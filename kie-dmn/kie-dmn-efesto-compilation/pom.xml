@@ -35,6 +35,7 @@
 
     <properties>
         <java.module.name>org.kie.dmn.efesto.compilation</java.module.name>
+        <dependency-plugin.version>3.6.1</dependency-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -42,31 +43,31 @@
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-efesto-api</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-dmn-test-resources</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
           </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-pmml-compiler-core</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
           </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-pmml-models-regression-compiler</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
           </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
           </dependency>
         </dependencies>
@@ -146,5 +147,39 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Unpack DMN resources from from org.kie:kie-dmn-test-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie</groupId>
+                  <artifactId>kie-dmn-test-resources</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>tests</classifier>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                  <includes>**/*.dmn,**/*.pmml</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

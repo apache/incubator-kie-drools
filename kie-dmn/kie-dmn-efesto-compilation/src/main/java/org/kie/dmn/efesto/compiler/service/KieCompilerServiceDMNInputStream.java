@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,24 +20,21 @@ package org.kie.dmn.efesto.compiler.service;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
+import org.kie.dmn.api.identifiers.DmnIdFactory;
+import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
+import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
 import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.dmn.validation.DMNValidator;
-import org.kie.dmn.validation.DMNValidatorFactory;
-import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
+import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,9 +44,7 @@ import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 /**
  * For the moment being, use this for DMN "validation", since DMN does not have a code-generation phase
  */
-public class KieCompilerServiceDMNInputStream implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
-
-    static final DMNValidator validator = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()));
+public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerServiceDMN {
 
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
@@ -80,26 +75,16 @@ public class KieCompilerServiceDMNInputStream implements KieCompilerService<Efes
             throw new KieCompilerServiceException(String.format("Validation errors from %s:\r\n%s", ((EfestoInputStreamResource) toProcess).getFileName(), errors));
 
         } else {
+            String fileName = inputStreamResource.getFileName();
+            LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
+                    .get(KieDmnComponentRoot.class)
+                    .get(DmnIdFactory.class)
+                    .get(fileName);
+            ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
             DMNModel dmnModel = getDMNModel(modelSource);
             return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(inputStreamResource.getFileName(),
                     dmnModel.getName(),
                     modelSource));
-        }
-    }
-
-    @Override
-    public String getModelType() {
-        return "dmn";
-    }
-
-
-    private String getModelSource(InputStream inputStream) {
-        String newLine = System.getProperty("line.separator");
-        try (inputStream) {
-            return new BufferedReader(new InputStreamReader(inputStream))
-                    .lines().collect(Collectors.joining(newLine));
-        } catch (Exception e) {
-            throw new EfestoCompilationManagerException(e);
         }
     }
 }

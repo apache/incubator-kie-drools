@@ -23,10 +23,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
-import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.dmn.validation.DMNValidator;
-import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.core.storage.ContextStorage;
@@ -36,26 +34,19 @@ import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
-import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
 
-public class KieCompilerServiceDMNFile implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
-
-    static final DMNValidator validator = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()));
+public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
 
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
@@ -104,27 +95,4 @@ public class KieCompilerServiceDMNFile implements KieCompilerService<EfestoCompi
             throw new EfestoCompilationManagerException(e);
         }
     }
-
-    public boolean hasCompilationSource(String fileName) {
-        LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                .get(KieDmnComponentRoot.class)
-                .get(DmnIdFactory.class)
-                .get(fileName);
-        return ContextStorage.getEfestoCompilationSource(localCompilationSourceIdDmn) != null;
-    }
-
-    @Override
-    public String getCompilationSource(String fileName) {
-        LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                .get(KieDmnComponentRoot.class)
-                .get(DmnIdFactory.class)
-                .get(fileName);
-        return ContextStorage.getEfestoCompilationSource(localCompilationSourceIdDmn);
-    }
-
-    @Override
-    public String getModelType() {
-        return "dmn";
-    }
-
 }
