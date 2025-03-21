@@ -199,12 +199,12 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     /**
-     * Method to compile the dmn model
-     * @param dmndefs : defines the structure of the rules, models, and associated metadata
-     * @param dmnModels : List of decision models
-     * @param resource : resource object that provides a way to load, manage, and process files that define business rules, decision tables, and other assets.
-     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
-     * @return : model which holds the dmn elements
+     * This method compiles a given DMN Definitions object into a DMNModel, processing imports, item definitions and DRG elements as part of the compilation process.
+     * @param dmndefs : The Definitions object containing the DMN model definition to be compiled.
+     * @param dmnModels A collection of existing DMN models that may be used during the compilation process.
+     * @param resource The Resource that provides the underlying data for the DMN model.
+     * @param relativeResolver A Function that resolves relative paths to resources as Reader.
+     * @return A DMNModelImpl representing the compiled DMN model, or null if dmndefs is null.
      */
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
@@ -222,10 +222,10 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     /**
-     * Method to configure the dmn compiler
-     * @param feeldialect : object used to support the FEEL language
-     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
-     * @return : an object of the DMNCompilerContext which provides the context required for compiling a DMN model
+     * This method will Configures and creates a DMNCompilerContext for the DMN compiler, setting up the FEEL helper and relative resolver.
+     * @param feeldialect : It used by the DMN compiler for parsing and evaluating FEEL expressions.
+     * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
+     * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
      */
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
 
@@ -238,11 +238,12 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     /**
-     * Methods to iterate the models based on the import type
-     * @param dmndefs : defines the structure of the rules, models, and associated metadata
-     * @param dmnModels : List of decision models
-     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
-     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
+     * This method is used to iterates over the imports defined in a DMN Definitions object and processes each import based on its type.
+     * After processing all imports, it merges models by calling processMergedModel method for each merged model.
+     * @param dmndefs : The Definitions object that contains the imports to be processed.
+     * @param dmnModels : A collection of existing DMNModel instances that may be relevant for resolving imports.
+     * @param model : The DMNModelImpl instance into which the resolved imports are applied.
+     * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
      */
     void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();

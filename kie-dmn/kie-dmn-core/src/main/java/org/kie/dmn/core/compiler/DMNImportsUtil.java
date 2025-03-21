@@ -143,11 +143,12 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Method to resolve the dmn models based on the import type
-     * @param i : object of the Import interface which represents an imported resource in a DMN model
-     * @param dmnModels : List of decision models
-     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
-     * @param toMerge : This is a list that will hold DMN models that are to be merged later
+     * Resolves a DMN import by searching for the corresponding DMNModel based on the provided Import object.
+     * If the import is resolved successfully, it is checked and merged with the current DMN model.
+     * @param i : The Import object representing the DMN import to be resolved.
+     * @param dmnModels : A collection of existing DMNModel objects that may be used to resolve the import.
+     * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
+     * @param toMerge : A list that will hold DMN models to be merged with the current model.
      */
     static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
         Either<String, DMNModel> resolvedResult = DMNImportsUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
@@ -164,14 +165,13 @@ public class DMNImportsUtil {
             return null;
         }, Function.identity());
         checkLocatedDMNModel(i, located, model, toMerge);
-
     }
 
     /**
-     * Method to import the dmn model to the default namespace
+     * This method is used to checks if a DMNModel is located and processes it by setting the import alias or merging it with the original model.
      * @param i : represents an import object, and it has a name (i.getName()). If the name is available, it will be used as the import alias.
-     * @param located : it is a DMN model that has been locate
-     * @param model : it is the target DMN model where the import or merge is being applied
+     * @param located : it is a DMN model that has been locate.
+     * @param model : it is the target DMN model where the import or merge is being applied model.
      * @param toMerge : This is a list that will hold DMN models that are to be merged later, instead of being directly imported.
      */
     static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
@@ -190,11 +190,11 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Reolve model with import type as PMML
-     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
-     * @param i : object of the Import interface which represents an imported resource in a DMN model
-     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
-     * @param dmnCompilerConfig : object of the DMNCompilerConfigurationImpl which is used to configure how the DMN models should be processed and compiled by the DMN engine.
+     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
+     * @param model : Represents a DMN model that requires the PMML import resolution.
+     * @param i : Object that specifies the import details for the PMML resource.
+     * @param relativeResolver : A function that resolves relative paths to resources.
+     * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
      */
     static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
@@ -203,11 +203,13 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Static methods to resolve the pmml models
-     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
-     * @param i : object of the Import interface which represents an imported resource in a DMN model
-     * @param relativeResource : is a functional interface used to resolve relative paths to resources
-     * @param dmnCompilerConfig : object of the DMNCompilerConfigurationImpl which is used to configure how the DMN models should be processed and compiled by the DMN engine.
+     * Resolves the PMML import type for a given DMN model and import, consuming and processing the PMML import information.
+     * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer for appropriate processing.
+     * @param model : represents a DMN model where the PMML import information will be added.
+     * @param i : The Import object that specifies the PMML import details.
+     * @param relativeResource : The resource representing the relative resource containing the PMML data.
+     * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
+     * @throws IOException If an error occurs while reading the PMML resource input stream.
      */
     static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         try (InputStream pmmlIS = relativeResource.getInputStream()) {
@@ -219,9 +221,9 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Logs the error messages which comes while processing a dmn with an unknown import type
-     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
-     * @param importType : Type of import used within a Drools rule file
+     * Logs an error message when an unsupported or unknown import type is encountered during DMN model compilation.
+     * @param model : Instance of the DMNModelImpl that represents the DMN model where the error occurred.
+     * @param importType : The type of the import that caused the error (e.g., DMN, PMML, or unknown type).
      */
     static void logErrorMessage(DMNModelImpl model, String importType) {
         MsgUtil.reportMessage(LOGGER,
@@ -235,10 +237,11 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Method to handle imports from the model
-     * @param model : represents a DMN model, which includes all the necessary components in the DMN standard.
-     * @param m : represents a DMN model in the KIE DMN engine.
-     * @param iAlias : alias of a variable used within a rule
+     * This method ensures that all necessary components from the source DMN model are integrated into the target model,
+     * including the import chain and various types of nodes (inputs, items, decisions, etc.).
+     * @param model : The DMNModelImpl instance into which elements from the source model will be imported.
+     * @param m : DMN model from which elements will be imported.
+     * @param iAlias : The alias to be used for the import chain when adding the elements from the source model.
      */
     static void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
@@ -257,7 +260,5 @@ public class DMNImportsUtil {
         for (DecisionServiceNode dsn : m.getDecisionServices()) {
             model.addDecisionService(dsn);
         }
-
-
     }
 }
