@@ -200,11 +200,11 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     /**
      * Method to compile the dmn model
-     * @param dmndefs : This defines the structure of the rules, models, and associated metadata
+     * @param dmndefs : defines the structure of the rules, models, and associated metadata
      * @param dmnModels : List of decision models
-     * @param resource
-     * @param relativeResolver
-     * @return
+     * @param resource : resource object that provides a way to load, manage, and process files that define business rules, decision tables, and other assets.
+     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
+     * @return : model which holds the dmn elements
      */
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
@@ -223,9 +223,9 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     /**
      * Method to configure the dmn compiler
-     * @param feeldialect
-     * @param relativeResolver
-     * @return
+     * @param feeldialect : object used to support the FEEL language
+     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
+     * @return : an object of the DMNCompilerContext which provides the context required for compiling a DMN model
      */
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
 
@@ -239,10 +239,10 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     /**
      * Methods to iterate the models based on the import type
-     * @param dmndefs
-     * @param dmnModels
-     * @param model
-     * @param relativeResolver
+     * @param dmndefs : defines the structure of the rules, models, and associated metadata
+     * @param dmnModels : List of decision models
+     * @param model : represents a DMN model, which includes all the necessary components like decision tables and other elements defined in the DMN standard.
+     * @param relativeResolver : is a functional interface used to resolve relative paths to resources
      */
     void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();
