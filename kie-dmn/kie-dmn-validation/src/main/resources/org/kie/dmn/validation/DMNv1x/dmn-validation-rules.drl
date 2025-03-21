@@ -28,7 +28,7 @@ import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
+import org.kie.dmn.core.compiler.DMNImportsUtil;
 import org.kie.dmn.validation.ValidatorUtil;
 
 import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
@@ -40,7 +40,7 @@ declare entry-point "DMNImports" end
 
 rule MISSING_IMPORT_p1
 when
-  $elemRef : Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN,
+  $elemRef : Import( DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN,
                      $importedNS : namespace,
                      getAdditionalAttributes().get(ValidatorUtil.KIE_MODEL_NAME_QNAME) == null )
   not( Definitions( namespace == $importedNS ) from entry-point "DMNImports" )
@@ -50,7 +50,7 @@ end
 
 rule MISSING_IMPORT_p2
 when
-  $elemRef : Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN,
+  $elemRef : Import( DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN,
                      $importedNS : namespace,
                      getAdditionalAttributes().get(ValidatorUtil.KIE_MODEL_NAME_QNAME) != null,
                      $importedName : getAdditionalAttributes().get(ValidatorUtil.KIE_MODEL_NAME_QNAME) )
