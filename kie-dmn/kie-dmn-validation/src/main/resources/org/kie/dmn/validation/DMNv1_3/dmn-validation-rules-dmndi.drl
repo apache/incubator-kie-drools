@@ -100,7 +100,7 @@ when
     DMNDI()
     $shape : DMNShape($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX)
     Definitions($nsContext : nsContext)
-    $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])
+    $import : Import(DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN, namespace == $nsContext[$prefix])
     $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
     not DRGElement(id == $shape.dmnElementRef.localPart) from $importDef.drgElement
     not TextAnnotation(id == $shape.dmnElementRef.localPart) from $importDef.artifact
@@ -126,7 +126,7 @@ when
     DMNDI()
     $edge : DMNEdge($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX, $localPart : dmnElementRef.localPart)
     Definitions($nsContext : nsContext)
-    $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])
+    $import : Import(DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN, namespace == $nsContext[$prefix])
     $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
     eval(!doesDefinitionsContainIdForDMNEdge($importDef, $localPart))
 then
