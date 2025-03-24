@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +17,6 @@
 package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -42,9 +38,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import javax.xml.namespace.QName;
-
 import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
@@ -57,7 +51,6 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -67,13 +60,12 @@ import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
-import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
+import org.kie.dmn.core.compiler.DMNImportsUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.core.util.NamespaceUtil;
@@ -85,7 +77,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenFnType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
@@ -111,6 +102,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
+import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
+import static org.kie.dmn.core.compiler.DMNImportsUtil.resolvePMMLImportType;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
@@ -209,77 +204,71 @@ public class DMNCompilerImpl implements DMNCompiler {
         return null;
     }
 
+    /**
+     * This method compiles a given DMN Definitions object into a DMNModel, processing imports, item definitions and DRG elements as part of the compilation process.
+     * @param dmndefs : The Definitions object containing the DMN model definition to be compiled.
+     * @param dmnModels A collection of existing DMN models that may be used during the compilation process.
+     * @param resource The Resource that provides the underlying data for the DMN model.
+     * @param relativeResolver A Function that resolves relative paths to resources as Reader.
+     * @return A DMNModelImpl representing the compiled DMN model, or null if dmndefs is null.
+     */
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
             return null;
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs, resource);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
-        DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
-        List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, model.getFeelDialect());
-        DMNCompilerContext ctx = new DMNCompilerContext(feel);
-        ctx.setRelativeResolver(relativeResolver);
-        List<DMNModel> toMerge = new ArrayList<>();
+        DMNCompilerContext ctx = configureDMNCompiler(model.getFeelDialect(), relativeResolver);
         if (!dmndefs.getImport().isEmpty()) {
-            for (Import i : dmndefs.getImport()) {
-                if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
-                    Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
-                    DMNModel located = resolvedResult.cata(msg -> {
-                        MsgUtil.reportMessage(logger,
-                                              DMNMessage.Severity.ERROR,
-                                              i,
-                                              model,
-                                              null,
-                                              null,
-                                              Msg.IMPORT_NOT_FOUND_FOR_NODE,
-                                              msg,
-                                              i);
-                        return null;
-                    }, Function.identity());
-                    if (located != null) {
-                        String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-                        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
-                        //  with original one,
-                        // because otherwise we would have to deal with clashing name aliases, or similar issues
-                        if (iAlias != null && !iAlias.isEmpty()) {
-                            model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                            importFromModel(model, located, iAlias);
-                        } else {
-                            toMerge.add(located);
-                        }
-                    }
-                } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
-                    processPMMLImport(model, i, relativeResolver);
-                    model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
-                } else {
-                    MsgUtil.reportMessage(logger,
-                                          DMNMessage.Severity.ERROR,
-                                          null,
-                                          model,
-                                          null,
-                                          null,
-                                          Msg.IMPORT_TYPE_UNKNOWN,
-                                          i.getImportType());
-                }
-            }
+            iterateImports(dmndefs, dmnModels, model, relativeResolver );
         }
-
-        toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
         return model;
     }
 
-    private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
-        ClassLoader rootClassLoader = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader();
-        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
-        try (InputStream pmmlIS = relativeResource.getInputStream()) {
-            DMNImportPMMLInfo.from(pmmlIS, (DMNCompilerConfigurationImpl) dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
-                                                                                                               model::addPMMLImportInfo);
-        } catch (IOException e) {
-            new PMMLImportErrConsumer(model, i).accept(e);
+    /**
+     * This method will Configures and creates a DMNCompilerContext for the DMN compiler, setting up the FEEL helper and relative resolver.
+     * @param feeldialect : It used by the DMN compiler for parsing and evaluating FEEL expressions.
+     * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
+     * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
+     */
+    private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
+
+        DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
+        List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
+        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect);
+        DMNCompilerContext ctx = new DMNCompilerContext(feel);
+        ctx.setRelativeResolver(relativeResolver);
+        return ctx;
+    }
+
+    /**
+     * This method is used to iterates over the imports defined in a DMN Definitions object and processes each import based on its type.
+     * After processing all imports, it merges models by calling processMergedModel method for each merged model.
+     * @param dmndefs : The Definitions object that contains the imports to be processed.
+     * @param dmnModels : A collection of existing DMNModel instances that may be relevant for resolving imports.
+     * @param model : The DMNModelImpl instance into which the resolved imports are applied.
+     * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
+     */
+    void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
+        List<DMNModel> toMerge = new ArrayList<>();
+        for (Import i : dmndefs.getImport()) {
+            ImportType importType = DMNImportsUtil.whichImportType(i);
+            switch(importType) {
+                case DMN :
+                    resolveDMNImportType(i, dmnModels, model, toMerge);
+                    break;
+                case PMML:
+                    resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
+                    model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
+                    break;
+                default :
+                    logErrorMessage(model, i.getImportType());
+                    break;
+            }
         }
+        toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
     }
 
     public static class PMMLImportErrConsumer implements Consumer<Exception> {
@@ -312,7 +301,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
 
     }
-
     protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
         if (relativeResolver != null) {
             Reader reader = relativeResolver.apply(i.getLocationURI());
@@ -337,7 +325,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 //            pmmlResource = resolveRelativeURI.isAbsolute() ?
 //                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
 //                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
-        } catch (Exception e) {
+        } catch (URISyntaxException | IOException e) {
             new PMMLImportErrConsumer(model, i, node).accept(e);
         }
         logger.trace("pmmlResource: {}", pmmlResource);
@@ -369,24 +357,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 
-    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
-        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
-        for (ItemDefNode idn : m.getItemDefinitions()) {
-            model.getTypeRegistry().registerType(idn.getType());
-        }
-        for (InputDataNode idn : m.getInputs()) {
-            model.addInput(idn);
-        }
-        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
-            model.addBusinessKnowledgeModel(bkm);
-        }
-        for (DecisionNode dn : m.getDecisions()) {
-            model.addDecision(dn);
-        }
-        for (DecisionServiceNode dsn : m.getDecisionServices()) {
-            model.addDecisionService(dsn);
-        }
-    }
+
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();
