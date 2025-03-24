@@ -51,7 +51,7 @@
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>2.0.2</version.io.quarkiverse.jackson-jq>
-    <version.io.quarkiverse.openapi.generator>2.8.2-lts</version.io.quarkiverse.openapi.generator>
+    <version.io.quarkiverse.openapi.generator>2.9.0-lts</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.asyncapi>0.3.0</version.io.quarkiverse.asyncapi>
     <version.io.quarkiverse.reactivemessaging.http>2.4.1</version.io.quarkiverse.reactivemessaging.http>
     <version.io.quarkiverse.embedded.postgresql>0.3.0</version.io.quarkiverse.embedded.postgresql>
