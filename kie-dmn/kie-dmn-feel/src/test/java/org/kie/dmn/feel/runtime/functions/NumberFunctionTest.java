@@ -121,4 +121,37 @@ class NumberFunctionTest {
     void invokeGroupEqualsDecimal() {
         FunctionTestUtil.assertResultError(numberFunction.invoke("1 000.1", ".", "."), InvalidParametersEvent.class);
     }
+
+    @Test
+    void invokeNumberWithLeadingZeros1() {
+        FunctionTestUtil.assertResult(numberFunction.invoke("009876"), BigDecimal.valueOf(9876));
+    }
+
+    @Test
+    void invokeNumberWithoutDecimalPart1() {
+        FunctionTestUtil.assertResult(numberFunction.invoke("1.1"), BigDecimal.valueOf(1.1));
+    }
+    /// //////////////
+    @Test
+    void invokeSingleParamNumberNull() {
+        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
+    }
+
+    @Test
+    void invokeSingleParamIllegalNumber() {
+        FunctionTestUtil.assertResultError(numberFunction.invoke("test"), InvalidParametersEvent.class);
+    }
+
+    @Test
+    void invokeSingleParamNumberWithLeadingZeros() {
+        FunctionTestUtil.assertResult(numberFunction.invoke("00123"), BigDecimal.valueOf(123));
+    }
+
+    @Test
+    void invokeSingleParamNumberWithoutDecimalPart() {
+        FunctionTestUtil.assertResult(numberFunction.invoke("123"), BigDecimal.valueOf(123));
+    }
 }
