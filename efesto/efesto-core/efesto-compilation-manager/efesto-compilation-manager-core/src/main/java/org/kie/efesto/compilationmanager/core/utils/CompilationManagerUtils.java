@@ -26,12 +26,14 @@ import java.util.Optional;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
+import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputModelContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoClassesContainer;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
@@ -145,11 +147,13 @@ public class CompilationManagerUtils {
     }
 
     static GeneratedResource getGeneratedResource(EfestoCompilationOutput compilationOutput) {
-        if (compilationOutput instanceof EfestoRedirectOutput) {
-            return new GeneratedRedirectResource(((EfestoRedirectOutput) compilationOutput).getModelLocalUriId(),
-                                                 ((EfestoRedirectOutput) compilationOutput).getTargetEngine());
-        } else if (compilationOutput instanceof EfestoCallableOutput) {
-            return new GeneratedExecutableResource(((EfestoCallableOutput) compilationOutput).getModelLocalUriId(), ((EfestoCallableOutput) compilationOutput).getFullClassNames());
+        if (compilationOutput instanceof EfestoRedirectOutput efestoRedirectOutput) {
+            return new GeneratedRedirectResource(efestoRedirectOutput.getModelLocalUriId(),
+                                                 efestoRedirectOutput.getTargetEngine());
+        } else if (compilationOutput instanceof EfestoCallableOutputClassesContainer efestoCallableOutputClassesContainer) {
+            return new GeneratedExecutableResource(efestoCallableOutputClassesContainer.getModelLocalUriId(), efestoCallableOutputClassesContainer.getFullClassNames());
+        } else if (compilationOutput instanceof EfestoCallableOutputModelContainer efestoCallableOutputModelContainer) {
+            return new GeneratedModelResource(efestoCallableOutputModelContainer.getModelLocalUriId(), efestoCallableOutputModelContainer.getModelSource(), efestoCallableOutputModelContainer.getCompiledModel());
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }

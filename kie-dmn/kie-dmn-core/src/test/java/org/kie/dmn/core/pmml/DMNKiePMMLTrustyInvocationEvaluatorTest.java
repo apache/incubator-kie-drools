@@ -18,8 +18,10 @@
  */
 package org.kie.dmn.core.pmml;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,23 +29,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.efesto.common.api.model.GeneratedResources;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.PMML_FILE_NAME;
 import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.PMML_MODEL_NAME;
+import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.RESULT_OBJECT_NAME;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -57,21 +60,18 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
     private static final String pmmlFileNameNoSuffix ="LogisticRegression";
     private static final String pmmlFileName = pmmlFileNameNoSuffix + ".pmml";
     private static final String model = "LogisticRegression";
+    private static ModelLocalUriId pmmlModelLocalUriId;
 
     @BeforeEach
     void setup() throws IOException {
-        URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(pmmlFileName);
-        assertThat(pmmlUrl).isNotNull();
-        String pmmlFilePath = pmmlUrl.getPath();
+        pmmlModelLocalUriId = compilePmml();
         String dmnNS = "dmnNS";
         DMNElement nodeMock = Mockito.mock(DMNElement.class);
-        Resource pmmlResourceMock = Mockito.mock(Resource.class);
-        when(pmmlResourceMock.getSourcePath()).thenReturn(pmmlFilePath);
-        when(pmmlResourceMock.getInputStream()).thenReturn(pmmlUrl.openStream());
         PMMLInfo pmmlInfoMock = Mockito.mock(PMMLInfo.class);
+
         dmnKiePMMLTrustyInvocationEvaluator = spy(new DMNKiePMMLTrustyInvocationEvaluator(dmnNS,
                                                                                           nodeMock,
-                                                                                          pmmlResourceMock,
+                                                                                          pmmlModelLocalUriId,
                                                                                           model,
                                                                                           pmmlInfoMock) {
 
@@ -81,14 +81,12 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
 
             protected Map<String, Object> getPMMLRequestData(String correlationId, String modelName, String fileName,
                                                          DMNResult dmnr) {
-                return getPMMLRequestDataCommon(correlationId, modelName, fileName);
+                return getPMMLRequestDataCommon(modelName, fileName);
             }
         });
     }
 
     @Test
-    @Disabled
-        // TODO REENABLE
     void getPMML4Result() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DMNRuntime dmnRuntimeMock = mock(DMNRuntime.class);
@@ -98,43 +96,37 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNResult dmnrMock = mock(DMNResult.class);
         dmnKiePMMLTrustyInvocationEvaluator.getPMMLResult(eventManagerMock, dmnrMock);
         verify(dmnKiePMMLTrustyInvocationEvaluator,
-               times(1)).evaluate(model, pmmlFileName, dmnrMock, classLoader);
+               times(1)).evaluate(model, dmnrMock, classLoader);
     }
 
-//    @Test
-//    public void getOutputFieldValues() {
-//        List<Object> values = getValues();
-//        Map<String, Object> resultVariables = new HashMap<>();
-//        for (int i = 0; i < values.size(); i++) {
-//            resultVariables.put("Element-" + i, values.get(i));
-//        }
-//        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.getOutputFieldValues(new PMML4Result(),
-//                                                                                                 resultVariables,
-//                                                                                                 null);
-//        resultVariables.forEach((s, value) -> {
-//            assertThat(retrieved).containsKey(s);
-//            Object retObject = retrieved.get(s);
-//            Object expected = EvalHelper.coerceNumber(value);
-//            assertThat(retObject).isEqualTo(expected);
-//        });
-//    }
-
-//    @Test
-//    public void getPredictedValues() {
-//        List<Object> values = getValues();
-//        values.forEach(value -> {
-//            PMML4Result result = getPMML4Result(value);
-//            Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.getPredictedValues(result, null);
-//            assertThat(retrieved).containsKey(result.getResultObjectName());
-//            Object retObject = retrieved.get(result.getResultObjectName());
-//            Object expected = EvalHelper.coerceNumber(value);
-//            assertThat(retObject).isEqualTo(expected);
-//        });
-//    }
+    @Test
+    public void getOutputFieldValues() {
+        Map<String, Object> resultVariables = getMappedValues();
+        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.getOutputFieldValues(resultVariables,
+                                                                                                 null);
+        resultVariables.forEach((s, value) -> {
+            assertThat(retrieved).containsKey(s);
+            Object retObject = retrieved.get(s);
+            Object expected = NumberEvalHelper.coerceNumber(value);
+            assertThat(retObject).isEqualTo(expected);
+        });
+    }
 
     @Test
-    @Disabled
-    // TODO REENABLE
+    public void getPredictedValues() {
+        final Map<String, Object> values = getMappedValues();
+        values.forEach((key, value) -> {
+            Map<String, Object> resultVariables = new HashMap<>(values);
+            resultVariables.put(RESULT_OBJECT_NAME, key);
+            Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.getPredictedValues(resultVariables, null);
+            assertThat(retrieved).containsKey(key);
+            Object retObject = retrieved.get(key);
+            Object expected = NumberEvalHelper.coerceNumber(value);
+            assertThat(retObject).isEqualTo(expected);
+        });
+    }
+
+    @Test
     void evaluate() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DMNRuntime dmnRuntimeMock = mock(DMNRuntime.class);
@@ -142,21 +134,27 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNRuntimeEventManager eventManagerMock = mock(DMNRuntimeEventManager.class);
         when(eventManagerMock.getRuntime()).thenReturn(dmnRuntimeMock);
         DMNResult dmnrMock = mock(DMNResult.class);
-        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(model, pmmlFileName, dmnrMock,
+        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(model, dmnrMock,
                                                                                      classLoader);
         assertThat(retrieved).isNotNull();
     }
 
-    @Test
-    @Disabled
-    // TODO REENABLE
-    void compileFile() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Map<String, GeneratedResources> retrieved = dmnKiePMMLTrustyInvocationEvaluator.compileFile(pmmlFileName, classLoader);
-        assertThat(retrieved).isNotNull().isNotEmpty().containsKey("pmml");
+//    @Test
+//    void compileFile() {
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        Map<String, GeneratedResources> retrieved = dmnKiePMMLTrustyInvocationEvaluator.compileFile(pmmlFileName, classLoader);
+//        assertThat(retrieved).isNotNull().isNotEmpty().containsKey("pmml");
+//    }
+
+    private static ModelLocalUriId compilePmml() throws IOException {
+        URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(pmmlFileName);
+        assertThat(pmmlUrl).isNotNull();
+        File pmmlFile = new File(pmmlUrl.getFile());
+        assertThat(pmmlFile).isNotNull().exists();
+        return EfestoPMMLUtils.compilePMML(pmmlFile, Thread.currentThread().getContextClassLoader());
     }
 
-    private static Map<String, Object> getPMMLRequestDataCommon(String correlationId, String modelName,
+    private static Map<String, Object> getPMMLRequestDataCommon(String modelName,
                                                                 String fileName) {
         Map<String, Object> toReturn = new HashMap<>();
         List<String> fields = Arrays.asList("variance", "skewness", "curtosis", "entropy");
@@ -168,6 +166,13 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         toReturn.put(PMML_FILE_NAME, fileName);
         toReturn.put(PMML_MODEL_NAME, modelName);
         return toReturn;
+    }
+
+    private  Map<String, Object> getMappedValues() {
+        List<Object> values = getValues();
+        AtomicInteger counter = new AtomicInteger(0);
+        return values.stream().collect(Collectors.toMap(o -> "Element-" + counter.getAndAdd(1),
+                                                        o -> o));
     }
 
     private List<Object> getValues() {

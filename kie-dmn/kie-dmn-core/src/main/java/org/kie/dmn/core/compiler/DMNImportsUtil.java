@@ -16,9 +16,11 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.*;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.Either;
@@ -39,10 +42,10 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamespaceConsts;
 import org.kie.dmn.model.v1_1.TImport;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.DMNCompilerImpl.resolveRelativeResource;
 
 public class DMNImportsUtil {
 
@@ -197,8 +200,7 @@ public class DMNImportsUtil {
      * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
      */
     static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
-        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.resolveRelativeResource(model, i, i, relativeResolver);
         resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
     }
 
@@ -207,13 +209,14 @@ public class DMNImportsUtil {
      * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer for appropriate processing.
      * @param model : represents a DMN model where the PMML import information will be added.
      * @param i : The Import object that specifies the PMML import details.
-     * @param relativeResource : The resource representing the relative resource containing the PMML data.
+     * @param pmmlModelLocalUriId : The ModelLocalUriId pointing at the PMML data.
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
      * @throws IOException If an error occurs while reading the PMML resource input stream.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        try (InputStream pmmlIS = relativeResource.getInputStream()) {
-            DMNImportPMMLInfo.from(pmmlIS, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
+    static void resolvePMMLImportType(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        String pmmlSource = EfestoPMMLUtils.getPmmlSource(pmmlModelLocalUriId);
+        try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
+            DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
                     model::addPMMLImportInfo);
         } catch (IOException e) {
             new DMNCompilerImpl.PMMLImportErrConsumer(model, i).accept(e);

@@ -49,11 +49,13 @@ import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
 
     @Override
+    @SuppressWarnings( "rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
         return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase("dmn");
     }
 
     @Override
+    @SuppressWarnings( "rawtypes")
     public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
@@ -76,9 +78,9 @@ public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
                                                        DMNValidator.Validation.VALIDATE_MODEL,
                                                        DMNValidator.Validation.VALIDATE_COMPILATION,
                                                        DMNValidator.Validation.ANALYZE_DECISION_TABLE);
-        if (DmnCompilerUtils.hasError(messages)) {
-            return Collections.emptyList();
-        }
+//        if (DmnCompilerUtils.hasError(messages)) {
+//            return Collections.emptyList();
+//        }
         try {
             String fileName = dmnFile.getName();
             LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
@@ -88,9 +90,9 @@ public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
 
             ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
             DMNModel dmnModel = getDMNModel(modelSource);
-            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(fileName,
+            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
                     dmnModel.getName(),
-                    modelSource));
+                    modelSource, dmnModel));
         } catch (Exception e) {
             throw new EfestoCompilationManagerException(e);
         }

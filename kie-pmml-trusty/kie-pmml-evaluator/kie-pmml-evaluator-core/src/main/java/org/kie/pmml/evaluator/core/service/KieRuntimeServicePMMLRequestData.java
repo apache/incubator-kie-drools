@@ -53,7 +53,8 @@ public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLR
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return canManageEfestoInput(toEvaluate, context);
+        return canManageEfestoInput(toEvaluate, context)
+                && toEvaluate.getModelLocalUriId().model().equals(PMML_STRING);
     }
 
     @Override

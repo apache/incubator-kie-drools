@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,15 +18,32 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
+import org.drools.util.ResourceHelper;
 import org.kie.api.runtime.ExecutableRunner;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.RequestContext;
-import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.identifiers.DmnIdFactory;
+import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
+import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
+import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.api.model.GeneratedModelResource;
+import org.kie.efesto.common.api.model.GeneratedResources;
+
+import static org.drools.scenariosimulation.backend.util.DMNSimulationUtils.compileModels;
 
 public class DMNScenarioExecutableBuilder {
 
@@ -34,41 +51,57 @@ public class DMNScenarioExecutableBuilder {
     public static final String DMN_RESULT = "dmnResult";
     public static final String DMN_MODEL = "dmnModel";
 
-    private final DMNRuntime dmnRuntime;
-    private final DMNContext dmnContext;
+    private final Map<String, Object> dmnContext;
     private DMNModel dmnModel;
+    private ModelLocalUriId dmnModelLocalUriId;
+    private final Map<String, GeneratedResources> generatedResourcesMap;
 
-    private DMNScenarioExecutableBuilder(KieContainer kieContainer, String applicationName) {
-        dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
-        dmnContext = dmnRuntime.newContext();
+    private DMNScenarioExecutableBuilder(Map<String, GeneratedResources> generatedResourcesMap) {
+        dmnContext = new HashMap<>();
+        this.generatedResourcesMap = generatedResourcesMap;
     }
 
-    private DMNScenarioExecutableBuilder(KieContainer kieContainer) {
-        this(kieContainer, DEFAULT_APPLICATION);
+    public static DMNScenarioExecutableBuilder createBuilder() {
+        try {
+            Collection<File> dmnFiles =  ResourceHelper.getFileResourcesByExtension("dmn");
+            Collection<File> pmmlFiles =  ResourceHelper.getFileResourcesByExtension("pmml");
+            Map<String, GeneratedResources> generatedResourcesMap = compileModels(dmnFiles, pmmlFiles);
+            return new DMNScenarioExecutableBuilder(generatedResourcesMap);
+        } catch (Exception e) {
+            // TODO gcardosi fix
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 
-    public static DMNScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String applicationName) {
-        return new DMNScenarioExecutableBuilder(kieContainer, applicationName);
-    }
-
-    public static DMNScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
-        return new DMNScenarioExecutableBuilder(kieContainer);
-    }
-
-    public void setActiveModel(String path) {
-        dmnModel = DMNSimulationUtils.extractDMNModel(dmnRuntime, path);
+    @SuppressWarnings( "rawtypes")
+    public void setActiveModel(String nameSpace, String modelName) {
+        GeneratedResources dmnGeneratedResources = generatedResourcesMap.get("dmn");
+        dmnModelLocalUriId = new EfestoAppRoot()
+                .get(KieDmnComponentRoot.class)
+                .get(DmnIdFactory.class)
+                .get(nameSpace, modelName);
+        GeneratedModelResource generatedModelResource = dmnGeneratedResources.stream()
+                .filter(GeneratedModelResource.class::isInstance)
+                .map(GeneratedModelResource.class::cast)
+                .filter(genRes -> genRes.getModelLocalUriId().equals(dmnModelLocalUriId))
+                .findFirst()
+                // TODO gcardosi fix
+                .orElse(null);
+        dmnModel = (DMNModel) generatedModelResource.getCompiledModel();
     }
 
     public void setValue(String key, Object value) {
-        dmnContext.set(key, value);
+        dmnContext.put(key, value);
     }
 
     public RequestContext run() {
-        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
+        EfestoOutputDMN efestoOutput = (EfestoOutputDMN) DMNSimulationUtils.getEfestoOutput(generatedResourcesMap, dmnModelLocalUriId, dmnContext);
         RequestContext requestContext = ExecutableRunner.create().createContext();
-        requestContext.setResult(dmnResult);
+        requestContext.setResult(efestoOutput.getOutputData());
         requestContext.setOutput(DMN_MODEL, dmnModel);
-        requestContext.setOutput(DMN_RESULT, dmnResult);
+        requestContext.setOutput(DMN_RESULT, efestoOutput.getOutputData());
         return requestContext;
     }
 }

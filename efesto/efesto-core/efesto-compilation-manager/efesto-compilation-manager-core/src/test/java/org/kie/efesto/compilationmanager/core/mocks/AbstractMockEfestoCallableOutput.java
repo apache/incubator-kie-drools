@@ -18,28 +18,19 @@
  */
 package org.kie.efesto.compilationmanager.core.mocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import java.util.Map;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
-public class MockEfestoCallableOutput extends AbstractMockEfestoCallableOutput {
+public abstract class AbstractMockEfestoCallableOutput extends EfestoCallableOutputClassesContainer {
 
-    private static final String fullClassName ="mock.efesto.output.Module";
-
-    private static final String moduleClass = "package mock.efesto.output;\n" +
-            "public class Module {}";
-
-    public MockEfestoCallableOutput() {
-        super(new ModelLocalUriId(LocalUri.parse("/mock/efesto/output/Module")), MockEfestoCallableOutput.class.getName(), getMappedCompiledBytes(fullClassName, moduleClass));
+    public AbstractMockEfestoCallableOutput(ModelLocalUriId modelLocalUriId, String fullClassName, Map<String, byte[]> compiledClassMap) {
+        super(modelLocalUriId, fullClassName, compiledClassMap);
     }
 
-    @Override
-    public List<String> getFullClassNames() {
-        return Collections.singletonList(fullClassName);
+    static Map<String,byte[]> getMappedCompiledBytes(String className, String content) {
+        return KieMemoryCompiler.compileNoLoad(Map.of(className, content), Thread.currentThread().getContextClassLoader());
     }
 
 }

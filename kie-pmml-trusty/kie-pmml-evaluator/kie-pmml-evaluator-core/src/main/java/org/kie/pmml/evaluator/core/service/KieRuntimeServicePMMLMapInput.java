@@ -31,6 +31,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.api.identifiers.AbstractModelLocalUriIdPmml;
+import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 import org.slf4j.Logger;
@@ -54,7 +55,8 @@ public class KieRuntimeServicePMMLMapInput implements KieRuntimeService<Map<Stri
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return canManageEfestoInput(toEvaluate, context);
+        return canManageEfestoInput(toEvaluate, context)
+                && toEvaluate.getModelLocalUriId().model().equals(PMML_STRING);
     }
 
     @Override

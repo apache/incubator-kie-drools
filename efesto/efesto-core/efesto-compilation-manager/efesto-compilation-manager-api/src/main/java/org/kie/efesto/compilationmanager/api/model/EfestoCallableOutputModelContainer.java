@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,14 +23,16 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 /**
  * A <code>EfestoCallableOutput</code> containing model source (e.g. for DMN execution)
  */
-public abstract class EfestoCallableOutputModelContainer implements EfestoCallableOutput {
+public abstract class EfestoCallableOutputModelContainer<T> implements EfestoCallableOutput {
 
     private final ModelLocalUriId modelLocalUriId;
     private final String modelSource;
+    private final T compiledModel;
 
-    protected EfestoCallableOutputModelContainer(ModelLocalUriId modelLocalUriId, String modelSource) {
+    protected EfestoCallableOutputModelContainer(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel) {
         this.modelLocalUriId = modelLocalUriId;
         this.modelSource = modelSource;
+        this.compiledModel = compiledModel;
     }
 
     @Override
@@ -40,5 +42,9 @@ public abstract class EfestoCallableOutputModelContainer implements EfestoCallab
 
     public String getModelSource() {
         return modelSource;
+    }
+
+    public T getCompiledModel() {
+        return compiledModel;
     }
 }

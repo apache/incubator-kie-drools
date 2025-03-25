@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,5 +32,6 @@ public interface EfestoLocalRuntimeContext<T extends EfestoListener> extends Efe
 
     Class<?> loadClass(String className) throws ClassNotFoundException;
 
+    @SuppressWarnings("rawtypes")
     ServiceLoader<KieRuntimeService> getKieRuntimeService();
 }

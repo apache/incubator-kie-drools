@@ -46,6 +46,13 @@ public class DMNEvaluator {
         return new DMNEvaluator(dmnModel, dmnRuntime);
     }
 
+    public static DMNEvaluator fromDMNModel(DMNModel dmnModel) {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.emptyList())
+                .getOrElseThrow(RuntimeException::new);
+        return new DMNEvaluator(dmnModel, dmnRuntime);
+    }
+
     private DMNEvaluator(DMNModel dmnModel, DMNRuntime dmnRuntime) {
         this.dmnModel = dmnModel;
         this.dmnRuntime = dmnRuntime;

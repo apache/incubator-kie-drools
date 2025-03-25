@@ -18,6 +18,9 @@
  */
 package org.kie.dmn.efesto.compiler.utils;
 
+import java.io.File;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.kie.api.builder.Message;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
@@ -25,6 +28,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.efesto.compiler.model.EfestoCallableOutputDMN;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.internal.io.ResourceFactory;
 
@@ -38,8 +42,8 @@ public class DmnCompilerUtils {
         return dmnMessages.stream().anyMatch(dmnMessage -> dmnMessage.getLevel().equals(Message.Level.ERROR));
     }
 
-    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(String fileName, String modelName, String modelSource) {
-        return new EfestoCallableOutputDMN(fileName, modelName, modelSource);
+    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(String nameSpace, String modelName, String modelSource, DMNModel dmnModel) {
+        return new EfestoCallableOutputDMN(nameSpace, modelName, modelSource, dmnModel);
     }
 
     public static DMNModel getDMNModel(String modelSource) {
@@ -47,5 +51,14 @@ public class DmnCompilerUtils {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
                 .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
         return dmnRuntime.getModels().get(0);
+    }
+
+    public static List<DMNModel> getDMNModels(Set<File> modelFiles) {
+        List<Resource> modelResources = modelFiles.stream().map(ResourceFactory::newFileResource)
+                .toList();
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(modelResources)
+                .getOrElseThrow(RuntimeException::new);
+        return dmnRuntime.getModels();
     }
 }

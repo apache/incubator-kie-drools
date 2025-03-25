@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
@@ -26,13 +27,15 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputModelCont
 import java.util.Collections;
 import java.util.List;
 
-public class EfestoCallableOutputDMN extends EfestoCallableOutputModelContainer {
+public class EfestoCallableOutputDMN extends EfestoCallableOutputModelContainer<DMNModel> {
 
-    public EfestoCallableOutputDMN(String fileName, String modelName, String modelSource) {
+    public EfestoCallableOutputDMN(String nameSpace, String modelName, String modelSource, DMNModel dmnModel) {
         super(new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(fileName, modelName), modelSource);
+                .get(nameSpace, modelName),
+              modelSource,
+              dmnModel);
     }
 
     @Override

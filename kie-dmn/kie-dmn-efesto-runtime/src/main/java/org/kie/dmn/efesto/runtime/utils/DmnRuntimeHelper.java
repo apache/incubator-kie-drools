@@ -21,6 +21,7 @@ package org.kie.dmn.efesto.runtime.utils;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.dmn.efesto.runtime.service.DMNEvaluator;
@@ -48,7 +49,18 @@ public class DmnRuntimeHelper {
     public static Optional<EfestoOutputDMN> execute(EfestoInput<Map<String, Object>> toEvaluate, EfestoLocalRuntimeContext runtimeContext) {
         ModelLocalUriId modelLocalUriId = toEvaluate.getModelLocalUriId();
         Optional<GeneratedModelResource> generatedModelResource = getGeneratedModelResource(modelLocalUriId, runtimeContext.getGeneratedResourcesMap());
-        return generatedModelResource.map(it -> execute(it.getModelSource(), modelLocalUriId, toEvaluate.getInputData()));
+        return generatedModelResource.map(it -> execute((DMNModel) it.getCompiledModel(), modelLocalUriId, toEvaluate.getInputData()));
+    }
+
+    static EfestoOutputDMN execute(DMNModel model, ModelLocalUriId modelLocalUriId, Map<String, Object> inputData) {
+        try {
+            DMNEvaluator dmnEvaluator = DMNEvaluator.fromDMNModel(model);
+            DMNResult dmnResult = dmnEvaluator.evaluate(inputData);
+            return new EfestoOutputDMN(modelLocalUriId, dmnResult);
+        } catch (Exception e) {
+            logger.error("Failed to evaluate {}", inputData, e);
+            return null;
+        }
     }
 
     static EfestoOutputDMN execute(String modelSource, ModelLocalUriId modelLocalUriId, Map<String, Object> inputData) {

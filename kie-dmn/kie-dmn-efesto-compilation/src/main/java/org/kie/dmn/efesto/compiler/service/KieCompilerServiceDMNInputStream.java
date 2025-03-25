@@ -82,9 +82,10 @@ public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerService
                     .get(fileName);
             ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
             DMNModel dmnModel = getDMNModel(modelSource);
-            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(inputStreamResource.getFileName(),
+            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
                     dmnModel.getName(),
-                    modelSource));
+                    modelSource,
+                    dmnModel));
         }
     }
 }

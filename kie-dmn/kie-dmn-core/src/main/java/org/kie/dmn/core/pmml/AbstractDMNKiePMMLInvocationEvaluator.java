@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -36,6 +35,7 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +50,8 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDMNKiePMMLInvocationEvaluator.class);
     protected final PMMLInfo<?> pmmlInfo;
 
-    public AbstractDMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model, PMMLInfo<?> pmmlInfo) {
-        super(dmnNS, node, pmmlResource, model);
+    public AbstractDMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, ModelLocalUriId pmmlModelLocalUriID, String model, PMMLInfo<?> pmmlInfo) {
+        super(dmnNS, node, pmmlModelLocalUriID, model);
         this.pmmlInfo = pmmlInfo;
     }
 

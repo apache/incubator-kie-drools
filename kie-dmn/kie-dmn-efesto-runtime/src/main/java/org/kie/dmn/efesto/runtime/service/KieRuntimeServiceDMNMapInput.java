@@ -19,7 +19,6 @@
 package org.kie.dmn.efesto.runtime.service;
 
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
@@ -36,7 +35,6 @@ import java.util.Optional;
 
 import static org.kie.dmn.efesto.runtime.utils.DmnRuntimeHelper.canManage;
 import static org.kie.dmn.efesto.runtime.utils.DmnRuntimeHelper.execute;
-import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
 
 public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<String, Object>, DMNResult, EfestoInput<Map<String, Object>>, EfestoOutputDMN, EfestoLocalRuntimeContext> {
 
@@ -48,20 +46,22 @@ public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<Strin
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public boolean canManageInput(EfestoInput toEvaluate, EfestoLocalRuntimeContext context) {
         return canManage(toEvaluate, context)
-                && toEvaluate.getModelLocalUriId() instanceof LocalComponentIdDmn;
+                && toEvaluate.getModelLocalUriId().model().equals("dmn");
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Optional<EfestoOutputDMN> evaluateInput(EfestoInput<Map<String, Object>> toEvaluate,
                                                    EfestoLocalRuntimeContext context) {
         if (!canManageInput(toEvaluate, context)) {
             throw new KieRuntimeServiceException("Wrong parameters " + toEvaluate + " " + context);
         }
-        if (!(context instanceof EfestoLocalRuntimeContext)) {
-            context = buildWithParentClassLoader(context.getClass().getClassLoader(), context.getGeneratedResourcesMap());
-        }
+//        if (context == null) {
+//            context = buildWithParentClassLoader(context.getClass().getClassLoader(), context.getGeneratedResourcesMap());
+//        }
         return execute(toEvaluate,  context);
     }
 

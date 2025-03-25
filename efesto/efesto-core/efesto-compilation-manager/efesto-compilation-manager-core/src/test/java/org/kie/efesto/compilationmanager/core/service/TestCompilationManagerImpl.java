@@ -156,7 +156,7 @@ class TestCompilationManagerImpl {
             assertThat(indexFile).exists();
 
             GeneratedResources finalContent = getGeneratedResourcesObject(indexFile);
-            assertThat(finalContent).hasSize(2);
+            assertThat(finalContent).hasSize(4);
 
             List<ModelLocalUriId> friList = Arrays.asList(new MockEfestoCallableOutput().getModelLocalUriId(), new MockEfestoCallableOutputE().getModelLocalUriId());
 

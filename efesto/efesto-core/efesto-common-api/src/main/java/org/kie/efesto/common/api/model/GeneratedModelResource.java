@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.Objects;
 /**
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
-public final class GeneratedModelResource implements GeneratedResource {
+public final class GeneratedModelResource<T> implements GeneratedResource {
 
     private static final long serialVersionUID = 6588314882989626752L;
     /**
@@ -36,13 +36,16 @@ public final class GeneratedModelResource implements GeneratedResource {
 
     private final String modelSource;
 
+    private final T compiledModel;
+
     public GeneratedModelResource() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    public GeneratedModelResource(ModelLocalUriId modelLocalUriId, String modelSource) {
+    public GeneratedModelResource(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel) {
         this.modelLocalUriId = modelLocalUriId;
         this.modelSource = modelSource;
+        this.compiledModel = compiledModel;
     }
 
     public ModelLocalUriId getModelLocalUriId() {
@@ -51,6 +54,10 @@ public final class GeneratedModelResource implements GeneratedResource {
 
     public String getModelSource() {
         return modelSource;
+    }
+
+    public T getCompiledModel() {
+        return compiledModel;
     }
 
     @Override
