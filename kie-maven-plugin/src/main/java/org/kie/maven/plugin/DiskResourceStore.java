@@ -80,53 +80,36 @@ public class DiskResourceStore implements ResourceStore {
     private void commonWrite(String fullPath, byte[] pResourceData, boolean createFolder) {
         File file = new File(fullPath);
         if (createFolder) {
-            File dir = file.getParentFile();
-            if (!dir.exists()) {
-                dir.mkdirs();
+            File parentDir = file.getParentFile();
+            if (!parentDir.exists()) {
+                boolean created = parentDir.mkdirs();
+                if (!created) {
+                    System.err.println("Failed to create directory: " + parentDir.getAbsolutePath());
+                }
             }
         }
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(pResourceData);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
     private byte[] commonRead(String fullPath) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(fullPath);
+        try (FileInputStream fis = new FileInputStream(fullPath)) {
             return readBytesFromInputStream(fis);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
     private void commonRemove(String fullPath) {
-        File file = new File(fullPath);
-        if (file.exists()) {
-            file.delete();
+        if (new File(fullPath).exists()) {
+            boolean deleted = new File(fullPath).delete();
+            if (!deleted) {
+                System.err.println("Failed to delete the file: " + new File(fullPath).getAbsolutePath());
+            }
         }
     }
 
