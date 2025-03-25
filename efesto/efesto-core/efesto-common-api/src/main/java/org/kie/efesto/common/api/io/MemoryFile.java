@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,8 @@ public class MemoryFile extends File implements Serializable {
     private byte[] content;
 
     public MemoryFile(Path filePath) throws IOException {
-        super(filePath.getFileName().toString());
+        //super(filePath.getFileName().toString());
+        super(filePath.toString());
         logger.debug("MemoryFile {}", filePath);
         logger.debug(this.getAbsolutePath());
         this.name = filePath.getFileName().toString();
@@ -93,6 +94,17 @@ public class MemoryFile extends File implements Serializable {
 
     public byte[] getContent() {
         return content;
+    }
+
+    @Override
+    public Path toPath() {
+        try {
+            String urlProtocol = url.getProtocol().equals("jar") ? "jar:" : "";
+            String path = String.format("%s%s", urlProtocol, url.getPath());
+            return Path.of(path);
+        } catch (Exception e) {
+            return super.toPath();
+        }
     }
 
     @Override

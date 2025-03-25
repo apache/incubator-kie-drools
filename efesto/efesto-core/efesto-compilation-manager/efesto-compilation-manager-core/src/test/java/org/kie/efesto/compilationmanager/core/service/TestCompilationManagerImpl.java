@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.mocks.AbstractMockOutput;
@@ -156,7 +156,7 @@ class TestCompilationManagerImpl {
             assertThat(indexFile).exists();
 
             GeneratedResources finalContent = getGeneratedResourcesObject(indexFile);
-            assertThat(finalContent).hasSize(2);
+            assertThat(finalContent).hasSize(4);
 
             List<ModelLocalUriId> friList = Arrays.asList(new MockEfestoCallableOutput().getModelLocalUriId(), new MockEfestoCallableOutputE().getModelLocalUriId());
 

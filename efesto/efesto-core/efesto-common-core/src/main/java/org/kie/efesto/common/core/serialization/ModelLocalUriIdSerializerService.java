@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.api.model;
+package org.kie.efesto.common.core.serialization;
 
-import java.util.ServiceLoader;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+public class ModelLocalUriIdSerializerService implements SerializerService<ModelLocalUriId> {
 
-public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
+    @Override
+    public Class<ModelLocalUriId> type() {
+        return ModelLocalUriId.class;
+    }
 
-    Class<?> loadClass(String className) throws ClassNotFoundException;
-
-    ServiceLoader<KieRuntimeService> getKieRuntimeService();
+    @Override
+    public JsonSerializer<? extends ModelLocalUriId> ser() {
+        return new ModelLocalUriIdSerializer();
+    }
 }

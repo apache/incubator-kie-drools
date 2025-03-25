@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_STEP;
@@ -59,7 +59,7 @@ public class TestingHelper {
         return new PMMLRuntimeContextImpl(getPMMLRequestDataWithInputData(modelName, fileName), fileName, listeners, memoryCompilerClassLoader);
     }
 
-    public static EfestoRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
+    public static EfestoLocalRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
         return EfestoRuntimeContextUtils.buildWithParentClassLoader(parenClassLoader);
     }
 

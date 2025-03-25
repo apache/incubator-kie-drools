@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,15 +27,15 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId> {
+public class ModelLocalUriIdDeserializer extends StdDeserializer<ModelLocalUriId> {
 
     private static final long serialVersionUID = -3468047979532504909L;
 
-    public ModelLocalUriIdDeSerializer() {
+    public ModelLocalUriIdDeserializer() {
         this(null);
     }
 
-    public ModelLocalUriIdDeSerializer(Class<ModelLocalUriId> t) {
+    public ModelLocalUriIdDeserializer(Class<ModelLocalUriId> t) {
         super(t);
     }
 
