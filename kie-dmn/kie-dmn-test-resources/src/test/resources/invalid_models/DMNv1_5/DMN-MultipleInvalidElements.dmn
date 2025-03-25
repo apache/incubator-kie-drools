@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31150E" id="_C8433920-37EC-4814-A3DE-197917CDEB52" name="DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282">
+  <inputData name="New Input Data" id="_3A190E59-760B-45C2-86E6-2D50D8D9527C">
+    <variable name="New Input Data" id="_CE5FC851-DED9-48C1-9540-08ACDC56312C" typeRef="number" />
+  </inputData>
+  <decision name="Decision1" id="_A40F3AA4-2832-4D98-83F0-7D604F9A090F">
+    <variable id="_9E0A3CF8-7B76-4908-B9A5-6ADED81780F4" typeRef="number" name="Decision1" />
+    <informationRequirement id="_C1A882AE-208C-456B-BCB6-5ABB67B5099D">
+      <requiredInput href="#_3A190E59-760B-45C2-86E6-2D50D8D9527C" />
+    </informationRequirement>
+    <knowledgeRequirement id="_B27B7577-2FF5-47C9-8693-FAEECEE52EFB">
+      <requiredKnowledge href="#_09186183-0646-4CD0-AD67-A159E9F87F5E" />
+    </knowledgeRequirement>
+    <literalExpression id="_4AC1BD7D-5A8D-4A88-94F9-0B80BDF0D9B1" typeRef="number" label="Decision1">
+      <text>Round Up(New Input Data)</text>
+    </literalExpression>
+  </decision>
+  <decision name="Decision2" id="_3DC41DB9-BE1D-4289-A639-24AB57ED082D">
+    <variable id="_ABCF6EB8-CF66-4D12-9B26-5D109C69328A" name="Decision2" />
+    <informationRequirement id="_5848A89D-BEED-4BCC-AFC5-EB2D96AE2A9F">
+      <requiredInput href="#_ED8D803B-1CE0-4BBF-B515-FFD98FD8BF21" />
+    </informationRequirement>
+    <conditional id="_2B147ECC-2457-4623-B841-3360D75F9F76" label="Decision2">
+      <if id="_AB2F8078-B54D-4D12-A9EB-1ABA5FA276F8">
+        <literalExpression id="_E9277A40-E525-40BB-90B5-540E81B0F451" label="Expression Name">
+          <text>Conditional Input &lt; 100</text>
+        </literalExpression>
+      </if>
+      <then id="_300AAEEE-70C0-4CEF-B241-FD6424D95C08">
+        <literalExpression id="_1FD8E4FC-8375-4EBB-B474-2BA28A3D613C" label="Expression Name">
+          <text>100</text>
+        </literalExpression>
+      </then>
+      <else id="_6F318F57-DA06-4F71-80AD-288E0BBB3A52">
+        <literalExpression id="_43236F2B-9857-454F-8EA0-39B37C7519CF" label="Expression Name">
+          <text>round up(Conditional Input, 15000)</text>
+        </literalExpression>
+      </else>
+    </conditional>
+  </decision>
+  <businessKnowledgeModel name="Round Up" id="_09186183-0646-4CD0-AD67-A159E9F87F5E">
+    <variable name="Round Up" id="_D9B2ABE3-8F70-47EB-9F58-06A442F1AFB1" typeRef="number" />
+    <encapsulatedLogic label="Round Up" typeRef="number" id="_D386D137-582B-49F9-B6F9-F341C3AC4B3E" kind="FEEL">
+      <formalParameter id="_BD31D51E-29BC-49E5-97EE-55571DD97A35" name="New Input Data" typeRef="number" />
+      <literalExpression id="_2E43C09D-011A-436C-B40B-9154405EAF3A" typeRef="number" label="Return">
+        <text>round up(New Input Data, 12000)</text>
+      </literalExpression>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <inputData name="Conditional Input" id="_ED8D803B-1CE0-4BBF-B515-FFD98FD8BF21">
+    <variable name="Conditional Input" id="_6953E989-101B-4AC9-AA08-963CFD8D7C7F" typeRef="number" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_35F2B440-6456-4617-9288-C1DB4571BD64" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_4AC1BD7D-5A8D-4A88-94F9-0B80BDF0D9B1">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_2E43C09D-011A-436C-B40B-9154405EAF3A">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_E9277A40-E525-40BB-90B5-540E81B0F451">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1FD8E4FC-8375-4EBB-B474-2BA28A3D613C">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_43236F2B-9857-454F-8EA0-39B37C7519CF">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_10BB430B-C3BB-4787-8BD3-C16902638A42" dmnElementRef="_3A190E59-760B-45C2-86E6-2D50D8D9527C" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="240" y="0" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_2AE7DDAE-7164-4079-BFB1-D3D64EDCDE1D" dmnElementRef="_A40F3AA4-2832-4D98-83F0-7D604F9A090F" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="600" y="-60" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_5D0E1055-7523-400E-A82D-18DF89340540-AUTO-TARGET" dmnElementRef="_C1A882AE-208C-456B-BCB6-5ABB67B5099D" sourceElement="_10BB430B-C3BB-4787-8BD3-C16902638A42" targetElement="_2AE7DDAE-7164-4079-BFB1-D3D64EDCDE1D">
+        <di:waypoint x="320" y="40" />
+        <di:waypoint x="680" y="-20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_E4AF0974-016B-427B-B3B7-D61CBE26FD14" dmnElementRef="_3DC41DB9-BE1D-4289-A639-24AB57ED082D" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1100" y="-60" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_CC5CFF75-4E2D-4B09-BA95-FD51EE4BAAAB" dmnElementRef="_09186183-0646-4CD0-AD67-A159E9F87F5E" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="600" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_B7A4C183-976B-4578-92E7-5AF0759E9158" dmnElementRef="_B27B7577-2FF5-47C9-8693-FAEECEE52EFB" sourceElement="_CC5CFF75-4E2D-4B09-BA95-FD51EE4BAAAB" targetElement="_2AE7DDAE-7164-4079-BFB1-D3D64EDCDE1D">
+        <di:waypoint x="680" y="300" />
+        <di:waypoint x="680" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="_8E12F39F-A1C2-4FB8-A501-49E91BFDE5A4" dmnElementRef="_ED8D803B-1CE0-4BBF-B515-FFD98FD8BF21" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1100" y="280" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_0DDFB6F2-F49C-4D2A-9550-D87D0B87A23B" dmnElementRef="_5848A89D-BEED-4BCC-AFC5-EB2D96AE2A9F" sourceElement="_8E12F39F-A1C2-4FB8-A501-49E91BFDE5A4" targetElement="_E4AF0974-016B-427B-B3B7-D61CBE26FD14">
+        <di:waypoint x="1180" y="320" />
+        <di:waypoint x="1180" y="20" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
