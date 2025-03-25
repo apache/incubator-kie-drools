@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,7 +18,6 @@ package org.kie.maven.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -80,11 +77,10 @@ public class DiskResourceStore implements ResourceStore {
     private void commonWrite(String fullPath, byte[] pResourceData, boolean createFolder) {
         File file = new File(fullPath);
         if (createFolder) {
-            File parentDir = file.getParentFile();
-            if (!parentDir.exists()) {
-                boolean created = parentDir.mkdirs();
+            if (!file.getParentFile().exists()) {
+                boolean created = file.getParentFile().mkdirs();
                 if (!created) {
-                    System.err.println("Failed to create directory: " + parentDir.getAbsolutePath());
+                    System.err.println("Failed to create directory: " + file.getParentFile().getAbsolutePath());
                 }
             }
         }
