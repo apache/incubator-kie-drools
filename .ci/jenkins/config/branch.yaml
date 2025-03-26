@@ -11,20 +11,20 @@ environments:
       DROOLS_BUILD_MVN_OPTS: -Dfull
       ADDITIONAL_TIMEOUT: 720
     ids:
-    - native
+      - native
   sonarcloud:
     auto_generation: false
     env_vars:
       ENABLE_SONARCLOUD: true
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
-    - sonarcloud
-    - coverage
+      - sonarcloud
+      - coverage
 repositories:
-- name: incubator-kie-drools
-  job_display_name: drools
-  branch: 10.1.x
-  is_branch_config_repo: true
+  - name: incubator-kie-drools
+    job_display_name: drools
+    branch: 10.1.x
+    is_branch_config_repo: true
 git:
   author:
     name: apache
@@ -79,8 +79,8 @@ cloud:
 release:
   gpg:
     sign:
-      key-credentials-id: GPG_KEY_FILE
-      passphrase-credentials-id: ''
+      key_credentials_id: GPG_KEY_FILE
+      passphrase_credentials_id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:
