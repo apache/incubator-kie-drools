@@ -54,22 +54,17 @@ pipeline {
                         echo "Release properties imported from previous job: ${releaseProperties}"
                     }
 
-                    assert getDroolsVersion()
+                    assert getReleaseVersion()
 
                     currentBuild.displayName = getDisplayName()
 
-                    sendNotification("Release Pipeline has started...\nDrools version = ${getDroolsVersion()}\n=> ${env.BUILD_URL}")
-
-                    // Safety measure to not publish to main JBoss
-                    if (getGitAuthor() != 'apache' && !getArtifactsRepositoryParam()) {
-                        sendNotification("Git Author is different from `apache` and no `ARTIFACTS_REPOSITORY` parameter has been provided. Are you sure you want to continue ? => ${env.BUILD_URL}input")
-                        input message: 'Should the pipeline continue with no `ARTIFACTS_REPOSITORY` defined ?', ok: 'Yes'
-                    }
+                    sendNotification("Release Pipeline has started...\nDrools version = ${getReleaseVersion()}\n=> ${env.BUILD_URL}")
                 }
             }
             post {
                 always {
-                    setReleasePropertyIfneeded('drools.version', getDroolsVersion())
+                    setReleasePropertyIfneeded('release.version', getReleaseVersion())
+                    setReleasePropertyIfneeded('git.tag.name', getGitTagName())
                 }
             }
         }
@@ -79,86 +74,18 @@ pipeline {
                 script {
                     def buildParams = getDefaultBuildParams()
                     addSkipTestsParam(buildParams)
-
                     buildJob(getDeployJobName(droolsRepo), buildParams)
                 }
             }
         }
 
-        // stage('Build & Deploy KIE jpmml integration') {
-        //     steps {
-        //         script {
-        //             def buildParams = getDefaultBuildParams()
-        //             addSkipTestsParam(buildParams)
-
-        //             buildJob(getDeployJobName(kieJpmmlIntegrationRepo), buildParams)
-        //         }
-        //     }
-        // }
-
         stage('Artifacts\' staging finalization') {
             steps {
                 script {
                     if (!areArtifactsStaged()) {
-                        sendNotification("All artifacts have been staged. You can find them here: ${getStagingRepository()}")
+                        sendNotification('All artifacts have been staged.')
                     }
                     setArtifactsStaged()
-                }
-            }
-        }
-
-        stage('Are staged artifacts released?') {
-            when {
-                // Execute only if artifacts repository was not given, which means the staging repository has been created
-                expression { return !getArtifactsRepositoryParam() && !areArtifactsReleased() }
-            }
-            steps {
-                script {
-                    String body = "${getDroolsVersion()} artifacts are ready for release.\n" +
-                                 "Please release the staging repositories and then confirm here: ${env.BUILD_URL}input"
-                    sendNotification(body)
-                    input message: 'Has the staging repository been released ?', ok: 'Yes'
-
-                    sendNotification('Artifacts have been released. Finalizing now the release ...')
-                    setArtifactsReleased()
-                }
-            }
-        }
-
-        stage('Promote Drools') {
-            when {
-                expression { return isJobConsideredOk(getDeployJobName(droolsRepo)) }
-            }
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addDeployBuildUrlParam(buildParams, getDeployJobName(droolsRepo))
-
-                    buildJob(getPromoteJobName(droolsRepo), buildParams)
-                }
-            }
-        }
-
-        // stage('Promote KIE jpmml integration') {
-        //     when {
-        //         expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
-        //     }
-        //     steps {
-        //         script {
-        //             def buildParams = getDefaultBuildParams()
-        //             addDeployBuildUrlParam(buildParams, getDeployJobName(kieJpmmlIntegrationRepo))
-
-        //             buildJob(getPromoteJobName(kieJpmmlIntegrationRepo), buildParams)
-        //         }
-        //     }
-        // }
-
-        stage('Setup next snapshot version') {
-            steps {
-                script {
-                    def buildParams = []
-                    addStringParam(buildParams, 'DROOLS_VERSION', util.getNextVersion(getDroolsVersion(), 'micro'))
-                    build(job: '../setup-branch/0-setup-branch', wait: false, parameters: buildParams, propagate: false)
                 }
             }
         }
@@ -230,10 +157,6 @@ def buildJob(String jobName, List buildParams, boolean shouldWait = true) {
 
 String getDeployJobName(String repository) {
     return "${repository}-deploy"
-}
-
-String getPromoteJobName(String repository) {
-    return "${repository}-promote"
 }
 
 String getJobPropertySuffix(String jobName) {
@@ -330,9 +253,10 @@ def readPropertiesFromUrl(String url, String propsFilename) {
 
 List getDefaultBuildParams() {
     List buildParams = []
-    addDisplayNameParam(buildParams, getDisplayName(getDroolsVersion()))
-    addStringParam(buildParams, 'PROJECT_VERSION', getDroolsVersion())
-    addStringParam(buildParams, 'DROOLS_PR_BRANCH', "drools-${getDroolsVersion()}")
+    addDisplayNameParam(buildParams, getDisplayName(getReleaseVersion()))
+    addStringParam(buildParams, 'PROJECT_VERSION', getReleaseVersion())
+    addStringParam(buildParams, 'DROOLS_PR_BRANCH', "drools-${getReleaseVersion()}")
+    addStringParam(buildParams, 'GIT_TAG_NAME', getGitTagName())
     return buildParams
 }
 
@@ -367,24 +291,16 @@ void addBooleanParam(List buildParams, String key, boolean value) {
 }
 
 String getDisplayName(version = '') {
-    version = version ?: getDroolsVersion()
+    version = version ?: getReleaseVersion()
     return "Release ${version}"
 }
 
-String getDroolsVersion() {
-    return params.DROOLS_VERSION ?: getReleaseProperty('drools.version')
+String getReleaseVersion() {
+    return params.RELEASE_VERSION ?: getReleaseProperty('release.version')
 }
 
 String getGitAuthor() {
     return env.GIT_AUTHOR
-}
-
-String getArtifactsRepositoryParam() {
-    return env['ARTIFACTS_REPOSITORY'] ?: ''
-}
-
-String getStagingRepository() {
-    return getArtifactsRepositoryParam() ?: env.DEFAULT_STAGING_REPOSITORY
 }
 
 void setReleasePropertyIfneeded(String key, def value) {
@@ -415,10 +331,6 @@ void setArtifactsStaged() {
     setReleasePropertyIfneeded(ARTIFACTS_STAGING_STAGE, true)
 }
 
-boolean areArtifactsReleased() {
-    return hasReleaseProperty(ARTIFACTS_RELEASE_STAGE)
-}
-
-void setArtifactsReleased() {
-    setReleasePropertyIfneeded(ARTIFACTS_RELEASE_STAGE, true)
+String getGitTagName() {
+    return params.GIT_TAG_NAME ?: getReleaseProperty('git.tag.name')
 }
