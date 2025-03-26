@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,9 +37,9 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.dto.PMML4Result;
-import org.kie.pmml.api.dto.PMMLRequestData;
-import org.kie.pmml.api.dto.ParameterInfo;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;

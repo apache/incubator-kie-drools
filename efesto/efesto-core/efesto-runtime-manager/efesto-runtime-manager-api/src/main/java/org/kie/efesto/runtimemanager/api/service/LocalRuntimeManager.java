@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,6 +36,7 @@ public interface LocalRuntimeManager {
      * @param toEvaluate
      * @return
      */
+    @SuppressWarnings("rawtypes")
     Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context,
                                            EfestoInput... toEvaluate);
 

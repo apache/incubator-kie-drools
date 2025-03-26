@@ -152,7 +152,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     private Collection<EfestoOutput> evaluateInput(EfestoInput<Map<String, Object>> inputPMML,
-                                                     EfestoLocalRuntimeContext runtimeContext) {
+                                                   EfestoLocalRuntimeContext runtimeContext) {
         try {
             return runtimeManager.evaluateInput(runtimeContext, inputPMML);
         } catch (Exception t) {

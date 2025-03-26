@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,6 +39,7 @@ import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInput;
 
+@SuppressWarnings("rawtypes")
 public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLRequestData, PMML4Result,
         EfestoInput<PMMLRequestData>, EfestoOutputPMML, EfestoRuntimeContext> {
 

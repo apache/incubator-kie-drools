@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -87,6 +87,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Object evaluate(final Map<String, Object> requestData,
                            final PMMLRuntimeContext context) {
         logger.trace("evaluate {}", requestData);

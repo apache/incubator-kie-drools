@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,6 +29,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.compilationmanager.api.service.KieCompilerService</code> file
  */
+@SuppressWarnings("rawtypes")
 public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> {
 
 

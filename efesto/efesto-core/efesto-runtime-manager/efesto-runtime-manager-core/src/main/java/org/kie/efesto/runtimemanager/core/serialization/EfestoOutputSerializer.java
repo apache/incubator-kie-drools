@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
+@SuppressWarnings("rawtypes")
 public class EfestoOutputSerializer extends StdSerializer<EfestoOutput> {
 
     private static final long serialVersionUID = 5014755163979962781L;

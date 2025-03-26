@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.pmml.api.dto.PMML4Result;
 import org.kie.pmml.api.dto.PMMLRequestData;

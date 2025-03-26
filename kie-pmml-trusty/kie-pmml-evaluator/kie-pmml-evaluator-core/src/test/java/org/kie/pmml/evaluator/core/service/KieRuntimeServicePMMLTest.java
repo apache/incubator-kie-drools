@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -52,6 +52,7 @@ class KieRuntimeServicePMMLTest {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     void canManageInput() {
         modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
@@ -85,6 +86,7 @@ class KieRuntimeServicePMMLTest {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     void evaluateEfestoRuntimeContext() {
         modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         EfestoRuntimeContext runtimeContext =

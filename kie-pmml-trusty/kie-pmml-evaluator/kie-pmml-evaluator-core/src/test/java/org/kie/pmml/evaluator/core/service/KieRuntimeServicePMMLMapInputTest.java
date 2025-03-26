@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
+import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 
 import static org.assertj.core.api.Assertions.assertThat;

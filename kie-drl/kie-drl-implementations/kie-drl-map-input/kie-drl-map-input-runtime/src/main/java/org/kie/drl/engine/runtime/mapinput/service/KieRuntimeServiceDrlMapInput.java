@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,6 +19,10 @@
 package org.kie.drl.engine.runtime.mapinput.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
 import org.kie.drl.engine.runtime.mapinput.utils.DrlRuntimeHelper;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
@@ -27,9 +31,16 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.common.core.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.model.*;
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.core.utils.JSONUtils;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-
-import java.util.*;
 
 import static org.kie.efesto.common.core.utils.JSONUtils.getInputData;
 import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;

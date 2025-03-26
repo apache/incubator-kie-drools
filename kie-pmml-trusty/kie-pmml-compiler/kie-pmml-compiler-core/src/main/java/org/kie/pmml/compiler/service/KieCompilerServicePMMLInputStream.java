@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,6 +30,7 @@ import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerServicePMMLInputStream.getEfestoCompilationOutputPMML;
 
+@SuppressWarnings("rawtypes")
 public class KieCompilerServicePMMLInputStream implements KieCompilerService<EfestoCompilationOutput,
         EfestoCompilationContext> {
 
