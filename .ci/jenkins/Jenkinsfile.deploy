@@ -82,7 +82,7 @@ pipeline {
         }
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -129,8 +129,9 @@ pipeline {
 
                         if (isRelease()) {
                             releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand.withProfiles(['apache-release'])
-                                        .withProperty('only.reproducible')
+                            mavenCommand
+                            .withProfiles(['apache-release'])
+                            .withProperty('only.reproducible')
                         }
 
                         configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
@@ -150,7 +151,7 @@ pipeline {
         }
         stage('Create PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -160,11 +161,6 @@ pipeline {
                         } else {
                             println '[WARN] no changes to commit'
                         }
-
-                        // Create a new tag
-                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
-                        githubscm.tagRepository(getGitTagName())
-                        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -175,6 +171,29 @@ pipeline {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
+                    }
+                }
+            }
+        }
+        stage('Commit and Create Tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            def commitMsg = "[${getBuildBranch()}] Update version to ${getProjectVersion()}"
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                            githubscm.commitChanges(commitMsg, {
+                                githubscm.findAndStageNotIgnoredFiles('pom.xml')
+                                githubscm.findAndStageNotIgnoredFiles('antora.yml')
+                            })
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                        githubscm.tagRepository(getGitTagName())
+                        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
                 }
             }
