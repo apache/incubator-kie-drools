@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public class ContextStorage {
 
     private static final Map<ModelLocalUriId, EfestoCompilationContext> COMPILATION_CONTEXT_MAP = new HashMap<>();

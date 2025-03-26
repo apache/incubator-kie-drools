@@ -93,7 +93,7 @@ class EfestoPMMLUtilsTest {
     }
 
     @Test
-    void compilePmmlFromRelativeResolver() throws IOException {
+    void compilePmmlFromRelativeResolver() {
         commonCompileFromResolver(EfestoPMMLUtils::compilePmmlFromRelativeResolver);
     }
 

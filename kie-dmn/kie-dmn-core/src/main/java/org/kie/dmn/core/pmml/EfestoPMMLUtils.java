@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 
+@SuppressWarnings( "rawtypes")
 public class EfestoPMMLUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EfestoPMMLUtils.class);
