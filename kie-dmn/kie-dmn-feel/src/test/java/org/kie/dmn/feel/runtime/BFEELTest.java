@@ -95,6 +95,10 @@ public class BFEELTest extends BaseFEELTest {
 
                 {"range(\"[x]\")", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN), null},
 
+                {"number(\"test\")", BigDecimal.ZERO, null},
+                {"number(\"1 2 3\")", BigDecimal.ZERO, null},
+                {"number(\"1.1\")", BigDecimal.valueOf(1.1), null},
+
 
         };
         return addAdditionalParametersForBothProfiles(cases, FEELDialect.BFEEL);
