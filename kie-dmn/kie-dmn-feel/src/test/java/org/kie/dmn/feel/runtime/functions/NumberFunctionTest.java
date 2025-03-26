@@ -124,9 +124,6 @@ class NumberFunctionTest {
     @Test
     void invokeSingleParamNumberNull() {
         FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(numberFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
