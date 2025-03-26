@@ -32,6 +32,14 @@ public class ContextStorage {
     private static final Map<ModelLocalUriId, String> COMPILATION_SOURCE_MAP = new HashMap<>();
     private static final Map<ModelLocalUriId, EfestoRuntimeContext> RUNTIME_CONTEXT_MAP = new HashMap<>();
 
+    /**
+     * Method used to clean up all data currently stored.
+     */
+    public static void reset() {
+        COMPILATION_CONTEXT_MAP.clear();
+        COMPILATION_SOURCE_MAP.clear();
+        RUNTIME_CONTEXT_MAP.clear();
+    }
 
     public static void putEfestoCompilationContext(ModelLocalUriId modelLocalUriId, EfestoCompilationContext compilationContext) {
         COMPILATION_CONTEXT_MAP.put(modelLocalUriId, compilationContext);
