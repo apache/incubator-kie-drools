@@ -262,6 +262,16 @@
       <artifactId>kie-pmml-models-regression-evaluator</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-tree-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
