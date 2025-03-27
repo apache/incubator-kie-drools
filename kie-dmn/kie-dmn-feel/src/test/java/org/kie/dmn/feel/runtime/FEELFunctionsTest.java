@@ -314,6 +314,11 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 {"range(\"[null..null]\")", null, FEELEvent.Severity.ERROR},
                 {"range(\"[null..2]\")", null, FEELEvent.Severity.ERROR},
                 {"range(\"[1..null]\")", null, FEELEvent.Severity.ERROR},
+
+                {"number(\"test\")", null, FEELEvent.Severity.ERROR},
+                {"number(\"1 2 3\")", null, FEELEvent.Severity.ERROR},
+                {"number(\"1.1\")", BigDecimal.valueOf(1.1), null},
+                {"number(1947)", BigDecimal.valueOf(1947), null},
         };
         return addAdditionalParameters(cases, false);
     }
