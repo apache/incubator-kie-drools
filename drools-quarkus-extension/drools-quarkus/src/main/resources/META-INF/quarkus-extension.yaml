@@ -30,3 +30,8 @@ metadata:
   categories:
     - "business-automation"
   status: "stable"
+  codestart:
+      name: quarkus-drools
+      languages:
+      - "java"
+      artifact: "org.drools:drools-quarkus:codestarts:jar:${project.version}"
