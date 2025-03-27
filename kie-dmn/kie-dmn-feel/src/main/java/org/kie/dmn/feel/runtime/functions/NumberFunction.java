@@ -65,4 +65,22 @@ public class NumberFunction
         }
     }
 
+    /**
+     * Invokes the function to convert an input object into a BigDecimal.
+     * If the input is null or annot be converted to a BigDecimal , an error result is returned.
+     * @param from : the input object to be converted into a BigDecimal.
+     * @return FEELFnResult : containing the BigDecimal value if conversion is successful
+     */
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("from") Object from) {
+        if ( from == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
+        }
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(from);
+        if( result == null ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "unable to calculate final number result" ) );
+        } else {
+            return FEELFnResult.ofResult( result );
+        }
+    }
+
 }
