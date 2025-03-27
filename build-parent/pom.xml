@@ -73,7 +73,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.io.quarkus>3.15.3.1</version.io.quarkus>
+    <version.io.quarkus>3.20.0</version.io.quarkus>
     <version.io.netty>4.1.118.Final</version.io.netty>
     <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
@@ -99,11 +99,11 @@
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.11.Final</version.org.infinispan>
-    <version.org.infinispan.protostream>5.0.8.Final</version.org.infinispan.protostream>
+    <version.org.infinispan>15.0.14.Final</version.org.infinispan>
+    <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
-    <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
+    <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
     <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
@@ -190,10 +190,10 @@
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
-    <version.org.postgresql>42.7.4</version.org.postgresql>
+    <version.org.postgresql>42.7.5</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.2.3</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.2.7</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
