@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,7 +18,6 @@ package org.kie.maven.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -80,53 +77,35 @@ public class DiskResourceStore implements ResourceStore {
     private void commonWrite(String fullPath, byte[] pResourceData, boolean createFolder) {
         File file = new File(fullPath);
         if (createFolder) {
-            File dir = file.getParentFile();
-            if (!dir.exists()) {
-                dir.mkdirs();
+            if (!file.getParentFile().exists()) {
+                boolean created = file.getParentFile().mkdirs();
+                if (!created) {
+                    System.err.println("Failed to create directory: " + file.getParentFile().getAbsolutePath());
+                }
             }
         }
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(pResourceData);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
     private byte[] commonRead(String fullPath) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(fullPath);
+        try (FileInputStream fis = new FileInputStream(fullPath)) {
             return readBytesFromInputStream(fis);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
     private void commonRemove(String fullPath) {
-        File file = new File(fullPath);
-        if (file.exists()) {
-            file.delete();
+        if (new File(fullPath).exists()) {
+            boolean deleted = new File(fullPath).delete();
+            if (!deleted) {
+                System.err.println("Failed to delete the file: " + new File(fullPath).getAbsolutePath());
+            }
         }
     }
 
