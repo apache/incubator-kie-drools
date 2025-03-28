@@ -20,6 +20,7 @@ package org.kie.efesto.compilationmanager.api.service;
 
 import java.util.List;
 
+import org.kie.efesto.common.api.EfestoService;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -30,7 +31,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
  * <code>src/main/resources/META-INF/services/org.kie.efesto.compilationmanager.api.service.KieCompilerService</code> file
  */
 @SuppressWarnings("rawtypes")
-public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> {
+public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> extends EfestoService {
 
 
     boolean canManageResource(EfestoResource toProcess);

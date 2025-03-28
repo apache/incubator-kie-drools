@@ -43,7 +43,6 @@ public class MemoryFile extends File implements Serializable {
     private byte[] content;
 
     public MemoryFile(Path filePath) throws IOException {
-        //super(filePath.getFileName().toString());
         super(filePath.toString());
         logger.debug("MemoryFile {}", filePath);
         logger.debug(this.getAbsolutePath());
