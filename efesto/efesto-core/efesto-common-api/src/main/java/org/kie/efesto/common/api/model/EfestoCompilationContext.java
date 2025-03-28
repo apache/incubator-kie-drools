@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.kie.efesto.common.api.EfestoService;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
 
@@ -35,7 +36,7 @@ public interface EfestoCompilationContext<T extends EfestoListener> extends Efes
     Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
     void loadClasses(Map<String, byte[]> compiledClassesMap);
-    ServiceLoader getKieCompilerServiceLoader();
+    ServiceLoader<? extends EfestoService> getKieCompilerServiceLoader();
 
     byte[] getCode(String name);
 
