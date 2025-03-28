@@ -21,6 +21,8 @@ package org.drools.mvel.dataproviders;
 import java.util.ArrayList;
 import java.util.List;
 
+// test
+
 public class TestVariable {
 
     public String helloWorld(final String a1,
