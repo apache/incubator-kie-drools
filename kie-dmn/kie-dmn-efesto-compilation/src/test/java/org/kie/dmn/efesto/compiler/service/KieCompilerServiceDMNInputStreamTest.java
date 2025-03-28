@@ -37,6 +37,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("unchecked")
 public class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMNTest {
 
     private static EfestoInputStreamResource toProcess;
@@ -72,7 +73,7 @@ public class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerSer
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getFileName()).isEqualTo(dmnFileName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnNameSpace);
         assertThat(localComponentIdDmn.getName()).isEqualTo(dmnModelName);
     }
 

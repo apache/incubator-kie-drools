@@ -78,6 +78,7 @@ public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
                                                        DMNValidator.Validation.VALIDATE_MODEL,
                                                        DMNValidator.Validation.VALIDATE_COMPILATION,
                                                        DMNValidator.Validation.ANALYZE_DECISION_TABLE);
+        // TODO how to deal ?
 //        if (DmnCompilerUtils.hasError(messages)) {
 //            return Collections.emptyList();
 //        }

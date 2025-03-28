@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;

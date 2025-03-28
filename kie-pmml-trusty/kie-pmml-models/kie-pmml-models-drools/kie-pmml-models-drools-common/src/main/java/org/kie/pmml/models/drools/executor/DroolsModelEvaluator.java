@@ -20,7 +20,7 @@ package org.kie.pmml.models.drools.executor;
 
 import java.util.Map;
 
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;

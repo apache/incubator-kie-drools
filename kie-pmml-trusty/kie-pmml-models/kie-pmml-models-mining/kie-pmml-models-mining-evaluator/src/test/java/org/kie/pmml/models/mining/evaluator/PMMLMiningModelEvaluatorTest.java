@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;

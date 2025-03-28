@@ -30,17 +30,17 @@ public class LocalComponentIdDmn extends ModelLocalUriId implements Id {
     public static final String PREFIX = "dmn";
     private static final long serialVersionUID = 8621199867598971641L;
 
-    private final String fileName;
+    private final String nameSpace;
     private final String name;
 
-    public LocalComponentIdDmn(String fileName, String name) {
-        super(LocalUri.Root.append(PREFIX).append(fileName).append(name));
-        this.fileName = fileName;
+    public LocalComponentIdDmn(String nameSpace, String name) {
+        super(LocalUri.Root.append(PREFIX).append(nameSpace).append(name));
+        this.nameSpace = nameSpace;
         this.name = name;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getNameSpace() {
+        return nameSpace;
     }
 
     public String getName() {

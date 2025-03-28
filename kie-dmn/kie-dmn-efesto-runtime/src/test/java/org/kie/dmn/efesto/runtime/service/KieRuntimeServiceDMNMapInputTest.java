@@ -42,6 +42,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@SuppressWarnings("rawtypes")
 public class KieRuntimeServiceDMNMapInputTest {
 
     private static final String MODEL_NAME = "_0001-input-data-string";

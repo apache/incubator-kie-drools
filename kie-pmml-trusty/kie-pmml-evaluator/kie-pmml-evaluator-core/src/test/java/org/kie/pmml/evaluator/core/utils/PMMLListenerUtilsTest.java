@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.pmml.api.dto.PMMLRequestData;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.pmml.api.dto;
+package org.kie.api.pmml;
 
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;

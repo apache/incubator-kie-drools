@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;

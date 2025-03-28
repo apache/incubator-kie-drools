@@ -21,7 +21,7 @@ package org.kie.pmml.api.runtime;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.models.PMMLModel;
 
 public interface PMMLRuntime {

@@ -22,11 +22,19 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Function;
+import org.drools.io.ClassPathResource;
+import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.model.api.Import;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
@@ -35,12 +43,16 @@ import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
+import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
+import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
+import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.compiler.PMMLCompilationContextImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 
-@SuppressWarnings( "rawtypes")
+@SuppressWarnings("rawtypes")
 public class EfestoPMMLUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(EfestoPMMLUtils.class);
@@ -60,28 +72,9 @@ public class EfestoPMMLUtils {
     private EfestoPMMLUtils() {
     }
 
-    @SuppressWarnings("rawtypes")
     public static ModelLocalUriId compilePMML(File pmmlFile, ClassLoader classLoader) {
-        KieMemoryCompiler.MemoryCompilerClassLoader toUse =
-                classLoader instanceof KieMemoryCompiler.MemoryCompilerClassLoader ?
-                        (KieMemoryCompiler.MemoryCompilerClassLoader) classLoader :
-                        new KieMemoryCompiler.MemoryCompilerClassLoader(classLoader);
-        EfestoCompilationContext pmmlCompilationContext = new PMMLCompilationContextImpl(pmmlFile.getName(),
-                                                                                         toUse);
-        compilationManager.processResource(pmmlCompilationContext, new EfestoFileResource(pmmlFile));
-        GeneratedExecutableResource generatedExecutableResource =
-                ((GeneratedResources) pmmlCompilationContext.getGeneratedResourcesMap().get("pmml"))
-                        .stream()
-                        .filter(GeneratedExecutableResource.class::isInstance)
-                        .map(GeneratedExecutableResource.class::cast)
-                        .findFirst()
-                        .orElse(null);
         try {
-            // TODO gcardosi fix
-            ModelLocalUriId toReturn = getPmmlModelLocalUriIdFromFullPath(pmmlFile.getPath());
-            ContextStorage.putEfestoCompilationSource(toReturn, Files.readString(pmmlFile.toPath()));
-            ContextStorage.putEfestoCompilationContext(toReturn, pmmlCompilationContext);
-            return toReturn;
+            return compilePMML(Files.readString(pmmlFile.toPath()), pmmlFile.getAbsolutePath(), classLoader);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,7 +89,7 @@ public class EfestoPMMLUtils {
                 EfestoCompilationContextUtils.buildWithParentClassLoader(toUse);
         EfestoInputStreamResource toProcess =
                 new EfestoInputStreamResource(new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8)),
-                                                                            locationUri);
+                                              locationUri);
         compilationManager.processResource(pmmlCompilationContext, toProcess);
         GeneratedExecutableResource generatedExecutableResource =
                 ((GeneratedResources) pmmlCompilationContext.getGeneratedResourcesMap().get("pmml"))
@@ -105,14 +98,13 @@ public class EfestoPMMLUtils {
                         .map(GeneratedExecutableResource.class::cast)
                         .findFirst()
                         .orElse(null);
-        // TODO gcardosi fix
         ModelLocalUriId toReturn = getPmmlModelLocalUriIdFromFullPath(locationUri);
         ContextStorage.putEfestoCompilationSource(toReturn, pmmlSource);
         ContextStorage.putEfestoCompilationContext(toReturn, pmmlCompilationContext);
         return toReturn;
     }
 
-    public static ModelLocalUriId resolveRelativeResource(Import anImport, Function<String, Reader> relativeResolver) {
+    public static ModelLocalUriId getPmmlModelLocalUriId(Import anImport, Function<String, Reader> relativeResolver) {
         if (relativeResolver != null) {
             return compilePmmlFromRelativeResolver(anImport, relativeResolver);
         } else {
@@ -131,23 +123,45 @@ public class EfestoPMMLUtils {
         return getPmmlModelLocalUriIdFromFullPath(locationURI);
     }
 
+    public static ModelLocalUriId getRelativePmmlModelLocalUriIdFromImport(Import anImport, Resource dmnResource) {
+        String locationURI = anImport.getLocationURI();
+        if (isRelative(locationURI)) {
+            Path parentPath = getParentPath(dmnResource);
+            if (parentPath != null) {
+                locationURI = parentPath.resolve(locationURI).toString();
+            }
+        }
+        logger.trace("locationURI: {}", locationURI);
+        return getPmmlModelLocalUriIdFromFullPath(locationURI);
+    }
+
     public static ModelLocalUriId getPmmlModelLocalUriIdFromFullPath(String fullFileNamePath) {
         String pathPart;
-        String filePart;
+        String name;
         if (fullFileNamePath.contains(SLASH)) {
             pathPart = fullFileNamePath.substring(0, fullFileNamePath.lastIndexOf(SLASH));
-            filePart = fullFileNamePath.substring(fullFileNamePath.lastIndexOf(SLASH) + 1);
+            name = fullFileNamePath.substring(fullFileNamePath.lastIndexOf(SLASH) + 1);
         } else {
-            filePart = pathPart = getFileNameNoSuffix(fullFileNamePath);
+            name = pathPart = getFileNameNoSuffix(fullFileNamePath);
         }
-        filePart = getFileNameNoSuffix(filePart);
-        String path = "/pmml/" + pathPart + SLASH + getSanitizedClassName(filePart);
-        LocalUri parsed = LocalUri.parse(path);
-        return new ModelLocalUriId(parsed);
+        name = getFileNameNoSuffix(name);
+        name = getSanitizedClassName(name);
+        if (!pathPart.startsWith(SLASH)) {
+            pathPart = SLASH + pathPart;
+        }
+        if (!pathPart.endsWith(SLASH)) {
+            pathPart = pathPart + SLASH;
+        }
+        String fileName = pathPart + name;
+        return new EfestoAppRoot()
+                .get(KiePmmlComponentRoot.class)
+                .get(PmmlIdFactory.class)
+                .get(fileName, name);
     }
 
     /**
-     * Retrieves a <code>ByteArrayResource</code> of the <code>source</code> stored with the given <code>ModelLocalUriId</code>
+     * Retrieves a <code>ByteArrayResource</code> of the <code>source</code> stored with the given
+     * <code>ModelLocalUriId</code>
      * @param pmmlModelLocalUriID
      * @return
      */
@@ -167,6 +181,32 @@ public class EfestoPMMLUtils {
 
     public static String getFileNameNoSuffix(String fileName) {
         return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+    }
+
+    static Path getParentPath(Resource dmnResource) {
+        File parentDir = null;
+        if (dmnResource instanceof FileSystemResource fileSystemResource && fileSystemResource.getFile() != null) {
+            parentDir = fileSystemResource.getFile().getParentFile();
+        } else if (dmnResource instanceof ClassPathResource classPathResource) {
+            try {
+                URL resourceUrl = classPathResource.getURL();
+                if (resourceUrl != null && resourceUrl.getFile() != null) {
+                    parentDir = new File(resourceUrl.getFile()).getParentFile();
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to retrieve the URL from ClassPathResource {}", classPathResource, e);
+            }
+        }
+        return parentDir != null ? parentDir.toPath() : null;
+    }
+
+    static boolean isRelative(String toParse) {
+        try {
+            URI uri = new URI(toParse);
+            return uri.getScheme() == null && !Paths.get(toParse).isAbsolute();
+        } catch (URISyntaxException e) {
+            return !Paths.get(toParse).isAbsolute();
+        }
     }
 
     static String getStringFromRelativeResolver(String key, Function<String, Reader> relativeResolver) {

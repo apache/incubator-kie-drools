@@ -21,6 +21,7 @@ package org.kie.dmn.efesto.compiler.service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
 import org.kie.dmn.efesto.compiler.model.DmnCompilationContextImpl;
 import org.kie.efesto.common.api.identifiers.LocalUri;
@@ -41,12 +42,15 @@ public abstract class AbstractKieCompilerServiceDMNTest {
 
     protected static final String dmnModelName = "loan";
     protected static final String dmnFileName = "loan";
+    protected static final String dmnNameSpace = "https://kiegroup.org/dmn/_79B69A7F-5A25-4B53-BD6A-3216EDC246ED";
     protected static final String dmnFullFileName = String.format("%s.dmn", dmnFileName);
     protected static final String dmnFullPathFileName = String.format("valid_models/DMNv1_x/%s", dmnFullFileName);
     protected static MemoryFile dmnFile;
 
     protected static final String dmnPmmlModelName = "TestRegressionDMN";
     protected static final String dmnPmmlFileName = "KiePMMLRegression";
+
+    protected static final String dmnPmmlNameSpace =  "https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456";
     protected static final String dmnPmmlFullFileName = String.format("%s.dmn", dmnPmmlFileName);
     protected static final String dmnPmmlFullPathFileName = String.format("valid_models/DMNv1_x/pmml/%s", dmnPmmlFullFileName);
     protected static MemoryFile dmnPmmlFile;
@@ -104,13 +108,7 @@ public abstract class AbstractKieCompilerServiceDMNTest {
     }
 
     private static ModelLocalUriId getPmmlModelLocalUriId() {
-        String path = "/pmml/" + getFileNameNoSuffix(pmmlFullFileName) + SLASH + getSanitizedClassName(pmmlModelName);
-        LocalUri parsed = LocalUri.parse(path);
-        return new ModelLocalUriId(parsed);
-    }
-
-    private static String getFileNameNoSuffix(String fileName) {
-        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+        return EfestoPMMLUtils.getPmmlModelLocalUriIdFromFullPath(pmmlFullFileName);
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;

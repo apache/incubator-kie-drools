@@ -32,7 +32,6 @@ import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoLocalRuntimeContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 

@@ -21,8 +21,8 @@ package org.kie.pmml.evaluator.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.pmml.api.dto.PMMLRequestData;
-import org.kie.pmml.api.dto.ParameterInfo;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
 
 public class PMMLRequestDataBuilder {
 

@@ -28,7 +28,6 @@ import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.*;
@@ -50,6 +49,12 @@ import org.slf4j.LoggerFactory;
 public class DMNImportsUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DMNImportsUtil.class);
+
+    public enum ImportType {
+        UNKNOWN,
+        DMN,
+        PMML;
+    }
 
     private DMNImportsUtil() {
         // No constructor for util class.
@@ -118,31 +123,23 @@ public class DMNImportsUtil {
         }
     }
 
-    public enum ImportType {
-        UNKNOWN,
-        DMN,
-        PMML;
-    }
     public static ImportType whichImportType(Import importElement) {
-        switch (importElement.getImportType()) {
-            case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN:
-            case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
-            case org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN:
-                return ImportType.DMN;
-            case NamespaceConsts.PMML_3_0:
-            case NamespaceConsts.PMML_3_1:
-            case NamespaceConsts.PMML_3_2:
-            case NamespaceConsts.PMML_4_0:
-            case NamespaceConsts.PMML_4_1:
-            case NamespaceConsts.PMML_4_2:
-            case NamespaceConsts.PMML_4_3:
-                return ImportType.PMML;
-            default:
-                return ImportType.UNKNOWN;
-        }
+        return switch (importElement.getImportType()) {
+            case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN,
+                 "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL",
+                 org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN -> ImportType.DMN;
+            case NamespaceConsts.PMML_3_0,
+                 NamespaceConsts.PMML_3_1,
+                 NamespaceConsts.PMML_3_2,
+                 NamespaceConsts.PMML_4_0,
+                 NamespaceConsts.PMML_4_1,
+                 NamespaceConsts.PMML_4_2,
+                 NamespaceConsts.PMML_4_3 -> ImportType.PMML;
+            default -> ImportType.UNKNOWN;
+        };
     }
 
     /**
@@ -168,6 +165,23 @@ public class DMNImportsUtil {
             return null;
         }, Function.identity());
         checkLocatedDMNModel(i, located, model, toMerge);
+    }
+
+    /**
+     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
+     *
+     * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
+     * @param anImport : The Import object representing the PMML import to be resolved.
+     * @param relativeResolver: FUnction used to retrieve the actual PMML source
+     * @param dmnCompilerConfig: Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
+     */
+    static void resolvePMMLImportType(DMNModelImpl model, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+       if (relativeResolver != null) {
+           resolvePMMLImportTypeFromRelativeResolver(model, anImport, relativeResolver, dmnCompilerConfig);
+       } else {
+           ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, model.getResource());
+           resolvePMMLImportTypeFromModelLocalUriId(model, anImport, pmmlModelLocalUriId, dmnCompilerConfig);
+       }
     }
 
     /**
@@ -199,9 +213,9 @@ public class DMNImportsUtil {
      * @param relativeResolver : A function that resolves relative paths to resources.
      * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        ModelLocalUriId relativeResource = EfestoPMMLUtils.resolveRelativeResource(model, i, i, relativeResolver);
-        resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
+    static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(i, relativeResolver);
+        resolvePMMLImportTypeFromModelLocalUriId(model, i, relativeResource, dmnCompilerConfig);
     }
 
     /**
@@ -213,8 +227,8 @@ public class DMNImportsUtil {
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
      * @throws IOException If an error occurs while reading the PMML resource input stream.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        String pmmlSource = EfestoPMMLUtils.getPmmlSource(pmmlModelLocalUriId);
+    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        String pmmlSource = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
             DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
                     model::addPMMLImportInfo);

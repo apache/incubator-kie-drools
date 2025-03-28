@@ -27,8 +27,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.api.dto.PMML4Result;
-import org.kie.pmml.api.dto.PMMLRequestData;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResources;

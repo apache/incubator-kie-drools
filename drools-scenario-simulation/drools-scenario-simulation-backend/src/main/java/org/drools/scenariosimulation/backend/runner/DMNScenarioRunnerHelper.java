@@ -72,14 +72,6 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!ScenarioSimulationModel.Type.DMN.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
-        try {
-            Collection<File> dmnFiles =  ResourceHelper.getFileResourcesByExtension("dmn");
-            Enumeration<URL> urlEnumeration = Thread.currentThread().getContextClassLoader().getResources("dmn");
-            List<URL> urlLIst = Collections.list(urlEnumeration);
-            System.out.println(urlLIst);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper();
         executableBuilder.setActiveModel(settings.getDmnNamespace(), settings.getDmnName());
 

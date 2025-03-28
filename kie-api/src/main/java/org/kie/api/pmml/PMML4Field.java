@@ -16,10 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.pmml.api.dto;
+package org.kie.api.pmml;
 
 
+public interface PMML4Field {
 
-public abstract class PMML4AbstractField implements PMML4Field {
+    public String getContext();
 
+    public boolean isValid();
+
+    public boolean isMissing();
+
+    public String getName();
 }

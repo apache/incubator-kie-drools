@@ -59,9 +59,6 @@ public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<Strin
         if (!canManageInput(toEvaluate, context)) {
             throw new KieRuntimeServiceException("Wrong parameters " + toEvaluate + " " + context);
         }
-//        if (context == null) {
-//            context = buildWithParentClassLoader(context.getClass().getClassLoader(), context.getGeneratedResourcesMap());
-//        }
         return execute(toEvaluate,  context);
     }
 

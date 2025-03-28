@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -564,9 +563,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             if (lookupImport.isPresent()) {
                 Import theImport = lookupImport.get();
                 logger.trace("theImport: {}", theImport);
-                ModelLocalUriId pmmlModelLocalUriID = EfestoPMMLUtils.resolveRelativeResource(model,
-                                                                                       theImport, funcDef,
-                                                                                       ctx.getRelativeResolver());
+                ModelLocalUriId pmmlModelLocalUriID = EfestoPMMLUtils.getPmmlModelLocalUriId(theImport,
+                                                                                             ctx.getRelativeResolver());
                 logger.trace("pmmlResource: {}", pmmlModelLocalUriID);
                 DMNImportPMMLInfo pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
                 logger.trace("pmmlInfo: {}", pmmlInfo);

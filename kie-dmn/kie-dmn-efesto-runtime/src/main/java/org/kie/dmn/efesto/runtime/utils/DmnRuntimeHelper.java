@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedModelResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrModelOrRedirect;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DmnRuntimeHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DmnRuntimeHelper.class.getName());
@@ -49,7 +50,13 @@ public class DmnRuntimeHelper {
     public static Optional<EfestoOutputDMN> execute(EfestoInput<Map<String, Object>> toEvaluate, EfestoLocalRuntimeContext runtimeContext) {
         ModelLocalUriId modelLocalUriId = toEvaluate.getModelLocalUriId();
         Optional<GeneratedModelResource> generatedModelResource = getGeneratedModelResource(modelLocalUriId, runtimeContext.getGeneratedResourcesMap());
-        return generatedModelResource.map(it -> execute((DMNModel) it.getCompiledModel(), modelLocalUriId, toEvaluate.getInputData()));
+        return generatedModelResource.map(it -> {
+            if (it.getCompiledModel() != null) {
+                return execute((DMNModel) it.getCompiledModel(), modelLocalUriId, toEvaluate.getInputData());
+            } else {
+                return execute(it.getModelSource(), modelLocalUriId, toEvaluate.getInputData());
+            }
+        });
     }
 
     static EfestoOutputDMN execute(DMNModel model, ModelLocalUriId modelLocalUriId, Map<String, Object> inputData) {

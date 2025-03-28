@@ -78,7 +78,7 @@ public class PMMLInvocationEvaluatorFactory {
                                              String.class)
                     .newInstance(model.getNamespace(),
                                  funcDef,
-                                 EfestoPMMLUtils.getPmmlResource(pmmlModelLocalUriID),
+                                 EfestoPMMLUtils.getPmmlResourceFromContextStorage(pmmlModelLocalUriID),
                                  pmmlModelName);
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             LOG.warn("Tried binding org.kie:kie-dmn-jpmml, failed.");

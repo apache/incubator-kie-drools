@@ -18,7 +18,6 @@ package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,7 +97,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
 import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolvePMMLImportType;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -248,10 +246,10 @@ public class DMNCompilerImpl implements DMNCompiler {
             ImportType importType = DMNImportsUtil.whichImportType(i);
             switch(importType) {
                 case DMN :
-                    resolveDMNImportType(i, dmnModels, model, toMerge);
+                    DMNImportsUtil.resolveDMNImportType(i, dmnModels, model, toMerge);
                     break;
                 case PMML:
-                    resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
+                    DMNImportsUtil.resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                     break;
                 default :

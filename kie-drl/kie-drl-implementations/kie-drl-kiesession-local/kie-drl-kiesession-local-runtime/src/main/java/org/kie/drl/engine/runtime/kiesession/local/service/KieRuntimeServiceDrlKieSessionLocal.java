@@ -29,7 +29,6 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.core.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.common.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
@@ -38,8 +37,7 @@ import java.util.Optional;
 
 import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
 
-import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
-
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoRuntimeContext> {
 
     private static final ObjectMapper objectMapper = JSONUtils.getObjectMapper();

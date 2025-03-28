@@ -36,6 +36,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@SuppressWarnings("unchecked")
 public class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMNTest {
 
     private static EfestoFileResource toProcessDmn;
@@ -77,7 +78,7 @@ public class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMN
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getFileName()).isEqualTo(dmnFileName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnNameSpace);
         assertThat(localComponentIdDmn.getName()).isEqualTo(dmnModelName);
     }
 
@@ -93,7 +94,7 @@ public class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMN
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getFileName()).isEqualTo(dmnPmmlFileName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnPmmlNameSpace);
         assertThat(localComponentIdDmn.getName()).isEqualTo(dmnPmmlModelName);
     }
 

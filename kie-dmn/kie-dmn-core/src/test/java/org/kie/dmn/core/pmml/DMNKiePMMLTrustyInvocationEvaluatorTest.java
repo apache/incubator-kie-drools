@@ -63,7 +63,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
     private static ModelLocalUriId pmmlModelLocalUriId;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         pmmlModelLocalUriId = compilePmml();
         String dmnNS = "dmnNS";
         DMNElement nodeMock = Mockito.mock(DMNElement.class);
@@ -96,7 +96,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNResult dmnrMock = mock(DMNResult.class);
         dmnKiePMMLTrustyInvocationEvaluator.getPMMLResult(eventManagerMock, dmnrMock);
         verify(dmnKiePMMLTrustyInvocationEvaluator,
-               times(1)).evaluate(model, dmnrMock, classLoader);
+               times(1)).evaluate(model, pmmlModelLocalUriId, dmnrMock, classLoader);
     }
 
     @Test
@@ -134,19 +134,12 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNRuntimeEventManager eventManagerMock = mock(DMNRuntimeEventManager.class);
         when(eventManagerMock.getRuntime()).thenReturn(dmnRuntimeMock);
         DMNResult dmnrMock = mock(DMNResult.class);
-        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(model, dmnrMock,
+        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(model, pmmlModelLocalUriId, dmnrMock,
                                                                                      classLoader);
-        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotNull().isNotEmpty();
     }
 
-//    @Test
-//    void compileFile() {
-//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        Map<String, GeneratedResources> retrieved = dmnKiePMMLTrustyInvocationEvaluator.compileFile(pmmlFileName, classLoader);
-//        assertThat(retrieved).isNotNull().isNotEmpty().containsKey("pmml");
-//    }
-
-    private static ModelLocalUriId compilePmml() throws IOException {
+    private static ModelLocalUriId compilePmml() {
         URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(pmmlFileName);
         assertThat(pmmlUrl).isNotNull();
         File pmmlFile = new File(pmmlUrl.getFile());

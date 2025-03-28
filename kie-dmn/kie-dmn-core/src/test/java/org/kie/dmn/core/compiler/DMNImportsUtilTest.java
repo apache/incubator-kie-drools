@@ -16,6 +16,11 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Function;
 
@@ -23,17 +28,22 @@ import javax.xml.namespace.QName;
 
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_1.TImport;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.core.storage.ContextStorage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.core.util.DMNTestUtil.getRelativeResolver;
 import static org.mockito.Mockito.mock;
 
 class DMNImportsUtilTest {
@@ -43,6 +53,11 @@ class DMNImportsUtilTest {
     @BeforeAll
     static void setup() {
         dMNCompiler = new DMNCompilerImpl();
+    }
+
+    @BeforeEach
+    public  void init() {
+        ContextStorage.reset();
     }
 
     @Test
@@ -218,37 +233,6 @@ class DMNImportsUtilTest {
     }
 
     @Test
-    void resolveDMNImportType()  {
-        List<DMNModel> toMerge = new ArrayList<>();
-        List<DMNModel> dmnModels = new ArrayList<>();
-        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
-                this.getClass());
-        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
-        assertThat(importedModel).isNotNull();
-        dmnModels.add(importedModel);
-
-        //imported model - Importing_Named_Model.dmn
-        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
-        resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
-                this.getClass());
-        DMNModel importingModel = dMNCompiler.compile(resource, dmnModels);
-        assertThat(importingModel).isNotNull();
-        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
-        assertThat(importingModel.getMessages()).isEmpty();
-
-        Import input = importingModel.getDefinitions().getImport().get(0);
-        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
-        DMNImportsUtil.resolveDMNImportType(input, dmnModels, model, toMerge);
-        assertThat(model.getMessages()).isEmpty();
-        assertThat(model.getImportAliasesForNS().entrySet().stream().findFirst())
-                .isPresent().get().extracting(Map.Entry::getValue)
-                .extracting(QName::getLocalPart).isNotNull().isEqualTo("Imported Model");
-
-    }
-
-
-
-    @Test
     void checkLocatedDMNModelWithAliasNull() {
         String namespace="http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
         List<DMNModel> toMerge = new ArrayList<>();
@@ -270,24 +254,98 @@ class DMNImportsUtilTest {
     }
 
     @Test
-    void resolvePMMLImportType() {
+    void resolveDMNImportType()  {
+        List<DMNModel> toMerge = new ArrayList<>();
         List<DMNModel> dmnModels = new ArrayList<>();
-        Resource dmnResource = new ClassPathResource( "../pmml/KiePMMLNewTree.dmn",
-                this.getClass());
-        DMNModel importingModel = dMNCompiler.compile( dmnResource, dmnModels);
-        assertThat(importingModel).isNotNull();
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+                                                   this.getClass());
+        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(importedModel).isNotNull();
+        dmnModels.add(importedModel);
 
+        //imported model - Importing_Named_Model.dmn
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
+                                          this.getClass());
+        DMNModel importingModel = dMNCompiler.compile(resource, dmnModels);
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+        assertThat(importingModel.getMessages()).isEmpty();
 
         Import input = importingModel.getDefinitions().getImport().get(0);
-        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), dmnResource);
+        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
+        DMNImportsUtil.resolveDMNImportType(input, dmnModels, model, toMerge);
+        assertThat(model.getMessages()).isEmpty();
+        assertThat(model.getImportAliasesForNS().entrySet().stream().findFirst())
+                .isPresent().get().extracting(Map.Entry::getValue)
+                .extracting(QName::getLocalPart).isNotNull().isEqualTo("Imported Model");
 
-        Resource relativeResource = new ClassPathResource( "../pmml/test_tree_new.pmml",
+    }
+
+    @Test
+    void resolvePMMLImportTypeFromRelativeResolver() throws IOException {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource dmnResource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
                 this.getClass());
+        DMNModel simpleModel = dMNCompiler.compile( dmnResource, dmnModels);
+        assertThat(simpleModel).isNotNull();
+
+
+        String pmmlFilePath = "../pmml/test_tree_new.pmml";
+        URL resource = DMNImportsUtilTest.class.getResource(pmmlFilePath);
+        assertThat(resource).isNotNull();
+        File pmmlFile = new File(resource.getFile());
+        assertThat(pmmlFile).isNotNull().exists();
+        String pmmlFileContent = Files.readString(pmmlFile.toPath());
+
+
+        DMNModelImpl model = new DMNModelImpl(simpleModel.getDefinitions(), dmnResource);
         assertThat(model.getPmmlImportInfo()).isEmpty();
+
+        String importName = "test_tree";
+        Import anImport = new org.kie.dmn.model.v1_5.TImport();
+        anImport.setLocationURI(pmmlFile.getAbsolutePath());
+        anImport.setImportType("pmml");
+        anImport.setName(importName);
+        Function<String, Reader> relativeResolver = getRelativeResolver(anImport.getLocationURI(), pmmlFileContent);
         DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl)((DMNCompilerImpl)dMNCompiler).getDmnCompilerConfig();
-        // TODO gcardosi
-//        DMNImportsUtil.resolvePMMLImportType(model, input, relativeResource, dmnCompilerConfig);
-//        assertThat(model.getPmmlImportInfo()).hasSize(1).containsOnlyKeys("test_tree");
+        assertThat(model.getPmmlImportInfo()).isEmpty();
+        DMNImportsUtil.resolvePMMLImportTypeFromRelativeResolver(model, anImport, relativeResolver, dmnCompilerConfig);
+        assertThat(model.getPmmlImportInfo()).hasSize(1).containsOnlyKeys(importName);
+    }
+
+    @Test
+    void resolvePMMLImportTypeFromModelLocalUriId() throws IOException {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource dmnResource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
+                                                      this.getClass());
+        DMNModel simpleModel = dMNCompiler.compile( dmnResource, dmnModels);
+        assertThat(simpleModel).isNotNull();
+
+
+        String pmmlFilePath = "../pmml/test_tree_new.pmml";
+        URL resource = DMNImportsUtilTest.class.getResource(pmmlFilePath);
+        assertThat(resource).isNotNull();
+        File pmmlFile = new File(resource.getFile());
+        assertThat(pmmlFile).isNotNull().exists();
+
+
+        String pmmlFileContent = Files.readString(pmmlFile.toPath());
+        ModelLocalUriId modelLocalUriId = EfestoPMMLUtils.compilePMML(pmmlFileContent, pmmlFile.getAbsolutePath(), Thread.currentThread().getContextClassLoader());
+
+
+        DMNModelImpl model = new DMNModelImpl(simpleModel.getDefinitions(), dmnResource);
+        assertThat(model.getPmmlImportInfo()).isEmpty();
+
+        String importName = "test_tree";
+        Import anImport = new org.kie.dmn.model.v1_5.TImport();
+        anImport.setLocationURI(pmmlFile.getAbsolutePath());
+        anImport.setImportType("pmml");
+        anImport.setName(importName);
+        DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl)((DMNCompilerImpl)dMNCompiler).getDmnCompilerConfig();
+        assertThat(model.getPmmlImportInfo()).isEmpty();
+        DMNImportsUtil.resolvePMMLImportTypeFromModelLocalUriId(model, anImport, modelLocalUriId, dmnCompilerConfig);
+        assertThat(model.getPmmlImportInfo()).hasSize(1).containsOnlyKeys(importName);
     }
 
 }
