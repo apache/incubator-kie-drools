@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +19,11 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
@@ -86,21 +90,48 @@ public class DMNLiteralExpressionEvaluator
         EvaluationContextImpl ectx = feelInstance.newEvaluationContext(List.of(liListener), result.getContext().getAll());
         ectx.setDMNRuntime(dmrem.getRuntime());
         // in case an exception is thrown, the parent node will report it
+        // TODO: tricky workaround
+        Set<FEELEvent> previousFeelEvents = result.getMessages(DMNMessage.Severity.WARN, DMNMessage.Severity.ERROR)
+                .stream()
+                .map(DMNMessage::getFeelEvent)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
         Object val = feelInstance.evaluate(expression, ectx);
-        ResultType resultType = ResultType.SUCCESS;
+        Set<FEELEvent> currentFeelEvents = result.getMessages(DMNMessage.Severity.WARN, DMNMessage.Severity.ERROR)
+                .stream()
+                .map(DMNMessage::getFeelEvent)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        currentFeelEvents.removeAll(previousFeelEvents);
+        boolean error = false;
         for (FEELEvent captured : liListener.events) {
             MsgUtil.reportMessage(LOG,
-                                  dmnSeverityFromFEELSeverity(captured.getSeverity()),
-                                  expressionNode,
-                                  result,
-                                  null,
-                                  captured,
-                                  Msg.FEEL_EVENT_EVAL_LITERAL_EXPRESSION,
-                                  captured.getSeverity().toString(),
-                                  MsgUtil.clipString(expressionNode.getText(), 50),
-                                  captured.getMessage());
-            resultType = getFEELDialectAdaptedResultType(captured.getSeverity(), val, feelInstance.getFeelDialect());
+                    dmnSeverityFromFEELSeverity(captured.getSeverity()),
+                    expressionNode,
+                    result,
+                    null,
+                    captured,
+                    Msg.FEEL_EVENT_EVAL_LITERAL_EXPRESSION,
+                    captured.getSeverity().toString(),
+                    MsgUtil.clipString(expressionNode.getText(), 50),
+                    captured.getMessage());
+            error = error || captured.getSeverity() == Severity.ERROR;
         }
+        for (FEELEvent captured : currentFeelEvents) {
+            MsgUtil.reportMessage(LOG,
+                    dmnSeverityFromFEELSeverity(captured.getSeverity()),
+                    expressionNode,
+                    result,
+                    null,
+                    captured,
+                    Msg.FEEL_EVENT_EVAL_LITERAL_EXPRESSION,
+                    captured.getSeverity().toString(),
+                    MsgUtil.clipString(expressionNode.getText(), 50),
+                    captured.getMessage());
+            error = error || captured.getSeverity() == Severity.ERROR;
+        }
+        Severity severity = error ? Severity.ERROR : Severity.INFO;
+        ResultType resultType = getFEELDialectAdaptedResultType(severity, val, feelInstance.getFeelDialect());
         return new EvaluatorResultImpl(val, resultType);
     }
 
