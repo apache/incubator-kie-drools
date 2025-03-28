@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,11 +18,6 @@
  */
 package org.kie.efesto.common.core.serialization;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,9 +25,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ModelLocalUriIdDeSerializerTest {
+class ModelLocalUriIdDeserializerTest {
 
     @Test
     void deserializeDecodedPath() throws IOException {
@@ -42,7 +42,7 @@ class ModelLocalUriIdDeSerializerTest {
         InputStream stream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         JsonParser parser = mapper.getFactory().createParser(stream);
         DeserializationContext ctxt = mapper.getDeserializationContext();
-        ModelLocalUriId retrieved = new ModelLocalUriIdDeSerializer().deserialize(parser, ctxt);
+        ModelLocalUriId retrieved = new ModelLocalUriIdDeserializer().deserialize(parser, ctxt);
 
         String path = "/example/some-id/instances/some-instance-id";
         LocalUri parsed = LocalUri.parse(path);
@@ -59,7 +59,7 @@ class ModelLocalUriIdDeSerializerTest {
         InputStream stream = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
         JsonParser parser = mapper.getFactory().createParser(stream);
         DeserializationContext ctxt = mapper.getDeserializationContext();
-        ModelLocalUriId retrieved = new ModelLocalUriIdDeSerializer().deserialize(parser, ctxt);
+        ModelLocalUriId retrieved = new ModelLocalUriIdDeserializer().deserialize(parser, ctxt);
         String path = "/To+decode+first+part/To+decode+second+part/To+decode+third+part/";
         LocalUri parsed = LocalUri.parse(path);
         ModelLocalUriId expected = new ModelLocalUriId(parsed);

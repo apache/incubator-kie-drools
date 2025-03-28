@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.api.model;
+package org.kie.efesto.common.core.serialization;
 
-import java.util.ServiceLoader;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
 
-import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+public class EfestoIdentifierClassKeyDeserializerService implements DeserializerService<EfestoIdentifierClassKey> {
 
-public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
+    @Override
+    public Class<EfestoIdentifierClassKey> type() {
+        return EfestoIdentifierClassKey.class;
+    }
 
-    Class<?> loadClass(String className) throws ClassNotFoundException;
-
-    ServiceLoader<KieRuntimeService> getKieRuntimeService();
+    @Override
+    public JsonDeserializer<? extends EfestoIdentifierClassKey> deser() {
+        return new EfestoIdentifierClassKeyDeserializer();
+    }
 }

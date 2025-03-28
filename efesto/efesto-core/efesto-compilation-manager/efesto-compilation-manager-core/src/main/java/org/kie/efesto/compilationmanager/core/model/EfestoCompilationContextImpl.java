@@ -30,7 +30,7 @@ import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.core.utils.JSONUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.JavaConfiguration;

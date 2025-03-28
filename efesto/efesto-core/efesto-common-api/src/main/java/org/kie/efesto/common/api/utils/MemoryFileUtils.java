@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -131,8 +131,8 @@ public class MemoryFileUtils {
     static File getFileFromJar(URL retrieved) throws URISyntaxException, IOException {
         logger.debug("getFileFromJar {}", retrieved);
         String fileName = retrieved.getFile();
-        if (fileName.contains("/")) {
-            fileName = fileName.substring(fileName.lastIndexOf('/'));
+        if (fileName.contains("!/")) {
+            fileName = fileName.substring((fileName.lastIndexOf("!/") + 1));
         }
         String jarPath = retrieved.toString();
         jarPath = jarPath.substring(0, jarPath.lastIndexOf("!/") + 2);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -66,8 +66,9 @@ public class Constants {
     public static final String PMML_SUFFIX = "." + PMML_STRING;
 
     public static final String PMML_FILE_NAME = "_pmml_file_name_";
-
     public static final String PMML_MODEL_NAME = "_model_name_";
+    public static final String RESULT_OBJECT_NAME = "_result_object_name_";
+    public static final String RESULT_CODE = "_result_code_";
 
     private Constants() {
         // Avoid instantiation

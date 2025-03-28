@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,19 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
 public class MockKieRuntimeServiceA extends AbstractMockKieRuntimeService {
 
-    private static List<ModelLocalUriId> managedResources =
-            Collections.singletonList(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputA.class.getSimpleName() + SLASH + MockEfestoInputA.class.getPackage().getName())));
 
+    public MockKieRuntimeServiceA() {
+        super(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputA.class.getSimpleName() + SLASH + MockEfestoInputA.class.getPackage().getName())));
+    }
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
@@ -41,7 +38,12 @@ public class MockKieRuntimeServiceA extends AbstractMockKieRuntimeService {
     }
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return managedResources.contains(toEvaluate.getModelLocalUriId());
+    public String getModelType() {
+        return MockEfestoInputA.class.getSimpleName();
+    }
+
+    @Override
+    public EfestoInput getMockedEfestoInput() {
+        return new MockEfestoInputA();
     }
 }

@@ -27,6 +27,18 @@ public class CollectionUtils {
 
     private CollectionUtils() { }
 
+    public static <T, X extends RuntimeException> Optional<T> findAtMostOne(Iterable<T> collection, BiFunction<T, T, X> multipleValuesExceptionSupplier) {
+        T result = null;
+        for (T t : collection) {
+            if (result == null) {
+                result = t;
+            } else {
+                throw multipleValuesExceptionSupplier.apply(result, t);
+            }
+        }
+        return Optional.ofNullable(result);
+    }
+
     public static <T, X extends RuntimeException> Optional<T> findAtMostOne(Iterable<T> collection, Predicate<T> filter, BiFunction<T, T, X> multipleValuesExceptionSupplier) {
         T result = null;
         for (T t : collection) {

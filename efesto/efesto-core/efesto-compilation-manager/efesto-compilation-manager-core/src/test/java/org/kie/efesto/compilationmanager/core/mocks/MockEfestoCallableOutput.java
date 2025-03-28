@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,22 +21,25 @@ package org.kie.efesto.compilationmanager.core.mocks;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.Map;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
+import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 
-public class MockEfestoCallableOutput implements EfestoCallableOutput {
+public class MockEfestoCallableOutput extends AbstractMockEfestoCallableOutput {
 
-    private ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/mock/efesto/output/module"));
+    private static final String fullClassName ="mock.efesto.output.Module";
 
-    @Override
-    public ModelLocalUriId getModelLocalUriId() {
-        return modelLocalUriId;
+    private static final String moduleClass = "package mock.efesto.output;\n" +
+            "public class Module {}";
+
+    public MockEfestoCallableOutput() {
+        super(new ModelLocalUriId(LocalUri.parse("/mock/efesto/output/Module")), MockEfestoCallableOutput.class.getName(), getMappedCompiledBytes(fullClassName, moduleClass));
     }
 
     @Override
     public List<String> getFullClassNames() {
-        return Collections.singletonList("mock.efesto.output.Module");
+        return Collections.singletonList(fullClassName);
     }
 
 }

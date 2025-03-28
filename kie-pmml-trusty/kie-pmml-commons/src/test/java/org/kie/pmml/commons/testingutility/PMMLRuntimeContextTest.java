@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 

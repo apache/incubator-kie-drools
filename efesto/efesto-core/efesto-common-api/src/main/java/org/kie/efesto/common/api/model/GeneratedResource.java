@@ -30,7 +30,8 @@ import java.io.Serializable;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
         @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable")
+        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
+        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
 })
 public interface GeneratedResource extends Serializable {
 

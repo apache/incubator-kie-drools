@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,6 @@
  */
 package org.kie.pmml.models.drools.commons.model;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +87,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Object evaluate(final Map<String, Object> requestData,
                            final PMMLRuntimeContext context) {
         logger.trace("evaluate {}", requestData);

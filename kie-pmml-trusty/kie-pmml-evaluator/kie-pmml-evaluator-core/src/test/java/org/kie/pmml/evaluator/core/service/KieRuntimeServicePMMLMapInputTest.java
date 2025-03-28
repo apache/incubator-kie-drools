@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
+import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.TestingHelper.getEfestoContext;
@@ -71,8 +71,8 @@ class KieRuntimeServicePMMLMapInputTest {
         inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                           getInputData(MODEL_NAME, FILE_NAME));
         efestoRuntimeContext = getEfestoContext(memoryCompilerClassLoader);
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
-                                                                                           efestoRuntimeContext);
+        Optional<EfestoOutputPMMLMap> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
+                                                                                              efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isPresent();
     }
 
@@ -82,7 +82,7 @@ class KieRuntimeServicePMMLMapInputTest {
         inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                           getInputData(MODEL_NAME, FILE_NAME));
         efestoRuntimeContext = getEfestoContext(memoryCompilerClassLoader);
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
+        Optional<EfestoOutputPMMLMap> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
                                                                                            efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isNotPresent();
     }
@@ -92,7 +92,7 @@ class KieRuntimeServicePMMLMapInputTest {
         modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         inputPMML = new BaseEfestoInput<>(modelLocalUriId, getInputData(MODEL_NAME, FILE_NAME));
         efestoRuntimeContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
+        Optional<EfestoOutputPMMLMap> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
                                                                                            efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isPresent();
     }
