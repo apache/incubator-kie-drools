@@ -504,8 +504,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void bkmNode(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0009-invocation-arithmetic.dmn", getClass());
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(dmnModel.getMessages().toString()).isFalse();
@@ -530,8 +528,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void itemDefCollection(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass());
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(dmnModel.getMessages().toString()).isFalse();
@@ -562,8 +558,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void list(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("list-expression.dmn", getClass());
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "list-expression");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(dmnModel.getMessages().toString()).isFalse();
@@ -579,8 +573,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void relation(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("relation-expression.dmn", getClass());
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "relation-expression");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(dmnModel.getMessages().toString()).isFalse();
@@ -607,8 +599,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void lendingExample(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-lending.dmn", getClass());
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4e0f0b70-d31c-471c-bd52-5ca709ed362b", "Lending1");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
@@ -914,9 +904,10 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult.hasErrors()).as(dmnResult.getMessages().toString()).isTrue();
-        assertThat(dmnResult.getMessages()).hasSize(2);
+        assertThat(dmnResult.getMessages()).hasSize(3);
         assertThat(dmnResult.getMessages().get(0).getSourceId()).isEqualTo("_c5eda7c3-7f22-43c2-8c1e-a3cc79bb7a74");
-        assertThat(dmnResult.getMessages().get(1).getSourceId()).isEqualTo("_5bac3e4c-b59a-4f14-b5cf-d4d88c60877f");
+        assertThat(dmnResult.getMessages().get(1).getSourceId()).isEqualTo("_c5eda7c3-7f22-43c2-8c1e-a3cc79bb7a74");
+        assertThat(dmnResult.getMessages().get(2).getSourceId()).isEqualTo("_5bac3e4c-b59a-4f14-b5cf-d4d88c60877f");
     }
 
     @ParameterizedTest
@@ -1662,7 +1653,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, wrongContext);
         assertThat(dmnResult.hasErrors()).as(dmnResult.getMessages().toString()).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
     }
 
     @ParameterizedTest
@@ -1683,7 +1674,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, wrongContext);
         assertThat(dmnResult.hasErrors()).as(dmnResult.getMessages().toString()).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
 
     }
 
@@ -1707,7 +1698,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.hasErrors()).as(dmnResult.getMessages().toString()).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
         // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
     }
 
     @ParameterizedTest
@@ -1839,7 +1830,6 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("number", 123.123456d);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
 
         final DMNContext result = dmnResult.getContext();

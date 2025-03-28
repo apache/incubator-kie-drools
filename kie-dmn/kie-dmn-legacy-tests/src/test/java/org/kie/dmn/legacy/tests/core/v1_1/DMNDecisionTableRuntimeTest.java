@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -152,7 +152,7 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( dmnResult.hasErrors()).isTrue();
         assertThat( dmnResult.getMessages().stream().filter(
-                message -> message.getFeelEvent().getSourceException() instanceof NullPointerException ).count()).isEqualTo(0L );
+                message -> message.getFeelEvent() != null && message.getFeelEvent().getSourceException() instanceof NullPointerException ).count()).isEqualTo(0L );
     }
 
     @ParameterizedTest(name = "{0}")

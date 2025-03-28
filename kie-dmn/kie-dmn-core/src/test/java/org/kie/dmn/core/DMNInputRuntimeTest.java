@@ -22,8 +22,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -650,4 +652,52 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             assertThat(node.getName().endsWith("" + index++)).isTrue();
         }
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void multipleInvalidElements(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_5/DMN-MultipleInvalidElements.dmn",
+                this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31150E",
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 8);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+
+        String decision1SourceId = "_A40F3AA4-2832-4D98-83F0-7D604F9A090F";
+        String decision2SourceId = "_3DC41DB9-BE1D-4289-A639-24AB57ED082D";
+        String decision1RoundUpLiteralExpressionSourceId = "_2E43C09D-011A-436C-B40B-9154405EAF3A";
+        String decision2RoundUpLiteralExpressionSourceId = "_43236F2B-9857-454F-8EA0-39B37C7519CF";
+        String businessKnowledgeModelExpressionSourceId = "_4AC1BD7D-5A8D-4A88-94F9-0B80BDF0D9B1";
+        Set<String> expectedIds = new HashSet<>(Arrays.asList(decision1SourceId,
+                decision2SourceId,
+                decision1RoundUpLiteralExpressionSourceId,
+                decision2RoundUpLiteralExpressionSourceId,
+                businessKnowledgeModelExpressionSourceId));
+
+        assertThat(dmnResult.getMessages()).hasSize(6);
+        Set<String> retrievedIds = dmnResult.getMessages(DMNMessage.Severity.ERROR)
+                    .stream()
+                            .map(DMNMessage::getSourceId)
+                .collect(Collectors.toSet());
+        assertThat(retrievedIds).hasSameSizeAs(expectedIds).containsAll(expectedIds);
+
+        // Decision1 and Decision2 are expected to fail
+        DMNDecisionResult retrievedResult = dmnResult.getDecisionResultById(decision1SourceId);
+        assertThat(retrievedResult).isNotNull();
+        assertThat(retrievedResult.getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+        retrievedResult = dmnResult.getDecisionResultById(decision2SourceId);
+        assertThat(retrievedResult).isNotNull();
+        assertThat(retrievedResult.getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+
+
+     }
 }

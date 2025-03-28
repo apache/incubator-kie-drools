@@ -1531,7 +1531,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, wrongContext);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -1552,7 +1552,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, wrongContext);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -1575,7 +1575,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
         // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
-        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(2);
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).hasSize(3);
     }
 
     @ParameterizedTest(name = "{0}")
