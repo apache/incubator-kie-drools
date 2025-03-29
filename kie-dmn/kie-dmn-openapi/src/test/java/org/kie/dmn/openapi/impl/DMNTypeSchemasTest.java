@@ -104,10 +104,8 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(allowedValuesString, null, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertThat(toPopulate.get().getMinimum()).isEqualTo(BigDecimal.ONE);
-        assertThat(toPopulate.get().getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.get().getExclusiveMinimum()).isEqualTo(BigDecimal.ONE);
         assertThat(toPopulate.get().getMaximum()).isEqualTo(BigDecimal.TEN);
-        assertThat(toPopulate.get().getExclusiveMaximum()).isFalse();
         assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES);
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_ALLOWED_VALUES)).replace(" ", "");
@@ -123,10 +121,8 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(null, typeConstraintsString, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertThat(toPopulate.get().getMinimum()).isEqualTo(BigDecimal.ONE);
-        assertThat(toPopulate.get().getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.get().getExclusiveMinimum()).isEqualTo(BigDecimal.ONE);
         assertThat(toPopulate.get().getMaximum()).isEqualTo(BigDecimal.TEN);
-        assertThat(toPopulate.get().getExclusiveMaximum()).isFalse();
         assertThat(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).isTrue();
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).replace(" ",
