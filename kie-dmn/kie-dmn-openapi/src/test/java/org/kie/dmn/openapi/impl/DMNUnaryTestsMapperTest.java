@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.kie.dmn.openapi.impl.DMNOASConstants.X_NULLABLE;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
@@ -51,7 +52,7 @@ class DMNUnaryTestsMapperTest {
         expression += ", count (?) > 1";
         List<DMNUnaryTest> unaryTests = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, unaryTests);
-        assertThat(toPopulate.getNullable()).isFalse();
+        assertThat(toPopulate.getExtensions().get(X_NULLABLE)).isNotNull().isEqualTo(Boolean.FALSE);
         assertThat(toPopulate.getEnumeration()).isNotNull();
         assertThat(toPopulate.getEnumeration()).hasSameSizeAs(expectedStrings).containsAll(expectedStrings);
     }
@@ -64,7 +65,7 @@ class DMNUnaryTestsMapperTest {
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap.toString())).toList());
         List<DMNUnaryTest> unaryTests = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, unaryTests);
-        assertThat(toPopulate.getNullable()).isTrue();
+        assertThat(toPopulate.getExtensions().get(X_NULLABLE)).isNotNull().isEqualTo(Boolean.TRUE);
         assertThat(toPopulate.getEnumeration()).isNotNull();
         assertThat(toPopulate.getEnumeration()).hasSameSizeAs(expectedStrings).containsAll(expectedStrings);
     }
@@ -95,7 +96,7 @@ class DMNUnaryTestsMapperTest {
                 .toList();
         expression = String.join(",", formattedDates.stream().map(toMap -> String.format("%s", toMap)).toList());
         toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        assertThat(toPopulate.get().getNullable()).isNull();
+        assertThat(toPopulate.get().getExtensions()).isNull();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
         assertThat(toPopulate.get().getEnumeration()).isNotNull();
         assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(expectedDates).containsAll(expectedDates);

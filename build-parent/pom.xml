@@ -60,10 +60,10 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.15.1</version.commons-io>
     <version.common-text>1.11.0</version.common-text>
-    <version.com.fasterxml.jackson>2.17.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.17.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.17.2</version.com.fasterxml.jackson.annotations>
-    <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
+    <version.com.fasterxml.jackson>2.18.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.18.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.18.2</version.com.fasterxml.jackson.annotations>
+    <version.com.github.victools>4.37.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
@@ -73,10 +73,12 @@
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
-    <version.io.micrometer>1.12.2</version.io.micrometer>
+    <version.io.micrometer>1.14.5</version.io.micrometer>
     <version.io.quarkus>3.20.0</version.io.quarkus>
     <version.io.netty>4.1.118.Final</version.io.netty>
-    <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
+    <version.io.smallrye.openapi.core>4.0.8</version.io.smallrye.openapi.core>
+    <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
+
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -410,6 +412,22 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-core</artifactId>
         <version>${version.io.smallrye.openapi.core}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye.config</groupId>
+        <artifactId>smallrye-config</artifactId>
+        <version>${version.io.smallrye.config.core}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
