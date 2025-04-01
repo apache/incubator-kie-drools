@@ -1,0 +1,17 @@
+{
+  "id": "jqDelExpression",
+  "name": "jqDelExpression",
+  "start": "testJqExpression",
+  "states": [
+    {
+      "name": "testJqExpression",
+      "type": "inject",
+      "data": {},
+      "stateDataFilter": {
+        "input": "${ del( .InfractionsWithInstants[] | .BaseDepassement, .ActivitesIncriminees, .DebutIdentification, .FinIdentification ) }",
+        "output": "{ Infractions: .InfractionsWithInstants }"
+      },
+      "end": true
+    }
+  ]
+}

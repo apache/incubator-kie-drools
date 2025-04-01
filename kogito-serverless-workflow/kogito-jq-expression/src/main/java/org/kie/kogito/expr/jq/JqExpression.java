@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.FunctionJsonNode;
@@ -229,25 +230,33 @@ public class JqExpression implements Expression {
         return validationError == null;
     }
 
+    private static Pattern FUNCTION_DOES_NOT_EXIST = Pattern.compile("Function (.*) does not exist");
+
     private void checkFunctionCall(net.thisptr.jackson.jq.Expression toCheck) throws JsonQueryException {
-        if (toCheck instanceof FunctionCall) {
-            toCheck.apply(scope.get(), ObjectMapperFactory.get().createObjectNode(), out -> {
-            });
-        } else if (toCheck instanceof BinaryOperatorExpression) {
-            if (rhsField != null) {
-                try {
-                    checkFunctionCall((net.thisptr.jackson.jq.Expression) rhsField.get(toCheck));
-                } catch (ReflectiveOperationException e) {
-                    logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), rhsField.getName(), toCheck.getClass(), expr);
+        try {
+            if (toCheck instanceof FunctionCall) {
+                toCheck.apply(scope.get(), ObjectMapperFactory.get().createObjectNode(), out -> {
+                });
+            } else if (toCheck instanceof BinaryOperatorExpression) {
+                if (rhsField != null) {
+                    try {
+                        checkFunctionCall((net.thisptr.jackson.jq.Expression) rhsField.get(toCheck));
+                    } catch (ReflectiveOperationException e) {
+                        logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), rhsField.getName(), toCheck.getClass(), expr);
+                    }
                 }
+            } else if (toCheck != null) {
+                for (Field f : getAllExprFields(toCheck))
+                    try {
+                        checkFunctionCall((net.thisptr.jackson.jq.Expression) f.get(toCheck));
+                    } catch (ReflectiveOperationException e) {
+                        logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), f.getName(), toCheck.getClass(), expr);
+                    }
             }
-        } else if (toCheck != null) {
-            for (Field f : getAllExprFields(toCheck))
-                try {
-                    checkFunctionCall((net.thisptr.jackson.jq.Expression) f.get(toCheck));
-                } catch (ReflectiveOperationException e) {
-                    logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), f.getName(), toCheck.getClass(), expr);
-                }
+        } catch (JsonQueryException ex) {
+            if (FUNCTION_DOES_NOT_EXIST.matcher(ex.getMessage()).matches()) {
+                throw ex;
+            }
         }
     }
 

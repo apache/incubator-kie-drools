@@ -608,7 +608,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
 
     @ParameterizedTest
     @ValueSource(strings = { "/examples/applicantworkflow.sw.json", "/exec/error.sw.json", "/exec/callback.sw.json", "/exec/compensation.sw.json", "/exec/compensation.end.sw.json",
-            "/exec/foreach.sw.json" })
+            "/exec/foreach.sw.json", "/exec/jqDelExpression.sw.json" })
     public void testSpecExamplesParsing(String workflowLocation) throws Exception {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
