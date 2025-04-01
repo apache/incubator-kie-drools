@@ -61,8 +61,21 @@
     <module>process-definitions</module>
     <module>dynamic</module>
     <module>jbpm-usertask-storage-jpa</module>
-    <module>python</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>full</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>python</module>
+       </modules>
+     </profile>
+  </profiles>
 
   <build>
     <pluginManagement>
