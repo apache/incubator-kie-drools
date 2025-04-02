@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -123,5 +124,15 @@ class DateTimeFunctionTest {
                         LocalDate.of(2017, 6, 12),
                         OffsetTime.of(10, 6, 20, 0, ZoneOffset.UTC)),
                 ZonedDateTime.of(2017, 6, 12, 10, 6, 20, 0, ZoneOffset.UTC));
+    }
+
+    @Test
+    void invokeParamStringDateTimeZone() {
+        FEELFnResult<TemporalAccessor> invoke = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
+        FunctionTestUtil.assertResult(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
+                        LocalTime.of(23, 59, 0),
+                        "America/Costa_Rica"),
+        ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
+        System.out.println(invoke);
     }
 }
