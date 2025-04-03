@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -66,9 +64,55 @@ public class NumberEvalHelper {
         return null;
     }
 
+    /**
+     * The method handles various numeric types and converts the given object to an Integer
+     * Returns null If the conversion is not possible.
+     *
+     * @param value : The object to be converted.
+     * @return : An Integer representation of the value, or null if conversion is not possible.
+     */
+    public static Integer getIntegerOrNull(Object value) {
+        if ( value instanceof BigDecimal ) {
+            return ((BigDecimal) value).intValue();
+        }
+        if ( value instanceof BigInteger ) {
+            return ((BigInteger) value).intValue();
+        }
+        if ( value instanceof Double || value instanceof Float ) {
+            //String stringVal = value.toString();
+           // if (stringVal.equals("NaN") || stringVal.equals("Infinity") || stringVal.equals("-Infinity")) {
+                //return null;
+            //}
+            // We need to remove trailing zeros
+            //String stringValue = removeTrailingZeros(value.toString());
+            //return Integer.parseInt(stringValue);
+            return ((Number) value).intValue();
+        }
+
+        if ( value instanceof Number ) {
+            return ((Number) value).intValue();
+        }
+        return null;
+    }
+
     public static Object coerceNumber(Object value) {
         if ( value instanceof Number && !(value instanceof BigDecimal) ) {
             return getBigDecimalOrNull( value );
+        }  else {
+            return value;
+        }
+    }
+
+    /**
+     * Converts the given object to an integer if it is an instance of Number.
+     * else it is returned unchanged.
+     *
+     * @param value : the object to be converted
+     * @return : an integer representation of the number if applicable, otherwise the original value
+     */
+    public static Object coerceIntegerNumber(Object value) {
+        if ( value instanceof Number ) {
+            return getIntegerOrNull( value );
         } else {
             return value;
         }
