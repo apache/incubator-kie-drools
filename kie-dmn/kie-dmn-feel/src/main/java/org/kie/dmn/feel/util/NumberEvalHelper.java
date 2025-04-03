@@ -78,17 +78,6 @@ public class NumberEvalHelper {
         if ( value instanceof BigInteger ) {
             return ((BigInteger) value).intValue();
         }
-        if ( value instanceof Double || value instanceof Float ) {
-            //String stringVal = value.toString();
-           // if (stringVal.equals("NaN") || stringVal.equals("Infinity") || stringVal.equals("-Infinity")) {
-                //return null;
-            //}
-            // We need to remove trailing zeros
-            //String stringValue = removeTrailingZeros(value.toString());
-            //return Integer.parseInt(stringValue);
-            return ((Number) value).intValue();
-        }
-
         if ( value instanceof Number ) {
             return ((Number) value).intValue();
         }

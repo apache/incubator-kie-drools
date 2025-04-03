@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,21 +35,28 @@ class NumberEvalHelperTest {
     }
 
     @Test
-    void testCoerceNumber_withBigDecimal() {
+    void coerceIntegerNumber_withBigDecimal() {
         Object result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
         assertInstanceOf(Integer.class, result, "Expected Integer");
         assertEquals(99, result);
     }
 
     @Test
-    void testCoerceNumber_withDouble() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(42.5);
+    void coerceIntegerNumber_withBigInteger() {
+        Object result = NumberEvalHelper.coerceIntegerNumber(new BigInteger("1000"));
+        assertInstanceOf(Integer.class, result, "Expected Integer");
+        assertEquals(1000, result);
+    }
+
+    @Test
+    void coerceIntegerNumber_withDouble() {
+        Object result = NumberEvalHelper.coerceIntegerNumber(042.50);
         assertInstanceOf(Integer.class, result, "Expected Integer");
         assertEquals(42, result);
     }
 
     @Test
-    void testCoerceNumber_withString() {
+    void coerceIntegerNumber_withString() {
         Object result = NumberEvalHelper.coerceIntegerNumber("123");
         assertInstanceOf(String.class, result, "Expected String");
         assertThat(result).isNotNull();
@@ -56,10 +64,17 @@ class NumberEvalHelperTest {
     }
 
     @Test
-    void testCoerceNumber_withInteger() {
+    void coerceIntegerNumber_withInteger() {
         Object result = NumberEvalHelper.coerceIntegerNumber(42);
         assertInstanceOf(Integer.class, result, "Expected Integer");
         assertEquals(42, result);
+    }
+
+    @Test
+    void coerceIntegerNumber_withLong() {
+        Object result = NumberEvalHelper.coerceIntegerNumber(423L);
+        assertInstanceOf(Integer.class, result, "Expected Integer");
+        assertEquals(423, result);
     }
 
 }
