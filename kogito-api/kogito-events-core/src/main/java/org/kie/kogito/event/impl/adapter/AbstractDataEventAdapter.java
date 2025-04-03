@@ -59,12 +59,16 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
     }
 
     protected ProcessInstanceStateDataEvent adapt(ProcessEvent event, Integer eventType) {
+        return adapt(event, eventType, event.getEventDate());
+    }
+
+    protected ProcessInstanceStateDataEvent adapt(ProcessEvent event, Integer eventType, Date date) {
         Map<String, Object> metadata = AdapterHelper.buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
 
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
 
         ProcessInstanceStateEventBody.Builder builder = ProcessInstanceStateEventBody.create()
-                .eventDate(new Date())
+                .eventDate(date)
                 .eventUser(event.getEventIdentity())
                 .eventType(eventType)
                 .processId(event.getProcessInstance().getProcessId())

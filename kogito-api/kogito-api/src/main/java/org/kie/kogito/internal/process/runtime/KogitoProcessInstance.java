@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.internal.process.runtime;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,8 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
      * @return the business key or null if not set
      */
     String getBusinessKey();
+
+    Date getStartDate();
 
     /**
      * Returns optional header of the process instance
