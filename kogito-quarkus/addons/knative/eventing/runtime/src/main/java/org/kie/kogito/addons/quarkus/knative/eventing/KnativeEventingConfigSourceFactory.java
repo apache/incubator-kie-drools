@@ -79,8 +79,8 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
         }
 
         final String sinkUrl = context.getValue(K_SINK).getValue();
-        if (sinkUrl == null || "".equals(sinkUrl)) {
-            LOGGER.warn("{} variable is empty or doesn't exist. Please make sure that this service is a Knative Source or has a SinkBinding bound to it.", K_SINK);
+        if (sinkUrl == null || sinkUrl.isEmpty()) {
+            LOGGER.debug("{} variable is empty or doesn't exist. Please make sure that this service is a Knative Source or has a SinkBinding bound to it.", K_SINK);
         }
 
         configuration.forEach((key, value) -> LOGGER.debug("Adding connector -> {} =  {}", key, value));

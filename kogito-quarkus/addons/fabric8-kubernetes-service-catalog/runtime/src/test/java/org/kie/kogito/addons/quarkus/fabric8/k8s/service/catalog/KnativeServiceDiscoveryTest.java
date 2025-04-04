@@ -22,25 +22,26 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 class KnativeServiceDiscoveryTest {
 
-    private static final String REMOTE_SERVICE_HOST = "serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
+    private static final String REMOTE_SERVICE_HOST = "serverless-workflow-greeting-quarkus.default.10.99.154.147.sslip.io";
+    private static final String NAMESPACE = "default";
 
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+    @Inject
+    OpenShiftClient client;
 
     @Inject
     KnativeServiceDiscovery knativeServiceDiscovery;
@@ -48,34 +49,26 @@ class KnativeServiceDiscoveryTest {
     @Test
     void queryService() {
         String remoteServiceUrl = "http://" + REMOTE_SERVICE_HOST;
-        KnativeResourceDiscoveryTestUtil.createServiceIfNotExists(mockServer, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus", remoteServiceUrl);
 
-        Optional<URI> uri = knativeServiceDiscovery.query(new KnativeServiceUri("test", "serverless-workflow-greeting-quarkus"));
+        KubeTestUtils.createKnativeServiceIfNotExists(client, "knative/quarkus-greeting.yaml", NAMESPACE, "serverless-workflow-greeting-quarkus", remoteServiceUrl);
 
-        assertThat(uri).map(URI::getHost)
-                .hasValue(REMOTE_SERVICE_HOST);
+        Optional<URI> uri = knativeServiceDiscovery.query(new KnativeServiceUri(NAMESPACE, "serverless-workflow-greeting-quarkus"));
 
-        assertThat(uri).map(URI::getPort)
-                .hasValue(-1);
-
-        assertThat(uri).map(URI::getScheme)
-                .hasValue("http");
+        assertThat(uri).map(URI::getHost).hasValue(REMOTE_SERVICE_HOST);
+        assertThat(uri).map(URI::getPort).hasValue(-1);
+        assertThat(uri).map(URI::getScheme).hasValue("http");
     }
 
     @Test
     void https() {
         String remoteServiceUrl = "https://" + REMOTE_SERVICE_HOST;
-        KnativeResourceDiscoveryTestUtil.createServiceIfNotExists(mockServer, "knative/quarkus-greeting-https.yaml", "test", "serverless-workflow-greeting-quarkus-https", remoteServiceUrl);
 
-        Optional<URI> url = knativeServiceDiscovery.query(new KnativeServiceUri("test", "serverless-workflow-greeting-quarkus-https"));
+        KubeTestUtils.createKnativeServiceIfNotExists(client, "knative/quarkus-greeting-https.yaml", NAMESPACE, "serverless-workflow-greeting-quarkus-https", remoteServiceUrl);
 
-        assertThat(url).map(URI::getHost)
-                .hasValue(REMOTE_SERVICE_HOST);
+        Optional<URI> url = knativeServiceDiscovery.query(new KnativeServiceUri(NAMESPACE, "serverless-workflow-greeting-quarkus-https"));
 
-        assertThat(url).map(URI::getPort)
-                .hasValue(-1);
-
-        assertThat(url).map(URI::getScheme)
-                .hasValue("https");
+        assertThat(url).map(URI::getHost).hasValue(REMOTE_SERVICE_HOST);
+        assertThat(url).map(URI::getPort).hasValue(-1);
+        assertThat(url).map(URI::getScheme).hasValue("https");
     }
 }

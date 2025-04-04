@@ -20,28 +20,28 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogTest;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 
-import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
+import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 class Fabric8KubernetesServiceCatalogTest extends KubernetesServiceCatalogTest {
 
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+    @Inject
+    OpenShiftClient client;
 
     @BeforeEach
     void beforeEach() {
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting.yaml", getNamespace(), getKnativeServiceName());
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting-kubernetes.yaml", getNamespace(), getKubernetesServiceName());
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting-openshift.yaml", getNamespace(), getOpenshiftServicename());
+        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting.yaml", getNamespace(), getKnativeServiceName());
+        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting-kubernetes.yaml", getNamespace(), getKubernetesServiceName());
+        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting-openshift.yaml", getNamespace(), getOpenshiftServicename());
     }
 
     @Inject

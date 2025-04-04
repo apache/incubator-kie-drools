@@ -36,13 +36,13 @@ import static org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol.OPEN
  */
 public abstract class KubernetesServiceCatalogTest {
 
-    private static final String EXPECTED_KNATIVE_URI = "http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
+    private static final String EXPECTED_KNATIVE_URI = "http://serverless-workflow-greeting-quarkus.default.10.99.154.147.sslip.io";
 
-    private static final String EXPECTED_KUBERNETES_URI = "http://serverless-workflow-greeting-quarkus-kubernetes.test.10.99.154.147.sslip.io";
+    private static final String EXPECTED_KUBERNETES_URI = "http://serverless-workflow-greeting-quarkus-kubernetes.default.10.99.154.147.sslip.io";
 
-    private static final String EXPECTED_OPENSHIFT_URI = "http://serverless-workflow-greeting-quarkus-openshift.test.10.99.154.147.sslip.io";
+    private static final String EXPECTED_OPENSHIFT_URI = "http://serverless-workflow-greeting-quarkus-openshift.default.10.99.154.147.sslip.io";
 
-    private static final String NAMESPACE = "test";
+    private static final String NAMESPACE = "default";
 
     private static final String KNATIVE_SERVICENAME = "serverless-workflow-greeting-quarkus";
 

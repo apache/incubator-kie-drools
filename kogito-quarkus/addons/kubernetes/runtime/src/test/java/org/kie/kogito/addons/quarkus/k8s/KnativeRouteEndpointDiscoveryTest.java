@@ -65,8 +65,12 @@ public class KnativeRouteEndpointDiscoveryTest {
         // configure mock
         final RouteStatus status = new RouteStatus();
         status.setUrl("http://192.168.2.32");
-        final Route route = new RouteBuilder().withNewMetadata().withName("ksvc1").withNamespace("test").and().withStatus(status).build();
-        knativeClient.routes().create(route);
+        final Route route = new RouteBuilder()
+                .withNewMetadata().withName("ksvc1").withNamespace("test").endMetadata()
+                .withStatus(status)
+                .build();
+
+        knativeClient.routes().resource(route).create();
 
         final Optional<Endpoint> endpoint = endpointDiscovery.findEndpoint("test", "ksvc1");
         assertTrue(endpoint.isPresent());
@@ -74,7 +78,7 @@ public class KnativeRouteEndpointDiscoveryTest {
         try {
             new URL(endpoint.get().getUrl());
         } catch (MalformedURLException e) {
-            fail("The generated URL " + endpoint.get().getUrl() + " is invalid"); //verbose
+            fail("The generated URL " + endpoint.get().getUrl() + " is invalid");
         }
     }
 
@@ -91,9 +95,11 @@ public class KnativeRouteEndpointDiscoveryTest {
                 .withNewMetadata()
                 .withLabels(labels)
                 .withName("ksvc2").withNamespace("test")
-                .and().withStatus(status)
+                .endMetadata()
+                .withStatus(status)
                 .build();
-        knativeClient.routes().create(route);
+
+        knativeClient.routes().resource(route).create();
 
         final List<Endpoint> endpoint = endpointDiscovery.findEndpoint("test", labels);
         assertFalse(endpoint.isEmpty());
@@ -101,7 +107,7 @@ public class KnativeRouteEndpointDiscoveryTest {
         try {
             new URL(endpoint.get(0).getUrl());
         } catch (MalformedURLException e) {
-            fail("The generated URL " + endpoint.get(0).getUrl() + " is invalid"); //verbose
+            fail("The generated URL " + endpoint.get(0).getUrl() + " is invalid");
         }
     }
 
@@ -111,8 +117,11 @@ public class KnativeRouteEndpointDiscoveryTest {
         endpointDiscovery.setKnativeClient(knativeClient);
 
         // configure mock
-        final Route route = new RouteBuilder().withNewMetadata().withName("ksvc3").withNamespace("test").and().build();
-        knativeClient.routes().create(route);
+        final Route route = new RouteBuilder()
+                .withNewMetadata().withName("ksvc3").withNamespace("test").endMetadata()
+                .build();
+
+        knativeClient.routes().resource(route).create();
 
         final Optional<Endpoint> endpoint = endpointDiscovery.findEndpoint("test", "ksvc3");
         assertTrue(endpoint.isEmpty());

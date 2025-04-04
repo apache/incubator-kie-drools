@@ -23,34 +23,34 @@ import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
+import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 class KubeDiscoveryConfigCacheUpdaterTest {
 
-    @KubernetesTestServer
-    static KubernetesServer mockServer;
-
-    KubeDiscoveryConfigCacheUpdater kubeDiscoveryConfigCacheUpdater;
-
-    final String remoteServiceUrl = "http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
+    private static final String remoteServiceUrl = "http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
 
     @Inject
     KubernetesServiceCatalog kubernetesServiceCatalog;
 
+    @Inject
+    OpenShiftClient client;
+
+    KubeDiscoveryConfigCacheUpdater kubeDiscoveryConfigCacheUpdater;
+
     @BeforeEach
     void beforeEach() {
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus", remoteServiceUrl);
+        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus", remoteServiceUrl);
         kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(kubernetesServiceCatalog);
     }
 

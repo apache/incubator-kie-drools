@@ -78,6 +78,9 @@ class KubernetesResourceDiscovery extends AbstractResourceDiscovery {
     private KubernetesResourceUri resolveNamespace(KubernetesResourceUri uri, Supplier<String> defaultNamespaceSupplier) {
         if (uri.getNamespace() == null) {
             String defaultNamespace = defaultNamespaceSupplier.get();
+            if (defaultNamespace == null || defaultNamespace.isEmpty()) {
+                throw new IllegalArgumentException("Can't resolve namespace for uri " + uri + " using the default namespace supplier: " + defaultNamespaceSupplier.get());
+            }
 
             logDefaultNamespace(defaultNamespace);
 

@@ -23,107 +23,115 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * This tests also covers the queryServiceByLabelOrSelector method from {@link ServiceUtils}
- */
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 public class PodUtilsTest {
 
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+    private final String namespace = "serverless-workflow-greeting-quarkus";
+
+    @Inject
+    OpenShiftClient client;
 
     @Inject
     KubernetesResourceDiscovery discovery;
 
-    private final String namespace = "serverless-workflow-greeting-quarkus";
-
     @Test
-    public void testPodNotFound() {
-        Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+    void testPodNotFound() {
+        Pod pod = client.pods().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod");
-        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+
+        KubeTestUtils.createWithStatusPreserved(client, pod, namespace, Pod.class);
+
         assertEquals(Optional.empty(),
                 discovery.query(KubernetesResourceUri.parse("pods.v1/" + namespace + "/hello")));
     }
 
     @Test
-    public void testPodWithNoService() {
-        var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/process-quarkus-example-pod-no-service");
+    void testPodWithNoService() {
+        final String tempNamespace = "temp-namespace";
+        var kubeURI = KubernetesResourceUri.parse("pods.v1/" + tempNamespace + "/test-pod-no-svc");
 
-        Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
-        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+        Pod pod = client.pods().inNamespace(tempNamespace)
+                .load(getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+        pod.getMetadata().setName("test-pod-no-svc");
+
+        KubeTestUtils.createWithStatusPreserved(client, pod, tempNamespace, Pod.class);
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.21:8080", url.get());
     }
 
     @Test
-    public void testPodWithNoServiceCustomPortName() {
+    void testPodWithNoServiceCustomPortName() {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/pod-no-service-custom-port?port-name=my-custom-port");
 
-        Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).item();
-        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+        Pod pod = client.pods().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).item();
+
+        KubeTestUtils.createWithStatusPreserved(client, pod, namespace, Pod.class);
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://172.17.0.22:52485", url.get());
     }
 
     @Test
-    public void testPodWithService() {
+    void testPodWithService() {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/test-pod-with-service");
 
-        Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+        Pod pod = client.pods().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod-with-service");
-        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+        KubeTestUtils.createWithStatusPreserved(client, pod, namespace, Pod.class);
 
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:80", url.get());
     }
 
     @Test
-    public void testPodWithServiceWithCustomLabel() {
+    void testPodWithServiceWithCustomLabel() {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/test-pod-with-service-custom-label?labels=label-name=test-label;other-label=other-value");
 
-        Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
+        Pod pod = client.pods().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod-with-service-custom-label");
-        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
-        service.getMetadata().setName(" process-quarkus-example-pod-clusterip-svc-custom-label");
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        KubeTestUtils.createWithStatusPreserved(client, pod, namespace, Pod.class);
 
-        Service service1 = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+        service.getMetadata().setName("process-quarkus-example-pod-clusterip-svc-custom-label");
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
+
+        Service service1 = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
         Map<String, String> labels = service1.getMetadata().getLabels();
         labels.put("label-name", "test-label");
         service1.getMetadata().setLabels(labels);
         service1.getMetadata().setName("second-service");
         service1.getSpec().setClusterIP("20.20.20.20");
-        mockServer.getClient().resource(service1).inNamespace(namespace).createOrReplace();
+
+        KubeTestUtils.createWithStatusPreserved(client, service1, namespace, Service.class);
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
         assertEquals("http://20.20.20.20:80", url.get());

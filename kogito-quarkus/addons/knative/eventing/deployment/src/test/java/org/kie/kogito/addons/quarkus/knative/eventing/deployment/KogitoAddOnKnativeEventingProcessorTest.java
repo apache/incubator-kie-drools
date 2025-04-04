@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.addons.quarkus.knative.eventing.deployment;
 
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -35,9 +34,8 @@ import org.mockito.ArgumentCaptor;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.GeneratedFileSystemResourceBuildItem;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
-import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +54,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     @Test
     void checkKogitoFileIsGeneratedWithDefaultConfig() {
-        final OutputTargetBuildItem outputTargetBuildItem = new OutputTargetBuildItem(Paths.get("/"), "", false, null, Optional.empty());
         final Set<CloudEventMeta> ces = new HashSet<>();
         ces.add(new CloudEventMeta("myProducedEvent", "/local/test", EventKind.PRODUCED));
         ces.add(new CloudEventMeta("myConsumedEvent", "/local/test", EventKind.CONSUMED));
@@ -66,7 +63,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
+        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -78,7 +75,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     @Test
     void checkKogitoFileIsGeneratedOnlyProduced() {
-        final OutputTargetBuildItem outputTargetBuildItem = new OutputTargetBuildItem(Paths.get("/"), "", false, null, Optional.empty());
         final Set<CloudEventMeta> ces = new HashSet<>();
         ces.add(new CloudEventMeta("myProducedEvent", "/local/test", EventKind.PRODUCED));
         final KogitoServiceDeploymentTarget deploymentTarget = new KogitoServiceDeploymentTarget("apps", "v1", "Deployment", "kogito-service");
@@ -87,7 +83,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
+        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -99,7 +95,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     @Test
     void checkKogitoFileIsGeneratedWithKogitoSource() {
-        final OutputTargetBuildItem outputTargetBuildItem = new OutputTargetBuildItem(Paths.get("/"), "", false, null, Optional.empty());
         final Set<CloudEventMeta> ces = new HashSet<>();
         ces.add(new CloudEventMeta("myProducedEvent", "/local/test", EventKind.PRODUCED));
         final KogitoServiceDeploymentTarget deploymentTarget = new KogitoServiceDeploymentTarget("apps", "v1", "Deployment", "kogito-service");
@@ -109,7 +104,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         eventingProcessor.config.generateKogitoSource = true;
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
+        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -121,7 +116,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     @Test
     void checkKogitoFileIsGeneratedOnlyConsumed() {
-        final OutputTargetBuildItem outputTargetBuildItem = new OutputTargetBuildItem(Paths.get("/"), "", false, null, Optional.empty());
         final Set<CloudEventMeta> ces = new HashSet<>();
         ces.add(new CloudEventMeta("myConsumedEvent", "/local/test", EventKind.CONSUMED));
         final KogitoServiceDeploymentTarget deploymentTarget = new KogitoServiceDeploymentTarget("apps", "v1", "Deployment", "kogito-service");
@@ -130,7 +124,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
+        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNotNull(producer.getItem().getData());
         assertTrue(producer.getItem().getData().length > 0);
@@ -142,7 +136,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     @Test
     void checkNotProducedIfNoCEs() {
-        final OutputTargetBuildItem outputTargetBuildItem = new OutputTargetBuildItem(Paths.get("/"), "", false, null, Optional.empty());
         final Set<CloudEventMeta> ces = new HashSet<>();
         final KogitoServiceDeploymentTarget deploymentTarget = new KogitoServiceDeploymentTarget("apps", "v1", "Deployment", "kogito-service");
         final KogitoKnativeResourcesMetadataBuildItem resourcesMetadataBuildItem =
@@ -150,7 +143,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
         final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
 
-        eventingProcessor.generate(outputTargetBuildItem, Optional.of(resourcesMetadataBuildItem), producer);
+        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
 
         assertNull(producer.getItem());
     }
@@ -224,16 +217,16 @@ class KogitoAddOnKnativeEventingProcessorTest {
         return eventingProcessor;
     }
 
-    private static final class MockGeneratedFSProducer implements BuildProducer<GeneratedFileSystemResourceBuildItem> {
+    private static final class MockGeneratedFSProducer implements BuildProducer<GeneratedResourceBuildItem> {
 
-        private GeneratedFileSystemResourceBuildItem item;
+        private GeneratedResourceBuildItem item;
 
         @Override
-        public void produce(GeneratedFileSystemResourceBuildItem item) {
+        public void produce(GeneratedResourceBuildItem item) {
             this.item = item;
         }
 
-        public GeneratedFileSystemResourceBuildItem getItem() {
+        public GeneratedResourceBuildItem getItem() {
             return item;
         }
     }

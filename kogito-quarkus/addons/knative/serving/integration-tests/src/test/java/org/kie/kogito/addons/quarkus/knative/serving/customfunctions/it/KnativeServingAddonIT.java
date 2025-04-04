@@ -48,21 +48,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
+import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8;
 
 @QuarkusTest
 @WithKubernetesTestServer
 class KnativeServingAddonIT {
 
-    private static final String NAMESPACE = "default";
-
-    private static final String SERVICENAME = "serverless-workflow-greeting-quarkus";
-
-    private static final String CLOUD_EVENT_PATH = "/cloud-event";
-
     public static final String AT_LEAST_ONE_NON_WHITE_CHARACTER_REGEX = ".*\\S.*";
-
+    private static final String NAMESPACE = "default";
+    private static final String SERVICENAME = "serverless-workflow-greeting-quarkus";
+    private static final String CLOUD_EVENT_PATH = "/cloud-event";
     private static WireMockServer wireMockServer;
 
     private static String remoteServiceUrl;
@@ -78,16 +74,22 @@ class KnativeServingAddonIT {
         createWiremockServer();
     }
 
-    @BeforeEach
-    void beforeEach() {
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting.yaml", NAMESPACE, SERVICENAME, remoteServiceUrl);
-    }
-
     @AfterAll
     static void afterAll() {
         if (wireMockServer != null) {
             wireMockServer.stop();
         }
+    }
+
+    private static void createWiremockServer() {
+        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        wireMockServer.start();
+        remoteServiceUrl = wireMockServer.baseUrl();
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        createKnativeServiceIfNotExists(mockServer.getClient(), "knative/quarkus-greeting.yaml", NAMESPACE, SERVICENAME, remoteServiceUrl);
     }
 
     @Test
@@ -346,11 +348,5 @@ class KnativeServingAddonIT {
                         .withHeader("Content-Type", "application/json")
                         .withJsonBody(JsonNodeFactory.instance.objectNode()
                                 .put("message", JsonNodeFactory.instance.arrayNode().add(23).add(24).toPrettyString()))));
-    }
-
-    private static void createWiremockServer() {
-        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
-        wireMockServer.start();
-        remoteServiceUrl = wireMockServer.baseUrl();
     }
 }

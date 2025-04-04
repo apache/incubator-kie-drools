@@ -25,11 +25,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kie</groupId>
-        <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-parent</artifactId>
+        <artifactId>kie-addons-quarkus-kubernetes-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
-    <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
-    <name>Kogito Add-On Fabric8 Kubernetes Service Catalog Tests Utils</name>
+    <artifactId>kie-addons-quarkus-kubernetes-test-utils</artifactId>
+    <name>KIE Add-On Kubernetes Tests Utils</name>
     <description>Util classes intended to be used in test scope.</description>
 
   <properties>
@@ -42,16 +42,16 @@
             <artifactId>quarkus-kubernetes-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-cache</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>knative-client</artifactId>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-server-mock</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
@@ -63,15 +63,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-test-openshift-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-jre8</artifactId>
         </dependency>
     </dependencies>
 </project>

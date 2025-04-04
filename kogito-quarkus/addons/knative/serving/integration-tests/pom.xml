@@ -75,6 +75,7 @@
             <groupId>org.kie</groupId>
             <artifactId>kie-addons-quarkus-kubernetes</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
@@ -111,11 +112,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-server-mock</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-kubernetes-test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.kie.sonataflow</groupId>
             <artifactId>sonataflow-quarkus-deployment</artifactId>

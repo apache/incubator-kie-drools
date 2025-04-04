@@ -28,7 +28,7 @@ import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
+import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 
 @QuarkusIntegrationTest
 @WithKubernetesTestServer
@@ -43,7 +43,7 @@ class ConfigValueExpanderIT {
 
     @BeforeEach
     void beforeEach() {
-        createServiceIfNotExists(mockServer, "knative/quarkus-greeting.yaml", NAMESPACE, SERVICENAME);
+        createKnativeServiceIfNotExists(mockServer.getClient(), "knative/quarkus-greeting.yaml", NAMESPACE, SERVICENAME);
     }
 
     @Test

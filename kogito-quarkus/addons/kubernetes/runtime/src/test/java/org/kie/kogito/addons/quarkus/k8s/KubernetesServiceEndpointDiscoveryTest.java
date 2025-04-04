@@ -29,15 +29,15 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.k8s.Endpoint;
 import org.kie.kogito.addons.k8s.EndpointDiscovery;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.ServiceSpec;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -47,35 +47,43 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 public class KubernetesServiceEndpointDiscoveryTest {
 
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+    @Inject
+    OpenShiftClient client;
 
     @Named("default")
     @Inject
     EndpointDiscovery endpointDiscovery;
 
     private void createServiceIfNotExist(final String name, Map<String, String> labels, Integer... ports) {
-        if (mockServer.getClient().services().inNamespace("test").withName(name).get() != null) {
+        if (client.services().inNamespace("test").withName(name).get() != null) {
             return;
         }
+
         final List<ServicePort> sPorts = new ArrayList<>();
-        for (Integer integer : ports) {
+        for (Integer portNumber : ports) {
             final ServicePort port = new ServicePort();
-            port.setPort(integer);
+            port.setPort(portNumber);
             sPorts.add(port);
         }
+
         final Service svc = new ServiceBuilder()
                 .withNewMetadata()
-                .withName(name).withNamespace("test")
+                .withName(name)
+                .withNamespace("test")
                 .withLabels(labels)
-                .and().withSpec(new ServiceSpec()).build();
+                .endMetadata()
+                .withSpec(new ServiceSpec())
+                .build();
+
         svc.getSpec().setClusterIP("127.0.0.1");
         svc.getSpec().setPorts(sPorts);
 
-        mockServer.getClient().resource(svc).createOrReplace();
+        client.resource(svc)
+                .inNamespace("test")
+                .createOr(existing -> client.resource(svc).inNamespace("test").update());
     }
 
     @Test
@@ -87,7 +95,7 @@ public class KubernetesServiceEndpointDiscoveryTest {
         try {
             new URL(endpoint.get().getUrl());
         } catch (MalformedURLException e) {
-            fail("The generated URL " + endpoint.get().getUrl() + " is invalid"); //verbose
+            fail("The generated URL " + endpoint.get().getUrl() + " is invalid");
         }
     }
 
@@ -100,7 +108,7 @@ public class KubernetesServiceEndpointDiscoveryTest {
         try {
             new URL(endpoints.get(0).getUrl());
         } catch (MalformedURLException e) {
-            fail("The generated URL " + endpoints.get(0).getUrl() + " is invalid"); //verbose
+            fail("The generated URL " + endpoints.get(0).getUrl() + " is invalid");
         }
     }
 }

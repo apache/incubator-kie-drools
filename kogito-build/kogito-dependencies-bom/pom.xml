@@ -81,7 +81,7 @@
     Don't add as a management dependency because it will break SpringBoot and Quarkus
     Kubernetes addons since they use a different version.
     -->
-    <version.io.fabric8.kubernetes-client>6.13.3</version.io.fabric8.kubernetes-client>
+    <version.io.fabric8.kubernetes-client>6.13.4</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.12.2</version.io.micrometer>
     <version.org.flywaydb>10.17.3</version.org.flywaydb>
     <version.org.postgresql>42.7.4</version.org.postgresql>

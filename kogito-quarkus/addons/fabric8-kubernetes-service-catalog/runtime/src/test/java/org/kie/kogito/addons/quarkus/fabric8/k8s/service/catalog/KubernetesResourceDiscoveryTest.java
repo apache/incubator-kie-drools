@@ -22,41 +22,42 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
 
 import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.openshift.client.OpenShiftClient;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
 import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This tests also covers the queryServiceByName method from {@link ServiceUtils}
+ * This test also covers the queryServiceByName method from {@link ServiceUtils}
  */
 @QuarkusTest
-@WithKubernetesTestServer
+@QuarkusTestResource(OpenShiftMockServerTestResource.class)
 public class KubernetesResourceDiscoveryTest {
 
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+    private final String namespace = "serverless-workflow-greeting-quarkus";
+
+    @Inject
+    OpenShiftClient client;
 
     @Inject
     KubernetesResourceDiscovery kubernetesResourceDiscovery;
-
-    private final String namespace = "serverless-workflow-greeting-quarkus";
 
     @Test
     public void testServiceNodePort() {
         var kubeURI = KubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-service");
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
 
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:80", url.get());
@@ -66,12 +67,13 @@ public class KubernetesResourceDiscoveryTest {
     public void testServiceNodePortCustomPortName() {
         var kubeURI = KubernetesResourceUri.parse("services.v1/" + namespace + "/custom-port-name-service?port-name=my-custom-port");
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
         service.getMetadata().setName("custom-port-name-service");
         service.getSpec().getPorts().get(0).setName("my-custom-port");
         service.getSpec().getPorts().get(0).setPort(8089);
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:8089", url.get());
@@ -81,9 +83,10 @@ public class KubernetesResourceDiscoveryTest {
     public void testServiceClusterIP() {
         var kubeURI = KubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-clusterip-svc");
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:80", url.get());
@@ -93,9 +96,10 @@ public class KubernetesResourceDiscoveryTest {
     public void testServiceExternalName() {
         var kubeURI = KubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod");
 
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-external-name.yaml")).item();
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-external-name.yaml")).item();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
         assertEquals("http://my-public.domain.org:80", url.get());
@@ -103,9 +107,10 @@ public class KubernetesResourceDiscoveryTest {
 
     @Test
     public void testNotFoundService() {
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         assertEquals(Optional.empty(),
                 kubernetesResourceDiscovery.query(KubernetesResourceUri.parse("services.v1/" + namespace + "/service-1")));
@@ -113,10 +118,11 @@ public class KubernetesResourceDiscoveryTest {
 
     @Test
     public void testNotSupportedTypeService() {
-        Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
+        Service service = client.services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
         service.getSpec().setType(KubeConstants.LOAD_BALANCER_TYPE);
-        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
+
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, Service.class);
 
         assertEquals(Optional.empty(),
                 kubernetesResourceDiscovery.query(KubernetesResourceUri.parse("services.v1/" + namespace + "/process-quarkus-example-pod-clusterip-svc")));
@@ -124,11 +130,13 @@ public class KubernetesResourceDiscoveryTest {
 
     @Test
     public void testServiceWithoutNamespace() {
-        var kubeURI = KubernetesResourceUri.parse("services.v1/process-quarkus-example-pod-service");
+        var kubeURI = KubernetesResourceUri.parse("services.v1/svc-no-port");
 
-        Service service = mockServer.getClient().services().inNamespace("test")
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
-        mockServer.getClient().resource(service).inNamespace("test").createOrReplace();
+        Service service = client.services().inNamespace("default")
+                .load(getClass().getClassLoader().getResourceAsStream("service/service-node-port.yaml")).item();
+        service.getMetadata().setName("svc-no-port");
+
+        KubeTestUtils.createWithStatusPreserved(client, service, "default", Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
         assertEquals("http://10.10.10.10:80", url.get());
@@ -136,13 +144,13 @@ public class KubernetesResourceDiscoveryTest {
 
     @Test
     public void testNotFoundKnativeService() {
-        KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
+        KnativeClient knativeClient = client.adapt(KnativeClient.class);
+
         io.fabric8.knative.serving.v1.Service service = knativeClient.services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
+                .load(getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
         service.getMetadata().setName("test");
 
-        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
-        knativeClient.services().inNamespace(namespace).create(service);
+        KubeTestUtils.createWithStatusPreserved(client, service, namespace, io.fabric8.knative.serving.v1.Service.class);
 
         assertEquals(Optional.empty(),
                 kubernetesResourceDiscovery.query(KubernetesResourceUri.parse("services.v1.serving.knative.dev/" + namespace + "/invalid")));
@@ -152,14 +160,12 @@ public class KubernetesResourceDiscoveryTest {
     public void testKnativeService() {
         var kubeURI = KubernetesResourceUri.parse("services.v1.serving.knative.dev/" + namespace + "/serverless-workflow-greeting-quarkus");
 
-        KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
-        io.fabric8.knative.serving.v1.Service kService = knativeClient.services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
+        io.fabric8.knative.serving.v1.Service kService = client.adapt(KnativeClient.class).services().inNamespace(namespace)
+                .load(getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).item();
 
-        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
-        knativeClient.services().inNamespace(namespace).create(kService);
+        KubeTestUtils.createWithStatusPreserved(client, kService, namespace, io.fabric8.knative.serving.v1.Service.class);
 
         Optional<String> url = kubernetesResourceDiscovery.query(kubeURI).map(URI::toString);
-        assertEquals("http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io", url.get());
+        assertEquals("http://serverless-workflow-greeting-quarkus.default.10.99.154.147.sslip.io", url.get());
     }
 }

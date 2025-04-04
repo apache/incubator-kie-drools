@@ -465,12 +465,12 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
+        <artifactId>kie-addons-quarkus-kubernetes-test-utils</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
+        <artifactId>kie-addons-quarkus-kubernetes-test-utils</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

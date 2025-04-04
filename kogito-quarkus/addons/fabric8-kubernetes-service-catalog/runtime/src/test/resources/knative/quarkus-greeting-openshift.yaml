@@ -52,7 +52,7 @@ spec:
       percent: 100
 status:
   address:
-    url: http://serverless-workflow-greeting-quarkus.test.svc.cluster.local
+    url: http://serverless-workflow-greeting-quarkus.default.svc.cluster.local
   conditions:
     - lastTransitionTime: '2022-08-17T13:59:00Z'
       status: 'True'
@@ -70,4 +70,4 @@ status:
     - latestRevision: true
       percent: 100
       revisionName: serverless-workflow-greeting-quarkus-00001
-  url: http://serverless-workflow-greeting-quarkus-openshift.test.10.99.154.147.sslip.io
+  url: http://serverless-workflow-greeting-quarkus-openshift.default.10.99.154.147.sslip.io
