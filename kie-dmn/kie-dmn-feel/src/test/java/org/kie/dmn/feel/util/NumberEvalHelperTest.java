@@ -22,7 +22,6 @@ import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class NumberEvalHelperTest {
 
@@ -37,28 +36,27 @@ class NumberEvalHelperTest {
     @Test
     void coerceIntegerNumber_withBigDecimal() {
         Object result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
-        assertInstanceOf(Integer.class, result, "Expected Integer");
-        assertEquals(99, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(99);
     }
 
     @Test
     void coerceIntegerNumber_withBigInteger() {
         Object result = NumberEvalHelper.coerceIntegerNumber(new BigInteger("1000"));
-        assertInstanceOf(Integer.class, result, "Expected Integer");
-        assertEquals(1000, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(1000);
     }
 
     @Test
     void coerceIntegerNumber_withDouble() {
         Object result = NumberEvalHelper.coerceIntegerNumber(042.50);
-        assertInstanceOf(Integer.class, result, "Expected Integer");
-        assertEquals(42, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(42);
     }
 
     @Test
     void coerceIntegerNumber_withString() {
         Object result = NumberEvalHelper.coerceIntegerNumber("123");
-        assertInstanceOf(String.class, result, "Expected String");
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo("123");
     }
@@ -66,15 +64,15 @@ class NumberEvalHelperTest {
     @Test
     void coerceIntegerNumber_withInteger() {
         Object result = NumberEvalHelper.coerceIntegerNumber(42);
-        assertInstanceOf(Integer.class, result, "Expected Integer");
-        assertEquals(42, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(42);
     }
 
     @Test
     void coerceIntegerNumber_withLong() {
         Object result = NumberEvalHelper.coerceIntegerNumber(423L);
-        assertInstanceOf(Integer.class, result, "Expected Integer");
-        assertEquals(423, result);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(423);
     }
 
 }
