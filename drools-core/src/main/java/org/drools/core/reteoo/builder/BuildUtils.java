@@ -118,10 +118,6 @@ public class BuildUtils {
             }
         }
 
-        if ( node != null && !areNodesCompatibleForSharing(context, node) ) {
-            node = null;
-        }
-
         if ( node == null ) {
             // only attach() if it is a new node
             node = candidate;
@@ -181,19 +177,6 @@ public class BuildUtils {
             return context.getRuleBase().getRuleBaseConfiguration().isShareAlphaNodes();
         }
         return false;
-    }
-
-    private boolean areNodesCompatibleForSharing(BuildContext context, BaseNode node) {
-        if ( node.getType() == NodeTypeEnums.RightInputAdapterNode) {
-            // avoid subnetworks sharing when they belong to 2 different agenda-groups
-            String agendaGroup = context.getRule().getAgendaGroup();
-            for (Rule associatedRule : node.getAssociatedRules()) {
-                if (!agendaGroup.equals( (( RuleImpl ) associatedRule).getAgendaGroup() )) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
