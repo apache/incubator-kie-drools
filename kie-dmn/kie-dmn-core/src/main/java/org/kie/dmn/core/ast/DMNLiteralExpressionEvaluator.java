@@ -89,7 +89,6 @@ public class DMNLiteralExpressionEvaluator
         EvaluationContextImpl ectx = feelInstance.newEvaluationContext(List.of(liListener), result.getContext().getAll());
         ectx.setDMNRuntime(dmrem.getRuntime());
         // in case an exception is thrown, the parent node will report it
-        // TODO: tricky workaround
         Set<FEELEvent> previousFeelEvents = result.getMessages(DMNMessage.Severity.WARN, DMNMessage.Severity.ERROR)
                 .stream()
                 .map(DMNMessage::getFeelEvent)
