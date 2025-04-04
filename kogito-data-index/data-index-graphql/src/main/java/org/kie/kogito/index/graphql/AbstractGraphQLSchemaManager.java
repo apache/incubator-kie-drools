@@ -18,8 +18,10 @@
  */
 package org.kie.kogito.index.graphql;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
@@ -34,12 +36,14 @@ import org.kie.kogito.index.graphql.query.GraphQLQueryParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.storage.DataIndexStorageService;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.persistence.api.StorageFetcher;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.query.Query;
@@ -176,6 +180,42 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     public ProcessDefinition getProcessDefinition(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
         return cacheService.getProcessDefinitionStorage().get(new ProcessDefinitionKey(source.getProcessId(), source.getVersion()));
+    }
+
+    private static final String START_MESSAGE = "Workflow started at %s";
+    private static final String FAILED_MESSAGE = "Workflow failed with error %s at %s";
+    private static final String RETRIGGERED_MESSAGE = "Workflow retriggered at %s";
+    private static final String WAITING_MESSAGE = "Workflow waiting at node %s since %s";
+    private static final String COMPLETED_MESSAGE = "Workflow completed at %s";
+
+    public List<String> getExecutionSummary(DataFetchingEnvironment env) {
+        ProcessInstance pi = env.getSource();
+        List<String> summary = new ArrayList<>();
+        List<NodeInstance> nodes = pi.getNodes();
+        nodes.sort((u, v) -> u.getEnter().compareTo(v.getEnter()));
+        ListIterator<NodeInstance> iter = nodes.listIterator();
+        summary.add(String.format(START_MESSAGE, pi.getStart()));
+        while (iter.hasNext()) {
+            NodeInstance item = iter.next();
+            if (Boolean.TRUE.equals(item.isRetrigger())) {
+                summary.add(String.format(RETRIGGERED_MESSAGE, item.getEnter()));
+            }
+            if (item.getErrorMessage() != null) {
+                summary.add(String.format(FAILED_MESSAGE, item.getErrorMessage(), item.getEnter()));
+            }
+        }
+        if (pi.getState() == KogitoProcessInstance.STATE_ACTIVE) {
+            while (iter.hasPrevious()) {
+                NodeInstance last = iter.previous();
+                if (last.getName() != null && last.getExit() == null) {
+                    summary.add(String.format(WAITING_MESSAGE, last.getName(), last.getEnter()));
+                }
+                break;
+            }
+        } else if (pi.getState() == KogitoProcessInstance.STATE_COMPLETED) {
+            summary.add(String.format(COMPLETED_MESSAGE, pi.getEnd()));
+        }
+        return summary;
     }
 
     protected String getServiceUrl(String endpoint, String processId) {

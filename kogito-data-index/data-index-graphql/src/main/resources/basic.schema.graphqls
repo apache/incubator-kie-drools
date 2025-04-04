@@ -101,6 +101,7 @@ type ProcessInstance {
     identity: String
     createdBy: String
     updatedBy: String
+    executionSummary: [String]
     slaDueDate: DateTime
 }
 
