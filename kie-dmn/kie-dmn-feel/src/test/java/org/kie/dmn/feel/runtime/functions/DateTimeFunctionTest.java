@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -137,5 +137,12 @@ class DateTimeFunctionTest {
         FEELFnResult<TemporalAccessor> expectedResult = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
         FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00@America/Costa_Rica");
         assertThat(expectedResult.getOrElse(null)).isEqualTo(retrievedResult.getOrElse(null));
+    }
+
+    @Test
+    void testValidateDateAndTime() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.validateDateAndTime(LocalDate.of(2024, 12, 24),
+                        LocalTime.of(23, 59, 0)),
+                LocalDateTime.of(2024, 12, 24, 23, 59, 0, 0));
     }
 }
