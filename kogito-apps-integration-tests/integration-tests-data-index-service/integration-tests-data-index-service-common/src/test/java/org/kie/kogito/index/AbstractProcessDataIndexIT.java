@@ -300,7 +300,7 @@ public abstract class AbstractProcessDataIndexIT {
 
         await()
                 .atMost(TIMEOUT)
-                .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE"));
+                .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE", 2));
 
         if (validateGetProcessInstanceSource()) {
             await()
@@ -443,7 +443,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("errors", nullValue()));
         await()
                 .atMost(TIMEOUT)
-                .untilAsserted(() -> getProcessInstanceById(pId2, "ABORTED"));
+                .untilAsserted(() -> getProcessInstanceById(pId2, "ABORTED", 1));
 
         given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"mutation{ ProcessInstanceRetry( id: \\\"" + pId2 + "\\\")}\"}")
@@ -699,15 +699,16 @@ public abstract class AbstractProcessDataIndexIT {
                 .path("id");
     }
 
-    protected ValidatableResponse getProcessInstanceById(String processInstanceId, String state) {
+    protected ValidatableResponse getProcessInstanceById(String processInstanceId, String state, int numberOfEntries) {
         return given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ProcessInstances(where: {  id: {  equal : \\\"" + processInstanceId + "\\\"}}){ id, processId, state } }\" }")
+                .body("{ \"query\" : \"{ProcessInstances(where: {  id: {  equal : \\\"" + processInstanceId + "\\\"}}){ id, processId, state, executionSummary } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessInstances.size()", is(1))
                 .body("data.ProcessInstances[0].id", is(processInstanceId))
                 .body("data.ProcessInstances[0].processId", is("approvals"))
-                .body("data.ProcessInstances[0].state", is(state));
+                .body("data.ProcessInstances[0].state", is(state))
+                .body("data.ProcessInstances[0].executionSummary.size()", is(numberOfEntries));
     }
 
     private void checkExpectedCreatedItemData(String creationData, Map<String, String> resultMap) throws IOException {

@@ -61,7 +61,7 @@ class InMemoryQuarkusAddonDataIndexIT {
                 .body("workflowdata.greeting", is("Hello from JSON Workflow,"))
                 .extract().path("id");
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, state, diagram, source, nodeDefinitions { name } } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, state, diagram, source, nodeDefinitions { name }, executionSummary } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessInstances.size()", is(1))
@@ -69,7 +69,8 @@ class InMemoryQuarkusAddonDataIndexIT {
                 .body("data.ProcessInstances[0].state", is("COMPLETED"))
                 .body("data.ProcessInstances[0].diagram", is(nullValue()))
                 .body("data.ProcessInstances[0].source", is(notNullValue()))
-                .body("data.ProcessInstances[0].nodeDefinitions.size()", is(12));
+                .body("data.ProcessInstances[0].nodeDefinitions.size()", is(12))
+                .body("data.ProcessInstances[0].executionSummary.size()", is(2));
     }
 
     @Test
