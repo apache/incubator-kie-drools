@@ -31,6 +31,8 @@ import java.time.temporal.TemporalAccessor;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class DateTimeFunctionTest {
 
     private static final DateAndTimeFunction dateTimeFunction = DateAndTimeFunction.INSTANCE;
@@ -128,11 +130,12 @@ class DateTimeFunctionTest {
 
     @Test
     void invokeParamStringDateTimeZone() {
-        FEELFnResult<TemporalAccessor> invoke = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
         FunctionTestUtil.assertResult(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
                         LocalTime.of(23, 59, 0),
                         "America/Costa_Rica"),
-        ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
-        System.out.println(invoke);
+                ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
+        FEELFnResult<TemporalAccessor> expectedResult = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
+        FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00@America/Costa_Rica");
+        assertThat(expectedResult.getOrElse(null)).isEqualTo(retrievedResult.getOrElse(null));
     }
 }

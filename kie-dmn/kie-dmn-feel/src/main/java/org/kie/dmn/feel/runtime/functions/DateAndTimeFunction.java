@@ -82,29 +82,14 @@ public class DateAndTimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) TemporalAccessor date, @ParameterName( "time" ) TemporalAccessor time) {
-        if ( date == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time) {
+        FEELFnResult<TemporalAccessor> validationResult = validateDateAndTime(date, time);
+        if (validationResult.isLeft()) {
+            return validationResult;
         }
-        if ( !(date instanceof LocalDate) ) {
-            // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
-            // I try to convert `date` to a LocalDate, if the query method returns null would signify conversion is not possible.
-            date = date.query(TemporalQueries.localDate());
-
-            if (date == null) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or must be possible to convert to a FEEL date using built-in date(date) )"));
-            }
-        }
-        if ( time == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
-        }
-        if (!(time instanceof LocalTime || (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null))) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or (it must contain localTime AND zone)"));
-        }
-
         try {
-            if( date instanceof LocalDate && time instanceof LocalTime ) {
-                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ) );
+            if (date instanceof LocalDate && time instanceof LocalTime) {
+                return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
             } else if (date instanceof LocalDate && (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null)) {
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneId.from(time)));
             }
@@ -185,32 +170,15 @@ public class DateAndTimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) TemporalAccessor date, @ParameterName( "time" ) TemporalAccessor time, @ParameterName( "timeZone" ) String timeZone) {
-        if ( date == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
-        }
-        if ( !(date instanceof LocalDate) ) {
-            // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
-            // I try to convert `date` to a LocalDate, if the query method returns null would signify conversion is not possible.
-            date = date.query(TemporalQueries.localDate());
-
-            if (date == null) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or must be possible to convert to a FEEL date using built-in date(date) )"));
-            }
-        }
-        if ( time == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
-        }
-        if (!(time instanceof LocalTime || (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null))) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or (it must contain localTime AND zone)"));
-        }
-        if (timeZone == null) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time, @ParameterName("timeZone") String timeZone) {
+        validateDateAndTime(date, time);
+        if (timeZone == null || timeZone.isEmpty() || TimeZone.getTimeZone(timeZone) == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "timeZone", "cannot be null"));
         }
 
         try {
             ZoneId zoneId = TimeZone.getTimeZone(timeZone).toZoneId();
-            if(time instanceof LocalTime) {
+            if (time instanceof LocalTime) {
                 return FEELFnResult.ofResult(ZonedDateTime.of( (LocalDate) date, (LocalTime) time, zoneId) );
             } else if (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), zoneId));
@@ -221,8 +189,35 @@ public class DateAndTimeFunction
         }
     }
 
-    private String formatCustom(ZonedDateTime dateTime) {
-        return dateTime.toLocalDateTime().toString() + "@" + dateTime.getZone().getId();
+    static FEELFnResult<TemporalAccessor> validateDateAndTime(TemporalAccessor date, TemporalAccessor time) {
+        if (date == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
+        }
+        LocalDate localDate;
+        if (date instanceof LocalDate) {
+            localDate = (LocalDate) date;
+        } else {
+            localDate = date.query(TemporalQueries.localDate());
+            if (localDate == null) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or convertible to one)"));
+            }
+        }
+
+        if (time == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
+        }
+        LocalTime localTime = null;
+        if (time instanceof LocalTime) {
+            localTime = (LocalTime) time;
+        } else if (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
+            localTime = time.query(TemporalQueries.localTime());
+        }
+        if (localTime == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be a LocalTime or contain both localTime and zone"));
+        }
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        return FEELFnResult.ofResult(localDateTime);
     }
+
 
 }
