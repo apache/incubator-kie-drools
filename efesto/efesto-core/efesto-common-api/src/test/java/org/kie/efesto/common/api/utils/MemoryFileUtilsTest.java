@@ -78,7 +78,7 @@ class MemoryFileUtilsTest {
         URL jarUrl = getJarUrl();
         assertThat(jarUrl).isNotNull();
         Optional<File> retrieved = MemoryFileUtils.getOptionalFileFromJar(jarUrl);
-        assertThat(retrieved).isNotNull().isPresent().isInstanceOf(MemoryFile.class);
+        assertThat(retrieved).isNotNull().isPresent().get().isInstanceOf(MemoryFile.class);
     }
 
     @Test
