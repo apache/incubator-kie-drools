@@ -20,6 +20,7 @@ package org.jbpm.process.core.timer;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
@@ -77,11 +78,28 @@ public class DateTimeUtils extends TimeUtils {
             result[2] = elements[2];
         } else {
             result[0] = elements[0].substring(1);
-            result[1] = OffsetDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            result[1] = OffsetDateTime.now().plus(Duration.of(getMillis(elements[1]), ChronoUnit.MILLIS)).format(DateTimeFormatter.ISO_DATE_TIME);
             result[2] = elements[1];
         }
 
         return result;
+    }
+
+    public static long getMillis(String durationStr) {
+        if (durationStr.startsWith("PT")) { // ISO-8601 PTnHnMn.nS
+            return Duration.parse(durationStr).toMillis();
+        } else if (!durationStr.contains("T")) { // ISO-8601 PnYnMnWnD
+            Period period = Period.parse(durationStr);
+            OffsetDateTime now = OffsetDateTime.now();
+            return Duration.between(now, now.plus(period)).toMillis();
+        } else { // ISO-8601 PnYnMnWnDTnHnMn.nS
+            String[] elements = durationStr.split("T");
+            Period period = Period.parse(elements[0]);
+            Duration duration = Duration.parse("PT" + elements[1]);
+            OffsetDateTime now = OffsetDateTime.now();
+
+            return Duration.between(now, now.plus(period).plus(duration)).toMillis();
+        }
     }
 
     public static long[] parseRepeatableDateTime(String dateTimeStr) {
@@ -104,7 +122,7 @@ public class DateTimeUtils extends TimeUtils {
             } else if (DateTimeUtils.isPeriod(periodIn)) {
                 // If period is specified as duration then delay variable carry start time information
                 OffsetDateTime startTime = OffsetDateTime.parse(delayIn, DateTimeFormatter.ISO_DATE_TIME);
-                period = Duration.parse(periodIn);
+                period = Duration.of(getMillis(periodIn), ChronoUnit.MILLIS);
                 startAtDelayDur = Duration.between(OffsetDateTime.now(), startTime);
             } else {
                 // Both delay and period are specified as start and end times
