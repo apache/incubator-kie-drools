@@ -32,10 +32,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MemoryFileUtilsTest {
 
-    private final static String TEST_FILE = "TestingEmptyFile.txt";
-    private final static String NOT_EXISTING_FILE = "NotExistingFile.txt";
+    private static final String TEST_FILE = "TestingEmptyFile.txt";
+    private static final String NOT_EXISTING_FILE = "NotExistingFile.txt";
 
-    private final static String NOT_EMPTY_FILE = "IndexFile.test_json";
+    private static final String NOT_EMPTY_FILE = "IndexFile.test_json";
 
 
 
@@ -78,46 +78,43 @@ class MemoryFileUtilsTest {
         URL jarUrl = getJarUrl();
         assertThat(jarUrl).isNotNull();
         Optional<File> retrieved = MemoryFileUtils.getOptionalFileFromJar(jarUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
-        assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
+        assertThat(retrieved).isNotNull().isPresent().isInstanceOf(MemoryFile.class);
     }
 
     @Test
     void getOptionalFileFromResource() {
         URL resourceUrl = getResourceUrl();
         Optional<File> retrieved = MemoryFileUtils.getOptionalFileFromResource(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
-        assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
+        assertThat(retrieved).isNotNull().isPresent().get().isInstanceOf(MemoryFile.class);
     }
 
     @Test
     void getOptionalFileFromURLFile() {
         URL resourceUrl = getResourceUrl();
         Optional<File> retrieved = MemoryFileUtils.getOptionalFileFromURLFile(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
-        assertThat(retrieved).get().isInstanceOf(File.class);
+        assertThat(retrieved).isNotNull().isPresent().get().isInstanceOf(File.class);
     }
 
     @Test
     void getFileFromResource() throws IOException {
         URL resourceUrl = getResourceUrl();
         File retrieved = MemoryFileUtils.getFileFromResource(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(MemoryFile.class);
-        assertThat(retrieved).canRead();
+        assertThat(retrieved).isNotNull().isInstanceOf(MemoryFile.class).canRead();
     }
 
     @Test
-    void getFileFromJar() throws URISyntaxException, IOException {
+    void getFileFromJarWithJar() throws URISyntaxException, IOException {
         URL jarUrl = getJarUrl();
         assertThat(jarUrl).isNotNull();
         File retrieved = MemoryFileUtils.getFileFromJar(jarUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(MemoryFile.class);
-        assertThat(retrieved).canRead();
+        assertThat(retrieved).isNotNull().isInstanceOf(MemoryFile.class).canRead();
+    }
+
+    @Test
+    void getFileFromJarWithNotJar() throws URISyntaxException, IOException {
+        URL notJarUrl = getResourceUrl();
+        assertThat(notJarUrl).isNotNull();
+        assertThat(MemoryFileUtils.getFileFromJar(notJarUrl)).isNull();
     }
 
     private static URL getResourceUrl() {
