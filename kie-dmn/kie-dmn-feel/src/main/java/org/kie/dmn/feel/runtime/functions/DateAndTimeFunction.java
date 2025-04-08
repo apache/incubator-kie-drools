@@ -58,11 +58,11 @@ public class DateAndTimeFunction
                                                                  .toFormatter();
     }
 
-    static FEELFnResult<TemporalAccessor> validateDateAndTime(TemporalAccessor date, TemporalAccessor time) {
+    static FEELFnResult<TemporalAccessor> validateDate(TemporalAccessor date) {
         if (date == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
-        if ( !(date instanceof LocalDate) ) {
+        if (!(date instanceof LocalDate)) {
             // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
             // I try to convert `date` to a LocalDate, if the query method returns null would signify conversion is not possible.
             date = date.query(TemporalQueries.localDate());
@@ -71,14 +71,17 @@ public class DateAndTimeFunction
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate (or must be possible to convert to a FEEL date using built-in date(date) )"));
             }
         }
+        return FEELFnResult.ofResult(date);
+    }
+
+    static FEELFnResult<TemporalAccessor> validateTime(TemporalAccessor time) {
         if (time == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
         }
         if (!(time instanceof LocalTime || (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null))) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or (it must contain localTime AND zone)"));
         }
-        LocalDateTime localDateTime = LocalDateTime.of((LocalDate) date, LocalTime.from(time));
-        return FEELFnResult.ofResult(localDateTime);
+        return FEELFnResult.ofResult(time);
     }
 
     private DateAndTimeFunction() {
@@ -106,13 +109,18 @@ public class DateAndTimeFunction
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time) {
-        FEELFnResult<TemporalAccessor> validationResult = validateDateAndTime(date, time);
-        if (validationResult.isLeft()) {
-            return validationResult;
+        FEELFnResult<TemporalAccessor> dateValidationResult = validateDate(date);
+        if (dateValidationResult.isLeft()) {
+            return dateValidationResult;
+        }
+        FEELFnResult<TemporalAccessor> timeValidationResult = validateTime(time);
+        if (timeValidationResult.isLeft()) {
+            return timeValidationResult;
         }
         try {
+            date = dateValidationResult.getOrElse(null);
             if (date instanceof LocalDate && time instanceof LocalTime) {
-                return validationResult;
+                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ));
             } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneId.from(time)));
             }
@@ -194,14 +202,19 @@ public class DateAndTimeFunction
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time, @ParameterName("timeZone") String timeZone) {
-        FEELFnResult<TemporalAccessor> validationResult = validateDateAndTime(date, time);
-        if (validationResult.isLeft()) {
-            return validationResult;
+        FEELFnResult<TemporalAccessor> dateValidationResult = validateDate(date);
+        if (dateValidationResult.isLeft()) {
+            return dateValidationResult;
+        }
+        FEELFnResult<TemporalAccessor> timeValidationResult = validateTime(time);
+        if (timeValidationResult.isLeft()) {
+            return timeValidationResult;
         }
         if (timeZone == null || timeZone.isEmpty() || TimeZone.getTimeZone(timeZone) == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "timeZone", "cannot be null"));
         }
         try {
+            date = dateValidationResult.getOrElse(null);
             ZoneId zoneId = TimeZone.getTimeZone(timeZone).toZoneId();
             if (date instanceof LocalDate && time instanceof LocalTime) {
                 return FEELFnResult.ofResult(ZonedDateTime.of( (LocalDate) date, (LocalTime) time, zoneId) );

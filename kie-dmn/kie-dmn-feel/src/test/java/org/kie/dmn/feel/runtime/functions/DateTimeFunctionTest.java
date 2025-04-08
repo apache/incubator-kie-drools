@@ -146,19 +146,26 @@ class DateTimeFunctionTest {
     }
 
     @Test
-    void testValidateDateAndTime() {
-        FunctionTestUtil.assertResult(DateAndTimeFunction.validateDateAndTime(LocalDate.of(2024, 12, 24),
-                        LocalTime.of(23, 59, 0)),
-                LocalDateTime.of(2024, 12, 24, 23, 59, 0, 0));
+    void testValidateDate() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.validateDate(LocalDate.of(2024, 12, 24)),
+                LocalDate.of(2024, 12, 24));
     }
 
     @Test
-    void testValidateDateAndTimeNulls() {
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateDateAndTime(null,null),
+    void testValidateTime() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.validateTime(LocalTime.of(23, 59, 0)),
+                LocalTime.of(23, 59, 0, 0));
+    }
+
+    @Test
+    void testValidateNullDate() {
+        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateDate(null),
                 InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateDateAndTime(null,LocalTime.of(23, 59, 0)),
-                InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateDateAndTime(LocalDate.of(2024, 12, 24),null),
+    }
+
+    @Test
+    void testValidateNullTime() {
+        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateTime(null),
                 InvalidParametersEvent.class);
     }
 }
