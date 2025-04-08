@@ -18,20 +18,31 @@
  */
 package org.kie.efesto.runtimemanager.api.utils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
-import org.kie.efesto.runtimemanager.api.service.*;
+import org.kie.efesto.runtimemanager.api.service.DistributedRuntimeManager;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+import org.kie.efesto.runtimemanager.api.service.LocalRuntimeManager;
+import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.api.service.RuntimeServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
 
+
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class SPIUtils {
 
     private SPIUtils() {
