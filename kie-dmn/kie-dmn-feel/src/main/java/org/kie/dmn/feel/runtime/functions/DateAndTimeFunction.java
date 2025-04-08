@@ -111,9 +111,9 @@ public class DateAndTimeFunction
             return validationResult;
         }
         try {
-            if (time instanceof LocalTime) {
+            if (date instanceof LocalDate && time instanceof LocalTime) {
                 return validationResult;
-            } else if (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
+            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneId.from(time)));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
@@ -203,9 +203,9 @@ public class DateAndTimeFunction
         }
         try {
             ZoneId zoneId = TimeZone.getTimeZone(timeZone).toZoneId();
-            if (time instanceof LocalTime) {
+            if (date instanceof LocalDate && time instanceof LocalTime) {
                 return FEELFnResult.ofResult(ZonedDateTime.of( (LocalDate) date, (LocalTime) time, zoneId) );
-            } else if (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
+            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), zoneId));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
