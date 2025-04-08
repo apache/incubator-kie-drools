@@ -1263,6 +1263,7 @@ public class AddRemoveRulesTest {
             resultsList.clear();
             TestUtil.addRules(kieSession, rule2);
             kieSession.fireAllRules();
+            // Failed: peer is not created for [RightInputAdapterNode(15)] by EagerPhreakBuilder,
             assertThat(resultsList).containsOnly(TestUtil.RULE2_NAME);
         } finally {
             kieSession.dispose();
@@ -2334,6 +2335,7 @@ public class AddRemoveRulesTest {
         assertThat(tuple.getPeer()).isNotNull();
 
         this.deleteRule(rule2Name);
+        // Failed: peer is not cleared by EagerPhreakBuilder
         assertThat(tuple.getPeer()).isNull();
     }
 

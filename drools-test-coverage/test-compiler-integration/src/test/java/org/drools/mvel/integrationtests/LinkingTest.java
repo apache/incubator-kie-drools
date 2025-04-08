@@ -551,7 +551,7 @@ public class LinkingTest {
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
-        assertThat(liaNode.getSinkPropagator().size()).isEqualTo(2);
+        assertThat(liaNode.getSinkPropagator().size()).isEqualTo(3);
 
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];
@@ -564,15 +564,15 @@ public class LinkingTest {
         wm.insert(  new A() );
 
         PathMemory pmem = wm.getNodeMemory(rtn);
-        assertThat(pmem.getSegmentMemories().length).isEqualTo(4);
-        assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(11); // the exists eval segment does not need to be linked in
+        assertThat(pmem.getSegmentMemories().length).isEqualTo(3); //  3 segments: LIA[4], E[10], E[13]-J[15]-RTN[16]
+        assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(7); // all segments need to be linked
 
         RiaPathMemory riaMem =  (RiaPathMemory) wm.getNodeMemory((MemoryFactory) exists1n.getRightInput());
         assertThat(riaMem.getAllLinkedMaskTest()).isEqualTo(2); // second segment must be linked in
 
         wm.insert(  new B() );
         wm.insert(  new C() );
-        assertThat(riaMem.getSegmentMemories().length).isEqualTo(2);
+        assertThat(riaMem.getSegmentMemories().length).isEqualTo(3); // 3 segments: LIA[4], J[6]-J[8], RIA[9]
 
         riaMem =  (RiaPathMemory) wm.getNodeMemory((MemoryFactory) exists2n.getRightInput());
         assertThat(riaMem.getAllLinkedMaskTest()).isEqualTo(0); // no segments to be linked in

@@ -403,11 +403,13 @@ public class ActivateAndDeleteOnListenerTest {
 
             ksession.insert(0);
             ksession.insert(Long.valueOf(1));
+            // eval(list.add("e2")) in yyy is evaluated
             assertThat(list.toString()).isEqualTo("[e2, yyy]");
 
             list.clear();
             ksession.fireAllRules();
-            assertThat(list.toString()).isEqualTo("[xxx, zzz]");
+            // eval(list.add("e2")) in xxx and yyy are not shared, so eval(list.add("e2")) in xxx is evaluated this time
+            assertThat(list.toString()).isEqualTo("[e2, xxx, zzz]");
         } finally {
             ksession.dispose();
         }

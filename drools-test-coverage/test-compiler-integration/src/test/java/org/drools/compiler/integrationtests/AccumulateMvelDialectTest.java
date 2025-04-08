@@ -312,9 +312,12 @@ public class AccumulateMvelDialectTest {
             final JoinNode cheeseJoin = (JoinNode) oSinks[0];
             final LeftTupleSink[] ltSinks = cheeseJoin.getSinkPropagator().getSinks();
 
-            assertThat(ltSinks.length).isEqualTo(1);
-            final RightInputAdapterNode rian = (RightInputAdapterNode) ltSinks[0];
-            assertThat(rian.getObjectSinkPropagator().size()).isEqualTo(2);   //  RiaNode is shared, if this has two outputs
+            // RIAN is not shared
+            assertThat(ltSinks.length).isEqualTo(2);
+            final RightInputAdapterNode rian1 = (RightInputAdapterNode) ltSinks[0];
+            assertThat(rian1.getObjectSinkPropagator().size()).isEqualTo(1);
+            final RightInputAdapterNode rian2 = (RightInputAdapterNode) ltSinks[1];
+            assertThat(rian2.getObjectSinkPropagator().size()).isEqualTo(1);
 
             wm.insert(new Cheese("stilton", 10));
             wm.insert(new Person("Alice", "brie"));
