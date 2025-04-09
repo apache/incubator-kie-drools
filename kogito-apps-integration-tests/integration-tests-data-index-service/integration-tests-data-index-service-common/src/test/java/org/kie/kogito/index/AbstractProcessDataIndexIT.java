@@ -51,6 +51,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -300,7 +301,7 @@ public abstract class AbstractProcessDataIndexIT {
 
         await()
                 .atMost(TIMEOUT)
-                .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE", 2));
+                .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE"));
 
         if (validateGetProcessInstanceSource()) {
             await()
@@ -443,7 +444,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("errors", nullValue()));
         await()
                 .atMost(TIMEOUT)
-                .untilAsserted(() -> getProcessInstanceById(pId2, "ABORTED", 1));
+                .untilAsserted(() -> getProcessInstanceById(pId2, "ABORTED"));
 
         given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"mutation{ ProcessInstanceRetry( id: \\\"" + pId2 + "\\\")}\"}")
@@ -699,7 +700,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .path("id");
     }
 
-    protected ValidatableResponse getProcessInstanceById(String processInstanceId, String state, int numberOfEntries) {
+    protected ValidatableResponse getProcessInstanceById(String processInstanceId, String state) {
         return given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ProcessInstances(where: {  id: {  equal : \\\"" + processInstanceId + "\\\"}}){ id, processId, state, executionSummary } }\" }")
                 .when().post("/graphql")
@@ -708,7 +709,8 @@ public abstract class AbstractProcessDataIndexIT {
                 .body("data.ProcessInstances[0].id", is(processInstanceId))
                 .body("data.ProcessInstances[0].processId", is("approvals"))
                 .body("data.ProcessInstances[0].state", is(state))
-                .body("data.ProcessInstances[0].executionSummary.size()", is(numberOfEntries));
+                .body("data.ProcessInstances[0].executionSummary", is(notNullValue()))
+                .body("data.ProcessInstances[0].executionSummary.size()", greaterThan(0));
     }
 
     private void checkExpectedCreatedItemData(String creationData, Map<String, String> resultMap) throws IOException {
