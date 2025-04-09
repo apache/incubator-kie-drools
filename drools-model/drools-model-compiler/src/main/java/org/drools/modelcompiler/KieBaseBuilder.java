@@ -29,6 +29,7 @@ import org.drools.model.Model;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
@@ -92,7 +93,7 @@ public class KieBaseBuilder {
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 
-    public static InternalKnowledgeBase createKieBaseFromModel(Collection<Model> models, KieBaseModel kieBaseModel) {
+    public static InternalKnowledgeBase createKieBaseFromModel(Collection<Model> models, KieBaseModel kieBaseModel, final KieModuleModel kieModuleModel) {
         KieBaseConfiguration conf = KieServices.get().newKieBaseConfiguration();
         RuleBaseConfiguration kieBaseConf = conf.as(RuleBaseConfiguration.KEY);
         kieBaseConf.setEventProcessingMode(kieBaseModel.getEventProcessingMode());
@@ -100,6 +101,14 @@ public class KieBaseBuilder {
 
         KiePackagesBuilder builder = new KiePackagesBuilder(conf);
         models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
+        if (kieBaseModel.getIncludes() != null && !kieBaseModel.getIncludes().isEmpty()) {
+            for (String includedKieBaseName : kieBaseModel.getIncludes()) {
+                KieBaseModel includedKieBaseModel = kieModuleModel.getKieBaseModels().get(includedKieBaseName);
+                if (includedKieBaseModel != null) {
+                    models.stream().filter( m -> isPackageInKieBase(includedKieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
+                }
+            }
+        }
         return new KieBaseBuilder(kieBaseModel, conf).createKieBase(builder.build());
     }
 }

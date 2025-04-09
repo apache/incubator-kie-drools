@@ -73,12 +73,21 @@ public class KieSessionModelBuilder {
         Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
         Map<String, List<String>> modelsByKBase = new HashMap<>();
         for (Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
-            List<String> kieBasePackages = entry.getValue().getPackages();
-            boolean isAllPackages = kieBasePackages.isEmpty() || (kieBasePackages.size() == 1 && kieBasePackages.get(0).equals("*"));
-            modelsByKBase.put(entry.getKey(),
-                    isAllPackages ? new ArrayList<>(modelsByPackage.values()) : kieBasePackages.stream().map(modelsByPackage::get).filter(Objects::nonNull).collect(toList()));
+            List<String> modelsForKieBase = getModelsForKieBaseWithoutIncludes(entry.getValue(), modelsByPackage);
+            if (entry.getValue().getIncludes() != null && !entry.getValue().getIncludes().isEmpty()) {
+                for (String includedKieBaseName : entry.getValue().getIncludes()) {
+                    modelsForKieBase.addAll(getModelsForKieBaseWithoutIncludes(kieBaseModels.get(includedKieBaseName), modelsByPackage));
+                }
+            }
+            modelsByKBase.put(entry.getKey(), modelsForKieBase);
         }
         return modelsByKBase;
+    }
+
+    private List<String> getModelsForKieBaseWithoutIncludes(final KieBaseModel kieBaseModel, final Map<String, String> modelsByPackage) {
+        List<String> kieBasePackages = kieBaseModel.getPackages();
+        boolean isAllPackages = kieBasePackages.isEmpty() || (kieBasePackages.size() == 1 && kieBasePackages.get(0).equals("*"));
+        return isAllPackages ? new ArrayList<>(modelsByPackage.values()) : kieBasePackages.stream().map(modelsByPackage::get).filter(Objects::nonNull).collect(toList());
     }
 
     private Map<String, String> getModelsByPackage(Collection<CodegenPackageSources> packageSources) {
