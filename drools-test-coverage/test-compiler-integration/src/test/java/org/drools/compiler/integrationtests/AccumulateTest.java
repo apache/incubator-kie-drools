@@ -4097,4 +4097,147 @@ public class AccumulateTest {
             kieSession.dispose();
         }
     }
+
+    public static class Item {
+
+        private String name;
+        private Integer price;
+
+        public Item(String name, Integer price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Integer getPrice() {
+            return price;
+        }
+
+        public void setPrice(Integer price) {
+            this.price = price;
+        }
+
+        @Override
+        public String toString() {
+            return "Item{name='" + name + "'}";
+        }
+    }
+
+    public static class Cart{
+        private  List<Item> itemList;
+
+        public List<Item> getItemList() {
+            return itemList;
+        }
+
+        public void setItemList(List<Item> itemList) {
+            this.itemList = itemList;
+        }
+
+        @Override
+        public String toString() {
+            return "Cart";
+        }
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    void accumulateWithUpdate_shouldNotThrowNPE(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "import " + Item.class.getCanonicalName() + ";\n" +
+                        "import " + Cart.class.getCanonicalName() + ";\n" +
+                        "import " + List.class.getCanonicalName() + ";\n" +
+                        """
+                                global java.util.Map results;
+                                
+                                rule R1
+                                no-loop true
+                                agenda-group "AGENDA1"
+                                salience 9999
+                                when
+                                    $cart : Cart()
+                                then
+                                    update($cart);
+                                end
+                                
+                                rule R2
+                                no-loop true
+                                agenda-group "AGENDA2"
+                                salience 1000
+                                when
+                                    $cart : Cart()
+                                    $list : List() from accumulate (
+                                        $item : Item() from $cart.getItemList(),
+                                        collectList($item)
+                                    )
+                                then
+                                    results.put("list size", $list.size());
+                                    update($cart);
+                                end
+                                
+                                rule R3
+                                no-loop true
+                                agenda-group "AGENDA2"
+                                salience 0
+                                when
+                                    $cart : Cart()
+                                    $total : Number(intValue >= 13000) from accumulate (
+                                        $item : Item() from $cart.getItemList(),
+                                        sum($item.getPrice())
+                                    )
+                                then
+                                    results.put("high total", $total);
+                                    update($cart);
+                                end
+                                
+                                rule R4
+                                no-loop true
+                                agenda-group "AGENDA3"
+                                salience 0
+                                when
+                                    $cart : Cart()
+                                    $total : Number(intValue >= 0) from accumulate (
+                                        $item : Item() from $cart.getItemList(),
+                                        sum($item.getPrice())
+                                    )
+                                then
+                                    results.put("low total", $total);
+                                    update($cart);
+                                end
+                                """;
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kieBase.newKieSession();
+        Map<String, Integer> results = new HashMap<>();
+        ksession.setGlobal("results", results);
+
+        try {
+            Cart cart = new Cart();
+            cart.setItemList(new ArrayList<>(List.of(
+                    new Item("Item1", 1),
+                    new Item("Item2", 2),
+                    new Item("Item3", 3),
+                    new Item("Item4", 4))));
+            ksession.insert(cart);
+            ksession.getAgenda().getAgendaGroup("AGENDA1").setFocus();
+            ksession.fireAllRules();
+            ksession.getAgenda().getAgendaGroup("AGENDA2").setFocus();
+            ksession.fireAllRules();
+            ksession.getAgenda().getAgendaGroup("AGENDA3").setFocus();
+            ksession.fireAllRules();
+
+            assertThat(results).hasSize(2);
+            assertThat(results).containsEntry("list size", 4);
+            assertThat(results).containsEntry("low total", 10);
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
