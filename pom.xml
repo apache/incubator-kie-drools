@@ -31,7 +31,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>999-SNAPSHOT</version>
+  <version>9.103.0</version>
 
   <name>Drools :: Parent</name>
   <description>
