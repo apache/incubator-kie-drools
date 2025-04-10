@@ -36,14 +36,15 @@
   <name>Kogito :: Codegen Modules</name>
 
   <modules>
-    <module>kogito-codegen-core</module>
     <module>kogito-codegen-api</module>
+    <module>kogito-codegen-core</module>
+    <module>kogito-codegen-decisions</module>
+    <module>kogito-codegen-integration-tests</module>
+    <module>kogito-codegen-manager</module>
+    <module>kogito-codegen-predictions</module>
     <module>kogito-codegen-processes</module>
     <module>kogito-codegen-processes-integration-tests</module>
     <module>kogito-codegen-rules</module>
-    <module>kogito-codegen-decisions</module>
-    <module>kogito-codegen-predictions</module>
-    <module>kogito-codegen-integration-tests</module>
     <module>kogito-codegen-sample</module>
   </modules>
 

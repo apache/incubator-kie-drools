@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>kogito-maven-plugin-test</artifactId>
-
+  <name>Kogito :: Maven Plugin :: Test</name>
 
   <properties>
     <java.module.name>org.kie.kogito.maven.plugin.testing</java.module.name>

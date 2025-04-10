@@ -24,21 +24,19 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.testing.junit5.InjectMojo;
 import org.apache.maven.plugin.testing.junit5.MojoTest;
 import org.drools.codegen.common.GeneratedFile;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.maven.plugin.util.CompilerHelper;
-import org.kie.kogito.maven.plugin.util.GenerateModelHelper;
-import org.kie.kogito.maven.plugin.util.PersistenceGenerationHelper;
+import org.kie.kogito.codegen.manager.CompilerHelper;
+import org.kie.kogito.codegen.manager.GenerateModelHelper;
+import org.kie.kogito.codegen.manager.processes.PersistenceGenerationHelper;
 import org.mockito.MockedStatic;
-import org.reflections.Reflections;
 
 import static org.assertj.core.api.Fail.fail;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.RESOURCES;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.SOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.RESOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.SOURCES;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -48,8 +46,6 @@ class GenerateModelMojoTest {
 
     private static final KogitoBuildContext kogitoBuildContextMocked = mock(KogitoBuildContext.class);
     private static final ClassLoader classLoaderMocked = mock(ClassLoader.class);
-    private static final Reflections reflectionsMocked = mock(Reflections.class);
-    private static final Log logMocked = mock(Log.class);
 
     @Test
     @InjectMojo(goal = "generateModel", pom = "src/test/resources/unit/generate-model/pom.xml")
@@ -66,9 +62,9 @@ class GenerateModelMojoTest {
     void generatePersistence(GenerateModelMojo mojo) {
         commonSetup(mojo);
         try (MockedStatic<PersistenceGenerationHelper> persistenceGenerationHelperMockedStatic = mockStatic(PersistenceGenerationHelper.class)) {
-            mojo.generatePersistence(kogitoBuildContextMocked, reflectionsMocked);
-            persistenceGenerationHelperMockedStatic.verify(() -> PersistenceGenerationHelper.generatePersistenceFiles(kogitoBuildContextMocked, reflectionsMocked, mojo.schemaVersion), times(1));
-        } catch (MojoExecutionException e) {
+            mojo.generatePersistence(kogitoBuildContextMocked, classLoaderMocked);
+            persistenceGenerationHelperMockedStatic.verify(() -> PersistenceGenerationHelper.generatePersistenceFiles(kogitoBuildContextMocked, classLoaderMocked, mojo.schemaVersion), times(1));
+        } catch (Exception e) {
             fail(e.getMessage(), e);
         }
     }
@@ -81,9 +77,11 @@ class GenerateModelMojoTest {
             Collection<GeneratedFile> generatedSources = new HashSet<>();
             Collection<GeneratedFile> generatedResources = new HashSet<>();
             Map<String, Collection<GeneratedFile>> generatedFiles = Map.of(SOURCES, generatedSources, RESOURCES, generatedResources);
-            mojo.compileAndDump(generatedFiles, classLoaderMocked, logMocked);
-            compilerHelperMockedStatic.verify(() -> CompilerHelper.dumpAndCompileGeneratedSources(generatedSources, classLoaderMocked, mojo.project, mojo.baseDir, logMocked), times(1));
-            compilerHelperMockedStatic.verify(() -> CompilerHelper.dumpResources(generatedResources, mojo.baseDir, logMocked), times(1));
+            mojo.compileAndDump(generatedFiles, classLoaderMocked);
+            compilerHelperMockedStatic.verify(
+                    () -> CompilerHelper.compileAndDumpGeneratedSources(generatedSources, classLoaderMocked, mojo.project.getRuntimeClasspathElements(), mojo.baseDir, "UTF-8", "17", "17"),
+                    times(1));
+            compilerHelperMockedStatic.verify(() -> CompilerHelper.dumpResources(generatedResources, mojo.baseDir), times(1));
         } catch (MojoExecutionException e) {
             fail(e.getMessage(), e);
         }
@@ -92,6 +90,7 @@ class GenerateModelMojoTest {
     private void commonSetup(GenerateModelMojo mojo) {
         mojo.outputDirectory = new File(mojo.project.getModel().getBuild().getOutputDirectory());
         mojo.baseDir = mojo.project.getBasedir();
-        mojo.projectDir = mojo.project.getBasedir();
+        mojo.projectBaseDir = mojo.project.getBasedir();
+        mojo.projectSourceEncoding = "UTF-8";
     }
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.maven.plugin.util;
+package org.kie.kogito.codegen.manager;
 
 import java.io.File;
 import java.util.Collection;
@@ -29,8 +29,8 @@ import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.RESOURCES;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.SOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.RESOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.SOURCES;
 
 public class GenerateModelHelper {
 
@@ -55,7 +55,6 @@ public class GenerateModelHelper {
                 case COMPILED_CLASS -> generatedResources.add(new GeneratedFile(COMPILED_CLASS, convertPath(generatedFile.path().toString()), generatedFile.contents()));
                 default -> throw new IllegalStateException("Unexpected file with category: " + generatedFile.category());
             }
-
         });
         return Map.of(SOURCES, generatedClasses, RESOURCES, generatedResources);
     }

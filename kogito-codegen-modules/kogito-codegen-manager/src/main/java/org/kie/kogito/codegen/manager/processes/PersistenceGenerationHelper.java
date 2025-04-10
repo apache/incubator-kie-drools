@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.maven.plugin.util;
+package org.kie.kogito.codegen.manager.processes;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.kie.kogito.Model;
@@ -33,6 +32,7 @@ import org.kie.kogito.ProcessInput;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.json.JsonSchemaGenerator;
+import org.kie.kogito.codegen.manager.util.CodeGenManagerUtil;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshallerGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
@@ -40,8 +40,8 @@ import org.reflections.Reflections;
 
 import static java.util.Arrays.asList;
 import static org.kie.kogito.codegen.core.utils.GeneratedFileValidation.validateGeneratedFileTypes;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.RESOURCES;
-import static org.kie.kogito.maven.plugin.util.CompilerHelper.SOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.RESOURCES;
+import static org.kie.kogito.codegen.manager.CompilerHelper.SOURCES;
 
 public class PersistenceGenerationHelper {
 
@@ -49,9 +49,10 @@ public class PersistenceGenerationHelper {
     }
 
     public static Map<String, Collection<GeneratedFile>> generatePersistenceFiles(KogitoBuildContext context,
-            Reflections reflections,
-            String schemaVersion) throws MojoExecutionException {
+            ClassLoader projectClassloader,
+            String schemaVersion) {
         try {
+            Reflections reflections = CodeGenManagerUtil.getReflections(projectClassloader);
 
             @SuppressWarnings({ "rawtype", "unchecked" })
             Set<Class<?>> modelClasses = (Set) reflections.getSubTypesOf(Model.class);
@@ -71,7 +72,7 @@ public class PersistenceGenerationHelper {
             toReturn.get(RESOURCES).addAll(generateJsonSchemaFromClasses(userTaskClassStream, schemaVersion));
             return toReturn;
         } catch (Exception e) {
-            throw new MojoExecutionException("Error during processing model classes", e);
+            throw new IllegalStateException("Error during processing model classes", e);
         }
     }
 
@@ -97,5 +98,4 @@ public class PersistenceGenerationHelper {
                 .withSchemaVersion(schemaVersion).build()
                 .generate();
     }
-
 }

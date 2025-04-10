@@ -39,6 +39,7 @@ import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.kogito.codegen.manager.util.CodeGenManagerUtil;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,23 @@ public final class MojoUtil {
             }
         }
         return null;
+    }
+
+    public static boolean hasClassOnClasspath(final MavenProject project, String className) {
+        try {
+            Set<Artifact> elements = project.getArtifacts();
+            URL[] urls = new URL[elements.size()];
+
+            int i = 0;
+            for (Artifact artifact : elements) {
+                urls[i] = artifact.getFile().toURI().toURL();
+                i++;
+            }
+
+            return CodeGenManagerUtil.isClassNameInUrlClassLoader(urls, className);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private MojoUtil() {
