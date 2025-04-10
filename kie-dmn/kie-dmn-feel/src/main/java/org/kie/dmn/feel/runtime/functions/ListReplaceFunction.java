@@ -46,7 +46,11 @@ public class ListReplaceFunction
         if (position == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", CANNOT_BE_NULL));
         }
-        int intPosition = position.intValue();
+        Object positionObj = NumberEvalHelper.coerceIntegerNumber(position);
+        int intPosition = 0;
+        if( positionObj instanceof Integer ) {
+            intPosition = (Integer) positionObj;
+        }
         if (intPosition == 0 || Math.abs(intPosition) > list.size()) {
             String paramProblem = String.format("%s outside valid boundaries (1-%s)", intPosition, list.size());
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));

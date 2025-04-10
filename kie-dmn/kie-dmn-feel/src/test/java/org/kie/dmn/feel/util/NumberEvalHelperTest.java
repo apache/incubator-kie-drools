@@ -35,9 +35,9 @@ class NumberEvalHelperTest {
 
     @Test
     void coerceIntegerNumber_withBigDecimal() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
+        Object result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("-99.99"));
         assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(99);
+        assertThat(result).isEqualTo(-99);
     }
 
     @Test

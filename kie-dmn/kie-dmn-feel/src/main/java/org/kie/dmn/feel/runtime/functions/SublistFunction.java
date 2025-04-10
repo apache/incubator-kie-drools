@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -24,6 +22,7 @@ import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class SublistFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
@@ -45,28 +44,38 @@ public class SublistFunction
         if ( start == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start", "cannot be null"));
         }
-        if ( start.equals( BigDecimal.ZERO ) ) {
+        Object startObj = NumberEvalHelper.coerceIntegerNumber(start);
+        int startInt = 0;
+        if( startObj instanceof Integer ) {
+            startInt = (Integer) startObj;
+        }
+        if ( startInt == 0 ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start", "cannot be zero"));
         }
-        if ( start.abs().intValue() > list.size() ) {
+
+        if ( Math.abs(startInt) > list.size() ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start", "is inconsistent with 'list' size"));
         }
         if ( length != null && length.compareTo(BigDecimal.ZERO) <= 0) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "length", "must be a positive number when specified"));
         }
-
-        if ( start.intValue() > 0 ) {
-            int end = length != null ? start.intValue() - 1 + length.intValue() : list.size();
+        Object lengthObj = NumberEvalHelper.coerceIntegerNumber(length);
+        int lengthInt = 0;
+        if( lengthObj instanceof Integer ) {
+            lengthInt = (Integer) lengthObj;
+        }
+        if ( startInt > 0 ) {
+            int end = length != null ? startInt - 1 + lengthInt : list.size();
             if ( end > list.size() ) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "attempting to create a sublist bigger than the original list"));
             }
-            return FEELFnResult.ofResult( list.subList( start.intValue() - 1, end ) );
+            return FEELFnResult.ofResult( list.subList( startInt - 1, end ) );
         } else {
-            int end = length != null ? list.size() + start.intValue() + length.intValue() : list.size();
+            int end = length != null ? list.size() + startInt + lengthInt : list.size();
             if ( end > list.size() ) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "attempting to create a sublist bigger than the original list"));
             }
-            return FEELFnResult.ofResult( list.subList( list.size() + start.intValue(), end ) );
+            return FEELFnResult.ofResult( list.subList( list.size() + startInt, end ) );
         }
     }
 }

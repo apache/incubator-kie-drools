@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -30,6 +28,7 @@ import java.util.regex.Pattern;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -72,16 +71,10 @@ public class DateFunction
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
-        if ( year == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "year", "cannot be null"));
-        }
-        if ( month == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "month", "cannot be null"));
-        }
-        if ( day == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "day", "cannot be null"));
-        }
-
+        FEELFnResult<TemporalAccessor> result;
+        if ((result = checkNullParam("year", year)) != null)  return result;
+        if ((result = checkNullParam("month", month)) != null) return result;
+        if ((result = checkNullParam("day", day)) != null) return result;
         try {
             return FEELFnResult.ofResult( LocalDate.of( year.intValue(), month.intValue(), day.intValue() ) );
         } catch (DateTimeException e) {
@@ -103,5 +96,12 @@ public class DateFunction
 
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
         return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
+    }
+
+    private FEELFnResult<TemporalAccessor> checkNullParam(String paramName, Number value) {
+        if (NumberEvalHelper.coerceIntegerNumber(value) == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, paramName, "cannot be null"));
+        }
+        return null;
     }
 }

@@ -39,6 +39,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELTimeFunction;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class TimeFunction
         extends BaseFEELFunction implements FEELTimeFunction {
@@ -118,16 +119,10 @@ public class TimeFunction
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
-        if ( hour == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "hour", "cannot be null"));
-        }
-        if ( minute == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "minute", "cannot be null"));
-        }
-        if ( seconds == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "seconds", "cannot be null"));
-        }
-        
+        FEELFnResult<TemporalAccessor> result;
+        if ((result = checkNullParam("hour", hour)) != null) return result;
+        if ((result = checkNullParam("minute", minute)) != null) return result;
+        if ((result = checkNullParam("second", seconds)) != null) return result;
         try {
             int nanosecs = 0;
             if( seconds instanceof BigDecimal ) {
@@ -179,6 +174,13 @@ public class TimeFunction
 
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
         return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
+    }
+
+    private FEELFnResult<TemporalAccessor> checkNullParam(String paramName, Number value) {
+        if (NumberEvalHelper.coerceIntegerNumber(value) == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, paramName, "cannot be null"));
+        }
+        return null;
     }
 
 }

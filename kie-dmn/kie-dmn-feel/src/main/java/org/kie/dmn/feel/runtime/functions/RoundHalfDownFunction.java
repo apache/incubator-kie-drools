@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -24,6 +22,7 @@ import java.math.RoundingMode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class RoundHalfDownFunction
         extends BaseFEELFunction implements FEELNumberFunction {
@@ -45,9 +44,13 @@ public class RoundHalfDownFunction
         if ( scale == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
         }
+        Object scaleObj = NumberEvalHelper.coerceIntegerNumber(scale);
         // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
-        if (scale.compareTo(BigDecimal.valueOf(-6111)) < 0 || scale.compareTo(BigDecimal.valueOf(6176)) > 0) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
+        if (scaleObj instanceof Integer) {
+            int scaleInt = (Integer) scaleObj;
+            if (scaleInt < -6111 || scaleInt > 6176) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
+            }
         }
         return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.HALF_DOWN ) );
     }
