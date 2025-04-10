@@ -42,7 +42,6 @@
     <module>drools-impact-analysis-model</module>
     <module>drools-impact-analysis-parser</module>
     <module>drools-impact-analysis-graph</module>
-    <module>drools-impact-analysis-itests</module>
   </modules>
 
 </project>

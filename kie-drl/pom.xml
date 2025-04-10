@@ -42,8 +42,6 @@
     <module>kie-drl-compilation-common</module>
     <module>kie-drl-implementations</module>
     <module>kie-drl-runtime-common</module>
-    <module>kie-drl-tests</module>
-    <module>kie-drl-tests-without-index-file</module>
   </modules>
 
   <dependencyManagement>

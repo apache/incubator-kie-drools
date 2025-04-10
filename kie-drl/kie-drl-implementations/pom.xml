@@ -38,7 +38,6 @@
 
     <modules>
         <module>kie-drl-map-input</module>
-        <module>kie-drl-kiesession-local</module>
     </modules>
 
 </project>
