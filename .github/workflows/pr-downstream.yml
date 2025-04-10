@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 180
     strategy:
       matrix:
-        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        job_name: [ kogito-runtimes, kogito-apps, serverless-workflow-examples ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.6']
@@ -30,12 +30,6 @@ jobs:
           - job_name: kogito-apps
             repository: kogito-apps
             env_BUILD_MVN_OPTS: "-DskipUI"
-          - job_name: kogito-quarkus-examples
-            repository: kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
-          - job_name: kogito-springboot-examples
-            repository: kogito-examples
-            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
           - job_name: serverless-workflow-examples
             repository: kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
