@@ -20,6 +20,7 @@ package org.kie.dmn.feel.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,44 +38,51 @@ class NumberEvalHelperTest {
 
     @Test
     void coerceIntegerNumber_withBigDecimal() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(99);
+        //Verifies that BigDecimal values are truncated (not rounded) when coerced to integers.
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(99);
     }
 
     @Test
     void coerceIntegerNumber_withBigInteger() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(new BigInteger("1000"));
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(1000);
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(new BigInteger("1000"));
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(1000);
     }
 
     @Test
     void coerceIntegerNumber_withDouble() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(042.50);
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(42);
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(42.50);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(42);
     }
 
     @Test
     void coerceIntegerNumber_withString() {
-        Object result = NumberEvalHelper.coerceIntegerNumber("123");
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo("123");
+        // Verifies that a non-numeric input such as a String returns Optional.empty()
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber("123");
+        assertThat(result).isEmpty();
     }
 
     @Test
     void coerceIntegerNumber_withInteger() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(42);
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(42);
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(42);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(42);
     }
 
     @Test
     void coerceIntegerNumber_withLong() {
-        Object result = NumberEvalHelper.coerceIntegerNumber(423L);
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(423);
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(423L);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(423);
+    }
+
+    @Test
+    void coerceIntegerNumber_withNull() {
+        Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(null);
+        assertThat(result).isEmpty();
     }
 
 }

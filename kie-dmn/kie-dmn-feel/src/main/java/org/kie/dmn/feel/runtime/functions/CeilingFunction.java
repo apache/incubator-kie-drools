@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
@@ -46,14 +47,14 @@ public class CeilingFunction
         if ( scale == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
         }
-        Object scaleObj = NumberEvalHelper.coerceIntegerNumber(scale);
-        // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
-        if (scaleObj instanceof Integer) {
-            int scaleInt = (Integer) scaleObj;
-            if (scaleInt < -6111 || scaleInt > 6176) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
-            }
+        Optional<Integer> scaleObj = NumberEvalHelper.coerceIntegerNumber(scale);
+        if(scaleObj.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "should be a Number type"));
         }
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.CEILING ) );
+        int scaleInt = scaleObj.get();
+        if (scaleInt < -6111 || scaleInt > 6176) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 and 6176."));
+        }
+        return FEELFnResult.ofResult( n.setScale( scaleInt, RoundingMode.CEILING ) );
     }
 }

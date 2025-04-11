@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
@@ -40,14 +41,11 @@ public class RemoveFunction
         if ( list == null ) { 
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
-        if ( position == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be null"));
+        Optional<Integer> positionObj = NumberEvalHelper.coerceIntegerNumber(position);
+        if(positionObj.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "must be a non-null Number value."));
         }
-        Object positionObj = NumberEvalHelper.coerceIntegerNumber(position);
-        int positionInt = 0;
-        if( positionObj instanceof Integer ) {
-            positionInt = (Integer) positionObj;
-        }
+        int positionInt = positionObj.get();
         if ( positionInt == 0 ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be zero (parameter 'position' is 1-based)"));
         }

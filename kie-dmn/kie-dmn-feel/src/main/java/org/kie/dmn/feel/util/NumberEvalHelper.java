@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,11 +102,11 @@ public class NumberEvalHelper {
      * @param value : the object to be converted
      * @return : an integer representation of the number if applicable, otherwise the original value
      */
-    public static Object coerceIntegerNumber(Object value) {
+    public static Optional<Integer> coerceIntegerNumber(Object value) {
         if ( value instanceof Number ) {
-            return getIntegerOrNull( value );
+            return Optional.of(getIntegerOrNull( value ));
         } else {
-            return value;
+            return Optional.empty();
         }
     }
 

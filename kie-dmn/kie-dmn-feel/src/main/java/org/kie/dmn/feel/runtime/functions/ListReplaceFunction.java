@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
@@ -43,14 +44,11 @@ public class ListReplaceFunction
         if (list == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", CANNOT_BE_NULL));
         }
-        if (position == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", CANNOT_BE_NULL));
+        Optional<Integer> positionObj = NumberEvalHelper.coerceIntegerNumber(position);
+        if(positionObj.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "must be a non-null Number value."));
         }
-        Object positionObj = NumberEvalHelper.coerceIntegerNumber(position);
-        int intPosition = 0;
-        if( positionObj instanceof Integer ) {
-            intPosition = (Integer) positionObj;
-        }
+        int intPosition = positionObj.get();
         if (intPosition == 0 || Math.abs(intPosition) > list.size()) {
             String paramProblem = String.format("%s outside valid boundaries (1-%s)", intPosition, list.size());
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));

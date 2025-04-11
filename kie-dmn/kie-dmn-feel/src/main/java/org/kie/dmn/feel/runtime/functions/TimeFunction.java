@@ -32,6 +32,7 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -40,6 +41,8 @@ import org.kie.dmn.feel.runtime.FEELTimeFunction;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.NumberEvalHelper;
+
+import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
 public class TimeFunction
         extends BaseFEELFunction implements FEELTimeFunction {
@@ -119,11 +122,14 @@ public class TimeFunction
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
-        FEELFnResult<TemporalAccessor> result;
-        if ((result = checkNullParam("hour", hour)) != null) return result;
-        if ((result = checkNullParam("minute", minute)) != null) return result;
-        if ((result = checkNullParam("second", seconds)) != null) return result;
         try {
+            Optional<Integer> coercedHour = coerceIntegerNumber(hour);
+            Optional<Integer> coercedMinute = coerceIntegerNumber(minute);
+            Optional<Integer> coercedSecond = coerceIntegerNumber(seconds);
+
+            if (coercedHour.isEmpty() || coercedMinute.isEmpty() || coercedSecond.isEmpty()) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
+            }
             int nanosecs = 0;
             if( seconds instanceof BigDecimal ) {
                 BigDecimal secs = (BigDecimal) seconds;
@@ -131,10 +137,10 @@ public class TimeFunction
             }
 
             if ( offset == null ) {
-                return FEELFnResult.ofResult( LocalTime.of( hour.intValue(), minute.intValue(), seconds.intValue(),
+                return FEELFnResult.ofResult( LocalTime.of( coercedHour.get(), coercedMinute.get(), coercedSecond.get(),
                                                             nanosecs ) );
             } else {
-                return FEELFnResult.ofResult( OffsetTime.of( hour.intValue(), minute.intValue(), seconds.intValue(),
+                return FEELFnResult.ofResult( OffsetTime.of( coercedHour.get(), coercedMinute.get(), coercedSecond.get(),
                                                              nanosecs,
                                               ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) ) );
             }
@@ -176,7 +182,7 @@ public class TimeFunction
         return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
 
-    private FEELFnResult<TemporalAccessor> checkNullParam(String paramName, Number value) {
+    private FEELFnResult<TemporalAccessor> checkParamIfNull(String paramName, Number value) {
         if (NumberEvalHelper.coerceIntegerNumber(value) == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, paramName, "cannot be null"));
         }
