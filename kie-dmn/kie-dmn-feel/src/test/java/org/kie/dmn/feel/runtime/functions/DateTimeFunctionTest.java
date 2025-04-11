@@ -135,17 +135,21 @@ class DateTimeFunctionTest {
                         "America/Costa_Rica"),
                 ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
         FEELFnResult<TemporalAccessor> expectedResult = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
+        assertThat(expectedResult).isNotNull();
         FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00@America/Costa_Rica");
+        assertThat(retrievedResult).isNotNull();
         assertThat(expectedResult.getOrElse(null)).isEqualTo(retrievedResult.getOrElse(null));
     }
 
     @Test
     void testParamStringDateTimeZone() {
         FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "Z");
+        assertThat(result).isNotNull();
         ZonedDateTime actualDateTime = (ZonedDateTime) result.getOrElse(null);
         ZonedDateTime expectedDateTime = ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
         assertThat(expectedDateTime).isEqualTo(actualDateTime);
         FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00Z");
+        assertThat(retrievedResult).isNotNull();
         assertThat(actualDateTime).isEqualTo(retrievedResult.getOrElse(null));
     }
 
