@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,21 +20,20 @@ package org.kie.efesto.common.api.identifiers;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class LocalUriTest {
     @Test
     public void testToString() {
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
-        assertEquals("/example/some-id/instances/some-instance-id", hpath.path());
+        assertThat(hpath.path()).isEqualTo("/example/some-id/instances/some-instance-id");
     }
 
     @Test
     public void testStartsWith() {
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
-        assertTrue(hpath.startsWith("example"));
+        assertThat(hpath.startsWith("example")).isTrue();
     }
 
     @Test
@@ -42,7 +41,7 @@ public class LocalUriTest {
         String path = "/example/some-id/instances/some-instance-id";
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
         LocalUri parsedHPath = LocalUri.parse(path);
-        assertEquals(hpath, parsedHPath);
+        assertThat(parsedHPath).isEqualTo(hpath);
 
     }
 
@@ -51,26 +50,26 @@ public class LocalUriTest {
         String path = "/example////some-id//instances/some-instance-id";
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
         LocalUri parsedHPath = LocalUri.parse(path);
-        assertEquals(hpath, parsedHPath);
+        assertThat(parsedHPath).isEqualTo(hpath);
     }
 
     @Test
     public void testParseMalformedRelative() {
         String path = "example////some-id//instances/some-instance-id";
-        assertThrows(IllegalArgumentException.class, () -> LocalUri.parse(path));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> LocalUri.parse(path));
     }
 
     @Test
     public void testUrlEncoding() {
         LocalUri path = LocalUri.Root.append("URL unsafe").append("??").append("Compon/ents").append("are \\ encoded");
-        assertEquals("/URL+unsafe/%3F%3F/Compon%2Fents/are+%5C+encoded", path.path());
+        assertThat(path.path()).isEqualTo("/URL+unsafe/%3F%3F/Compon%2Fents/are+%5C+encoded");
     }
 
     @Test
     public void testUriConversion() {
         String path = "/example/some-id/instances/some-instance-id";
         LocalUri parsed = LocalUri.parse(path);
-        assertEquals(parsed.toUri().toString(), String.format("%s://%s", LocalUri.SCHEME, parsed.path()));
+        assertThat(String.format("%s://%s", LocalUri.SCHEME, parsed.path())).isEqualTo(parsed.toUri().toString());
     }
 
 }

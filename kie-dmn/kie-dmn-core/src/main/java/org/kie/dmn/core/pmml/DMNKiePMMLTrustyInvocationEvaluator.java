@@ -38,10 +38,10 @@ import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
@@ -49,8 +49,8 @@ import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerExceptio
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.slf4j.Logger;
@@ -132,7 +132,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     protected PMML4Result evaluate(String modelName, String pmmlFileName, DMNResult dmnr,
                                    ClassLoader parentClassloader) {
-        EfestoRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader);
+        EfestoLocalRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader);
         ModelLocalUriId modelLocalUriId = getModelLocalUriId(pmmlFileName, modelName);
 
         Collection<EfestoOutput> retrieved;
@@ -160,7 +160,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     private Collection<EfestoOutput> evaluateInput(EfestoInput<PMMLRequestData> inputPMML,
-                                                     EfestoRuntimeContext runtimeContext) {
+                                                   EfestoLocalRuntimeContext runtimeContext) {
         try {
             return runtimeManager.evaluateInput(runtimeContext, inputPMML);
         } catch (Exception t) {
@@ -205,7 +205,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return toReturn;
     }
 
-    private EfestoRuntimeContext getEfestoRuntimeContext(final ClassLoader parentClassloader) {
+    private EfestoLocalRuntimeContext getEfestoRuntimeContext(final ClassLoader parentClassloader) {
         return EfestoRuntimeContextUtils.buildWithParentClassLoader(parentClassloader);
     }
 
