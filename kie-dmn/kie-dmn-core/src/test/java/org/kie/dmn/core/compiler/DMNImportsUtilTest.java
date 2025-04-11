@@ -26,19 +26,39 @@ import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
+import java.util.stream.Stream;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_1.TImport;
+import org.kie.dmn.model.v1_5.TBusinessKnowledgeModel;
+import org.kie.dmn.model.v1_5.TConditional;
+import org.kie.dmn.model.v1_5.TContext;
+import org.kie.dmn.model.v1_5.TContextEntry;
+import org.kie.dmn.model.v1_5.TFunctionDefinition;
+import org.kie.dmn.model.v1_5.TInformationItem;
+import org.kie.dmn.model.v1_5.TLiteralExpression;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.core.storage.ContextStorage;
 
@@ -47,6 +67,9 @@ import static org.kie.dmn.core.util.DMNTestUtil.getRelativeResolver;
 import static org.mockito.Mockito.mock;
 
 class DMNImportsUtilTest {
+
+    private static final String pmmlImportedName = "PMML_IMPORTED_NAME";
+    private static final String pmmlModelName = "PMML";
 
     private static DMNCompiler dMNCompiler;
 
@@ -331,7 +354,7 @@ class DMNImportsUtilTest {
 
 
         String pmmlFileContent = Files.readString(pmmlFile.toPath());
-        ModelLocalUriId modelLocalUriId = EfestoPMMLUtils.compilePMML(pmmlFileContent, pmmlFile.getAbsolutePath(), Thread.currentThread().getContextClassLoader());
+        ModelLocalUriId modelLocalUriId = EfestoPMMLUtils.compilePMML(pmmlFileContent, pmmlFile.getName(), "SampleMineNew" , Thread.currentThread().getContextClassLoader());
 
 
         DMNModelImpl model = new DMNModelImpl(simpleModel.getDefinitions(), dmnResource);
@@ -346,6 +369,180 @@ class DMNImportsUtilTest {
         assertThat(model.getPmmlImportInfo()).isEmpty();
         DMNImportsUtil.resolvePMMLImportTypeFromModelLocalUriId(model, anImport, modelLocalUriId, dmnCompilerConfig);
         assertThat(model.getPmmlImportInfo()).hasSize(1).containsOnlyKeys(importName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getExpectedResult")
+    void getPMMLModelFromDMNModelImpl(Map.Entry<String, String> expectedResult) {
+        // template model
+        Resource dmnResource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
+                                                      this.getClass());
+        DMNModel simpleModel = dMNCompiler.compile( dmnResource, new ArrayList<>());
+        assertThat(simpleModel).isNotNull();
+
+        // document context entry
+        ContextEntry documentContextEntry = getPmmlImportedNameContextEntry("document");
+        // model context entry
+        ContextEntry modelContextEntry = getPmmlModelNameContextEntry("model");
+        // context
+        Context context = getContext(documentContextEntry, modelContextEntry);
+        // encapsulatedLogic
+        FunctionDefinition encapsulatedLogic = new TFunctionDefinition();
+        encapsulatedLogic.setKind(FunctionKind.PMML);
+        encapsulatedLogic.addChildren(context);
+        // businessKnowledgeModel
+        BusinessKnowledgeModel businessKnowledgeModel = new TBusinessKnowledgeModel();
+        businessKnowledgeModel.setEncapsulatedLogic(encapsulatedLogic);
+        businessKnowledgeModel.setName("BKM");
+        businessKnowledgeModel.setParent(simpleModel.getDefinitions());
+        // BusinessKnowledgeModelNode
+        BusinessKnowledgeModelNode businessKnowledgeModelNode = new BusinessKnowledgeModelNodeImpl(businessKnowledgeModel);
+        DMNModelImpl model = new DMNModelImpl(simpleModel.getDefinitions(), dmnResource);
+        model.addBusinessKnowledgeModel(businessKnowledgeModelNode);
+        assertThat(DMNImportsUtil.getPMMLModelName(model, expectedResult.getKey())).isEqualTo(expectedResult.getValue());
+    }
+
+    @ParameterizedTest
+    @MethodSource("getExpectedResult")
+    void getPMMLModelFromFunctionDef(Map.Entry<String, String> expectedResult) {
+        // document context entry
+        ContextEntry documentContextEntry = getPmmlImportedNameContextEntry("document");
+
+        // model context entry
+        ContextEntry modelContextEntry = getPmmlModelNameContextEntry("model");
+        // context
+        Context context = getContext(documentContextEntry, modelContextEntry);
+        FunctionDefinition functionDefinition = new TFunctionDefinition();
+        functionDefinition.addChildren(context);
+        assertThat(DMNImportsUtil.getPMMLModelName(functionDefinition, expectedResult.getKey())).isEqualTo(expectedResult.getValue());
+    }
+
+    @Test
+    void getPMMLModelFromFunctionDefNameFails() {
+        // document context entry
+        ContextEntry documentContextEntry = getPmmlImportedNameContextEntry("document");
+        // model context entry
+        ContextEntry modelContextEntry = getPmmlModelNameContextEntry("model");
+        // context
+        Context context = getContext(documentContextEntry, modelContextEntry);
+        FunctionDefinition functionDefinition = new TFunctionDefinition();
+        functionDefinition.addChildren(context);
+        assertThat(DMNImportsUtil.getPMMLModelName(functionDefinition, "NOT_PMML_IMPORTED_NAME")).isNull();
+    }
+
+    @Test
+    void getModelNameSuccess() {
+        ContextEntry contextEntry = getPmmlModelNameContextEntry("model");
+        Context context = getContext(contextEntry);
+        assertThat(DMNImportsUtil.getModelName(context)).isEqualTo(pmmlModelName);
+    }
+
+    @Test
+    void getModelNameFails() {
+        ContextEntry contextEntry = getPmmlModelNameContextEntry("not-model");
+        Context context = getContext(contextEntry);
+        assertThat(DMNImportsUtil.getModelName(context)).isNull();
+        //
+        contextEntry = getContextEntry("not-model", new TConditional());
+        context = getContext(contextEntry);
+        assertThat(DMNImportsUtil.getModelName(context)).isNull();
+    }
+
+    @Test
+    void referToPMMLImportedName() {
+        ContextEntry contextEntry = getPmmlModelNameContextEntry("document");
+        Context context = getContext(contextEntry);
+        assertThat(DMNImportsUtil.referToPMMLImportedName(context, pmmlModelName)).isTrue();
+        //
+        assertThat(DMNImportsUtil.referToPMMLImportedName(context, "NOT_MODEL_NAME")).isFalse();
+        //
+        contextEntry = getPmmlModelNameContextEntry("not-document");
+        context = getContext(contextEntry);
+        assertThat(DMNImportsUtil.referToPMMLImportedName(context, pmmlModelName)).isFalse();
+    }
+
+    @Test
+    void isDocumentContextEntry() {
+        ContextEntry contextEntry = getPmmlModelNameContextEntry("document");
+        assertThat(DMNImportsUtil.isDocumentContextEntry(contextEntry, pmmlModelName)).isTrue();
+        //
+        assertThat(DMNImportsUtil.isDocumentContextEntry(contextEntry, "NOT_MODEL_NAME")).isFalse();
+        //
+        contextEntry = getPmmlModelNameContextEntry("not-document");
+        assertThat(DMNImportsUtil.isDocumentContextEntry(contextEntry, pmmlModelName)).isFalse();
+    }
+
+    @Test
+    void isModelContextEntry() {
+        ContextEntry contextEntry = getContextEntry("model", new TLiteralExpression());
+        assertThat(DMNImportsUtil.isModelContextEntry(contextEntry)).isTrue();
+        contextEntry = getContextEntry("not-model", new TLiteralExpression());
+        assertThat(DMNImportsUtil.isModelContextEntry(contextEntry)).isFalse();
+    }
+
+    @Test
+    void hasVariableName() {
+        ContextEntry contextEntry = getContextEntry("variable");
+        assertThat(DMNImportsUtil.hasVariableName(contextEntry, "variable")).isTrue();
+        assertThat(DMNImportsUtil.hasVariableName(contextEntry, "not-variable")).isFalse();
+    }
+
+    private static Stream<Map.Entry<String, String>> getExpectedResult() {
+        Map<String, String> toReturn = new HashMap<>();
+        toReturn.put(pmmlImportedName, pmmlModelName);
+        toReturn.put("NOT_IMPORTED_NAME", null);
+        return toReturn.entrySet().stream();
+    }
+
+    private static Context getContext(ContextEntry ... contextEntries) {
+        Context toReturn = new TContext();
+        for (ContextEntry contextEntry : contextEntries) {
+            toReturn.getContextEntry().add(contextEntry);
+        }
+        return toReturn;
+    }
+
+    private static ContextEntry getPmmlImportedNameContextEntry(String variableName) {
+        ContextEntry toReturn = getContextEntry(variableName);
+        toReturn.setExpression(getPmmlImportedNameLiteralExpression());
+        return toReturn;
+    }
+
+    private static ContextEntry getPmmlModelNameContextEntry(String variableName) {
+        ContextEntry toReturn = getContextEntry(variableName);
+        toReturn.setExpression(getPmmlModelNameLiteralExpression());
+        return toReturn;
+    }
+
+    private static ContextEntry getContextEntry(String variableName, Expression expression) {
+        ContextEntry toReturn = getContextEntry(variableName);
+        toReturn.setExpression(expression);
+        return toReturn;
+    }
+
+    private static ContextEntry getContextEntry(String variableName) {
+        InformationItem variable = getInformationItem(variableName);
+        ContextEntry toReturn = new TContextEntry();
+        toReturn.setVariable(variable);
+        return toReturn;
+    }
+
+    private static InformationItem getInformationItem(String name) {
+        InformationItem toReturn = new TInformationItem();
+        toReturn.setName(name);
+        return toReturn;
+    }
+
+    private static LiteralExpression getPmmlModelNameLiteralExpression() {
+        LiteralExpression toReturn = new TLiteralExpression();
+        toReturn.setText(pmmlModelName);
+        return toReturn;
+    }
+
+    private static LiteralExpression getPmmlImportedNameLiteralExpression() {
+        LiteralExpression toReturn = new TLiteralExpression();
+        toReturn.setText(pmmlImportedName);
+        return toReturn;
     }
 
 }

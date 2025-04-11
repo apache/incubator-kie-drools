@@ -108,7 +108,7 @@ public abstract class AbstractKieCompilerServiceDMNTest {
     }
 
     private static ModelLocalUriId getPmmlModelLocalUriId() {
-        return EfestoPMMLUtils.getPmmlModelLocalUriIdFromFullPath(pmmlFullFileName);
+        return EfestoPMMLUtils.getPmmlModelLocalUriId(pmmlFullFileName, pmmlModelName);
     }
 
 }

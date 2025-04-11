@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -37,8 +38,14 @@ import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamespaceConsts;
 import org.kie.dmn.model.v1_1.TImport;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
@@ -179,7 +186,9 @@ public class DMNImportsUtil {
        if (relativeResolver != null) {
            resolvePMMLImportTypeFromRelativeResolver(model, anImport, relativeResolver, dmnCompilerConfig);
        } else {
-           ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, model.getResource());
+            // TODO gcardosi RETRIEVE THE REAL MODEL NAME
+           String pmmlModelName = "PUPPA";
+           ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, pmmlModelName, model.getResource());
            resolvePMMLImportTypeFromModelLocalUriId(model, anImport, pmmlModelLocalUriId, dmnCompilerConfig);
        }
     }
@@ -214,7 +223,9 @@ public class DMNImportsUtil {
      * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
      */
     static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(i, relativeResolver);
+        // TODO gcardosi retrieve actual model name
+        String pmmlModelName = "PUPPA";
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(i, pmmlModelName, relativeResolver);
         resolvePMMLImportTypeFromModelLocalUriId(model, i, relativeResource, dmnCompilerConfig);
     }
 
@@ -277,5 +288,60 @@ public class DMNImportsUtil {
         for (DecisionServiceNode dsn : m.getDecisionServices()) {
             model.addDecisionService(dsn);
         }
+    }
+
+    /**
+     * Method used to retrieve the name of the PMML model invoked inside a BusinessKnowledgeModel
+     * @param model
+     * @param pmmlImportedName the name used, inside the DMN file, for the pmml import
+     * @return
+     */
+    static String getPMMLModelName(DMNModelImpl model, String pmmlImportedName) {
+        return model.getBusinessKnowledgeModels().stream()
+                .map(BusinessKnowledgeModelNode::getBusinessKnowledModel)
+                .map(BusinessKnowledgeModel::getEncapsulatedLogic)
+                .filter(encapsulatedLogic -> encapsulatedLogic.getKind().equals(FunctionKind.PMML))
+                .map(encapsulatedLogic -> getPMMLModelName(encapsulatedLogic, pmmlImportedName))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    static String getPMMLModelName(FunctionDefinition functionDefinition, String pmmlImportedName) {
+        return functionDefinition.getChildren().stream()
+                .filter(child -> child instanceof Context)
+                .map(child -> (Context) child)
+                .filter(context -> referToPMMLImportedName(context, pmmlImportedName))
+                .map(DMNImportsUtil::getModelName)
+                .findFirst()
+                .orElse(null);
+    }
+
+    static String getModelName(Context context) {
+        return context.getContextEntry().stream()
+                .filter(DMNImportsUtil::isModelContextEntry)
+                .map(contextEntry -> ((LiteralExpression)contextEntry.getExpression()).getText())
+                .findFirst()
+                .orElse(null);
+    }
+
+    static boolean referToPMMLImportedName(Context context, String pmmlImportedName) {
+        return context.getContextEntry().stream()
+                .anyMatch(contextEntry -> isDocumentContextEntry(contextEntry, pmmlImportedName));
+    }
+
+    static boolean isDocumentContextEntry(ContextEntry contextEntry, String pmmlImportedName) {
+        return hasVariableName(contextEntry, "document") &&
+                contextEntry.getExpression() instanceof LiteralExpression literalExpression &&
+                literalExpression.getText().equals(pmmlImportedName);
+    }
+
+    static boolean isModelContextEntry(ContextEntry contextEntry) {
+        return hasVariableName(contextEntry, "model") &&
+                contextEntry.getExpression() instanceof LiteralExpression;
+    }
+
+    static boolean hasVariableName(ContextEntry contextEntry, String expectedVariableName) {
+        return contextEntry.getVariable().getName().equals(expectedVariableName);
     }
 }

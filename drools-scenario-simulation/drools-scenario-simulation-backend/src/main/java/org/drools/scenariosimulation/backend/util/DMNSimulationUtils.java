@@ -74,7 +74,7 @@ public class DMNSimulationUtils {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static Map<String, GeneratedResources> compileModels(Collection<File> dmnFiles, Collection<File> pmmlFiles) {
-        pmmlFiles.forEach(pmmlFile -> EfestoPMMLUtils.compilePMML(pmmlFile, memoryCompilerClassLoader));
+        //pmmlFiles.forEach(pmmlFile -> EfestoPMMLUtils.compilePMML(pmmlFile, "PUPPA", memoryCompilerClassLoader));
         ModelLocalUriId dmnModelLocalUriId = new ModelLocalUriId(LocalUri.Root.append("dmn").append("scesim"));
         EfestoFileSetResource toProcessDmn = new EfestoFileSetResource(new HashSet<>(dmnFiles), dmnModelLocalUriId);
         EfestoCompilationContext dmnCompilationContext =

@@ -19,9 +19,7 @@
 package org.kie.dmn.core.pmml;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,8 +42,6 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.PMML_FILE_NAME;
-import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.PMML_MODEL_NAME;
 import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.RESULT_OBJECT_NAME;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -57,9 +53,9 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
 
     private static DMNKiePMMLTrustyInvocationEvaluator dmnKiePMMLTrustyInvocationEvaluator;
 
-    private static final String pmmlFileNameNoSuffix ="LogisticRegression";
-    private static final String pmmlFileName = pmmlFileNameNoSuffix + ".pmml";
-    private static final String model = "LogisticRegression";
+    private static final String PMML_FILE_NAME_NO_SUFFIX ="LogisticRegression";
+    private static final String PMML_FILE_NAME = PMML_FILE_NAME_NO_SUFFIX + ".pmml";
+    private static final String PMML_MODEL_NAME = "LogisticRegression";
     private static ModelLocalUriId pmmlModelLocalUriId;
 
     @BeforeEach
@@ -72,7 +68,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         dmnKiePMMLTrustyInvocationEvaluator = spy(new DMNKiePMMLTrustyInvocationEvaluator(dmnNS,
                                                                                           nodeMock,
                                                                                           pmmlModelLocalUriId,
-                                                                                          model,
+                                                                                          PMML_MODEL_NAME,
                                                                                           pmmlInfoMock) {
 
             protected Optional<String> getOutputFieldNameFromInfo(String resultName) {
@@ -96,7 +92,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNResult dmnrMock = mock(DMNResult.class);
         dmnKiePMMLTrustyInvocationEvaluator.getPMMLResult(eventManagerMock, dmnrMock);
         verify(dmnKiePMMLTrustyInvocationEvaluator,
-               times(1)).evaluate(model, pmmlModelLocalUriId, dmnrMock, classLoader);
+               times(1)).evaluate(PMML_MODEL_NAME, pmmlModelLocalUriId, dmnrMock, classLoader);
     }
 
     @Test
@@ -134,17 +130,17 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         DMNRuntimeEventManager eventManagerMock = mock(DMNRuntimeEventManager.class);
         when(eventManagerMock.getRuntime()).thenReturn(dmnRuntimeMock);
         DMNResult dmnrMock = mock(DMNResult.class);
-        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(model, pmmlModelLocalUriId, dmnrMock,
+        Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.evaluate(PMML_MODEL_NAME, pmmlModelLocalUriId, dmnrMock,
                                                                                      classLoader);
         assertThat(retrieved).isNotNull().isNotEmpty();
     }
 
     private static ModelLocalUriId compilePmml() {
-        URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(pmmlFileName);
+        URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(PMML_FILE_NAME);
         assertThat(pmmlUrl).isNotNull();
         File pmmlFile = new File(pmmlUrl.getFile());
         assertThat(pmmlFile).isNotNull().exists();
-        return EfestoPMMLUtils.compilePMML(pmmlFile, Thread.currentThread().getContextClassLoader());
+        return EfestoPMMLUtils.compilePMML(pmmlFile, PMML_MODEL_NAME, Thread.currentThread().getContextClassLoader());
     }
 
     private static Map<String, Object> getPMMLRequestDataCommon(String modelName,
@@ -156,8 +152,8 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
             double value = (double)random.nextInt(100)/10;
             toReturn.put(field, value);
         });
-        toReturn.put(PMML_FILE_NAME, fileName);
-        toReturn.put(PMML_MODEL_NAME, modelName);
+        toReturn.put(DMNKiePMMLTrustyInvocationEvaluator.PMML_FILE_NAME, fileName);
+        toReturn.put(DMNKiePMMLTrustyInvocationEvaluator.PMML_MODEL_NAME, modelName);
         return toReturn;
     }
 
