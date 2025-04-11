@@ -140,6 +140,16 @@ class DateTimeFunctionTest {
     }
 
     @Test
+    void testParamStringDateTimeZone() {
+        FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "Z");
+        ZonedDateTime actualDateTime = (ZonedDateTime) result.getOrElse(null);
+        ZonedDateTime expectedDateTime = ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
+        assertThat(expectedDateTime).isEqualTo(actualDateTime);
+        FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00Z");
+        assertThat(actualDateTime).isEqualTo(retrievedResult.getOrElse(null));
+    }
+
+    @Test
     void invokeParamStringDateTimeZoneNull() {
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
                 LocalTime.of(23, 59, 0), null), InvalidParametersEvent.class);
