@@ -93,6 +93,14 @@ public class KieBaseBuilder {
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 
+    /**
+     * Creates a KieBase instance from rules models.
+     *
+     * @param models A collection of rules models, which is filtered based on the required KieBase model.
+     * @param kieBaseModel A KieBase model for which the KieBase instance is created.
+     * @param kieModuleModel KieModule model, which contains the KieBase.
+     * @return An instance of KieBase.
+     */
     public static InternalKnowledgeBase createKieBaseFromModel(Collection<Model> models, KieBaseModel kieBaseModel, final KieModuleModel kieModuleModel) {
         KieBaseConfiguration conf = KieServices.get().newKieBaseConfiguration();
         RuleBaseConfiguration kieBaseConf = conf.as(RuleBaseConfiguration.KEY);
