@@ -119,14 +119,14 @@ public class JITDMNServiceImpl implements JITDMNService {
                 Thread.currentThread().interrupt();
             }
             return new DMNResultWithExplanation(
-                    JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap()),
+                    JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap(), dmnResult.getInvalidElementPaths()),
                     new SalienciesResponse(EXPLAINABILITY_FAILED, EXPLAINABILITY_FAILED_MESSAGE, null));
         }
 
         List<SaliencyResponse> saliencyModelResponse = buildSalienciesResponse(dmnEvaluator.getDmnModel(), saliencyMap);
 
         return new DMNResultWithExplanation(
-                JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap()),
+                JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap(), dmnResult.getInvalidElementPaths()),
                 new SalienciesResponse(EXPLAINABILITY_SUCCEEDED, null, saliencyModelResponse));
     }
 

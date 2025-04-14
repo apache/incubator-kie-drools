@@ -20,8 +20,10 @@ package org.kie.kogito.jitexecutor.dmn.responses;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -77,8 +79,16 @@ class JITDMNResultTest {
         DMNResultImpl dmnResult = new DMNResultImpl(DMN_MODEL);
         dmnResult.setContext(createContext());
         dmnResult.addDecisionResult(decisionResult);
+        Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap = new HashMap<>();
+        Map<String, Integer> evaluationHitIds = Map.of("_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6", 1);
+        decisionEvaluationHitIdsMap.put("_3c8cee68-99dd-418c-847d-0b54697354f2", evaluationHitIds);
 
-        JITDMNResult jitdmnResult = JITDMNResult.of("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example", dmnResult, Collections.emptyMap());
+        List<List<String>> invalidElementPaths = new ArrayList<>();
+        List<String> invalidPath = List.of("_4bd33d4a-741b-444a-968b-64e1841211e7");
+        invalidElementPaths.add(invalidPath);
+
+        JITDMNResult jitdmnResult =
+                JITDMNResult.of("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example", dmnResult, decisionEvaluationHitIdsMap, invalidElementPaths);
         String retrieved = MAPPER.writeValueAsString(jitdmnResult);
         assertThat(retrieved).isNotNull().isNotBlank();
         JITDMNResult result = MAPPER.readValue(retrieved, JITDMNResult.class);
@@ -297,6 +307,9 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_5b8356f3-2cf2-40e8-8f80-324937e8b276\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_b5e759df-f662-44cd-94f5-55c3c81f0ee3\",\n" +
                 "      \"decisionName\": \"Eligibility\",\n" +
                 "      \"result\": null,\n" +
@@ -328,6 +341,9 @@ class JITDMNResultTest {
                 "      ],\n" +
                 "      \"evaluationHitIds\": {},\n" +
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_b5e759df-f662-44cd-94f5-55c3c81f0ee3\"]]\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"decisionId\": \"_4bd33d4a-741b-444a-968b-64e1841211e7\",\n" +
@@ -363,6 +379,9 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_4bd33d4a-741b-444a-968b-64e1841211e7\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_e905f02c-c5d9-4f2a-ba57-7912ff523b46\",\n" +
                 "      \"decisionName\": \"Application risk score\",\n" +
                 "      \"result\": null,\n" +
@@ -378,6 +397,9 @@ class JITDMNResultTest {
                 "      ],\n" +
                 "      \"evaluationHitIds\": {},\n" +
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_e905f02c-c5d9-4f2a-ba57-7912ff523b46\"]]\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"decisionId\": \"_ed60265c-25e2-400f-a99f-fafd3b489838\",\n" +
@@ -405,6 +427,9 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_ed60265c-25e2-400f-a99f-fafd3b489838\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_40b45659-9299-43a6-af30-04c948c5c0ec\",\n" +
                 "      \"decisionName\": \"Post-bureau risk category\",\n" +
                 "      \"result\": null,\n" +
@@ -428,6 +453,9 @@ class JITDMNResultTest {
                 "      ],\n" +
                 "      \"evaluationHitIds\": {},\n" +
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_40b45659-9299-43a6-af30-04c948c5c0ec\"]]\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"decisionId\": \"_728e3a50-f00f-42c0-b3ee-1ee5aabd5474\",\n" +
@@ -455,12 +483,18 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_728e3a50-f00f-42c0-b3ee-1ee5aabd5474\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_3c8cee68-99dd-418c-847d-0b54697354f2\",\n" +
                 "      \"decisionName\": \"Required monthly installment\",\n" +
                 "      \"result\": 333.3636546143084985132842970339110,\n" +
                 "      \"messages\": [],\n" +
                 "      \"evaluationHitIds\": {\"_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6\": 1},\n" +
                 "      \"evaluationStatus\": \"SUCCEEDED\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"invalidElementPaths\" : []\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"decisionId\": \"_ca1e6032-12eb-428a-a80b-49028a88c0b5\",\n" +
@@ -488,6 +522,9 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_ca1e6032-12eb-428a-a80b-49028a88c0b5\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_9997fcfd-0f50-4933-939e-88a235b5e2a0\",\n" +
                 "      \"decisionName\": \"Pre-bureau risk category\",\n" +
                 "      \"result\": null,\n" +
@@ -513,6 +550,9 @@ class JITDMNResultTest {
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
                 "    },\n" +
                 "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_9997fcfd-0f50-4933-939e-88a235b5e2a0\"]]\n" +
+                "    },\n" +
+                "    {\n" +
                 "      \"decisionId\": \"_8b838f06-968a-4c66-875e-f5412fd692cf\",\n" +
                 "      \"decisionName\": \"Strategy\",\n" +
                 "      \"result\": null,\n" +
@@ -536,7 +576,10 @@ class JITDMNResultTest {
                 "      ],\n" +
                 "      \"evaluationHitIds\": {},\n" +
                 "      \"evaluationStatus\": \"SKIPPED\"\n" +
-                "    }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"invalidElementPaths\" : [[\"_8b838f06-968a-4c66-875e-f5412fd692cf\"]]\n" +
+                "    } \n" +
                 "  ]\n" +
                 "}";
         JITDMNResult result = MAPPER.readValue(json, JITDMNResult.class);

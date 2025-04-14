@@ -51,13 +51,17 @@ public class JITDMNResult implements Serializable,
 
     private List<DMNDecisionResult> decisionResults;
 
-    public static JITDMNResult of(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
+    private List<List<String>> invalidElementPaths;
+
+    public static JITDMNResult of(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap,
+            List<List<String>> invalidElementPaths) {
         JITDMNResult toReturn = new JITDMNResult();
         toReturn.namespace = namespace;
         toReturn.modelName = modelName;
         toReturn.dmnContext = internalGetContext(dmnResult.getContext().getAll());
         toReturn.messages = internalGetMessages(dmnResult.getMessages());
         toReturn.decisionResults = internalGetDecisionResults(dmnResult.getDecisionResults(), decisionEvaluationHitIdsMap);
+        toReturn.invalidElementPaths = invalidElementPaths;
         return toReturn;
     }
 
@@ -91,6 +95,14 @@ public class JITDMNResult implements Serializable,
 
     public void setMessages(List<JITDMNMessage> messages) {
         this.messages = messages;
+    }
+
+    public List<List<String>> getInvalidElementPaths() {
+        return invalidElementPaths;
+    }
+
+    public void setInvalidElementPaths(List<List<String>> invalidElementPaths) {
+        this.invalidElementPaths = invalidElementPaths;
     }
 
     @JsonIgnore
@@ -163,6 +175,7 @@ public class JITDMNResult implements Serializable,
                 .append(", dmnContext=").append(dmnContext)
                 .append(", messages=").append(messages)
                 .append(", decisionResults=").append(decisionResults)
+                .append(", invalidPaths=").append(invalidElementPaths)
                 .append("]").toString();
     }
 

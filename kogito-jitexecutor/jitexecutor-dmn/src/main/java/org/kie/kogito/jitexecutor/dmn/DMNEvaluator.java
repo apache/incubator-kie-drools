@@ -19,11 +19,13 @@
 package org.kie.kogito.jitexecutor.dmn;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,10 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DynamicDMNContextBuilder;
+import org.kie.dmn.model.api.ChildExpression;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.common.requests.ResourceWithURI;
@@ -95,6 +101,74 @@ public class DMNEvaluator {
         }
     }
 
+    static List<String> getPathToRoot(DMNModel dmnModel, String invalidId) {
+        List<String> path = new ArrayList<>();
+        DMNModelInstrumentedBase node = getNodeById(dmnModel, invalidId);
+
+        while (node != null && !(node instanceof Definitions)) {
+            if (node instanceof DMNElement dmnElement) {
+                path.add(dmnElement.getId());
+            } else if (node instanceof ChildExpression childExpression) {
+                path.add(childExpression.getId());
+            } else {
+                path.add(node.getIdentifierString());
+            }
+            node = node.getParent();
+        }
+        Collections.reverse(path);
+        return path.isEmpty() ? Collections.singletonList(invalidId) : path;
+    }
+
+    static DMNModelInstrumentedBase getNodeById(DMNModel dmnModel, String id) {
+        return dmnModel.getDefinitions().getChildren().stream().map(child -> getNodeById(child, id))
+                .filter(Objects::nonNull).findFirst().orElse(null);
+    }
+
+    static DMNModelInstrumentedBase getNodeById(DMNModelInstrumentedBase dmnModelInstrumentedBase, String id) {
+        if (dmnModelInstrumentedBase.getIdentifierString().equals(id)) {
+            return dmnModelInstrumentedBase;
+        }
+        for (DMNModelInstrumentedBase child : dmnModelInstrumentedBase.getChildren()) {
+            DMNModelInstrumentedBase result = getNodeById(child, id);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    static List<List<String>> retrieveInvalidElementPaths(List<DMNMessage> messages, DMNModel dmnModel) {
+        List<List<String>> invalidElementPaths = messages.stream().filter(message -> message.getLevel().equals(Message.Level.WARNING) ||
+                message.getLevel().equals(Message.Level.ERROR)).map(message -> getPathToRoot(dmnModel, message.getSourceId())).collect(Collectors.toList());
+        return removeDuplicates(invalidElementPaths);
+    }
+
+    static List<List<String>> removeDuplicates(List<List<String>> invalidElementPaths) {
+        invalidElementPaths.sort((a, b) -> Integer.compare(b.size(), a.size()));
+        List<List<String>> result = new ArrayList<>();
+        Map<List<String>, String> pathToStringMap = new HashMap<>();
+
+        for (List<String> invalidPath : invalidElementPaths) {
+            String mergedInvalidPath = pathToStringMap.computeIfAbsent(invalidPath, DMNEvaluator::getMergedPaths);
+            boolean isSubset = false;
+            for (List<String> path : result) {
+                String mergedPath = pathToStringMap.computeIfAbsent(path, DMNEvaluator::getMergedPaths);
+                if (mergedPath.contains(mergedInvalidPath)) {
+                    isSubset = true;
+                    break;
+                }
+            }
+            if (!isSubset) {
+                result.add(invalidPath);
+            }
+        }
+        return result;
+    }
+
+    static String getMergedPaths(List<String> toMerge) {
+        return String.join("|", toMerge);
+    }
+
     private DMNEvaluator(DMNModel dmnModel, DMNRuntime dmnRuntime) {
         this.dmnModel = dmnModel;
         this.dmnRuntime = dmnRuntime;
@@ -121,13 +195,14 @@ public class DMNEvaluator {
         DMNContext dmnContext =
                 new DynamicDMNContextBuilder(dmnRuntime.newContext(), dmnModel).populateContextWith(context);
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
+        List<List<String>> invalidElementPaths = retrieveInvalidElementPaths(dmnResult.getMessages(), dmnModel);
         Optional<Map<String, Map<String, Integer>>> decisionEvaluationHitIdsMap = dmnRuntime.getListeners().stream()
                 .filter(JITDMNListener.class::isInstance)
                 .findFirst()
                 .map(JITDMNListener.class::cast)
                 .map(JITDMNListener::getDecisionEvaluationHitIdsMap);
         return JITDMNResult.of(getNamespace(), getName(), dmnResult,
-                decisionEvaluationHitIdsMap.orElse(Collections.emptyMap()));
+                decisionEvaluationHitIdsMap.orElse(Collections.emptyMap()), invalidElementPaths);
     }
 
 }
