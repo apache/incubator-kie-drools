@@ -37,24 +37,24 @@ public class KieBaseBuilderTest {
     @Test
     public void createKieBaseFromModelWithKieBaseIncludes() {
         final Result result = new Result();
-        Variable<Person> personVariable = declarationOf(Person.class);
+        final Variable<Person> personVariable = declarationOf(Person.class);
 
-        Rule rule1 = rule("org.drools.test.included", "rule1")
+        final Rule rule1 = rule("org.drools.test.included", "rule1")
                 .build(
                         pattern(personVariable)
                                 .expr("exprA", p -> p.getName().equals("Frantisek"))
                                 .expr("exprB", p -> p.getAge() > 20),
                         on(personVariable).execute((p) -> result.setValue(p.getName() + " is older than " + 20)));
 
-        Rule rule2 = rule("org.drools.test.main", "rule2")
+        final Rule rule2 = rule("org.drools.test.main", "rule2")
                 .build(
                         pattern(personVariable)
                                 .expr("exprA", p -> p.getName().equals("Frantisek"))
                                 .expr("exprB", p -> p.getAge() > 30),
                         on(personVariable).execute((p) -> result.setValue(p.getName() + " is older than " + 30)));
 
-        Model model1 = new ModelImpl("org.drools.test.included").addRule(rule1);
-        Model model2 = new ModelImpl("org.drools.test.main").addRule(rule2);
+        final Model model1 = new ModelImpl("org.drools.test.included").addRule(rule1);
+        final Model model2 = new ModelImpl("org.drools.test.main").addRule(rule2);
 
         final KieModuleModel kieModuleModel = new KieModuleModelImpl();
         final KieBaseModel kieBaseModelIncluded = kieModuleModel.newKieBaseModel("IncludedModel");
@@ -64,7 +64,7 @@ public class KieBaseBuilderTest {
         kieBaseModelThatIncludes.addInclude("IncludedModel");
         final KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(List.of(model1, model2), kieBaseModelThatIncludes, kieModuleModel);
         try (KieSession ksession = kieBase.newKieSession()) {
-            Person personToBeInserted = new Person("Frantisek", 38);
+            final Person personToBeInserted = new Person("Frantisek", 38);
             ksession.insert(personToBeInserted);
             assertThat(ksession.fireAllRules()).isEqualTo(2);
         }
