@@ -34,6 +34,7 @@ import org.kie.api.conf.KieBaseOption;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBaseOrIncludedKieBases;
 
 public class KieBaseBuilder {
 
@@ -100,15 +101,7 @@ public class KieBaseBuilder {
         kieBaseConf.setSessionPoolSize(kieBaseModel.getSessionsPool().getSize());
 
         KiePackagesBuilder builder = new KiePackagesBuilder(conf);
-        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
-        if (kieBaseModel.getIncludes() != null && !kieBaseModel.getIncludes().isEmpty()) {
-            for (String includedKieBaseName : kieBaseModel.getIncludes()) {
-                KieBaseModel includedKieBaseModel = kieModuleModel.getKieBaseModels().get(includedKieBaseName);
-                if (includedKieBaseModel != null) {
-                    models.stream().filter( m -> isPackageInKieBase(includedKieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
-                }
-            }
-        }
+        models.stream().filter( m -> isPackageInKieBaseOrIncludedKieBases(m.getPackageName(), kieBaseModel, kieModuleModel)).forEach(builder::addModel);
         return new KieBaseBuilder(kieBaseModel, conf).createKieBase(builder.build());
     }
 }

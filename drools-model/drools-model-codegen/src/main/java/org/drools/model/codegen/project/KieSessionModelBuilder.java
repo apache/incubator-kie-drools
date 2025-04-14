@@ -23,9 +23,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
@@ -69,23 +71,36 @@ public class KieSessionModelBuilder {
 
     }
 
-    private Map<String, List<String>> getModelByKBase(Collection<CodegenPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
-        Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
-        Map<String, List<String>> modelsByKBase = new HashMap<>();
-        for (Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
-            List<String> modelsForKieBase = getModelsForKieBaseWithoutIncludes(entry.getValue(), modelsByPackage);
-            if (entry.getValue().getIncludes() != null && !entry.getValue().getIncludes().isEmpty()) {
-                for (String includedKieBaseName : entry.getValue().getIncludes()) {
-                    modelsForKieBase.addAll(getModelsForKieBaseWithoutIncludes(kieBaseModels.get(includedKieBaseName), modelsByPackage));
-                }
-            }
-            modelsByKBase.put(entry.getKey(), modelsForKieBase);
+    private Map<String, List<String>> getModelByKBase(final Collection<CodegenPackageSources> packageSources,
+            final Map<String, KieBaseModel> kieBaseModels) {
+        final Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
+        final Map<String, List<String>> modelsByKBase = new HashMap<>();
+        // Helper set of already processed KieBases that is used to avoid infinite loop, when a user
+        // can potentially create a loop with includes definition, e.g.
+        // a includes b and b includes a
+        final Set<String> alreadyProcessesKieBases = new HashSet<>();
+        for (final Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
+            modelsByKBase.put(entry.getKey(), getModelsForKieBaseWithIncludes(entry.getValue(), modelsByPackage, alreadyProcessesKieBases));
         }
         return modelsByKBase;
     }
 
+    private List<String> getModelsForKieBaseWithIncludes(final KieBaseModel kieBaseModel,
+            final Map<String, String> modelsByPackage, final Set<String> alreadyProcessesKieBases) {
+        final List<String> modelsForKieBase = getModelsForKieBaseWithoutIncludes(kieBaseModel, modelsByPackage);
+        if (kieBaseModel.getIncludes() != null && !kieBaseModel.getIncludes().isEmpty()) {
+            for (final String includedKieBaseName : kieBaseModel.getIncludes()) {
+                if (!alreadyProcessesKieBases.contains(includedKieBaseName)) {
+                    modelsForKieBase.addAll(getModelsForKieBaseWithIncludes(kieBaseModels.get(includedKieBaseName), modelsByPackage, alreadyProcessesKieBases));
+                    alreadyProcessesKieBases.add(includedKieBaseName);
+                }
+            }
+        }
+        return modelsForKieBase;
+    }
+
     private List<String> getModelsForKieBaseWithoutIncludes(final KieBaseModel kieBaseModel, final Map<String, String> modelsByPackage) {
-        List<String> kieBasePackages = kieBaseModel.getPackages();
+        final List<String> kieBasePackages = kieBaseModel.getPackages();
         boolean isAllPackages = kieBasePackages.isEmpty() || (kieBasePackages.size() == 1 && kieBasePackages.get(0).equals("*"));
         return isAllPackages ? new ArrayList<>(modelsByPackage.values()) : kieBasePackages.stream().map(modelsByPackage::get).filter(Objects::nonNull).collect(toList());
     }
