@@ -79,6 +79,7 @@ public class KieBaseBuilderTest {
         try (KieSession ksession = kieBase.newKieSession()) {
             final Person personToBeInserted = new Person("Frantisek", 38);
             ksession.insert(personToBeInserted);
+            // This assert checks that all three rules fire. If not, the includes don't work properly.
             assertThat(ksession.fireAllRules()).isEqualTo(3);
         }
     }
