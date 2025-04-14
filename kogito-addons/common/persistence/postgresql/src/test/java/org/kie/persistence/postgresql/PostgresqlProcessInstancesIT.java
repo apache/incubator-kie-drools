@@ -19,6 +19,8 @@
 package org.kie.persistence.postgresql;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.drools.io.ClassPathResource;
@@ -28,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.flyway.initializer.KieFlywayInitializer;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.postgresql.AbstractProcessInstancesFactory;
 import org.kie.kogito.persistence.postgresql.PostgresqlProcessInstances;
 import org.kie.kogito.process.Process;
@@ -105,7 +108,7 @@ class PostgresqlProcessInstancesIT {
         StaticProcessConfig config = new StaticProcessConfig();
         ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
         BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
-        process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client, lock()));
+        process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client, lock(), new HeadersPersistentConfig(true, null)));
         process.configure();
         abort(process.instances());
         return process;
@@ -119,7 +122,9 @@ class PostgresqlProcessInstancesIT {
     void testBasicFlow() {
         BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
-        processInstance.start();
+
+        Map<String, List<String>> headers = Map.of("name", List.of("pepe"));
+        processInstance.start(headers);
 
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
@@ -130,6 +135,7 @@ class PostgresqlProcessInstancesIT {
 
         ProcessInstance<?> readOnlyPI = process.instances().findById(processInstance.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThat(readOnlyPI.status()).isEqualTo(STATE_ACTIVE);
+        assertThat(((AbstractProcessInstance) readOnlyPI).hasHeader("name")).isTrue();
         assertOne(processInstances);
 
         verify(processInstances).create(any(), any());
@@ -309,8 +315,8 @@ class PostgresqlProcessInstancesIT {
 
     private class PostgreProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
-        public PostgreProcessInstancesFactory(PgPool client, boolean lock) {
-            super(client, 10000l, lock);
+        public PostgreProcessInstancesFactory(PgPool client, boolean lock, HeadersPersistentConfig headersConfig) {
+            super(client, 10000l, lock, headersConfig);
         }
 
         @Override

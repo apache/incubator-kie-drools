@@ -20,6 +20,7 @@ package org.kie.kogito.persistence.jdbc;
 
 import javax.sql.DataSource;
 
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
 
@@ -27,18 +28,24 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
 
     private final DataSource dataSource;
     private final Boolean lock;
+    private final HeadersPersistentConfig headersConfig;
 
     protected AbstractProcessInstancesFactory() {
         this(null, false);
     }
 
     public AbstractProcessInstancesFactory(DataSource dataSource, Boolean lock) {
+        this(dataSource, lock, null);
+    }
+
+    public AbstractProcessInstancesFactory(DataSource dataSource, Boolean lock, HeadersPersistentConfig headersConfig) {
         this.dataSource = dataSource;
         this.lock = lock;
+        this.headersConfig = headersConfig;
     }
 
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        return new JDBCProcessInstances(process, dataSource, lock);
+        return new JDBCProcessInstances(process, dataSource, lock, headersConfig);
     }
 }

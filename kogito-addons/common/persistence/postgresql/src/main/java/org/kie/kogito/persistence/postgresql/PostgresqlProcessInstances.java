@@ -27,7 +27,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -65,11 +67,12 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private final Long queryTimeoutMillis;
     private final boolean lock;
 
-    public PostgresqlProcessInstances(Process<?> process, PgPool client, Long queryTimeoutMillis, boolean lock) {
+    public PostgresqlProcessInstances(Process<?> process, PgPool client, Long queryTimeoutMillis, boolean lock, HeadersPersistentConfig headersConfig) {
         this.process = process;
         this.client = client;
         this.queryTimeoutMillis = queryTimeoutMillis;
-        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners().build();
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners()
+                .withContextEntry(MarshallerContextName.MARSHALLER_HEADERS_CONFIG, headersConfig).build();
         this.lock = lock;
     }
 

@@ -36,6 +36,872 @@ public final class KogitoProcessInstanceProtobuf {
                 (com.google.protobuf.ExtensionRegistryLite) registry);
     }
 
+    public interface HeaderEntryOrBuilder extends
+            // @@protoc_insertion_point(interface_extends:org.jbpm.flow.serialization.protobuf.HeaderEntry)
+            com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>string key = 1;</code>
+         * 
+         * @return The key.
+         */
+        java.lang.String getKey();
+
+        /**
+         * <code>string key = 1;</code>
+         * 
+         * @return The bytes for key.
+         */
+        com.google.protobuf.ByteString
+                getKeyBytes();
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @return A list containing the value.
+         */
+        java.util.List<java.lang.String>
+                getValueList();
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @return The count of value.
+         */
+        int getValueCount();
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @param index The index of the element to return.
+         * @return The value at the given index.
+         */
+        java.lang.String getValue(int index);
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @param index The index of the value to return.
+         * @return The bytes of the value at the given index.
+         */
+        com.google.protobuf.ByteString
+                getValueBytes(int index);
+    }
+
+    /**
+     * Protobuf type {@code org.jbpm.flow.serialization.protobuf.HeaderEntry}
+     */
+    public static final class HeaderEntry extends
+            com.google.protobuf.GeneratedMessageV3 implements
+            // @@protoc_insertion_point(message_implements:org.jbpm.flow.serialization.protobuf.HeaderEntry)
+            HeaderEntryOrBuilder {
+        private static final long serialVersionUID = 0L;
+
+        // Use HeaderEntry.newBuilder() to construct.
+        private HeaderEntry(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+            super(builder);
+        }
+
+        private HeaderEntry() {
+            key_ = "";
+            value_ =
+                    com.google.protobuf.LazyStringArrayList.emptyList();
+        }
+
+        @java.lang.Override
+        @SuppressWarnings({ "unused" })
+        protected java.lang.Object newInstance(
+                UnusedPrivateParameter unused) {
+            return new HeaderEntry();
+        }
+
+        public static final com.google.protobuf.Descriptors.Descriptor
+                getDescriptor() {
+            return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                internalGetFieldAccessorTable() {
+            return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_fieldAccessorTable
+                    .ensureFieldAccessorsInitialized(
+                            org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.class,
+                            org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder.class);
+        }
+
+        public static final int KEY_FIELD_NUMBER = 1;
+        @SuppressWarnings("serial")
+        private volatile java.lang.Object key_ = "";
+
+        /**
+         * <code>string key = 1;</code>
+         * 
+         * @return The key.
+         */
+        @java.lang.Override
+        public java.lang.String getKey() {
+            java.lang.Object ref = key_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                key_ = s;
+                return s;
+            }
+        }
+
+        /**
+         * <code>string key = 1;</code>
+         * 
+         * @return The bytes for key.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString
+                getKeyBytes() {
+            java.lang.Object ref = key_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                key_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        public static final int VALUE_FIELD_NUMBER = 2;
+        @SuppressWarnings("serial")
+        private com.google.protobuf.LazyStringArrayList value_ =
+                com.google.protobuf.LazyStringArrayList.emptyList();
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @return A list containing the value.
+         */
+        public com.google.protobuf.ProtocolStringList
+                getValueList() {
+            return value_;
+        }
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @return The count of value.
+         */
+        public int getValueCount() {
+            return value_.size();
+        }
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @param index The index of the element to return.
+         * @return The value at the given index.
+         */
+        public java.lang.String getValue(int index) {
+            return value_.get(index);
+        }
+
+        /**
+         * <code>repeated string value = 2;</code>
+         * 
+         * @param index The index of the value to return.
+         * @return The bytes of the value at the given index.
+         */
+        public com.google.protobuf.ByteString
+                getValueBytes(int index) {
+            return value_.getByteString(index);
+        }
+
+        private byte memoizedIsInitialized = -1;
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized == 1)
+                return true;
+            if (isInitialized == 0)
+                return false;
+
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        @java.lang.Override
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                throws java.io.IOException {
+            if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+            }
+            for (int i = 0; i < value_.size(); i++) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 2, value_.getRaw(i));
+            }
+            getUnknownFields().writeTo(output);
+        }
+
+        @java.lang.Override
+        public int getSerializedSize() {
+            int size = memoizedSize;
+            if (size != -1)
+                return size;
+
+            size = 0;
+            if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+            }
+            {
+                int dataSize = 0;
+                for (int i = 0; i < value_.size(); i++) {
+                    dataSize += computeStringSizeNoTag(value_.getRaw(i));
+                }
+                size += dataSize;
+                size += 1 * getValueList().size();
+            }
+            size += getUnknownFields().getSerializedSize();
+            memoizedSize = size;
+            return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry)) {
+                return super.equals(obj);
+            }
+            org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry other = (org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry) obj;
+
+            if (!getKey()
+                    .equals(other.getKey()))
+                return false;
+            if (!getValueList()
+                    .equals(other.getValueList()))
+                return false;
+            if (!getUnknownFields().equals(other.getUnknownFields()))
+                return false;
+            return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+            if (memoizedHashCode != 0) {
+                return memoizedHashCode;
+            }
+            int hash = 41;
+            hash = (19 * hash) + getDescriptor().hashCode();
+            hash = (37 * hash) + KEY_FIELD_NUMBER;
+            hash = (53 * hash) + getKey().hashCode();
+            if (getValueCount() > 0) {
+                hash = (37 * hash) + VALUE_FIELD_NUMBER;
+                hash = (53 * hash) + getValueList().hashCode();
+            }
+            hash = (29 * hash) + getUnknownFields().hashCode();
+            memoizedHashCode = hash;
+            return hash;
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                java.nio.ByteBuffer data)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                java.nio.ByteBuffer data,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                com.google.protobuf.ByteString data)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                com.google.protobuf.ByteString data,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(byte[] data)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                byte[] data,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws com.google.protobuf.InvalidProtocolBufferException {
+            return PARSER.parseFrom(data, extensionRegistry);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseWithIOException(PARSER, input);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseDelimitedFrom(java.io.InputStream input)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseDelimitedWithIOException(PARSER, input);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseDelimitedFrom(
+                java.io.InputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                com.google.protobuf.CodedInputStream input)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseWithIOException(PARSER, input);
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry parseFrom(
+                com.google.protobuf.CodedInputStream input,
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3
+                    .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() {
+            return newBuilder();
+        }
+
+        public static Builder newBuilder() {
+            return DEFAULT_INSTANCE.toBuilder();
+        }
+
+        public static Builder newBuilder(org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry prototype) {
+            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+
+        @java.lang.Override
+        public Builder toBuilder() {
+            return this == DEFAULT_INSTANCE
+                    ? new Builder()
+                    : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            Builder builder = new Builder(parent);
+            return builder;
+        }
+
+        /**
+         * Protobuf type {@code org.jbpm.flow.serialization.protobuf.HeaderEntry}
+         */
+        public static final class Builder extends
+                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+                // @@protoc_insertion_point(builder_implements:org.jbpm.flow.serialization.protobuf.HeaderEntry)
+                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder {
+            public static final com.google.protobuf.Descriptors.Descriptor
+                    getDescriptor() {
+                return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor;
+            }
+
+            @java.lang.Override
+            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+                    internalGetFieldAccessorTable() {
+                return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_fieldAccessorTable
+                        .ensureFieldAccessorsInitialized(
+                                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.class,
+                                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder.class);
+            }
+
+            // Construct using org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.newBuilder()
+            private Builder() {
+
+            }
+
+            private Builder(
+                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+                super(parent);
+
+            }
+
+            @java.lang.Override
+            public Builder clear() {
+                super.clear();
+                bitField0_ = 0;
+                key_ = "";
+                value_ =
+                        com.google.protobuf.LazyStringArrayList.emptyList();
+                return this;
+            }
+
+            @java.lang.Override
+            public com.google.protobuf.Descriptors.Descriptor
+                    getDescriptorForType() {
+                return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor;
+            }
+
+            @java.lang.Override
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getDefaultInstanceForType() {
+                return org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.getDefaultInstance();
+            }
+
+            @java.lang.Override
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry build() {
+                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry result = buildPartial();
+                if (!result.isInitialized()) {
+                    throw newUninitializedMessageException(result);
+                }
+                return result;
+            }
+
+            @java.lang.Override
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry buildPartial() {
+                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry result = new org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry(this);
+                if (bitField0_ != 0) {
+                    buildPartial0(result);
+                }
+                onBuilt();
+                return result;
+            }
+
+            private void buildPartial0(org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry result) {
+                int from_bitField0_ = bitField0_;
+                if (((from_bitField0_ & 0x00000001) != 0)) {
+                    result.key_ = key_;
+                }
+                if (((from_bitField0_ & 0x00000002) != 0)) {
+                    value_.makeImmutable();
+                    result.value_ = value_;
+                }
+            }
+
+            @java.lang.Override
+            public Builder clone() {
+                return super.clone();
+            }
+
+            @java.lang.Override
+            public Builder setField(
+                    com.google.protobuf.Descriptors.FieldDescriptor field,
+                    java.lang.Object value) {
+                return super.setField(field, value);
+            }
+
+            @java.lang.Override
+            public Builder clearField(
+                    com.google.protobuf.Descriptors.FieldDescriptor field) {
+                return super.clearField(field);
+            }
+
+            @java.lang.Override
+            public Builder clearOneof(
+                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+                return super.clearOneof(oneof);
+            }
+
+            @java.lang.Override
+            public Builder setRepeatedField(
+                    com.google.protobuf.Descriptors.FieldDescriptor field,
+                    int index, java.lang.Object value) {
+                return super.setRepeatedField(field, index, value);
+            }
+
+            @java.lang.Override
+            public Builder addRepeatedField(
+                    com.google.protobuf.Descriptors.FieldDescriptor field,
+                    java.lang.Object value) {
+                return super.addRepeatedField(field, value);
+            }
+
+            @java.lang.Override
+            public Builder mergeFrom(com.google.protobuf.Message other) {
+                if (other instanceof org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry) {
+                    return mergeFrom((org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry) other);
+                } else {
+                    super.mergeFrom(other);
+                    return this;
+                }
+            }
+
+            public Builder mergeFrom(org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry other) {
+                if (other == org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.getDefaultInstance())
+                    return this;
+                if (!other.getKey().isEmpty()) {
+                    key_ = other.key_;
+                    bitField0_ |= 0x00000001;
+                    onChanged();
+                }
+                if (!other.value_.isEmpty()) {
+                    if (value_.isEmpty()) {
+                        value_ = other.value_;
+                        bitField0_ |= 0x00000002;
+                    } else {
+                        ensureValueIsMutable();
+                        value_.addAll(other.value_);
+                    }
+                    onChanged();
+                }
+                this.mergeUnknownFields(other.getUnknownFields());
+                onChanged();
+                return this;
+            }
+
+            @java.lang.Override
+            public final boolean isInitialized() {
+                return true;
+            }
+
+            @java.lang.Override
+            public Builder mergeFrom(
+                    com.google.protobuf.CodedInputStream input,
+                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                    throws java.io.IOException {
+                if (extensionRegistry == null) {
+                    throw new java.lang.NullPointerException();
+                }
+                try {
+                    boolean done = false;
+                    while (!done) {
+                        int tag = input.readTag();
+                        switch (tag) {
+                            case 0:
+                                done = true;
+                                break;
+                            case 10: {
+                                key_ = input.readStringRequireUtf8();
+                                bitField0_ |= 0x00000001;
+                                break;
+                            } // case 10
+                            case 18: {
+                                java.lang.String s = input.readStringRequireUtf8();
+                                ensureValueIsMutable();
+                                value_.add(s);
+                                break;
+                            } // case 18
+                            default: {
+                                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                                    done = true; // was an endgroup tag
+                                }
+                                break;
+                            } // default:
+                        } // switch (tag)
+                    } // while (!done)
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    throw e.unwrapIOException();
+                } finally {
+                    onChanged();
+                } // finally
+                return this;
+            }
+
+            private int bitField0_;
+
+            private java.lang.Object key_ = "";
+
+            /**
+             * <code>string key = 1;</code>
+             * 
+             * @return The key.
+             */
+            public java.lang.String getKey() {
+                java.lang.Object ref = key_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    key_ = s;
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>string key = 1;</code>
+             * 
+             * @return The bytes for key.
+             */
+            public com.google.protobuf.ByteString
+                    getKeyBytes() {
+                java.lang.Object ref = key_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
+                                    (java.lang.String) ref);
+                    key_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>string key = 1;</code>
+             * 
+             * @param value The key to set.
+             * @return This builder for chaining.
+             */
+            public Builder setKey(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                key_ = value;
+                bitField0_ |= 0x00000001;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>string key = 1;</code>
+             * 
+             * @return This builder for chaining.
+             */
+            public Builder clearKey() {
+                key_ = getDefaultInstance().getKey();
+                bitField0_ = (bitField0_ & ~0x00000001);
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>string key = 1;</code>
+             * 
+             * @param value The bytes for key to set.
+             * @return This builder for chaining.
+             */
+            public Builder setKeyBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+                key_ = value;
+                bitField0_ |= 0x00000001;
+                onChanged();
+                return this;
+            }
+
+            private com.google.protobuf.LazyStringArrayList value_ =
+                    com.google.protobuf.LazyStringArrayList.emptyList();
+
+            private void ensureValueIsMutable() {
+                if (!value_.isModifiable()) {
+                    value_ = new com.google.protobuf.LazyStringArrayList(value_);
+                }
+                bitField0_ |= 0x00000002;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @return A list containing the value.
+             */
+            public com.google.protobuf.ProtocolStringList
+                    getValueList() {
+                value_.makeImmutable();
+                return value_;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @return The count of value.
+             */
+            public int getValueCount() {
+                return value_.size();
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param index The index of the element to return.
+             * @return The value at the given index.
+             */
+            public java.lang.String getValue(int index) {
+                return value_.get(index);
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param index The index of the value to return.
+             * @return The bytes of the value at the given index.
+             */
+            public com.google.protobuf.ByteString
+                    getValueBytes(int index) {
+                return value_.getByteString(index);
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param index The index to set the value at.
+             * @param value The value to set.
+             * @return This builder for chaining.
+             */
+            public Builder setValue(
+                    int index, java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                ensureValueIsMutable();
+                value_.set(index, value);
+                bitField0_ |= 0x00000002;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param value The value to add.
+             * @return This builder for chaining.
+             */
+            public Builder addValue(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                ensureValueIsMutable();
+                value_.add(value);
+                bitField0_ |= 0x00000002;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param values The value to add.
+             * @return This builder for chaining.
+             */
+            public Builder addAllValue(
+                    java.lang.Iterable<java.lang.String> values) {
+                ensureValueIsMutable();
+                com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                        values, value_);
+                bitField0_ |= 0x00000002;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @return This builder for chaining.
+             */
+            public Builder clearValue() {
+                value_ =
+                        com.google.protobuf.LazyStringArrayList.emptyList();
+                bitField0_ = (bitField0_ & ~0x00000002);
+                ;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>repeated string value = 2;</code>
+             * 
+             * @param value The bytes of the value to add.
+             * @return This builder for chaining.
+             */
+            public Builder addValueBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+                ensureValueIsMutable();
+                value_.add(value);
+                bitField0_ |= 0x00000002;
+                onChanged();
+                return this;
+            }
+
+            @java.lang.Override
+            public final Builder setUnknownFields(
+                    final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.setUnknownFields(unknownFields);
+            }
+
+            @java.lang.Override
+            public final Builder mergeUnknownFields(
+                    final com.google.protobuf.UnknownFieldSet unknownFields) {
+                return super.mergeUnknownFields(unknownFields);
+            }
+
+            // @@protoc_insertion_point(builder_scope:org.jbpm.flow.serialization.protobuf.HeaderEntry)
+        }
+
+        // @@protoc_insertion_point(class_scope:org.jbpm.flow.serialization.protobuf.HeaderEntry)
+        private static final org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry DEFAULT_INSTANCE;
+        static {
+            DEFAULT_INSTANCE = new org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry();
+        }
+
+        public static org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<HeaderEntry> PARSER = new com.google.protobuf.AbstractParser<HeaderEntry>() {
+            @java.lang.Override
+            public HeaderEntry parsePartialFrom(
+                    com.google.protobuf.CodedInputStream input,
+                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                    throws com.google.protobuf.InvalidProtocolBufferException {
+                Builder builder = newBuilder();
+                try {
+                    builder.mergeFrom(input, extensionRegistry);
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    throw e.setUnfinishedMessage(builder.buildPartial());
+                } catch (com.google.protobuf.UninitializedMessageException e) {
+                    throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+                } catch (java.io.IOException e) {
+                    throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                            .setUnfinishedMessage(builder.buildPartial());
+                }
+                return builder.buildPartial();
+            }
+        };
+
+        public static com.google.protobuf.Parser<HeaderEntry> parser() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<HeaderEntry> getParserForType() {
+            return PARSER;
+        }
+
+        @java.lang.Override
+        public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+    }
+
     public interface ProcessInstanceOrBuilder extends
             // @@protoc_insertion_point(interface_extends:org.jbpm.flow.serialization.protobuf.ProcessInstance)
             com.google.protobuf.MessageOrBuilder {
@@ -481,6 +1347,34 @@ public final class KogitoProcessInstanceProtobuf {
          */
         com.google.protobuf.ByteString
                 getCancelTimerIdBytes();
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry>
+                getHeadersList();
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getHeaders(int index);
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        int getHeadersCount();
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        java.util.List<? extends org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder>
+                getHeadersOrBuilderList();
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder getHeadersOrBuilder(
+                int index);
     }
 
     /**
@@ -516,6 +1410,7 @@ public final class KogitoProcessInstanceProtobuf {
             completedNodeIds_ =
                     com.google.protobuf.LazyStringArrayList.emptyList();
             cancelTimerId_ = "";
+            headers_ = java.util.Collections.emptyList();
         }
 
         @java.lang.Override
@@ -1520,6 +2415,52 @@ public final class KogitoProcessInstanceProtobuf {
             }
         }
 
+        public static final int HEADERS_FIELD_NUMBER = 24;
+        @SuppressWarnings("serial")
+        private java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry> headers_;
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        @java.lang.Override
+        public java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry> getHeadersList() {
+            return headers_;
+        }
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        @java.lang.Override
+        public java.util.List<? extends org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder>
+                getHeadersOrBuilderList() {
+            return headers_;
+        }
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        @java.lang.Override
+        public int getHeadersCount() {
+            return headers_.size();
+        }
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        @java.lang.Override
+        public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getHeaders(int index) {
+            return headers_.get(index);
+        }
+
+        /**
+         * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+         */
+        @java.lang.Override
+        public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder getHeadersOrBuilder(
+                int index) {
+            return headers_.get(index);
+        }
+
         private byte memoizedIsInitialized = -1;
 
         @java.lang.Override
@@ -1605,6 +2546,9 @@ public final class KogitoProcessInstanceProtobuf {
             }
             if (((bitField0_ & 0x00000200) != 0)) {
                 com.google.protobuf.GeneratedMessageV3.writeString(output, 23, errorNodeInstanceId_);
+            }
+            for (int i = 0; i < headers_.size(); i++) {
+                output.writeMessage(24, headers_.get(i));
             }
             getUnknownFields().writeTo(output);
         }
@@ -1696,6 +2640,10 @@ public final class KogitoProcessInstanceProtobuf {
             }
             if (((bitField0_ & 0x00000200) != 0)) {
                 size += com.google.protobuf.GeneratedMessageV3.computeStringSize(23, errorNodeInstanceId_);
+            }
+            for (int i = 0; i < headers_.size(); i++) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeMessageSize(24, headers_.get(i));
             }
             size += getUnknownFields().getSerializedSize();
             memoizedSize = size;
@@ -1837,6 +2785,9 @@ public final class KogitoProcessInstanceProtobuf {
                         .equals(other.getCancelTimerId()))
                     return false;
             }
+            if (!getHeadersList()
+                    .equals(other.getHeadersList()))
+                return false;
             if (!getUnknownFields().equals(other.getUnknownFields()))
                 return false;
             return true;
@@ -1931,6 +2882,10 @@ public final class KogitoProcessInstanceProtobuf {
             if (hasCancelTimerId()) {
                 hash = (37 * hash) + CANCEL_TIMER_ID_FIELD_NUMBER;
                 hash = (53 * hash) + getCancelTimerId().hashCode();
+            }
+            if (getHeadersCount() > 0) {
+                hash = (37 * hash) + HEADERS_FIELD_NUMBER;
+                hash = (53 * hash) + getHeadersList().hashCode();
             }
             hash = (29 * hash) + getUnknownFields().hashCode();
             memoizedHashCode = hash;
@@ -2082,6 +3037,7 @@ public final class KogitoProcessInstanceProtobuf {
                     getSlaFieldBuilder();
                     getContextFieldBuilder();
                     getSwimlaneContextFieldBuilder();
+                    getHeadersFieldBuilder();
                 }
             }
 
@@ -2127,6 +3083,13 @@ public final class KogitoProcessInstanceProtobuf {
                 completedNodeIds_ =
                         com.google.protobuf.LazyStringArrayList.emptyList();
                 cancelTimerId_ = "";
+                if (headersBuilder_ == null) {
+                    headers_ = java.util.Collections.emptyList();
+                } else {
+                    headers_ = null;
+                    headersBuilder_.clear();
+                }
+                bitField0_ = (bitField0_ & ~0x00800000);
                 return this;
             }
 
@@ -2171,6 +3134,15 @@ public final class KogitoProcessInstanceProtobuf {
                     result.swimlaneContext_ = swimlaneContext_;
                 } else {
                     result.swimlaneContext_ = swimlaneContextBuilder_.build();
+                }
+                if (headersBuilder_ == null) {
+                    if (((bitField0_ & 0x00800000) != 0)) {
+                        headers_ = java.util.Collections.unmodifiableList(headers_);
+                        bitField0_ = (bitField0_ & ~0x00800000);
+                    }
+                    result.headers_ = headers_;
+                } else {
+                    result.headers_ = headersBuilder_.build();
                 }
             }
 
@@ -2445,6 +3417,31 @@ public final class KogitoProcessInstanceProtobuf {
                     bitField0_ |= 0x00400000;
                     onChanged();
                 }
+                if (headersBuilder_ == null) {
+                    if (!other.headers_.isEmpty()) {
+                        if (headers_.isEmpty()) {
+                            headers_ = other.headers_;
+                            bitField0_ = (bitField0_ & ~0x00800000);
+                        } else {
+                            ensureHeadersIsMutable();
+                            headers_.addAll(other.headers_);
+                        }
+                        onChanged();
+                    }
+                } else {
+                    if (!other.headers_.isEmpty()) {
+                        if (headersBuilder_.isEmpty()) {
+                            headersBuilder_.dispose();
+                            headersBuilder_ = null;
+                            headers_ = other.headers_;
+                            bitField0_ = (bitField0_ & ~0x00800000);
+                            headersBuilder_ =
+                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getHeadersFieldBuilder() : null;
+                        } else {
+                            headersBuilder_.addAllMessages(other.headers_);
+                        }
+                    }
+                }
                 this.mergeUnknownFields(other.getUnknownFields());
                 onChanged();
                 return this;
@@ -2599,6 +3596,19 @@ public final class KogitoProcessInstanceProtobuf {
                                 bitField0_ |= 0x00008000;
                                 break;
                             } // case 186
+                            case 194: {
+                                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry m =
+                                        input.readMessage(
+                                                org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.parser(),
+                                                extensionRegistry);
+                                if (headersBuilder_ == null) {
+                                    ensureHeadersIsMutable();
+                                    headers_.add(m);
+                                } else {
+                                    headersBuilder_.addMessage(m);
+                                }
+                                break;
+                            } // case 194
                             default: {
                                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                                     done = true; // was an endgroup tag
@@ -4831,6 +5841,264 @@ public final class KogitoProcessInstanceProtobuf {
                 return this;
             }
 
+            private java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry> headers_ =
+                    java.util.Collections.emptyList();
+
+            private void ensureHeadersIsMutable() {
+                if (!((bitField0_ & 0x00800000) != 0)) {
+                    headers_ = new java.util.ArrayList<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry>(headers_);
+                    bitField0_ |= 0x00800000;
+                }
+            }
+
+            private com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder> headersBuilder_;
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry> getHeadersList() {
+                if (headersBuilder_ == null) {
+                    return java.util.Collections.unmodifiableList(headers_);
+                } else {
+                    return headersBuilder_.getMessageList();
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public int getHeadersCount() {
+                if (headersBuilder_ == null) {
+                    return headers_.size();
+                } else {
+                    return headersBuilder_.getCount();
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry getHeaders(int index) {
+                if (headersBuilder_ == null) {
+                    return headers_.get(index);
+                } else {
+                    return headersBuilder_.getMessage(index);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder setHeaders(
+                    int index, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry value) {
+                if (headersBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureHeadersIsMutable();
+                    headers_.set(index, value);
+                    onChanged();
+                } else {
+                    headersBuilder_.setMessage(index, value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder setHeaders(
+                    int index, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder builderForValue) {
+                if (headersBuilder_ == null) {
+                    ensureHeadersIsMutable();
+                    headers_.set(index, builderForValue.build());
+                    onChanged();
+                } else {
+                    headersBuilder_.setMessage(index, builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder addHeaders(org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry value) {
+                if (headersBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureHeadersIsMutable();
+                    headers_.add(value);
+                    onChanged();
+                } else {
+                    headersBuilder_.addMessage(value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder addHeaders(
+                    int index, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry value) {
+                if (headersBuilder_ == null) {
+                    if (value == null) {
+                        throw new NullPointerException();
+                    }
+                    ensureHeadersIsMutable();
+                    headers_.add(index, value);
+                    onChanged();
+                } else {
+                    headersBuilder_.addMessage(index, value);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder addHeaders(
+                    org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder builderForValue) {
+                if (headersBuilder_ == null) {
+                    ensureHeadersIsMutable();
+                    headers_.add(builderForValue.build());
+                    onChanged();
+                } else {
+                    headersBuilder_.addMessage(builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder addHeaders(
+                    int index, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder builderForValue) {
+                if (headersBuilder_ == null) {
+                    ensureHeadersIsMutable();
+                    headers_.add(index, builderForValue.build());
+                    onChanged();
+                } else {
+                    headersBuilder_.addMessage(index, builderForValue.build());
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder addAllHeaders(
+                    java.lang.Iterable<? extends org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry> values) {
+                if (headersBuilder_ == null) {
+                    ensureHeadersIsMutable();
+                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                            values, headers_);
+                    onChanged();
+                } else {
+                    headersBuilder_.addAllMessages(values);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder clearHeaders() {
+                if (headersBuilder_ == null) {
+                    headers_ = java.util.Collections.emptyList();
+                    bitField0_ = (bitField0_ & ~0x00800000);
+                    onChanged();
+                } else {
+                    headersBuilder_.clear();
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public Builder removeHeaders(int index) {
+                if (headersBuilder_ == null) {
+                    ensureHeadersIsMutable();
+                    headers_.remove(index);
+                    onChanged();
+                } else {
+                    headersBuilder_.remove(index);
+                }
+                return this;
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder getHeadersBuilder(
+                    int index) {
+                return getHeadersFieldBuilder().getBuilder(index);
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder getHeadersOrBuilder(
+                    int index) {
+                if (headersBuilder_ == null) {
+                    return headers_.get(index);
+                } else {
+                    return headersBuilder_.getMessageOrBuilder(index);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public java.util.List<? extends org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder>
+                    getHeadersOrBuilderList() {
+                if (headersBuilder_ != null) {
+                    return headersBuilder_.getMessageOrBuilderList();
+                } else {
+                    return java.util.Collections.unmodifiableList(headers_);
+                }
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder addHeadersBuilder() {
+                return getHeadersFieldBuilder().addBuilder(
+                        org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.getDefaultInstance());
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder addHeadersBuilder(
+                    int index) {
+                return getHeadersFieldBuilder().addBuilder(
+                        index, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.getDefaultInstance());
+            }
+
+            /**
+             * <code>repeated .org.jbpm.flow.serialization.protobuf.HeaderEntry headers = 24;</code>
+             */
+            public java.util.List<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder>
+                    getHeadersBuilderList() {
+                return getHeadersFieldBuilder().getBuilderList();
+            }
+
+            private com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder>
+                    getHeadersFieldBuilder() {
+                if (headersBuilder_ == null) {
+                    headersBuilder_ =
+                            new com.google.protobuf.RepeatedFieldBuilderV3<org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntry.Builder, org.jbpm.flow.serialization.protobuf.KogitoProcessInstanceProtobuf.HeaderEntryOrBuilder>(
+                                    headers_,
+                                    ((bitField0_ & 0x00800000) != 0),
+                                    getParentForChildren(),
+                                    isClean());
+                    headers_ = null;
+                }
+                return headersBuilder_;
+            }
+
             @java.lang.Override
             public final Builder setUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -4893,6 +6161,8 @@ public final class KogitoProcessInstanceProtobuf {
 
     }
 
+    private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor;
+    private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_fieldAccessorTable;
 
@@ -4908,48 +6178,55 @@ public final class KogitoProcessInstanceProtobuf {
                         "ogito_process_instance.proto\022$org.jbpm.f" +
                         "low.serialization.protobuf\0327org/jbpm/flo" +
                         "w/serialization/protobuf/kogito_types.pr" +
-                        "oto\"\272\010\n\017ProcessInstance\022\024\n\014process_type\030" +
-                        "\001 \001(\t\022\022\n\nprocess_id\030\002 \001(\t\022\027\n\017process_ver" +
-                        "sion\030\026 \001(\t\022\n\n\002id\030\003 \001(\t\022\'\n\032parent_process" +
-                        "_instance_id\030\004 \001(\tH\000\210\001\001\022\031\n\014business_key\030" +
-                        "\005 \001(\tH\001\210\001\001\022\031\n\014deploymentId\030\006 \001(\tH\002\210\001\001\022\030\n" +
-                        "\013description\030\007 \001(\tH\003\210\001\001\022\r\n\005state\030\010 \001(\005\022\027" +
-                        "\n\nstart_date\030\t \001(\003H\004\210\001\001\022\"\n\025node_instance" +
-                        "_counter\030\n \001(\003H\005\210\001\001\022\031\n\021signal_completion" +
-                        "\030\013 \001(\010\022%\n\030root_process_instance_id\030\014 \001(\t" +
-                        "H\006\210\001\001\022\034\n\017root_process_id\030\r \001(\tH\007\210\001\001\022\032\n\re" +
-                        "rror_node_id\030\016 \001(\tH\010\210\001\001\022#\n\026error_node_in" +
-                        "stance_id\030\027 \001(\tH\t\210\001\001\022\032\n\rerror_message\030\017 " +
-                        "\001(\tH\n\210\001\001\022\031\n\014reference_id\030\020 \001(\tH\013\210\001\001\022B\n\003s" +
-                        "la\030\021 \001(\01320.org.jbpm.flow.serialization.p" +
-                        "rotobuf.SLAContextH\014\210\001\001\022K\n\007context\030\022 \001(\013" +
-                        "25.org.jbpm.flow.serialization.protobuf." +
-                        "WorkflowContextH\r\210\001\001\022O\n\020swimlane_context" +
-                        "\030\023 \003(\01325.org.jbpm.flow.serialization.pro" +
-                        "tobuf.SwimlaneContext\022\030\n\020completedNodeId" +
-                        "s\030\024 \003(\t\022\034\n\017cancel_timer_id\030\025 \001(\tH\016\210\001\001B\035\n" +
-                        "\033_parent_process_instance_idB\017\n\r_busines" +
-                        "s_keyB\017\n\r_deploymentIdB\016\n\014_descriptionB\r" +
-                        "\n\013_start_dateB\030\n\026_node_instance_counterB" +
-                        "\033\n\031_root_process_instance_idB\022\n\020_root_pr" +
-                        "ocess_idB\020\n\016_error_node_idB\031\n\027_error_nod" +
-                        "e_instance_idB\020\n\016_error_messageB\017\n\r_refe" +
-                        "rence_idB\006\n\004_slaB\n\n\010_contextB\022\n\020_cancel_" +
-                        "timer_idB\037B\035KogitoProcessInstanceProtobu" +
-                        "fb\006proto3"
+                        "oto\")\n\013HeaderEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
+                        "\030\002 \003(\t\"\376\010\n\017ProcessInstance\022\024\n\014process_ty" +
+                        "pe\030\001 \001(\t\022\022\n\nprocess_id\030\002 \001(\t\022\027\n\017process_" +
+                        "version\030\026 \001(\t\022\n\n\002id\030\003 \001(\t\022\'\n\032parent_proc" +
+                        "ess_instance_id\030\004 \001(\tH\000\210\001\001\022\031\n\014business_k" +
+                        "ey\030\005 \001(\tH\001\210\001\001\022\031\n\014deploymentId\030\006 \001(\tH\002\210\001\001" +
+                        "\022\030\n\013description\030\007 \001(\tH\003\210\001\001\022\r\n\005state\030\010 \001(" +
+                        "\005\022\027\n\nstart_date\030\t \001(\003H\004\210\001\001\022\"\n\025node_insta" +
+                        "nce_counter\030\n \001(\003H\005\210\001\001\022\031\n\021signal_complet" +
+                        "ion\030\013 \001(\010\022%\n\030root_process_instance_id\030\014 " +
+                        "\001(\tH\006\210\001\001\022\034\n\017root_process_id\030\r \001(\tH\007\210\001\001\022\032" +
+                        "\n\rerror_node_id\030\016 \001(\tH\010\210\001\001\022#\n\026error_node" +
+                        "_instance_id\030\027 \001(\tH\t\210\001\001\022\032\n\rerror_message" +
+                        "\030\017 \001(\tH\n\210\001\001\022\031\n\014reference_id\030\020 \001(\tH\013\210\001\001\022B" +
+                        "\n\003sla\030\021 \001(\01320.org.jbpm.flow.serializatio" +
+                        "n.protobuf.SLAContextH\014\210\001\001\022K\n\007context\030\022 " +
+                        "\001(\01325.org.jbpm.flow.serialization.protob" +
+                        "uf.WorkflowContextH\r\210\001\001\022O\n\020swimlane_cont" +
+                        "ext\030\023 \003(\01325.org.jbpm.flow.serialization." +
+                        "protobuf.SwimlaneContext\022\030\n\020completedNod" +
+                        "eIds\030\024 \003(\t\022\034\n\017cancel_timer_id\030\025 \001(\tH\016\210\001\001" +
+                        "\022B\n\007headers\030\030 \003(\01321.org.jbpm.flow.serial" +
+                        "ization.protobuf.HeaderEntryB\035\n\033_parent_" +
+                        "process_instance_idB\017\n\r_business_keyB\017\n\r" +
+                        "_deploymentIdB\016\n\014_descriptionB\r\n\013_start_" +
+                        "dateB\030\n\026_node_instance_counterB\033\n\031_root_" +
+                        "process_instance_idB\022\n\020_root_process_idB" +
+                        "\020\n\016_error_node_idB\031\n\027_error_node_instanc" +
+                        "e_idB\020\n\016_error_messageB\017\n\r_reference_idB" +
+                        "\006\n\004_slaB\n\n\010_contextB\022\n\020_cancel_timer_idB" +
+                        "\037B\035KogitoProcessInstanceProtobufb\006proto3"
         };
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
                 .internalBuildGeneratedFileFrom(descriptorData,
                         new com.google.protobuf.Descriptors.FileDescriptor[] {
                                 org.jbpm.flow.serialization.protobuf.KogitoTypesProtobuf.getDescriptor(),
                         });
-        internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_descriptor =
+        internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor =
                 getDescriptor().getMessageTypes().get(0);
+        internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_org_jbpm_flow_serialization_protobuf_HeaderEntry_descriptor,
+                new java.lang.String[] { "Key", "Value", });
+        internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_descriptor =
+                getDescriptor().getMessageTypes().get(1);
         internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_flow_serialization_protobuf_ProcessInstance_descriptor,
                 new java.lang.String[] { "ProcessType", "ProcessId", "ProcessVersion", "Id", "ParentProcessInstanceId", "BusinessKey", "DeploymentId", "Description", "State", "StartDate",
                         "NodeInstanceCounter", "SignalCompletion", "RootProcessInstanceId", "RootProcessId", "ErrorNodeId", "ErrorNodeInstanceId", "ErrorMessage", "ReferenceId", "Sla", "Context",
-                        "SwimlaneContext", "CompletedNodeIds", "CancelTimerId", });
+                        "SwimlaneContext", "CompletedNodeIds", "CancelTimerId", "Headers", });
         org.jbpm.flow.serialization.protobuf.KogitoTypesProtobuf.getDescriptor();
     }
 

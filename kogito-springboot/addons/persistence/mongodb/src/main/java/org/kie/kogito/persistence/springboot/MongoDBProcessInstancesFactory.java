@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.persistence.springboot;
 
+import java.util.List;
+
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.mongodb.AbstractProcessInstancesFactory;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +36,10 @@ public class MongoDBProcessInstancesFactory extends AbstractProcessInstancesFact
     public MongoDBProcessInstancesFactory(MongoClient mongoClient,
             AbstractTransactionManager transactionManager,
             @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock,
-            @Value("${spring.data.mongodb.database:kogito}") String dbName) {
-        super(mongoClient, dbName, lock, transactionManager);
+            @Value("${spring.data.mongodb.database:kogito}") String dbName,
+            @Value("${kogito.persistence.headers.enabled:false}") Boolean headersEnabled,
+            @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded) {
+        super(mongoClient, dbName, lock, transactionManager, new HeadersPersistentConfig(headersEnabled, headersExcluded));
     }
 
 }

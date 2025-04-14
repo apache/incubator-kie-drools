@@ -25,7 +25,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -41,8 +43,13 @@ public class RocksDBProcessInstances<T> implements MutableProcessInstances<T> {
     private final RocksDB db;
 
     public RocksDBProcessInstances(Process<T> process, RocksDB db) {
+        this(process, db, null);
+    }
+
+    public RocksDBProcessInstances(Process<T> process, RocksDB db, HeadersPersistentConfig headersConfig) {
         this.process = process;
-        marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners().build();
+        marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners()
+                .withContextEntry(MarshallerContextName.MARSHALLER_HEADERS_CONFIG, headersConfig).build();
         this.db = db;
     }
 

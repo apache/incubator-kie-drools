@@ -257,6 +257,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         processInstance = null;
     }
 
+    public boolean hasHeader(String headerName) {
+        return processInstance().getHeaders().containsKey(headerName);
+    }
+
     @Override
     public void start() {
         start(Collections.emptyMap());

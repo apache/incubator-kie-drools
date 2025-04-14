@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.persistence.postgresql;
 
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
 
@@ -28,6 +29,7 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
     private final Long queryTimeout;
     private final PgPool client;
     private final Boolean lock;
+    private HeadersPersistentConfig headersConfig;
 
     // Constructor for DI
     protected AbstractProcessInstancesFactory() {
@@ -35,9 +37,15 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
     }
 
     public AbstractProcessInstancesFactory(PgPool client, Long queryTimeout, Boolean lock) {
+        this(client, queryTimeout, lock, null);
+    }
+
+    public AbstractProcessInstancesFactory(PgPool client, Long queryTimeout, Boolean lock,
+            HeadersPersistentConfig headersConfig) {
         this.client = client;
         this.queryTimeout = queryTimeout;
         this.lock = lock;
+        this.headersConfig = headersConfig;
     }
 
     public PgPool client() {
@@ -50,6 +58,6 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
 
     @Override
     public PostgresqlProcessInstances createProcessInstances(Process<?> process) {
-        return new PostgresqlProcessInstances(process, client(), queryTimeout, lock());
+        return new PostgresqlProcessInstances(process, client(), queryTimeout, lock(), headersConfig);
     }
 }

@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.persistence.springboot;
 
+import java.util.List;
+
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.postgresql.AbstractProcessInstancesFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,8 +35,10 @@ public class PostgresqlProcessInstancesFactory extends AbstractProcessInstancesF
     @Autowired
     public PostgresqlProcessInstancesFactory(@Qualifier("kogito") PgPool client,
             @Value("${kogito.persistence.query.timeout.millis:10000}") Long queryTimeout,
-            @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock) {
-        super(client, queryTimeout, lock);
+            @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock,
+            @Value("${kogito.persistence.headers.enabled:false}") Boolean headersEnabled,
+            @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded) {
+        super(client, queryTimeout, lock, new HeadersPersistentConfig(headersEnabled, headersExcluded));
     }
 
     protected PostgresqlProcessInstancesFactory() {

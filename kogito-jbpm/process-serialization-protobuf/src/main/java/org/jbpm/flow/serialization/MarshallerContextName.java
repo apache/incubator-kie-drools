@@ -21,6 +21,7 @@ package org.jbpm.flow.serialization;
 import java.util.function.Supplier;
 
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.Process;
 
 public final class MarshallerContextName<T> {
@@ -31,6 +32,7 @@ public final class MarshallerContextName<T> {
     public static final MarshallerContextName<Process<?>> MARSHALLER_PROCESS = new MarshallerContextName<>("PROCESS");
     public static final MarshallerContextName<RuleFlowProcessInstance> MARSHALLER_PROCESS_INSTANCE = new MarshallerContextName<>("PROCESS_INSTANCE");
     public static final MarshallerContextName<Boolean> MARSHALLER_INSTANCE_READ_ONLY = new MarshallerContextName<>("READ_ONLY");
+    public static final MarshallerContextName<HeadersPersistentConfig> MARSHALLER_HEADERS_CONFIG = new MarshallerContextName<HeadersPersistentConfig>("HEADER_CONFIG");
     public static final MarshallerContextName<ProcessInstanceMarshallerListener[]> MARSHALLER_INSTANCE_LISTENER =
             new MarshallerContextName<>("MARSHALLER_INSTANCE_LISTENERS", () -> new ProcessInstanceMarshallerListener[0]);
     public static final MarshallerContextName<NodeInstanceReader[]> MARSHALLER_NODE_INSTANCE_READER = new MarshallerContextName<>("MARSHALLER_NODE_INSTANCE_READER", () -> new NodeInstanceReader[0]);

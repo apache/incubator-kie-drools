@@ -18,9 +18,13 @@
  */
 package org.kie.kogito.persistence.quarkus;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.sql.DataSource;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,8 +35,10 @@ public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory
 
     @Inject
     public JDBCProcessInstancesFactory(DataSource dataSource,
-            @ConfigProperty(name = "kogito.persistence.optimistic.lock", defaultValue = "false") Boolean lock) {
-        super(dataSource, lock);
+            @ConfigProperty(name = "kogito.persistence.optimistic.lock", defaultValue = "false") Boolean lock,
+            @ConfigProperty(name = "kogito.persistence.headers.enabled", defaultValue = "false") boolean headersEnabled,
+            @ConfigProperty(name = "kogito.persistence.headers.excluded") Optional<List<String>> headersExcluded) {
+        super(dataSource, lock, HeadersPersistentConfig.of(headersEnabled, headersExcluded));
     }
 
     public JDBCProcessInstancesFactory() {

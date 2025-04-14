@@ -18,8 +18,11 @@
  */
 package org.kie.kogito.persistence.springboot;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +33,10 @@ public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory
 
     @Autowired
     public JDBCProcessInstancesFactory(DataSource dataSource,
-            @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock) {
-        super(dataSource, lock);
+            @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock,
+            @Value("${kogito.persistence.headers.enabled:false}") Boolean headersEnabled,
+            @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded) {
+        super(dataSource, lock, new HeadersPersistentConfig(headersEnabled, headersExcluded));
     }
 
 }

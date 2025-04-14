@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.mongodb;
 
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -30,17 +31,24 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
     private final String dbName;
     private final Boolean lock;
     private final AbstractTransactionManager transactionManager;
+    private HeadersPersistentConfig headersConfig;
 
     public AbstractProcessInstancesFactory(MongoClient mongoClient, String dbName, Boolean lock, AbstractTransactionManager transactionManager) {
+        this(mongoClient, dbName, lock, transactionManager, null);
+    }
+
+    public AbstractProcessInstancesFactory(MongoClient mongoClient, String dbName, Boolean lock,
+            AbstractTransactionManager transactionManager, HeadersPersistentConfig headersPersistentConfig) {
         this.mongoClient = mongoClient;
         this.dbName = dbName;
         this.lock = lock;
         this.transactionManager = transactionManager;
+        this.headersConfig = headersPersistentConfig;
     }
 
     @Override
     public MongoDBProcessInstances<?> createProcessInstances(Process<?> process) {
-        return new MongoDBProcessInstances<>(mongoClient, process, dbName, transactionManager, lock);
+        return new MongoDBProcessInstances<>(mongoClient, process, dbName, transactionManager, lock, headersConfig);
     }
 
 }

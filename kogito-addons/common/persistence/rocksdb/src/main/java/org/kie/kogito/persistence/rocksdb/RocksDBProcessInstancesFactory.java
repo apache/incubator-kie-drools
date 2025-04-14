@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.persistence.rocksdb;
 
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.rocksdb.Options;
@@ -27,14 +28,20 @@ import org.rocksdb.RocksDBException;
 public class RocksDBProcessInstancesFactory implements ProcessInstancesFactory, AutoCloseable {
 
     private final RocksDB db;
+    private final HeadersPersistentConfig headersConfig;
 
     public RocksDBProcessInstancesFactory(Options options, String dbLocation) throws RocksDBException {
+        this(options, dbLocation, null);
+    }
+
+    public RocksDBProcessInstancesFactory(Options options, String dbLocation, HeadersPersistentConfig headersConfig) throws RocksDBException {
         this.db = RocksDB.open(options, dbLocation);
+        this.headersConfig = headersConfig;
     }
 
     @Override
     public RocksDBProcessInstances<?> createProcessInstances(Process<?> process) {
-        return new RocksDBProcessInstances<>(process, db);
+        return new RocksDBProcessInstances<>(process, db, headersConfig);
     }
 
     @Override

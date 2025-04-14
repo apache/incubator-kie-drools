@@ -24,7 +24,9 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -44,9 +46,14 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     private final Repository repository;
 
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock) {
+        this(process, dataSource, lock, null);
+    }
+
+    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock, HeadersPersistentConfig headersConfig) {
         this.process = process;
         this.lock = lock;
-        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners().build();
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners()
+                .withContextEntry(MarshallerContextName.MARSHALLER_HEADERS_CONFIG, headersConfig).build();
         this.repository = new GenericRepository(dataSource);
     }
 

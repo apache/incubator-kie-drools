@@ -20,9 +20,12 @@ package org.kie.kogito.serverless.workflow.openapi;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.util.ContextFactory;
@@ -39,8 +42,11 @@ import io.quarkus.restclient.runtime.RestClientBuilderFactory;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler {
+
+    private static final Collection<String> excludedHeaders = Set.of("User-Agent", "Host", "Content-Length", "Accept", "Accept-Encoding", "Connection");
 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
@@ -48,7 +54,16 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
         T ref = RestClientBuilderFactory.build(clazz, calculatedConfigKey(workItem)).register(new ClientRequestFilter() {
             @Override
             public void filter(ClientRequestContext requestContext) throws IOException {
-                ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> requestContext.getHeaders().put(k, Collections.singletonList(v)));
+                MultivaluedMap<String, Object> contextHeaders = requestContext.getHeaders();
+                ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> contextHeaders.put(k, Collections.singletonList(v)));
+                Map<String, List<String>> headers = workItem.getProcessInstance().getHeaders();
+                if (headers != null) {
+                    headers.forEach((k, v) -> {
+                        if (!excludedHeaders.contains(k)) {
+                            contextHeaders.putIfAbsent(k, (List) v);
+                        }
+                    });
+                }
             }
         }).build(clazz);
         try {
