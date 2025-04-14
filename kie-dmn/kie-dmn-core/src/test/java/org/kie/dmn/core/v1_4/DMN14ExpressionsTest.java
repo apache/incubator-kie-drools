@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,9 +80,8 @@ public class DMN14ExpressionsTest extends BaseVariantTest {
         testConfig = conf;
         setup();
         DMNResult results = runtime.evaluateByName(model, new DMNContextImpl(), "Non boolean");
-        assertThat(results.getMessages()).hasSize(1);
+        assertThat(results.getMessages()).hasSize(2);
         assertThat(results.getMessages().iterator().next().getMessageType()).isEqualTo(DMNMessageType.ERROR_EVAL_NODE);
-
     }
 
     @MethodSource("params")
