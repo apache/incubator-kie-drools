@@ -16,22 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.it;
+package org.kie.kogito.process.impl.lock;
 
-import org.junit.jupiter.api.Disabled;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
+public interface ProcessInstanceLockStrategy {
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
-
-import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOGITO_KAFKA_TOPICS;
-
-@QuarkusIntegrationTest
-@QuarkusTestResource(value = KafkaQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_KAFKA_TOPICS, value = KafkaPersistenceIT.TOPICS) })
-@Disabled
-public class KafkaPersistenceIT extends PersistenceTest {
-
-    public static final String TOPICS = "kogito.process";
+    <T> T executeOperation(String processInstanceId, WorkflowAtomicExecutor<T> empty);
 
 }

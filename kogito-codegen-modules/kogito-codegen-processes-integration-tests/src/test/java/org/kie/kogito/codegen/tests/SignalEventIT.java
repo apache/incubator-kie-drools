@@ -247,8 +247,6 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(2).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
-        // since the unit of work is not ended yet there is still instance visible
-        assertOne(p.instances());
         uow.end();
         // after unit of work is ended instance is gone from the list
         assertEmpty(p.instances());

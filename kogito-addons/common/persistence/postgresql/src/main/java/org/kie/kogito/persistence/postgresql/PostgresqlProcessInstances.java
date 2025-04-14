@@ -113,7 +113,13 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        return findByIdInternal(id).map(r -> unmarshall(r, mode));
+        return findByIdInternal(id).map(r -> {
+            AbstractProcessInstance pi = (AbstractProcessInstance) unmarshall(r, mode);
+            if (!ProcessInstanceReadMode.READ_ONLY.equals(mode)) {
+                disconnect(pi);
+            }
+            return pi;
+        });
     }
 
     @Override
@@ -142,10 +148,11 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     }
 
     private void disconnect(ProcessInstance instance) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> findByIdInternal(instance.id()).map(r -> {
+        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(() -> findByIdInternal(instance.id()).map(r -> {
             ((AbstractProcessInstance) instance).setVersion(r.getLong(VERSION));
             return r.getBuffer(PAYLOAD).getBytes();
         }).orElseThrow()));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
     }
 
     private boolean insertInternal(String id, byte[] payload) {

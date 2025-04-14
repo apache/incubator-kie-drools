@@ -18,30 +18,33 @@
  */
 package org.kie.kogito.codegen.tests;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.codegen.AbstractCodegenIT;
+import org.kie.kogito.jbpm.usertask.handler.UserTaskKogitoWorkItemHandlerProcessListener;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTasks;
+import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.COMPLETE;
 
 public class GatewayIT extends AbstractCodegenIT {
 
     @Test
     public void testEventBasedGatewayWithData() throws Exception {
-        Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
-        resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("gateway/EventBasedSplit.bpmn2"));
-        Application app = generateCode(resourcesTypeMap);
+        Application app = generateCodeProcessesOnly("gateway/EventBasedSplit.bpmn2");
         assertThat(app).isNotNull();
 
         Process<? extends Model> p = app.get(Processes.class).processById("EventBasedSplit");
@@ -80,4 +83,45 @@ public class GatewayIT extends AbstractCodegenIT {
         assertEmpty(p.instances());
     }
 
+    @Test
+    public void testMultipleJoin() throws Exception {
+        Application app = generateCodeProcessesOnly("gateway/MultipleJoin.bpmn2");
+        assertThat(app).isNotNull();
+        // we wired user tasks and processes
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskKogitoWorkItemHandlerProcessListener(app.get(Processes.class)));
+
+        Process<? extends Model> p = app.get(Processes.class).processById("hiring_join");
+
+        Model m = p.createModel();
+
+        CandidateData data = new CandidateData();
+        data.setEmail("candidate@gmail.com");
+        data.setExperience(10);
+        data.setSkills(List.of("programmer", "soft"));
+        data.setName("minor");
+        data.setLastName("last name");
+
+        m.update(Map.of("candidateData", data));
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        UserTasks userTasks = app.get(UserTasks.class);
+
+        Awaitility.given().until(() -> {
+            return userTasks.instances().findByIdentity(IdentityProviders.of("mary")).size() == 1;
+        });
+
+        List<UserTaskInstance> userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("mary"));
+        assertThat(userTaskList).hasSize(1);
+
+        UserTaskInstance userTaskInstance_1 = userTaskList.get(0);
+        Offer offer = new Offer();
+        offer.setCategory("custom category");
+        offer.setSalary(50000);
+        userTaskInstance_1.transition(COMPLETE, Map.of("Offer", offer), IdentityProviders.of("mary"));
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
 }

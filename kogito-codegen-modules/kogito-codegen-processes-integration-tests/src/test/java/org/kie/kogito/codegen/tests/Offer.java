@@ -16,22 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.it;
+package org.kie.kogito.codegen.tests;
 
-import org.junit.jupiter.api.Disabled;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
+public class Offer {
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
+    private String category;
+    private Integer salary;
 
-import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOGITO_KAFKA_TOPICS;
+    public String getCategory() {
+        return category;
+    }
 
-@QuarkusIntegrationTest
-@QuarkusTestResource(value = KafkaQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_KAFKA_TOPICS, value = KafkaPersistenceIT.TOPICS) })
-@Disabled
-public class KafkaPersistenceIT extends PersistenceTest {
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public static final String TOPICS = "kogito.process";
+    public Integer getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
 
 }

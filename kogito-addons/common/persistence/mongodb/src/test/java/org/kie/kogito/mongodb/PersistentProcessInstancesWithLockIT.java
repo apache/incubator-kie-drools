@@ -27,6 +27,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
@@ -62,6 +63,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
         assertThat(instanceOne.version()).isOne();
         assertThat(instanceTwo.version()).isOne();
+        ((AbstractProcessInstance) instanceTwo).startDate(); // force reload
         instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));

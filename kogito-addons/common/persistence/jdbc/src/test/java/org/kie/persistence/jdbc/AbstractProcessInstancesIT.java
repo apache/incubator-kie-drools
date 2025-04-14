@@ -37,6 +37,7 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
@@ -201,6 +202,7 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
         assertThat(instanceOne.version()).isEqualTo(lock() ? 1L : 0);
         assertThat(instanceTwo.version()).isEqualTo(lock() ? 1L : 0);
+        ((AbstractProcessInstance) instanceTwo).startDate(); // force reload
         instanceOne.updateVariables(BpmnVariables.create(singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(singletonMap("ss", "test"));

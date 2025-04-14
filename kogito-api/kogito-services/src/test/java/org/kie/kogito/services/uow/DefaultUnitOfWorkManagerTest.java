@@ -136,12 +136,12 @@ public class DefaultUnitOfWorkManagerTest {
 
         final AtomicInteger picounter = new AtomicInteger(0);
 
-        BaseWorkUnit dummyWork = new BaseWorkUnit(counter, (d) -> ((AtomicInteger) d).incrementAndGet());
-        ProcessInstanceWorkUnit<?> piWork = new ProcessInstanceWorkUnit<>(null, (d) -> picounter.set(counter.get()));
+        BaseWorkUnit<AtomicInteger> dummyWork = new BaseWorkUnit<AtomicInteger>(counter, d -> d.incrementAndGet());
+        BaseWorkUnit<AtomicInteger> piWork = new BaseWorkUnit<AtomicInteger>(picounter, d -> d.set(counter.get()));
         unit.start();
         // make sure that dummyWork is first added and then piWork
-        unit.intercept(dummyWork);
         unit.intercept(piWork);
+        unit.intercept(dummyWork);
         unit.end();
 
         // after execution the pi should be 0 as this is the initial value of counter which will indicate

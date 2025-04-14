@@ -68,12 +68,15 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     @Override
     public Optional findById(String id, ProcessInstanceReadMode mode) {
         Path processInstanceStorage = Paths.get(storage.toString(), id);
-
         if (Files.notExists(processInstanceStorage)) {
             return Optional.empty();
         }
         byte[] data = readBytesFromFile(processInstanceStorage);
-        return Optional.of(marshaller.unmarshallProcessInstance(data, process, mode));
+        AbstractProcessInstance pi = (AbstractProcessInstance) marshaller.unmarshallProcessInstance(data, process, mode);
+        if (pi != null && !ProcessInstanceReadMode.READ_ONLY.equals(mode)) {
+            disconnect(processInstanceStorage, pi);
+        }
+        return Optional.of(pi);
     }
 
     @Override
@@ -149,7 +152,8 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     protected void disconnect(Path processInstanceStorage, ProcessInstance instance) {
         Supplier<byte[]> supplier = () -> readBytesFromFile(processInstanceStorage);
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
     }
 
     public String getMetadata(Path file, String key) {

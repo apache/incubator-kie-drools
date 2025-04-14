@@ -148,12 +148,14 @@ public class CacheProcessInstances implements MutableProcessInstances {
             ((AbstractProcessInstance) instance).setVersion(versionedCache.getVersion());
             return versionedCache.getValue();
         };
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
     }
 
     private void reload(String id, ProcessInstance instance) {
         Supplier<byte[]> supplier = () -> cache.get(id);
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
     }
 
     @Override

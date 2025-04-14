@@ -170,7 +170,7 @@ class FileSystemProcessInstancesTest {
         assertThat(processInstance.description()).isEqualTo("User Task");
 
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
-        verify(fileSystemBasedStorage).update(any(), any());
+        verify(fileSystemBasedStorage).create(any(), any());
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
