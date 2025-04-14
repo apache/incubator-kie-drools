@@ -81,6 +81,7 @@ public class KieSessionModelBuilder {
         final Set<String> alreadyProcessesKieBases = new HashSet<>();
         for (final Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
             modelsByKBase.put(entry.getKey(), getModelsForKieBaseWithIncludes(entry.getValue(), modelsByPackage, alreadyProcessesKieBases));
+            alreadyProcessesKieBases.clear();
         }
         return modelsByKBase;
     }
