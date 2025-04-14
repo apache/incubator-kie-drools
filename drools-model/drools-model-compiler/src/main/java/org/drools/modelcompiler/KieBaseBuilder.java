@@ -33,7 +33,6 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBaseOrIncludedKieBases;
 
 public class KieBaseBuilder {
