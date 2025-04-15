@@ -23,9 +23,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
@@ -69,16 +71,60 @@ public class KieSessionModelBuilder {
 
     }
 
-    private Map<String, List<String>> getModelByKBase(Collection<CodegenPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
-        Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
-        Map<String, List<String>> modelsByKBase = new HashMap<>();
-        for (Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
-            List<String> kieBasePackages = entry.getValue().getPackages();
-            boolean isAllPackages = kieBasePackages.isEmpty() || (kieBasePackages.size() == 1 && kieBasePackages.get(0).equals("*"));
-            modelsByKBase.put(entry.getKey(),
-                    isAllPackages ? new ArrayList<>(modelsByPackage.values()) : kieBasePackages.stream().map(modelsByPackage::get).filter(Objects::nonNull).collect(toList()));
+    /**
+     * Provides rules model names by KieBase.
+     *
+     * @param packageSources Package code sources for code generation.
+     * @param kieBaseModels Map of KieBase models, where key is the KieBase name.
+     * @return Map of rules models, where key is KieBase name and value is a list of rules model names that belong to that KieBase.
+     */
+    private Map<String, List<String>> getModelByKBase(final Collection<CodegenPackageSources> packageSources,
+            final Map<String, KieBaseModel> kieBaseModels) {
+        final Map<String, String> modelsByPackage = getModelsByPackage(packageSources);
+        final Map<String, List<String>> modelsByKBase = new HashMap<>();
+        // Helper set of already processed KieBases that is used to avoid infinite loop, when a user
+        // can potentially create a loop with includes definition, e.g.
+        // a includes b and b includes a
+        final Set<String> alreadyProcessesKieBases = new HashSet<>();
+        for (final Map.Entry<String, KieBaseModel> entry : kieBaseModels.entrySet()) {
+            modelsByKBase.put(entry.getKey(), getModelsForKieBaseWithIncludes(entry.getValue(), modelsByPackage, alreadyProcessesKieBases));
+            alreadyProcessesKieBases.clear();
         }
         return modelsByKBase;
+    }
+
+    /**
+     * Provides rules model names that are part of a KieBase. Checks which packages should be included in a KieBase,
+     * based on package names and "includes" configuration.
+     *
+     * @param kieBaseModel KieBase model for which the rule models are returned.
+     * @param modelsByPackage Map of rules models, where key is the package name where rules model is placed and value is the whole rules model class name with path.
+     * @param alreadyProcessesKieBases Set containing names of already processed KieBases as part of this method. This method is recursive, because KieBase can include other KieBases.
+     */
+    private List<String> getModelsForKieBaseWithIncludes(final KieBaseModel kieBaseModel,
+            final Map<String, String> modelsByPackage, final Set<String> alreadyProcessesKieBases) {
+        final List<String> modelsForKieBase = getModelsForKieBaseWithoutIncludes(kieBaseModel, modelsByPackage);
+        if (kieBaseModel.getIncludes() != null && !kieBaseModel.getIncludes().isEmpty()) {
+            for (final String includedKieBaseName : kieBaseModel.getIncludes()) {
+                if (!alreadyProcessesKieBases.contains(includedKieBaseName)) {
+                    modelsForKieBase.addAll(getModelsForKieBaseWithIncludes(kieBaseModels.get(includedKieBaseName), modelsByPackage, alreadyProcessesKieBases));
+                    alreadyProcessesKieBases.add(includedKieBaseName);
+                }
+            }
+        }
+        return modelsForKieBase;
+    }
+
+    /**
+     * Provides rules model names that are part of a KieBase.
+     *
+     * @param kieBaseModel KieBase model for which the rule models are returned.
+     * @param modelsByPackage Map of rules models, where key is the package name where rules model is placed and value is the whole rules model class name with path.
+     */
+    private List<String> getModelsForKieBaseWithoutIncludes(final KieBaseModel kieBaseModel, final Map<String, String> modelsByPackage) {
+        final List<String> kieBasePackages = kieBaseModel.getPackages();
+        boolean isAllPackages = kieBasePackages.isEmpty() || (kieBasePackages.size() == 1 && kieBasePackages.get(0).equals("*"));
+        return isAllPackages ? new ArrayList<>(modelsByPackage.values()) : kieBasePackages.stream().map(modelsByPackage::get).filter(Objects::nonNull).collect(toList());
     }
 
     private Map<String, String> getModelsByPackage(Collection<CodegenPackageSources> packageSources) {
