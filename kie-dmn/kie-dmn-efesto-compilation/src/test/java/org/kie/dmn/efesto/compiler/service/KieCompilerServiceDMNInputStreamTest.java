@@ -38,57 +38,56 @@ import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("unchecked")
-public class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMNTest {
+class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMNTest {
 
     private static EfestoInputStreamResource toProcess;
 
     @BeforeAll
-    public static void setUp() throws IOException {
+    static void setUp() {
         kieCompilationService = new KieCompilerServiceDMNInputStream();
         commonSetUp();
     }
 
     @BeforeEach
-    public void init() {
+    void init() {
         InputStream is = new ByteArrayInputStream(dmnFile.getContent());
-        toProcess = new EfestoInputStreamResource(is, dmnFullFileName);
+        toProcess = new EfestoInputStreamResource(is, DMN_FULL_FILE_NAME);
     }
 
     @Test
-    public void canManageResource() {
+    void canManageResource() {
         assertThat(kieCompilationService.canManageResource(toProcess)).isTrue();
         EfestoFileResource notToProcess = new EfestoFileResource(dmnFile);
         assertThat(kieCompilationService.canManageResource(notToProcess)).isFalse();
     }
 
     @Test
-    public void processResource() {
+    void processResource() {
         List<EfestoCompilationOutput> retrieved = kieCompilationService.processResource(toProcess,
                                                                                         DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
         assertThat(retrieved).isNotNull().hasSize(1);
         EfestoCompilationOutput retrievedOutput = retrieved.get(0);
-        assertThat(retrievedOutput).isNotNull();
-        assertThat(retrievedOutput).isExactlyInstanceOf(EfestoCallableOutputDMN.class);
+        assertThat(retrievedOutput).isNotNull().isExactlyInstanceOf(EfestoCallableOutputDMN.class);
         EfestoCallableOutputDMN callableOutput = (EfestoCallableOutputDMN) retrievedOutput;
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnNameSpace);
-        assertThat(localComponentIdDmn.getName()).isEqualTo(dmnModelName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_NAMESPACE);
+        assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_MODEL_NAME);
     }
 
     @Test
-    public void hasCompilationSource() {
+    void hasCompilationSource() {
         kieCompilationService.processResource(toProcess,
                                               DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
-        assertThat(kieCompilationService.hasCompilationSource(dmnFullFileName)).isTrue();
+        assertThat(kieCompilationService.hasCompilationSource(DMN_FULL_FILE_NAME)).isTrue();
     }
 
     @Test
-    public void getCompilationSource() {
+    void getCompilationSource() {
         kieCompilationService.processResource(toProcess,
                                               DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
-        String retrieved = kieCompilationService.getCompilationSource(dmnFullFileName);
+        String retrieved = kieCompilationService.getCompilationSource(DMN_FULL_FILE_NAME);
         assertThat(retrieved).isNotNull();
         String expected = new String(dmnFile.getContent(), StandardCharsets.UTF_8);
         assertThat(retrieved).isEqualTo(expected);

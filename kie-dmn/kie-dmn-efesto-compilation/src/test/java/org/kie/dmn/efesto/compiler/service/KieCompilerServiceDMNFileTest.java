@@ -37,13 +37,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SuppressWarnings("unchecked")
-public class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMNTest {
+class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMNTest {
 
     private static EfestoFileResource toProcessDmn;
     private static EfestoFileResource toProcessDmnPmml;
 
     @BeforeAll
-    public static void setUp() throws IOException {
+    static void setUp() {
         kieCompilationService = new KieCompilerServiceDMNFile();
         commonSetUp();
         toProcessDmn = new EfestoFileResource(dmnFile);
@@ -51,82 +51,80 @@ public class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMN
     }
 
     @Test
-    public void canManageResourceDmn() {
+    void  canManageResourceDmn() {
         assertThat(kieCompilationService.canManageResource(toProcessDmn)).isTrue();
         InputStream is = new ByteArrayInputStream(dmnFile.getContent());
-        EfestoInputStreamResource notToProcess = new EfestoInputStreamResource(is, dmnFullPathFileName);
+        EfestoInputStreamResource notToProcess = new EfestoInputStreamResource(is, DMN_FULL_PATH_FILE_NAME);
         assertThat(kieCompilationService.canManageResource(notToProcess)).isFalse();
     }
 
     @Test
-    public void canManageResourceDmnPmml() {
+    void  canManageResourceDmnPmml() {
         assertThat(kieCompilationService.canManageResource(toProcessDmnPmml)).isTrue();
         InputStream is = new ByteArrayInputStream( dmnPmmlFile.getContent());
-        EfestoInputStreamResource notToProcess = new EfestoInputStreamResource(is, dmnPmmlFullPathFileName);
+        EfestoInputStreamResource notToProcess = new EfestoInputStreamResource(is, DMN_PMML_FULL_PATH_FILE_NAME);
         assertThat(kieCompilationService.canManageResource(notToProcess)).isFalse();
     }
 
     @Test
-    public void processResourceDmn() {
+    void  processResourceDmn() {
         List<EfestoCompilationOutput> retrieved = kieCompilationService.processResource(toProcessDmn,
                                                                                         dmnCompilationContext);
         assertThat(retrieved).isNotNull().hasSize(1);
         EfestoCompilationOutput retrievedOutput = retrieved.get(0);
-        assertThat(retrievedOutput).isNotNull();
-        assertThat(retrievedOutput).isExactlyInstanceOf(EfestoCallableOutputDMN.class);
+        assertThat(retrievedOutput).isNotNull().isExactlyInstanceOf(EfestoCallableOutputDMN.class);
         EfestoCallableOutputDMN callableOutput = (EfestoCallableOutputDMN) retrievedOutput;
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnNameSpace);
-        assertThat(localComponentIdDmn.getName()).isEqualTo(dmnModelName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_NAMESPACE);
+        assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_MODEL_NAME);
     }
 
     @Test
-    public void processResourceDmnPmml() {
+    void  processResourceDmnPmml() {
         List<EfestoCompilationOutput> retrieved = kieCompilationService.processResource(toProcessDmnPmml,
                                                                                         dmnCompilationContext);
         assertThat(retrieved).isNotNull().hasSize(1);
         EfestoCompilationOutput retrievedOutput = retrieved.get(0);
-        assertThat(retrievedOutput).isNotNull();
-        assertThat(retrievedOutput).isExactlyInstanceOf(EfestoCallableOutputDMN.class);
+        assertThat(retrievedOutput).isNotNull().isExactlyInstanceOf(EfestoCallableOutputDMN.class);
         EfestoCallableOutputDMN callableOutput = (EfestoCallableOutputDMN) retrievedOutput;
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(dmnPmmlNameSpace);
-        assertThat(localComponentIdDmn.getName()).isEqualTo(dmnPmmlModelName);
+        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_PMML_NAMESPACE);
+        assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_PMML_MODEL_NAME);
     }
 
     @Test
-    public void hasCompilationSourceDmn() {
+    void  hasCompilationSourceDmn() {
         kieCompilationService.processResource(toProcessDmn,
                                               dmnCompilationContext);
-        assertThat(kieCompilationService.hasCompilationSource(dmnFullPathFileName)).isTrue();
+        assertThat(kieCompilationService.hasCompilationSource(DMN_FULL_PATH_FILE_NAME)).isTrue();
     }
 
     @Test
-    public void hasCompilationSourceDmnPmml() {
+    void hasCompilationSourceDmnPmml() {
         kieCompilationService.processResource(toProcessDmnPmml,
                                               dmnCompilationContext);
-        assertThat(kieCompilationService.hasCompilationSource(dmnPmmlFullPathFileName)).isTrue();
+        assertThat(kieCompilationService.hasCompilationSource(DMN_PMML_FULL_PATH_FILE_NAME)).isTrue();
     }
 
     @Test
-    public void getCompilationSourceDmn() {
+    void getCompilationSourceDmn() {
         kieCompilationService.processResource(toProcessDmn,
                                               dmnCompilationContext);
-        String retrieved = kieCompilationService.getCompilationSource(dmnFullPathFileName);
+        String retrieved = kieCompilationService.getCompilationSource(DMN_FULL_PATH_FILE_NAME);
         assertThat(retrieved).isNotNull();
         String expected = new String(dmnFile.getContent(), StandardCharsets.UTF_8);
         assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
-    public void getCompilationSourceDmnPmml() {
+    void getCompilationSourceDmnPmml() {
         kieCompilationService.processResource(toProcessDmnPmml,
                                               dmnCompilationContext);
-        String retrieved = kieCompilationService.getCompilationSource(dmnPmmlFullPathFileName);
+        String retrieved = kieCompilationService.getCompilationSource(DMN_PMML_FULL_PATH_FILE_NAME);
         assertThat(retrieved).isNotNull();
         String expected = new String(dmnPmmlFile.getContent(), StandardCharsets.UTF_8);
         assertThat(retrieved).isEqualTo(expected);

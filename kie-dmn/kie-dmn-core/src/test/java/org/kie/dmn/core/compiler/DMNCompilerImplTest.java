@@ -17,6 +17,7 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,7 @@ import org.mockito.verification.VerificationMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Reader;
-import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -216,7 +214,7 @@ class DMNCompilerImplTest {
             dMNCompiler.iterateImports(dmnDefs, null, model, null );
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), dmnInvocation);
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.whichImportType(Mockito.any()), times(1));
-            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), (Function<String, Reader>) Mockito.any(), Mockito.any()), pmmlInvocation);
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), pmmlInvocation);
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.logErrorMessage(Mockito.any(), Mockito.any()), logErrorInvocation);
         }
     }

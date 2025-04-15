@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import java.util.Optional;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
@@ -36,7 +35,6 @@ import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
-import org.kie.efesto.common.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 

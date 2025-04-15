@@ -94,8 +94,6 @@ import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
 import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
@@ -141,8 +139,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource, Collection<DMNModel> dmnModels) {
         try {
-            DMNModel model = compile(resource.getReader(), dmnModels, resource);
-            return model;
+            return compile(resource.getReader(), dmnModels, resource);
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }
@@ -157,8 +154,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
             Definitions dmndefs = getMarshaller().unmarshal(source);
-            DMNModel model = compile(dmndefs, dmnModels, resource, null);
-            return model;
+            return compile(dmndefs, dmnModels, resource, null);
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
@@ -249,7 +245,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     DMNImportsUtil.resolveDMNImportType(i, dmnModels, model, toMerge);
                     break;
                 case PMML:
-                    DMNImportsUtil.resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
+                    DMNImportsUtil.resolvePMMLImportType(model, dmndefs, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                     break;
                 default :

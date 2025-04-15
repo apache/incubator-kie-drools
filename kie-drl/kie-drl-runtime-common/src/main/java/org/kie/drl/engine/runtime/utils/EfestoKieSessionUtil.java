@@ -29,12 +29,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
-import org.kie.efesto.common.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class EfestoKieSessionUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(EfestoKieSessionUtil.class.getName());
