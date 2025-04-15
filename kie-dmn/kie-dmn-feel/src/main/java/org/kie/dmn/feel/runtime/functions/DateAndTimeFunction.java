@@ -84,6 +84,17 @@ public class DateAndTimeFunction
         return FEELFnResult.ofResult(time);
     }
 
+    static FEELFnResult<ZoneId> validateTimeZone(String timeZone) {
+        if (timeZone == null || timeZone.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "timeZone", "cannot be null"));
+        }
+        try {
+            return FEELFnResult.ofResult(ZoneId.of(timeZone));
+        } catch (DateTimeException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "timeZone", "is not a recognized as a valid time zone : " + timeZone));
+        }
+    }
+
     private DateAndTimeFunction() {
         super(FEELConversionFunctionNames.DATE_AND_TIME);
     }
@@ -210,12 +221,13 @@ public class DateAndTimeFunction
         if (timeValidationResult.isLeft()) {
             return timeValidationResult;
         }
-        if (timeZone == null || timeZone.isEmpty() || TimeZone.getTimeZone(timeZone) == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "timeZone", "cannot be null"));
+        FEELFnResult<ZoneId> timeZoneValidationResult = validateTimeZone(timeZone);
+        if (timeZoneValidationResult.isLeft()) {
+            return timeZoneValidationResult.cata(FEELFnResult::ofError, value -> null);
         }
         try {
             date = dateValidationResult.getOrElse(null);
-            ZoneId zoneId = TimeZone.getTimeZone(timeZone).toZoneId();
+            ZoneId zoneId = timeZoneValidationResult.getOrElse(null);
             if (date instanceof LocalDate && time instanceof LocalTime) {
                 return FEELFnResult.ofResult(ZonedDateTime.of( (LocalDate) date, (LocalTime) time, zoneId) );
             } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
