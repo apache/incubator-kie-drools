@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,6 +43,7 @@ public class MemoryFileUtils {
 
     private static final String TO_RETURN_TEMPLATE = "toReturn {}";
     private static final String TO_RETURN_GETABSOLUTEPATH_TEMPLATE = "toReturn.getAbsolutePath() {}";
+    private static final String FILE_IN_JAR_SEPARATOR = "!/";
 
     private MemoryFileUtils() {
     }
@@ -128,14 +129,18 @@ public class MemoryFileUtils {
         return toReturn;
     }
 
-    static File getFileFromJar(URL retrieved) throws URISyntaxException, IOException {
-        logger.debug("getFileFromJar {}", retrieved);
-        String fileName = retrieved.getFile();
-        if (fileName.contains("/")) {
-            fileName = fileName.substring(fileName.lastIndexOf('/'));
+    static File getFileFromJar(URL toRead) throws URISyntaxException, IOException {
+        logger.debug("getFileFromJar {}", toRead);
+        if (!toRead.getProtocol().equals("jar")) {
+            logger.warn("Trying to read a file from a non-jar file {} with {} protocol", toRead.getPath(), toRead.getProtocol());
+            return null;
         }
-        String jarPath = retrieved.toString();
-        jarPath = jarPath.substring(0, jarPath.lastIndexOf("!/") + 2);
+        String fileName = toRead.getFile();
+        if (fileName.contains(FILE_IN_JAR_SEPARATOR)) {
+            fileName = fileName.substring((fileName.lastIndexOf(FILE_IN_JAR_SEPARATOR) + 1));
+        }
+        String jarPath = toRead.toString();
+        jarPath = jarPath.substring(0, jarPath.lastIndexOf(FILE_IN_JAR_SEPARATOR) + 2);
         URI uri = new URI(jarPath);
         Map<String, ?> env = new HashMap<>();
         Path filePath;

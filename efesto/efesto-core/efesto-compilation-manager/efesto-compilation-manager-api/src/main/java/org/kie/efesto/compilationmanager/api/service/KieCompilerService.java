@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,8 @@ package org.kie.efesto.compilationmanager.api.service;
 
 import java.util.List;
 
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.EfestoService;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
@@ -29,7 +30,8 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.compilationmanager.api.service.KieCompilerService</code> file
  */
-public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> {
+@SuppressWarnings("rawtypes")
+public interface KieCompilerService<E extends EfestoCompilationOutput, U extends EfestoCompilationContext> extends EfestoService {
 
 
     boolean canManageResource(EfestoResource toProcess);
@@ -46,6 +48,18 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
      * @return
      */
     List<E> processResource(EfestoResource toProcess, U context);
+
+    default boolean hasCompilationSource(String fileName) {
+        return false;
+    }
+
+    /**
+     * Retrieve the source of a given model file. Used to retrieve source from remote model (e.g. pmml model deployed in different jvm and looked for by dmn)
+     * @param fileName
+     */
+    default String getCompilationSource(String fileName) {
+        return null;
+    }
 
     /**
      * Return the model type that the CompilerService handles

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
@@ -34,6 +34,7 @@ import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl
 
 import static org.kie.drl.engine.compilation.utils.DrlCompilerHelper.pkgDescrToExecModel;
 
+@SuppressWarnings("rawtypes")
 public class KieCompilerServicePackDesc implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
 
     @Override

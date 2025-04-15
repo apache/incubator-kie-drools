@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,7 @@
  */
 package org.kie.drl.engine.runtime.kiesession.local.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 
 import org.kie.api.runtime.KieSession;
@@ -25,12 +26,19 @@ import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessio
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.utils.DrlRuntimeHelper;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.core.utils.JSONUtils;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
+import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
 
 public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoRuntimeContext> {
+
+    private static final ObjectMapper objectMapper = JSONUtils.getObjectMapper();
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
@@ -44,11 +52,25 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
 
     @Override
     public Optional<EfestoOutputDrlKieSessionLocal> evaluateInput(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
-        return DrlRuntimeHelper.execute(toEvaluate, context);
+        if (!(context instanceof EfestoLocalRuntimeContext)) {
+            context = buildWithParentClassLoader(context.getClass().getClassLoader(), context.getGeneratedResourcesMap());
+        }
+        return DrlRuntimeHelper.execute(toEvaluate, (EfestoLocalRuntimeContext) context);
     }
 
     @Override
     public String getModelType() {
         return "drl";
+    }
+
+    @Override
+    public Optional<EfestoInputDrlKieSessionLocal> parseJsonInput(String modelLocalUriIdString, String inputDataString) {
+        ModelLocalUriId modelLocalUriId;
+        try {
+            modelLocalUriId = objectMapper.readValue(modelLocalUriIdString, ModelLocalUriId.class);
+            return modelLocalUriId.model().equals(getModelType()) ? Optional.of(new EfestoInputDrlKieSessionLocal(modelLocalUriId, inputDataString)) : Optional.empty();
+        } catch (Exception e) {
+            throw new KieEfestoCommonException(String.format("Failed to parse %s as ModelLocalUriId", modelLocalUriIdString));
+        }
     }
 }

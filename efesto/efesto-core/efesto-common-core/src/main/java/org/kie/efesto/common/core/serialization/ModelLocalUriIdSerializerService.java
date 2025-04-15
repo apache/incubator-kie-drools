@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,31 +18,18 @@
  */
 package org.kie.efesto.common.core.serialization;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId> {
+public class ModelLocalUriIdSerializerService implements SerializerService<ModelLocalUriId> {
 
-    private static final long serialVersionUID = -3468047979532504909L;
-
-    public ModelLocalUriIdDeSerializer() {
-        this(null);
-    }
-
-    public ModelLocalUriIdDeSerializer(Class<ModelLocalUriId> t) {
-        super(t);
+    @Override
+    public Class<ModelLocalUriId> type() {
+        return ModelLocalUriId.class;
     }
 
     @Override
-    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
-        String path = node.get("fullPath").asText();
-        return new ModelLocalUriId(LocalUri.parse(path));
+    public JsonSerializer<? extends ModelLocalUriId> ser() {
+        return new ModelLocalUriIdSerializer();
     }
 }
