@@ -38,14 +38,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_5.TImport;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.core.storage.ContextStorage;
-import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
-import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
-import org.kie.pmml.api.identifiers.PmmlIdFactory;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getRelativeResolver;
@@ -60,8 +58,6 @@ class EfestoPMMLUtilsTest {
     private static final String PMML_FILE_PATH = "../pmml/" + PMML_FILE_NAME;
     private static File PMML_FILE;
     private static String PMML_SOURCE;
-
-
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -106,10 +102,10 @@ class EfestoPMMLUtilsTest {
 
     @ParameterizedTest
     @MethodSource("pmmlPaths")
-    void getPmmlModelLocalUriIdWithoutResolver(String fullFileNamePath, LocalComponentIdPmml expected) {
+    void getPmmlModelLocalUriIdWithoutResolver(String fullFileNamePath, ModelLocalUriId expected) {
         Import anImport = new TImport();
         anImport.setLocationURI(fullFileNamePath);
-        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, expected.name(), null);
+        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, ((LocalUri.LocalUriPathComponent)expected.asLocalUri()).getComponent(), null);
         assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
 
@@ -120,10 +116,10 @@ class EfestoPMMLUtilsTest {
 
     @ParameterizedTest
     @MethodSource("pmmlPaths")
-    void getPmmlModelLocalUriIdFromImportWithoutResource(String fullFileNamePath, LocalComponentIdPmml expected) {
+    void getPmmlModelLocalUriIdFromImportWithoutResource(String fullFileNamePath, ModelLocalUriId expected) {
         Import anImport = new TImport();
         anImport.setLocationURI(fullFileNamePath);
-        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriIdFromImport(anImport, expected.name());
+        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriIdFromImport(anImport, ((LocalUri.LocalUriPathComponent)expected.asLocalUri()).getComponent());
         assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
 
@@ -144,8 +140,8 @@ class EfestoPMMLUtilsTest {
 
     @ParameterizedTest
     @MethodSource("pmmlPaths")
-    void getPmmlModelLocalUriId(String fullFileNamePath, LocalComponentIdPmml expected) {
-        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriId(fullFileNamePath, expected.name());
+    void getPmmlModelLocalUriId(String fullFileNamePath, ModelLocalUriId expected) {
+        ModelLocalUriId retrieved = EfestoPMMLUtils.getPmmlModelLocalUriId(fullFileNamePath, ((LocalUri.LocalUriPathComponent)expected.asLocalUri()).getComponent());
         assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
 
@@ -213,9 +209,7 @@ class EfestoPMMLUtilsTest {
     }
 
     private static ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {
-        return new EfestoAppRoot()
-                .get(KiePmmlComponentRoot.class)
-                .get(PmmlIdFactory.class)
-                .get(fileName, modelName);
+        LocalUri localUri = LocalUri.Root.append("pmml").append(fileName).append(modelName);
+        return new ModelLocalUriId(localUri);
     }
 }

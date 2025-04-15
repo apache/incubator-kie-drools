@@ -59,8 +59,8 @@ import org.kie.dmn.model.v1_5.TContextEntry;
 import org.kie.dmn.model.v1_5.TFunctionDefinition;
 import org.kie.dmn.model.v1_5.TInformationItem;
 import org.kie.dmn.model.v1_5.TLiteralExpression;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.core.storage.ContextStorage;
-import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getRelativeResolver;
@@ -339,7 +339,7 @@ class DMNImportsUtilTest {
         assertThat(pmmlFile).isNotNull().exists();
 
         String pmmlFileContent = Files.readString(pmmlFile.toPath());
-        LocalComponentIdPmml modelLocalUriId = EfestoPMMLUtils.compilePMML(pmmlFileContent, pmmlFile.getName(), "SampleMineNew" , Thread.currentThread().getContextClassLoader());
+        ModelLocalUriId modelLocalUriId = EfestoPMMLUtils.compilePMML(pmmlFileContent, pmmlFile.getName(), "SampleMineNew" , Thread.currentThread().getContextClassLoader());
 
         DMNModelImpl model = getDMNModelWithUnresolvedPMMLImport();
         Import anImport =getImportForUnresolvedPMMLImport();

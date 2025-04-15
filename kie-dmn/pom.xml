@@ -95,6 +95,8 @@
             <bannedDependencies>
               <excludes>
                 <exclude>junit:junit</exclude>
+                <exclude>org.kie:kie-pmml-api:*:*:compile</exclude>
+                <exclude>org.kie:kie-pmml-api:*:*:runtime</exclude>
               </excludes>
             </bannedDependencies>
           </rules>
@@ -120,9 +122,9 @@
           <!--  <noFailOnError>true</noFailOnError>-->
 
           <!--  optional - you can exclude classes that have a path containing any of the mentioned paths -->
-          <!--  <excludedPaths>-->
-          <!--    <excludedPath>my/package/to/exclude</excludedPath>-->
-          <!--  </excludedPaths>-->
+            <excludedPaths>
+              <excludedPath>org/kie/pmml</excludedPath>
+            </excludedPaths>
 
           <rules>
             <!-- using a rule available out of the box... -->

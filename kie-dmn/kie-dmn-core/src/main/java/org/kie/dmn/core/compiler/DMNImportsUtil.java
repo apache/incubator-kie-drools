@@ -50,7 +50,8 @@ import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamespaceConsts;
 import org.kie.dmn.model.v1_1.TImport;
-import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,8 +212,7 @@ public class DMNImportsUtil {
             resolvePMMLImportTypeFromRelativeResolver(model, dmndefs, anImport, relativeResolver, dmnCompilerConfig);
         } else {
             String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
-
-            LocalComponentIdPmml pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, pmmlModelName, model.getResource());
+            ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, pmmlModelName, model.getResource());
             resolvePMMLImportTypeFromModelLocalUriId(model, anImport, pmmlModelLocalUriId, dmnCompilerConfig);
         }
     }
@@ -226,7 +226,7 @@ public class DMNImportsUtil {
      */
     static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
-        LocalComponentIdPmml relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, pmmlModelName, relativeResolver);
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, pmmlModelName, relativeResolver);
         resolvePMMLImportTypeFromModelLocalUriId(model, anImport, relativeResource, dmnCompilerConfig);
     }
 
@@ -238,7 +238,7 @@ public class DMNImportsUtil {
      * @param pmmlModelLocalUriId : The ModelLocalUriId pointing at the PMML data.
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
      */
-    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, LocalComponentIdPmml pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         String pmmlSource = getPmmlSource(pmmlModelLocalUriId);
         try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
             DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
@@ -253,10 +253,10 @@ public class DMNImportsUtil {
      * @param pmmlModelLocalUriId
      * @return
      */
-    static String getPmmlSource(LocalComponentIdPmml pmmlModelLocalUriId) {
+    static String getPmmlSource(ModelLocalUriId pmmlModelLocalUriId) {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
-            String pmmlFileName = pmmlModelLocalUriId.getFileName() + ".pmml";
+            String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
             File pmmlFile = FileUtils.getFile(pmmlFileName);
             EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFile, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
             toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);

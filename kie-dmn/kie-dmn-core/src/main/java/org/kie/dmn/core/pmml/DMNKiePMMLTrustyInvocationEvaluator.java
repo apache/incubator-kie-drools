@@ -33,6 +33,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -45,7 +46,6 @@ import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
-import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +132,9 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 //                                                                                parentClassloader);
 //            runtimeContext.getGeneratedResourcesMap().putAll(generatedResourcesMap);
 //        }
-        Map<String, Object> pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, ((LocalComponentIdPmml) pmmlModelLocalUriID).getFileName(),
+        String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriID.asLocalUri().parent()).getComponent() + ".pmml";
+
+        Map<String, Object> pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, pmmlFileName,
                                                              dmnr);
         EfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(pmmlModelLocalUriID, pmmlRequestData);
         Collection<EfestoOutput> retrieved = evaluateInput(inputPMML, runtimeContext);
