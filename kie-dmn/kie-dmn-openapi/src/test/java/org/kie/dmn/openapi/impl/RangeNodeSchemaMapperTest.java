@@ -45,10 +45,10 @@ class RangeNodeSchemaMapperTest {
         List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
-        assertThat(toPopulate.getMinimum()).isEqualTo(BigDecimal.ONE);
-        assertThat(toPopulate.getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.getExclusiveMinimum()).isEqualTo(BigDecimal.ONE);
+        assertThat(toPopulate.getMinimum()).isNull();
         assertThat(toPopulate.getMaximum()).isEqualTo(BigDecimal.TEN);
-        assertThat(toPopulate.getExclusiveMaximum()).isFalse();
+        assertThat(toPopulate.getExclusiveMaximum()).isNull();
     }
 
     @Test
@@ -63,10 +63,10 @@ class RangeNodeSchemaMapperTest {
 
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
-        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MINIMUM_VALUE)).isEqualTo(expectedDates.get(0));
-        assertThat(toPopulate.getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_EXCLUSIVE_MINIMUM_VALUE)).isEqualTo(expectedDates.get(0));
+        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MINIMUM_VALUE)).isNull();
         assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MAXIMUM_VALUE)).isEqualTo(expectedDates.get(1));
-        assertThat(toPopulate.getExclusiveMaximum()).isFalse();
+        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_EXCLUSIVE_MAXIMUM_VALUE)).isNull();
     }
 
     @Test
