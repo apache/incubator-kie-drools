@@ -33,7 +33,6 @@
   <properties>
     <java.module.name>org.kie.dmn.validation</java.module.name>
     <drools.reproducibleExecutableModelGeneration>true</drools.reproducibleExecutableModelGeneration>
-    <dependency-plugin.version>3.6.1</dependency-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -196,7 +195,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency-plugin.version}</version>
         <executions>
           <execution>
             <id>unpack</id>

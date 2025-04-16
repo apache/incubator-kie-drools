@@ -39,7 +39,6 @@
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
     <version.net.sf.saxon.Saxon-HE>12.5</version.net.sf.saxon.Saxon-HE>
-    <dependency-plugin.version>3.6.1</dependency-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -181,7 +180,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency-plugin.version}</version>
         <executions>
           <execution>
             <id>unpack</id>
