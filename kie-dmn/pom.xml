@@ -121,11 +121,6 @@
           <!--  optional - you can avoid build fail if there is issue. True to avoid build failure, default is false -->
           <!--  <noFailOnError>true</noFailOnError>-->
 
-          <!--  optional - you can exclude classes that have a path containing any of the mentioned paths -->
-            <excludedPaths>
-              <excludedPath>org/kie/pmml</excludedPath>
-            </excludedPaths>
-
           <rules>
             <!-- using a rule available out of the box... -->
             <preConfiguredRules>

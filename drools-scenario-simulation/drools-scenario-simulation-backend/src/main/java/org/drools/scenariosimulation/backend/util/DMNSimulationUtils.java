@@ -19,34 +19,18 @@
 package org.drools.scenariosimulation.backend.util;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 import java.util.Map;
-import java.util.Set;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
-import org.kie.efesto.common.api.model.GeneratedExecutableResource;
-import org.kie.efesto.common.api.model.GeneratedModelResource;
-import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
-import org.kie.efesto.common.core.storage.ContextStorage;
-import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
-import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
@@ -60,8 +44,8 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 
 public class DMNSimulationUtils {
 
-    private static String delimiter = "/";
-    private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
+    private static final String SLASH = "/";
+    private static final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader =
             new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
     private static final CompilationManager compilationManager =
             SPIUtils.getCompilationManager(true).orElseThrow(() -> new RuntimeException("Compilation Manager not " +
@@ -74,7 +58,6 @@ public class DMNSimulationUtils {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static Map<String, GeneratedResources> compileModels(Collection<File> dmnFiles, Collection<File> pmmlFiles) {
-        //pmmlFiles.forEach(pmmlFile -> EfestoPMMLUtils.compilePMML(pmmlFile, "PUPPA", memoryCompilerClassLoader));
         ModelLocalUriId dmnModelLocalUriId = new ModelLocalUriId(LocalUri.Root.append("dmn").append("scesim"));
         EfestoFileSetResource toProcessDmn = new EfestoFileSetResource(new HashSet<>(dmnFiles), dmnModelLocalUriId);
         EfestoCompilationContext dmnCompilationContext =
@@ -82,15 +65,6 @@ public class DMNSimulationUtils {
         compilationManager.processResource(dmnCompilationContext, toProcessDmn);
         return dmnCompilationContext.getGeneratedResourcesMap();
     }
-
-//    public static Map<String, GeneratedResources> extractDMNModel(String path) {
-//        File dmnFile = getMemoryFile(path);
-//        EfestoFileResource toProcessDmn = new EfestoFileResource(dmnFile);
-//        EfestoCompilationContext compilationContext = EfestoCompilationContextUtils.buildWithParentClassLoader
-//        (memoryCompilerClassLoader);
-//        compilationManager.processResource(compilationContext, toProcessDmn);
-//        return compilationContext.getGeneratedResourcesMap();
-//    }
 
     @SuppressWarnings("rawtypes")
     public static EfestoOutput getEfestoOutput(Map<String, GeneratedResources> generatedResourcesMap,
@@ -102,20 +76,9 @@ public class DMNSimulationUtils {
         return efestoOutputs.iterator().next();
     }
 
-//    public static DMNModel extractDMNModel(DMNRuntime dmnRuntime, String path) {
-//        List<String> pathSplit = Arrays.asList(new StringBuilder(path).reverse().toString().split(delimiter));
-//        List<DMNModel> dmnModels = dmnRuntime.getModels();
-//
-//        return findDMNModel(dmnModels, pathSplit, 1);
-//    }
-//
-//    public static DMNRuntime extractDMNRuntime(KieContainer kieContainer) {
-//        return KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
-//    }
-
     public static DMNModel findDMNModel(List<DMNModel> dmnModels, List<String> pathToFind, int step) {
         List<DMNModel> result = new ArrayList<>();
-        String pathToCompare = String.join(delimiter, pathToFind.subList(0, step));
+        String pathToCompare = String.join(SLASH, pathToFind.subList(0, step));
         for (DMNModel dmnModel : dmnModels) {
             String modelPath = new StringBuilder(dmnModel.getResource().getSourcePath()).reverse().toString();
             if (modelPath.startsWith(pathToCompare)) {
@@ -138,17 +101,5 @@ public class DMNSimulationUtils {
         } else {
             return findDMNModel(dmnModels, pathToFind, step + 1);
         }
-    }
-
-    private static MemoryFile getMemoryFile(String fullFilePath) {
-        return org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName(fullFilePath)
-                .map(file -> {
-                    try {
-                        return new MemoryFile(file.toPath());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .orElseThrow(() -> new RuntimeException(String.format("Failed to get %s file", fullFilePath)));
     }
 }

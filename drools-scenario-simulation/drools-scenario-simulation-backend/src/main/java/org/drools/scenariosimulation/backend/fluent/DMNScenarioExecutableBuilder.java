@@ -19,15 +19,9 @@
 package org.drools.scenariosimulation.backend.fluent;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.drools.util.ResourceHelper;
 import org.kie.api.runtime.ExecutableRunner;
@@ -35,10 +29,8 @@ import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
-import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -47,14 +39,16 @@ import static org.drools.scenariosimulation.backend.util.DMNSimulationUtils.comp
 
 public class DMNScenarioExecutableBuilder {
 
-    public static final String DEFAULT_APPLICATION = "defaultApplication";
     public static final String DMN_RESULT = "dmnResult";
     public static final String DMN_MODEL = "dmnModel";
 
     private final Map<String, Object> dmnContext;
-    private DMNModel dmnModel;
-    private ModelLocalUriId dmnModelLocalUriId;
-    private final Map<String, GeneratedResources> generatedResourcesMap;
+    // default access for testing purpose
+    DMNModel dmnModel;
+    // default access for testing purpose
+    ModelLocalUriId dmnModelLocalUriId;
+    // default access for testing purpose
+    final Map<String, GeneratedResources> generatedResourcesMap;
 
     private DMNScenarioExecutableBuilder(Map<String, GeneratedResources> generatedResourcesMap) {
         dmnContext = new HashMap<>();
@@ -68,27 +62,24 @@ public class DMNScenarioExecutableBuilder {
             Map<String, GeneratedResources> generatedResourcesMap = compileModels(dmnFiles, pmmlFiles);
             return new DMNScenarioExecutableBuilder(generatedResourcesMap);
         } catch (Exception e) {
-            // TODO gcardosi fix
-            System.out.println(e.getMessage());
-            return null;
+            throw new IllegalStateException(e);
         }
-
     }
 
     @SuppressWarnings( "rawtypes")
     public void setActiveModel(String nameSpace, String modelName) {
         GeneratedResources dmnGeneratedResources = generatedResourcesMap.get("dmn");
-        dmnModelLocalUriId = new EfestoAppRoot()
+        ModelLocalUriId targetModelLocalUriId = new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
                 .get(nameSpace, modelName);
         GeneratedModelResource generatedModelResource = dmnGeneratedResources.stream()
                 .filter(GeneratedModelResource.class::isInstance)
                 .map(GeneratedModelResource.class::cast)
-                .filter(genRes -> genRes.getModelLocalUriId().equals(dmnModelLocalUriId))
+                .filter(genRes -> genRes.getModelLocalUriId().equals(targetModelLocalUriId))
                 .findFirst()
-                // TODO gcardosi fix
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException("Could not find generated model resource for " + targetModelLocalUriId));
+        dmnModelLocalUriId = generatedModelResource.getModelLocalUriId();
         dmnModel = (DMNModel) generatedModelResource.getCompiledModel();
     }
 

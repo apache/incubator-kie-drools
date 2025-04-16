@@ -18,7 +18,18 @@
  */
 package org.kie.dmn.pmml.trusty;
 
-import org.kie.dmn.pmml.PMMLValidatorImportTest;
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.junit.ArchTest;
+import com.tngtech.archunit.lang.ArchRule;
 
-public class TrustyPMMLValidatorImportTest extends PMMLValidatorImportTest {
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
+
+@AnalyzeClasses(packages = "org.kie.dmn")
+public class NoPMMLTrustyImportTest {
+
+    @ArchTest
+    public static final ArchRule myRule = noClasses()
+            .that().resideInAnyPackage("org.kie.dmn..")
+            .should().dependOnClassesThat().resideInAnyPackage("org.kie.pmml..");
+
 }

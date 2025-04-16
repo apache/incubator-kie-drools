@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -89,6 +89,7 @@ public class DMNScenarioRunnerHelperTest {
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
     private static final String DMN_FILE_PATH = "dmnFilePath";
+    private static final String DMN_NAMESPACE = "dmnNamespace";
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
@@ -142,6 +143,8 @@ public class DMNScenarioRunnerHelperTest {
         settings = new Settings();
         settings.setType(ScenarioSimulationModel.Type.DMN);
         settings.setDmnFilePath(DMN_FILE_PATH);
+        settings.setDmnName(NAME);
+        settings.setDmnNamespace(DMN_NAMESPACE);
         personFactIdentifier = FactIdentifier.create("Fact 1", "Fact 1");
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
@@ -441,8 +444,7 @@ public class DMNScenarioRunnerHelperTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        // TODO gcardosi restore/fix
-//        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_NAMESPACE, NAME);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
         assertThat(keyCaptor.getAllValues()).containsAll(expectedInputDataToLoad);
         for (int i = 0; i < inputObjects; i++) {

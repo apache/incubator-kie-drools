@@ -34,6 +34,7 @@
 
   <properties>
     <java.module.name>org.kie.dmn.pmml.tests.trusty</java.module.name>
+    <archunit.version>1.4.0</archunit.version>
   </properties>
 
   <dependencyManagement>
@@ -47,6 +48,12 @@
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-map-input-runtime</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${archunit.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -72,6 +79,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
+      <scope>test</scope>
       <exclusions>
         <!-- Tree -->
         <exclusion>
@@ -176,6 +184,12 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- ArchUnit -->
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
