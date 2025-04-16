@@ -16,37 +16,55 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
-import org.kie.api.io.Resource;
+import org.drools.util.FileUtils;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.*;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.EfestoPMMLUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.Context;
+import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamespaceConsts;
 import org.kie.dmn.model.v1_1.TImport;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.DMNCompilerImpl.resolveRelativeResource;
 
 public class DMNImportsUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DMNImportsUtil.class);
+
+    public enum ImportType {
+        UNKNOWN,
+        DMN,
+        PMML
+    }
 
     private DMNImportsUtil() {
         // No constructor for util class.
@@ -115,31 +133,23 @@ public class DMNImportsUtil {
         }
     }
 
-    public enum ImportType {
-        UNKNOWN,
-        DMN,
-        PMML;
-    }
     public static ImportType whichImportType(Import importElement) {
-        switch (importElement.getImportType()) {
-            case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN:
-            case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
-            case org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN:
-            case org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN:
-                return ImportType.DMN;
-            case NamespaceConsts.PMML_3_0:
-            case NamespaceConsts.PMML_3_1:
-            case NamespaceConsts.PMML_3_2:
-            case NamespaceConsts.PMML_4_0:
-            case NamespaceConsts.PMML_4_1:
-            case NamespaceConsts.PMML_4_2:
-            case NamespaceConsts.PMML_4_3:
-                return ImportType.PMML;
-            default:
-                return ImportType.UNKNOWN;
-        }
+        return switch (importElement.getImportType()) {
+            case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN,
+                 "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL",
+                 org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN,
+                 org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN -> ImportType.DMN;
+            case NamespaceConsts.PMML_3_0,
+                 NamespaceConsts.PMML_3_1,
+                 NamespaceConsts.PMML_3_2,
+                 NamespaceConsts.PMML_4_0,
+                 NamespaceConsts.PMML_4_1,
+                 NamespaceConsts.PMML_4_2,
+                 NamespaceConsts.PMML_4_3 -> ImportType.PMML;
+            default -> ImportType.UNKNOWN;
+        };
     }
 
     /**
@@ -191,15 +201,33 @@ public class DMNImportsUtil {
 
     /**
      * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
+     *
+     * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
+     * @param anImport : The Import object representing the PMML import to be resolved.
+     * @param relativeResolver: FUnction used to retrieve the actual PMML source
+     * @param dmnCompilerConfig: Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
+     */
+    static void resolvePMMLImportType(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        if (relativeResolver != null) {
+            resolvePMMLImportTypeFromRelativeResolver(model, dmndefs, anImport, relativeResolver, dmnCompilerConfig);
+        } else {
+            String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
+            ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, pmmlModelName, model.getResource());
+            resolvePMMLImportTypeFromModelLocalUriId(model, anImport, pmmlModelLocalUriId, dmnCompilerConfig);
+        }
+    }
+
+    /**
+     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
      * @param model : Represents a DMN model that requires the PMML import resolution.
-     * @param i : Object that specifies the import details for the PMML resource.
+     * @param anImport : Object that specifies the import details for the PMML resource.
      * @param relativeResolver : A function that resolves relative paths to resources.
      * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
-        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
-        resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
+    static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, pmmlModelName, relativeResolver);
+        resolvePMMLImportTypeFromModelLocalUriId(model, anImport, relativeResource, dmnCompilerConfig);
     }
 
     /**
@@ -207,17 +235,33 @@ public class DMNImportsUtil {
      * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer for appropriate processing.
      * @param model : represents a DMN model where the PMML import information will be added.
      * @param i : The Import object that specifies the PMML import details.
-     * @param relativeResource : The resource representing the relative resource containing the PMML data.
+     * @param pmmlModelLocalUriId : The ModelLocalUriId pointing at the PMML data.
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
-     * @throws IOException If an error occurs while reading the PMML resource input stream.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        try (InputStream pmmlIS = relativeResource.getInputStream()) {
-            DMNImportPMMLInfo.from(pmmlIS, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
+    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        String pmmlSource = getPmmlSource(pmmlModelLocalUriId);
+        try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
+            DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
                     model::addPMMLImportInfo);
         } catch (IOException e) {
             new DMNCompilerImpl.PMMLImportErrConsumer(model, i).accept(e);
         }
+    }
+
+    /**
+     * Method to retrieve the original Pmml model from Efesto storage, eventually compiling it if not already present
+     * @param pmmlModelLocalUriId
+     * @return
+     */
+    static String getPmmlSource(ModelLocalUriId pmmlModelLocalUriId) {
+        String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
+        if (toReturn == null) {
+            String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
+            File pmmlFile = FileUtils.getFile(pmmlFileName);
+            EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFile, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
+            toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
+        }
+        return toReturn;
     }
 
     /**
@@ -260,5 +304,59 @@ public class DMNImportsUtil {
         for (DecisionServiceNode dsn : m.getDecisionServices()) {
             model.addDecisionService(dsn);
         }
+    }
+
+    /**
+     * Method used to retrieve the name of the PMML model invoked inside a BusinessKnowledgeModel
+     * @param dmndefs
+     * @param pmmlImportedName the name used, inside the DMN file, for the pmml import
+     * @return
+     */
+    static String getPMMLModelName(Definitions dmndefs, String pmmlImportedName) {
+        return dmndefs.findAllChildren(BusinessKnowledgeModel.class).stream()
+                .map(BusinessKnowledgeModel::getEncapsulatedLogic)
+                .filter(encapsulatedLogic -> encapsulatedLogic.getKind().equals(FunctionKind.PMML))
+                .map(encapsulatedLogic -> getPMMLModelName(encapsulatedLogic, pmmlImportedName))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    static String getPMMLModelName(FunctionDefinition functionDefinition, String pmmlImportedName) {
+        return functionDefinition.getChildren().stream()
+                .filter(child -> child instanceof Context)
+                .map(child -> (Context) child)
+                .filter(context -> referToPMMLImportedName(context, pmmlImportedName))
+                .map(DMNImportsUtil::getModelName)
+                .findFirst()
+                .orElse(null);
+    }
+
+    static String getModelName(Context context) {
+        return context.getContextEntry().stream()
+                .filter(DMNImportsUtil::isModelContextEntry)
+                .map(contextEntry -> ((LiteralExpression)contextEntry.getExpression()).getText().replace("\"", ""))
+                .findFirst()
+                .orElse(null);
+    }
+
+    static boolean referToPMMLImportedName(Context context, String pmmlImportedName) {
+        return context.getContextEntry().stream()
+                .anyMatch(contextEntry -> isDocumentContextEntry(contextEntry, pmmlImportedName));
+    }
+
+    static boolean isDocumentContextEntry(ContextEntry contextEntry, String pmmlImportedName) {
+        return hasVariableName(contextEntry, "document") &&
+                contextEntry.getExpression() instanceof LiteralExpression literalExpression &&
+                literalExpression.getText().replace("\"", "").equals(pmmlImportedName.replace("\"", ""));
+    }
+
+    static boolean isModelContextEntry(ContextEntry contextEntry) {
+        return hasVariableName(contextEntry, "model") &&
+                contextEntry.getExpression() instanceof LiteralExpression;
+    }
+
+    static boolean hasVariableName(ContextEntry contextEntry, String expectedVariableName) {
+        return contextEntry.getVariable().getName().equals(expectedVariableName);
     }
 }

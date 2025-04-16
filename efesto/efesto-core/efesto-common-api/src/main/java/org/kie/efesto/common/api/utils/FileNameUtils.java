@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,10 +30,10 @@ public class FileNameUtils {
     }
 
     public static String getSuffix(String fileName) {
-        return fileName.substring(fileName.lastIndexOf('.') + 1);
+        return fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1) : "";
     }
 
     public static String removeSuffix(String fileName) {
-        return fileName.substring(0, fileName.lastIndexOf('.'));
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 }

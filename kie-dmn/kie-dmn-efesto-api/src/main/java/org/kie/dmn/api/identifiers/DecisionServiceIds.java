@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,10 +18,14 @@
  */
 package org.kie.dmn.api.identifiers;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
+public class DecisionServiceIds {
+    private final LocalDecisionId parentId;
 
-public class DecisionIds implements ComponentRoot {
-    public LocalDecisionId get(String namespace, String name) {
-        return new LocalDecisionId(namespace, name);
+    public DecisionServiceIds(LocalDecisionId parentId) {
+        this.parentId = parentId;
+    }
+
+    public LocalDecisionServiceId get(String serviceId) {
+        return new LocalDecisionServiceId(parentId, serviceId);
     }
 }

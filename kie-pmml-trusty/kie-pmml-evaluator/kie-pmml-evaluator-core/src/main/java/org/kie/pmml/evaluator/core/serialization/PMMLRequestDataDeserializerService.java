@@ -18,7 +18,9 @@
  */
 package org.kie.pmml.evaluator.core.serialization;
 
+
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.core.serialization.DeserializerService;
 import org.kie.api.pmml.PMMLRequestData;
 
