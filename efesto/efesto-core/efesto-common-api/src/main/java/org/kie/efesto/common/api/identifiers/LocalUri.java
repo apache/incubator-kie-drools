@@ -18,7 +18,6 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
