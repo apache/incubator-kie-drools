@@ -22,12 +22,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.KogitoMarshallEventFlag;
 import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -74,6 +75,7 @@ public class GroupingMessagingEventPublisher extends AbstractMessagingEventPubli
             if (binary) {
                 sent.setDataContentType(MultipleProcessInstanceDataEvent.BINARY_CONTENT_TYPE);
                 sent.setCompressed(compress);
+                sent.setMarshallFlags(KogitoMarshallEventFlag.buildFlags(EnumSet.allOf(KogitoMarshallEventFlag.class)));
             }
             publishToTopic(entry.getKey(), sent);
         } else {

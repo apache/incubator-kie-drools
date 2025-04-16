@@ -25,10 +25,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.kie.kogito.event.DataEvent;
 
-import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readObject;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readUTF;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.toDate;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeObject;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeUTF;
 
 public class ProcessInstanceVariableEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
@@ -63,7 +68,7 @@ public class ProcessInstanceVariableEventBody implements KogitoMarshallEventSupp
     }
 
     @Override
-    public void readEvent(DataInput in) throws IOException {
+    public void readEvent(DataInput in, Set<KogitoMarshallEventFlag> flags) throws IOException {
         nodeContainerDefinitionId = readUTF(in);
         nodeContainerInstanceId = readUTF(in);
         variableId = readUTF(in);

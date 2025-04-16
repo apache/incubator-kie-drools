@@ -63,6 +63,7 @@ public class MultipleProcessInstanceDataEventSerializer extends JsonSerializer<M
                 gen.writeBooleanField(MultipleProcessInstanceDataEvent.COMPRESS_DATA, true);
             }
             gen.writeBinaryField("data", dataAsBytes(value.getData(), compress));
+            gen.writeNumberField(MultipleProcessInstanceDataEvent.MARSHALL_FLAGS, value.getMarshallFlags());
             gen.writeEndObject();
         } else {
             defaultSerializer.serialize(value, gen, serializers);

@@ -21,10 +21,11 @@ package org.kie.kogito.event.process;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Set;
 
 public interface KogitoMarshallEventSupport {
 
     void writeEvent(DataOutput out) throws IOException;
 
-    void readEvent(DataInput in) throws IOException;
+    void readEvent(DataInput in, Set<KogitoMarshallEventFlag> flags) throws IOException;
 }

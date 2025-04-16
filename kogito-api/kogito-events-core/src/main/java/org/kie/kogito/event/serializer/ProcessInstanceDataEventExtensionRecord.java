@@ -23,11 +23,16 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Set;
 
+import org.kie.kogito.event.process.KogitoMarshallEventFlag;
 import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 
-import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readTime;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readUTF;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeTime;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeUTF;
 
 class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupport {
 
@@ -141,7 +146,7 @@ class ProcessInstanceDataEventExtensionRecord implements KogitoMarshallEventSupp
     }
 
     @Override
-    public void readEvent(DataInput in) throws IOException {
+    public void readEvent(DataInput in, Set<KogitoMarshallEventFlag> flags) throws IOException {
         id = in.readUTF();
         instanceId = in.readUTF();
         version = in.readUTF();

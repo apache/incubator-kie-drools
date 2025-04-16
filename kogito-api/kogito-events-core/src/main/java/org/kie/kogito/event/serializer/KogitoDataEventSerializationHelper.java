@@ -29,7 +29,8 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 
 import io.cloudevents.SpecVersion;
 
-import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readUTF;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeUTF;
 
 class KogitoDataEventSerializationHelper {
 

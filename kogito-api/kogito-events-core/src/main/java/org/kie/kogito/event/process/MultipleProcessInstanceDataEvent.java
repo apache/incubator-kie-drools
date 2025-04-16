@@ -26,6 +26,7 @@ public class MultipleProcessInstanceDataEvent extends ProcessInstanceDataEvent<C
     public static final String MULTIPLE_TYPE = "MultipleProcessInstanceDataEvent";
     public static final String BINARY_CONTENT_TYPE = "application/octet-stream";
     public static final String COMPRESS_DATA = "compressdata";
+    public static final String MARSHALL_FLAGS = "marshallflags";
 
     public MultipleProcessInstanceDataEvent() {
     }
@@ -38,6 +39,18 @@ public class MultipleProcessInstanceDataEvent extends ProcessInstanceDataEvent<C
         return isCompressed(getExtension(MultipleProcessInstanceDataEvent.COMPRESS_DATA));
     }
 
+    public void setCompressed(boolean compressed) {
+        addExtensionAttribute(COMPRESS_DATA, compressed);
+    }
+
+    public void setMarshallFlags(Integer flags) {
+        addExtensionAttribute(MARSHALL_FLAGS, flags);
+    }
+
+    public Integer getMarshallFlags() {
+        return getMarshallerFlags(getExtension(MARSHALL_FLAGS));
+    }
+
     public static boolean isCompressed(Object extension) {
         if (extension instanceof Boolean) {
             return ((Boolean) extension).booleanValue();
@@ -47,7 +60,12 @@ public class MultipleProcessInstanceDataEvent extends ProcessInstanceDataEvent<C
         return false;
     }
 
-    public void setCompressed(boolean compressed) {
-        addExtensionAttribute(COMPRESS_DATA, compressed);
+    public static Integer getMarshallerFlags(Object extension) {
+        if (extension instanceof Integer) {
+            return (Integer) extension;
+        } else if (extension instanceof String) {
+            return Integer.parseInt((String) extension);
+        }
+        return null;
     }
 }

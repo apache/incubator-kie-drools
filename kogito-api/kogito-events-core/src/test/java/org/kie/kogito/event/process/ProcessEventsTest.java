@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -281,6 +282,7 @@ class ProcessEventsTest {
         MultipleProcessInstanceDataEvent event = new MultipleProcessInstanceDataEvent(SOURCE, Arrays.asList(stateEvent, varEvent, errorEvent, nodeEvent, slaEvent));
         if (binary) {
             event.setDataContentType(MultipleProcessInstanceDataEvent.BINARY_CONTENT_TYPE);
+            event.setMarshallFlags(KogitoMarshallEventFlag.buildFlags(EnumSet.allOf(KogitoMarshallEventFlag.class)));
         }
         if (compress) {
             event.setCompressed(compress);

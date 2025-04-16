@@ -23,10 +23,11 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Set;
 
 import org.kie.kogito.event.DataEvent;
 
-import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.toDate;
 
 public class ProcessInstanceErrorEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
@@ -147,7 +148,7 @@ public class ProcessInstanceErrorEventBody implements KogitoMarshallEventSupport
     }
 
     @Override
-    public void readEvent(DataInput in) throws IOException {
+    public void readEvent(DataInput in, Set<KogitoMarshallEventFlag> flags) throws IOException {
         nodeDefinitionId = in.readUTF();
         nodeInstanceId = in.readUTF();
         errorMessage = in.readUTF();

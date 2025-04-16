@@ -27,11 +27,14 @@ import java.net.URI;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.zip.GZIPInputStream;
 
 import org.kie.kogito.event.process.CloudEventVisitor;
+import org.kie.kogito.event.process.KogitoMarshallEventFlag;
 import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -89,7 +92,7 @@ public class MultipleProcessInstanceDataEventDeserializer extends JsonDeserializ
             event.setId(node.get("id").asText());
             JsonNode data = node.get("data");
             if (data != null) {
-                event.setData(readFromBytes(data.binaryValue(), isCompressed(node)));
+                event.setData(readFromBytes(data.binaryValue(), isCompressed(node), buildFlagSet(node)));
             }
             return event;
         } else {
@@ -99,12 +102,17 @@ public class MultipleProcessInstanceDataEventDeserializer extends JsonDeserializ
         }
     }
 
+    private Set<KogitoMarshallEventFlag> buildFlagSet(JsonNode node) {
+        JsonNode flagsNode = node.get(MultipleProcessInstanceDataEvent.MARSHALL_FLAGS);
+        return flagsNode != null && flagsNode.isNumber() ? KogitoMarshallEventFlag.buildFlagsSet(flagsNode.intValue()) : EnumSet.noneOf(KogitoMarshallEventFlag.class);
+    }
+
     private static boolean isCompressed(JsonNode node) {
         JsonNode compress = node.get(MultipleProcessInstanceDataEvent.COMPRESS_DATA);
         return compress != null && compress.isBoolean() ? compress.asBoolean() : false;
     }
 
-    static Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> readFromBytes(byte[] binaryValue, boolean compressed) throws IOException {
+    static Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> readFromBytes(byte[] binaryValue, boolean compressed, Set<KogitoMarshallEventFlag> flags) throws IOException {
         InputStream wrappedIn = new ByteArrayInputStream(binaryValue);
         if (compressed) {
             logger.trace("Gzip compressed byte array");
@@ -121,7 +129,7 @@ public class MultipleProcessInstanceDataEventDeserializer extends JsonDeserializ
                 ProcessInstanceDataEventExtensionRecord info;
                 if (readInfo == -1) {
                     info = new ProcessInstanceDataEventExtensionRecord();
-                    info.readEvent(in);
+                    info.readEvent(in, flags);
                     logger.trace("Info readed is {}", info);
                     infos.add(info);
                 } else {
@@ -130,34 +138,35 @@ public class MultipleProcessInstanceDataEventDeserializer extends JsonDeserializ
                 }
                 String type = in.readUTF();
                 logger.trace("Type is {}", info);
-                result.add(getCloudEvent(in, type, info));
+                result.add(getCloudEvent(in, type, info, flags));
                 logger.trace("{} events remaining", size);
             }
             return result;
         }
     }
 
-    private static ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport> getCloudEvent(DataInputStream in, String type, ProcessInstanceDataEventExtensionRecord info) throws IOException {
+    private static ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport> getCloudEvent(DataInputStream in, String type, ProcessInstanceDataEventExtensionRecord info,
+            Set<KogitoMarshallEventFlag> flags) throws IOException {
         switch (type) {
             case ProcessInstanceVariableDataEvent.VAR_TYPE:
-                ProcessInstanceVariableDataEvent item = buildDataEvent(in, new ProcessInstanceVariableDataEvent(), ProcessInstanceVariableEventBody::new, info);
+                ProcessInstanceVariableDataEvent item = buildDataEvent(in, new ProcessInstanceVariableDataEvent(), ProcessInstanceVariableEventBody::new, info, flags);
                 item.setKogitoVariableName(item.getData().getVariableName());
                 return item;
             case ProcessInstanceStateDataEvent.STATE_TYPE:
-                return buildDataEvent(in, new ProcessInstanceStateDataEvent(), ProcessInstanceStateEventBody::new, info);
+                return buildDataEvent(in, new ProcessInstanceStateDataEvent(), ProcessInstanceStateEventBody::new, info, flags);
             case ProcessInstanceNodeDataEvent.NODE_TYPE:
-                return buildDataEvent(in, new ProcessInstanceNodeDataEvent(), ProcessInstanceNodeEventBody::new, info);
+                return buildDataEvent(in, new ProcessInstanceNodeDataEvent(), ProcessInstanceNodeEventBody::new, info, flags);
             case ProcessInstanceErrorDataEvent.ERROR_TYPE:
-                return buildDataEvent(in, new ProcessInstanceErrorDataEvent(), ProcessInstanceErrorEventBody::new, info);
+                return buildDataEvent(in, new ProcessInstanceErrorDataEvent(), ProcessInstanceErrorEventBody::new, info, flags);
             case ProcessInstanceSLADataEvent.SLA_TYPE:
-                return buildDataEvent(in, new ProcessInstanceSLADataEvent(), ProcessInstanceSLAEventBody::new, info);
+                return buildDataEvent(in, new ProcessInstanceSLADataEvent(), ProcessInstanceSLAEventBody::new, info, flags);
             default:
                 throw new UnsupportedOperationException("Unrecognized event type " + type);
         }
     }
 
     private static <T extends ProcessInstanceDataEvent<V>, V extends KogitoMarshallEventSupport & CloudEventVisitor> T buildDataEvent(DataInput in, T cloudEvent, Supplier<V> bodySupplier,
-            ProcessInstanceDataEventExtensionRecord info) throws IOException {
+            ProcessInstanceDataEventExtensionRecord info, Set<KogitoMarshallEventFlag> flags) throws IOException {
         int delta = readInt(in);
         logger.trace("Time delta is {}", delta);
         cloudEvent.setTime(info.getTime().plus(delta, ChronoUnit.MILLIS));
@@ -170,7 +179,7 @@ public class MultipleProcessInstanceDataEventDeserializer extends JsonDeserializ
         if (isNotNull) {
             logger.trace("Data is not null");
             V body = bodySupplier.get();
-            body.readEvent(in);
+            body.readEvent(in, flags);
             logger.trace("Event body before population {}", body);
             body.visit(cloudEvent);
             logger.trace("Event body after population {}", body);
