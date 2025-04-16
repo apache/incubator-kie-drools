@@ -54,6 +54,11 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-xsd-resources</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
         <classifier>tests</classifier>
         <version>${project.version}</version>
@@ -75,6 +80,10 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-xsd-resources</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
@@ -183,6 +192,34 @@
       </testResource>
     </testResources>
     <plugins>
+      <!-- Unpack XSD resources from org.kie:kie-dmn-xsd-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie</groupId>
+                  <artifactId>kie-dmn-xsd-resources</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/org/kie/dmn/validation</outputDirectory>
+                  <includes>**/*.xsd</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>

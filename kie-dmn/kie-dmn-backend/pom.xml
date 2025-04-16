@@ -36,7 +36,18 @@
   
   <properties>
     <java.module.name>org.kie.dmn.backend</java.module.name>
+    <dependency-plugin.version>3.6.1</dependency-plugin.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-xsd-resources</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -46,6 +57,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-util-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-xsd-resources</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -87,9 +102,60 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Unpack XSD resources from org.kie:kie-dmn-xsd-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie</groupId>
+                  <artifactId>kie-dmn-xsd-resources</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                  <!-- fetch only those specific xsd -->
+                  <includes>
+                    **/20151101/dmn.xsd,
+                    **/20180521/DC.xsd,
+                    **/20180521/DI.xsd,
+                    **/20180521/DMN12.xsd,
+                    **/20180521/DMNDI12.xsd,
+                    **/20191111/DMN13.xsd,
+                    **/20191111/DMNDI13.xsd,
+                    **/20211108/DMN14.xsd,
+                    **/20230324/DMN15.xsd,
+                    **/20230324/DMNDI15.xsd</includes>
+                  <fileMappers>
+                    <!-- remove all parent directories from it, flattening it under the classes directory -->
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper/>
+                    <!-- rename dmn.xsd to DMN11.xsd -->
+                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                      <pattern>^\Qdmn.xsd\E</pattern>
+                      <replacement>DMN11.xsd</replacement>
+                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   
   <profiles>
     <profile>
