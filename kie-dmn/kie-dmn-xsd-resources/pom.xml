@@ -34,23 +34,10 @@
 
   <properties>
     <java.module.name>org.kie.dmn.xsd.resources</java.module.name>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <download-maven-plugin.version>2.0.0</download-maven-plugin.version>
     <output.spec.directory>${project.build.directory}/classes/org/omg/spec/DMN</output.spec.directory>
   </properties>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>io.github.download-maven-plugin</groupId>
-          <artifactId>download-maven-plugin</artifactId>
-          <version>${download-maven-plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.societegenerale.commons</groupId>

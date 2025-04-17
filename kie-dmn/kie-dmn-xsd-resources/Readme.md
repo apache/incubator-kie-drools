@@ -20,7 +20,7 @@
 KIE :: Decision Model Notation :: XSD-Bundle
 ============================================
 
-This modules is used to bundle all the DMN-related xsd in one single jar, fetching them from [official repository](https://www.omg.org/spec/DMN/).
+This module is used to bundle all the DMN-related xsd in one single jar, fetching them from the [official repository](https://www.omg.org/spec/DMN/).
 
 | Version | Release  |
 |---------|----------|

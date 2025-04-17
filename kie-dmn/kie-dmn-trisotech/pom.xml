@@ -44,11 +44,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-xsd-resources</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
