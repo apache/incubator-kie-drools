@@ -20,10 +20,13 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class DecimalFunction
         extends BaseFEELFunction implements FEELNumberFunction {
@@ -34,18 +37,20 @@ public class DecimalFunction
         super( "decimal" );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
-        if ( n == null ) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("n") BigDecimal n, @ParameterName("scale") BigDecimal scale) {
+        if (n == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
         }
-        if ( scale == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
-        }
-        // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
-        if (scale.compareTo(BigDecimal.valueOf(-6111)) < 0 || scale.compareTo(BigDecimal.valueOf(6176)) > 0) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
-        }
-        
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.HALF_EVEN ) );
+        Optional<Integer> scaleObj = NumberEvalHelper.coerceIntegerNumber(scale);
+        AtomicReference<FEELFnResult<BigDecimal>> toReturn = new AtomicReference<>();
+        scaleObj.ifPresentOrElse(scaleInt -> {
+            // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
+            if (scaleInt < -6111 || scaleInt > 6176) {
+                toReturn.set(FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 and 6176.")));
+            } else {
+                toReturn.set(FEELFnResult.ofResult(n.setScale(scaleInt, RoundingMode.HALF_EVEN)));
+            }
+        }, () -> toReturn.set(FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "should be a Number type"))));
+        return toReturn.get();
     }
 }

@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +70,31 @@ public class NumberEvalHelper {
     public static Object coerceNumber(Object value) {
         if ( value instanceof Number && !(value instanceof BigDecimal) ) {
             return getBigDecimalOrNull( value );
-        } else {
+        }  else {
             return value;
         }
+    }
+
+    /**
+     * This method checks if the input is an instance of BigDecimal, BigInteger
+     * or any other subclass Number. If so, it returns an Optional containing
+     * the result of calling intValue() on the number. If the input is not a recognized number type,
+     * it returns Optional#empty()
+     * @param value : The object to coerce into an Integer
+     * @return : An Optional<Integer> containing the coerced integer value,
+     *           or Optional.empty() if the input is not a supported number type
+     */
+    public static Optional<Integer> coerceIntegerNumber(Object value) {
+        if ( value instanceof BigDecimal ) {
+            return  Optional.of(((BigDecimal) value).intValue());
+        }
+        if ( value instanceof BigInteger ) {
+            return  Optional.of(((BigInteger) value).intValue());
+        }
+        if ( value instanceof Number ) {
+            return  Optional.of(((Number) value).intValue());
+        }
+        return Optional.empty();
     }
 
 }

@@ -21,10 +21,12 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class RemoveFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
@@ -39,21 +41,24 @@ public class RemoveFunction
         if ( list == null ) { 
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
-        if ( position == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be null"));
+        Optional<Integer> positionObj = NumberEvalHelper.coerceIntegerNumber(position);
+        if(positionObj.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "must be a non-null Number value."));
         }
-        if ( position.intValue() == 0 ) {
+        int positionInt = positionObj.get();
+        if ( positionInt == 0 ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be zero (parameter 'position' is 1-based)"));
         }
-        if ( position.abs().intValue() > list.size() ) {
+        if ( Math.abs(positionInt) > list.size() ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "inconsistent with 'list' size"));
         }
+
         // spec requires us to return a new list
         List<Object> result = new ArrayList<>( list );
-        if( position.intValue() > 0 ) {
-            result.remove( position.intValue()-1 );
+        if( positionInt > 0 ) {
+            result.remove( positionInt-1 );
         } else {
-            result.remove( list.size()+position.intValue() );
+            result.remove( list.size()+positionInt );
         }
         return FEELFnResult.ofResult( result );
     }
