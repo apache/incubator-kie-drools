@@ -67,26 +67,6 @@ public class NumberEvalHelper {
         return null;
     }
 
-    /**
-     * The method handles various numeric types and converts the given object to an Integer
-     * Returns null If the conversion is not possible.
-     *
-     * @param value : The object to be converted.
-     * @return : An Integer representation of the value, or null if conversion is not possible.
-     */
-    public static Integer getIntegerOrNull(Object value) {
-        if ( value instanceof BigDecimal ) {
-            return ((BigDecimal) value).intValue();
-        }
-        if ( value instanceof BigInteger ) {
-            return ((BigInteger) value).intValue();
-        }
-        if ( value instanceof Number ) {
-            return ((Number) value).intValue();
-        }
-        return null;
-    }
-
     public static Object coerceNumber(Object value) {
         if ( value instanceof Number && !(value instanceof BigDecimal) ) {
             return getBigDecimalOrNull( value );
@@ -96,18 +76,25 @@ public class NumberEvalHelper {
     }
 
     /**
-     * Converts the given object to an integer if it is an instance of Number.
-     * else it is returned unchanged.
-     *
-     * @param value : the object to be converted
-     * @return : an integer representation of the number if applicable, otherwise the original value
+     * This method checks if the input is an instance of BigDecimal, BigInteger
+     * or any other subclass Number. If so, it returns an Optional containing
+     * the result of calling intValue() on the number. If the input is not a recognized number type,
+     * it returns Optional#empty()
+     * @param value : The object to coerce into an Integer
+     * @return : An Optional<Integer> containing the coerced integer value,
+     *           or Optional.empty() if the input is not a supported number type
      */
     public static Optional<Integer> coerceIntegerNumber(Object value) {
-        if ( value instanceof Number ) {
-            return Optional.of(getIntegerOrNull( value ));
-        } else {
-            return Optional.empty();
+        if ( value instanceof BigDecimal ) {
+            return  Optional.of(((BigDecimal) value).intValue());
         }
+        if ( value instanceof BigInteger ) {
+            return  Optional.of(((BigInteger) value).intValue());
+        }
+        if ( value instanceof Number ) {
+            return  Optional.of(((Number) value).intValue());
+        }
+        return Optional.empty();
     }
 
 }

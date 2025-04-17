@@ -32,6 +32,7 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -123,13 +124,9 @@ public class TimeFunction
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
         try {
-            Optional<Integer> coercedHour = coerceIntegerNumber(hour);
-            Optional<Integer> coercedMinute = coerceIntegerNumber(minute);
-            Optional<Integer> coercedSecond = coerceIntegerNumber(seconds);
-
-            if (coercedHour.isEmpty() || coercedMinute.isEmpty() || coercedSecond.isEmpty()) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
-            }
+            int coercedHour = coerceIntegerNumber(hour).orElseThrow();
+            int coercedMinute = coerceIntegerNumber(minute).orElseThrow();
+            int coercedSecond = coerceIntegerNumber(seconds).orElseThrow();
             int nanosecs = 0;
             if( seconds instanceof BigDecimal ) {
                 BigDecimal secs = (BigDecimal) seconds;
@@ -137,13 +134,15 @@ public class TimeFunction
             }
 
             if ( offset == null ) {
-                return FEELFnResult.ofResult( LocalTime.of( coercedHour.get(), coercedMinute.get(), coercedSecond.get(),
+                return FEELFnResult.ofResult( LocalTime.of( coercedHour, coercedMinute, coercedSecond,
                                                             nanosecs ) );
             } else {
-                return FEELFnResult.ofResult( OffsetTime.of( coercedHour.get(), coercedMinute.get(), coercedSecond.get(),
+                return FEELFnResult.ofResult( OffsetTime.of( coercedHour, coercedMinute, coercedSecond,
                                                              nanosecs,
                                               ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) ) );
             }
+        } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time-parsing exception", e));
         }

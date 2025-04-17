@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
 import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -77,14 +78,12 @@ public class DateFunction
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("year") Number year, @ParameterName("month") Number month, @ParameterName("day") Number day) {
         try {
-            Optional<Integer> coercedYear = coerceIntegerNumber(year);
-            Optional<Integer> coercedMonth = coerceIntegerNumber(month);
-            Optional<Integer> coercedDay = coerceIntegerNumber(day);
-
-            if (coercedYear.isEmpty() || coercedMonth.isEmpty() || coercedDay.isEmpty() ) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
-            }
-            return FEELFnResult.ofResult(LocalDate.of(coercedYear.get(), coercedMonth.get(), coercedDay.get()));
+            int coercedYear = coerceIntegerNumber(year).orElseThrow();
+            int coercedMonth = coerceIntegerNumber(month).orElseThrow();
+            int coercedDay = coerceIntegerNumber(day).orElseThrow();
+            return FEELFnResult.ofResult(LocalDate.of(coercedYear, coercedMonth, coercedDay));
+        } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }

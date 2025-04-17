@@ -42,6 +42,10 @@ class NumberEvalHelperTest {
         Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.99"));
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(99);
+
+        Optional<Integer> result1 = NumberEvalHelper.coerceIntegerNumber(new BigDecimal("99.00001"));
+        assertThat(result1).isPresent();
+        assertThat(result1.get()).isEqualTo(99);
     }
 
     @Test
@@ -56,6 +60,14 @@ class NumberEvalHelperTest {
         Optional<Integer> result = NumberEvalHelper.coerceIntegerNumber(42.50);
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(42);
+
+        Optional<Integer> result1 = NumberEvalHelper.coerceIntegerNumber(42.009 );
+        assertThat(result1).isPresent();
+        assertThat(result1.get()).isEqualTo(42);
+
+        Optional<Integer> result2 = NumberEvalHelper.coerceIntegerNumber(42.99999 );
+        assertThat(result2).isPresent();
+        assertThat(result2.get()).isEqualTo(42);
     }
 
     @Test
