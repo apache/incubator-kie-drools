@@ -100,30 +100,8 @@ goal.txt
 goal.txt
 # kie-archetypes/kie-drools-yaml-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
 goal.txt
-# kie-dmn/kie-dmn-backend/src/test/resources/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMN11.xsd
-DMN11.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMN12.xsd
-DMN12.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMN13.xsd
-DMN13.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMN14.xsd
-DMN14.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMN15.xsd
-DMN15.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMNDI12.xsd
-DMNDI12.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMNDI13.xsd
-DMNDI13.xsd
-# kie-dmn/kie-dmn-backend/src/test/resources/DMNDI15.xsd
-DMNDI15.xsd
 # kie-dmn/kie-dmn-core/src/test/filtered-resources/org/kie/dmn/core/drools-model
 drools-model
-# kie-dmn/kie-dmn-feel/src/main/resources/dmn.xsd
-dmn.xsd
 # kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/src/test/resources/org/kie/dmn/pmml/test_naive_bayes.pmml
 test_naive_bayes.pmml
 # kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/Churn Rules from SPSS Modeler.xml
@@ -140,48 +118,6 @@ miniloan.pmml
 toto.pmml
 # kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/wifi.pmml
 wifi.pmml
-# kie-dmn/kie-dmn-trisotech/src/test/resources/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-trisotech/src/test/resources/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-trisotech/src/test/resources/DMN13.xsd
-DMN13.xsd
-# kie-dmn/kie-dmn-trisotech/src/test/resources/DMNDI13.xsd
-DMNDI13.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20151101/dmn.xsd
-dmn.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20180521/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20180521/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20180521/DMN12.xsd
-DMN12.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20180521/DMNDI12.xsd
-DMNDI12.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20191111/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20191111/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20191111/DMN13.xsd
-DMN13.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20191111/DMNDI13.xsd
-DMNDI13.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20211108/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20211108/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20211108/DMN14.xsd
-DMN14.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20211108/DMNDI13.xsd
-DMNDI13.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20230324/DC.xsd
-DC.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20230324/DI.xsd
-DI.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20230324/DMN15.xsd
-DMN15.xsd
-# kie-dmn/kie-dmn-validation/src/main/resources/org/kie/dmn/validation/org/omg/spec/DMN/20230324/DMNDI15.xsd
-DMNDI15.xsd
 # kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/src/test/resources/IndexFile.drl_json
 IndexFile.drl_json
 # kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/src/test/resources/IndexFile.drl_json

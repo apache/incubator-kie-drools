@@ -220,6 +220,9 @@
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
     <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+
+    <!-- download-maven-plugin used to download arbitrary files at compile time -->
+    <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -2000,6 +2003,12 @@
                 </execution>
               </executions>
             </plugin>
+            <plugin>
+              <groupId>io.github.download-maven-plugin</groupId>
+              <artifactId>download-maven-plugin</artifactId>
+              <version>${version.download-maven-plugin}</version>
+            </plugin>
+
           </plugins>
         </pluginManagement>
       </build>

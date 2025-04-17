@@ -55,6 +55,10 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-xsd-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-dmn-model</artifactId>
     </dependency>
     <dependency>
@@ -167,6 +171,38 @@
       </testResource>
     </testResources>
     <plugins>
+      <!-- Unpack XSD resources from org.kie:kie-dmn-xsd-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie</groupId>
+                  <artifactId>kie-dmn-xsd-resources</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/</outputDirectory>
+                  <!-- fetch only that specific xsd -->
+                  <includes>**/20151101/dmn.xsd</includes>
+                  <fileMappers>
+                    <!-- remove all parent directories from it, flattening it under the classes directory -->
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper/>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
