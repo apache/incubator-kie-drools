@@ -215,16 +215,9 @@ public interface PropagationEntry {
             this.handle = handle;
             this.context = context;
             this.objectTypeConf = objectTypeConf;
-
-            if ( handle.isEvent() ) {
-                scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
-            }
         }
 
         public static void execute( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf) {
-            if ( handle.isEvent() ) {
-                scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
-            }
             propagate( handle, context, reteEvaluator, objectTypeConf );
         }
 
@@ -239,6 +232,8 @@ public interface PropagationEntry {
             if ( isOrphanHandle(handle, reteEvaluator) ) {
                 handle.setDisconnected(true);
                 handle.getEntryPoint(reteEvaluator).getObjectStore().removeHandle( handle );
+            } else if ( handle.isEvent() ) {
+                scheduleExpiration( reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime() );
             }
         }
 
