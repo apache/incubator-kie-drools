@@ -1,0 +1,35 @@
+name: Flaky Test Confirmation
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 8440dc2d4b95412a05a3c7b9501993e1ace9b496
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          
+      - name: Run test normally (should pass)
+        run: mvn test -pl drools-alphanetwork-compiler -Dtest=org.drools.ancompiler.AlphaNetworkCompilerTest#testAlphaConstraintWithModification[PATTERN_DSL]
+      
+      - name: Install NonDex
+        run: |
+          git clone https://github.com/TestingResearchIllinois/NonDex.git
+          cd NonDex
+          mvn install -DskipTests
+          
+      - name: Run test with NonDex (should fail)
+        run: |
+          cd drools-alphanetwork-compiler
+          mvn edu.illinois:nondex-maven-plugin:2.1.7:nondex -Dtest=org.drools.ancompiler.AlphaNetworkCompilerTest#testAlphaConstraintWithModification[PATTERN_DSL]
