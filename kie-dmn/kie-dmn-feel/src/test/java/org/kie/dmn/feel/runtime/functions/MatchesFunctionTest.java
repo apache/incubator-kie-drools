@@ -136,6 +136,20 @@ class MatchesFunctionTest {
         };
     }
 
+    @ParameterizedTest
+    @MethodSource("invokeWithXmlCharacterReferencesData")
+    void invokeWithXmlCharacterReferencesTest(String input, String pattern, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern), expectedResult);
+    }
+
+    private static Object[][] invokeWithXmlCharacterReferencesData() {
+        return new Object[][] {
+                { "t&st", "t&st", true },
+                { "a<bra>cadabra", "<bra>", true },
+                { "abracada\"bra'", "bra", true },
+        };
+    }
+
     @Test
     void invokeWithFlagDotAll() {
         FunctionTestUtil.assertResult(matchesFunction.invoke("fo\nbar", "fo.bar", "s"), true);

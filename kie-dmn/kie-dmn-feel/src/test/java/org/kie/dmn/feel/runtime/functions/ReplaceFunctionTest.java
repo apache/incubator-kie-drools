@@ -98,6 +98,20 @@ class ReplaceFunctionTest {
         };
     }
 
+    @ParameterizedTest
+    @MethodSource("invokeWithXmlCharacterReferencesData")
+    void invokeWithXmlCharacterReferencesTest(String input, String pattern, String replacement, String expectedResult) {
+        FunctionTestUtil.assertResult(replaceFunction.invoke(input, pattern, replacement), expectedResult);
+    }
+
+    private static Object[][] invokeWithXmlCharacterReferencesData() {
+        return new Object[][] {
+                { "abc&123", "abc", "123", "123&123" },
+                { "abc'123", "abc'", "123", "123123" },
+                { "abc\"123", "abc\"", "123<>", "123<>123" }
+        };
+    }
+
     @Test
     void invokeInvalidRegExPattern() {
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "(?=\\s)", "ttt"), InvalidParametersEvent.class);

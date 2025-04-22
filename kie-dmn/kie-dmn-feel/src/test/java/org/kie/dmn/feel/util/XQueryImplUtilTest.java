@@ -114,4 +114,21 @@ class XQueryImplUtilTest {
         };
     }
 
+    @ParameterizedTest
+    @MethodSource("sanitizeXmlCharacterReferencesTestData")
+    void sanitizeXmlCharacterReferencesTest(String expression, String expectedResult) {
+        assertThat(XQueryImplUtil.sanitizeXmlCharacterReferences(expression)).isEqualTo(expectedResult);
+    }
+
+    private static Object[][] sanitizeXmlCharacterReferencesTestData() {
+        return new Object[][] {
+                { null, null },
+                { "", "" },
+                { "lolASD", "lolASD" },
+                { "List<String>", "List&lt;String&gt;" },
+                { "\"Mr.Y\"", "&quot;Mr.Y&quot;" },
+                { "'<&>'", "&apos;&lt;&amp;&gt;&apos;" },
+        };
+    }
+
 }

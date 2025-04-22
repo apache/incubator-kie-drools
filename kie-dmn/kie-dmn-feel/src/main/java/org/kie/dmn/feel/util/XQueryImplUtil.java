@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,17 +26,25 @@ import net.sf.saxon.s9api.XQueryEvaluator;
 import net.sf.saxon.s9api.XQueryExecutable;
 import net.sf.saxon.s9api.SaxonApiException;
 
+import java.util.regex.Pattern;
+
 public class XQueryImplUtil {
+
+    static Pattern XML_CHARACTER_REFERENCES_PATTERN = Pattern.compile("['\"&<>]");
+
+    private XQueryImplUtil() {
+        // Util class with static methods only.
+    }
 
     public static Boolean executeMatchesFunction(String input, String pattern, String flags) {
         flags = flags == null ? "" : flags;
-        String xQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
+        String xQueryExpression = String.format("matches('%s', '%s', '%s')", sanitizeXmlCharacterReferences(input), sanitizeXmlCharacterReferences(pattern), flags);
         return evaluateXQueryExpression(xQueryExpression, Boolean.class);
     }
 
     public static String executeReplaceFunction(String input, String pattern, String replacement, String flags) {
         flags = flags == null ? "" : flags;
-        String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
+        String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", sanitizeXmlCharacterReferences(input), sanitizeXmlCharacterReferences(pattern), sanitizeXmlCharacterReferences(replacement), flags);
         return evaluateXQueryExpression(xQueryExpression, String.class);
     }
 
@@ -58,5 +66,22 @@ public class XQueryImplUtil {
          } catch (SaxonApiException e) {
              throw new IllegalArgumentException(e);
          }
+    }
+
+    /**
+     * It replaces all the XML Character References (&, ", ', <, >) in a given input string with their "escaping" characters.
+     * This is required to run XPath functions containing XML Character References.
+     * @param input A string input representing one of the parameter of managed functions
+     * @return A sanitized string
+     */
+    static String sanitizeXmlCharacterReferences(String input) {
+        if (input != null && XML_CHARACTER_REFERENCES_PATTERN.matcher(input).find()) {
+            input = input.contains("&") ? input.replace("&", "&amp;") : input;
+            input = input.contains("\"") ? input.replace("\"",  "&quot;") : input;
+            input = input.contains("'") ? input.replace("'",  "&apos;") : input;
+            input = input.contains("<") ? input.replace("<",  "&lt;") : input;
+            input = input.contains(">") ? input.replace(">",  "&gt;") : input;
+        }
+        return input;
     }
 }
