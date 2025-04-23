@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -95,6 +95,21 @@ class ReplaceFunctionTest {
                 { "testStringtest", "^test", "ttt", "tttStringtest" },
                 { "testString", "ttest", "ttt", "testString" },
                 { "testString", "$test", "ttt", "testString" }
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeWithXmlCharacterReferencesData")
+    void invokeWithXmlCharacterReferencesTest(String input, String pattern, String replacement, String expectedResult) {
+        FunctionTestUtil.assertResult(replaceFunction.invoke(input, pattern, replacement), expectedResult);
+    }
+
+    private static Object[][] invokeWithXmlCharacterReferencesData() {
+        return new Object[][] {
+                { "<'&'>", "abc", "123", "<'&'>" },
+                { "abc&123", "abc", "123", "123&123" },
+                { "abc'123", "abc'", "123", "123123" },
+                { "abc\"123", "abc\"", "123<>", "123<>123" }
         };
     }
 
