@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 public class XQueryImplUtil {
 
-    static Pattern XML_CHARACTER_REFERENCES_PATTERN = Pattern.compile("['\"&<>]");
+    private static final Pattern XML_CHARACTER_REFERENCES_PATTERN = Pattern.compile("['\"&<>]");
 
     private XQueryImplUtil() {
         // Util class with static methods only.
@@ -38,13 +38,13 @@ public class XQueryImplUtil {
 
     public static Boolean executeMatchesFunction(String input, String pattern, String flags) {
         flags = flags == null ? "" : flags;
-        String xQueryExpression = String.format("matches('%s', '%s', '%s')", sanitizeXmlCharacterReferences(input), sanitizeXmlCharacterReferences(pattern), flags);
+        String xQueryExpression = String.format("matches('%s', '%s', '%s')", escapeXmlCharactersReferencesForXPath(input), escapeXmlCharactersReferencesForXPath(pattern), flags);
         return evaluateXQueryExpression(xQueryExpression, Boolean.class);
     }
 
     public static String executeReplaceFunction(String input, String pattern, String replacement, String flags) {
         flags = flags == null ? "" : flags;
-        String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", sanitizeXmlCharacterReferences(input), sanitizeXmlCharacterReferences(pattern), sanitizeXmlCharacterReferences(replacement), flags);
+        String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", escapeXmlCharactersReferencesForXPath(input), escapeXmlCharactersReferencesForXPath(pattern), escapeXmlCharactersReferencesForXPath(replacement), flags);
         return evaluateXQueryExpression(xQueryExpression, String.class);
     }
 
@@ -74,7 +74,7 @@ public class XQueryImplUtil {
      * @param input A string input representing one of the parameter of managed functions
      * @return A sanitized string
      */
-    static String sanitizeXmlCharacterReferences(String input) {
+    static String escapeXmlCharactersReferencesForXPath(String input) {
         if (input != null && XML_CHARACTER_REFERENCES_PATTERN.matcher(input).find()) {
             input = input.contains("&") ? input.replace("&", "&amp;") : input;
             input = input.contains("\"") ? input.replace("\"",  "&quot;") : input;

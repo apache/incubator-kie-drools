@@ -106,6 +106,7 @@ class ReplaceFunctionTest {
 
     private static Object[][] invokeWithXmlCharacterReferencesData() {
         return new Object[][] {
+                { "<'&'>", "abc", "123", "<'&'>" },
                 { "abc&123", "abc", "123", "123&123" },
                 { "abc'123", "abc'", "123", "123123" },
                 { "abc\"123", "abc\"", "123<>", "123<>123" }

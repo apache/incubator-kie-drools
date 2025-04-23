@@ -115,12 +115,12 @@ class XQueryImplUtilTest {
     }
 
     @ParameterizedTest
-    @MethodSource("sanitizeXmlCharacterReferencesTestData")
-    void sanitizeXmlCharacterReferencesTest(String expression, String expectedResult) {
-        assertThat(XQueryImplUtil.sanitizeXmlCharacterReferences(expression)).isEqualTo(expectedResult);
+    @MethodSource("escapeXmlCharactersReferencesForXPathTestData")
+    void escapeXmlCharactersReferencesForXPathTest(String expression, String expectedResult) {
+        assertThat(XQueryImplUtil.escapeXmlCharactersReferencesForXPath(expression)).isEqualTo(expectedResult);
     }
 
-    private static Object[][] sanitizeXmlCharacterReferencesTestData() {
+    private static Object[][] escapeXmlCharactersReferencesForXPathTestData() {
         return new Object[][] {
                 { null, null },
                 { "", "" },
