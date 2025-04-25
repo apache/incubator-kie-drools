@@ -347,7 +347,28 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
                                 Type.getMethodDescriptor( getterMethod ),
                                 false);
         }
-        mv.visitInsn( Type.getType( fieldType ).getOpcode( Opcodes.IRETURN ) );
+        if (getterMethod.getReturnType() != overridingMethod.getReturnType()) {
+            if (getterMethod.getReturnType() == float.class && overridingMethod.getReturnType() == double.class) {
+                mv.visitInsn(Opcodes.F2D); // Convert float to double
+                // Clean up precision artifacts from float-to-double conversion
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, 
+                    "org/drools/util/FloatHelper", 
+                    "cleanDouble", 
+                    "(D)D", 
+                    false);
+            } else if (getterMethod.getReturnType() == double.class && overridingMethod.getReturnType() == float.class) {
+                mv.visitInsn(Opcodes.D2F); // Convert double to float
+            } else if (getterMethod.getReturnType() == byte.class && overridingMethod.getReturnType() == long.class) {
+                mv.visitInsn(Opcodes.I2L); // Convert byte to long (byte->int->long handled by JVM)
+            } else if (getterMethod.getReturnType() == short.class && overridingMethod.getReturnType() == long.class) {
+                mv.visitInsn(Opcodes.I2L); // Convert short to long (short->int->long handled by JVM)
+            } else if (getterMethod.getReturnType() == int.class && overridingMethod.getReturnType() == long.class) {
+                mv.visitInsn(Opcodes.I2L); // Convert int to long
+            } else if (getterMethod.getReturnType() == char.class && overridingMethod.getReturnType() == long.class) {
+                mv.visitInsn(Opcodes.I2L); // Convert char to long (char->int->long handled by JVM)
+            }
+        }
+        mv.visitInsn( Type.getType( overridingMethod.getReturnType() ).getOpcode( Opcodes.IRETURN ) );
         final Label l1 = new Label();
         mv.visitLabel( l1 );
         mv.visitLocalVariable( "this",
@@ -386,8 +407,9 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         // set method
         Method overridingMethod;
         try {
+            Class<?> parameterType = getParameterType(fieldType);
             overridingMethod = superClass.getMethod( getOverridingSetMethodName( fieldType ),
-                                                     Object.class, fieldType.isPrimitive() ? fieldType : Object.class );
+                                                     Object.class, parameterType );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
                                         e );
@@ -408,8 +430,29 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         mv.visitTypeInsn( Opcodes.CHECKCAST,
                           Type.getInternalName( originalClass ) );
 
-        mv.visitVarInsn( Type.getType( fieldType ).getOpcode( Opcodes.ILOAD ),
+        Class<?> parameterType = getParameterType(fieldType);
+        mv.visitVarInsn( Type.getType( parameterType ).getOpcode( Opcodes.ILOAD),
                          2 );
+
+        // If field is float but we're implementing setDecimalValue, convert double back to float for the bean setter
+        if ( fieldType == float.class && getOverridingSetMethodName( fieldType ).equals("setDecimalValue") ) {
+            mv.visitInsn(Opcodes.D2F); // Convert double parameter to float for the bean setter
+        }
+        // If field is byte/short/int/char but we're implementing setWholeNumberValue, convert long back to appropriate type for the bean setter
+        if ( fieldType == byte.class && getOverridingSetMethodName( fieldType ).equals("setWholeNumberValue") ) {
+            mv.visitInsn(Opcodes.L2I); // Convert long parameter to int first
+            mv.visitInsn(Opcodes.I2B); // Convert int to byte for the bean setter
+        }
+        if ( fieldType == short.class && getOverridingSetMethodName( fieldType ).equals("setWholeNumberValue") ) {
+            mv.visitInsn(Opcodes.L2I); // Convert long parameter to int first
+            mv.visitInsn(Opcodes.I2S); // Convert int to short for the bean setter
+        }
+        if ( fieldType == int.class && getOverridingSetMethodName( fieldType ).equals("setWholeNumberValue") ) {
+            mv.visitInsn(Opcodes.L2I); // Convert long parameter to int for the bean setter
+        }
+        if ( fieldType == char.class && getOverridingSetMethodName( fieldType ).equals("setWholeNumberValue") ) {
+            mv.visitInsn(Opcodes.L2I); // Convert long parameter to int for the bean setter
+        }
 
         if ( !fieldType.isPrimitive() ) {
             mv.visitTypeInsn( Opcodes.CHECKCAST,
@@ -446,8 +489,9 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
                                l0,
                                l1,
                                1 );
+        Class<?> localVarType = getLocalVarType(fieldType);
         mv.visitLocalVariable( "value",
-                               Type.getDescriptor( fieldType ),
+                               Type.getDescriptor( localVarType ),
                                null,
                                l0,
                                l1,
@@ -457,23 +501,35 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         mv.visitEnd();
     }
 
+    private static Class<?> getLocalVarType(Class<?> fieldType) {
+        if ((fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == char.class) && getOverridingSetMethodName(fieldType).equals("setWholeNumberValue")) {
+            return long.class;
+        } else if (fieldType == float.class && getOverridingSetMethodName(fieldType).equals("setDecimalValue")) {
+            return double.class;
+        } else {
+            return fieldType;
+        }
+    }
+
+    private static Class<?> getParameterType(Class<?> fieldType) {
+        if (fieldType.isPrimitive()) {
+            if (fieldType == float.class) {
+                return double.class;
+            } else if (fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == char.class) {
+                return long.class;
+            } else return fieldType;
+        } else {
+            return Object.class;
+        }
+    }
+
     private static String getOverridingGetMethodName(final Class< ? > fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                ret = "getCharValue";
-            } else if ( fieldType == byte.class ) {
-                ret = "getByteValue";
-            } else if ( fieldType == short.class ) {
-                ret = "getShortValue";
-            } else if ( fieldType == int.class ) {
-                ret = "getIntValue";
-            } else if ( fieldType == long.class ) {
-                ret = "getLongValue";
-            } else if ( fieldType == float.class ) {
-                ret = "getFloatValue";
-            } else if ( fieldType == double.class ) {
-                ret = "getDoubleValue";
+            if ( fieldType == char.class || fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class ) {
+                ret = "getWholeNumberValue";
+            } else if ( fieldType == float.class || fieldType == double.class ) {
+                ret = "getDecimalValue";
             } else if ( fieldType == boolean.class ) {
                 ret = "getBooleanValue";
             }
@@ -486,20 +542,10 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
     private static String getOverridingSetMethodName(final Class< ? > fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                ret = "setCharValue";
-            } else if ( fieldType == byte.class ) {
-                ret = "setByteValue";
-            } else if ( fieldType == short.class ) {
-                ret = "setShortValue";
-            } else if ( fieldType == int.class ) {
-                ret = "setIntValue";
-            } else if ( fieldType == long.class ) {
-                ret = "setLongValue";
-            } else if ( fieldType == float.class ) {
-                ret = "setFloatValue";
-            } else if ( fieldType == double.class ) {
-                ret = "setDoubleValue";
+            if ( fieldType == char.class || fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class ) {
+                ret = "setWholeNumberValue";
+            } else if ( fieldType == double.class ||  fieldType == float.class ) {
+                ret = "setDecimalValue";
             } else if ( fieldType == boolean.class ) {
                 ret = "setBooleanValue";
             }
@@ -516,33 +562,13 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
     private static Class< ? > getReaderSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;
         if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                ret = BaseCharClassFieldReader.class;
-            } else if ( fieldType == byte.class ) {
-                ret = BaseByteClassFieldReader.class;
-            } else if ( fieldType == short.class ) {
-                ret = BaseShortClassFieldReader.class;
-            } else if ( fieldType == int.class ) {
-                ret = BaseIntClassFieldReader.class;
-            } else if ( fieldType == long.class ) {
-                ret = BaseLongClassFieldReader.class;
-            } else if ( fieldType == float.class ) {
-                ret = BaseFloatClassFieldReader.class;
-            } else if ( fieldType == double.class ) {
-                ret = BaseDoubleClassFieldReader.class;
+            if ( fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class || fieldType == char.class ) {
+                ret = BaseWholeNumberClassFieldReader.class;
+            } else if ( fieldType == float.class ||fieldType == double.class ) {
+                ret = BaseDecimalClassFieldReader.class;
             } else if ( fieldType == boolean.class ) {
                 ret = BaseBooleanClassFieldReader.class;
             }
-        } else if ( Number.class.isAssignableFrom( fieldType ) ) {
-            ret = BaseNumberClassFieldReader.class;
-        } else if ( Date.class.isAssignableFrom( fieldType ) ) {
-            ret = BaseDateClassFieldReader.class;
-        } else if ( LocalDate.class.isAssignableFrom( fieldType ) ) {
-            ret = BaseLocalDateClassFieldReader.class;
-        } else if ( LocalDateTime.class.isAssignableFrom( fieldType ) ) {
-            ret = BaseLocalDateTimeClassFieldReader.class;
-        } else if ( ZonedDateTime.class.isAssignableFrom( fieldType ) ) {
-            ret = BaseZonedDateTimeClassFieldReader.class;
         } else {
             ret = BaseObjectClassFieldReader.class;
         }
@@ -556,20 +582,10 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
     private static Class< ? > getWriterSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;
         if ( fieldType.isPrimitive() ) {
-            if ( fieldType == char.class ) {
-                ret = BaseCharClassFieldWriter.class;
-            } else if ( fieldType == byte.class ) {
-                ret = BaseByteClassFieldWriter.class;
-            } else if ( fieldType == short.class ) {
-                ret = BaseShortClassFieldWriter.class;
-            } else if ( fieldType == int.class ) {
-                ret = BaseIntClassFieldWriter.class;
-            } else if ( fieldType == long.class ) {
-                ret = BaseLongClassFieldWriter.class;
-            } else if ( fieldType == float.class ) {
-                ret = BaseFloatClassFieldWriter.class;
-            } else if ( fieldType == double.class ) {
-                ret = BaseDoubleClassFieldWriter.class;
+            if ( fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class || fieldType == char.class ) {
+                ret = BaseWholeNumberClassFieldWriter.class;
+            } else if ( fieldType == double.class || fieldType == float.class ) {
+                ret = BaseDecimalClassFieldWriter.class;
             } else if ( fieldType == boolean.class ) {
                 ret = BaseBooleanClassFieldWriter.class;
             }

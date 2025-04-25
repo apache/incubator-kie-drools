@@ -16,26 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.extractors;
+package org.drools.util;
 
-public abstract class BaseClassFieldExtractorsTest {
+/**
+ * Utility class for handling float to double conversions with precision cleanup.
+ */
+public class FloatHelper {
 
-    public abstract void testGetBooleanValue();
-
-    public abstract void testGetByteValue();
-
-    public abstract void testGetCharValue();
-
-    public abstract void testGetShortValue();
-
-    public abstract void testGetIntValue();
-
-    public abstract void testGetLongValue();
-
-    public abstract void testGetDoubleValue();
-
-    public abstract void testGetValue();
-    
-    public abstract void testIsNullValue();
-
+    /**
+     * Cleans up precision artifacts when converting float to double.
+     * Rounds to approximately 7 significant digits (float precision).
+     * 
+     * @param d the double value to clean up
+     * @return the cleaned double value
+     */
+    public static double cleanDouble(double d) {
+        // Round to ~7 significant digits (float precision)
+        return Math.round(d * 1e7) / 1e7;
+    }
 }
