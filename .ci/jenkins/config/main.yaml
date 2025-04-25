@@ -24,6 +24,12 @@ git:
   - name: 9.101.x-prod
     seed:
       branch: seed-drools-9.101.x-prod
+  - name: 9.101.x-prod
+    seed:
+      branch: seed-drools-9.102.x-prod
+  - name: 9.103.x-prod
+    seed:
+      branch: seed-drools-9.103.x-prod      
 seed:
   config_file:
     git:
