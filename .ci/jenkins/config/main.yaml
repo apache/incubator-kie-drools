@@ -15,9 +15,6 @@ git:
     main_branch: true
     seed:
       branch: main
-  - name: 8.44.2.x
-    seed:
-      branch: seed-drools-8.44.2.x
   - name: 8.44.2.x-prod
     seed:
       branch: seed-drools-8.44.2.x
@@ -29,7 +26,7 @@ git:
       branch: seed-drools-9.102.x-prod
   - name: 9.103.x-prod
     seed:
-      branch: seed-drools-9.103.x-prod      
+      branch: seed-drools-9.103.x-prod
 seed:
   config_file:
     git:
