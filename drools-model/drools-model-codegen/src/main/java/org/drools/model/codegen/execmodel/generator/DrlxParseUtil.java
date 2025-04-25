@@ -874,9 +874,36 @@ public class DrlxParseUtil {
         if (e instanceof DrlNameExpr) {
             return (T) new NameExpr(((DrlNameExpr) e).getName());
         }
-        e.findAll(DrlNameExpr.class).forEach(n -> n.replace(new NameExpr(n.getName())));
+        e.findAll(DrlNameExpr.class).forEach( node -> {
+                    Optional<Node> parent = node.getParentNode();
+                    parent.ifPresent(value -> replaceDrlNameExprWithNameExprInOrder(value, node));
+                }
+        );
         return e;
     }
+
+    private static void replaceDrlNameExprWithNameExprInOrder(Node parent, DrlNameExpr drlNameExpr) {
+        List<Node> childNodesInOrder = new ArrayList<>();
+        if(parent instanceof MethodCallExpr methodCallExpr){
+            List<Expression> arguments = methodCallExpr.getArguments();
+            for (int i = 0; i < arguments.size(); i++) {
+                if (arguments.get(i) == drlNameExpr) {
+                    for (int j = i + 1; j < arguments.size(); j++) {
+                        childNodesInOrder.add(arguments.get(j));
+                        arguments.get(j).setParentNode(null);
+                    }
+                    break;
+                }
+            }
+            drlNameExpr.replace(new NameExpr(drlNameExpr.getName()));
+            for(Node child : childNodesInOrder) {
+                child.setParentNode(parent);
+            }
+        } else {
+            drlNameExpr.replace(new NameExpr(drlNameExpr.getName()));
+        }
+    }
+
 
     public static String addCurlyBracesToBlock(String blockString) {
         return String.format("{\n%s\n}", blockString);

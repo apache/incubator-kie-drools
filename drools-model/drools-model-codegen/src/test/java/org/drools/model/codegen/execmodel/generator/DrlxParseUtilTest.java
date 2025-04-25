@@ -24,15 +24,7 @@ import java.util.HashSet;
 import java.util.function.Function;
 
 import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.*;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.drools.mvelcompiler.CompiledBlockResult;
@@ -139,6 +131,24 @@ public class DrlxParseUtilTest {
         assertThat(findRemoveRootNodeViaScope(expr("$c.convert($length)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)"), expr("convert($length)")));
         assertThat(findRemoveRootNodeViaScope(expr("$data.getValues().get(0)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)"), expr("getValues()")));
         assertThat(findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)"))).isEqualTo(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)"), expr("getIndexes()")));
+    }
+
+    @Test
+    public void test_transformDrlNameExprToNameExpr_maintainingMethodArgumentOrder(){
+        Expression e = expr("UtilsClass.utilityMethodWithLotsOfArguments($arg1, $arg2.field1, $arg3.field2, $arg4.field3, $arg5.field4))");
+        Expression transformed = DrlxParseUtil.transformDrlNameExprToNameExpr(e);
+        assertThat(transformed.getChildNodes().size()).isEqualTo(7);
+        // First two child nodes are UtilsClass and utilityMethodWithLotsOfArguments
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(2) instanceof NameExpr).isTrue();
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(2)).isEqualTo(new NameExpr("$arg1"));
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(3) instanceof FieldAccessExpr).isTrue();
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(3)).isEqualTo(new FieldAccessExpr(new NameExpr("$arg2"), "field1"));
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(4) instanceof FieldAccessExpr).isTrue();
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(4)).isEqualTo(new FieldAccessExpr(new NameExpr("$arg3"), "field2"));
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(5) instanceof FieldAccessExpr).isTrue();
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(5)).isEqualTo(new FieldAccessExpr(new NameExpr("$arg4"), "field3"));
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(6) instanceof FieldAccessExpr).isTrue();
+        assertThat(transformed.asMethodCallExpr().getChildNodes().get(6)).isEqualTo(new FieldAccessExpr(new NameExpr("$arg5"), "field4"));
     }
 
     private Expression expr(String $a) {
