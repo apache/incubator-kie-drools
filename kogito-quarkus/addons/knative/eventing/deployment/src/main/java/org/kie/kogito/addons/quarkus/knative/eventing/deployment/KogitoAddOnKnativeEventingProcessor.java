@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 
 import org.jboss.jandex.DotName;
 import org.kie.kogito.addons.quarkus.knative.eventing.KSinkInjectionHealthCheck;
-import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSource;
-import org.kie.kogito.addons.quarkus.knative.eventing.deployment.resources.KogitoSourceSpec;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.quarkus.addons.common.deployment.AnyEngineKogitoAddOnProcessor;
 import org.slf4j.Logger;
@@ -36,11 +34,8 @@ import io.fabric8.knative.eventing.v1.Broker;
 import io.fabric8.knative.eventing.v1.BrokerBuilder;
 import io.fabric8.knative.eventing.v1.Trigger;
 import io.fabric8.knative.eventing.v1.TriggerBuilder;
-import io.fabric8.knative.internal.pkg.apis.duck.v1.DestinationBuilder;
-import io.fabric8.knative.internal.pkg.tracker.ReferenceBuilder;
 import io.fabric8.knative.sources.v1.SinkBinding;
 import io.fabric8.knative.sources.v1.SinkBindingBuilder;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsTest;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -55,6 +50,7 @@ import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConf
 
 public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnProcessor {
 
+    public static final DotName PROCESS_EVENTS_PUBLISHER_CLASS = DotName.createSimple("org.kie.kogito.events.process.ReactiveMessagingEventPublisher");
     private static final String FEATURE = "kie-addon-knative-eventing-extension";
     /**
      * Name of the generated file
@@ -64,12 +60,12 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
      * Target directory where to fetch the generated kubernetes.yml file and where to generate ours
      */
     private static final String TARGET_KUBERNETES = "kubernetes";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoAddOnKnativeEventingProcessor.class);
-
-    public static final DotName PROCESS_EVENTS_PUBLISHER_CLASS = DotName.createSimple("org.kie.kogito.events.process.ReactiveMessagingEventPublisher");
-
     EventingConfiguration config;
+
+    private static boolean hasProducedEvents(KogitoKnativeResourcesMetadataBuildItem metadata) {
+        return metadata.getCloudEvents().stream().anyMatch(ce -> ce.getKind() == EventKind.PRODUCED);
+    }
 
     @BuildStep
     FeatureBuildItem feature() {
@@ -100,18 +96,13 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
             BuildProducer<GeneratedResourceBuildItem> generatedResources) {
         if (resourcesMetadata.isPresent()) {
             final List<Trigger> triggers = this.generateTriggers(resourcesMetadata.get());
-            final Optional<KogitoSource> kogitoSource = this.generateKogitoSource(resourcesMetadata.get());
-            Optional<SinkBinding> sinkBinding = Optional.empty();
-            if (kogitoSource.isEmpty()) {
-                sinkBinding = this.generateSinkBinding(resourcesMetadata.get());
-            }
+            Optional<SinkBinding> sinkBinding = this.generateSinkBinding(resourcesMetadata.get());
 
-            if (sinkBinding.isPresent() || kogitoSource.isPresent() || !triggers.isEmpty()) {
+            if (sinkBinding.isPresent() || !triggers.isEmpty()) {
                 final Optional<Broker> broker = this.generateBroker();
                 final byte[] resourcesBytes =
                         new KogitoKnativeGenerator()
                                 .addResources(triggers)
-                                .addOptionalResource(kogitoSource)
                                 .addOptionalResource(sinkBinding)
                                 .addOptionalResource(broker)
                                 .getResourcesBytes();
@@ -141,28 +132,6 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
             return Optional.of(new BrokerBuilder().withNewMetadata()
                     .withName(SinkConfiguration.DEFAULT_SINK_NAME)
                     .endMetadata().build());
-        }
-        return Optional.empty();
-    }
-
-    private Optional<KogitoSource> generateKogitoSource(KogitoKnativeResourcesMetadataBuildItem metadata) {
-        if (config.generateKogitoSource) {
-            final KogitoSource kogitoSource = new KogitoSource();
-            final KogitoSourceSpec spec = new KogitoSourceSpec();
-            final ObjectMeta objectMeta = new ObjectMeta();
-            objectMeta.setName(metadata.getDeployment().getName());
-            spec.setSink(new DestinationBuilder().withNewRef()
-                    .withName(config.sink.name)
-                    .withApiVersion(config.sink.apiVersion)
-                    .withKind(config.sink.kind)
-                    .withNamespace(config.sink.namespace.orElse("")).endRef().build());
-            spec.setSubject(new ReferenceBuilder()
-                    .withName(metadata.getDeployment().getName())
-                    .withKind(metadata.getDeployment().getKind())
-                    .withApiVersion(metadata.getDeployment().getApiVersion()).build());
-            kogitoSource.setMetadata(objectMeta);
-            kogitoSource.setSpec(spec);
-            return Optional.of(kogitoSource);
         }
         return Optional.empty();
     }
@@ -208,9 +177,5 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
                         .endRef().endSubscriber().endSpec()
                         .build())
                 .collect(Collectors.toList());
-    }
-
-    private static boolean hasProducedEvents(KogitoKnativeResourcesMetadataBuildItem metadata) {
-        return metadata.getCloudEvents().stream().anyMatch(ce -> ce.getKind() == EventKind.PRODUCED);
     }
 }

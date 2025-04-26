@@ -44,16 +44,5 @@ public class EventingConfiguration {
     @ConfigItem(defaultValue = "true")
     Boolean autoGenerateBroker;
 
-    /**
-     * Whether to generate the Knative [KogitoSource](https://github.com/knative-sandbox/eventing-kogito) instead of a Knative SinkBinding.
-     * <p>
-     * KogitoSource is the custom SinkBinding created specifically to bound with the Kogito ecosystem such as Data Index,
-     * Jobs Service, and so on.
-     * <p>
-     * For minimal configuration and setup, you can leave this property set to `false` (default).
-     */
-    @ConfigItem(defaultValue = "false")
-    Boolean generateKogitoSource;
-
     SinkConfiguration sink;
 }

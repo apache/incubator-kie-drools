@@ -94,27 +94,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
     }
 
     @Test
-    void checkKogitoFileIsGeneratedWithKogitoSource() {
-        final Set<CloudEventMeta> ces = new HashSet<>();
-        ces.add(new CloudEventMeta("myProducedEvent", "/local/test", EventKind.PRODUCED));
-        final KogitoServiceDeploymentTarget deploymentTarget = new KogitoServiceDeploymentTarget("apps", "v1", "Deployment", "kogito-service");
-        final KogitoKnativeResourcesMetadataBuildItem resourcesMetadataBuildItem =
-                new KogitoKnativeResourcesMetadataBuildItem(ces, deploymentTarget);
-        final KogitoAddOnKnativeEventingProcessor eventingProcessor = buildTestProcessorWithDefaultConfig();
-        eventingProcessor.config.generateKogitoSource = true;
-        final MockGeneratedFSProducer producer = new MockGeneratedFSProducer();
-
-        eventingProcessor.generate(Optional.of(resourcesMetadataBuildItem), producer);
-
-        assertNotNull(producer.getItem().getData());
-        assertTrue(producer.getItem().getData().length > 0);
-        assertFalse(new String(producer.getItem().getData()).contains("SinkBinding"));
-        assertTrue(new String(producer.getItem().getData()).contains("KogitoSource"));
-        assertFalse(new String(producer.getItem().getData()).contains("Trigger"));
-        assertTrue(new String(producer.getItem().getData()).contains("Broker"));
-    }
-
-    @Test
     void checkKogitoFileIsGeneratedOnlyConsumed() {
         final Set<CloudEventMeta> ces = new HashSet<>();
         ces.add(new CloudEventMeta("myConsumedEvent", "/local/test", EventKind.CONSUMED));
@@ -210,7 +189,6 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
         eventingProcessor.config = new EventingConfiguration();
         eventingProcessor.config.autoGenerateBroker = true;
-        eventingProcessor.config.generateKogitoSource = false;
         eventingProcessor.config.broker = "default";
         eventingProcessor.config.sink = sinkConfiguration;
 
