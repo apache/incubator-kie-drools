@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-verifier</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>10.1.999-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-verifier-drl</artifactId>
@@ -48,7 +48,7 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-test-jar</artifactId>
-        <version>1.0.0</version>
+        <version>10.1.999-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
