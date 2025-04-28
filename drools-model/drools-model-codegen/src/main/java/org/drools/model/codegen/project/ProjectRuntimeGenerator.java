@@ -85,7 +85,8 @@ public class ProjectRuntimeGenerator {
         for (String kbaseName : modelMethod.getKieBaseNames()) {
             ifBlock.addStatement("kbaseMap.put( \"" + kbaseName + "\", " +
                     "KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( \"" + kbaseName + "\" ), " +
-                    "model.getKieModuleModel().getKieBaseModels().get( \"" + kbaseName + "\" ) ) );\n");
+                    "model.getKieModuleModel().getKieBaseModels().get( \"" + kbaseName + "\" ), " +
+                    "model.getKieModuleModel() ) );\n");
         }
     }
 

@@ -41,6 +41,7 @@
   </properties>
 
   <modules>
+    <module>kie-dmn-xsd-resources</module>
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
     <module>kie-dmn-test-resources</module>
