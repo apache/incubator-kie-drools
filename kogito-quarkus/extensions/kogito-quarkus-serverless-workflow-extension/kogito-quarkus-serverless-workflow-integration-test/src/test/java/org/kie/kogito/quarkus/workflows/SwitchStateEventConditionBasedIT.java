@@ -201,7 +201,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
         assertProcessInstanceHasFinished(SWITCH_STATE_EVENT_CONDITION_TIMEOUTS_END_GET_BY_ID_URL, processInstanceId, 1, 180);
         // When the process has finished the default case event must arrive.
         JsonPath result = waitForEvent(KOGITO_OUTGOING_STREAM_TOPIC, PROCESS_RESULT_EVENT_TYPE_CONDITION_END, 50);
-        assertThat(result.getString("data")).isEmpty();
+        assertThat(result.getString("data")).isNotEmpty();
     }
 
     /**

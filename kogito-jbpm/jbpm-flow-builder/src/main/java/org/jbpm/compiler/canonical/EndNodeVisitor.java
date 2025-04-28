@@ -29,7 +29,6 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.workflow.core.DroolsAction;
-import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
 
@@ -93,11 +92,9 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
             return Optional.empty();
         }
         return actions.stream()
-                .filter(a -> a instanceof DroolsConsequenceAction)
                 .map(d -> d.getMetaData(Metadata.ACTION))
                 .filter(Objects::nonNull)
                 .filter(actionClass::isInstance)
-                .map(a -> (ProcessInstanceCompensationAction) a)
                 .findFirst().map(actionClass::cast);
     }
 }
