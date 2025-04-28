@@ -26,6 +26,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
@@ -33,6 +35,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.Decision;
 import org.mockito.ArgumentCaptor;
@@ -48,11 +51,13 @@ import static org.mockito.Mockito.when;
 class DMNConditionalEvaluatorTest {
 
     private static final String DECISION_NAME = "DECISION_NAME";
+    private static final String BKM_NAME = "BKM_NAME";
     private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
     private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
     private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
     private static final Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> EVALUATOR_ID_MAP = new HashMap<>();
-    private static DMNConditionalEvaluator dmnConditionalEvaluator;
+    private static DMNConditionalEvaluator dmnConditionalEvaluatorBkmNode;
+    private static DMNConditionalEvaluator dmnConditionalEvaluatorDecisionNode;
     private static DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier;
     private static DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier;
     private static DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier;
@@ -88,6 +93,11 @@ class DMNConditionalEvaluatorTest {
         DMNElement dmnElementMocked = mock(DMNElement.class);
         when(dmnElementMocked.getParentDRDElement()).thenReturn(decisionMock);
 
+        BusinessKnowledgeModel bkmMock = mock(BusinessKnowledgeModel.class);
+        when(bkmMock.getName()).thenReturn(BKM_NAME);
+        DMNElement dmnElementBkmMocked = mock(DMNElement.class);
+        when(dmnElementBkmMocked.getParentDRDElement()).thenReturn(bkmMock);
+
         ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(IF_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.IF);
         thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(THEN_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.THEN);
         elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(ELSE_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.ELSE);
@@ -96,7 +106,8 @@ class DMNConditionalEvaluatorTest {
         EVALUATOR_ID_MAP.put(thenIdentifier, thenEvaluatorMock);
         EVALUATOR_ID_MAP.put(elseIdentifier, elseEvaluatorMock);
 
-        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", dmnElementMocked, EVALUATOR_ID_MAP);
+        dmnConditionalEvaluatorDecisionNode = new DMNConditionalEvaluator("name", dmnElementMocked, EVALUATOR_ID_MAP);
+        dmnConditionalEvaluatorBkmNode = new DMNConditionalEvaluator("name", dmnElementBkmMocked, EVALUATOR_ID_MAP);
     }
 
     @BeforeEach
@@ -104,8 +115,9 @@ class DMNConditionalEvaluatorTest {
         reset(spiedListener);
     }
 
-    @Test
-    void evaluateListenerInvocation() {
+    @ParameterizedTest
+    @MethodSource("dmnConditionEvaluators")
+    void evaluateListenerInvocation(DMNConditionalEvaluator dmnConditionalEvaluator) {
         when(ifEvaluationMock.getResultType()).thenReturn(EvaluatorResult.ResultType.FAILURE); // not interested in
         // nested execution
 
@@ -119,8 +131,9 @@ class DMNConditionalEvaluatorTest {
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(IF_ELEMENT_ID);
     }
 
-    @Test
-    void evaluateManageBooleanOrNullIfResultInvocation() {
+    @ParameterizedTest
+    @MethodSource("dmnConditionEvaluators")
+    void evaluateManageBooleanOrNullIfResultInvocation(DMNConditionalEvaluator dmnConditionalEvaluator) {
         when(ifEvaluationMock.getResultType()).thenReturn(EvaluatorResult.ResultType.SUCCESS);
         when(ifEvaluationMock.getResult()).thenReturn(true);
 
@@ -129,8 +142,9 @@ class DMNConditionalEvaluatorTest {
         verify(spiedDmnConditionalEvaluator).manageBooleanOrNullIfResult(true, eventManagerMock, dmnResultMock);
     }
 
-    @Test
-    void manageBooleanOrNullIfResultWithTrue() {
+    @ParameterizedTest
+    @MethodSource("dmnConditionEvaluators")
+    void manageBooleanOrNullIfResultWithTrue(DMNConditionalEvaluator dmnConditionalEvaluator) {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(true, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -142,8 +156,9 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(THEN_ELEMENT_ID);
     }
 
-    @Test
-    void manageBooleanOrNullIfResultWithFalse() {
+    @ParameterizedTest
+    @MethodSource("dmnConditionEvaluators")
+    void manageBooleanOrNullIfResultWithFalse(DMNConditionalEvaluator dmnConditionalEvaluator) {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(false, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -155,8 +170,9 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
     }
 
-    @Test
-    void manageBooleanOrNullIfResultWithNull() {
+    @ParameterizedTest
+    @MethodSource("dmnConditionEvaluators")
+    void manageBooleanOrNullIfResultWithNull(DMNConditionalEvaluator dmnConditionalEvaluator)  {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(null, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -168,13 +184,18 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
     }
 
+    private static DMNConditionalEvaluator[] dmnConditionEvaluators() {
+        return new DMNConditionalEvaluator[]
+                { dmnConditionalEvaluatorDecisionNode, dmnConditionalEvaluatorBkmNode };
+    }
+
     @Test
     void testMapEvaluatorIdentifiers() {
         Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> mapEvaluatorIdentifiers = DMNConditionalEvaluator.mapEvaluatorIdentifiers(EVALUATOR_ID_MAP);
 
-        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.IF)).isEqualTo(ifIdentifier);
-        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.THEN)).isEqualTo(thenIdentifier);
-        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.ELSE)).isEqualTo(elseIdentifier);
+        assertThat(mapEvaluatorIdentifiers).containsEntry(DMNConditionalEvaluator.EvaluatorType.IF, ifIdentifier)
+            .containsEntry(DMNConditionalEvaluator.EvaluatorType.THEN, thenIdentifier)
+            .containsEntry(DMNConditionalEvaluator.EvaluatorType.ELSE, elseIdentifier);
     }
 
     @Test

@@ -34,6 +34,7 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Decision;
@@ -101,8 +102,18 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
-    static String getDecisionName(DMNModelInstrumentedBase dmnElement) {
-        return dmnElement instanceof Decision decision ? decision.getName() : getDecisionName(dmnElement.getParentDRDElement());
+    static String getDecisionOrBkmName(DMNModelInstrumentedBase dmnElement) {
+        if (dmnElement instanceof Decision decision) {
+            return decision.getName();
+        }
+        if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
+            return businessKnowledgeModel.getName();
+        }
+        if (dmnElement.getParentDRDElement() != null) {
+            return getDecisionOrBkmName(dmnElement.getParentDRDElement());
+        }
+        logger.error("Can't find the related Decision or BKM node name for the given node: {}", dmnElement.getIdentifierString());
+        throw new IllegalStateException("Can't find the Decision / BusinessKnowledgeModel node name " + dmnElement.getIdentifierString());
     }
 
     public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
@@ -115,7 +126,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
         this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
         this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
-        this.decisionName = getDecisionName(dmnElement);
+        this.decisionName = getDecisionOrBkmName(dmnElement);
     }
 
     @Override
