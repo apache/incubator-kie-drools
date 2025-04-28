@@ -110,15 +110,15 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
      * @return
      */
     static String getDecisionOrBkmName(DMNModelInstrumentedBase dmnElement) {
-        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
-            logger.error("Root element reached. Can't find the related Decision or BKM node name");
-            throw new IllegalStateException("Reached Root element. Can't find the related Decision or BKM node name");
-        }
         if (dmnElement instanceof Decision decision) {
             return decision.getName();
         }
         if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
             return businessKnowledgeModel.getName();
+        }
+        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
+            logger.error("Root element id: {} reached. Can't find the related Decision or BKM node name", dmnElement.getIdentifierString());
+            throw new IllegalStateException("Reached Root element id: " + dmnElement.getIdentifierString() + " reached. Can't find the related Decision or BKM node name.");
         }
 
         return getDecisionOrBkmName(dmnElement.getParentDRDElement());
