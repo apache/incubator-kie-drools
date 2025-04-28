@@ -58,7 +58,7 @@
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
     <version.org.slf4j>2.0.6</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
-    <version.org.springframework>6.1.8</version.org.springframework>
+    <version.org.springframework>6.1.12</version.org.springframework>
     <version.org.springframework.boot>3.2.6</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
