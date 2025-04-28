@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,17 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
-import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextImpl;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.core.model.EfestoLocalRuntimeContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
-public class PMMLRuntimeContextImpl extends EfestoRuntimeContextImpl<PMMLListener> implements EfestoRuntimeContext<PMMLListener>,
-                                                                                              PMMLRuntimeContext {
+public class PMMLRuntimeContextImpl extends EfestoLocalRuntimeContextImpl<PMMLListener> implements EfestoRuntimeContext<PMMLListener>,
+                                                                                                   PMMLRuntimeContext {
 
     private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
 

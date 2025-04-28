@@ -706,7 +706,16 @@ public class DMNRuntimeImpl
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
-                    dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                    DMNMessage message = MsgUtil.reportMessage( logger,
+                            DMNMessage.Severity.ERROR,
+                            decision.getSource(),
+                            result,
+                            null,
+                            null,
+                            Msg.ERROR_EVAL_DECISION_NODE,
+                            getIdentifier( decision ),
+                            decision.getResultType() );
+                    reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
                     return false;
                 }
             } catch( Throwable t ) {
@@ -719,7 +728,6 @@ public class DMNRuntimeImpl
                                                             Msg.ERROR_EVAL_DECISION_NODE,
                                                             getIdentifier( decision ),
                                                             t.getMessage() );
-
                 reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
             }
             return true;

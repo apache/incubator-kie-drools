@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -489,6 +491,31 @@ public class KieBuilderImpl
             }
         }
         return false;
+    }
+
+    public static boolean isPackageInKieBaseOrIncludedKieBases(final String pkgName, final KieBaseModel kieBaseModel, final KieModuleModel kieModuleModel) {
+        final Set<String> alreadyProcessesKieBaseModels = new HashSet<>();
+        return isPackageInKieBaseOrIncludedKieBases(pkgName, kieBaseModel, kieModuleModel, alreadyProcessesKieBaseModels);
+    }
+
+    private static boolean isPackageInKieBaseOrIncludedKieBases(final String pkgName, final KieBaseModel kieBaseModel,
+            final KieModuleModel kieModuleModel, final Set<String> alreadyProcessesKieBaseModels) {
+        boolean isPackageInKieBaseResult = isPackageInKieBase(kieBaseModel, pkgName);
+        if (!isPackageInKieBaseResult && kieBaseModel.getIncludes() != null && !kieBaseModel.getIncludes().isEmpty()) {
+            for (String includedKieBaseName : kieBaseModel.getIncludes()) {
+                if (!alreadyProcessesKieBaseModels.contains(includedKieBaseName)) {
+                    KieBaseModel includedKieBaseModel = kieModuleModel.getKieBaseModels().get(includedKieBaseName);
+                    if (includedKieBaseModel != null) {
+                        isPackageInKieBaseResult = isPackageInKieBaseOrIncludedKieBases(pkgName, includedKieBaseModel, kieModuleModel);
+                        if (isPackageInKieBaseResult) {
+                            return true;
+                        }
+                    }
+                    alreadyProcessesKieBaseModels.add(includedKieBaseName);
+                }
+            }
+        }
+        return isPackageInKieBaseResult;
     }
 
     private static String getRelativePackageName( String pkgNameForFile ) {

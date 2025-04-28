@@ -29,10 +29,11 @@ import org.drools.model.Model;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBaseOrIncludedKieBases;
 
 public class KieBaseBuilder {
 
@@ -92,14 +93,22 @@ public class KieBaseBuilder {
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 
-    public static InternalKnowledgeBase createKieBaseFromModel(Collection<Model> models, KieBaseModel kieBaseModel) {
+    /**
+     * Creates a KieBase instance from rules models.
+     *
+     * @param models A collection of rules models, which is filtered based on the required KieBase model.
+     * @param kieBaseModel A KieBase model for which the KieBase instance is created.
+     * @param kieModuleModel KieModule model, which contains the KieBase.
+     * @return An instance of KieBase.
+     */
+    public static InternalKnowledgeBase createKieBaseFromModel(Collection<Model> models, KieBaseModel kieBaseModel, final KieModuleModel kieModuleModel) {
         KieBaseConfiguration conf = KieServices.get().newKieBaseConfiguration();
         RuleBaseConfiguration kieBaseConf = conf.as(RuleBaseConfiguration.KEY);
         kieBaseConf.setEventProcessingMode(kieBaseModel.getEventProcessingMode());
         kieBaseConf.setSessionPoolSize(kieBaseModel.getSessionsPool().getSize());
 
         KiePackagesBuilder builder = new KiePackagesBuilder(conf);
-        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getPackageName()) ).forEach( builder::addModel );
+        models.stream().filter( m -> isPackageInKieBaseOrIncludedKieBases(m.getPackageName(), kieBaseModel, kieModuleModel)).forEach(builder::addModel);
         return new KieBaseBuilder(kieBaseModel, conf).createKieBase(builder.build());
     }
 }

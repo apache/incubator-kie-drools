@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -133,6 +133,20 @@ class MatchesFunctionTest {
                 { "foobar", "^Fo*bar", "i", true },
                 { "\u212A", "k", "i", true },
                 { "\u212A", "K", "i", true }
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeWithXmlCharacterReferencesData")
+    void invokeWithXmlCharacterReferencesTest(String input, String pattern, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern), expectedResult);
+    }
+
+    private static Object[][] invokeWithXmlCharacterReferencesData() {
+        return new Object[][] {
+                { "t&st", "t&st", true },
+                { "a<bra>cadabra", "<bra>", true },
+                { "abracada\"bra'", "bra", true },
         };
     }
 

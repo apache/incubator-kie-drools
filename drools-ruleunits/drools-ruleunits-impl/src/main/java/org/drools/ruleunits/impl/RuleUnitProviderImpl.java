@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.util.IoUtils.readFileAsString;
 import static org.drools.util.IoUtils.readJarEntryAsString;
+import static org.drools.util.JarUtils.getPathWithoutScheme;
 import static org.drools.util.JarUtils.normalizeSpringBootResourceUrlPath;
 
 public class RuleUnitProviderImpl implements RuleUnitProvider {
@@ -185,14 +186,23 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         return unitValues != null && unitValues.stream().anyMatch(valueArray -> valueArray.length > 0 && valueArray[0] != null && valueArray[0].trim().equals(unitName));
     }
 
-    private static void collectResourcesInJar(KieServices ks, Collection<Resource> resources, Class<?> unitClass, String unitStatement, URL resourceUrl) {
-        String path = resourceUrl.getPath();                       // file:/path/to/xxx.jar!org/example
+    /**
+     * Collects rule unit resources under a specific package directory in a jar file.
+     * This method is protected, so that it can be enhanced when there is a framework specific issue
+     * @param ks
+     * @param resources
+     * @param unitClass
+     * @param unitStatement
+     * @param resourceUrl
+     */
+    protected static void collectResourcesInJar(KieServices ks, Collection<Resource> resources, Class<?> unitClass, String unitStatement, URL resourceUrl) {
+        String path = getPathWithoutScheme(resourceUrl);  // /path/to/xxx.jar!/org/example
+
+        path = normalizeSpringBootResourceUrlPath(path); // any spring-boot specific path should be normalized
 
         int jarSuffixIndex = path.indexOf(".jar!/");
-        String jarPath = path.substring(5, jarSuffixIndex + 4);    // /path/to/xxx.jar
+        String jarPath = path.substring(0, jarSuffixIndex + 4);    // /path/to/xxx.jar
         String directoryPath = path.substring(jarSuffixIndex + 6); // org/example
-
-        directoryPath = normalizeSpringBootResourceUrlPath(directoryPath);
 
         try (JarFile jarFile = new JarFile(new File(jarPath))) {
             Enumeration<JarEntry> entries = jarFile.entries();

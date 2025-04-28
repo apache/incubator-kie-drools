@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,11 +21,11 @@ package org.kie.pmml.api.runtime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.pmml.api.PMMLContext;
+import org.kie.api.pmml.PMMLRequestData;
 
-public interface PMMLRuntimeContext extends EfestoRuntimeContext<PMMLListener>,
+public interface PMMLRuntimeContext extends EfestoLocalRuntimeContext<PMMLListener>,
                                             PMMLContext<PMMLListener> {
 
     PMMLRequestData getRequestData();

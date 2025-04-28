@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.kie.efesto.runtimemanager.core.mocks.MockKieRuntimeServiceA;
 import org.kie.efesto.runtimemanager.core.mocks.MockKieRuntimeServiceC;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 

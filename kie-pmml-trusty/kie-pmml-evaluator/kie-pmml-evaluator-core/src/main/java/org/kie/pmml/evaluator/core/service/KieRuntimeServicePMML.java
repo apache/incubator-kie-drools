@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
@@ -34,6 +34,7 @@ import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputPMML;
 
+@SuppressWarnings("rawtypes")
 public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML,
         EfestoOutputPMML, EfestoRuntimeContext> {
 
@@ -55,5 +56,11 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
     @Override
     public String getModelType() {
         return PMML_STRING;
+    }
+
+    @Override
+    public Optional<EfestoInputPMML> parseJsonInput(String modelLocalUriIdString, String inputDataString) {
+        // This implementation is not meant to be executed from a different JVM
+        return Optional.empty();
     }
 }

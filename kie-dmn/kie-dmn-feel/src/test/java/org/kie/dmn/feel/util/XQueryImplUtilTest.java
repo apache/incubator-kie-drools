@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -111,6 +111,23 @@ class XQueryImplUtilTest {
         return new Object[][] {
                 { "matches('test', '^test', 'i')", Integer.class },
                 { "replace('testString', '^test', 'ttt', '')", Double.class },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("escapeXmlCharactersReferencesForXPathTestData")
+    void escapeXmlCharactersReferencesForXPathTest(String expression, String expectedResult) {
+        assertThat(XQueryImplUtil.escapeXmlCharactersReferencesForXPath(expression)).isEqualTo(expectedResult);
+    }
+
+    private static Object[][] escapeXmlCharactersReferencesForXPathTestData() {
+        return new Object[][] {
+                { null, null },
+                { "", "" },
+                { "lolASD", "lolASD" },
+                { "List<String>", "List&lt;String&gt;" },
+                { "\"Mr.Y\"", "&quot;Mr.Y&quot;" },
+                { "'<&>'", "&apos;&lt;&amp;&gt;&apos;" },
         };
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,8 +29,9 @@ import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ public class DrlRuntimeHelper {
         return getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), context.getGeneratedResourcesMap()).isPresent();
     }
 
-    public static Optional<EfestoOutputDrlMap> execute(BaseEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoRuntimeContext context) {
+    public static Optional<EfestoOutputDrlMap> execute(BaseEfestoInput<EfestoMapInputDTO> toEvaluate, EfestoLocalRuntimeContext context) {
         KieSession kieSession;
         try {
             kieSession = loadKieSession(toEvaluate.getModelLocalUriId(), context);
