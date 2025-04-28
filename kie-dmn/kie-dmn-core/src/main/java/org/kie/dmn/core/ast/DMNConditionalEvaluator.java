@@ -34,7 +34,11 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.api.*;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
