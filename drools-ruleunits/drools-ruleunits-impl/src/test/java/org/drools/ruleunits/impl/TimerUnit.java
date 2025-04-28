@@ -16,28 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.api.conf;
+package org.drools.ruleunits.impl;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.event.rule.RuleEventListener;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 
-/**
- * A class which encapsulates configurations to create {@link org.drools.ruleunits.api.RuleUnitInstance}. Used at runtime.
- *
- */
-public interface RuleConfig {
+public class TimerUnit implements RuleUnitData {
+    private final DataStore<String> strings;
+    private final List<String> results = new ArrayList<>();
 
-    List<AgendaEventListener> getAgendaEventListeners();
+    public TimerUnit() {
+        this(DataSource.createStore());
+    }
 
-    List<RuleRuntimeEventListener> getRuleRuntimeListeners();
+    public TimerUnit(DataStore<String> strings) {
+        this.strings = strings;
+    }
 
-    List<RuleEventListener> getRuleEventListeners();
+    public DataStore<String> getStrings() {
+        return strings;
+    }
 
-    ClockType getClockType();
-
-    void setClockType(ClockType clockType);
+    public List<String> getResults() {
+        return results;
+    }
 }
