@@ -33,7 +33,6 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -41,7 +40,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELTimeFunction;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
@@ -124,9 +122,9 @@ public class TimeFunction
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
         try {
-            int coercedHour = coerceIntegerNumber(hour).orElseThrow();
-            int coercedMinute = coerceIntegerNumber(minute).orElseThrow();
-            int coercedSecond = coerceIntegerNumber(seconds).orElseThrow();
+            int coercedHour = coerceIntegerNumber(hour).orElseThrow(() -> new NoSuchElementException("hour"));
+            int coercedMinute = coerceIntegerNumber(minute).orElseThrow(() -> new NoSuchElementException("minute"));
+            int coercedSecond = coerceIntegerNumber(seconds).orElseThrow(() -> new NoSuchElementException("seconds"));
             int nanosecs = 0;
             if( seconds instanceof BigDecimal ) {
                 BigDecimal secs = (BigDecimal) seconds;
@@ -141,8 +139,8 @@ public class TimeFunction
                                                              nanosecs,
                                               ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) ) );
             }
-        } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
+        } catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "One or more input values could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time-parsing exception", e));
         }
@@ -180,12 +178,4 @@ public class TimeFunction
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
         return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
-
-    private FEELFnResult<TemporalAccessor> checkParamIfNull(String paramName, Number value) {
-        if (NumberEvalHelper.coerceIntegerNumber(value) == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, paramName, "cannot be null"));
-        }
-        return null;
-    }
-
 }

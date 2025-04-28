@@ -26,13 +26,11 @@ import java.time.format.ResolverStyle;
 import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -78,12 +76,12 @@ public class DateFunction
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("year") Number year, @ParameterName("month") Number month, @ParameterName("day") Number day) {
         try {
-            int coercedYear = coerceIntegerNumber(year).orElseThrow();
-            int coercedMonth = coerceIntegerNumber(month).orElseThrow();
-            int coercedDay = coerceIntegerNumber(day).orElseThrow();
+            int coercedYear = coerceIntegerNumber(year).orElseThrow(() -> new NoSuchElementException("year"));
+            int coercedMonth = coerceIntegerNumber(month).orElseThrow(() -> new NoSuchElementException("month"));
+            int coercedDay = coerceIntegerNumber(day).orElseThrow(() -> new NoSuchElementException("day"));
             return FEELFnResult.ofResult(LocalDate.of(coercedYear, coercedMonth, coercedDay));
         } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }

@@ -20,13 +20,13 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.NoSuchElementException;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.NumberEvalHelper;
+
+import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
 public class CeilingFunction
         extends BaseFEELFunction implements FEELNumberFunction {
@@ -42,22 +42,15 @@ public class CeilingFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
-        if ( n == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
-        }
-        if ( scale == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
-        }
-        Optional<Integer> scaleObj = NumberEvalHelper.coerceIntegerNumber(scale);
-        AtomicReference<FEELFnResult<BigDecimal>> toReturn = new AtomicReference<>();
-        scaleObj.ifPresentOrElse(scaleInt -> {
-            // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
-            if (scaleInt < -6111 || scaleInt > 6176) {
-                toReturn.set(FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 and 6176.")));
-            } else {
-                toReturn.set(FEELFnResult.ofResult(n.setScale(scaleInt, RoundingMode.CEILING)));
+        try {
+            int coercedN = coerceIntegerNumber(n).orElseThrow(() -> new NoSuchElementException("n"));
+            int coercedScale = coerceIntegerNumber(scale).orElseThrow(() -> new NoSuchElementException("scale"));
+            if (coercedScale < -6111 || coercedScale > 6176) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
             }
-        }, () -> toReturn.set(FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "should be a Number type"))));
-        return toReturn.get();
+            return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.CEILING ) );
+        }catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
+        }
     }
 }

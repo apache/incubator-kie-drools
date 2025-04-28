@@ -37,7 +37,6 @@ import java.util.TimeZone;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateTimeFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
@@ -128,12 +127,12 @@ public class DateAndTimeFunction
                                                  @ParameterName("hour") Number hour, @ParameterName("minute") Number minute, @ParameterName("second") Number second,
                                                  @ParameterName("hour offset") Number hourOffset) {
         try {
-            int coercedYear = coerceIntegerNumber(year).orElseThrow();
-            int coercedMonth = coerceIntegerNumber(month).orElseThrow();
-            int coercedDay = coerceIntegerNumber(day).orElseThrow();
-            int coercedHour = coerceIntegerNumber(hour).orElseThrow();
-            int coercedMinute = coerceIntegerNumber(minute).orElseThrow();
-            int coercedSecond = coerceIntegerNumber(second).orElseThrow();
+            int coercedYear = coerceIntegerNumber(year).orElseThrow(() -> new NoSuchElementException("year"));
+            int coercedMonth = coerceIntegerNumber(month).orElseThrow(() -> new NoSuchElementException("month"));
+            int coercedDay = coerceIntegerNumber(day).orElseThrow(() -> new NoSuchElementException("day"));
+            int coercedHour = coerceIntegerNumber(hour).orElseThrow(() -> new NoSuchElementException("hour"));
+            int coercedMinute = coerceIntegerNumber(minute).orElseThrow(() -> new NoSuchElementException("minute"));
+            int coercedSecond = coerceIntegerNumber(second).orElseThrow(() -> new NoSuchElementException("second"));
 
             if (hourOffset != null) {
                 Optional<Integer> coercedHourOffset = coerceIntegerNumber(hourOffset);
@@ -152,7 +151,7 @@ public class DateAndTimeFunction
                 );
             }
         } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
@@ -162,16 +161,16 @@ public class DateAndTimeFunction
                                                  @ParameterName("hour") Number hour, @ParameterName("minute") Number minute, @ParameterName("second") Number second,
                                                  @ParameterName("timezone") String timezone) {
         try {
-            int coercedYear = coerceIntegerNumber(year).orElseThrow();
-            int coercedMonth = coerceIntegerNumber(month).orElseThrow();
-            int coercedDay = coerceIntegerNumber(day).orElseThrow();
-            int coercedHour = coerceIntegerNumber(hour).orElseThrow();
-            int coercedMinute = coerceIntegerNumber(minute).orElseThrow();
-            int coercedSecond = coerceIntegerNumber(second).orElseThrow();
+            int coercedYear = coerceIntegerNumber(year).orElseThrow(() -> new NoSuchElementException("year"));
+            int coercedMonth = coerceIntegerNumber(month).orElseThrow(() -> new NoSuchElementException("month"));
+            int coercedDay = coerceIntegerNumber(day).orElseThrow(() -> new NoSuchElementException("day"));
+            int coercedHour = coerceIntegerNumber(hour).orElseThrow(() -> new NoSuchElementException("hour"));
+            int coercedMinute = coerceIntegerNumber(minute).orElseThrow(() -> new NoSuchElementException("minute"));
+            int coercedSecond = coerceIntegerNumber(second).orElseThrow(() -> new NoSuchElementException("second"));
             return FEELFnResult.ofResult(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay,
                     coercedHour, coercedMinute, coercedSecond, 0, TimeZone.getTimeZone(timezone).toZoneId()));
         } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "coercion", "One or more input values could not be coerced to Integer: either null or not a valid Number."));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
