@@ -99,8 +99,14 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
+    /**
+     * Given a DMNModelInstrumentedBase element, it looks in the DMN hierarchy the element related Decision node name or
+     * BusinessKnowledgeModel node name
+     * @param dmnElement
+     * @return
+     */
     static String getDecisionOrBkmName(DMNModelInstrumentedBase dmnElement) {
-        if (dmnElement instanceof Definitions) {
+        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
             logger.error("Root element reached. Can't find the related Decision or BKM node name");
             throw new IllegalStateException("Reached Root element. Can't find the related Decision or BKM node name");
         }
@@ -110,11 +116,8 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
             return businessKnowledgeModel.getName();
         }
-        if (dmnElement.getParentDRDElement() != null) {
-            return getDecisionOrBkmName(dmnElement.getParentDRDElement());
-        }
-        logger.error("Can't find the related Decision or BKM node name for the given node: {}", dmnElement.getIdentifierString());
-        throw new IllegalStateException("Can't find the Decision / BusinessKnowledgeModel node name " + dmnElement.getIdentifierString());
+
+        return getDecisionOrBkmName(dmnElement.getParentDRDElement());
     }
 
     public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
