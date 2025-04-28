@@ -118,7 +118,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         }
         if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
             logger.error("Root element id: {} reached. Can't find the related Decision or BKM node name", dmnElement.getIdentifierString());
-            throw new IllegalStateException("Reached Root element id: " + dmnElement.getIdentifierString() + " reached. Can't find the related Decision or BKM node name.");
+            throw new IllegalStateException("Root element id: " + dmnElement.getIdentifierString() + " reached. Can't find the related Decision or BKM node name.");
         }
 
         return getDecisionOrBkmName(dmnElement.getParentDRDElement());
