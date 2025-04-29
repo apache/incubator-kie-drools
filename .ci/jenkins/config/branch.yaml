@@ -49,11 +49,9 @@ disable:
   deploy: true
 repositories:
 - name: drools
-- name: drools-website
 - name: kie-benchmarks
 productized_repositories:
 - name: drools
-- name: drools-website
 git:
   author:
     name: kiegroup
