@@ -1078,12 +1078,6 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-docs</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
         <artifactId>drools-distribution</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
