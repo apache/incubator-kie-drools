@@ -184,11 +184,6 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
     }
 
-    private static DMNConditionalEvaluator[] dmnConditionEvaluators() {
-        return new DMNConditionalEvaluator[]
-                { dmnConditionalEvaluatorDecisionNode, dmnConditionalEvaluatorBkmNode };
-    }
-
     @Test
     void testMapEvaluatorIdentifiers() {
         Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> mapEvaluatorIdentifiers = DMNConditionalEvaluator.mapEvaluatorIdentifiers(EVALUATOR_ID_MAP);
@@ -214,5 +209,10 @@ class DMNConditionalEvaluatorTest {
         Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> evaluatorIdentifierMap = new HashMap<>();
         String errorMessage = "Missing THEN evaluator in evaluatorIdMap";
         assertThatRuntimeException().isThrownBy(() -> DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.THEN)).withMessage(errorMessage);
+    }
+
+    private static DMNConditionalEvaluator[] dmnConditionEvaluators() {
+        return new DMNConditionalEvaluator[]
+                { dmnConditionalEvaluatorDecisionNode, dmnConditionalEvaluatorBkmNode };
     }
 }
