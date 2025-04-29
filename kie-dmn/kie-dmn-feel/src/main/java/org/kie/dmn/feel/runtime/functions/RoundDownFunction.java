@@ -48,7 +48,7 @@ public class RoundDownFunction
             if (coercedScale < -6111 || coercedScale > 6176) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
             }
-            return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.DOWN ) );
+            return FEELFnResult.ofResult( n.setScale( coercedScale, RoundingMode.DOWN ) );
         } catch (NoSuchElementException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         }
