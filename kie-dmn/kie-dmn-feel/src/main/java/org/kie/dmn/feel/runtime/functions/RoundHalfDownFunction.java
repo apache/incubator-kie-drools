@@ -43,7 +43,9 @@ public class RoundHalfDownFunction
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") BigDecimal n, @ParameterName("scale") BigDecimal scale) {
         try {
-            int coercedN = coerceIntegerNumber(n).orElseThrow(() -> new NoSuchElementException("n"));
+            if (n == null) {
+                throw new NoSuchElementException("n");
+            }
             int coercedScale = coerceIntegerNumber(scale).orElseThrow(() -> new NoSuchElementException("scale"));
             if (coercedScale < -6111 || coercedScale > 6176) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
