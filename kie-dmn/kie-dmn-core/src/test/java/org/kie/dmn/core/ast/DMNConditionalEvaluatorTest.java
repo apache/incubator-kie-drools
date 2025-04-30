@@ -163,7 +163,7 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(thenEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(THEN_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
+        assertThat(conditionalEvaluationEvent.getRootElementName()).isEqualTo(expectedRootElementName);
     }
 
     @ParameterizedTest
@@ -178,7 +178,7 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
+        assertThat(conditionalEvaluationEvent.getRootElementName()).isEqualTo(expectedRootElementName);
 
     }
 
@@ -194,7 +194,7 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
+        assertThat(conditionalEvaluationEvent.getRootElementName()).isEqualTo(expectedRootElementName);
     }
 
     @Test

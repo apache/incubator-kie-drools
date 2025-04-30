@@ -24,13 +24,13 @@ import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 public class AfterConditionalEvaluationEventImpl implements AfterConditionalEvaluationEvent {
 
     private final String nodeName;
-    private final String decisionName;
+    private final String rootElementName;
     private final EvaluatorResult evaluatorResult;
     private final String executedId;
 
-    public AfterConditionalEvaluationEventImpl(String nodeName, String decisionName, EvaluatorResult evaluatorResult, String executedId) {
+    public AfterConditionalEvaluationEventImpl(String nodeName, String rootElementName, EvaluatorResult evaluatorResult, String executedId) {
         this.nodeName = nodeName;
-        this.decisionName = decisionName;
+        this.rootElementName = rootElementName;
         this.evaluatorResult = evaluatorResult;
         this.executedId = executedId;
     }
@@ -41,8 +41,8 @@ public class AfterConditionalEvaluationEventImpl implements AfterConditionalEval
     }
 
     @Override
-    public String getDecisionName() {
-        return decisionName;
+    public String getRootElementName() {
+        return rootElementName;
     }
 
     @Override
