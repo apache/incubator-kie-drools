@@ -138,7 +138,7 @@ public abstract class StateHandler<S extends State> {
 
     protected final <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> sendEventNode(T actionNode,
             EventDefinition eventDefinition,
-            String data,
+            JsonNode data,
             String defaultWorkflowVar) {
         return NodeFactoryUtils.sendEventNode(
                 actionNode.action(new ProduceEventActionSupplier(workflow, eventDefinition.getType(), defaultWorkflowVar, data)),

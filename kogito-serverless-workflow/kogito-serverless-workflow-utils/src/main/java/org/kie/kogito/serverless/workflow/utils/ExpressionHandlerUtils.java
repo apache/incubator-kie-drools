@@ -26,6 +26,10 @@ import java.util.function.Function;
 import org.jbpm.ruleflow.core.Metadata;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.MergeUtils;
+import org.kie.kogito.process.expr.Expression;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -36,6 +40,8 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
 public class ExpressionHandlerUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExpressionHandlerUtils.class);
 
     private ExpressionHandlerUtils() {
     }
@@ -64,6 +70,19 @@ public class ExpressionHandlerUtils {
 
     public static Function<String, Object> getContextFunction(KogitoProcessContext context) {
         return k -> KogitoProcessContextResolver.get().readKey(context, k);
+    }
+
+    public static JsonNode transform(JsonNode node, Object inputModel, KogitoProcessContext context, String language) {
+        Expression expr = ExpressionHandlerFactory.get(language, node.asText());
+        try {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Expression: {}, valid: {}", expr.asString(), expr.isValid());
+            }
+            return expr.isValid() ? expr.eval(inputModel, JsonNode.class, context) : node;
+        } catch (Exception ex) {
+            logger.info("Error evaluating expression, returning original text {}", node);
+            return node;
+        }
     }
 
     public static String trimExpr(String expr) {

@@ -75,10 +75,14 @@ public class ActionBuilder {
         return call(functionName, JsonObjectUtils.fromValue(args));
     }
 
-    public static ActionBuilder trigger(EventDefBuilder builder, String data) {
+    public static ActionBuilder trigger(EventDefBuilder builder, JsonNode data) {
         ActionBuilder actionBuilder = new ActionBuilder(new Action().withEventRef(new EventRef().withData(data).withTriggerEventRef(builder.getName())));
         actionBuilder.eventDefinition = Optional.of(builder);
         return actionBuilder;
+    }
+
+    public static ActionBuilder trigger(EventDefBuilder builder, String data) {
+        return trigger(builder, JsonObjectUtils.fromString(data));
     }
 
     public static ActionBuilder call(FunctionBuilder functionBuilder, JsonNode args) {

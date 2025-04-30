@@ -32,8 +32,6 @@ import org.kie.kogito.serverless.workflow.parser.VariableInfo;
 import org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
@@ -79,9 +77,8 @@ public class AsyncAPITypeHandler implements FunctionTypeHandler {
 
     private NodeFactory<?, ?> buildPublishNode(Workflow workflow, ParserContext context, RuleFlowNodeContainerFactory<?, ?> factory, FunctionDefinition functionDef, FunctionRef functionRef,
             VariableInfo varInfo, AsyncChannelInfo entry) {
-        JsonNode args = functionRef.getArguments();
         return NodeFactoryUtils.sendEventNode(
-                factory.actionNode(context.newId()).action(new ProduceEventActionSupplier(workflow, entry.getName(), varInfo.getInputVar(), args != null ? args.toString() : null)),
+                factory.actionNode(context.newId()).action(new ProduceEventActionSupplier(workflow, entry.getName(), varInfo.getInputVar(), functionRef.getArguments())),
                 functionDef.getName(),
                 entry.getName(), varInfo.getInputVar());
     }

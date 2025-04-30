@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.suppliers;
 
+import java.io.UncheckedIOException;
 import java.util.function.Supplier;
 
 import org.jbpm.compiler.canonical.AbstractNodeVisitor;
@@ -27,11 +28,13 @@ import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.process.core.event.StaticMessageProducer;
 import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.actions.SWFProduceEventAction;
-import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
@@ -44,16 +47,22 @@ public class ProduceEventActionSupplier extends SWFProduceEventAction implements
 
     private static final long serialVersionUID = 1L;
 
-    public ProduceEventActionSupplier(Workflow workflow, String trigger, String varName, String data) {
-        super(trigger, varName, new MessageProducerSupplier(trigger), workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, data));
+    public ProduceEventActionSupplier(Workflow workflow, String trigger, String varName, JsonNode data) {
+        super(trigger, varName, new MessageProducerSupplier(trigger), workflow.getExpressionLang(), data);
     }
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
-        return AbstractNodeVisitor.buildProducerAction(parseClassOrInterfaceType(SWFProduceEventAction.class.getCanonicalName()), TriggerMetaData.of(node, (String) node.getMetaData()
-                .get(MAPPING_VARIABLE_INPUT)), metadata)
-                .addArgument(new StringLiteralExpr(exprLang))
-                .addArgument(data != null ? new StringLiteralExpr().setString(data) : new NullLiteralExpr());
+        try {
+            return AbstractNodeVisitor.buildProducerAction(parseClassOrInterfaceType(SWFProduceEventAction.class.getCanonicalName()), TriggerMetaData.of(node, (String) node.getMetaData()
+                    .get(MAPPING_VARIABLE_INPUT)), metadata)
+                    .addArgument(new StringLiteralExpr(exprLang))
+                    .addArgument(data != null ? new MethodCallExpr(JsonObjectUtils.class.getCanonicalName() + ".fromString").addArgument(
+                            JsonObjectUtils.toString(data))
+                            : new NullLiteralExpr());
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static class MessageProducerSupplier implements Supplier<MessageProducer<JsonNode>> {

@@ -40,7 +40,7 @@ public class WorkflowEventPublisherTest {
     @Test
     void testPublisher() {
         JsonNode expected = jsonObject().put("name", "Javierito");
-        Workflow workflow = workflow("testPublishEvent").start(operation().action(trigger(eventDef("testPublish"), "{name: .name}"))).end().build();
+        Workflow workflow = workflow("testPublishEvent").start(operation().action(trigger(eventDef("testPublish"), jsonObject().put("name", ".name")))).end().build();
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             assertThat(MockKafkaEventEmitterFactory.producer.history()).isEmpty();
             application.execute(workflow, expected);
