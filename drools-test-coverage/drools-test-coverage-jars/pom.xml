@@ -41,7 +41,6 @@
   <modules>
     <module>surf</module>
     <module>testEnum</module>
-    <module>only-jar-pojo-not-kjar-no-kmodule</module>
     <module>setter-overload</module>
     <module>drools-test-coverage-jars-with-invoker</module>
   </modules>

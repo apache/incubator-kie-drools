@@ -25,10 +25,8 @@
 
   <groupId>org.drools.testcoverage</groupId>
   <artifactId>only-jar-pojo-not-kjar-no-kmodule</artifactId>
-  <version>10.1.999-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
-
-  <name>Drools :: Test Coverage :: Jar without kmodule.xml</name>
 
   <properties>
     <java.module.name>org.drools.compiler.integrationtests.only.jar.pojo.not.kjar.no.kmodule</java.module.name>
@@ -64,7 +62,7 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}-${project.version}.jar</destinationFile>
+              <destinationFile>${project.build.directory}/../../../../../../test-compiler-integration/src/test/resources/${project.artifactId}-${project.version}.jar</destinationFile>
             </configuration>
           </execution>
         </executions>
