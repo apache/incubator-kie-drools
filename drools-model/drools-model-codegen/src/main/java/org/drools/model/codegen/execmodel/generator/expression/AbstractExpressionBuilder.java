@@ -62,6 +62,7 @@ import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.collectUsedDeclarationsInExpression;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -338,7 +339,7 @@ public abstract class AbstractExpressionBuilder {
 
     protected Expression generateLambdaForTemporalConstraint(TypedExpression typedExpression, Class<?> patternType) {
         Expression expr = typedExpression.getExpression();
-        Collection<String> usedDeclarations = DrlxParseUtil.collectUsedDeclarationsInExpression(expr);
+        Collection<String> usedDeclarations = collectUsedDeclarationsInExpression(expr);
         boolean containsThis = usedDeclarations.contains(THIS_PLACEHOLDER);
         if (containsThis) {
             usedDeclarations.remove(THIS_PLACEHOLDER);
