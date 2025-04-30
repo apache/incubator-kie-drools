@@ -126,7 +126,7 @@ class DMNConditionalEvaluatorTest {
 
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
-    void evaluateListenerInvocation(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedDecisionName) {
+    void evaluateListenerInvocation(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
         when(ifEvaluationMock.getResultType()).thenReturn(EvaluatorResult.ResultType.FAILURE); // not interested in
         // nested execution
 
@@ -142,7 +142,7 @@ class DMNConditionalEvaluatorTest {
 
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
-    void evaluateManageBooleanOrNullIfResultInvocation(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedDecisionName) {
+    void evaluateManageBooleanOrNullIfResultInvocation(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
         when(ifEvaluationMock.getResultType()).thenReturn(EvaluatorResult.ResultType.SUCCESS);
         when(ifEvaluationMock.getResult()).thenReturn(true);
 
@@ -153,7 +153,7 @@ class DMNConditionalEvaluatorTest {
 
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
-    void manageBooleanOrNullIfResultWithTrue(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedDecisionName) {
+    void manageBooleanOrNullIfResultWithTrue(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(true, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -163,12 +163,12 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(thenEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(THEN_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedDecisionName);
+        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
     }
 
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
-    void manageBooleanOrNullIfResultWithFalse(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedDecisionName) {
+    void manageBooleanOrNullIfResultWithFalse(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(false, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -178,13 +178,13 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedDecisionName);
+        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
 
     }
 
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
-    void manageBooleanOrNullIfResultWithNull(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedDecisionName)  {
+    void manageBooleanOrNullIfResultWithNull(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName)  {
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(null, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -194,7 +194,7 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
-        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedDecisionName);
+        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(expectedRootElementName);
     }
 
     @Test
@@ -226,6 +226,8 @@ class DMNConditionalEvaluatorTest {
 
     private static Object[][] dmnConditionEvaluators() {
         return new Object[][]
-                {{dmnConditionalEvaluatorInDecisionNode, DECISION_NAME}, {dmnConditionalEvaluatorInBkmNode, BKM_NAME}, {dmnConditionalEvaluatorInDefinitionsNode, DEFINITIONS_NAME}};
+                {{dmnConditionalEvaluatorInDecisionNode, DECISION_NAME},
+                        {dmnConditionalEvaluatorInBkmNode, BKM_NAME},
+                        {dmnConditionalEvaluatorInDefinitionsNode, DEFINITIONS_NAME}};
     }
 }
