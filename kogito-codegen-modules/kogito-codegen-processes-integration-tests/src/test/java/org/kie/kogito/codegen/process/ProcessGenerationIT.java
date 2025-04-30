@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.drools.io.FileSystemResource;
 import org.jbpm.process.core.timer.Timer;
@@ -204,7 +205,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
     private static final BiConsumer<Node, Node> nodeAsserter = (expected, current) -> {
         assertThat(current.getId()).isEqualTo(expected.getId());
-        if (expected.getName() != null) {
+        if (!StringUtils.isBlank(expected.getName())) {
             assertThat(current.getName()).isEqualTo(expected.getName());
         } else {
             assertThat(current.getName()).as(current.getClass().getName()).isNotNull();

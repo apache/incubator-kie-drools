@@ -45,6 +45,7 @@ public class CatchLinkNodeVisitor extends AbstractNodeVisitor<CatchLinkNode> {
         body.addStatement(getAssignedFactoryMethod(factoryField, CatchLinkNodeFactory.class, nodeId,
                 getNodeKey(), getWorkflowElementConstructor(node.getId())));
         body.addStatement(getDoneMethod(nodeId));
+        body.addStatement(getNameMethod(node, "CatchLink"));
     }
 
 }

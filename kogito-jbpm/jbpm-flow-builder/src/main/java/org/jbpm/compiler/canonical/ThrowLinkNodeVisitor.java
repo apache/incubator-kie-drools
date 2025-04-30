@@ -45,6 +45,7 @@ public class ThrowLinkNodeVisitor extends AbstractNodeVisitor<ThrowLinkNode> {
         body.addStatement(getAssignedFactoryMethod(factoryField, ThrowLinkNodeFactory.class, nodeId,
                 getNodeKey(), getWorkflowElementConstructor(node.getId())));
         body.addStatement(getDoneMethod(nodeId));
+        body.addStatement(getNameMethod(node, "ThrowLink"));
     }
 
 }

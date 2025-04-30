@@ -74,7 +74,7 @@ public abstract class AbstractVisitor {
     }
 
     protected String getOrDefault(String value, String defaultValue) {
-        if (value == null) {
+        if (value == null || value.trim().isEmpty()) {
             return sanitizeString(defaultValue);
         }
         return sanitizeString(value);
