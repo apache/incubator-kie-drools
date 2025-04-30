@@ -239,6 +239,9 @@ public interface PropagationEntry {
             if ( isOrphanHandle(handle, reteEvaluator) ) {
                 handle.setDisconnected(true);
                 handle.getEntryPoint(reteEvaluator).getObjectStore().removeHandle( handle );
+                if (handle instanceof DefaultEventHandle eventHandle) {
+                    eventHandle.unscheduleAllJobs(reteEvaluator);
+                }
             }
         }
 

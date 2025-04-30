@@ -21,10 +21,13 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
+import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
 public class RemoveFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
@@ -36,25 +39,28 @@ public class RemoveFunction
     }
 
     public FEELFnResult<List<Object>> invoke(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position) {
-        if ( list == null ) { 
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        try {
+            if (list == null) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+            }
+            int coercedPosition = coerceIntegerNumber(position).orElseThrow(() -> new NoSuchElementException("position"));
+            if (coercedPosition == 0) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be zero (parameter 'position' is 1-based)"));
+            }
+            if (Math.abs(coercedPosition) > list.size()) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "inconsistent with 'list' size"));
+            }
+
+            // spec requires us to return a new list
+            List<Object> result = new ArrayList<>(list);
+            if (coercedPosition > 0) {
+                result.remove(coercedPosition - 1);
+            } else {
+                result.remove(list.size() + coercedPosition);
+            }
+            return FEELFnResult.ofResult(result);
+        } catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         }
-        if ( position == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be null"));
-        }
-        if ( position.intValue() == 0 ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be zero (parameter 'position' is 1-based)"));
-        }
-        if ( position.abs().intValue() > list.size() ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "inconsistent with 'list' size"));
-        }
-        // spec requires us to return a new list
-        List<Object> result = new ArrayList<>( list );
-        if( position.intValue() > 0 ) {
-            result.remove( position.intValue()-1 );
-        } else {
-            result.remove( list.size()+position.intValue() );
-        }
-        return FEELFnResult.ofResult( result );
     }
 }
