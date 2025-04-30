@@ -97,5 +97,5 @@ jenkins:
   email_creds_id: DROOLS_CI_EMAIL_TO
   default_tools:
     jdk: kie-jdk17
-    maven: kie-maven-3.9.3
+    maven: kie-maven-3.9.6
     sonar_jdk: kie-jdk17
