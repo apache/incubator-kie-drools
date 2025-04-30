@@ -33,8 +33,8 @@
           </factIdentifier>
           <className>java.lang.Integer</className>
           <factAlias>#</factAlias>
-          <columnWidth>70</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>70.0</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements/>
@@ -48,13 +48,16 @@
           </factIdentifier>
           <className>java.lang.String</className>
           <factAlias>Scenario description</factAlias>
-          <columnWidth>300</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>300.0</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements>
             <ExpressionElement>
-              <step>fld1</step>
+              <step>Hello</step>
+            </ExpressionElement>
+            <ExpressionElement>
+              <step>greeting</step>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
@@ -62,78 +65,60 @@
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>fld1</name>
-            <className>fld1</className>
+            <name>1|1</name>
+            <className>org.kie.kogito.legacy.Hello</className>
           </factIdentifier>
-          <className>number</className>
-          <factAlias>fld1</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <genericTypes/>
-          <columnWidth>114</columnWidth>
+          <className>java.lang.String</className>
+          <factAlias>Hello</factAlias>
+          <expressionAlias>greeting</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>337.66666666666663</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements>
             <ExpressionElement>
-              <step>fld2</step>
+              <step>Hello</step>
+            </ExpressionElement>
+            <ExpressionElement>
+              <step>greeting</step>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
             <name>1|2</name>
-            <type>GIVEN</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>fld2</name>
-            <className>fld2</className>
-          </factIdentifier>
-          <className>number</className>
-          <factAlias>fld2</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <genericTypes/>
-          <columnWidth>114</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements>
-            <ExpressionElement>
-              <step>fld3</step>
-            </ExpressionElement>
-          </expressionElements>
-          <expressionIdentifier>
-            <name>1|3</name>
-            <type>GIVEN</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>fld3</name>
-            <className>fld3</className>
-          </factIdentifier>
-          <className>string</className>
-          <factAlias>fld3</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <genericTypes/>
-          <columnWidth>114</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements>
-            <ExpressionElement>
-              <step>Decision</step>
-            </ExpressionElement>
-          </expressionElements>
-          <expressionIdentifier>
-            <name>1|4</name>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>Decision</name>
-            <className>Decision</className>
+            <name>1|1</name>
+            <className>org.kie.kogito.legacy.Hello</className>
           </factIdentifier>
-          <className>Any</className>
-          <factAlias>Decision</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <genericTypes/>
-          <columnWidth>114</columnWidth>
+          <className>java.lang.String</className>
+          <factAlias>Hello</factAlias>
+          <expressionAlias>greeting</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>337.66666666666663</columnWidth>
+        </FactMapping>
+        <FactMapping>
+          <expressionElements>
+            <ExpressionElement>
+              <step>Hello</step>
+            </ExpressionElement>
+            <ExpressionElement>
+              <step>approved</step>
+            </ExpressionElement>
+          </expressionElements>
+          <expressionIdentifier>
+            <name>1715763614877</name>
+            <type>EXPECT</type>
+          </expressionIdentifier>
+          <factIdentifier>
+            <name>1|1</name>
+            <className>org.kie.kogito.legacy.Hello</className>
+          </factIdentifier>
+          <className>java.lang.Boolean</className>
+          <factAlias>Hello</factAlias>
+          <expressionAlias>approved</expressionAlias>
+          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>337.66666666666663</columnWidth>
         </FactMapping>
       </factMappings>
     </scesimModelDescriptor>
@@ -149,50 +134,7 @@
               <name>Description</name>
               <type>OTHER</type>
             </expressionIdentifier>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>fld1</name>
-              <className>fld1</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|1</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-            <rawValue class="string">3.0</rawValue>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>fld2</name>
-              <className>fld2</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|2</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-            <rawValue class="string">2.0</rawValue>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>fld3</name>
-              <className>fld3</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|3</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-            <rawValue class="string">"y"</rawValue>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Decision</name>
-              <className>Decision</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|4</name>
-              <type>EXPECT</type>
-            </expressionIdentifier>
-            <rawValue class="string">52.5</rawValue>
+            <rawValue class="string">Approved</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -204,6 +146,98 @@
               <type>OTHER</type>
             </expressionIdentifier>
             <rawValue class="string">1</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1|1</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">foo</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1|2</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">foo</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1715763614877</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">true</rawValue>
+          </FactMappingValue>
+        </factMappingValues>
+      </Scenario>
+      <Scenario>
+        <factMappingValues>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Scenario description</name>
+              <className>java.lang.String</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Description</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+            <rawValue class="string">Denied</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>#</name>
+              <className>java.lang.Integer</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Index</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+            <rawValue class="string">2</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1|1</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">bar</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1|2</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">bar</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>1|1</name>
+              <className>org.kie.kogito.legacy.Hello</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>1715763614877</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">false</rawValue>
           </FactMappingValue>
         </factMappingValues>
       </Scenario>
@@ -225,8 +259,8 @@
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
           <expressionAlias>PROPERTY 1</expressionAlias>
-          <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>114.0</columnWidth>
         </FactMapping>
       </factMappings>
     </scesimModelDescriptor>
@@ -248,10 +282,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>../../../../main/resources/dmnPmml/KiePMMLRegression.dmn</dmnFilePath>
-    <type>DMN</type>
-    <dmnNamespace>https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456</dmnNamespace>
-    <dmnName>TestRegressionDMN</dmnName>
+    <type>RULE</type>
     <skipFromBuild>false</skipFromBuild>
     <stateless>false</stateless>
   </settings>

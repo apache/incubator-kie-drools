@@ -56,6 +56,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-scenario-simulation-backend</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -141,11 +142,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>efesto-runtime-manager-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -16,23 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.scenariosimulation.integrationtest;
+package org.kie.drools;
 
-import org.drools.scenariosimulation.backend.runner.TestScenario;
+import org.kie.drools.Hello;
 
-import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
+rule HelloApprove when
+    $l: Hello( greeting.equals("foo") )
+then
+    System.out.println("HelloApprove");
+    modify($l) { setApproved(true) };
+end
 
-@TestScenario
-public class ScenarioTest {
-
-    /*
-    @BeforeClass
-    public static void setSystemProperties() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "./target/test-classes");
-    }
-
-    @AfterClass
-    public static void clearSystemProperties() {
-        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
-    } */
-}
+rule HelloDeny when
+    $l: Hello( greeting != "foo" )
+then
+    System.out.println("HelloDeny");
+    modify($l) { setApproved(false) };
+end
