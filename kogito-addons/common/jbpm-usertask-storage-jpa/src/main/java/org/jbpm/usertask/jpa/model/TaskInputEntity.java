@@ -25,6 +25,7 @@ import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -33,7 +34,9 @@ import jakarta.persistence.Table;
         @AttributeOverride(name = "name", column = @Column(name = "input_name")),
         @AttributeOverride(name = "value", column = @Column(name = "input_value"))
 })
-@AssociationOverride(name = "taskInstance", foreignKey = @ForeignKey(name = "jbpm_user_tasks_inputs_tid"))
+@AssociationOverride(name = "taskInstance",
+        joinColumns = @JoinColumn(name = "task_id"),
+        foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_inputs_tid"))
 public class TaskInputEntity extends TaskNamedDataEntity<byte[]> {
 
 }

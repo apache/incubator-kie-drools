@@ -282,12 +282,15 @@ public class TestUtils {
 
         instance.setExternalReferenceId("external-reference-id");
 
-        instance.setMetadata("ProcessId", "process-id");
-        instance.setMetadata("ProcessType", "BPMN");
-        instance.setMetadata("ProcessVersion", "1.0.0");
-        instance.setMetadata("boolean", true);
-        instance.setMetadata("integer", 0);
-        instance.setMetadata("null", 0);
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("ProcessId", "process-id");
+        metadata.put("ProcessType", "BPMN");
+        metadata.put("ProcessVersion", "1.0.0");
+        metadata.put("boolean", true);
+        metadata.put("integer", 0);
+        metadata.put("null", 0);
+
+        instance.setMetadata(metadata);
 
         instance.setInput("in_string", "hello this is a string");
         instance.setInput("in_integer", 1);

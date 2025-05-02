@@ -601,17 +601,13 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.comments = comments;
     }
 
-    public void setMetadata(String key, Object value) {
-        this.metadata.put(key, value);
-        updatePersistence();
-    }
-
     public Map<String, Object> getMetadata() {
         return metadata;
     }
 
     public void setMetadata(Map<String, Object> metadata) {
         this.metadata = metadata;
+        updatePersistence();
     }
 
     @Override

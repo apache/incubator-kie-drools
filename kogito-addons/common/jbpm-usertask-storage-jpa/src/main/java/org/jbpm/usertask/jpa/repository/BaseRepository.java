@@ -47,7 +47,9 @@ public abstract class BaseRepository<T, K> {
     }
 
     public T update(T entity) {
-        return this.getEntityManager().merge(entity);
+        this.getEntityManager().merge(entity);
+        this.getEntityManager().flush();
+        return entity;
     }
 
     public T remove(T entity) {

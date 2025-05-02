@@ -39,7 +39,7 @@ import jakarta.persistence.Table;
         @AttributeOverride(name = "value", column = @Column(name = "notification_value"))
 })
 @AssociationOverride(name = "taskInstance",
-        joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "jbpm_user_tasks_deadline_timer_tid")))
+        joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_deadline_timer_tid")))
 public class TaskDeadlineTimerEntity extends TaskTimerDataEntity<byte[]> {
 
     @Column(name = "notification_type")

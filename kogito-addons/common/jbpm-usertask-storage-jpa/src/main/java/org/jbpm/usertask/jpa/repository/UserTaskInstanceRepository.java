@@ -26,6 +26,7 @@ import org.kie.kogito.auth.IdentityProvider;
 
 import jakarta.persistence.TypedQuery;
 
+import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.DELETE_BY_ID;
 import static org.jbpm.usertask.jpa.model.UserTaskInstanceEntity.GET_INSTANCES_BY_IDENTITY;
 
 public class UserTaskInstanceRepository extends BaseRepository<UserTaskInstanceEntity, String> {
@@ -39,6 +40,14 @@ public class UserTaskInstanceRepository extends BaseRepository<UserTaskInstanceE
         query.setParameter("userId", identityProvider.getName());
         query.setParameter("roles", identityProvider.getRoles());
         return query.getResultList();
+    }
+
+    public UserTaskInstanceEntity delete(UserTaskInstanceEntity entity) {
+        getEntityManager().detach(entity);
+        getEntityManager().createNamedQuery(DELETE_BY_ID)
+                .setParameter("taskId", entity.getId())
+                .executeUpdate();
+        return entity;
     }
 
     @Override

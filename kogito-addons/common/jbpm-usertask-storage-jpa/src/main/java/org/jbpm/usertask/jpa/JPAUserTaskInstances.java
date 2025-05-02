@@ -68,19 +68,13 @@ public class JPAUserTaskInstances implements UserTaskInstances {
 
     @Override
     public UserTaskInstance create(UserTaskInstance userTaskInstance) {
-        Optional<UserTaskInstanceEntity> optional = userTaskInstanceRepository.findById(userTaskInstance.getId());
-
-        if (optional.isPresent()) {
-            LOGGER.error("Cannot create userTaskInstance with id {}. Task Already exists.", userTaskInstance.getId());
-            throw new IllegalArgumentException("Cannot create userTaskInstance with id " + userTaskInstance.getId() + ". Task Already exists.");
-        }
 
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
         entity.setId(userTaskInstance.getId());
 
-        this.userTaskInstanceRepository.persist(entity);
-
         userTaskInstanceEntityMapper.mapTaskInstanceToEntity(userTaskInstance, entity);
+
+        this.userTaskInstanceRepository.persist(entity);
 
         return this.reconnectUserTaskInstance.apply(userTaskInstance);
     }
@@ -113,7 +107,7 @@ public class JPAUserTaskInstances implements UserTaskInstances {
             throw new RuntimeException("Could not remove userTaskInstance with id " + userTaskInstance.getId() + ", userTaskInstance cannot be found");
         }
 
-        this.userTaskInstanceRepository.remove(optional.get());
+        this.userTaskInstanceRepository.delete(optional.get());
         return this.disconnectUserTaskInstance.apply(userTaskInstance);
     }
 

@@ -39,7 +39,7 @@ import jakarta.persistence.Table;
         @AttributeOverride(name = "value", column = @Column(name = "reassignment_value"))
 })
 @AssociationOverride(name = "taskInstance",
-        joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "jbpm_user_tasks_reassignment_timer_tid")))
+        joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_reassignment_timer_tid")))
 public class TaskReassignmentTimerEntity extends TaskTimerDataEntity<byte[]> {
 
     @Column(name = "reassignment_type")

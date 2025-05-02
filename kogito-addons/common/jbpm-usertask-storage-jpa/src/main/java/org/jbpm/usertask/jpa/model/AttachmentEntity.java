@@ -41,7 +41,7 @@ public class AttachmentEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_user_tasks_attachments_tid"))
     private UserTaskInstanceEntity taskInstance;
 

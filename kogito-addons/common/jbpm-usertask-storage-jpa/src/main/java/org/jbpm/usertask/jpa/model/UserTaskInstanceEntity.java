@@ -26,18 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @NamedQuery(name = UserTaskInstanceEntity.GET_INSTANCES_BY_IDENTITY,
@@ -49,9 +38,13 @@ import jakarta.persistence.Table;
                 "or adminGroups in (:roles) " +
                 "or (:userId member of userTask.potentialUsers and :userId not member of userTask.excludedUsers) " +
                 "or potentialGroups in (:roles)")
+@NamedNativeQuery(
+        name = UserTaskInstanceEntity.DELETE_BY_ID,
+        query = "delete from jbpm_user_tasks where id = :taskId")
 @Table(name = "jbpm_user_tasks")
 public class UserTaskInstanceEntity {
     public static final String GET_INSTANCES_BY_IDENTITY = "UserTaskInstanceEntity.GetInstanceByIdentity";
+    public static final String DELETE_BY_ID = "UserTaskInstanceEntity.DeleteById";
 
     @Id
     private String id;
@@ -79,29 +72,29 @@ public class UserTaskInstanceEntity {
     @Column(name = "external_reference_id")
     private String externalReferenceId;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "jbpm_user_tasks_potential_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_potential_users_tid")))
     @Column(name = "user_id", nullable = false)
     private Set<String> potentialUsers = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "jbpm_user_tasks_potential_groups", joinColumns = @JoinColumn(name = "task_id"),
             foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_potential_groups_tid"))
     @Column(name = "group_id")
     private Set<String> potentialGroups = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "jbpm_user_tasks_admin_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_admin_users_tid")))
     @Column(name = "user_id", nullable = false)
     private Set<String> adminUsers = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "jbpm_user_tasks_admin_groups", joinColumns = @JoinColumn(name = "task_id"),
             foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_admin_groups_tid"))
     @Column(name = "group_id")
     private Set<String> adminGroups = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "jbpm_user_tasks_excluded_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_jbpm_user_tasks_excluded_users_tid")))
     @Column(name = "user_id", nullable = false)
     private Set<String> excludedUsers = new HashSet<>();

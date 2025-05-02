@@ -18,9 +18,7 @@
  */
 package org.kie.kogito.jbpm.usertask.handler;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.kie.kogito.Application;
@@ -90,15 +88,18 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         instance.setTaskPriority(priority != null ? priority.toString() : null);
         instance.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
 
-        instance.setMetadata("ProcessId", workItem.getProcessInstance().getProcessId());
-        instance.setMetadata("ProcessType", workItem.getProcessInstance().getProcess().getType());
-        instance.setMetadata("ProcessVersion", workItem.getProcessInstance().getProcessVersion());
-        instance.setMetadata("ProcessInstanceId", workItem.getProcessInstance().getId());
-        instance.setMetadata("ProcessInstanceState", workItem.getProcessInstance().getState());
-        instance.setMetadata("RootProcessId", workItem.getProcessInstance().getRootProcessId());
-        instance.setMetadata("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
-        instance.setMetadata("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
-        instance.setMetadata("NodeInstanceId", workItem.getNodeInstance().getId());
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("ProcessId", workItem.getProcessInstance().getProcessId());
+        metadata.put("ProcessType", workItem.getProcessInstance().getProcess().getType());
+        metadata.put("ProcessVersion", workItem.getProcessInstance().getProcessVersion());
+        metadata.put("ProcessInstanceId", workItem.getProcessInstance().getId());
+        metadata.put("ProcessInstanceState", workItem.getProcessInstance().getState());
+        metadata.put("RootProcessId", workItem.getProcessInstance().getRootProcessId());
+        metadata.put("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
+        metadata.put("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
+        metadata.put("NodeInstanceId", workItem.getNodeInstance().getId());
+
+        instance.setMetadata(metadata);
 
         instance.fireInitialStateChange();
         workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> instance.setInput(e.getKey(), e.getValue()));

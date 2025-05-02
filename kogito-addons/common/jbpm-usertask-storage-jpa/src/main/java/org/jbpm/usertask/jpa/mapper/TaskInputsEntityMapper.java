@@ -59,11 +59,12 @@ public class TaskInputsEntityMapper implements EntityMapper {
                 userTaskInstanceEntity.addInput(entity);
                 return entity;
             });
-            inputEntity.setName(key);
+
             if (Objects.nonNull(value)) {
                 inputEntity.setValue(JSONUtils.valueToString(value).getBytes(StandardCharsets.UTF_8));
                 inputEntity.setJavaType(value.getClass().getName());
             }
+            repository.persist(inputEntity);
         });
     }
 

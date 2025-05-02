@@ -40,6 +40,7 @@ import org.kie.kogito.usertask.model.Comment;
 import org.mockito.Mockito;
 
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityExistsException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -78,7 +79,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
     @Test
     public void testCreateUserTask() {
-        UserTaskInstance instance = createUserTaskInstance();
+        DefaultUserTaskInstance instance = createUserTaskInstance();
 
         Assertions.assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
@@ -117,13 +118,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
         userTaskInstances.create(instance);
 
         Assertions.assertThatThrownBy(() -> userTaskInstances.create(instance))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Task Already exists.");
-
-        userTaskInstances.remove(instance);
-
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
-                .isFalse();
+                .isInstanceOf(EntityExistsException.class);
     }
 
     @Test
@@ -452,7 +447,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
         TestUtils.assertUserTaskEntityMetadata(entity, instance);
     }
 
-    private UserTaskInstance createUserTaskInstance() {
+    private DefaultUserTaskInstance createUserTaskInstance() {
         DefaultUserTaskInstance instance = TestUtils.createUserTaskInstance();
 
         instance.setInstances(userTaskInstances);

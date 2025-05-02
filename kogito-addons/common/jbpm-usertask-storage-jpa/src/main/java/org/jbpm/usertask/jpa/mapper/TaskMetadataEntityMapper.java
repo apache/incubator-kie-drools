@@ -54,14 +54,16 @@ public class TaskMetadataEntityMapper implements EntityMapper {
         userTaskInstance.getMetadata().forEach((key, value) -> {
             TaskMetadataEntity metadataEntity = userTaskInstanceEntity.getMetadata().stream().filter(entity -> entity.getName().equals(key)).findFirst().orElseGet(() -> {
                 TaskMetadataEntity entity = new TaskMetadataEntity();
+                entity.setName(key);
                 userTaskInstanceEntity.addMetadata(entity);
                 return entity;
             });
-            metadataEntity.setName(key);
+
             if (Objects.nonNull(value)) {
                 metadataEntity.setValue(JSONUtils.valueToString(value));
                 metadataEntity.setJavaType(value.getClass().getName());
             }
+            repository.persist(metadataEntity);
         });
     }
 

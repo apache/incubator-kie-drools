@@ -158,27 +158,11 @@ public class JPAUserTaskInstancesTest {
 
     @Test
     public void testSuccessfulCreate() {
-        when(userTaskInstanceRepository.findById(any())).thenReturn(Optional.empty());
-
         jpaUserTaskInstances.create(TestUtils.createUserTaskInstance());
 
         verify(userTaskInstanceRepository, times(1)).persist(any());
         verify(userTaskInstanceEntityMapper, times(1)).mapTaskInstanceToEntity(any(), any());
         verify(reconnectUserTaskInstance, times(1)).apply(any());
-    }
-
-    @Test
-    public void testUnSuccessfulCreate() {
-        Optional<UserTaskInstanceEntity> result = Optional.of(TestUtils.createUserTaskInstanceEntity());
-        when(userTaskInstanceRepository.findById(any())).thenReturn(result);
-
-        Assertions.assertThatThrownBy(() -> {
-            jpaUserTaskInstances.create(TestUtils.createUserTaskInstance());
-        }).hasMessageContaining("Task Already exists.");
-
-        verify(userTaskInstanceRepository, never()).persist(any());
-        verify(userTaskInstanceEntityMapper, never()).mapTaskInstanceToEntity(any(), any());
-        verify(reconnectUserTaskInstance, never()).apply(any());
     }
 
     @Test
@@ -211,7 +195,7 @@ public class JPAUserTaskInstancesTest {
 
         jpaUserTaskInstances.remove(TestUtils.createUserTaskInstance());
 
-        verify(userTaskInstanceRepository, times(1)).remove(any());
+        verify(userTaskInstanceRepository, times(1)).delete(any());
         verify(disconnectUserTaskInstance, times(1)).apply(any());
     }
 
