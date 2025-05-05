@@ -400,7 +400,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 	ksession.insert("Asdrubale");	
         
 	assertThat(ksession.fireAllRules()).isEqualTo(1);
-
+	ksession.fireAllRules();
         assertThat(results).containsExactly("Asdrubale is greater than 4 and smaller than 10");
     }
 
