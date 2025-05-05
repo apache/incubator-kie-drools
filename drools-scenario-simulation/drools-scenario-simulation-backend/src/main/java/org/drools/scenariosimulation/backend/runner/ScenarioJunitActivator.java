@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +31,6 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.runner.Description;
-import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
@@ -42,16 +40,8 @@ import org.kie.api.runtime.KieContainer;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
 import static org.drools.util.ResourceHelper.getResourcesByExtension;
 
+@Deprecated(since = "10.2.0", forRemoval = true)
 public class ScenarioJunitActivator extends ParentRunner<ScenarioRunnerDTO> {
-
-    public static final String ACTIVATOR_CLASS_NAME = "ScenarioJunitActivatorTest";
-
-    public static final Function<String, String> ACTIVATOR_CLASS_CODE = modulePackage ->
-            String.format("package %s;\n/**\n* Do not remove this file\n*/\n@%s(%s.class)\npublic class %s {\n}",
-                          modulePackage,
-                          RunWith.class.getCanonicalName(),
-                          ScenarioJunitActivator.class.getCanonicalName(),
-                          ScenarioJunitActivator.ACTIVATOR_CLASS_NAME);
 
     public ScenarioJunitActivator(Class<?> testClass) throws InitializationError {
         super(testClass);
