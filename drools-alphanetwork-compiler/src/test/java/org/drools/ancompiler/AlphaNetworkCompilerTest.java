@@ -388,7 +388,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
                         "when\n" +
                         "  $s : String( length > 4, length < 10)\n" +
                         "then\n" +
-                        "  results.add($s + \" is greater than 4 and smaller than 10\");\n" +
+                        "  ((java.util.List)results).add($s + \" is greater than 4 and smaller than 10\");\n" +
                         "end";
 
         KieSession ksession = getKieSession(testRunType, str);
