@@ -62,8 +62,6 @@ import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.TypedExpressionResult;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
@@ -717,6 +715,14 @@ public class ConstraintParser {
         }
 
         if (isOrBinary) {
+            if ( binaryExpr.getRight() instanceof HalfBinaryExpr ) {
+                DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
+                Expression rightExpr = right.getExpression();
+                DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
+                return isMultipleResult(leftResult, operator, rightResult) ?
+                        createMultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
+                        leftResult.combineWith( rightResult, operator );
+            }
             combo = combineExpressions( leftPrefixExpressions, rightPrefixExpresssions, combo ); // NullSafeExpressions are combined here because the order is complex
         } else {
             combo = combineExpressions( leftTypedExpressionResult, combo ); // NullSafeExpressions will be added later by PatternDSL.addNullSafeExpr() which will be separated AlphaNodes

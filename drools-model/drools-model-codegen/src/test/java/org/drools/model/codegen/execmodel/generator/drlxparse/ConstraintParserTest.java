@@ -68,7 +68,16 @@ public class ConstraintParserTest {
         assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR cases
 
         // null check is done after the first constraint
-        assertThat(result.getExpr().toString()).isEqualTo("_this.getName() == \"John\" || _this.getAddress() != null && _this.getName() == _this.getAddress().getCity()");
+        assertThat(result.getExpr().toString()).isEqualTo("(org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), _this.getAddress().getCity()))");
+    }
+
+    @Test
+    public void testNullSafeExpressionsWithHalfConstraintOr() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" ||  == \"Jacob\"");
+
+        assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR cases
+
+        assertThat(result.getExpr().toString()).isEqualTo("(org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))");
     }
 
     @Test
