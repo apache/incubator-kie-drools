@@ -118,7 +118,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
             return businessKnowledgeModel.getName();
         }
         if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
-            logger.warn("Root element identifier: {} reached. The conditional expression is not wrapped in a Decision or BKM node name. Returning this root element identifier",
+            logger.debug("Root element identifier: {} reached. The conditional expression is not wrapped in a Decision or BKM node name. Returning this root element identifier",
                     dmnElement.getIdentifierString());
             return dmnElement.getIdentifierString();
         }
