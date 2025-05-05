@@ -30,6 +30,7 @@ import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
@@ -80,9 +81,15 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootProcessId(pi.getRootProcessId())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
-                .state(event.getProcessInstance().getState())
                 .businessKey(pi.getBusinessKey())
                 .slaDueDate(pi.getSlaDueDate());
+
+        // this is due to the listener order execution. we cannot trust the state of the process if it start and finishes at the same time.
+        if (eventType == ProcessInstanceStateEventBody.EVENT_TYPE_STARTED) {
+            builder.state(KogitoProcessInstance.STATE_ACTIVE);
+        } else {
+            builder.state(event.getProcessInstance().getState());
+        }
 
         String securityRoles = (String) event.getProcessInstance().getProcess().getMetaData().get("securityRoles");
         if (securityRoles != null) {

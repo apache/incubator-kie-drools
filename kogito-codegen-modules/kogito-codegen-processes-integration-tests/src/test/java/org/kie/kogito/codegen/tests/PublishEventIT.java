@@ -43,6 +43,7 @@ import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
@@ -431,8 +432,15 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         List<DataEvent<?>> events = publisher.extract();
 
-        ProcessInstanceStateDataEvent processDataEvent =
-                events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).map(ProcessInstanceStateDataEvent.class::cast).findFirst().orElseThrow();
+        List<ProcessInstanceStateDataEvent> processInstanceStateEvents =
+                events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).map(ProcessInstanceStateDataEvent.class::cast).toList();
+        assertThat(processInstanceStateEvents).hasSize(2);
+        assertThat(processInstanceStateEvents)
+                .extracting(ProcessInstanceStateDataEvent::getData)
+                .extracting(ProcessInstanceStateEventBody::getState)
+                .containsExactlyInAnyOrder(KogitoProcessInstance.STATE_ACTIVE, KogitoProcessInstance.STATE_COMPLETED);
+
+        ProcessInstanceStateDataEvent processDataEvent = processInstanceStateEvents.stream().filter(e -> e.getData().getState() == 2).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoProcessInstanceVersion()).isEqualTo("1.0");
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
@@ -476,7 +484,10 @@ public class PublishEventIT extends AbstractCodegenIT {
         List<DataEvent<?>> events = rawEvents.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).collect(Collectors.toList());
         assertThat(events).hasSize(1);
 
-        assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
+        assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", KogitoProcessInstance.STATE_ACTIVE);
+
+        events = rawEvents.stream().filter(ProcessInstanceErrorDataEvent.class::isInstance).collect(Collectors.toList());
+        assertThat(events).hasSize(1);
 
         List<ProcessInstanceErrorDataEvent> errorEvents =
                 rawEvents.stream().filter(ProcessInstanceErrorDataEvent.class::isInstance).map(ProcessInstanceErrorDataEvent.class::cast).collect(Collectors.toList());

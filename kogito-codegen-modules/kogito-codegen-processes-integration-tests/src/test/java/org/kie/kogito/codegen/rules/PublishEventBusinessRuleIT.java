@@ -39,6 +39,7 @@ import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
@@ -78,18 +79,28 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
+        List<ProcessInstanceStateDataEvent> processInstanceStateEvents = events.stream()
+                .filter(ProcessInstanceStateDataEvent.class::isInstance)
+                .map(ProcessInstanceStateDataEvent.class::cast)
+                .toList();
+
+        assertThat(processInstanceStateEvents).hasSize(2);
+        assertThat(processInstanceStateEvents)
+                .extracting(ProcessInstanceStateDataEvent::getData)
+                .extracting(ProcessInstanceStateEventBody::getState)
+                .containsExactlyInAnyOrder(KogitoProcessInstance.STATE_ACTIVE, KogitoProcessInstance.STATE_COMPLETED);
+
         ProcessInstanceStateDataEvent processDataEvent =
-                events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).map(ProcessInstanceStateDataEvent.class::cast).findFirst().orElseThrow();
+                processInstanceStateEvents.stream().filter(e -> e.getData().getState() == KogitoProcessInstance.STATE_COMPLETED).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource()).hasToString("http://myhost/BusinessRuleTask");
 
-        assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
+        assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", KogitoProcessInstance.STATE_COMPLETED);
 
-        List<DataEvent<?>> nodeEvents = events.stream().filter(ProcessInstanceNodeDataEvent.class::isInstance).collect(Collectors.toList());
-
+        List<ProcessInstanceNodeDataEvent> nodeEvents = events.stream().filter(ProcessInstanceNodeDataEvent.class::isInstance).map(ProcessInstanceNodeDataEvent.class::cast).toList();
         assertThat(nodeEvents).hasSize(6).map(e -> (ProcessInstanceNodeEventBody) e.getData()).extractingResultOf("getNodeType").containsOnly("StartNode", "RuleSetNode", "EndNode");
 
         List<ProcessInstanceVariableDataEvent> variableEvents =
