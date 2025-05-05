@@ -61,18 +61,20 @@ public class KnativeRouteEndpointDiscovery implements EndpointDiscovery {
      * before calling the discovery methods.
      */
     public final void adaptKnativeClientFromKube(final KubernetesClient kubernetesClient) {
+        if (kubernetesClient == null) {
+            LOGGER.warn("KubernetesClient is null. Cannot adapt to KnativeClient.");
+            return;
+        }
         try {
-            if (kubernetesClient != null && kubernetesClient.isAdaptable(KnativeClient.class)) {
-                knativeClient = kubernetesClient.adapt(KnativeClient.class);
-            } else {
-                LOGGER.warn("Impossible to adapt Fabric8 Kubernetes Client to Knative Client. Discovery operations for Knative won't be performed.");
-            }
+            knativeClient = kubernetesClient.adapt(KnativeClient.class);
         } catch (KubernetesClientException ex) {
-            // when running on a local environment, the client might try to ping the cluster.
-            // instead of returning `false` from isAdaptable, it's throwing the exception.
-            // We catch it here to avoid initialization errors on such envs
-            LOGGER.warn("Error trying to adapt current Kubernetes Client to Knative. Turn on DEBUG to see the full stack trace: {}", ex.getMessage());
-            LOGGER.debug("Stack trace: ", ex);
+            // When running locally, this may throw if no cluster is reachable
+            LOGGER.warn("Error trying to adapt Kubernetes Client to Knative. Discovery operations for Knative won't be performed. Turn on DEBUG to see the full stack trace: {}", ex.getMessage());
+            LOGGER.debug("Stack trace:", ex);
+        } catch (Exception ex) {
+            // Catch any other unexpected issues
+            LOGGER.warn("Unexpected error during KnativeClient adaptation: {}", ex.getMessage());
+            LOGGER.debug("Stack trace:", ex);
         }
     }
 
