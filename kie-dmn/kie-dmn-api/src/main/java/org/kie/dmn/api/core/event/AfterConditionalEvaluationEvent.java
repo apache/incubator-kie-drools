@@ -32,7 +32,7 @@ public interface AfterConditionalEvaluationEvent {
      * The decision that this node relates to
      * @return
      */
-    String getRootElementName();
+    String getDecisionName();
 
     EvaluatorResult getEvaluatorResultResult();
 
