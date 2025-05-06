@@ -373,7 +373,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
                                                                                        "ModelC.dmn");
 
         final DMNModelImpl modelA = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "Say hello 1ID1D");
-        assertThat(modelA.getImportChainAliases()).hasSize(0);
+        assertThat(modelA.getImportChainAliases()).isEmpty();
 
         final DMNModelImpl modelB = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
         assertThat(modelB.getImportChainAliases()).hasSize(1);
@@ -568,6 +568,12 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
         getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
         getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+
+        final DMNModel dmnModel = runtime.getModel(dmnMainNamespace,
+                                                   dmnMainModelName);
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+        assertThat(evaluateAll.getDecisionResultByName("DecisionMain").getResult()).isEqualTo(Boolean.TRUE);
     }
 
     @ParameterizedTest
@@ -591,6 +597,11 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
         getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
         getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+        final DMNModel dmnModel = runtime.getModel(dmnMainNamespace,
+                                                   dmnMainModelName);
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+        assertThat(evaluateAll.getDecisionResultByName("DecisionMain").getResult()).isEqualTo(Boolean.TRUE);
     }
 
 }
