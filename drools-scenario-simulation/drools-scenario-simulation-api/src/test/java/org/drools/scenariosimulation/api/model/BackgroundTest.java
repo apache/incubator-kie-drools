@@ -18,6 +18,7 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ class BackgroundTest {
         assertThat(clonedDescriptor.getUnmodifiableFactMappings()).hasSameSizeAs(originalDescriptor.getUnmodifiableFactMappings());
         assertThat(clonedDescriptor.getUnmodifiableFactMappings()).isEqualTo(originalDescriptor.getUnmodifiableFactMappings());
         assertThat(cloned.getUnmodifiableData()).hasSameSizeAs(background.getUnmodifiableData());
-        assertThat(cloned.getUnmodifiableData()).usingElementComparator((x, y) -> x.getDescription().compareTo(y.getDescription())).isEqualTo(background.getUnmodifiableData());
+        assertThat(cloned.getUnmodifiableData()).usingElementComparator(Comparator.comparing(AbstractScesimData::getDescription)).isEqualTo(background.getUnmodifiableData());
     }
 
     @Test
@@ -96,7 +97,7 @@ class BackgroundTest {
         background.removeFactMappingByIndex(0);
         
         assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
-        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).hasSize(0);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).isEmpty();
     }
 
     @Test
@@ -104,7 +105,7 @@ class BackgroundTest {
         background.removeFactMapping(background.getScesimModelDescriptor().getFactMappingByIndex(0));
         
         assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
-        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).hasSize(0);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).isEmpty();
     }
 
     @Test

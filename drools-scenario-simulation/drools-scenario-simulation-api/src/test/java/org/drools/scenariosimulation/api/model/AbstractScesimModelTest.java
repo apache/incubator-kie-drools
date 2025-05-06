@@ -25,18 +25,16 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 class AbstractScesimModelTest {
 
-    private final static int SCENARIO_DATA = 5;
-    private final static int FACT_MAPPINGS = 3;
+    private static final int SCENARIO_DATA = 5;
+    private static final int FACT_MAPPINGS = 3;
     private AbstractScesimModel<Scenario> model;
 
     @BeforeEach
@@ -63,7 +61,7 @@ class AbstractScesimModelTest {
     }
 
     @Test
-    public void getUnmodifiableData_isUnmodifiable() {
+    void getUnmodifiableData_isUnmodifiable() {
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> model.getUnmodifiableData().add(new Scenario()));
     }
 
@@ -141,7 +139,7 @@ class AbstractScesimModelTest {
         
         model.removeFactMappingByIndex(2);
         
-        verify(model, times(1)).clearDatas(eq(factMappingByIndex));
+        verify(model, times(1)).clearDatas(factMappingByIndex);
         assertThat(model.scesimModelDescriptor.getFactMappings()).hasSize(FACT_MAPPINGS - 1).doesNotContain(factMappingByIndex);
     }
 
@@ -151,7 +149,7 @@ class AbstractScesimModelTest {
         
         model.removeFactMapping(factMappingByIndex);
         
-        verify(model, times(1)).clearDatas(eq(factMappingByIndex));
+        verify(model, times(1)).clearDatas(factMappingByIndex);
         assertThat(model.scesimModelDescriptor.getFactMappings()).hasSize(FACT_MAPPINGS - 1).doesNotContain(factMappingByIndex);
     }
 
@@ -162,7 +160,7 @@ class AbstractScesimModelTest {
         final FactIdentifier factIdentifier = factMappingByIndex.getFactIdentifier();
         final ExpressionIdentifier expressionIdentifier = factMappingByIndex.getExpressionIdentifier();
 
-        model.scesimData.forEach(scesimData -> verify(scesimData, times(1)).removeFactMappingValueByIdentifiers(eq(factIdentifier), eq(expressionIdentifier)));
+        model.scesimData.forEach(scesimData -> verify(scesimData, times(1)).removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier));
     }
 
     private Scenario getSpyScenario(int index) {

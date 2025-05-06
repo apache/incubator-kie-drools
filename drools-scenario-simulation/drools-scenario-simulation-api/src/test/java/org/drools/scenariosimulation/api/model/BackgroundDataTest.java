@@ -87,14 +87,14 @@ class BackgroundDataTest {
 
     @Test
     void getDescription_initialEmptyDescription() {
-        assertThat(backgroundData.getDescription()).isEqualTo("");
+        assertThat(backgroundData.getDescription()).isEmpty();
     }
 
     @Test
     void getDescription_descriptionSetToNullValue() {
         backgroundData.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, null);
         
-        assertThat(backgroundData.getDescription()).isEqualTo("");
+        assertThat(backgroundData.getDescription()).isEmpty();
     }
 
     @Test
@@ -108,7 +108,7 @@ class BackgroundDataTest {
     void setDescription_nullValue() {
         backgroundData.setDescription(null);
         
-        assertThat(backgroundData.getDescription()).isEqualTo("");
+        assertThat(backgroundData.getDescription()).isEmpty();
     }
     
     @Test

@@ -47,7 +47,7 @@ class FactMappingTest {
         assertThatThrownBy(original::getExpressionElementsWithoutClass)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("ExpressionElements malformed");
-        assertThat(original.getExpressionElements()).hasSize(0);
+        assertThat(original.getExpressionElements()).isEmpty();
 
     }
     
