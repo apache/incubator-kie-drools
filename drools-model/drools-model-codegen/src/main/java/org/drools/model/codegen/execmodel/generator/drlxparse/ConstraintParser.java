@@ -161,7 +161,7 @@ public class ConstraintParser {
         boolean hasBind = drlx.getBind() != null;
         DrlxParseResult drlxParseResult =
                 compileStart(patternType, bindingId, constraint, drlx.getExpr(), hasBind, isPositional )
-                .setOriginalDrlConstraint(constraintExpressionString);
+                        .setOriginalDrlConstraint(constraintExpressionString);
 
         drlxParseResult.accept(result -> {
             if (hasBind) {
@@ -194,8 +194,8 @@ public class ConstraintParser {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) drlxParseResult;
         if (context.getCurrentConstraintDescr().isPresent() && !result.getVariablesFromDifferentPattern().isEmpty() && result.getReactOnProperties().isEmpty()) {
             LOG.warn("{} is not relevant to this pattern, so it causes class reactivity. " +
-                     "Consider placing this constraint in the original pattern if possible : {}",
-                     result.getVariablesFromDifferentPattern(), result.getOriginalDrlConstraint());
+                            "Consider placing this constraint in the original pattern if possible : {}",
+                    result.getVariablesFromDifferentPattern(), result.getOriginalDrlConstraint());
         }
     }
 
@@ -424,18 +424,29 @@ public class ConstraintParser {
             throw new RuntimeException(combo + " is not nor contains BinaryExpr");
         }
 
-        Expression left = binaryExpr.getLeft();
+        Expression left = getEqualityExpression(binaryExpr.getLeft());
         for (Expression prefixExpression : leftPrefixExpresssions) {
             left = new BinaryExpr(prefixExpression, left, BinaryExpr.Operator.AND);
         }
         binaryExpr.setLeft(left);
 
-        Expression right = binaryExpr.getRight();
+        Expression right = getEqualityExpression(binaryExpr.getRight());
         for (Expression prefixExpression : rightPrefixExpresssions) {
-            right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
+            if (!(prefixExpression.isBinaryExpr() && prefixExpression.asBinaryExpr().getRight().isNullLiteralExpr())){
+                right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
+            }
         }
         binaryExpr.setRight(right);
         return combo;
+    }
+
+    private Expression getEqualityExpression(Expression expr) {
+        if(expr.isBinaryExpr()){
+            if ((expr.asBinaryExpr().getOperator() == EQUALS || expr.asBinaryExpr().getOperator() == NOT_EQUALS) ){
+                return getEqualityExpression(new TypedExpression(expr.asBinaryExpr().getLeft()), new TypedExpression(expr.asBinaryExpr().getRight()), expr.asBinaryExpr().getOperator()).expression;
+            }
+        }
+        return expr;
     }
 
     private DrlxParseResult parseFunctionInEval(MethodCallExpr methodCallExpr, Class<?> patternType, String bindingId, boolean isPositional, Optional<MethodDeclaration> functionCall) {
@@ -515,7 +526,7 @@ public class ConstraintParser {
                 throw new IllegalArgumentException("Cannot find declaration specification by specified expression " + expression + "!");
             }
         }
-        
+
         return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
                 .addReactOnProperty( nameExpr.getNameAsString() )
                 .setIsPredicate(true);
@@ -715,14 +726,6 @@ public class ConstraintParser {
         }
 
         if (isOrBinary) {
-            if ( binaryExpr.getRight() instanceof HalfBinaryExpr ) {
-                DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
-                Expression rightExpr = right.getExpression();
-                DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
-                return isMultipleResult(leftResult, operator, rightResult) ?
-                        createMultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
-                        leftResult.combineWith( rightResult, operator );
-            }
             combo = combineExpressions( leftPrefixExpressions, rightPrefixExpresssions, combo ); // NullSafeExpressions are combined here because the order is complex
         } else {
             combo = combineExpressions( leftTypedExpressionResult, combo ); // NullSafeExpressions will be added later by PatternDSL.addNullSafeExpr() which will be separated AlphaNodes
@@ -789,7 +792,7 @@ public class ConstraintParser {
     private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {
         return leftResult.isSuccess() && rightResult.isSuccess() && (
                 (isLogicalOperator(operator) && (((DrlxParseSuccess) leftResult).getExprBinding() != null || ((DrlxParseSuccess) rightResult).getExprBinding() != null)) ||
-                ((DrlxParseSuccess) leftResult).isTemporal() || ((DrlxParseSuccess) rightResult).isTemporal()
+                        ((DrlxParseSuccess) leftResult).isTemporal() || ((DrlxParseSuccess) rightResult).isTemporal()
         );
     }
 
@@ -810,17 +813,17 @@ public class ConstraintParser {
 
     private boolean hasDeclarationFromOtherPattern(ExpressionTyperContext expressionTyperContext) {
         return expressionTyperContext.getUsedDeclarations()
-                                     .stream()
-                                     .map(context::getTypedDeclarationById)
-                                     .anyMatch(optDecl -> {
-                                         if (optDecl.isPresent()) {
-                                             TypedDeclarationSpec decl = optDecl.get();
-                                             if (!decl.isGlobal() && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
-                                                 return true;
-                                             }
-                                         }
-                                         return false;
-                                     });
+                .stream()
+                .map(context::getTypedDeclarationById)
+                .anyMatch(optDecl -> {
+                    if (optDecl.isPresent()) {
+                        TypedDeclarationSpec decl = optDecl.get();
+                        if (!decl.isGlobal() && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
     }
 
     private boolean isForallSelfJoinConstraint( TypedExpression left, TypedExpression right, Index.ConstraintType constraintType ) {

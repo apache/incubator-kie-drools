@@ -68,16 +68,17 @@ public class ConstraintParserTest {
         assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR cases
 
         // null check is done after the first constraint
-        assertThat(result.getExpr().toString()).isEqualTo("(org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), _this.getAddress().getCity()))");
+        assertThat(result.getExpr().toString()).isEqualTo("org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), _this.getAddress().getCity())");
     }
 
     @Test
-    public void testNullSafeExpressionsWithHalfConstraintOr() {
-        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" ||  == \"Jacob\"");
+    public void testOrWithHalfConstraint() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || == \"Jacob\"");
 
         assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR cases
 
-        assertThat(result.getExpr().toString()).isEqualTo("(org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))");
+        // null check is done after the first constraint
+        assertThat(result.getExpr().toString()).isEqualTo("org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\") || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\")");
     }
 
     @Test
@@ -137,7 +138,7 @@ public class ConstraintParserTest {
         assertThat(implicitCastExpression.get().toString()).isEqualTo("_this instanceof Person"); // will be added as the first predicate
 
         // instanceof check is done after the first constraint
-        assertThat(result.getExpr().toString()).isEqualTo("\"Mark\" == _this.toString() || _this instanceof " + Person.class.getCanonicalName() + " && \"Mark\" == ((" + Person.class.getCanonicalName() + ") _this).getAddress().getCity()");
+        assertThat(result.getExpr().toString()).isEqualTo("org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(\"Mark\", _this.toString()) || _this instanceof org.drools.model.codegen.execmodel.domain.Person && org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(\"Mark\", ((org.drools.model.codegen.execmodel.domain.Person) _this).getAddress().getCity())");
     }
 
     @Test
