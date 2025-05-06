@@ -98,12 +98,15 @@ end
 rule DMNSHAPE_UNKNOWN_REF_WITH_IMPORT
 when
     DMNDI()
-    $shape : DMNShape($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX)
-    Definitions($nsContext : nsContext)
+    $shape : DMNShape($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX, $localPart : dmnElementRef.localPart)
+    $definitions : Definitions($nsContext : nsContext)
     $import : Import(DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN, namespace == $nsContext[$prefix])
     $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
-    not DRGElement(id == $shape.dmnElementRef.localPart) from $importDef.drgElement
-    not TextAnnotation(id == $shape.dmnElementRef.localPart) from $importDef.artifact
+    $importRelatedDefinitions :  Definitions(drgElement[0].id == $localPart) from entry-point "RelatedImports"
+    not DRGElement(id == $localPart) from $importDef.drgElement
+    not DRGElement(id == $localPart) from $importRelatedDefinitions.drgElement
+    not DRGElement(id == $localPart)
+    not TextAnnotation(id == $localPart) from $importDef.artifact
     not Group(id == $shape.dmnElementRef.localPart) from $importDef.artifact
 then
     reporter.report(DMNMessage.Severity.ERROR, $shape, Msg.DMNDI_UNKNOWN_REF, $shape.getDmnElementRef(), $shape.getIdentifierString());

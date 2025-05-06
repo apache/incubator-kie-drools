@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -547,5 +546,52 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Is A Bigger?").getResult()).isEqualTo(Boolean.TRUE);
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importNestedModelsWithUnnamedImport(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_5/nested_imports";
+        String dmnMain = String.format("%s/DMNMainUnnamedImport.dmn", basePath);
+        String dmn1 = String.format("%s/DMN1.dmn", basePath);
+        String dmn2 = String.format("%s/DMN2.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmn1,
+                                                                                       dmn2);
+        String dmnMainNamespace = "https://kie.org/dmn/_84840481-6BE8-4C7D-AB86-CE933B145B9B";
+        String dmnMainModelName = "MainUnnamedImport";
+        String dmn1Namespace = "https://kie.org/dmn/_9330C60C-CD07-40EB-98BA-E56D186CCDE1";
+        String dmn1ModelName = "DMN_CDC9A17D-C69A-4F6A-8366-FF9638F398B1";
+        String dmn2Namespace = "https://kie.org/dmn/_484279FA-4F72-4596-A18A-6F265AC06DAD";
+        String dmn2ModelName = "DMN_8F060061-5BD2-400A-99B4-A54E371875C0";
+        getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
+        getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
+        getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importNestedModelsWithNamedImport(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_5/nested_imports";
+        String dmnMain = String.format("%s/DMNMainNamedImport.dmn", basePath);
+        String dmn1 = String.format("%s/DMN1.dmn", basePath);
+        String dmn2 = String.format("%s/DMN2.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmn1,
+                                                                                       dmn2);
+        String dmnMainNamespace = "https://kie.org/dmn/_84840481-6BE8-4C7D-AB86-CE933B145B9B";
+        String dmnMainModelName = "MainNamedImport";
+        String dmn1Namespace = "https://kie.org/dmn/_9330C60C-CD07-40EB-98BA-E56D186CCDE1";
+        String dmn1ModelName = "DMN_CDC9A17D-C69A-4F6A-8366-FF9638F398B1";
+        String dmn2Namespace = "https://kie.org/dmn/_484279FA-4F72-4596-A18A-6F265AC06DAD";
+        String dmn2ModelName = "DMN_8F060061-5BD2-400A-99B4-A54E371875C0";
+        getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
+        getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
+        getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+    }
+
 }
 

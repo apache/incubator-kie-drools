@@ -146,8 +146,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource, Collection<DMNModel> dmnModels) {
         try {
-            DMNModel model = compile(resource.getReader(), dmnModels, resource);
-            return model;
+            return compile(resource.getReader(), dmnModels, resource);
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }
@@ -162,8 +161,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
             Definitions dmndefs = getMarshaller().unmarshal(source);
-            DMNModel model = compile(dmndefs, dmnModels, resource, null);
-            return model;
+            return compile(dmndefs, dmnModels, resource, null);
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
@@ -228,7 +226,6 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
      */
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
-
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect);
@@ -666,7 +663,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
-        } else if (itemDef.getItemComponent() != null && itemDef.getItemComponent().size() > 0) {
+        } else if (itemDef.getItemComponent() != null && !itemDef.getItemComponent().isEmpty()) {
             // this is a composite type
             // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {

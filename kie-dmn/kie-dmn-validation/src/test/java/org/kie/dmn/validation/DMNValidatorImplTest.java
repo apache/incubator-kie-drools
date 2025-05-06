@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.validation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,10 +29,19 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 import javax.xml.validation.ValidatorHandler;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.v1_5.TDefinitions;
+import org.kie.dmn.model.v1_5.TImport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DC;
@@ -40,8 +50,26 @@ import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPAC
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DMNDI;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_FEEL;
 import static org.kie.dmn.validation.DMNValidatorImpl.DMNVERSION_SCHEMA_MAP;
+import static org.kie.dmn.validation.DMNValidatorImpl.populateNestedUnnamedImports;
 
 class DMNValidatorImplTest {
+    private List<Definitions> otherModelsDefinitions;
+    private Set<Definitions> toIterate;
+    private Import imported;
+    private List<String> unnamedImports;
+
+    @BeforeEach
+    void setUp() {
+        otherModelsDefinitions = IntStream.range(0, 6).mapToObj(i -> getDefinitions()).toList();
+        imported = getImport(otherModelsDefinitions.get(4).getNamespace());
+        otherModelsDefinitions.get(0).getImport().add(imported);
+        otherModelsDefinitions.get(1).getImport().add(getImport(otherModelsDefinitions.get(5).getNamespace()));
+        toIterate = new HashSet<>();
+        IntStream.range(0, 4).forEach(i -> toIterate.add(otherModelsDefinitions.get(i)));
+        unnamedImports = new ArrayList<>();
+        unnamedImports.add(otherModelsDefinitions.get(0).getNamespace());
+        unnamedImports.add(otherModelsDefinitions.get(1).getNamespace());
+    }
 
     @Test
     void validateNsContextValuesValid() {
@@ -104,6 +132,47 @@ class DMNValidatorImplTest {
     void determineSchemaWithOverride() {
         Schema overrideSchema = getSchema();
         Arrays.stream(XStreamMarshaller.DMN_VERSION.values()).forEach(version -> assertThat(DMNValidatorImpl.determineSchema(version, overrideSchema)).isEqualTo(overrideSchema));
+    }
+
+    @Test
+    void populateNestedUnnamedImportsByUnnamedImports() {
+        Set<Definitions> toPopulate = new HashSet<>();
+        populateNestedUnnamedImports(toPopulate, otherModelsDefinitions, unnamedImports);
+        // the directly referred to as unnamed imports, and the nested imports of them
+        assertThat(toPopulate).hasSize(4)
+                .contains(otherModelsDefinitions.get(0), otherModelsDefinitions.get(1), otherModelsDefinitions.get(4), otherModelsDefinitions.get(5));
+    }
+
+    @Test
+    void populateNestedUnnamedImportsByImport() {
+        Set<Definitions> toPopulate = new HashSet<>();
+        populateNestedUnnamedImports(toPopulate, imported, otherModelsDefinitions);
+        // only the imported one
+        assertThat(toPopulate).hasSize(1)
+                .contains(otherModelsDefinitions.get(4));
+    }
+
+    @Test
+    void populateNestedUnnamedImportsByDefinitions() {
+        Set<Definitions> toPopulate = new HashSet<>();
+        populateNestedUnnamedImports(toPopulate, toIterate, otherModelsDefinitions);
+        // the toIterate definitions plus the two imported
+        assertThat(toPopulate).hasSize(toIterate.size() + 2)
+                .containsAll(toIterate)
+                .contains(otherModelsDefinitions.get(4), otherModelsDefinitions.get(5));
+    }
+
+
+    private static Definitions getDefinitions() {
+        Definitions toReturn = new TDefinitions();
+        toReturn.setNamespace(UUID.randomUUID().toString());
+        return toReturn;
+    }
+
+    private static Import getImport(String nameSpace) {
+        Import toReturn = new TImport();
+        toReturn.setNamespace(nameSpace);
+        return toReturn;
     }
 
     private Schema getSchema() {

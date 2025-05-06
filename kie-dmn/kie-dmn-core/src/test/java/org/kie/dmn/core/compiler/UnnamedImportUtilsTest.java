@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,11 +80,11 @@ class UnnamedImportUtilsTest {
         try (InputStream is = importedModelFileResource.openStream()) {
             String xml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Definitions definitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(xml);
-            assertThat(definitions.getDecisionService()).allMatch(definition -> added(definition));
-            assertThat(definitions.getBusinessContextElement()).allMatch(definition -> added(definition));
-            assertThat(definitions.getDrgElement()).allMatch(definition -> added(definition));
-            assertThat(definitions.getImport()).allMatch(definition -> added(definition));
-            assertThat(definitions.getItemDefinition()).allMatch(definition -> added(definition));
+            assertThat(definitions.getDecisionService()).allMatch(this::added);
+            assertThat(definitions.getBusinessContextElement()).allMatch(this::added);
+            assertThat(definitions.getDrgElement()).allMatch(this::added);
+            assertThat(definitions.getImport()).allMatch(this::added);
+            assertThat(definitions.getItemDefinition()).allMatch(this::added);
         }
     }
 

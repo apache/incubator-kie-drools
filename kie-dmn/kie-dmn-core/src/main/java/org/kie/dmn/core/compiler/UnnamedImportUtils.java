@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,10 +57,12 @@ public class UnnamedImportUtils {
         mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
                                                                  stringDMNTypeMap.values().
                                                                          forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
+        mergedModel.getDecisions().forEach(parentModel::addDecision);
+        mergedModel.getImportAliasesForNS().forEach((s, qName) -> parentModel.setImportAliasForNS(s, qName.getNamespaceURI(), qName.getLocalPart()));
     }
 
     public static void mergeDefinitions(Definitions parentDefinitions, Definitions mergedDefinitions) {
-        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original one,
         // Here we try to put all the definitions from the "imported" model inside the parent one
         parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
 
