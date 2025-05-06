@@ -68,7 +68,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ruleunits-quarkus</artifactId>
-        <version>${project.version}</version>
     </dependency>
     
   </dependencies>
