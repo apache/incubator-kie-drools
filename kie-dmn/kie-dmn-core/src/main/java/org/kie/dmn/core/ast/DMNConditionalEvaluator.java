@@ -112,7 +112,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
      */
     static String getRootElementNodeName(DMNModelInstrumentedBase dmnElement) {
         if (dmnElement == null) {
-            logger.debug(("Can't find the name of a null DMNModelInstrumentedBase"));
+            logger.debug("Can't find the name of a null DMNModelInstrumentedBase");
             return null;
         }
         if (dmnElement instanceof Decision decision) {
