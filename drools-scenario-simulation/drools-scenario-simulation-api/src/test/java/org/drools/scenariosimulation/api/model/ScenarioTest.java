@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,13 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ScenarioTest {
+class ScenarioTest {
 
     private ScesimModelDescriptor scesimModelDescriptor;
     private Scenario scenario;
@@ -33,8 +34,8 @@ public class ScenarioTest {
     private ExpressionIdentifier expressionIdentifier;
     private Simulation simulation;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         simulation = new Simulation();
         scesimModelDescriptor = simulation.getScesimModelDescriptor();
         scenario = simulation.addData();
@@ -43,7 +44,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void addFactMappingValue() {
+    void addFactMappingValue() {
         FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         
         Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
@@ -52,7 +53,7 @@ public class ScenarioTest {
     }
 
     @Test
-    public void removeFactMappingValueByIdentifiers() {
+    void removeFactMappingValueByIdentifiers() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
 
         scenario.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
@@ -61,7 +62,7 @@ public class ScenarioTest {
     }
 
     @Test
-    public void removeFactMappingValue() {
+    void removeFactMappingValue() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
 
@@ -70,28 +71,28 @@ public class ScenarioTest {
         assertThat(scenario.getFactMappingValue(factIdentifier, expressionIdentifier)).isNotPresent();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void addMappingValueTest() {
+    @Test
+    void addMappingValueTest() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         // Should fail
-        scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value"));
     }
 
     @Test
-    public void getDescription_initialDescriptionIsEmpty() {
-        assertThat(scenario.getDescription()).isEqualTo("");
+    void getDescription_initialDescriptionIsEmpty() {
+        assertThat(scenario.getDescription()).isEmpty();
     }
 
     @Test
-    public void getDescription_descriptionIsSetToNullValue() {
+    void getDescription_descriptionIsSetToNullValue() {
         String description = null;
         scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
         
-        assertThat(scenario.getDescription()).isEqualTo("");
+        assertThat(scenario.getDescription()).isEmpty();
     }
     
     @Test
-    public void getDescription_descriptionIsSetToNonNullValue() {
+    void getDescription_descriptionIsSetToNonNullValue() {
         String description = "Test Description";
         scenario.addMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, description);
         
@@ -99,16 +100,16 @@ public class ScenarioTest {
     }
 
     @Test
-    public void setDescription_nullValue() {
+    void setDescription_nullValue() {
         Scenario scenarioWithDescriptionNull = simulation.addData();
 
         scenarioWithDescriptionNull.setDescription(null);
         
-        assertThat(scenarioWithDescriptionNull.getDescription()).isEqualTo("");
+        assertThat(scenarioWithDescriptionNull.getDescription()).isEmpty();
     }
 
     @Test
-    public void getDescription3() {
+    void getDescription3() {
         Scenario scenarioWithDescriptionNull = simulation.addData();
 
         scenarioWithDescriptionNull.setDescription("Test Description");
@@ -117,7 +118,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void addOrUpdateMappingValue() {
+    void addOrUpdateMappingValue() {
         Object value2 = "Test 2";
         FactMappingValue factMappingValue = scenario.addMappingValue(factIdentifier, expressionIdentifier, "Test 1");
 
