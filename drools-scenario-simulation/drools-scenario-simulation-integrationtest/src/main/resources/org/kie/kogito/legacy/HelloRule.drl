@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.drools;
+package org.kie.kogito.legacy;
 
-import org.kie.drools.Hello;
+import org.kie.kogito.legacy.Hello;
 
 rule HelloApprove when
     $l: Hello( greeting.equals("foo") )

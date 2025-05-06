@@ -77,40 +77,39 @@ public class TestScenarioEngine implements TestEngine {
         EngineDescriptor engineDescriptor = new EngineDescriptor(uniqueId, TEST_ENGINE_DESCRIPTION);
 
         discoveryRequest.getSelectorsByType(ClassSelector.class).forEach(selector ->
-            appendTestsInClass(selector.getJavaClass(), engineDescriptor)
+            appendTestSuites(selector.getJavaClass(), engineDescriptor)
         );
 
         LOGGER.debug("Discovered {} scesim files", engineDescriptor.getChildren().size());
         return engineDescriptor;
     }
 
-    private void appendTestsInClass(Class<?> javaClass, TestDescriptor engineDescriptor) {
+    private void appendTestSuites(Class<?> javaClass, TestDescriptor engineDescriptor) {
         if (AnnotationSupport.isAnnotated(javaClass, TestScenarioActivator.class)) {
-            LOGGER.debug("A class with @TestScenario annotation found: {}", javaClass.getCanonicalName());
+            LOGGER.debug("A class with @TestScenarioActivator annotation found: {}", javaClass.getCanonicalName());
 
-            getScesimFileAbsolutePaths().stream().map(this::parseFile).forEach(scesim -> {
+            getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scesim -> {
                 String fileName = getScesimFileName(scesim.getFileName());
-                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(fileName, engineDescriptor);
+                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, fileName, scesim.getSettings().getType());
                 engineDescriptor.addChild(suite);
-                for (ScenarioWithIndex scenarioWithIndex : scesim.getScenarioWithIndices()) {
-                    int index = scenarioWithIndex.getIndex();
-                    suite.addChild(new TestScenarioTestDescriptor(engineDescriptor.getUniqueId(), fileName, index, scesim, scenarioWithIndex));
-                }
+                scesim.getScenarioWithIndices().forEach(scenarioWithIndex ->
+                    suite.addChild(new TestScenarioTestDescriptor(suite, fileName, scesim, scenarioWithIndex))
+                );
             });
         }
     }
 
-    List<String> getScesimFileAbsolutePaths() {
+    static List<String> getScesimFileAbsolutePaths() {
         try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
             LOGGER.debug("Scanning Test Scenario (*.scesim) files");
-            List<String> scesimFileAbsolutePaths = fileStream.filter(this::filterResource)
+            List<String> scesimFileAbsolutePaths = fileStream.filter(TestScenarioEngine::filterResource)
                     .map(Path::normalize)
                     .map(Path::toFile)
                     .map(File::getAbsolutePath)
                     .toList();
 
             LOGGER.debug("Found Test Scenario (*.scesim) {} files", scesimFileAbsolutePaths.size());
-            scesimFileAbsolutePaths.forEach(LOGGER::info);
+            scesimFileAbsolutePaths.forEach(LOGGER::debug);
 
             return scesimFileAbsolutePaths;
         } catch (IOException e) {
@@ -119,113 +118,17 @@ public class TestScenarioEngine implements TestEngine {
         }
     }
 
-    boolean filterResource(Path path) {
-        return path.toString().endsWith(".scesim") && !path.toString().contains("/target/") && Files.isRegularFile(path);
-    }
-
-    /*
-     * public static Description getDescriptionForSimulation(Optional<String> fullFileName, List<ScenarioWithIndex> scenarios) {
-     * String testSuiteName = fullFileName.isPresent() ? getScesimFileName(fullFileName.get()) : AbstractScenarioRunner.class.getSimpleName();
-     * Description suiteDescription = Description.createSuiteDescription(testSuiteName);
-     * scenarios.forEach(scenarioWithIndex -> suiteDescription.addChild(
-     * getDescriptionForScenario(fullFileName,
-     * scenarioWithIndex.getIndex(),
-     * scenarioWithIndex.getScesimData().getDescription())));
-     * return suiteDescription;
-     * }
-     * 
-     * public static Description getDescriptionForScenario(Optional<String> fullFileName, int index, String description) {
-     * String testName = fullFileName.isPresent() ? getScesimFileName(fullFileName.get()) : AbstractScenarioRunner.class.getSimpleName();
-     * return Description.createTestDescription(testName,
-     * String.format("#%d: %s", index, description));
-     * }
-     */
-
-    public static String getScesimFileName(String fileFullPath) {
-        if (fileFullPath == null) {
-            return null;
-        }
+    static String getScesimFileName(String fileFullPath) {
         int idx = fileFullPath.replace("\\", "/").lastIndexOf('/');
         String fileName = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
         return fileName.endsWith(ConstantsHolder.SCESIM_EXTENSION) ? fileName.substring(0, fileName.lastIndexOf(ConstantsHolder.SCESIM_EXTENSION)) : fileName;
     }
 
-    @Override
-    public void execute(ExecutionRequest executionRequest) {
-        LOGGER.info("Executing {} Test Scenarios", executionRequest.getRootTestDescriptor().getChildren().size());
-        EngineExecutionListener listener = executionRequest.getEngineExecutionListener();
-        DMNScenarioRunnerHelper scenarioRunnerHelper = new DMNScenarioRunnerHelper();
-        RuleScenarioRunnerHelper ruleScenarioRunnerHelper = new RuleScenarioRunnerHelper();
-
-
-        for (TestDescriptor testSuiteDescriptor : executionRequest.getRootTestDescriptor().getChildren()) {
-            System.out.println("SUb Tests " + testSuiteDescriptor.getChildren().size() + " name: " + testSuiteDescriptor.getDisplayName());
-
-            listener.executionStarted(testSuiteDescriptor);
-            TestExecutionResult state = TestExecutionResult.successful();
-            for (TestDescriptor testDescriptor : testSuiteDescriptor.getChildren()) {
-                listener.executionStarted(testDescriptor);
-
-                ScenarioRunnerDTO scenarioRunnerDTO = ((TestScenarioTestDescriptor) testDescriptor).getScenarioRunnerDTO();
-                ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(
-                        getKieContainer().getClassLoader(),
-                        scenarioRunnerDTO.getSettings().getType());
-                ScesimModelDescriptor simulationModelDescriptor = scenarioRunnerDTO.getSimulationModelDescriptor();
-                Settings settings = scenarioRunnerDTO.getSettings();
-                Background background = scenarioRunnerDTO.getBackground();
-                //System.out.println("test descriptor " + testDescriptor.getDisplayName());
-                ScenarioWithIndex scenarioWithIndex = ((TestScenarioTestDescriptor) testDescriptor).getScenarioWithIndex();
-                ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
-
-
-
-
-                try {
-                    //var r = getSpecificRunnerProvider(scenarioRunnerDTO.getSettings().getType()).create(getKieContainer(), scenarioRunnerDTO);
-
-                    scenarioRunnerHelper.run(getKieContainer(),
-                            simulationModelDescriptor,
-                            scenarioWithIndex,
-                            expressionEvaluatorFactory,
-                            getKieContainer().getClassLoader(),
-                            scenarioRunnerData,
-                            settings,
-                            background);
-                } catch (ScenarioException e) {
-                    /*
-                     * IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
-                     * indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
-                     */
-                    //                    runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
-                    listener.executionFinished(testDescriptor, TestExecutionResult.failed(e));
-                    //listener.executionFinished(testDescriptorEngine, TestExecutionResult.failed(e));
-
-
-                    LOGGER.error(e.getMessage(), e);
-                } catch (Throwable e) {
-                    /*
-                     * IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, "Unexpected test error in scenario '" +
-                     * scenarioWithIndex.getScesimData().getDescription() + "'", e);
-                     * indexedScenarioException.setFileName(scenarioRunnerDTO.getFileName());
-                     */
-                   listener.executionFinished(testDescriptor, TestExecutionResult.failed(e));
-                    //listener.executionFinished(testDescriptorEngine, TestExecutionResult.failed(e));
-                    LOGGER.error(e.getMessage(), e);
-                    //                    runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
-                }
-
-                listener.executionFinished(testDescriptor, TestExecutionResult.successful());
-
-                //System.out.println(testDescriptor.getDisplayName() + " Succcess");
-            }
-
-            //System.out.println("Suite finished with " + state.toString());
-            listener.executionFinished(testSuiteDescriptor, state);
-        }
-
+    static boolean filterResource(Path path) {
+        return path.toString().endsWith(".scesim") && !path.toAbsolutePath().toString().replace("\\", "/").contains("/target/") && Files.isRegularFile(path);
     }
 
-    protected ScenarioRunnerDTO parseFile(String path) {
+    static ScenarioRunnerDTO parseFile(String path) {
         try (final Scanner scanner = new Scanner(new File(path))) {
             String rawFile = scanner.useDelimiter("\\Z").next();
             ScenarioSimulationModel scenarioSimulationModel = XML_READER.unmarshal(rawFile);
@@ -235,6 +138,56 @@ public class TestScenarioEngine implements TestEngine {
         } catch (Exception e) {
             throw new ScenarioException("Issue on parsing file: " + path, e);
         }
+    }
+
+    @Override
+    public void execute(ExecutionRequest executionRequest) {
+        LOGGER.debug("Executing {} Test Scenarios", executionRequest.getRootTestDescriptor().getChildren().size());
+
+        EngineExecutionListener listener = executionRequest.getEngineExecutionListener();
+        executionRequest.getRootTestDescriptor().getChildren().stream()
+                .map(TestScenarioTestSuiteDescriptor.class::cast)
+                .forEach(testSuiteDescriptor -> {
+                    LOGGER.debug("Executing {} Test Scenario which contains {} scenarios", testSuiteDescriptor.getDisplayName(), testSuiteDescriptor.getChildren().size());
+                    listener.executionStarted(testSuiteDescriptor);
+                    AbstractRunnerHelper runnerHelper = getRunnerHelper(testSuiteDescriptor.getTestScenarioType());
+
+                    testSuiteDescriptor.getChildren().stream()
+                            .map(TestScenarioTestDescriptor.class::cast)
+                            .forEach(testDescriptor -> {
+                                listener.executionStarted(testDescriptor);
+
+                                ScenarioRunnerDTO scenarioRunnerDTO = testDescriptor.getScenarioRunnerDTO();
+                                ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(
+                                        getKieContainer().getClassLoader(),
+                                        scenarioRunnerDTO.getSettings().getType());
+                                ScesimModelDescriptor simulationModelDescriptor = scenarioRunnerDTO.getSimulationModelDescriptor();
+                                Settings settings = scenarioRunnerDTO.getSettings();
+                                Background background = scenarioRunnerDTO.getBackground();
+                                ScenarioWithIndex scenarioWithIndex = testDescriptor.getScenarioWithIndex();
+                                ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
+
+                                try {
+                                    runnerHelper.run(getKieContainer(),
+                                            simulationModelDescriptor,
+                                            scenarioWithIndex,
+                                            expressionEvaluatorFactory,
+                                            getKieContainer().getClassLoader(),
+                                            scenarioRunnerData,
+                                            settings,
+                                            background);
+                                } catch (Exception e) {
+                                    listener.executionFinished(testDescriptor, TestExecutionResult.failed(e));
+                                    LOGGER.error(e.getMessage(), e);
+                                }
+
+                                listener.executionFinished(testDescriptor, TestExecutionResult.successful());
+                            });
+
+                    /** TODO Test results depends on children results **/
+                    listener.executionFinished(testSuiteDescriptor, TestExecutionResult.successful());
+                    /***** END **/
+                });
     }
 
     /**
@@ -252,11 +205,11 @@ public class TestScenarioEngine implements TestEngine {
         return KieServices.get().getKieClasspathContainer();
     }
 
-    public static ScenarioRunnerProvider getSpecificRunnerProvider(ScenarioSimulationModel.Type type) {
+    static AbstractRunnerHelper getRunnerHelper(ScenarioSimulationModel.Type type) {
         if (ScenarioSimulationModel.Type.RULE.equals(type)) {
-            return RuleScenarioRunner::new;
+            return new RuleScenarioRunnerHelper();
         } else if (ScenarioSimulationModel.Type.DMN.equals(type)) {
-            return DMNScenarioRunner::new;
+            return new DMNScenarioRunnerHelper();
         } else {
             throw new IllegalArgumentException("Impossible to run simulation of type " + type);
         }

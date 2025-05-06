@@ -1,0 +1,119 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_5DA7054D-14B8-4D0B-85FF-2D713F771745" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_E0D310C8-0123-4831-AF2E-5E138725FD8E" name="a" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_5DA7054D-14B8-4D0B-85FF-2D713F771745">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_1D52D6DF-F9A8-41E6-9A6A-8ECCC3CD10EA" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_67ABEA03-96B8-48CE-B575-1F1294802214" name="Age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B5623B04-AEC1-4FD3-9077-8520432B4DC0" name="Name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_93FCF529-42EA-431A-A72F-2ECF5E39D862" name="tRisk" isCollection="false">
+    <dmn:itemComponent id="_DB76DFE0-E406-4746-9470-94A46BA49CC4" name="Level" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:businessKnowledgeModel id="_6C7F64A1-4EF3-483E-B1B3-03E9EFB8B856" name="Have strict rules?">
+    <dmn:extensionElements/>
+    <dmn:variable id="_EDD90263-CDE4-4E92-92BA-8CA68647411A" name="Have strict rules?" typeRef="boolean"/>
+    <dmn:encapsulatedLogic id="_F456F59B-DF8F-4C4F-8E5D-E00FD895C80C" kind="FEEL">
+      <dmn:formalParameter id="_94516793-4F34-4689-AB09-359182F4E9C5" name="country" typeRef="string"/>
+      <dmn:literalExpression id="_9EE1E218-1F0B-4F35-952E-4378F4A1856C">
+        <dmn:text>list contains(List of Countries(), country )</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+    <dmn:knowledgeRequirement id="_3436E86D-696A-49CF-A2B2-17B8B00D083E">
+      <dmn:requiredKnowledge href="#_F17A960D-D27B-4077-81CF-B3D64B55FA8A"/>
+    </dmn:knowledgeRequirement>
+  </dmn:businessKnowledgeModel>
+  <dmn:businessKnowledgeModel id="_F17A960D-D27B-4077-81CF-B3D64B55FA8A" name="List of Countries">
+    <dmn:extensionElements/>
+    <dmn:variable id="_980DD9D4-23F1-46F4-9DAC-FA814CBA7C57" name="List of Countries" typeRef="string"/>
+    <dmn:encapsulatedLogic id="_61A1E938-4718-48A7-A11E-D3E82BAABF75" kind="FEEL">
+      <dmn:list id="_DF75FC71-C3A5-43BF-A023-BDCF0B0D9D5A">
+        <dmn:literalExpression id="_2FC89727-CC8A-4CC1-B63C-2810FD79C30B">
+          <dmn:text>"Canada"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_1BA2D861-6EE4-43B2-9CE2-1CB2F9FB80C0">
+          <dmn:text>"Cuba"</dmn:text>
+        </dmn:literalExpression>
+        <dmn:literalExpression id="_C4E6C48F-F19E-426B-8AB5-EC7C3008488D">
+          <dmn:text>"Brazil"</dmn:text>
+        </dmn:literalExpression>
+      </dmn:list>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_6C01282E-427B-4098-AAC3-E0FED9D77BFB" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_9EE1E218-1F0B-4F35-952E-4378F4A1856C">
+            <kie:width>386</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_F456F59B-DF8F-4C4F-8E5D-E00FD895C80C">
+            <kie:width>50</kie:width>
+            <kie:width>386</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_DF75FC71-C3A5-43BF-A023-BDCF0B0D9D5A">
+            <kie:width>50</kie:width>
+            <kie:width>200</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_2FC89727-CC8A-4CC1-B63C-2810FD79C30B">
+            <kie:width>200</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1BA2D861-6EE4-43B2-9CE2-1CB2F9FB80C0">
+            <kie:width>200</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_C4E6C48F-F19E-426B-8AB5-EC7C3008488D">
+            <kie:width>200</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_61A1E938-4718-48A7-A11E-D3E82BAABF75">
+            <kie:width>50</kie:width>
+            <kie:width>270</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_6C7F64A1-4EF3-483E-B1B3-03E9EFB8B856" dmnElementRef="_6C7F64A1-4EF3-483E-B1B3-03E9EFB8B856" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="191" y="118" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_F17A960D-D27B-4077-81CF-B3D64B55FA8A" dmnElementRef="_F17A960D-D27B-4077-81CF-B3D64B55FA8A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="384" y="118" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_3436E86D-696A-49CF-A2B2-17B8B00D083E" dmnElementRef="_3436E86D-696A-49CF-A2B2-17B8B00D083E">
+        <di:waypoint x="434" y="143"/>
+        <di:waypoint x="291" y="143"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

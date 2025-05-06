@@ -16,37 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.drools;
+package org.kie.kogito.legacy;
 
-public class Hello implements java.io.Serializable {
+import org.kie.kogito.legacy.Hello;
 
-    static final long serialVersionUID = 1L;
+rule HelloApprove when
+    $l: Hello( greeting.equals("foo") )
+then
+    System.out.println("HelloApprove");
+    modify($l) { setApproved(true) };
+end
 
-    private String greeting;
-    private Boolean approved;
-
-    public Hello() {
-    }
-
-    public Hello(String greeting, Boolean approved) {
-        this.greeting = greeting;
-        this.approved = approved;
-    }
-
-    public String getGreeting() {
-        return this.greeting;
-    }
-
-    public void setGreeting(String greeting) {
-        this.greeting = greeting;
-    }
-
-    public Boolean getApproved() {
-        return this.approved;
-    }
-
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
-    }
-
-}
+rule HelloDeny when
+    $l: Hello( greeting != "foo" )
+then
+    System.out.println("HelloDeny");
+    modify($l) { setApproved(false) };
+end

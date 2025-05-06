@@ -17,7 +17,7 @@ package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
-import org.junit.platform.engine.UniqueId;
+import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
 import org.junit.platform.engine.support.descriptor.ClassSource;
 import org.slf4j.Logger;
@@ -28,19 +28,18 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestScenarioTestDescriptor.class);
 
     private final ScenarioRunnerDTO scenarioRunnerDTO;
-    private final int index;
     private final String fileName;
     private final ScenarioWithIndex scenarioWithIndex;
 
-    public TestScenarioTestDescriptor(UniqueId uniqueId, String fileName, int index, ScenarioRunnerDTO scenarioRunnerDTO, ScenarioWithIndex scenarioWithIndex) {
-        super(uniqueId.append("scenario", fileName.concat(String.valueOf(index))),
-                String.valueOf(index).concat(fileName),
+    public TestScenarioTestDescriptor(TestDescriptor testSuiteDescriptor, String fileName, ScenarioRunnerDTO scenarioRunnerDTO, ScenarioWithIndex scenarioWithIndex) {
+        super(testSuiteDescriptor.getUniqueId().append("scenario", String.valueOf(scenarioWithIndex.getIndex())),
+                String.format("#%d: %s", scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription()),
                 ClassSource.from(TestScenarioEngine.class));
         this.scenarioRunnerDTO = scenarioRunnerDTO;
-        this.index = index;
         this.fileName = fileName;
         this.scenarioWithIndex = scenarioWithIndex;
-        LOGGER.info("TestScenarioTestDescriptor created index: {}, fileName: {}", index, fileName);
+        setParent(testSuiteDescriptor);
+        LOGGER.debug("TestScenarioTestDescriptor created scenario index: {}, fileName: {}", scenarioWithIndex.getIndex(), fileName);
     }
 
     @Override
@@ -50,10 +49,6 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
 
     public ScenarioRunnerDTO getScenarioRunnerDTO() {
         return scenarioRunnerDTO;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     public String getFileName() {

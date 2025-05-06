@@ -16,29 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.scenariosimulation.integrationtest;
+package org.kie.kogito.legacy;
 
-//import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
-import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
-//import org.junit.AfterClass;
-//import org.junit.BeforeClass;
+public class Hello implements java.io.Serializable {
 
-//import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
+    static final long serialVersionUID = 1L;
 
-//@org.junit.runner.RunWith(ScenarioJunitActivator.class)
+    private String greeting;
+    private Boolean approved;
 
-
-@TestScenarioActivator
-public class ScenarioTest {
-
-    /*
-    @BeforeClass
-    public static void setSystemProperties() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "./target/test-classes");
+    public Hello() {
     }
 
-    @AfterClass
-    public static void clearSystemProperties() {
-        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
-    } */
+    public Hello(String greeting, Boolean approved) {
+        this.greeting = greeting;
+        this.approved = approved;
+    }
+
+    public String getGreeting() {
+        return this.greeting;
+    }
+
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
+
+    public Boolean getApproved() {
+        return this.approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
+
 }
