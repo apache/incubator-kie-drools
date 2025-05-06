@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,15 +18,15 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.util.JsonUtils.convertFromStringToJSONNode;
 
-public class JsonUtilsTest {
+class JsonUtilsTest {
 
     @Test
-    public void convertFromStringToJSONNode_manyCases() {
+    void convertFromStringToJSONNode_manyCases() {
         assertThat(convertFromStringToJSONNode(null)).isNotPresent();
         assertThat(convertFromStringToJSONNode("Not json")).isNotPresent();
         assertThat(convertFromStringToJSONNode("\"Not json")).isNotPresent();

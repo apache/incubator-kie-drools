@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -155,27 +153,25 @@ public class TestScenarioEngine implements TestEngine {
                     testSuiteDescriptor.getChildren().stream()
                             .map(TestScenarioTestDescriptor.class::cast)
                             .forEach(testDescriptor -> {
+                                LOGGER.debug("Executing {} scenario", testSuiteDescriptor.getDisplayName());
                                 listener.executionStarted(testDescriptor);
 
                                 ScenarioRunnerDTO scenarioRunnerDTO = testDescriptor.getScenarioRunnerDTO();
+                                KieContainer kieContainer = getKieContainer(scenarioRunnerDTO.getSettings().getType());
+
                                 ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(
-                                        getKieContainer().getClassLoader(),
+                                        kieContainer.getClassLoader(),
                                         scenarioRunnerDTO.getSettings().getType());
-                                ScesimModelDescriptor simulationModelDescriptor = scenarioRunnerDTO.getSimulationModelDescriptor();
-                                Settings settings = scenarioRunnerDTO.getSettings();
-                                Background background = scenarioRunnerDTO.getBackground();
-                                ScenarioWithIndex scenarioWithIndex = testDescriptor.getScenarioWithIndex();
-                                ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
 
                                 try {
-                                    runnerHelper.run(getKieContainer(),
-                                            simulationModelDescriptor,
-                                            scenarioWithIndex,
+                                    runnerHelper.run(kieContainer,
+                                            scenarioRunnerDTO.getSimulationModelDescriptor(),
+                                            testDescriptor.getScenarioWithIndex(),
                                             expressionEvaluatorFactory,
-                                            getKieContainer().getClassLoader(),
-                                            scenarioRunnerData,
-                                            settings,
-                                            background);
+                                            kieContainer.getClassLoader(),
+                                            new ScenarioRunnerData(),
+                                            scenarioRunnerDTO.getSettings(),
+                                            scenarioRunnerDTO.getBackground());
                                 } catch (Exception e) {
                                     listener.executionFinished(testDescriptor, TestExecutionResult.failed(e));
                                     LOGGER.error(e.getMessage(), e);
@@ -190,22 +186,11 @@ public class TestScenarioEngine implements TestEngine {
                 });
     }
 
-    /**
-     * Temporary hack, it is needed because AbstractScenarioRunner invokes kieContainer.getClassLoader() in the constructor
-     *
-     * @return
-     */
-    private static KieContainer mockKieContainer() {
-        InvocationHandler nullHandler = (o, method, objects) -> null;
-        return (KieContainer) Proxy.newProxyInstance(KieContainer.class.getClassLoader(),
-                new Class[] { KieContainer.class }, nullHandler);
-    }
-
-    KieContainer getKieContainer() {
+    protected KieContainer getKieContainer(ScenarioSimulationModel.Type type) {
         return KieServices.get().getKieClasspathContainer();
     }
 
-    static AbstractRunnerHelper getRunnerHelper(ScenarioSimulationModel.Type type) {
+    protected AbstractRunnerHelper getRunnerHelper(ScenarioSimulationModel.Type type) {
         if (ScenarioSimulationModel.Type.RULE.equals(type)) {
             return new RuleScenarioRunnerHelper();
         } else if (ScenarioSimulationModel.Type.DMN.equals(type)) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,8 @@ import java.util.Map;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.imports.Import;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -51,14 +52,14 @@ import static org.drools.scenariosimulation.backend.util.DOMParserUtil.getNested
 import static org.drools.scenariosimulation.backend.util.DOMParserUtil.getNestedChildrenNodesMap;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 
-public class ScenarioSimulationXMLPersistenceTest {
+class ScenarioSimulationXMLPersistenceTest {
 
     protected ScenarioSimulationXMLPersistence instance = ScenarioSimulationXMLPersistence.getInstance();
     protected String currentVersion = new ScenarioSimulationModel().getVersion();
     protected MigrationStrategy migrationInstance = new InMemoryMigrationStrategy();
 
     @Test
-    public void noFQCNUsed() {
+    void noFQCNUsed() {
         final ScenarioSimulationModel simulationModel = new ScenarioSimulationModel();
         simulationModel.getImports().addImport(new Import("org.test.Test"));
 
@@ -68,14 +69,14 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void versionAttributeExists() {
+    void versionAttributeExists() {
         final String xml = instance.marshal(new ScenarioSimulationModel());
         
         assertThat(xml).startsWith("<ScenarioSimulationModel version=\"" + ScenarioSimulationXMLPersistence.getCurrentVersion() + "\">");
     }
 
     @Test
-    public void migrateIfNecessary_1_0_to_1_1() throws Exception {
+    void migrateIfNecessary_1_0_to_1_1() throws Exception {
         String toMigrate = getFileContent("scesim-1-0.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -92,7 +93,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_1_to_1_2() throws Exception {
+    void migrateIfNecessary_1_1_to_1_2() throws Exception {
         String toMigrate = getFileContent("scesim-1-1.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -108,7 +109,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_2_to_1_3() throws Exception {
+    void migrateIfNecessary_1_2_to_1_3() throws Exception {
         String toMigrate = getFileContent("scesim-1-2.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -128,7 +129,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_3_to_1_4() throws Exception {
+    void migrateIfNecessary_1_3_to_1_4() throws Exception {
         String toMigrate = getFileContent("scesim-1-3-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -193,7 +194,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_4_to_1_5() throws Exception {
+    void migrateIfNecessary_1_4_to_1_5() throws Exception {
         String toMigrate = getFileContent("scesim-1-4-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -205,7 +206,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_5_to_1_6() throws Exception {
+    void migrateIfNecessary_1_5_to_1_6() throws Exception {
         String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -217,7 +218,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_6_to_1_7() throws Exception {
+    void migrateIfNecessary_1_6_to_1_7() throws Exception {
         String toMigrate = getFileContent("scesim-1-6-rule.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -269,7 +270,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_7_to_1_8() throws Exception {
+    void migrateIfNecessary_1_7_to_1_8() throws Exception {
         String toMigrate = getFileContent("scesim-1-7-dmn.scesim");
         Document document = DOMParserUtil.getDocument(toMigrate);
         
@@ -340,7 +341,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary() throws Exception {
+    void migrateIfNecessary() throws Exception {
         assertThatThrownBy(() -> instance.migrateIfNecessary("<ScenarioSimulationModel version=\"9999999999.99999999999\" />"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Version 9999999999.99999999999 of the file is not supported. Current version is " + ScenarioSimulationXMLPersistence.getCurrentVersion());
@@ -353,19 +354,19 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionNullDocument() {
+    void extractVersionNullDocument() {
         assertThatThrownBy(() -> instance.extractVersion(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void extractVersionMissingAttribute() {
+    void extractVersionMissingAttribute() {
         assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument("<ScenarioSimulationModel />")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void extractVersionMissingVersionAttribute_prolog() {
+    void extractVersionMissingVersionAttribute_prolog() {
         assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ScenarioSimulationModel />")))
@@ -373,7 +374,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionMissingVersionAttribute_prolog_attribute() {
+    void extractVersionMissingVersionAttribute_prolog_attribute() {
         assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel xmlns=\"whatever\" />")))
@@ -381,14 +382,14 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<ScenarioSimulationModel version=\"1.1\" />"));
         assertThat(version).isEqualTo("1.1");
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ScenarioSimulationModel version=\"1.2\" />"));
@@ -396,7 +397,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog_attributeRight() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog_attributeRight() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel version=\"1.4\" xmlns=\"whatever\" />"));
@@ -404,7 +405,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog_attributeLeft() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog_attributeLeft() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel xmlns=\"whatever\" version=\"1.5\" />"));
@@ -412,7 +413,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog_attributesMiddle() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog_attributesMiddle() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel attribute2=\"whatever\" version=\"1.6\" attribute1=\"whatever\" />"));
@@ -420,7 +421,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog_attributesRight() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog_attributesRight() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel attribute2=\"whatever\" attribute1=\"whatever\" version=\"1.7\" />"));
@@ -428,7 +429,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWithVersionAttribute_prolog_attributesLeft() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWithVersionAttribute_prolog_attributesLeft() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<ScenarioSimulationModel version=\"1.8\" attribute2=\"whatever\" attribute1=\"whatever\" />"));
@@ -437,7 +438,7 @@ public class ScenarioSimulationXMLPersistenceTest {
 
 
     @Test
-    public void extractVersionWhenMoreVersionAttributesArePresent() throws ParserConfigurationException, IOException, SAXException {
+    void extractVersionWhenMoreVersionAttributesArePresent() throws ParserConfigurationException, IOException, SAXException {
         String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ScenarioSimulationModel version=\"1.2\">\n" +
                 "<someTag version=\"1.1\"/>\n" +
@@ -445,18 +446,18 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertThat(version).isEqualTo("1.2");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void unmarshalEmptyContent() throws Exception {
-        ScenarioSimulationXMLPersistence.getInstance().unmarshal("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void unmarshalNullContent() throws Exception {
-        ScenarioSimulationXMLPersistence.getInstance().unmarshal(null);
+    @Test
+    void unmarshalEmptyContent() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ScenarioSimulationXMLPersistence.getInstance().unmarshal(""));
     }
 
     @Test
-    public void unmarshalRULE() throws Exception {
+    void unmarshalNullContent() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ScenarioSimulationXMLPersistence.getInstance().unmarshal(null));
+    }
+
+    @Test
+    void unmarshalRULE() throws Exception {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertThat(retrieved.getSettings().getType()).isEqualTo(ScenarioSimulationModel.Type.RULE);
@@ -464,7 +465,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void unmarshalDMN() throws Exception {
+    void unmarshalDMN() throws Exception {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertThat(retrieved.getSettings().getType()).isEqualTo(ScenarioSimulationModel.Type.DMN);

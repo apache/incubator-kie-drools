@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,24 +26,22 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConditionFilterTest {
-
-	
+class ConditionFilterTest {
+    
     @Test
-    public void accept() {
+    void accept() {
         ConditionFilter conditionFilter = createConditionFilter(ValueWrapper::of);
 
         assertThat(conditionFilter.accept(1)).isFalse();
         assertThat(conditionFilter.accept("String")).isTrue();
     }
-
     
     @Test
-    public void acceptWithFailure() {
+    void acceptWithFailure() {
         ConditionFilter conditionFilterFail = createConditionFilter(object -> ValueWrapper.errorWithValidValue(null, null));
         
         assertThat(conditionFilterFail.accept("String")).isFalse();

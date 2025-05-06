@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -60,7 +60,7 @@ public class TestUtils {
         return IntStream.range(0, 5).mapToObj(index -> {
             Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
             return createDMNMessageMock("dmnMessage-" + index, level);
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult, String expectedMessage) {
@@ -76,7 +76,6 @@ public class TestUtils {
         assertThat(toCheck.getResult()).isEqualTo(expectedResult);
         assertThat(toCheck.getMessage()).isNotPresent();
     }
-    
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {
         DMNMessage dmnMessageMock = mock(DMNMessage.class);

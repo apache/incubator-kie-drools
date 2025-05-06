@@ -75,7 +75,7 @@
       <artifactId>xstream</artifactId>
     </dependency>
 
-    <!-- JUnit Platform intenally used by the Test Scenario Engine -->
+    <!-- JUnit Platform internally used by the Test Scenario Engine -->
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-commons</artifactId>
@@ -84,17 +84,18 @@
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-engine</artifactId>
     </dependency>
+    <!-- To be added when registering the Test Engine in this module
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-launcher</artifactId>
-    </dependency>
+    </dependency> -->
     <!-- To be deleted when removing the old Test Scenario based on JUnit4 -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
 
-    <!-- MVEL support -->
+    <!-- Drools dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
@@ -106,6 +107,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mvel</groupId>
@@ -130,6 +135,11 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
