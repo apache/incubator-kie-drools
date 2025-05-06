@@ -16,28 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.api.conf;
+package org.drools.ruleunits.impl;
+unit TimerUnit;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.event.rule.RuleEventListener;
-
-/**
- * A class which encapsulates configurations to create {@link org.drools.ruleunits.api.RuleUnitInstance}. Used at runtime.
- *
- */
-public interface RuleConfig {
-
-    List<AgendaEventListener> getAgendaEventListeners();
-
-    List<RuleRuntimeEventListener> getRuleRuntimeListeners();
-
-    List<RuleEventListener> getRuleEventListeners();
-
-    ClockType getClockType();
-
-    void setClockType(ClockType clockType);
-}
+rule TimerRule
+timer ( int: 30m )
+when
+    /strings [ this == "Hello Timer" ]
+then
+    results.add("it worked!");
+end

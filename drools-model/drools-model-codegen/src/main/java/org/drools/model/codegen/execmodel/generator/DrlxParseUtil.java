@@ -894,11 +894,15 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Collection<String> collectUsedDeclarationsInExpression(Expression expr) {
-        return expr.findAll(NameExpr.class)
-                   .stream()
-                   .map(NameExpr::getName)
+    public static List<String> collectUsedDeclarationsInExpression(Expression expr) {
+        Stream<NameExpr> namesStream = expr instanceof MethodCallExpr methodCallExpr ?
+                Stream.concat(methodCallExpr.getScope().stream(), methodCallExpr.getArguments().stream())
+                        .flatMap(e -> e.findAll(NameExpr.class).stream()) :
+                expr.findAll(NameExpr.class).stream();
+
+        return namesStream.map(NameExpr::getName)
                    .map(SimpleName::getIdentifier)
+                   .distinct()
                    .collect(toList());
     }
 

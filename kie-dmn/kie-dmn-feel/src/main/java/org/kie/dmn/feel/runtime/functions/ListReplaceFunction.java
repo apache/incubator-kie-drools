@@ -21,11 +21,14 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.NumberEvalHelper;
+
+import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
 public class ListReplaceFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
@@ -40,22 +43,23 @@ public class ListReplaceFunction
 
     public FEELFnResult<List> invoke(@ParameterName("list") List list, @ParameterName("position") BigDecimal position,
                                      @ParameterName("newItem") Object newItem) {
-        if (list == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", CANNOT_BE_NULL));
+        try {
+            if (list == null) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", CANNOT_BE_NULL));
+            }
+            int coercedPosition = coerceIntegerNumber(position).orElseThrow(() -> new NoSuchElementException("position"));
+            if (coercedPosition == 0 || Math.abs(coercedPosition) > list.size()) {
+                String paramProblem = String.format("%s outside valid boundaries (1-%s)", coercedPosition, list.size());
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));
+            }
+            Object e = NumberEvalHelper.coerceNumber(newItem);
+            List toReturn = new ArrayList(list);
+            int replacementPosition = coercedPosition > 0 ? coercedPosition - 1 : list.size() - Math.abs(coercedPosition);
+            toReturn.set(replacementPosition, e);
+            return FEELFnResult.ofResult(toReturn);
+        } catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         }
-        if (position == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", CANNOT_BE_NULL));
-        }
-        int intPosition = position.intValue();
-        if (intPosition == 0 || Math.abs(intPosition) > list.size()) {
-            String paramProblem = String.format("%s outside valid boundaries (1-%s)", intPosition, list.size());
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));
-        }
-        Object e = NumberEvalHelper.coerceNumber(newItem);
-        List toReturn = new ArrayList(list);
-        int replacementPosition = intPosition > 0 ? intPosition -1 : list.size() - Math.abs(intPosition);
-        toReturn.set(replacementPosition, e);
-        return FEELFnResult.ofResult(toReturn);
     }
 
     public FEELFnResult<List> invoke(@ParameterName("list") List list,
