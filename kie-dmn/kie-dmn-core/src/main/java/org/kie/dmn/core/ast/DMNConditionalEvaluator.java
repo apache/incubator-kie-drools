@@ -111,6 +111,10 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
      * @return The root element (Decision, BKM or Definitions) name or identifier
      */
     static String getRootElementNodeName(DMNModelInstrumentedBase dmnElement) {
+        if (dmnElement == null) {
+            logger.debug(("Can't find the name of a null DMNModelInstrumentedBase"));
+            return null;
+        }
         if (dmnElement instanceof Decision decision) {
             return decision.getName();
         }
@@ -118,7 +122,9 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
             return businessKnowledgeModel.getName();
         }
         if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
-            logger.debug("Root element identifier: {} reached. The conditional expression is not wrapped in a Decision or BKM node name. Returning this root element identifier",
+            logger.debug("Root element identifier: {} reached. " +
+                            "The conditional expression is not wrapped in a Decision or BKM node name." +
+                            "Returning this root element identifier",
                     dmnElement.getIdentifierString());
             return dmnElement.getIdentifierString();
         }
