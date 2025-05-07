@@ -31,10 +31,13 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
     private final String fileName;
     private final ScenarioWithIndex scenarioWithIndex;
 
-    public TestScenarioTestDescriptor(TestDescriptor testSuiteDescriptor, String fileName, ScenarioRunnerDTO scenarioRunnerDTO, ScenarioWithIndex scenarioWithIndex) {
+    public TestScenarioTestDescriptor(TestDescriptor testSuiteDescriptor,
+                                      String fileName,
+                                      ScenarioRunnerDTO scenarioRunnerDTO,
+                                      ScenarioWithIndex scenarioWithIndex) {
         super(testSuiteDescriptor.getUniqueId().append("scenario", String.valueOf(scenarioWithIndex.getIndex())),
                 String.format("#%d: %s", scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription()),
-                ClassSource.from(TestScenarioEngine.class));
+                ClassSource.from(fileName));
         this.scenarioRunnerDTO = scenarioRunnerDTO;
         this.fileName = fileName;
         this.scenarioWithIndex = scenarioWithIndex;

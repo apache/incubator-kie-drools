@@ -29,10 +29,12 @@ public class TestScenarioTestSuiteDescriptor extends AbstractTestDescriptor {
 
     private final ScenarioSimulationModel.Type testScenarioType;
 
-    public TestScenarioTestSuiteDescriptor(TestDescriptor engineDescriptor, String fileName, ScenarioSimulationModel.Type testScenarioType) {
+    public TestScenarioTestSuiteDescriptor(TestDescriptor engineDescriptor,
+                                           String fileName,
+                                           ScenarioSimulationModel.Type testScenarioType) {
         super(engineDescriptor.getUniqueId().append("scesim", fileName),
                 fileName,
-                ClassSource.from(TestScenarioEngine.class));
+                ClassSource.from(fileName));
         setParent(engineDescriptor);
         this.testScenarioType = testScenarioType;
         LOGGER.debug("TestScenarioSuite created fileName: {} and added in {}", fileName, engineDescriptor.getDisplayName());
