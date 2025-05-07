@@ -18,11 +18,7 @@
  */
 package org.drools.scenariosimulation.backend.runner;
 
-import org.drools.scenariosimulation.api.model.Background;
-import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
@@ -86,12 +82,12 @@ public class TestScenarioEngine implements TestEngine {
         if (AnnotationSupport.isAnnotated(javaClass, TestScenarioActivator.class)) {
             LOGGER.debug("A class with @TestScenarioActivator annotation found: {}", javaClass.getCanonicalName());
 
-            getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scesim -> {
-                String fileName = getScesimFileName(scesim.getFileName());
-                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, fileName, scesim.getSettings().getType());
+            getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scenarioRunnerDTO -> {
+                String fileName = getScesimFileName(scenarioRunnerDTO.getFileName());
+                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, fileName, scenarioRunnerDTO);
                 engineDescriptor.addChild(suite);
-                scesim.getScenarioWithIndices().forEach(scenarioWithIndex ->
-                    suite.addChild(new TestScenarioTestDescriptor(suite, fileName, scesim, scenarioWithIndex))
+                scenarioRunnerDTO.getScenarioWithIndices().forEach(scenarioWithIndex ->
+                    suite.addChild(new TestScenarioTestDescriptor(suite, fileName, scenarioWithIndex))
                 );
             });
         }
@@ -147,6 +143,12 @@ public class TestScenarioEngine implements TestEngine {
                 .map(TestScenarioTestSuiteDescriptor.class::cast)
                 .forEach(testSuiteDescriptor -> {
                     LOGGER.debug("Executing {} Test Scenario which contains {} scenarios", testSuiteDescriptor.getDisplayName(), testSuiteDescriptor.getChildren().size());
+                    ScenarioRunnerDTO scenarioRunnerDTO = testSuiteDescriptor.getScenarioRunnerDTO();
+                    if (scenarioRunnerDTO.getSettings().isSkipFromBuild()) {
+                        LOGGER.debug("Skipping {} scenario", testSuiteDescriptor.getDisplayName());
+                        listener.executionSkipped(testSuiteDescriptor, testSuiteDescriptor.getDisplayName() + " skipped from the build");
+                        return;
+                    }
                     listener.executionStarted(testSuiteDescriptor);
                     AbstractRunnerHelper runnerHelper = getRunnerHelper(testSuiteDescriptor.getTestScenarioType());
 
@@ -156,9 +158,7 @@ public class TestScenarioEngine implements TestEngine {
                                 LOGGER.debug("Executing {} scenario", testSuiteDescriptor.getDisplayName());
                                 listener.executionStarted(testDescriptor);
 
-                                ScenarioRunnerDTO scenarioRunnerDTO = testDescriptor.getScenarioRunnerDTO();
                                 KieContainer kieContainer = getKieContainer(scenarioRunnerDTO.getSettings().getType());
-
                                 ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(
                                         kieContainer.getClassLoader(),
                                         scenarioRunnerDTO.getSettings().getType());
@@ -172,17 +172,16 @@ public class TestScenarioEngine implements TestEngine {
                                             new ScenarioRunnerData(),
                                             scenarioRunnerDTO.getSettings(),
                                             scenarioRunnerDTO.getBackground());
+
+                                    LOGGER.debug("{} scenario successful", testSuiteDescriptor.getDisplayName());
+                                    listener.executionFinished(testDescriptor, TestExecutionResult.successful());
                                 } catch (Exception e) {
-                                    listener.executionFinished(testDescriptor, TestExecutionResult.failed(e));
-                                    LOGGER.error(e.getMessage(), e);
+                                    LOGGER.debug("{} scenario failed", testSuiteDescriptor.getDisplayName());
+                                    listener.executionFinished(testDescriptor, TestExecutionResult.failed(defineFailureException(e, testDescriptor.getScenarioWithIndex().getIndex(), testDescriptor.getScenarioWithIndex().getScesimData().getDescription(), testSuiteDescriptor.getDisplayName())));
                                 }
-
-                                listener.executionFinished(testDescriptor, TestExecutionResult.successful());
                             });
-
-                    /** TODO Test results depends on children results **/
+                    LOGGER.debug("{} Test Scenario suit executed", testSuiteDescriptor.getDisplayName());
                     listener.executionFinished(testSuiteDescriptor, TestExecutionResult.successful());
-                    /***** END **/
                 });
     }
 
@@ -197,6 +196,20 @@ public class TestScenarioEngine implements TestEngine {
             return new DMNScenarioRunnerHelper();
         } else {
             throw new IllegalArgumentException("Impossible to run simulation of type " + type);
+        }
+    }
+
+    private Throwable defineFailureException(Exception e, int index, String scenarioName, String fileName) {
+        if (e instanceof ScenarioException scenarioException && scenarioException.isFailedAssertion()) {
+            return new IndexedScenarioAssertionError(index,
+                    scenarioName,
+                    fileName,
+                    e);
+        } else {
+            return new IndexedScenarioException(index,
+                    scenarioName,
+                    fileName,
+                    e);
         }
     }
 

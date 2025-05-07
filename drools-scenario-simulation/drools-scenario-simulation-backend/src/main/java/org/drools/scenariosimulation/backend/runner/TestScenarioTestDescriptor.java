@@ -16,7 +16,6 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
 import org.junit.platform.engine.support.descriptor.ClassSource;
@@ -27,19 +26,14 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestScenarioTestDescriptor.class);
 
-    private final ScenarioRunnerDTO scenarioRunnerDTO;
-    private final String fileName;
     private final ScenarioWithIndex scenarioWithIndex;
 
     public TestScenarioTestDescriptor(TestDescriptor testSuiteDescriptor,
                                       String fileName,
-                                      ScenarioRunnerDTO scenarioRunnerDTO,
                                       ScenarioWithIndex scenarioWithIndex) {
         super(testSuiteDescriptor.getUniqueId().append("scenario", String.valueOf(scenarioWithIndex.getIndex())),
                 String.format("#%d: %s", scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription()),
                 ClassSource.from(fileName));
-        this.scenarioRunnerDTO = scenarioRunnerDTO;
-        this.fileName = fileName;
         this.scenarioWithIndex = scenarioWithIndex;
         setParent(testSuiteDescriptor);
         LOGGER.debug("TestScenarioTestDescriptor created scenario index: {}, fileName: {}", scenarioWithIndex.getIndex(), fileName);
@@ -48,14 +42,6 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
     @Override
     public Type getType() {
         return Type.TEST;
-    }
-
-    public ScenarioRunnerDTO getScenarioRunnerDTO() {
-        return scenarioRunnerDTO;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public ScenarioWithIndex getScenarioWithIndex() {

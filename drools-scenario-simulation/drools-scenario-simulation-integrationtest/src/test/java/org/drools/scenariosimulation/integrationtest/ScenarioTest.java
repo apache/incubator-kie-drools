@@ -18,15 +18,7 @@
  */
 package org.drools.scenariosimulation.integrationtest;
 
-//import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
 import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
-//import org.junit.AfterClass;
-//import org.junit.BeforeClass;
-
-//import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
-
-//@org.junit.runner.RunWith(ScenarioJunitActivator.class)
-
 
 @TestScenarioActivator
 public class ScenarioTest {

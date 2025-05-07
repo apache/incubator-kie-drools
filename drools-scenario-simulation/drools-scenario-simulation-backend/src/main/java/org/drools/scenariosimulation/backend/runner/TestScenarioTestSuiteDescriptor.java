@@ -17,6 +17,7 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
 import org.junit.platform.engine.support.descriptor.ClassSource;
@@ -27,16 +28,16 @@ public class TestScenarioTestSuiteDescriptor extends AbstractTestDescriptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestScenarioTestSuiteDescriptor.class);
 
-    private final ScenarioSimulationModel.Type testScenarioType;
+    private final ScenarioRunnerDTO scenarioRunnerDTO;
 
     public TestScenarioTestSuiteDescriptor(TestDescriptor engineDescriptor,
                                            String fileName,
-                                           ScenarioSimulationModel.Type testScenarioType) {
+                                           ScenarioRunnerDTO scenarioRunnerDTO) {
         super(engineDescriptor.getUniqueId().append("scesim", fileName),
                 fileName,
                 ClassSource.from(fileName));
         setParent(engineDescriptor);
-        this.testScenarioType = testScenarioType;
+        this.scenarioRunnerDTO = scenarioRunnerDTO;
         LOGGER.debug("TestScenarioSuite created fileName: {} and added in {}", fileName, engineDescriptor.getDisplayName());
     }
 
@@ -45,7 +46,11 @@ public class TestScenarioTestSuiteDescriptor extends AbstractTestDescriptor {
         return Type.CONTAINER;
     }
 
+    public ScenarioRunnerDTO getScenarioRunnerDTO() {
+        return scenarioRunnerDTO;
+    }
+
     public ScenarioSimulationModel.Type getTestScenarioType() {
-        return testScenarioType;
+        return scenarioRunnerDTO.getSettings().getType();
     }
 }
