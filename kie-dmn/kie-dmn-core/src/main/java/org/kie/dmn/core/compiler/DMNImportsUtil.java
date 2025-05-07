@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
@@ -239,7 +240,7 @@ public class DMNImportsUtil {
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
      */
     static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        String pmmlSource = getPmmlSource(pmmlModelLocalUriId);
+        String pmmlSource = getPmmlSource(pmmlModelLocalUriId, dmnCompilerConfig.getRootClassLoader());
         try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
             DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
                     model::addPMMLImportInfo);
@@ -251,13 +252,14 @@ public class DMNImportsUtil {
     /**
      * Method to retrieve the original Pmml model from Efesto storage, eventually compiling it if not already present
      * @param pmmlModelLocalUriId
+     * @param classLoader
      * @return
      */
-    static String getPmmlSource(ModelLocalUriId pmmlModelLocalUriId) {
+    static String getPmmlSource(ModelLocalUriId pmmlModelLocalUriId, ClassLoader classLoader) {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
             String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
-            File pmmlFile = FileUtils.getFile(pmmlFileName);
+            File pmmlFile = getPmmlFile(pmmlFileName, classLoader);
             EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFile, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
             toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         }
@@ -324,8 +326,8 @@ public class DMNImportsUtil {
 
     static String getPMMLModelName(FunctionDefinition functionDefinition, String pmmlImportedName) {
         return functionDefinition.getChildren().stream()
-                .filter(child -> child instanceof Context)
-                .map(child -> (Context) child)
+                .filter(Context.class::isInstance)
+                .map(Context.class::cast)
                 .filter(context -> referToPMMLImportedName(context, pmmlImportedName))
                 .map(DMNImportsUtil::getModelName)
                 .findFirst()
@@ -358,5 +360,40 @@ public class DMNImportsUtil {
 
     static boolean hasVariableName(ContextEntry contextEntry, String expectedVariableName) {
         return contextEntry.getVariable().getName().equals(expectedVariableName);
+    }
+
+    /**
+     * Retrieve the file with the given name scanning first the classpath, then the given classloader
+     * @param pmmlFileName
+     * @param classLoader
+     * @return
+     * @throws IllegalStateException if the file can not be found
+     */
+    static File getPmmlFile(String pmmlFileName, ClassLoader classLoader) {
+        return getPmmlFileFromClasspath(pmmlFileName).or(() -> getPmmlFileFromClassloader(pmmlFileName, classLoader))
+                .orElseThrow(() -> new IllegalStateException("Could not find PMML file: " + pmmlFileName));
+    }
+
+    static Optional<File> getPmmlFileFromClasspath(String pmmlFileName) {
+        File toReturn = null;
+        try {
+            toReturn = FileUtils.getFile(pmmlFileName);
+        } catch (Exception e) {
+            LOGGER.warn("Unable to find PMML file {} from Classpath", pmmlFileName);
+        }
+        return Optional.ofNullable(toReturn);
+    }
+
+    static Optional<File> getPmmlFileFromClassloader(String pmmlFileName, ClassLoader classLoader) {
+        File toReturn = null;
+        try {
+            URL resource = classLoader.getResource(pmmlFileName);
+            if (resource != null) {
+                toReturn = new File(resource.getFile());
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Unable to find PMML file {} from Classloader {}", pmmlFileName, classLoader);
+        }
+        return Optional.ofNullable(toReturn);
     }
 }

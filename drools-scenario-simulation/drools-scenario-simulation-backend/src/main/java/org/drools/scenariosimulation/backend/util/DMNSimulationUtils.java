@@ -26,6 +26,7 @@ import java.util.List;
 
 import java.util.Map;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
@@ -33,7 +34,6 @@ import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
-import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
@@ -57,11 +57,10 @@ public class DMNSimulationUtils {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static Map<String, GeneratedResources> compileModels(Collection<File> dmnFiles, Collection<File> pmmlFiles) {
+    public static Map<String, GeneratedResources> compileModels(Collection<File> dmnFiles) {
         ModelLocalUriId dmnModelLocalUriId = new ModelLocalUriId(LocalUri.Root.append("dmn").append("scesim"));
         EfestoFileSetResource toProcessDmn = new EfestoFileSetResource(new HashSet<>(dmnFiles), dmnModelLocalUriId);
-        EfestoCompilationContext dmnCompilationContext =
-                EfestoCompilationContextUtils.buildWithParentClassLoader(memoryCompilerClassLoader);
+        EfestoCompilationContext dmnCompilationContext = DmnCompilationContext.buildWithParentClassLoader(memoryCompilerClassLoader);
         compilationManager.processResource(dmnCompilationContext, toProcessDmn);
         return dmnCompilationContext.getGeneratedResourcesMap();
     }

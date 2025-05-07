@@ -58,8 +58,7 @@ public class DMNScenarioExecutableBuilder {
     public static DMNScenarioExecutableBuilder createBuilder() {
         try {
             Collection<File> dmnFiles =  ResourceHelper.getFileResourcesByExtension("dmn");
-            Collection<File> pmmlFiles =  ResourceHelper.getFileResourcesByExtension("pmml");
-            Map<String, GeneratedResources> generatedResourcesMap = compileModels(dmnFiles, pmmlFiles);
+            Map<String, GeneratedResources> generatedResourcesMap = compileModels(dmnFiles);
             return new DMNScenarioExecutableBuilder(generatedResourcesMap);
         } catch (Exception e) {
             throw new IllegalStateException(e);

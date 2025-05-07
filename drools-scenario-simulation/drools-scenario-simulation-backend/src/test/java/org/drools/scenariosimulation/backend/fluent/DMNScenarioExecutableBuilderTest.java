@@ -67,14 +67,13 @@ public class DMNScenarioExecutableBuilderTest {
                 LOG.debug("Mocked static Collection<File> getFileResourcesByExtension pmml!");
                 return pmmlFiles;
             });
-            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(dmnFiles, pmmlFiles)).thenAnswer(invocation -> {
+            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(dmnFiles)).thenAnswer(invocation -> {
                 LOG.debug("Mocked static Map compileModels!");
                 return generatedResourcesMap;
             });
             DMNScenarioExecutableBuilder builder = DMNScenarioExecutableBuilder.createBuilder();
             mockResourceHelper.verify(() -> ResourceHelper.getFileResourcesByExtension("dmn"), times(1));
-            mockResourceHelper.verify(() -> ResourceHelper.getFileResourcesByExtension("pmml"), times(1));
-            mockDMNSimulationUtils.verify(() -> DMNSimulationUtils.compileModels(dmnFiles, pmmlFiles), times(1));
+            mockDMNSimulationUtils.verify(() -> DMNSimulationUtils.compileModels(dmnFiles), times(1));
             assertThat(builder).isNotNull();
             assertThat(builder.generatedResourcesMap).isEqualTo(generatedResourcesMap);
         }
@@ -86,19 +85,18 @@ public class DMNScenarioExecutableBuilderTest {
         Collection<File> pmmlFiles = new ArrayList<>();
         try (MockedStatic<DMNSimulationUtils> mockDMNSimulationUtils = Mockito.mockStatic(DMNSimulationUtils.class);
              MockedStatic<ResourceHelper> mockResourceHelper = Mockito.mockStatic(ResourceHelper.class)) {
-            mockResourceHelper.when(() -> ResourceHelper.getFileResourcesByExtension("dmn")).thenAnswer(invocation -> {
+                mockResourceHelper.when(() -> ResourceHelper.getFileResourcesByExtension("dmn")).thenAnswer(invocation -> {
                 LOG.debug("Mocked static Collection<File> getFileResourcesByExtension dmn!");
                 return dmnFiles;
             });
-            mockResourceHelper.when(() -> ResourceHelper.getFileResourcesByExtension("pmml")).thenAnswer(invocation -> {
+                mockResourceHelper.when(() -> ResourceHelper.getFileResourcesByExtension("pmml")).thenAnswer(invocation -> {
                 LOG.debug("Mocked static Collection<File> getFileResourcesByExtension pmml!");
                 return pmmlFiles;
             });
-            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(dmnFiles, pmmlFiles)).thenThrow(RuntimeException.class);
+            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(dmnFiles)).thenThrow(RuntimeException.class);
             assertThrows(IllegalStateException.class, DMNScenarioExecutableBuilder::createBuilder);
             mockResourceHelper.verify(() -> ResourceHelper.getFileResourcesByExtension("dmn"), times(1));
-            mockResourceHelper.verify(() -> ResourceHelper.getFileResourcesByExtension("pmml"), times(1));
-            mockDMNSimulationUtils.verify(() -> DMNSimulationUtils.compileModels(dmnFiles, pmmlFiles), times(1));
+            mockDMNSimulationUtils.verify(() -> DMNSimulationUtils.compileModels(dmnFiles), times(1));
         }
     }
 
@@ -120,7 +118,7 @@ public class DMNScenarioExecutableBuilderTest {
         Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
         generatedResourcesMap.put("dmn", generatedResources);
         try (MockedStatic<DMNSimulationUtils> mockDMNSimulationUtils = Mockito.mockStatic(DMNSimulationUtils.class)) {
-            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(Mockito.any(), Mockito.any())).thenAnswer(invocation -> {
+            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(Mockito.any())).thenAnswer(invocation -> {
                 LOG.debug("Mocked static Map compileModels!");
                 return generatedResourcesMap;
             });
@@ -149,7 +147,7 @@ public class DMNScenarioExecutableBuilderTest {
         Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
         generatedResourcesMap.put("dmn", generatedResources);
         try (MockedStatic<DMNSimulationUtils> mockDMNSimulationUtils = Mockito.mockStatic(DMNSimulationUtils.class)) {
-            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(Mockito.any(), Mockito.any())).thenAnswer(invocation -> {
+            mockDMNSimulationUtils.when(() -> DMNSimulationUtils.compileModels(Mockito.any())).thenAnswer(invocation -> {
                 LOG.debug("Mocked static Map compileModels!");
                 return generatedResourcesMap;
             });

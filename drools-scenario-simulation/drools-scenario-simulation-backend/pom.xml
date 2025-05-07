@@ -96,6 +96,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-compilation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-dmn-efesto-runtime</artifactId>
     </dependency>
 
@@ -134,6 +138,12 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>

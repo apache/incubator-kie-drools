@@ -18,12 +18,16 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
+import java.util.Set;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
+@SuppressWarnings("rawtypes")
 public interface DmnCompilationContext extends EfestoCompilationContext {
 
     static DmnCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
@@ -38,5 +42,16 @@ public interface DmnCompilationContext extends EfestoCompilationContext {
         return (DmnCompilationContext) EfestoCompilationContextUtils.buildFromContext(context, DmnCompilationContextImpl.class);
     }
 
+    static DmnCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader, Set<DMNProfile> customDMNProfiles,
+                                                            RuntimeTypeCheckOption runtimeTypeCheckOption) {
+        return new DmnCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader), customDMNProfiles, runtimeTypeCheckOption);
+    }
+
     KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
+
+    Set<DMNProfile> getCustomDMNProfiles();
+
+    RuntimeTypeCheckOption getRuntimeTypeCheckOption();
+
+    ClassLoader getContextClassloader();
 }

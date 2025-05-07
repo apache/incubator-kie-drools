@@ -21,17 +21,15 @@ package org.kie.dmn.efesto.compiler.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
 import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
@@ -47,7 +45,8 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
     @Override
     @SuppressWarnings( "rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoFileSetResource && ((EfestoFileSetResource) toProcess).getModelLocalUriId().model().equalsIgnoreCase("dmn");
+        return toProcess instanceof EfestoFileSetResource efestoFileSetResource &&
+                efestoFileSetResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
     }
 
     @Override
@@ -58,20 +57,24 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
                                                                 this.getClass().getName(),
                                                                 toProcess.getClass().getName()));
         }
+        if (!(context instanceof DmnCompilationContext dmnContext)) {
+            throw new KieCompilerServiceException(String.format("Wrong %s context parameter for from %s",
+                                                                context.getClass().getName(),
+                                                                this.getClass().getName()));
+        }
         EfestoFileSetResource fileSetResource = (EfestoFileSetResource) toProcess;
         Set<File> dmnFiles = fileSetResource.getContent();
         try {
-            List<DMNModel> dmnModels = getDMNModels(dmnFiles);
+            List<DMNModel> dmnModels = getDMNModels(dmnFiles, dmnContext.getCustomDMNProfiles(), dmnContext.getRuntimeTypeCheckOption(), dmnContext.getContextClassloader());
             storeSources(dmnFiles);
-            List<EfestoCompilationOutput> toReturn = dmnModels.stream()
+            return dmnModels.stream()
                     .map(
                     dmnModel -> DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
                                                                                    dmnModel.getName(),
                                                                                    dmnModel.toString(),
                                                                                    dmnModel))
-                    .collect(Collectors.toList());
+                    .toList();
 
-            return toReturn;
         } catch (Exception e) {
             throw new EfestoCompilationManagerException(e);
         }
@@ -85,11 +88,10 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
                         .get(KieDmnComponentRoot.class)
                         .get(DmnIdFactory.class)
                         .get(fileName);
-                String modelSource = null;
-                modelSource = Files.readString(file.toPath());
+                String modelSource = Files.readString(file.toPath());
                 ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new KieCompilerServiceException(e);
             }
 
         });

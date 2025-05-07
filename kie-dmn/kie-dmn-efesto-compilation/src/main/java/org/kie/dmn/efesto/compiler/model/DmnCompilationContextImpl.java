@@ -18,19 +18,49 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
+import java.util.Set;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
+@SuppressWarnings("rawtypes")
+
 public class DmnCompilationContextImpl extends EfestoCompilationContextImpl implements DmnCompilationContext {
 
+    private Set<DMNProfile> customDMNProfiles;
+    private RuntimeTypeCheckOption runtimeTypeCheckOption;
+
     public DmnCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        this(memoryCompilerClassLoader, null, null);
+    }
+
+    public DmnCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, Set<DMNProfile> customDMNProfiles,
+                                     RuntimeTypeCheckOption runtimeTypeCheckOption) {
         super(memoryCompilerClassLoader);
+        this.customDMNProfiles = customDMNProfiles;
+        this.runtimeTypeCheckOption = runtimeTypeCheckOption;
     }
 
     @Override
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
         return KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
+    }
+
+    @Override
+    public Set<DMNProfile> getCustomDMNProfiles() {
+        return customDMNProfiles;
+    }
+
+    @Override
+    public RuntimeTypeCheckOption getRuntimeTypeCheckOption() {
+        return runtimeTypeCheckOption;
+    }
+
+    @Override
+    public ClassLoader getContextClassloader() {
+        return memoryCompilerClassLoader;
     }
 }
