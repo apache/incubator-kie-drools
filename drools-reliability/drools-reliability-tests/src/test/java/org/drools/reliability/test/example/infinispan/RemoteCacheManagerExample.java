@@ -41,7 +41,7 @@ import java.util.List;
  * After running this example, you can run RemoteCacheManagerExampleAfterFailOver to see the results.
  * <p>
  * So the steps are:
- * docker run -p 11222:11222 -e USER="admin" -e PASS="secret" quay.io/infinispan/server:14.0
+ * docker run -p 11222:11222 -e USER="admin" -e PASS="secret" quay.io/infinispan/server:15.0
  * Run RemoteCacheManagerExample
  * Run RemoteCacheManagerExampleAfterFailOver
  */

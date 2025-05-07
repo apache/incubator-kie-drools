@@ -24,12 +24,12 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
-import io.smallrye.openapi.runtime.io.JsonUtil;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
@@ -71,7 +71,7 @@ public abstract class BaseDMNOASTest {
     private static ObjectNode synthesizeSchema(DMNOASResult result, DMNType InputSetTypeUT) {
         String dollarRef = result.getNamingPolicy().getRef(InputSetTypeUT);
         ObjectNode syntheticJSONSchema = result.getJsonSchemaNode().deepCopy();
-        JsonUtil.stringProperty(syntheticJSONSchema, "$ref", dollarRef);
+        syntheticJSONSchema.set("$ref", JsonNodeFactory.instance.textNode(dollarRef));
         JacksonUtils.printoutJSON(syntheticJSONSchema);
         return syntheticJSONSchema;
     }
