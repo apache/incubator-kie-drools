@@ -192,8 +192,8 @@ class EfestoPMMLUtilsTest {
 
     private static Object[][] pmmlPaths() {
         return new Object[][]{
-                {"this/is/a/path/to/model.pmml", getModelLocalUriId("model", "RegressionModel")},
-                {"this/is/a/path/to/model", getModelLocalUriId("model", "TreeModel")},
+                {fileFormattedPath("this", "is", "a", "path", "to", "model.pmml"), getModelLocalUriId("model", "RegressionModel")},
+                {fileFormattedPath("this", "is", "a", "path", "to", "model"), getModelLocalUriId("model", "TreeModel")},
                 {"model.pmml", getModelLocalUriId("model", "ClusterModel")}
         };
     }
@@ -201,11 +201,15 @@ class EfestoPMMLUtilsTest {
     private static Object[][] filePaths() {
         return new Object[][]{
                 {"http://some.place/file", false},
-                {"file://some/place/file", false},
-                {"/some/place/file", false},
-                {"./file", true},
-                {"../some/place/file", true}
+                {fileFormattedPath("file:" + File.separator + File.separator, "place", "file"), false},
+                {fileFormattedPath(File.separator +"some", "place", "file"), false},
+                {fileFormattedPath(".", "file"), true},
+                {fileFormattedPath("..", "some", "place", "file"), true}
         };
+    }
+
+    private static String fileFormattedPath(String... elements) {
+        return elements.length > 0 ? String.join(File.separator, elements) : null;
     }
 
     private static ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {

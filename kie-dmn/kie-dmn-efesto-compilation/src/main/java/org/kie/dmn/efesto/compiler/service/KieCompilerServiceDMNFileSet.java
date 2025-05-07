@@ -69,10 +69,13 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
             storeSources(dmnFiles);
             return dmnModels.stream()
                     .map(
-                    dmnModel -> DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
-                                                                                   dmnModel.getName(),
-                                                                                   dmnModel.toString(),
-                                                                                   dmnModel))
+                    dmnModel -> {
+                        String modelSource = readFile(new File(dmnModel.getResource().getSourcePath()));
+                        return DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
+                                                                           dmnModel.getName(),
+                                                                                  modelSource,
+                                                                           dmnModel);
+                    })
                     .toList();
 
         } catch (Exception e) {
@@ -82,19 +85,21 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
 
     private void storeSources(Set<File> dmnFiles) {
         dmnFiles.forEach(file -> {
-            try {
-                String fileName = file.getName();
-                LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                        .get(KieDmnComponentRoot.class)
-                        .get(DmnIdFactory.class)
-                        .get(fileName);
-                String modelSource = Files.readString(file.toPath());
-                ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
-            } catch (IOException e) {
-                throw new KieCompilerServiceException(e);
-            }
-
+            String fileName = file.getName();
+            LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
+                    .get(KieDmnComponentRoot.class)
+                    .get(DmnIdFactory.class)
+                    .get(fileName);
+            String modelSource = readFile(file);
+            ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
         });
+    }
 
+    private String readFile(File toRead) {
+        try {
+            return Files.readString(toRead.toPath());
+        } catch (IOException e) {
+            throw new KieCompilerServiceException(e);
+        }
     }
 }
