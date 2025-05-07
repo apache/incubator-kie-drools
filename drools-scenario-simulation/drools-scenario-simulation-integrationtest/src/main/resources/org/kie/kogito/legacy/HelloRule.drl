@@ -23,13 +23,11 @@ import org.kie.kogito.legacy.Hello;
 rule HelloApprove when
     $l: Hello( greeting.equals("foo") )
 then
-    System.out.println("HelloApprove");
     modify($l) { setApproved(true) };
 end
 
 rule HelloDeny when
     $l: Hello( greeting != "foo" )
 then
-    System.out.println("HelloDeny");
     modify($l) { setApproved(false) };
 end
