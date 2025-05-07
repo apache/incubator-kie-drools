@@ -219,7 +219,6 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
      */
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
-
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect);
@@ -614,7 +613,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
-        } else if (itemDef.getItemComponent() != null && itemDef.getItemComponent().size() > 0) {
+        } else if (itemDef.getItemComponent() != null && !itemDef.getItemComponent().isEmpty()) {
             // this is a composite type
             // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {
