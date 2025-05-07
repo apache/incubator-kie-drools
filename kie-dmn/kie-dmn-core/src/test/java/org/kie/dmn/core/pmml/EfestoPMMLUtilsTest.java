@@ -183,7 +183,7 @@ class EfestoPMMLUtilsTest {
 
     private void commonCompileFromResolver(TriFunction<Import, String, Function<String, Reader>, ModelLocalUriId> methodToCall) {
         Import anImport = new TImport();
-        anImport.setLocationURI(PMML_FILE.getAbsolutePath());
+        anImport.setLocationURI(PMML_FILE.toURI().toString());
         Function<String, Reader> relativeResolver = getRelativeResolver(anImport.getLocationURI(), PMML_SOURCE);
         ModelLocalUriId retrieved = methodToCall.apply(anImport, PMML_MODEL_NAME, relativeResolver);
         assertThat(retrieved).isNotNull();
@@ -201,15 +201,21 @@ class EfestoPMMLUtilsTest {
     private static Object[][] filePaths() {
         return new Object[][]{
                 {"http://some.place/file", false},
-                {fileFormattedPath("file:" + File.separator + File.separator, "place", "file"), false},
-                {fileFormattedPath(File.separator +"some", "place", "file"), false},
+                {fileFormattedUri("some", "place", "file"), false},
                 {fileFormattedPath(".", "file"), true},
                 {fileFormattedPath("..", "some", "place", "file"), true}
         };
     }
 
     private static String fileFormattedPath(String... elements) {
-        return elements.length > 0 ? String.join(File.separator, elements) : null;
+        assertThat(elements).isNotNull().hasSizeGreaterThan(0);
+        return String.join(File.separator, elements);
+    }
+
+    private static String fileFormattedUri(String... elements) {
+        String path = fileFormattedPath(elements);
+        assertThat(path).isNotNull();
+        return new File(path).toURI().toString();
     }
 
     private static ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {

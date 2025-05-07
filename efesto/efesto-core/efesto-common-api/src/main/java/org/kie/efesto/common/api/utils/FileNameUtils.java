@@ -18,15 +18,26 @@
  */
 package org.kie.efesto.common.api.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
+import java.net.URI;
 
 public class FileNameUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileNameUtils.class);
     private FileNameUtils() {
     }
 
     public static String getFileName(String source) {
-        return source.contains(File.separator) ?
-                source.substring(source.lastIndexOf(File.separatorChar) + 1) : source;
+        String sourceToUse = source;
+        try {
+            sourceToUse = new URI(source).toURL().getFile();
+        } catch (Exception e) {
+            LOGGER.debug("Can't parse the given source {} as URI", source);
+        }
+        return new File(sourceToUse).getName();
     }
 
     public static String getSuffix(String fileName) {

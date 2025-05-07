@@ -478,7 +478,7 @@ class DMNImportsUtilTest {
         assertThat(resource).isNotNull();
         File pmmlFile = new File(resource.getFile());
         Import anImport = new org.kie.dmn.model.v1_5.TImport();
-        anImport.setLocationURI(pmmlFile.getAbsolutePath());
+        anImport.setLocationURI(pmmlFile.toURI().toString());
         anImport.setImportType("pmml");
         anImport.setName(pmmlImportedName);
         return anImport;
@@ -490,7 +490,7 @@ class DMNImportsUtilTest {
         assertThat(resource).isNotNull();
         File pmmlFile = new File(resource.getFile());
         String pmmlFileContent = Files.readString(pmmlFile.toPath());
-        return getRelativeResolver(pmmlFile.getAbsolutePath(), pmmlFileContent);
+        return getRelativeResolver(pmmlFile.toURI().toString(), pmmlFileContent);
     }
 
     private static Import makeImport(final String namespace, final String name, final String modelName) {
