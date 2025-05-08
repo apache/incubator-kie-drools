@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -66,8 +66,8 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!ScenarioSimulationModel.Type.DMN.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
-        DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
-        executableBuilder.setActiveModel(settings.getDmnFilePath());
+        DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper();
+        executableBuilder.setActiveModel(settings.getDmnNamespace(), settings.getDmnName());
 
         defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 
@@ -289,7 +289,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return toReturn;
     }
 
-    protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
-        return DMNScenarioExecutableBuilder.createBuilder(kieContainer);
+    protected DMNScenarioExecutableBuilder createBuilderWrapper() {
+        return DMNScenarioExecutableBuilder.createBuilder();
     }
 }

@@ -30,6 +30,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
+import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.TestingHelper.getEfestoContext;

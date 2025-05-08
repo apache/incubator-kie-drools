@@ -18,6 +18,9 @@
  */
 package org.kie.dmn.core.util;
 
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.function.Function;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 
@@ -34,5 +37,9 @@ public class DMNTestUtil {
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         return dmnModel;
+    }
+
+    public static Function<String, Reader> getRelativeResolver(String key, String content) {
+        return s -> s.equals(key) ? new StringReader(content) : null;
     }
 }

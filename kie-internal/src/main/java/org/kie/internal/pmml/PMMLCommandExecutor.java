@@ -18,17 +18,17 @@
  */
 package org.kie.internal.pmml;
 
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
+import java.util.Map;
+
 import org.kie.api.runtime.Context;
 
 public interface PMMLCommandExecutor {
 
     /**
-     * Evaluate the given <code>PMMLRequestData<code>
+     * Evaluate the given <code>Map<String, Object><code>
      * @param pmmlRequestData : it must contain the pmml file name (in the <i>source</i> property)
      * and the model name
      * @return
      */
-    PMML4Result execute(final PMMLRequestData pmmlRequestData, final Context context);
+    Map<String, Object> execute(final Map<String, Object> pmmlRequestData, final Context context);
 }

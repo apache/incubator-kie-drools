@@ -62,7 +62,6 @@ import org.drools.commands.runtime.ExecutionResultImpl;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
-import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -368,7 +367,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     }
 
     @Override
-    public Command newApplyPmmlModel(PMMLRequestData request) {
+    public Command newApplyPmmlModel(Map<String, Object> request) {
     	return new ApplyPmmlModelCommand(request);
     }
 

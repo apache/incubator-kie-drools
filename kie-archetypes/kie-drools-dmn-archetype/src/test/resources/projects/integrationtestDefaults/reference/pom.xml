@@ -47,6 +47,16 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${dollar}{drools-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${dollar}{drools-version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -64,6 +74,17 @@
       <artifactId>drools-model-compiler</artifactId>
     </dependency>
 
+    <!-- Efesto -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-compilation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-runtime</artifactId>
+    </dependency>
+
+    <!-- Test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
