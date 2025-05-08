@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -259,8 +260,8 @@ public class DMNImportsUtil {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
             String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
-            File pmmlFile = getPmmlFile(pmmlFileName, classLoader);
-            EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFile, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
+            String pmmlFileContent = getPmmlFileContent(pmmlFileName, classLoader);
+            EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFileContent, pmmlFileName, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
             toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         }
         return toReturn;
@@ -369,27 +370,32 @@ public class DMNImportsUtil {
      * @return
      * @throws IllegalStateException if the file can not be found
      */
-    static File getPmmlFile(String pmmlFileName, ClassLoader classLoader) {
-        return getPmmlFileFromClasspath(pmmlFileName).or(() -> getPmmlFileFromClassloader(pmmlFileName, classLoader))
+    static String getPmmlFileContent(String pmmlFileName, ClassLoader classLoader) {
+        return getPmmlFileContentFromClasspath(pmmlFileName).or(() -> getPmmlFileContentFromClassloader(pmmlFileName, classLoader))
                 .orElseThrow(() -> new IllegalStateException("Could not find PMML file: " + pmmlFileName));
     }
 
-    static Optional<File> getPmmlFileFromClasspath(String pmmlFileName) {
-        File toReturn = null;
+    static Optional<String> getPmmlFileContentFromClasspath(String pmmlFileName) {
+        String toReturn = null;
         try {
-            toReturn = FileUtils.getFile(pmmlFileName);
+            File foundFile = FileUtils.getFile(pmmlFileName);
+            if (foundFile.exists()) {
+                toReturn = Files.readString(foundFile.toPath(), StandardCharsets.UTF_8);
+            }
         } catch (Exception e) {
             LOGGER.warn("Unable to find PMML file {} from Classpath", pmmlFileName);
         }
         return Optional.ofNullable(toReturn);
     }
 
-    static Optional<File> getPmmlFileFromClassloader(String pmmlFileName, ClassLoader classLoader) {
-        File toReturn = null;
+    static Optional<String> getPmmlFileContentFromClassloader(String pmmlFileName, ClassLoader classLoader) {
+        String toReturn = null;
         try {
             URL resource = classLoader.getResource(pmmlFileName);
             if (resource != null) {
-                toReturn = new File(resource.getFile());
+                try (InputStream is = resource.openStream()) {
+                    toReturn = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                }
             }
         } catch (Exception e) {
             LOGGER.warn("Unable to find PMML file {} from Classloader {}", pmmlFileName, classLoader);
