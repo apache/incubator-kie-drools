@@ -18,15 +18,18 @@
  */
 package org.kie.dmn.efesto.compiler.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
+import org.kie.dmn.efesto.compiler.model.DMNResourceSetResource;
 import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
 import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
@@ -35,22 +38,21 @@ import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
-import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromFiles;
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromResources;
 
-public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN {
+public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerServiceDMN {
 
     @Override
-    @SuppressWarnings( "rawtypes")
+    @SuppressWarnings("rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoFileSetResource efestoFileSetResource &&
-                efestoFileSetResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
+        return toProcess instanceof DMNResourceSetResource dmnResourceSetResource &&
+                dmnResourceSetResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
     }
 
     @Override
-    @SuppressWarnings( "rawtypes")
+    @SuppressWarnings("rawtypes")
     public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
@@ -62,42 +64,38 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
                                                                 context.getClass().getName(),
                                                                 this.getClass().getName()));
         }
-        EfestoFileSetResource fileSetResource = (EfestoFileSetResource) toProcess;
-        Set<File> dmnFiles = fileSetResource.getContent();
+        DMNResourceSetResource dmnResourceSetResource = (DMNResourceSetResource) toProcess;
+        Set<Resource> dmnResources = dmnResourceSetResource.getContent();
         try {
-            List<DMNModel> dmnModels = getDMNModelsFromFiles(dmnFiles, dmnContext.getCustomDMNProfiles(), dmnContext.getRuntimeTypeCheckOption(), dmnContext.getContextClassloader());
-            storeSources(dmnFiles);
-            return dmnModels.stream()
-                    .map(
-                    dmnModel -> {
-                        String modelSource = readFile(new File(dmnModel.getResource().getSourcePath()));
-                        return DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
-                                                                           dmnModel.getName(),
-                                                                                  modelSource,
-                                                                           dmnModel);
-                    })
-                    .toList();
-
+            List<DMNModel> dmnModels = getDMNModelsFromResources(dmnResources, dmnContext.getCustomDMNProfiles(),
+                                                                 dmnContext.getRuntimeTypeCheckOption(),
+                                                                 dmnContext.getContextClassloader());
+            List<EfestoCompilationOutput> toReturn = new ArrayList<>();
+            dmnModels.forEach(dmnModel -> {
+                String modelSource = readResource(dmnModel.getResource());
+                storeSource(modelSource, dmnModel.getName());
+                toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
+                                                                                dmnModel.getName(),
+                                                                                modelSource,
+                                                                                dmnModel));
+            });
+            return toReturn;
         } catch (Exception e) {
             throw new EfestoCompilationManagerException(e);
         }
     }
 
-    private void storeSources(Set<File> dmnFiles) {
-        dmnFiles.forEach(file -> {
-            String fileName = file.getName();
-            LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                    .get(KieDmnComponentRoot.class)
-                    .get(DmnIdFactory.class)
-                    .get(fileName);
-            String modelSource = readFile(file);
-            ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
-        });
+    private void storeSource(String modelSource, String modelName) {
+        LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
+                .get(KieDmnComponentRoot.class)
+                .get(DmnIdFactory.class)
+                .get(modelName);
+        ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
     }
 
-    private String readFile(File toRead) {
-        try {
-            return Files.readString(toRead.toPath());
+    private String readResource(Resource toRead) {
+        try (InputStream is = toRead.getInputStream()) {
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new KieCompilerServiceException(e);
         }

@@ -57,10 +57,10 @@ public class DmnCompilerUtils {
         return dmnRuntime.getModels().get(0);
     }
 
-    public static List<DMNModel> getDMNModels(Set<File> modelFiles,
-                                              Set<DMNProfile> customDMNProfiles,
-                                              RuntimeTypeCheckOption runtimeTypeCheckOption,
-                                              ClassLoader classLoader) {
+    public static List<DMNModel> getDMNModelsFromFiles(Set<File> modelFiles,
+                                                       Set<DMNProfile> customDMNProfiles,
+                                                       RuntimeTypeCheckOption runtimeTypeCheckOption,
+                                                       ClassLoader classLoader) {
         List<Resource> modelResources = modelFiles.stream().map(ResourceFactory::newFileResource)
                 .toList();
         DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
@@ -74,6 +74,25 @@ public class DmnCompilerUtils {
                 .setRootClassLoader(classLoader)
                 .buildConfiguration()
                 .fromResources(modelResources)
+                .getOrElseThrow(RuntimeException::new);
+        return dmnRuntime.getModels();
+    }
+
+    public static List<DMNModel> getDMNModelsFromResources(Set<Resource> dmnResources,
+                                              Set<DMNProfile> customDMNProfiles,
+                                              RuntimeTypeCheckOption runtimeTypeCheckOption,
+                                              ClassLoader classLoader) {
+        DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
+        if (runtimeTypeCheckOption != null) {
+            dmnRuntimeBuilder.setOption(runtimeTypeCheckOption);
+        }
+        if (customDMNProfiles != null) {
+            customDMNProfiles.forEach(dmnRuntimeBuilder::addProfile);
+        }
+        DMNRuntime dmnRuntime = dmnRuntimeBuilder
+                .setRootClassLoader(classLoader)
+                .buildConfiguration()
+                .fromResources(dmnResources)
                 .getOrElseThrow(RuntimeException::new);
         return dmnRuntime.getModels();
     }
