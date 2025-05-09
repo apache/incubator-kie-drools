@@ -23,7 +23,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum KogitoMarshallEventFlag {
-    RETRIGGER(1);
+    RETRIGGER(1),
+    CLOUDEVENT_ID(2);
 
     private int value;
 

@@ -19,6 +19,7 @@
 package org.kie.kogito.event.impl.adapter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -72,23 +73,30 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .eventDate(date)
                 .eventUser(event.getEventIdentity())
                 .eventType(eventType)
-                .processId(event.getProcessInstance().getProcessId())
-                .processVersion(event.getProcessInstance().getProcessVersion())
-                .processInstanceId(event.getProcessInstance().getId())
-                .processName(event.getProcessInstance().getProcessName())
-                .processVersion(event.getProcessInstance().getProcessVersion())
-                .processType(event.getProcessInstance().getProcess().getType())
+                .processId(pi.getProcessId())
+                .processVersion(pi.getProcessVersion())
+                .processInstanceId(pi.getId())
+                .processName(pi.getProcessName())
+                .processVersion(pi.getProcessVersion())
+                .processType(pi.getProcess().getType())
                 .parentInstanceId(pi.getParentProcessInstanceId())
                 .rootProcessId(pi.getRootProcessId())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .businessKey(pi.getBusinessKey())
                 .slaDueDate(pi.getSlaDueDate());
+        Map<String, List<String>> headers = pi.getHeaders();
+        if (headers != null) {
+            String id = getHeader(headers, "id");
+            if (id != null) {
+                builder.cloudEvent(id, getHeader(headers, "source"));
+            }
+        }
 
         // this is due to the listener order execution. we cannot trust the state of the process if it start and finishes at the same time.
         if (eventType == ProcessInstanceStateEventBody.EVENT_TYPE_STARTED) {
             builder.state(KogitoProcessInstance.STATE_ACTIVE);
         } else {
-            builder.state(event.getProcessInstance().getState());
+            builder.state(pi.getState());
         }
 
         String securityRoles = (String) event.getProcessInstance().getProcess().getMetaData().get("securityRoles");
@@ -102,6 +110,11 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                         event.getEventIdentity(), metadata, body);
         piEvent.setKogitoBusinessKey(pi.getBusinessKey());
         return piEvent;
+    }
+
+    private String getHeader(Map<String, List<String>> headers, String key) {
+        List<String> value = headers.get(key);
+        return value != null ? value.get(0).toString() : null;
     }
 
     protected ProcessInstanceNodeDataEvent toProcessInstanceNodeEvent(ProcessNodeTriggeredEvent event, int eventType) {
@@ -121,16 +134,16 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .eventDate(new Date())
                 .eventUser(event.getEventIdentity())
                 .eventType(eventType)
-                .processId(event.getProcessInstance().getProcessId())
-                .processVersion(event.getProcessInstance().getProcessVersion())
-                .processInstanceId(event.getProcessInstance().getId())
-                .nodeName(event.getNodeInstance().getNodeName())
-                .nodeType(event.getNodeInstance().getNode().getClass().getSimpleName())
-                .nodeInstanceId(event.getNodeInstance().getId())
-                .nodeDefinitionId(event.getNodeInstance().getNode().getUniqueId())
+                .processId(pi.getProcessId())
+                .processVersion(pi.getProcessVersion())
+                .processInstanceId(pi.getId())
+                .nodeName(nodeInstance.getNodeName())
+                .nodeType(nodeInstance.getNode().getClass().getSimpleName())
+                .nodeInstanceId(nodeInstance.getId())
+                .nodeDefinitionId(nodeInstance.getNode().getUniqueId())
                 .slaDueDate(nodeInstance.getSlaDueDate());
         consumer.accept(builder, event);
-        if (event.getNodeInstance() instanceof KogitoWorkItemNodeInstance workItemNodeInstance && workItemNodeInstance.getWorkItem() != null) {
+        if (nodeInstance instanceof KogitoWorkItemNodeInstance workItemNodeInstance && workItemNodeInstance.getWorkItem() != null) {
             KogitoWorkItem workItem = workItemNodeInstance.getWorkItem();
             builder.workItemId(workItem.getStringId());
             builder.data("WorkItemId", workItem.getStringId());
@@ -144,7 +157,7 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
         }
 
         ProcessInstanceNodeEventBody body = builder.build();
-        ProcessInstanceNodeDataEvent piEvent = new ProcessInstanceNodeDataEvent(AdapterHelper.buildSource(getConfig().service(), event.getProcessInstance().getProcessId()),
+        ProcessInstanceNodeDataEvent piEvent = new ProcessInstanceNodeDataEvent(AdapterHelper.buildSource(getConfig().service(), pi.getProcessId()),
                 getConfig().addons().toString(), event.getEventIdentity(), metadata, body);
         piEvent.setKogitoBusinessKey(pi.getBusinessKey());
         return piEvent;
