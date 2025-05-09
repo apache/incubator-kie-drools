@@ -84,10 +84,10 @@ public class TestScenarioEngine implements TestEngine {
 
             getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scenarioRunnerDTO -> {
                 String fileName = getScesimFileName(scenarioRunnerDTO.getFileName());
-                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, fileName, scenarioRunnerDTO);
+                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, javaClass, fileName, scenarioRunnerDTO);
                 engineDescriptor.addChild(suite);
                 scenarioRunnerDTO.getScenarioWithIndices().forEach(scenarioWithIndex ->
-                    suite.addChild(new TestScenarioTestDescriptor(suite, fileName, scenarioWithIndex))
+                    suite.addChild(new TestScenarioTestDescriptor(suite, javaClass, fileName, scenarioWithIndex))
                 );
             });
         }

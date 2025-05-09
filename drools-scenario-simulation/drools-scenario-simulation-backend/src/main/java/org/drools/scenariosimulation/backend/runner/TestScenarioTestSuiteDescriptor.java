@@ -31,11 +31,12 @@ public class TestScenarioTestSuiteDescriptor extends AbstractTestDescriptor {
     private final ScenarioRunnerDTO scenarioRunnerDTO;
 
     public TestScenarioTestSuiteDescriptor(TestDescriptor engineDescriptor,
+                                           Class<?> activatorJavaClass,
                                            String fileName,
                                            ScenarioRunnerDTO scenarioRunnerDTO) {
         super(engineDescriptor.getUniqueId().append("scesim", fileName),
                 fileName,
-                ClassSource.from(fileName));
+                ClassSource.from(activatorJavaClass));
         setParent(engineDescriptor);
         this.scenarioRunnerDTO = scenarioRunnerDTO;
         LOGGER.debug("TestScenarioSuite created fileName: {} and added in {}", fileName, engineDescriptor.getDisplayName());

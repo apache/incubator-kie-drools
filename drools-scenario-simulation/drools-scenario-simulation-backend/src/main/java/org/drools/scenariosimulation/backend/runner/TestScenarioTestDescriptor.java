@@ -29,11 +29,12 @@ public class TestScenarioTestDescriptor extends AbstractTestDescriptor {
     private final ScenarioWithIndex scenarioWithIndex;
 
     public TestScenarioTestDescriptor(TestDescriptor testSuiteDescriptor,
+                                      Class<?> javaClass,
                                       String fileName,
                                       ScenarioWithIndex scenarioWithIndex) {
         super(testSuiteDescriptor.getUniqueId().append("scenario", String.valueOf(scenarioWithIndex.getIndex())),
                 String.format("#%d: %s", scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription()),
-                ClassSource.from(fileName));
+                ClassSource.from(javaClass));
         this.scenarioWithIndex = scenarioWithIndex;
         setParent(testSuiteDescriptor);
         LOGGER.debug("TestScenarioTestDescriptor created scenario index: {}, fileName: {}", scenarioWithIndex.getIndex(), fileName);
