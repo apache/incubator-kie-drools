@@ -50,6 +50,8 @@ public class ProcessInstanceMeta {
     private String updatedBy;
     private ZonedDateTime lastUpdate;
     private ZonedDateTime slaDueDate;
+    private String cloudEventId;
+    private String cloudEventSource;
 
     public String getId() {
         return id;
@@ -193,6 +195,22 @@ public class ProcessInstanceMeta {
 
     public void setSlaDueDate(ZonedDateTime slaDueDate) {
         this.slaDueDate = slaDueDate;
+    }
+
+    public String getCloudEventId() {
+        return cloudEventId;
+    }
+
+    public void setCloudEventId(String cloudEventId) {
+        this.cloudEventId = cloudEventId;
+    }
+
+    public String getCloudEventSource() {
+        return cloudEventSource;
+    }
+
+    public void setCloudEventSource(String cloudEventSource) {
+        this.cloudEventSource = cloudEventSource;
     }
 
     @Override

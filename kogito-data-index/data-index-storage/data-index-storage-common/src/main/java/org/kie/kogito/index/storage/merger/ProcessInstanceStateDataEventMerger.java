@@ -66,6 +66,8 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
         pi.setDefinition(definitions(event));
         pi.setUpdatedBy(event.getData().getEventUser());
         pi.setSlaDueDate(toZonedDateTime(event.getData().getSlaDueDate()));
+        pi.setCloudEventId(event.getData().getCloudEventId());
+        pi.setCloudEventSource(event.getData().getCloudEventSource());
         LOGGER.debug("Value after merging: {}", pi);
         return pi;
     }

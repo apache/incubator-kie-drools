@@ -234,6 +234,8 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         pi.setAddons(addons);
         pi.setEndpoint(endpoint);
         pi.setSlaDueDate(toZonedDateTime(data.getSlaDueDate()));
+        pi.setCloudEventId(data.getCloudEventId());
+        pi.setCloudEventSource(data.getCloudEventSource());
     }
 
     private void indexVariable(ProcessInstanceEntity pi, ProcessInstanceVariableEventBody data) {

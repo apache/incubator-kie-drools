@@ -93,6 +93,9 @@ public class ProcessInstanceEntity extends AbstractEntity {
             @JoinColumn(name = "version", referencedColumnName = "version", insertable = false, updatable = false) })
     private ProcessDefinitionEntity definition;
 
+    private String cloudEventId;
+    private String cloudEventSource;
+
     @Override
     public String getId() {
         return id;
@@ -268,6 +271,22 @@ public class ProcessInstanceEntity extends AbstractEntity {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getCloudEventId() {
+        return cloudEventId;
+    }
+
+    public void setCloudEventId(String cloudEventId) {
+        this.cloudEventId = cloudEventId;
+    }
+
+    public String getCloudEventSource() {
+        return cloudEventSource;
+    }
+
+    public void setCloudEventSource(String cloudEventSource) {
+        this.cloudEventSource = cloudEventSource;
     }
 
     @Override

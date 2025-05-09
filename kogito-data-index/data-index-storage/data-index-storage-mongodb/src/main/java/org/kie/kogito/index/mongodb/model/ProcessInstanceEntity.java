@@ -30,47 +30,51 @@ public class ProcessInstanceEntity {
     @BsonId
     String id;
 
-    String processId;
+    private String processId;
 
-    Set<String> roles;
+    private Set<String> roles;
 
-    Document variables;
+    private Document variables;
 
-    String endpoint;
+    private String endpoint;
 
-    List<NodeInstanceEntity> nodes;
+    private List<NodeInstanceEntity> nodes;
 
-    Integer state;
+    private Integer state;
 
-    Long start;
+    private Long start;
 
-    Long end;
+    private Long end;
 
-    String rootProcessInstanceId;
+    private String rootProcessInstanceId;
 
-    String rootProcessId;
+    private String rootProcessId;
 
-    String parentProcessInstanceId;
+    private String parentProcessInstanceId;
 
-    String processName;
+    private String processName;
 
-    String version;
+    private String version;
 
-    ProcessInstanceErrorEntity error;
+    private ProcessInstanceErrorEntity error;
 
-    Set<String> addons;
+    private Set<String> addons;
 
-    Long lastUpdate;
+    private Long lastUpdate;
 
-    String businessKey;
+    private String businessKey;
 
-    List<MilestoneEntity> milestones;
+    private List<MilestoneEntity> milestones;
 
-    String createdBy;
+    private String createdBy;
 
-    String updatedBy;
+    private String updatedBy;
 
-    Long slaDueDate;
+    private Long slaDueDate;
+
+    private String cloudEventId;
+
+    private String cloudEventSource;
 
     public String getId() {
         return id;
@@ -246,6 +250,22 @@ public class ProcessInstanceEntity {
 
     public void setSlaDueDate(Long slaDueDate) {
         this.slaDueDate = slaDueDate;
+    }
+
+    public String getCloudEventId() {
+        return cloudEventId;
+    }
+
+    public void setCloudEventId(String cloudEventId) {
+        this.cloudEventId = cloudEventId;
+    }
+
+    public String getCloudEventSource() {
+        return cloudEventSource;
+    }
+
+    public void setCloudEventSource(String cloudEventSource) {
+        this.cloudEventSource = cloudEventSource;
     }
 
     @Override
