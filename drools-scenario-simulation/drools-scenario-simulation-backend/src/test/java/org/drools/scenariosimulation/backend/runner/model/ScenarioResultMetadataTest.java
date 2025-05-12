@@ -21,7 +21,7 @@ package org.drools.scenariosimulation.backend.runner.model;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,13 +32,13 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SU
 
 class ScenarioResultMetadataTest {
 
-    private static ScenarioResultMetadata scenarioResultMetadata;
-    private static ScenarioWithIndex scenarioWithIndex;
-    private static Scenario scenarioMock;
-    private static int SCENARIO_INDEX = 0;
+    private ScenarioResultMetadata scenarioResultMetadata;
+    private ScenarioWithIndex scenarioWithIndex;
+    private Scenario scenarioMock;
+    private int SCENARIO_INDEX = 0;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
         scenarioMock = mock(Scenario.class);
         scenarioWithIndex = new ScenarioWithIndex(SCENARIO_INDEX, scenarioMock);
         scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
