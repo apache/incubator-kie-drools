@@ -39,11 +39,7 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-quarkus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-engine</artifactId>
+      <artifactId>drools-ruleunits-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -73,7 +69,7 @@
       of it -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-quarkus-deployment</artifactId>
+      <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
       <scope>test</scope>
       <exclusions>
         <exclusion>
