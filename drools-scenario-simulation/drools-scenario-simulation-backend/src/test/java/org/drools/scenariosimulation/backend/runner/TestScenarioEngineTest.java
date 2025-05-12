@@ -18,6 +18,8 @@
  */
 package org.drools.scenariosimulation.backend.runner;
 
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -50,5 +52,45 @@ class TestScenarioEngineTest {
         };
     }
 
+    @Test
+    void getRunnerHelper_DMN() {
+        AbstractRunnerHelper runnerHelper = TestScenarioEngine.getRunnerHelper(ScenarioSimulationModel.Type.DMN);
+
+        assertThat(runnerHelper).isNotNull().isInstanceOf(DMNScenarioRunnerHelper.class);
+    }
+
+    @Test
+    void getRunnerHelper_RULE() {
+        AbstractRunnerHelper runnerHelper = TestScenarioEngine.getRunnerHelper(ScenarioSimulationModel.Type.RULE);
+
+        assertThat(runnerHelper).isNotNull().isInstanceOf(RuleScenarioRunnerHelper.class);
+    }
+
+    @Test
+    void testDefineFailureException_FailedAssertion() {
+        ScenarioException scenarioException = new ScenarioException("Test failure", true);
+        Throwable result = TestScenarioEngine.defineFailureException(scenarioException, 1, "TestScenario", "TestScenario.scesim");
+
+        assertThat(result).isNotNull().isInstanceOf(IndexedScenarioAssertionError.class);
+        assertThat(result.getMessage()).isEqualTo("#1 TestScenario: Test failure (TestScenario.scesim)");
+    }
+
+    @Test
+    void testDefineFailureException_FailedException() {
+        ScenarioException scenarioException = new ScenarioException("Test failure", false);
+        Throwable result = TestScenarioEngine.defineFailureException(scenarioException, 12, "MyTestScenario", "MyTestScenario.scesim");
+
+        assertThat(result).isNotNull().isInstanceOf(IndexedScenarioException.class);
+        assertThat(result.getMessage()).isEqualTo("#12 MyTestScenario: Test failure (MyTestScenario.scesim)");
+    }
+
+    @Test
+    void testDefineFailureException_GenericException() {
+        Exception genericException = new RuntimeException("GenericEx");
+        Throwable result = TestScenarioEngine.defineFailureException(genericException, 122, "ATestScenario", "ATestScenario.scesim");
+
+        assertThat(result).isNotNull().isInstanceOf(IndexedScenarioException.class);
+        assertThat(result.getMessage()).isEqualTo("#122 ATestScenario: GenericEx (ATestScenario.scesim)");
+    }
 
 }
