@@ -42,8 +42,6 @@ OpenBitSet.java
 mvel.jj
 # drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/resources/org/drools/hotreload/adult.txt
 adult.txt
-# drools-scenario-simulation/drools-scenario-simulation-backend/src/main/resources/META-INF/services/org.junit.platform.engine.TestEngine
-org.junit.platform.engine.TestEngine
 # drools-scenario-simulation/drools-scenario-simulation-backend/src/test/resources/folderToTest/testFile.txt
 testFile.txt
 # drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/agenda-group.drl.csv
