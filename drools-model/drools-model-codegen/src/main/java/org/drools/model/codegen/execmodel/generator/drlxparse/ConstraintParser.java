@@ -432,9 +432,7 @@ public class ConstraintParser {
 
         Expression right = getEqualityExpression(binaryExpr.getRight());
         for (Expression prefixExpression : rightPrefixExpresssions) {
-            if (!(prefixExpression.isBinaryExpr() && prefixExpression.asBinaryExpr().getRight().isNullLiteralExpr())){
-                right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
-            }
+            right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
         }
         binaryExpr.setRight(right);
         return combo;
