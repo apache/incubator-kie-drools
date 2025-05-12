@@ -120,6 +120,14 @@ public class ConstraintParserTest {
     }
 
     @Test
+    public void testWithNumberConstraint() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "age == 60");
+
+        assertThat(result.getNullSafeExpressions().size()).isEqualTo(0); // not using NullSafeExpressions for complex OR case
+        assertThat(result.getExpr().toString()).isEqualTo("org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), 60)");
+    }
+
+    @Test
     public void testOrWithMultipleConstraints() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(name == \"John\" || != \"Peter\") && (age <= 19 || >= 60)");
 

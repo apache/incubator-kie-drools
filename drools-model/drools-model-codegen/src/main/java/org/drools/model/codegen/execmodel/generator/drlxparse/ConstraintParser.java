@@ -410,7 +410,7 @@ public class ConstraintParser {
         return combo;
     }
 
-    private Expression combineExpressions(List<Expression> leftPrefixExpresssions, List<Expression> rightPrefixExpresssions, Expression combo) {
+    private Expression combineExpressions(List<Expression> leftPrefixExpressions, List<Expression> rightPrefixExpressions, Expression combo) {
         Expression inner = combo;
         if (combo.isEnclosedExpr()) {
             EnclosedExpr enclosedExpr = combo.asEnclosedExpr();
@@ -424,27 +424,26 @@ public class ConstraintParser {
             throw new RuntimeException(combo + " is not nor contains BinaryExpr");
         }
 
-        Expression left = getEqualityExpression(binaryExpr.getLeft());
-        for (Expression prefixExpression : leftPrefixExpresssions) {
+        Expression left = getConstraintEqualityExpression(binaryExpr.getLeft());
+        for (Expression prefixExpression : leftPrefixExpressions) {
             left = new BinaryExpr(prefixExpression, left, BinaryExpr.Operator.AND);
         }
         binaryExpr.setLeft(left);
 
-        Expression right = getEqualityExpression(binaryExpr.getRight());
-        for (Expression prefixExpression : rightPrefixExpresssions) {
+        Expression right = getConstraintEqualityExpression(binaryExpr.getRight());
+        for (Expression prefixExpression : rightPrefixExpressions) {
             right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
         }
         binaryExpr.setRight(right);
         return combo;
     }
 
-    private Expression getEqualityExpression(Expression expr) {
+    private Expression getConstraintEqualityExpression(Expression expr) {
         if (expr.isBinaryExpr()) {
             BinaryExpr binaryExpr = expr.asBinaryExpr();
             if (!binaryExpr.getLeft().isMethodCallExpr()) {
-                binaryExpr.asBinaryExpr().setLeft(getEqualityExpression(binaryExpr.getLeft()));
-                binaryExpr.asBinaryExpr().setRight(getEqualityExpression(binaryExpr.getRight()));
-
+                binaryExpr.setLeft(getConstraintEqualityExpression(binaryExpr.getLeft()));
+                binaryExpr.setRight(getConstraintEqualityExpression(binaryExpr.getRight()));
             }
             if ((binaryExpr.getOperator() == EQUALS || binaryExpr.getOperator() == NOT_EQUALS)) {
                 return getEqualityExpression(new TypedExpression(binaryExpr.getLeft()), new TypedExpression(binaryExpr.getRight()), binaryExpr.getOperator()).expression;
