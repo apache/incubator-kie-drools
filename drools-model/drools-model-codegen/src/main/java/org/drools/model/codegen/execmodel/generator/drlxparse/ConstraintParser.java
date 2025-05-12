@@ -441,9 +441,15 @@ public class ConstraintParser {
     }
 
     private Expression getEqualityExpression(Expression expr) {
-        if(expr.isBinaryExpr()){
-            if ((expr.asBinaryExpr().getOperator() == EQUALS || expr.asBinaryExpr().getOperator() == NOT_EQUALS) ){
-                return getEqualityExpression(new TypedExpression(expr.asBinaryExpr().getLeft()), new TypedExpression(expr.asBinaryExpr().getRight()), expr.asBinaryExpr().getOperator()).expression;
+        if (expr.isBinaryExpr()) {
+            BinaryExpr binaryExpr = expr.asBinaryExpr();
+            if (!binaryExpr.getLeft().isMethodCallExpr()) {
+                binaryExpr.asBinaryExpr().setLeft(getEqualityExpression(binaryExpr.getLeft()));
+                binaryExpr.asBinaryExpr().setRight(getEqualityExpression(binaryExpr.getRight()));
+
+            }
+            if ((binaryExpr.getOperator() == EQUALS || binaryExpr.getOperator() == NOT_EQUALS)) {
+                return getEqualityExpression(new TypedExpression(binaryExpr.getLeft()), new TypedExpression(binaryExpr.getRight()), binaryExpr.getOperator()).expression;
             }
         }
         return expr;
