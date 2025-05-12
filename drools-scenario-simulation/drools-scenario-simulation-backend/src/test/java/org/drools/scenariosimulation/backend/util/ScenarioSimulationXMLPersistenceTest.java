@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.imports.Import;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -448,12 +447,14 @@ class ScenarioSimulationXMLPersistenceTest {
 
     @Test
     void unmarshalEmptyContent() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ScenarioSimulationXMLPersistence.getInstance().unmarshal(""));
+        assertThatThrownBy(() -> ScenarioSimulationXMLPersistence.getInstance().unmarshal("")
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void unmarshalNullContent() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ScenarioSimulationXMLPersistence.getInstance().unmarshal(null));
+        assertThatThrownBy(() -> ScenarioSimulationXMLPersistence.getInstance().unmarshal(null)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

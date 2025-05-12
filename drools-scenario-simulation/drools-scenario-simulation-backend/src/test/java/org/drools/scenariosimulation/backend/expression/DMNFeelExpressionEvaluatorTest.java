@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -220,7 +219,8 @@ class DMNFeelExpressionEvaluatorTest {
     @Test
     void convertResult_map_fail() {
         String expressionCollectionJsonString = new TextNode(": 5 y : 3 }").toString();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), List.of()));
+        assertThatThrownBy(() -> expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), List.of())
+        ).isInstanceOf(IllegalArgumentException.class);
     }
     
     @SuppressWarnings("unchecked")

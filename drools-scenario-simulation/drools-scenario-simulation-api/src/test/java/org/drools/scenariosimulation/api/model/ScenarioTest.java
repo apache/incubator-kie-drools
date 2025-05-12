@@ -20,11 +20,11 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ScenarioTest {
 
@@ -75,7 +75,8 @@ class ScenarioTest {
     void addMappingValueTest() {
         scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
         // Should fail
-        Assertions.assertThrows(IllegalArgumentException.class, () -> scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value"));
+        assertThatThrownBy(() -> scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value")
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
