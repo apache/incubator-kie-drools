@@ -23,14 +23,4 @@ import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
 @TestScenarioActivator
 public class ScenarioTest {
 
-    /*
-    @BeforeClass
-    public static void setSystemProperties() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "./target/test-classes");
-    }
-
-    @AfterClass
-    public static void clearSystemProperties() {
-        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
-    } */
 }
