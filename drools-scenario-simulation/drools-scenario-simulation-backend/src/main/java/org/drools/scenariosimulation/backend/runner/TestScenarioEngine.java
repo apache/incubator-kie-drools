@@ -65,8 +65,7 @@ public class TestScenarioEngine implements TestEngine {
 
     @Override
     public TestDescriptor discover(EngineDiscoveryRequest discoveryRequest, UniqueId uniqueId) {
-        LOGGER.debug("Starting {} with id: {}", TEST_ENGINE_DESCRIPTION, TEST_ENGINE_ID);
-        LOGGER.debug("Discovering scesim files for Test Scenario Engine");
+        LOGGER.debug("Discovering scesim files for {}", TEST_ENGINE_DESCRIPTION);
 
         EngineDescriptor engineDescriptor = new EngineDescriptor(uniqueId, TEST_ENGINE_DESCRIPTION);
 
@@ -78,62 +77,6 @@ public class TestScenarioEngine implements TestEngine {
         return engineDescriptor;
     }
 
-    private void appendTestSuites(Class<?> javaClass, TestDescriptor engineDescriptor) {
-        if (AnnotationSupport.isAnnotated(javaClass, TestScenarioActivator.class)) {
-            LOGGER.debug("A class with @TestScenarioActivator annotation found: {}", javaClass.getCanonicalName());
-
-            getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scenarioRunnerDTO -> {
-                String fileName = getScesimFileName(scenarioRunnerDTO.getFileName());
-                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, javaClass, fileName, scenarioRunnerDTO);
-                engineDescriptor.addChild(suite);
-                scenarioRunnerDTO.getScenarioWithIndices().forEach(scenarioWithIndex ->
-                    suite.addChild(new TestScenarioTestDescriptor(suite, javaClass, fileName, scenarioWithIndex))
-                );
-            });
-        }
-    }
-
-    static List<String> getScesimFileAbsolutePaths() {
-        try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
-            LOGGER.debug("Scanning Test Scenario (*.scesim) files");
-            List<String> scesimFileAbsolutePaths = fileStream.filter(TestScenarioEngine::filterResource)
-                    .map(Path::normalize)
-                    .map(Path::toFile)
-                    .map(File::getAbsolutePath)
-                    .toList();
-
-            LOGGER.debug("Found Test Scenario (*.scesim) {} files", scesimFileAbsolutePaths.size());
-            scesimFileAbsolutePaths.forEach(LOGGER::debug);
-
-            return scesimFileAbsolutePaths;
-        } catch (IOException e) {
-            LOGGER.error("Error scanning Test Scenario (*.scesim)", e);
-            return Collections.emptyList();
-        }
-    }
-
-    static String getScesimFileName(String fileFullPath) {
-        int idx = fileFullPath.replace("\\", "/").lastIndexOf('/');
-        String fileName = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
-        return fileName.endsWith(ConstantsHolder.SCESIM_EXTENSION) ? fileName.substring(0, fileName.lastIndexOf(ConstantsHolder.SCESIM_EXTENSION)) : fileName;
-    }
-
-    static boolean filterResource(Path path) {
-        return path.toString().endsWith(".scesim") && !path.toAbsolutePath().toString().replace("\\", "/").contains("/target/") && Files.isRegularFile(path);
-    }
-
-    static ScenarioRunnerDTO parseFile(String path) {
-        try (final Scanner scanner = new Scanner(new File(path))) {
-            String rawFile = scanner.useDelimiter("\\Z").next();
-            ScenarioSimulationModel scenarioSimulationModel = XML_READER.unmarshal(rawFile);
-            return new ScenarioRunnerDTO(scenarioSimulationModel, path);
-        } catch (FileNotFoundException e) {
-            throw new ScenarioException("File not found, this should not happen: " + path, e);
-        } catch (Exception e) {
-            throw new ScenarioException("Issue on parsing file: " + path, e);
-        }
-    }
-
     @Override
     public void execute(ExecutionRequest executionRequest) {
         LOGGER.debug("Executing {} Test Scenarios", executionRequest.getRootTestDescriptor().getChildren().size());
@@ -142,7 +85,8 @@ public class TestScenarioEngine implements TestEngine {
         executionRequest.getRootTestDescriptor().getChildren().stream()
                 .map(TestScenarioTestSuiteDescriptor.class::cast)
                 .forEach(testSuiteDescriptor -> {
-                    LOGGER.debug("Executing {} Test Scenario which contains {} scenarios", testSuiteDescriptor.getDisplayName(), testSuiteDescriptor.getChildren().size());
+                    LOGGER.debug("Executing {} Test Scenario which contains {} scenarios", testSuiteDescriptor.getDisplayName(),
+                            testSuiteDescriptor.getChildren().size());
                     ScenarioRunnerDTO scenarioRunnerDTO = testSuiteDescriptor.getScenarioRunnerDTO();
                     if (scenarioRunnerDTO.getSettings().isSkipFromBuild()) {
                         LOGGER.debug("Skipping {} scenario", testSuiteDescriptor.getDisplayName());
@@ -177,7 +121,11 @@ public class TestScenarioEngine implements TestEngine {
                                     listener.executionFinished(testDescriptor, TestExecutionResult.successful());
                                 } catch (Exception e) {
                                     LOGGER.debug("{} scenario failed", testSuiteDescriptor.getDisplayName());
-                                    listener.executionFinished(testDescriptor, TestExecutionResult.failed(defineFailureException(e, testDescriptor.getScenarioWithIndex().getIndex(), testDescriptor.getScenarioWithIndex().getScesimData().getDescription(), testSuiteDescriptor.getDisplayName())));
+                                    listener.executionFinished(testDescriptor,
+                                            TestExecutionResult.failed(defineFailureException(e,
+                                                    testDescriptor.getScenarioWithIndex().getIndex(),
+                                                    testDescriptor.getScenarioWithIndex().getScesimData().getDescription(),
+                                                    testSuiteDescriptor.getDisplayName())));
                                 }
                             });
                     LOGGER.debug("{} Test Scenario suit executed", testSuiteDescriptor.getDisplayName());
@@ -185,11 +133,67 @@ public class TestScenarioEngine implements TestEngine {
                 });
     }
 
-    protected KieContainer getKieContainer(ScenarioSimulationModel.Type type) {
-        return KieServices.get().getKieClasspathContainer();
+    private void appendTestSuites(Class<?> javaClass, TestDescriptor engineDescriptor) {
+        if (AnnotationSupport.isAnnotated(javaClass, TestScenarioActivator.class)) {
+            LOGGER.debug("A class with @TestScenarioActivator annotation found: {}", javaClass.getCanonicalName());
+
+            getScesimFileAbsolutePaths().stream().map(TestScenarioEngine::parseFile).forEach(scenarioRunnerDTO -> {
+                String fileName = getScesimFileName(scenarioRunnerDTO.getFileName());
+                TestScenarioTestSuiteDescriptor suite = new TestScenarioTestSuiteDescriptor(engineDescriptor, javaClass, fileName, scenarioRunnerDTO);
+                engineDescriptor.addChild(suite);
+                scenarioRunnerDTO.getScenarioWithIndices().forEach(scenarioWithIndex ->
+                        suite.addChild(new TestScenarioTestDescriptor(suite, javaClass, fileName, scenarioWithIndex))
+                );
+            });
+        }
     }
 
-    protected AbstractRunnerHelper getRunnerHelper(ScenarioSimulationModel.Type type) {
+    static List<String> getScesimFileAbsolutePaths() {
+        try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
+            LOGGER.debug("Scanning Test Scenario (*.scesim) files");
+            List<String> scesimFileAbsolutePaths = fileStream.filter(TestScenarioEngine::filterResource)
+                    .map(Path::normalize)
+                    .map(Path::toFile)
+                    .map(File::getAbsolutePath)
+                    .toList();
+
+            LOGGER.debug("Found Test Scenario (*.scesim) {} files", scesimFileAbsolutePaths.size());
+            scesimFileAbsolutePaths.forEach(LOGGER::debug);
+
+            return scesimFileAbsolutePaths;
+        } catch (IOException e) {
+            LOGGER.error("Error scanning Test Scenario (*.scesim)", e);
+            return Collections.emptyList();
+        }
+    }
+
+    static String getScesimFileName(String fileFullPath) {
+        int idx = fileFullPath.replace("\\", "/").lastIndexOf('/');
+        String fileName = idx >= 0 ? fileFullPath.substring(idx + 1) : fileFullPath;
+        return fileName.endsWith(ConstantsHolder.SCESIM_EXTENSION) ?
+                fileName.substring(0, fileName.lastIndexOf(ConstantsHolder.SCESIM_EXTENSION)) :
+                fileName;
+    }
+
+    static boolean filterResource(Path path) {
+        return path.toString().endsWith(".scesim") &&
+                !path.toAbsolutePath().toString().replace("\\", "/").contains("/target/") &&
+                Files.isRegularFile(path);
+    }
+
+    static ScenarioRunnerDTO parseFile(String path) {
+        try (final Scanner scanner = new Scanner(new File(path))) {
+            String rawFile = scanner.useDelimiter("\\Z").next();
+            ScenarioSimulationModel scenarioSimulationModel = XML_READER.unmarshal(rawFile);
+            return new ScenarioRunnerDTO(scenarioSimulationModel, path);
+        } catch (FileNotFoundException e) {
+            throw new ScenarioException("File not found, this should not happen: " + path, e);
+        } catch (Exception e) {
+            throw new ScenarioException("Issue on parsing file: " + path, e);
+        }
+    }
+
+    static AbstractRunnerHelper getRunnerHelper(ScenarioSimulationModel.Type type) {
         if (ScenarioSimulationModel.Type.RULE.equals(type)) {
             return new RuleScenarioRunnerHelper();
         } else if (ScenarioSimulationModel.Type.DMN.equals(type)) {
@@ -199,18 +203,21 @@ public class TestScenarioEngine implements TestEngine {
         }
     }
 
-    private Throwable defineFailureException(Exception e, int index, String scenarioName, String fileName) {
+    /**
+     * This is required to differentiate tests FAILURES with test ERRORS. In case of a Test failure, an
+     * AssertionError should be thrown, in case of a Test Error, an Exception should be thrown.
+     */
+    static Throwable defineFailureException(Exception e, int index, String scenarioName, String fileName) {
         if (e instanceof ScenarioException scenarioException && scenarioException.isFailedAssertion()) {
-            return new IndexedScenarioAssertionError(index,
-                    scenarioName,
-                    fileName,
-                    e);
+            return new IndexedScenarioAssertionError(index, scenarioName, fileName, e);
         } else {
-            return new IndexedScenarioException(index,
-                    scenarioName,
-                    fileName,
-                    e);
+            return new IndexedScenarioException(index, scenarioName, fileName, e);
         }
+    }
+
+    /* TODO Temporary - TBR */
+    protected KieContainer getKieContainer(ScenarioSimulationModel.Type type) {
+        return KieServices.get().getKieClasspathContainer();
     }
 
 }
