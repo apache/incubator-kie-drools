@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,8 +20,9 @@ package org.drools.scenariosimulation.backend.runner.model;
 
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
@@ -29,28 +30,27 @@ import static org.mockito.Mockito.mock;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
-public class ScenarioResultMetadataTest {
+class ScenarioResultMetadataTest {
 
-    private ScenarioResultMetadata scenarioResultMetadata;
-    private ScenarioWithIndex scenarioWithIndex;
-    private Scenario scenarioMock;
-    private int SCENARIO_INDEX = 0;
+    private static ScenarioResultMetadata scenarioResultMetadata;
+    private static ScenarioWithIndex scenarioWithIndex;
+    private static Scenario scenarioMock;
+    private static int SCENARIO_INDEX = 0;
 
-    @Before
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         scenarioMock = mock(Scenario.class);
         scenarioWithIndex = new ScenarioWithIndex(SCENARIO_INDEX, scenarioMock);
         scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
     }
 
     @Test
-    public void noLogLinesAtTheStart() {
+    void noLogLinesAtTheStart() {
         assertThat(scenarioResultMetadata.getAuditLogLines()).isEmpty();
     }
-
     
     @Test
-    public void addAuditMessage() {
+    void addAuditMessage() {
         scenarioResultMetadata.addAuditMessage(1, "decisionName", SUCCEEDED.toString());
         
         assertThat(scenarioResultMetadata.getAuditLogLines()).hasSize(1);
@@ -58,7 +58,7 @@ public class ScenarioResultMetadataTest {
     }
 
     @Test
-    public void addAuditMessageWithErrorMessage() {
+    void addAuditMessageWithErrorMessage() {
         scenarioResultMetadata.addAuditMessage(1, "decisionName", FAILED.toString(), "Message");
         
         assertThat(scenarioResultMetadata.getAuditLogLines()).hasSize(1);
