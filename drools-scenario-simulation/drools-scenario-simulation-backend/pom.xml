@@ -96,11 +96,6 @@
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-engine</artifactId>
     </dependency>
-    <!-- To be added when registering the Test Engine in this module
-    <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-launcher</artifactId>
-    </dependency> -->
     <!-- To be deleted when removing the old Test Scenario based on JUnit4 -->
     <dependency>
       <groupId>junit</groupId>
