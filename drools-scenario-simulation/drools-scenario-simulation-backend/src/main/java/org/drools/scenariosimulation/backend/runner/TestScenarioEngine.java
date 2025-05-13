@@ -137,7 +137,7 @@ public class TestScenarioEngine implements TestEngine {
                                                     testSuiteDescriptor.getDisplayName())));
                                 }
                             });
-                    LOGGER.debug("{} Test Scenario suit executed", testSuiteDescriptor.getDisplayName());
+                    LOGGER.debug("{} Test Scenario suite executed", testSuiteDescriptor.getDisplayName());
                     listener.executionFinished(testSuiteDescriptor, TestExecutionResult.successful());
                 });
 
