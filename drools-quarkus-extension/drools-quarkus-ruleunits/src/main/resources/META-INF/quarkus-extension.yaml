@@ -18,7 +18,7 @@
 #
 
 ---
-name: "Drools Rulenunits"
+name: "Drools Ruleunits"
 metadata:
   keywords:
   - "drools"
@@ -30,3 +30,8 @@ metadata:
   categories:
     - "business-automation"
   status: "stable"
+  codestart:
+      name: quarkus-drools-ruleunits
+      languages:
+      - "java"
+      artifact: "org.drools:drools-quarkus-ruleunits:codestarts:jar:${project.version}"
