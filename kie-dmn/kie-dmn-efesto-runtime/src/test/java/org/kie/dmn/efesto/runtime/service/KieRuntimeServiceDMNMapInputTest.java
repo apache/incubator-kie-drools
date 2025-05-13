@@ -29,7 +29,6 @@ import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
@@ -46,7 +45,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class KieRuntimeServiceDMNMapInputTest {
 
     private static final String MODEL_NAME = "_0001-input-data-string";
-    private static final String FILE_NAME = "0001-input-data-string";
+    private static final String NAMESPACE ="https://github.com/kiegroup/drools/kie-dmn";
     private static KieRuntimeServiceDMNMapInput kieRuntimeServiceDMNMapInput;
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
@@ -64,7 +63,7 @@ public class KieRuntimeServiceDMNMapInputTest {
 
     @Test
     public void canManageManageableInput() {
-        modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(FILE_NAME, MODEL_NAME);
+        modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(NAMESPACE, MODEL_NAME);
         Map<String, Object> inputData = new HashMap<>();
         inputDMN = new BaseEfestoInput<>(modelLocalUriId, inputData);
         assertThat(kieRuntimeServiceDMNMapInput.canManageInput(inputDMN,
@@ -73,7 +72,7 @@ public class KieRuntimeServiceDMNMapInputTest {
 
     @Test
     public void evaluateCorrectInput() {
-        modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(FILE_NAME, MODEL_NAME);
+        modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(NAMESPACE, MODEL_NAME);
         Map<String, Object> inputData = Map.of("Full Name", "John Doe");
         inputDMN = new BaseEfestoInput<>(modelLocalUriId, inputData);
         efestoRuntimeContext = getEfestoContext(memoryCompilerClassLoader);
@@ -86,11 +85,11 @@ public class KieRuntimeServiceDMNMapInputTest {
     }
 
 
-    static LocalComponentIdDmn getModelLocalUriIdFromDmnIdFactory(String fileName, String modelName) {
+    static LocalComponentIdDmn getModelLocalUriIdFromDmnIdFactory(String nameSpace, String modelName) {
         return new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(fileName, modelName);
+                .get(nameSpace, modelName);
     }
 
     static EfestoLocalRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
