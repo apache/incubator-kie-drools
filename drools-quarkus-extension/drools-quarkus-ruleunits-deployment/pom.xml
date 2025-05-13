@@ -29,11 +29,11 @@
       <version>999-SNAPSHOT</version>
     </parent>
 
-  <name>Drools :: Quarkus Ruleunit Extension :: Deployment</name>
-  <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+  <name>Drools :: Quarkus Extension :: Deployment :: Ruleunits</name>
+  <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
 
   <properties>
-    <java.module.name>org.drools.ruleunits.quarkus.deployment</java.module.name>
+    <java.module.name>org.drools.quarkus.ruleunits.deployment</java.module.name>
   </properties>
 
   <dependencies>
@@ -67,7 +67,7 @@
         </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-quarkus</artifactId>
+      <artifactId>drools-quarkus-ruleunits</artifactId>
     </dependency>
     
   </dependencies>

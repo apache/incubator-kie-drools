@@ -29,7 +29,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <name>Drools :: Quarkus Extension :: Examples :: Reactive</name>
+  <name>Drools :: Quarkus Extension :: Examples :: Multiunit</name>
   <artifactId>drools-quarkus-examples-multiunit</artifactId>
 
   <properties>
@@ -39,7 +39,7 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-quarkus</artifactId>
+      <artifactId>drools-quarkus-ruleunits</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -69,7 +69,7 @@
       of it -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+      <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
       <scope>test</scope>
       <exclusions>
         <exclusion>

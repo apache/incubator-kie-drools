@@ -29,13 +29,13 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>drools-ruleunits-quarkus</artifactId>
-    <name>Drools Quarkus - Runtime with Ruleunit Support</name>
+    <artifactId>drools-quarkus-ruleunits</artifactId>
+    <name>Drools :: Quarkus Extension :: Runtime :: Ruleunits</name>
     <description>Define and execute your business rules with Drools and Ruleunits</description>
     <url>https://www.drools.org/</url>
 
     <properties>
-        <java.module.name>org.drools.ruleunits.quarkus.runtime</java.module.name>
+        <java.module.name>org.drools.quarkus.ruleunits.runtime</java.module.name>
     </properties>
 
     <dependencies>

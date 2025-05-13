@@ -39,7 +39,7 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-quarkus</artifactId>
+      <artifactId>drools-quarkus-ruleunits</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -75,7 +75,7 @@
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+      <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
       <type>pom</type>
       <scope>test</scope>
       <exclusions>

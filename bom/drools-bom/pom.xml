@@ -689,18 +689,18 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus</artifactId>
+        <artifactId>drools-quarkus-ruleunits</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus</artifactId>
+        <artifactId>drools-quarkus-ruleunits</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>      
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus</artifactId>
+        <artifactId>drools-quarkus-ruleunits</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
@@ -732,24 +732,24 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>

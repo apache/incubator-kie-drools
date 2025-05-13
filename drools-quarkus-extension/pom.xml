@@ -39,8 +39,8 @@
     <module>drools-quarkus-util-deployment</module>
     <module>drools-quarkus</module>
     <module>drools-quarkus-deployment</module>
-    <module>drools-ruleunits-quarkus</module>
-    <module>drools-ruleunits-quarkus-deployment</module>
+    <module>drools-quarkus-ruleunits</module>
+    <module>drools-quarkus-ruleunits-deployment</module>
     <module>drools-quarkus-integration-test</module>
     <module>drools-quarkus-integration-test-kmodule</module>
     <module>drools-quarkus-integration-test-hotreload</module>

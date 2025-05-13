@@ -30,7 +30,7 @@
     </parent>
 
     <artifactId>drools-quarkus</artifactId>
-    <name>Drools Quarkus - Runtime</name>
+    <name>Drools :: Quarkus Extension :: Runtime</name>
     <description>Define and execute your business rules with Drools</description>
     <url>https://www.drools.org/</url>
 
