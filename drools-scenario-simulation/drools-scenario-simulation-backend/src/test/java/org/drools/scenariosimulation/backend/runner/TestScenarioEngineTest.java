@@ -19,6 +19,8 @@
 package org.drools.scenariosimulation.backend.runner;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.backend.TestUtils;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -50,6 +52,33 @@ class TestScenarioEngineTest {
                 {"Test", "Test", null},
                 {null, null, NullPointerException.class},
         };
+    }
+
+    @Test
+    void parseFile_DMN() {
+        ScenarioRunnerDTO scenarioRunnerDTO = TestScenarioEngine.parseFile(TestUtils.getFilePath("scesim-dmn.scesim"));
+
+        assertThat(scenarioRunnerDTO).isNotNull();
+        assertThat(scenarioRunnerDTO.getSettings().getType()).isEqualTo(ScenarioSimulationModel.Type.DMN);
+        assertThat(scenarioRunnerDTO.getSimulationModelDescriptor().getFactMappings()).isNotNull().isNotEmpty();
+        assertThat(scenarioRunnerDTO.getScenarioWithIndices()).isNotNull().isNotEmpty();
+    }
+
+    @Test
+    void parseFile_RULE() {
+        ScenarioRunnerDTO scenarioRunnerDTO = TestScenarioEngine.parseFile(TestUtils.getFilePath("scesim-rule.scesim"));
+
+        assertThat(scenarioRunnerDTO).isNotNull();
+        assertThat(scenarioRunnerDTO.getSettings().getType()).isEqualTo(ScenarioSimulationModel.Type.RULE);
+        assertThat(scenarioRunnerDTO.getSimulationModelDescriptor().getFactMappings()).isNotNull().isNotEmpty();
+        assertThat(scenarioRunnerDTO.getScenarioWithIndices()).isNotNull().isNotEmpty();
+    }
+
+    @Test
+    void parseFile_MissingFile() {
+        assertThatThrownBy(() -> TestScenarioEngine.parseFile("NotExisting.scesim"))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage("File not found, this should not happen: NotExisting.scesim");
     }
 
     @Test

@@ -55,6 +55,18 @@ public class TestUtils {
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
 
+    public static String getFilePath(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String filePath = ResourceHelper.getResourcesByExtension(extension)
+                .stream()
+                .filter(path -> path.endsWith(fileName))
+                .findFirst()
+                .orElse(null);
+        assertThat(filePath).isNotNull();
+
+        return filePath;
+    }
+
     public static List<DMNMessage> getRandomlyGeneratedDMNMessageList() {
         return IntStream.range(0, 5).mapToObj(index -> {
             Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
