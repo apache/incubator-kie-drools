@@ -895,15 +895,18 @@ public class DrlxParseUtil {
     }
 
     public static List<String> collectUsedDeclarationsInExpression(Expression expr) {
-        Stream<NameExpr> namesStream = expr instanceof MethodCallExpr methodCallExpr ?
-                Stream.concat(methodCallExpr.getScope().stream(), methodCallExpr.getArguments().stream())
-                        .flatMap(e -> e.findAll(NameExpr.class).stream()) :
-                expr.findAll(NameExpr.class).stream();
+        return exprToOrderedNameExprStream(expr)
+                .map(NameExpr::getName)
+                .map(SimpleName::getIdentifier)
+                .distinct()
+                .collect(toList());
+    }
 
-        return namesStream.map(NameExpr::getName)
-                   .map(SimpleName::getIdentifier)
-                   .distinct()
-                   .collect(toList());
+    private static Stream<NameExpr> exprToOrderedNameExprStream(Expression expr) {
+        return expr instanceof MethodCallExpr methodCallExpr ?
+                Stream.concat(methodCallExpr.getScope().stream(), methodCallExpr.getArguments().stream())
+                        .flatMap(DrlxParseUtil::exprToOrderedNameExprStream) :
+                expr.findAll(NameExpr.class).stream();
     }
 
     public static Optional<java.lang.reflect.Type> safeResolveType(TypeResolver typeResolver, String typeName) {
