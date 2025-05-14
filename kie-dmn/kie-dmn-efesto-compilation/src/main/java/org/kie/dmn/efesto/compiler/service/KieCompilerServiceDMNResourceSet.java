@@ -18,12 +18,13 @@
  */
 package org.kie.dmn.efesto.compiler.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
@@ -39,16 +40,21 @@ import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManager
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromResources;
 
 public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerServiceDMN {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNResourceSet.class);
+
     @Override
     @SuppressWarnings("rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof DMNResourceSetResource dmnResourceSetResource &&
-                dmnResourceSetResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
+        return toProcess instanceof DMNResourceSetResource dmnFileSystemResourceSetResource &&
+                dmnFileSystemResourceSetResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
     }
 
     @Override
@@ -64,8 +70,8 @@ public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerService
                                                                 context.getClass().getName(),
                                                                 this.getClass().getName()));
         }
-        DMNResourceSetResource dmnResourceSetResource = (DMNResourceSetResource) toProcess;
-        Set<Resource> dmnResources = dmnResourceSetResource.getContent();
+        DMNResourceSetResource dmnFileSystemResourceSetResource = (DMNResourceSetResource) toProcess;
+        Collection<Resource> dmnResources = dmnFileSystemResourceSetResource.getContent();
         try {
             List<DMNModel> dmnModels = getDMNModelsFromResources(dmnResources, dmnContext.getCustomDMNProfiles(),
                                                                  dmnContext.getRuntimeTypeCheckOption(),
@@ -74,13 +80,15 @@ public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerService
             dmnModels.forEach(dmnModel -> {
                 String modelSource = readResource(dmnModel.getResource());
                 storeSource(modelSource, dmnModel.getName());
-                toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
+                File dmnFile = new File(dmnModel.getResource().getSourcePath());
+                toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilename(dmnFile),
                                                                                 dmnModel.getName(),
                                                                                 modelSource,
                                                                                 dmnModel));
             });
             return toReturn;
         } catch (Exception e) {
+            LOGGER.error("ERROR", e);
             throw new EfestoCompilationManagerException(e);
         }
     }

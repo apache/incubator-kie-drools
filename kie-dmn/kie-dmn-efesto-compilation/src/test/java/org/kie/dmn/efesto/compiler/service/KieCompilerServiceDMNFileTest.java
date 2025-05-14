@@ -19,7 +19,6 @@
 package org.kie.dmn.efesto.compiler.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -77,7 +76,7 @@ class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMNTest {
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_NAMESPACE);
+        assertThat(localComponentIdDmn.getFileName()).isEqualTo(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX);
         assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_MODEL_NAME);
     }
 
@@ -92,7 +91,7 @@ class KieCompilerServiceDMNFileTest extends AbstractKieCompilerServiceDMNTest {
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_PMML_NAMESPACE);
+        assertThat(localComponentIdDmn.getFileName()).isEqualTo(DMN_PMML_FULL_PATH_FILE_NAME_NO_SUFFIX);
         assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_PMML_MODEL_NAME);
     }
 

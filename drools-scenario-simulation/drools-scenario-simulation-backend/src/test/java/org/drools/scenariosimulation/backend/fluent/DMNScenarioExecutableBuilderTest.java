@@ -102,12 +102,12 @@ public class DMNScenarioExecutableBuilderTest {
 
     @Test
     public void testSetActiveModelNoException() {
-        String nameSpace = "namespace";
+        String fileName = "/this/is/filename";
         String modelName = "modelName";
         ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(nameSpace, modelName);
+                .get(fileName, modelName);
         GeneratedModelResource mockGeneratedModelResource = mock(GeneratedModelResource.class);
         DMNModel mockDMNModel = mock(DMNModel.class);
         when(mockGeneratedModelResource.getModelLocalUriId()).thenReturn(modelLocalUriId);
@@ -125,7 +125,7 @@ public class DMNScenarioExecutableBuilderTest {
             DMNScenarioExecutableBuilder builder = DMNScenarioExecutableBuilder.createBuilder();
             assertThat(builder).isNotNull();
             assertThat(builder.generatedResourcesMap).isEqualTo(generatedResourcesMap);
-            builder.setActiveModel(nameSpace, modelName);
+            builder.setActiveModel(fileName, modelName);
             assertThat(builder.dmnModelLocalUriId).isEqualTo(modelLocalUriId);
             assertThat(builder.dmnModel).isEqualTo(mockDMNModel);
         }
@@ -133,12 +133,12 @@ public class DMNScenarioExecutableBuilderTest {
 
     @Test
     public void testSetActiveModelException() {
-        String nameSpace = "namespace";
+        String fileName = "/this/is/filename";
         String modelName = "modelName";
         ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(nameSpace, modelName);
+                .get(fileName, modelName);
         GeneratedModelResource mockGeneratedModelResource = mock(GeneratedModelResource.class);
         when(mockGeneratedModelResource.getModelLocalUriId()).thenReturn(modelLocalUriId);
 
@@ -154,7 +154,7 @@ public class DMNScenarioExecutableBuilderTest {
             DMNScenarioExecutableBuilder builder = DMNScenarioExecutableBuilder.createBuilder();
             assertThat(builder).isNotNull();
             assertThat(builder.generatedResourcesMap).isEqualTo(generatedResourcesMap);
-            assertThrows(IllegalStateException.class, () -> builder.setActiveModel("not-namespace", "not-model-name"));
+            assertThrows(IllegalStateException.class, () -> builder.setActiveModel("not-filename", "not-model-name"));
             assertThat(builder.dmnModelLocalUriId).isNull();
             assertThat(builder.dmnModel).isNull();
         }

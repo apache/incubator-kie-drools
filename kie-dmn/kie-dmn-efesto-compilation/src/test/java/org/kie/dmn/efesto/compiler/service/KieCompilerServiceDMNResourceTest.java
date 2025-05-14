@@ -50,6 +50,7 @@ class KieCompilerServiceDMNResourceTest extends AbstractKieCompilerServiceDMNTes
         commonSetUp();
         toProcessDmn = new FileSystemResource(dmnFile);
         toProcessDmnPmml = new ByteArrayResource(dmnPmmlFile.getContent());
+        toProcessDmnPmml.setSourcePath(DMN_PMML_FULL_PATH_FILE_NAME_NO_SUFFIX);
         dmnModelLocalUriId = new ModelLocalUriId(LocalUri.Root.append("dmn").append(DMN_MODEL_NAME));
         toProcess = new DMNResourceSetResource(Set.of(toProcessDmn, toProcessDmnPmml), dmnModelLocalUriId);
     }
@@ -73,10 +74,10 @@ class KieCompilerServiceDMNResourceTest extends AbstractKieCompilerServiceDMNTes
             ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
             assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
             LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-            String nameSpace = localComponentIdDmn.getNameSpace();
+            String fileName = localComponentIdDmn.getFileName();
             String name = localComponentIdDmn.getName();
-            assertThat((nameSpace.equals(DMN_NAMESPACE) && name.equals(DMN_MODEL_NAME)) ||
-                               (nameSpace.equals(DMN_PMML_NAMESPACE) && name.equals(DMN_PMML_MODEL_NAME)))
+            assertThat((fileName.equals(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX) && name.equals(DMN_MODEL_NAME)) ||
+                               (fileName.equals(DMN_PMML_FULL_PATH_FILE_NAME_NO_SUFFIX) && name.equals(DMN_PMML_MODEL_NAME)))
                     .isTrue();
         });
     }

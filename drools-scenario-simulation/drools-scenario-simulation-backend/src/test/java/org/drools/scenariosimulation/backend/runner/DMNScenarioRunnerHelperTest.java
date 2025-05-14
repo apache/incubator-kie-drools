@@ -444,7 +444,7 @@ public class DMNScenarioRunnerHelperTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_NAMESPACE, NAME);
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH, NAME);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
         assertThat(keyCaptor.getAllValues()).containsAll(expectedInputDataToLoad);
         for (int i = 0; i < inputObjects; i++) {
@@ -535,7 +535,8 @@ public class DMNScenarioRunnerHelperTest {
         assertThat(subValuePerson).hasSize(2).contains(givenImportedPersonFactData, givenImportedPersonFactData2);
     }
 
-    public void commonExtractResultMetadata(List<DMNMessage> messages) {
+
+    private void commonExtractResultMetadata(List<DMNMessage> messages) {
         Set<DecisionNode> decisions = new HashSet<>();
         IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
         when(dmnModelMock.getDecisions()).thenReturn(decisions);
@@ -568,7 +569,7 @@ public class DMNScenarioRunnerHelperTest {
         }
     }
 
-    public void commonExtractResultMetadata() {
+    private void commonExtractResultMetadata() {
         Set<DecisionNode> decisions = new HashSet<>();
         IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
         when(dmnModelMock.getDecisions()).thenReturn(decisions);

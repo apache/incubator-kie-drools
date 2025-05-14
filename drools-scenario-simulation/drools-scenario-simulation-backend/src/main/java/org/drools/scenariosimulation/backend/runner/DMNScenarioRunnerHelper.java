@@ -49,6 +49,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
@@ -67,7 +68,8 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper();
-        executableBuilder.setActiveModel(settings.getDmnNamespace(), settings.getDmnName());
+        String fileName = DmnCompilerUtils.getCleanedFilename(settings.getDmnFilePath());
+        executableBuilder.setActiveModel(fileName, settings.getDmnName());
 
         defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 

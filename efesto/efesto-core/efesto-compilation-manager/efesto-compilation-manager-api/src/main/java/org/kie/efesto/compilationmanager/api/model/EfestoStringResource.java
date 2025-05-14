@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,23 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.identifiers;
+package org.kie.efesto.compilationmanager.api.model;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class DmnIdFactory implements DmnComponentRoot {
+public final class EfestoStringResource implements EfestoResource<String> {
 
-    public LocalComponentIdDmn get(String fileName, String modelName) {
-        return new LocalComponentIdDmn(fileName, modelName);
+    private final String content;
+    private final ModelLocalUriId modelLocalUriId;
+
+    /**
+     *
+     * @param content
+     * @param modelLocalUriId
+     */
+    public EfestoStringResource(String content, ModelLocalUriId modelLocalUriId) {
+        this.content = content;
+        this.modelLocalUriId = modelLocalUriId;
     }
 
-    public LocalCompilationSourceIdDmn get(String fileName) {
-        if (fileName.contains(LocalUri.SLASH)) {
-            fileName = fileName.substring(fileName.lastIndexOf(LocalUri.SLASH) + 1);
-        }
-        if (fileName.contains(".")) {
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-        }
-        return new LocalCompilationSourceIdDmn(fileName);
+    @Override
+    public String getContent() {
+        return content;
+    }
+
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 }

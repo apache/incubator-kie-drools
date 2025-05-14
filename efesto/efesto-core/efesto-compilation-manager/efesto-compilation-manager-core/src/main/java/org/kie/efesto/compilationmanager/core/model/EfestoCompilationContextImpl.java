@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,7 @@
  */
 package org.kie.efesto.compilationmanager.core.model;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +28,13 @@ import java.util.Set;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
+import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.common.core.utils.JSONUtils;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
+import org.kie.efesto.compilationmanager.api.model.EfestoStringResource;
+import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import org.kie.efesto.compilationmanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.JavaConfiguration;
@@ -41,6 +45,10 @@ import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesOb
 import static org.kie.efesto.common.core.utils.JSONUtils.writeGeneratedResourcesObject;
 
 public class EfestoCompilationContextImpl<T extends EfestoListener> implements EfestoCompilationContext<T> {
+
+    private static final CompilationManager compilationManager =
+            SPIUtils.getCompilationManager(true).orElseThrow(() -> new RuntimeException("Compilation Manager not " +
+                                                                                                "available"));
 
     protected final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
@@ -61,10 +69,11 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
 
     private void populateGeneratedResourcesMap() {
         Set<String> modelTypes = SPIUtils.collectModelTypes(this);
-        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader, modelTypes);
+        Map<String, IndexFile> indexFileMap = IndexFile.findIndexFilesFromClassLoader(memoryCompilerClassLoader,
+                                                                                      modelTypes);
         indexFileMap.forEach((model, indexFile) -> {
             try {
-                GeneratedResources generatedResources = JSONUtils.getGeneratedResourcesObject(indexFile);
+                GeneratedResources generatedResources = getInstantiatedResources(indexFile);
                 generatedResourcesMap.put(model, generatedResources);
             } catch (Exception e) {
                 throw new EfestoCompilationManagerException("Failed to read IndexFile content : " + indexFile.getAbsolutePath(), e);
@@ -84,7 +93,8 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
 
     @Override
     public Map<String, byte[]> compileClasses(Map<String, String> sourcesMap) {
-        return KieMemoryCompiler.compileNoLoad(sourcesMap, memoryCompilerClassLoader, JavaConfiguration.CompilerType.NATIVE);
+        return KieMemoryCompiler.compileNoLoad(sourcesMap, memoryCompilerClassLoader,
+                                               JavaConfiguration.CompilerType.NATIVE);
     }
 
     @Override
@@ -128,5 +138,34 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
             indexFiles.put(model, indexFile);
         }
         return indexFiles;
+    }
+
+    private GeneratedResources getInstantiatedResources(IndexFile indexFile) throws IOException {
+        GeneratedResources readResources = JSONUtils.getGeneratedResourcesObject(indexFile);
+        GeneratedResources toReturn = new GeneratedResources();
+        readResources.forEach(resource -> {
+                                  if (resource instanceof GeneratedModelResource generatedModelResource && generatedModelResource.getCompiledModel() == null) {
+                                      GeneratedModelResource toAdd =
+                                              compileGeneratedModelResource(generatedModelResource);
+                                      toReturn.add(toAdd);
+                                  } else {
+                                      toReturn.add(resource);
+                                  }
+                              }
+        );
+        return toReturn;
+    }
+
+    private GeneratedModelResource compileGeneratedModelResource(GeneratedModelResource toCompile) {
+        EfestoStringResource resource = new EfestoStringResource(toCompile.getModelSource(), toCompile.getModelLocalUriId());
+            compilationManager.processResource(this, resource);
+            Map<String, GeneratedResources> generatedResourcesMap = this.getGeneratedResourcesMap();
+            Map.Entry<String, GeneratedResources> generatedResourcesEntry = generatedResourcesMap.entrySet().stream()
+                    .filter(entry -> entry.getKey().equals("dmn"))
+                    .findFirst().orElseThrow(() -> new EfestoCompilationManagerException());
+            return generatedResourcesEntry.getValue().stream()
+                    .filter(GeneratedModelResource.class::isInstance)
+                    .map(GeneratedModelResource.class::cast)
+                    .findFirst().orElseThrow(() -> new EfestoCompilationManagerException());
     }
 }

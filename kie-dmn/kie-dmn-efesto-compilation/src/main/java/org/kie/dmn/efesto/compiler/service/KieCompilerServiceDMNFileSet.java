@@ -37,10 +37,15 @@ import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceExcept
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileSetResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromFiles;
 
 public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNFileSet.class);
 
     @Override
     @SuppressWarnings( "rawtypes")
@@ -70,8 +75,9 @@ public class KieCompilerServiceDMNFileSet extends AbstractKieCompilerServiceDMN 
             return dmnModels.stream()
                     .map(
                     dmnModel -> {
-                        String modelSource = readFile(new File(dmnModel.getResource().getSourcePath()));
-                        return DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
+                        File dmnFile = new File(dmnModel.getResource().getSourcePath());
+                        String modelSource = readFile(dmnFile);
+                        return DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilename(dmnFile),
                                                                            dmnModel.getName(),
                                                                                   modelSource,
                                                                            dmnModel);

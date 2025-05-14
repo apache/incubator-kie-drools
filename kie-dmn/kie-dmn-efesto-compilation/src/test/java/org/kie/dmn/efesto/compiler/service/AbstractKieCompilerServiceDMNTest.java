@@ -41,11 +41,17 @@ import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtil
 @SuppressWarnings("rawtypes")
 public abstract class AbstractKieCompilerServiceDMNTest {
 
+    private static final String VALID_MODELS = "valid_models";
+    private static final String DMN_1 = "/DMNv1_x";
+    private static final String VALID_MODELS_DMN1 = String.format("%s%s", VALID_MODELS, DMN_1);
+    private static final String VALID_MODELS_DMN1_PMML = String.format("%s%s/pmml", VALID_MODELS, DMN_1);
+
     protected static final String DMN_MODEL_NAME = "loan";
     protected static final String DMN_FILE_NAME = "loan";
     protected static final String DMN_NAMESPACE = "https://kiegroup.org/dmn/_79B69A7F-5A25-4B53-BD6A-3216EDC246ED";
     protected static final String DMN_FULL_FILE_NAME = String.format("%s.dmn", DMN_FILE_NAME);
-    protected static final String DMN_FULL_PATH_FILE_NAME = String.format("valid_models/DMNv1_x/%s", DMN_FULL_FILE_NAME);
+    protected static final String DMN_FULL_PATH_FILE_NAME = String.format("%s/%s", VALID_MODELS_DMN1,  DMN_FULL_FILE_NAME);
+    protected static final String DMN_FULL_PATH_FILE_NAME_NO_SUFFIX = String.format("%s/%s", VALID_MODELS_DMN1, DMN_FILE_NAME);
     protected static MemoryFile dmnFile;
 
     protected static final String DMN_PMML_MODEL_NAME = "TestRegressionDMN";
@@ -53,13 +59,14 @@ public abstract class AbstractKieCompilerServiceDMNTest {
 
     protected static final String DMN_PMML_NAMESPACE =  "https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456";
     protected static final String DMN_PMML_FULL_FILE_NAME = String.format("%s.dmn", DMN_PMML_FILE_NAME);
-    protected static final String DMN_PMML_FULL_PATH_FILE_NAME = String.format("valid_models/DMNv1_x/pmml/%s", DMN_PMML_FULL_FILE_NAME);
+    protected static final String DMN_PMML_FULL_PATH_FILE_NAME = String.format("%s/%s", VALID_MODELS_DMN1_PMML, DMN_PMML_FULL_FILE_NAME);
+    protected static final String DMN_PMML_FULL_PATH_FILE_NAME_NO_SUFFIX = String.format("%s/%s",VALID_MODELS_DMN1_PMML, DMN_PMML_FILE_NAME);
     protected static MemoryFile dmnPmmlFile;
 
     protected static final String PMML_MODEL_NAME =  "TestRegression";
     protected static final String PMML_FILE_NAME = "test_regression";
     protected static final String PMML_FULL_FILE_NAME = String.format("%s.pmml", PMML_FILE_NAME);
-    protected static final String PMML_FULL_PATH_FILE_NAME = String.format("valid_models/DMNv1_x/pmml/%s", PMML_FULL_FILE_NAME);
+    protected static final String PMML_FULL_PATH_FILE_NAME = String.format("%s/%s", VALID_MODELS_DMN1_PMML, PMML_FULL_FILE_NAME);
     protected static MemoryFile pmmlFile;
 
     protected static KieCompilerService kieCompilationService;

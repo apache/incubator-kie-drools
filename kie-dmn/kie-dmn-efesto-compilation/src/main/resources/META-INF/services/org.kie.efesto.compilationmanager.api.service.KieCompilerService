@@ -22,3 +22,4 @@ org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNFile
 org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNFileSet
 org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNInputStream
 org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNResourceSet
+org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNString

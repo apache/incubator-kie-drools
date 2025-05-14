@@ -19,7 +19,6 @@
 package org.kie.dmn.efesto.compiler.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -51,7 +50,7 @@ class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMN
     @BeforeEach
     void init() {
         InputStream is = new ByteArrayInputStream(dmnFile.getContent());
-        toProcess = new EfestoInputStreamResource(is, DMN_FULL_FILE_NAME);
+        toProcess = new EfestoInputStreamResource(is,  DMN_FULL_PATH_FILE_NAME);
     }
 
     @Test
@@ -72,7 +71,7 @@ class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMN
         ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
         assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
         LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getNameSpace()).isEqualTo(DMN_NAMESPACE);
+        assertThat(localComponentIdDmn.getFileName()).isEqualTo(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX);
         assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_MODEL_NAME);
     }
 

@@ -38,13 +38,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
 /**
  * For the moment being, use this for DMN "validation", since DMN does not have a code-generation phase
  */
 public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerServiceDMN {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNInputStream.class);
 
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
@@ -75,14 +80,14 @@ public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerService
             throw new KieCompilerServiceException(String.format("Validation errors from %s:\r\n%s", ((EfestoInputStreamResource) toProcess).getFileName(), errors));
 
         } else {
-            String fileName = inputStreamResource.getFileName();
+            String fileName = getCleanedFilename(inputStreamResource.getFileName());
             LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
                     .get(KieDmnComponentRoot.class)
                     .get(DmnIdFactory.class)
                     .get(fileName);
             ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
             DMNModel dmnModel = getDMNModel(modelSource);
-            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(dmnModel.getNamespace(),
+            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(fileName,
                     dmnModel.getName(),
                     modelSource,
                     dmnModel));

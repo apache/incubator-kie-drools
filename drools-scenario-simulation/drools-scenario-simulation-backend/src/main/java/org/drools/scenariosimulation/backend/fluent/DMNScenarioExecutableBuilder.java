@@ -66,12 +66,12 @@ public class DMNScenarioExecutableBuilder {
     }
 
     @SuppressWarnings( "rawtypes")
-    public void setActiveModel(String nameSpace, String modelName) {
+    public void setActiveModel(String fileName, String modelName) {
         GeneratedResources dmnGeneratedResources = generatedResourcesMap.get("dmn");
         ModelLocalUriId targetModelLocalUriId = new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(nameSpace, modelName);
+                .get(fileName, modelName);
         GeneratedModelResource generatedModelResource = dmnGeneratedResources.stream()
                 .filter(GeneratedModelResource.class::isInstance)
                 .map(GeneratedModelResource.class::cast)

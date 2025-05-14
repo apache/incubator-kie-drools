@@ -35,7 +35,6 @@ public class ModelLocalUriId extends LocalUriId implements Serializable {
 
     private final String fullPath;
 
-
     public ModelLocalUriId(LocalUri path) {
         super(path);
         model = getModel(path);
