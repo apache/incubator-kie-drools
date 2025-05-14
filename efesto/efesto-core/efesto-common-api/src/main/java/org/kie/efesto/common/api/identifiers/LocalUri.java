@@ -61,8 +61,6 @@ public abstract class LocalUri {
             throw new IllegalArgumentException("Path must start at root /");
         }
         StringTokenizer tok = new StringTokenizer(path, SLASH);
-        // TODO REMOVE
-        path.split(SLASH)[0].trim();
         LocalUri hpath = Root;
         while (tok.hasMoreTokens()) {
             hpath = hpath.append(tok.nextToken());

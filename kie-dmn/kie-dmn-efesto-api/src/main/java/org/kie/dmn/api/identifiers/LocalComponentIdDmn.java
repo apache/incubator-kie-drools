@@ -18,8 +18,6 @@
  */
 package org.kie.dmn.api.identifiers;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import org.kie.efesto.common.api.identifiers.Id;
@@ -67,12 +65,4 @@ public class LocalComponentIdDmn extends ModelLocalUriId implements Id {
     public int hashCode() {
         return super.hashCode();
     }
-
-    static String getEncodedNameSpace(String toEncode) {
-        String protocol = toEncode.substring(0, toEncode.indexOf('/'));
-        String path = toEncode.substring(toEncode.indexOf('/') + 1);
-        String encodedProtocol = URLEncoder.encode(protocol, StandardCharsets.UTF_8);
-        return encodedProtocol+path;
-    }
-
 }

@@ -59,22 +59,9 @@ public class LocalUriTest {
     }
 
     @Test
-    public void testUnsafeUrlEncoding() {
+    public void testUrlEncoding() {
         LocalUri path = LocalUri.Root.append("URL unsafe").append("??").append("Compon/ents").append("are \\ encoded");
         assertThat(path.path()).isEqualTo("/URL+unsafe/%3F%3F/Compon%2Fents/are+%5C+encoded");
-    }
-
-    @Test
-    public void testComponentUrlEncoding() {
-        LocalUri path = LocalUri.Root.append("dmn").append("https://this_is/something").append("Taloe");
-        assertThat(path.path()).isEqualTo("/something/https%3A%2F%2Fthis_is%2Fsomething/done");
-    }
-
-    @Test
-    public void testComponentUrlDecoding() {
-        String path = "/something/https%3A%2F%2Fthis_is%2Fsomething/done";
-        LocalUri retrieved = LocalUri.parse(path);
-        assertThat(retrieved.path()).isEqualTo(path);
     }
 
     @Test
