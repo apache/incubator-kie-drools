@@ -20,6 +20,8 @@ package org.drools.util;
 
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class PortablePath implements Serializable {
@@ -35,6 +37,11 @@ public class PortablePath implements Serializable {
     private PortablePath(String path) {
         this.path = path;
     }
+
+    public Path toPath() {
+        return Paths.get(path);
+    }
+
 
     public static PortablePath of(String s) {
         return of(s, IS_WINDOWS_SEPARATOR);
@@ -67,6 +74,18 @@ public class PortablePath implements Serializable {
 
     public PortablePath resolve(String name) {
         return resolve(of(name));
+    }
+
+    public static PortablePath resolveInternal(String basePathStr, String userPathStr) {
+        Path basePath = Paths.get(basePathStr).normalize();
+        Path targetPath = basePath.resolve(userPathStr).normalize();
+
+        if (!targetPath.startsWith(basePath)) {
+            throw new SecurityException("Path traversal attempt detected: " + userPathStr);
+        }
+
+        String securePath = trimTrailingSeparator(targetPath.toString().replace('\\', '/'));
+        return new PortablePath(securePath);
     }
 
     public String getFileName() {
