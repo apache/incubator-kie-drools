@@ -424,32 +424,18 @@ public class ConstraintParser {
             throw new RuntimeException(combo + " is not nor contains BinaryExpr");
         }
 
-        Expression left = getConstraintEqualityExpression(binaryExpr.getLeft());
+        Expression left = binaryExpr.getLeft();
         for (Expression prefixExpression : leftPrefixExpressions) {
             left = new BinaryExpr(prefixExpression, left, BinaryExpr.Operator.AND);
         }
         binaryExpr.setLeft(left);
 
-        Expression right = getConstraintEqualityExpression(binaryExpr.getRight());
+        Expression right = binaryExpr.getRight();
         for (Expression prefixExpression : rightPrefixExpressions) {
             right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
         }
         binaryExpr.setRight(right);
         return combo;
-    }
-
-    private Expression getConstraintEqualityExpression(Expression expr) {
-        if (expr.isBinaryExpr()) {
-            BinaryExpr binaryExpr = expr.asBinaryExpr();
-            if (!binaryExpr.getLeft().isMethodCallExpr()) {
-                binaryExpr.setLeft(getConstraintEqualityExpression(binaryExpr.getLeft()));
-                binaryExpr.setRight(getConstraintEqualityExpression(binaryExpr.getRight()));
-            }
-            if ((binaryExpr.getOperator() == EQUALS || binaryExpr.getOperator() == NOT_EQUALS)) {
-                return getEqualityExpression(new TypedExpression(binaryExpr.getLeft()), new TypedExpression(binaryExpr.getRight()), binaryExpr.getOperator()).expression;
-            }
-        }
-        return expr;
     }
 
     private DrlxParseResult parseFunctionInEval(MethodCallExpr methodCallExpr, Class<?> patternType, String bindingId, boolean isPositional, Optional<MethodDeclaration> functionCall) {
@@ -642,11 +628,20 @@ public class ConstraintParser {
         boolean isOrBinary = operator == BinaryExpr.Operator.OR;
 
         if ( isLogicalOperator( operator ) && isCombinable( binaryExpr ) ) {
-            DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
-            Expression rightExpr = binaryExpr.getRight() instanceof HalfPointFreeExpr ?
-                    completeHalfExpr( (( PointFreeExpr ) binaryExpr.getLeft()).getLeft(), ( HalfPointFreeExpr ) binaryExpr.getRight(), context) :
-                    binaryExpr.getRight();
-            DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
+            Expression left = binaryExpr.getLeft();
+            if (left instanceof HalfBinaryExpr leftHalfBinaryExpr) {
+                left = completeHalfBinaryExpr(leftHalfBinaryExpr, context);
+            }
+            DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, left, hasBind, isPositional );
+
+            Expression right = binaryExpr.getRight();
+            if (right instanceof HalfPointFreeExpr rightHalfPointFreeExpr) {
+                right = completeHalfPointFreeExpr(((PointFreeExpr) binaryExpr.getLeft()).getLeft(), rightHalfPointFreeExpr, context);
+            } else if (right instanceof HalfBinaryExpr rightHalfBinaryExpr) {
+                right = completeHalfBinaryExpr(rightHalfBinaryExpr, context);
+            }
+
+            DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, right, hasBind, isPositional );
             return isMultipleResult(leftResult, operator, rightResult) ?
                     createMultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
                     leftResult.combineWith( rightResult, operator );
@@ -836,12 +831,60 @@ public class ConstraintParser {
     }
 
     private boolean isCombinable( BinaryExpr binaryExpr ) {
-        return !(binaryExpr.getRight() instanceof HalfBinaryExpr) && ( !(binaryExpr.getRight() instanceof HalfPointFreeExpr) || binaryExpr.getLeft() instanceof PointFreeExpr );
+        if (binaryExpr.getLeft() instanceof HalfBinaryExpr || binaryExpr.getRight() instanceof HalfBinaryExpr) {
+            return findLeftmostOperand(Optional.of(binaryExpr)).isPresent();
+        }
+        return !(binaryExpr.getRight() instanceof HalfPointFreeExpr) || binaryExpr.getLeft() instanceof PointFreeExpr;
     }
 
-    private static PointFreeExpr completeHalfExpr(Expression left, HalfPointFreeExpr halfRight, RuleContext context) {
+    private static PointFreeExpr completeHalfPointFreeExpr(Expression left, HalfPointFreeExpr halfRight, RuleContext context) {
         ParserLogUtils.logHalfConstraintWarn(halfRight, Optional.of(context));
         return new PointFreeExpr( halfRight.getTokenRange().orElse( null ), left, halfRight.getRight(), halfRight.getOperator(), halfRight.isNegated(), halfRight.getArg1(), halfRight.getArg2(), halfRight.getArg3(), halfRight.getArg4() );
+    }
+
+    private static BinaryExpr completeHalfBinaryExpr(HalfBinaryExpr halfRight, RuleContext context) {
+        ParserLogUtils.logHalfConstraintWarn(halfRight, Optional.of(context));
+        Optional<Expression> leftOperandOpt = findLeftmostOperand(halfRight.getParentNode());
+        if (leftOperandOpt.isEmpty()) {
+            throw new IllegalStateException("Check if completeHalfBinaryExpr is possible beforehand");
+        }
+        return new BinaryExpr(leftOperandOpt.get(), halfRight.getRight(), halfRight.getOperator().toBinaryExprOperator());
+    }
+
+    private static Optional<Expression> findLeftmostOperand(Optional<Node> parentOpt) {
+        // find the leftmost operand under the tree
+        if (parentOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        Node parent = parentOpt.get();
+        if (parent instanceof EnclosedExpr enclosedExpr) {
+            parent = stripEnclosedExpr(enclosedExpr);
+        }
+        if (parent instanceof BinaryExpr binaryExpr) {
+            Optional<Expression> leftmostOpt = findLeftmostOperandInSubTree(binaryExpr);
+            if (leftmostOpt.isPresent()) {
+                return leftmostOpt;
+            } else {
+                // go up one level
+                return findLeftmostOperand(parent.getParentNode());
+            }
+        } else {
+            // Stop if it's not a BinaryExpr
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<Expression> findLeftmostOperandInSubTree(BinaryExpr binaryExpr) {
+        Expression left = binaryExpr.getLeft();
+        left = stripEnclosedExpr(left);
+        if (left instanceof HalfBinaryExpr) {
+            // HalfBinary are chained. Go up the tree
+            return Optional.empty();
+        } else if (left instanceof BinaryExpr leftBinaryExpr) {
+            return findLeftmostOperandInSubTree(leftBinaryExpr);
+        } else {
+            return Optional.of(left);
+        }
     }
 
     private static String getExpressionSymbol(Expression expr) {
