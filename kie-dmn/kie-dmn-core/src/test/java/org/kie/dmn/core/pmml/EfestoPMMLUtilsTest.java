@@ -74,7 +74,7 @@ class EfestoPMMLUtilsTest {
     }
 
     @BeforeEach
-    public void init() {
+    void init() {
         ContextStorage.reset();
     }
 
@@ -173,7 +173,6 @@ class EfestoPMMLUtilsTest {
 
     private void commonCompilePMML(ModelLocalUriId retrieved) {
         assertThat(retrieved).isNotNull();
-        assertThat(EfestoPMMLUtils.getPmmlSourceFromContextStorage(retrieved)).isEqualTo(PMML_SOURCE);
         EfestoCompilationContext efestoCompilationContext = ContextStorage.getEfestoCompilationContext(retrieved);
         assertThat(efestoCompilationContext).isNotNull();
         Map<String, GeneratedResources> generatedResourcesMap = efestoCompilationContext.getGeneratedResourcesMap();
@@ -187,7 +186,6 @@ class EfestoPMMLUtilsTest {
         Function<String, Reader> relativeResolver = getRelativeResolver(anImport.getLocationURI(), PMML_SOURCE);
         ModelLocalUriId retrieved = methodToCall.apply(anImport, PMML_MODEL_NAME, relativeResolver);
         assertThat(retrieved).isNotNull();
-        assertThat(EfestoPMMLUtils.getPmmlSourceFromContextStorage(retrieved)).isNotNull().isEqualTo(PMML_SOURCE);
     }
 
     private static Object[][] pmmlPaths() {

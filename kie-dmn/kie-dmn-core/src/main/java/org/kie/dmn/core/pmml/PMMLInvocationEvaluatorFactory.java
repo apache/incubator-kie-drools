@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.core.pmml;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -33,11 +35,23 @@ public class PMMLInvocationEvaluatorFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(PMMLInvocationEvaluatorFactory.class);
 
+    private static final Map<ModelLocalUriId, AbstractPMMLInvocationEvaluator> MAPPED_INSTANCES = new HashMap<>();
+
     private PMMLInvocationEvaluatorFactory() {
         // Constructing instances is not allowed for this Factory
     }
 
     public static AbstractPMMLInvocationEvaluator newInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, ModelLocalUriId pmmlModelLocalUriID, String pmmlModelName, PMMLInfo<?> pmmlInfo) {
+        if (MAPPED_INSTANCES.containsKey(pmmlModelLocalUriID)) {
+            return MAPPED_INSTANCES.get(pmmlModelLocalUriID);
+        } else {
+            AbstractPMMLInvocationEvaluator toReturn = createNewInstance(model, classLoader, funcDef, pmmlModelLocalUriID, pmmlModelName, pmmlInfo);
+            MAPPED_INSTANCES.put(pmmlModelLocalUriID, toReturn);
+            return toReturn;
+        }
+    }
+
+    static AbstractPMMLInvocationEvaluator createNewInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, ModelLocalUriId pmmlModelLocalUriID, String pmmlModelName, PMMLInfo<?> pmmlInfo) {
         AbstractPMMLInvocationEvaluator toReturn = getDMNjPMMLInvocationEvaluator(classLoader, funcDef, pmmlModelLocalUriID, model, pmmlModelName);
         if (toReturn == null) {
             toReturn = getDMNKiePMMLTrustyInvocationEvaluator(model.getNamespace(), funcDef, pmmlModelLocalUriID, pmmlModelName, pmmlInfo);

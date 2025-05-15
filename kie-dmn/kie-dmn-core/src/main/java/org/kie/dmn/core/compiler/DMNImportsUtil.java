@@ -251,7 +251,7 @@ public class DMNImportsUtil {
     }
 
     /**
-     * Method to retrieve the original Pmml model from Efesto storage, eventually compiling it if not already present
+     * Method to retrieve the original Pmml model from Efesto storage, eventually storing it if not already present
      * @param pmmlModelLocalUriId
      * @param classLoader
      * @return
@@ -260,9 +260,8 @@ public class DMNImportsUtil {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
             String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
-            String pmmlFileContent = getPmmlFileContent(pmmlFileName, classLoader);
-            EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFileContent, pmmlFileName, pmmlModelLocalUriId, Thread.currentThread().getContextClassLoader());
-            toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
+            toReturn = getPmmlFileContent(pmmlFileName, classLoader);
+            EfestoPMMLUtils.setPmmlSourceToContextStorage(pmmlModelLocalUriId, toReturn);
         }
         return toReturn;
     }

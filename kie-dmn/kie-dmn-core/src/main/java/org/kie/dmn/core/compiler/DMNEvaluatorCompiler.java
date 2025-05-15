@@ -563,7 +563,6 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             if (lookupImport.isPresent()) {
                 Import theImport = lookupImport.get();
                 logger.trace("theImport: {}", theImport);
-                // TODO gcardosi RETRIEVE THE REAL MODEL NAME
                 ModelLocalUriId pmmlModelLocalUriID = EfestoPMMLUtils.getPmmlModelLocalUriId(theImport,pmmlModelName,
                                                                                              ctx.getRelativeResolver());
                 logger.trace("pmmlResource: {}", pmmlModelLocalUriID);

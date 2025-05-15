@@ -39,7 +39,7 @@ public class DmnCompilationContextImpl extends EfestoCompilationContextImpl impl
 
     public DmnCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, Set<DMNProfile> customDMNProfiles,
                                      RuntimeTypeCheckOption runtimeTypeCheckOption) {
-        super(memoryCompilerClassLoader);
+        super(memoryCompilerClassLoader, false);
         this.customDMNProfiles = customDMNProfiles;
         this.runtimeTypeCheckOption = runtimeTypeCheckOption;
     }

@@ -121,10 +121,10 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
 
     protected Map<String, Object> evaluate(String modelName, ModelLocalUriId pmmlModelLocalUriID, DMNResult dmnr,
                                    ClassLoader parentClassloader) {
-        EfestoCompilationContext efestoCompilationContext = ContextStorage.getEfestoCompilationContext(pmmlModelLocalUriID);
+        String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriID.asLocalUri().parent()).getComponent() + ".pmml";
+        EfestoCompilationContext efestoCompilationContext = getEfestoCompilationContext(pmmlModelLocalUriID, pmmlFileName, parentClassloader);
 
         EfestoLocalRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader, efestoCompilationContext.getGeneratedResourcesMap());
-        String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriID.asLocalUri().parent()).getComponent() + ".pmml";
 
         Map<String, Object> pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, pmmlFileName,
                                                              dmnr);
@@ -139,6 +139,23 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
         return (Map) retrieved.iterator().next().getOutputData();
     }
+
+    /**
+     * This method retrieves the previously built <code>EfestoCompilationContext</code> for the given <code>ModelLocalUriId</code> or, eventually, recompile the model from scratch
+     * @param pmmlModelLocalUriID
+     * @param parentClassloader
+     * @return
+     */
+    private EfestoCompilationContext getEfestoCompilationContext(ModelLocalUriId pmmlModelLocalUriID, String pmmlFileName, ClassLoader parentClassloader) {
+        EfestoCompilationContext toReturn = ContextStorage.getEfestoCompilationContext(pmmlModelLocalUriID);
+        if (toReturn == null) {
+            String pmmlFileContent = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriID);
+            EfestoPMMLUtils.compilePMMLAtGivenLocalComponentIdPmml(pmmlFileContent, pmmlFileName, pmmlModelLocalUriID, parentClassloader);
+            toReturn = ContextStorage.getEfestoCompilationContext(pmmlModelLocalUriID);
+        }
+        return toReturn;
+    }
+
 
     private Collection<EfestoOutput> evaluateInput(EfestoInput<Map<String, Object>> inputPMML,
                                                    EfestoLocalRuntimeContext runtimeContext) {

@@ -34,7 +34,6 @@ import org.drools.io.ClassPathResource;
 import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.model.api.Import;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
@@ -131,11 +130,11 @@ public class EfestoPMMLUtils {
                                                               ModelLocalUriId pmmlModelLocalUriId,
                                                               ClassLoader classLoader) {
         KieMemoryCompiler.MemoryCompilerClassLoader toUse =
-                classLoader instanceof KieMemoryCompiler.MemoryCompilerClassLoader ?
-                        (KieMemoryCompiler.MemoryCompilerClassLoader) classLoader :
+                classLoader instanceof KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader ?
+                        memoryCompilerClassLoader :
                         new KieMemoryCompiler.MemoryCompilerClassLoader(classLoader);
         EfestoCompilationContext pmmlCompilationContext =
-                EfestoCompilationContextUtils.buildWithParentClassLoader(toUse);
+                EfestoCompilationContextUtils.buildWithParentClassLoaderWithoutSetup(toUse);
         EfestoInputStreamResource toProcess =
                 new EfestoInputStreamResource(new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8)),
                                               fileName);
@@ -147,7 +146,6 @@ public class EfestoPMMLUtils {
                         .map(GeneratedExecutableResource.class::cast)
                         .findFirst()
                         .orElse(null);
-        ContextStorage.putEfestoCompilationSource(pmmlModelLocalUriId, pmmlSource);
         ContextStorage.putEfestoCompilationContext(pmmlModelLocalUriId, pmmlCompilationContext);
     }
 
@@ -223,6 +221,16 @@ public class EfestoPMMLUtils {
      */
     public static String getPmmlSourceFromContextStorage(ModelLocalUriId pmmlModelLocalUriID) {
         return ContextStorage.getEfestoCompilationSource(pmmlModelLocalUriID);
+    }
+
+    /**
+     * Retrieves the <code>source</code> stored with the given <code>ModelLocalUriId</code>
+     * @param pmmlModelLocalUriID
+     * @param pmmlSource
+     * @return
+     */
+    public static void setPmmlSourceToContextStorage(ModelLocalUriId pmmlModelLocalUriID, String pmmlSource) {
+        ContextStorage.putEfestoCompilationSource(pmmlModelLocalUriID, pmmlSource);
     }
 
     static boolean isModelLocalUriIdPresent(ModelLocalUriId toCheck) {

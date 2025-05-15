@@ -60,6 +60,14 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
         populateGeneratedResourcesMap();
     }
 
+    protected EfestoCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader, boolean setup) {
+        this.memoryCompilerClassLoader = memoryCompilerClassLoader;
+        if (setup) {
+            prepareClassLoader();
+            populateGeneratedResourcesMap();
+        }
+    }
+
     private void prepareClassLoader() {
         for (ModelLocalUriId modelLocalUriId : localUriIdKeySet()) {
             Map<String, byte[]> generatedClasses = getGeneratedClasses(modelLocalUriId);
