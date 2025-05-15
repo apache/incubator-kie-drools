@@ -41,10 +41,10 @@ import java.util.List;
 
 public class DmnCompilerUtils {
 
-    static final List<String> CLEANABLE_PATTERNS = Arrays.asList("src/main/resources",
-                                                                 "src/main/java",
-                                                                 "src/test/resources",
-                                                                 "src/test/java",
+    static final List<String> CLEANABLE_PATTERNS = Arrays.asList("main/resources",
+                                                                 "main/java",
+                                                                 "test/resources",
+                                                                 "test/java",
                                                                  "target/generated-resources",
                                                                  "target/classes",
                                                                  "target/test-classes");
