@@ -62,15 +62,6 @@ public class ConstraintParserTest {
     }
 
     @Test
-    public void testOrWithMultipleConstraints() {
-        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || name == \"Jacob\" || name == \"Peter\"");
-
-        assertThat(result.getExpr().toString()).isEqualTo("((org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\")" +
-                                                                  " || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))" +
-                                                                  " || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Peter\"))");
-    }
-
-    @Test
     public void testNullSafeExpressionsWithOr() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || == address!.city");
 
@@ -81,11 +72,28 @@ public class ConstraintParserTest {
     }
 
     @Test
+    public void testOrWithMultipleFullConstraints() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || name == \"Jacob\" || name == \"Peter\"");
+
+        assertThat(result.getExpr().toString()).isEqualTo("((org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\")" +
+                                                                  " || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))" +
+                                                                  " || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Peter\"))");
+    }
+
+    @Test
     public void testOrWithHalfConstraint() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name == \"John\" || == \"Jacob\"");
 
         assertThat(result.getExpr().toString()).isEqualTo("(org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\")" +
                                                                   " || org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))");
+    }
+
+    @Test
+    public void testAndWithHalfConstraint() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "name != \"John\" && != \"Jacob\"");
+
+        assertThat(result.getExpr().toString()).isEqualTo("(!org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"John\")" +
+                                                                  " && !org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(), \"Jacob\"))");
     }
 
     @Test

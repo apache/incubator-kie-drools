@@ -832,8 +832,10 @@ public class ConstraintParser {
 
     private boolean isCombinable( BinaryExpr binaryExpr ) {
         if (binaryExpr.getLeft() instanceof HalfBinaryExpr || binaryExpr.getRight() instanceof HalfBinaryExpr) {
+            // if the leftmost operand exists, we can complete the HalfBinaryExpr
             return findLeftmostOperand(Optional.of(binaryExpr)).isPresent();
         }
+        // if left is PointFreeExpr, we can complete HalfPointFreeExpr
         return !(binaryExpr.getRight() instanceof HalfPointFreeExpr) || binaryExpr.getLeft() instanceof PointFreeExpr;
     }
 
@@ -846,7 +848,7 @@ public class ConstraintParser {
         ParserLogUtils.logHalfConstraintWarn(halfRight, Optional.of(context));
         Optional<Expression> leftOperandOpt = findLeftmostOperand(halfRight.getParentNode());
         if (leftOperandOpt.isEmpty()) {
-            throw new IllegalStateException("Check if completeHalfBinaryExpr is possible beforehand");
+            throw new IllegalStateException("isCombinable should have ensured that leftmostOperand exists: halfRight = " + PrintUtil.printNode(halfRight));
         }
         return new BinaryExpr(leftOperandOpt.get(), halfRight.getRight(), halfRight.getOperator().toBinaryExprOperator());
     }
