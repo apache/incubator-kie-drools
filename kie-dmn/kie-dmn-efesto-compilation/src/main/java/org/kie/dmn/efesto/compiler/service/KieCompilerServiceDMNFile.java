@@ -42,21 +42,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
 
 public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNFile.class);
-
     @Override
     @SuppressWarnings( "rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoFileResource && ((EfestoFileResource) toProcess).getModelType().equalsIgnoreCase("dmn");
+        return toProcess instanceof EfestoFileResource efestoFileResource && efestoFileResource.getModelType().equalsIgnoreCase("dmn");
     }
 
     @Override
@@ -88,7 +84,7 @@ public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
 //            return Collections.emptyList();
 //        }
         try {
-            String fileName = getCleanedFilename(dmnFile);
+            String fileName = getCleanedFilenameForURI(dmnFile);
             LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
                     .get(KieDmnComponentRoot.class)
                     .get(DmnIdFactory.class)

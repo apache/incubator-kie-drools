@@ -43,7 +43,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromResources;
 
 public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerServiceDMN {
@@ -81,7 +81,7 @@ public class KieCompilerServiceDMNResourceSet extends AbstractKieCompilerService
                 String modelSource = readResource(dmnModel.getResource());
                 storeSource(modelSource, dmnModel.getName());
                 File dmnFile = new File(dmnModel.getResource().getSourcePath());
-                toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilename(dmnFile),
+                toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilenameForURI(dmnFile),
                                                                                 dmnModel.getName(),
                                                                                 modelSource,
                                                                                 dmnModel));

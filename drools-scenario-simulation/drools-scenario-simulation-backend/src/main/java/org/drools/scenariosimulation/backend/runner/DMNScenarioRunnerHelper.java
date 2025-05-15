@@ -68,7 +68,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
         DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper();
-        String fileName = DmnCompilerUtils.getCleanedFilename(settings.getDmnFilePath());
+        String fileName = DmnCompilerUtils.getCleanedFilenameForURI(settings.getDmnFilePath());
         executableBuilder.setActiveModel(fileName, settings.getDmnName());
 
         defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);

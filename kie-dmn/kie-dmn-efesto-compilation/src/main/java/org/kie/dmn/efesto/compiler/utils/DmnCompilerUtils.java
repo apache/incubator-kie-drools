@@ -31,7 +31,6 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.efesto.compiler.model.EfestoCallableOutputDMN;
-import org.kie.dmn.efesto.compiler.service.KieCompilerServiceDMNResourceSet;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.internal.io.ResourceFactory;
@@ -39,12 +38,8 @@ import org.kie.internal.io.ResourceFactory;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DmnCompilerUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DmnCompilerUtils.class);
 
     static final List<String> CLEANABLE_PATTERNS = Arrays.asList("src/main/resources",
                                                                  "src/main/java",
@@ -99,9 +94,9 @@ public class DmnCompilerUtils {
     }
 
     public static List<DMNModel> getDMNModelsFromResources(Collection<Resource> dmnResources,
-                                              Set<DMNProfile> customDMNProfiles,
-                                              RuntimeTypeCheckOption runtimeTypeCheckOption,
-                                              ClassLoader classLoader) {
+                                                           Set<DMNProfile> customDMNProfiles,
+                                                           RuntimeTypeCheckOption runtimeTypeCheckOption,
+                                                           ClassLoader classLoader) {
         DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
         if (runtimeTypeCheckOption != null) {
             dmnRuntimeBuilder.setOption(runtimeTypeCheckOption);
@@ -117,28 +112,52 @@ public class DmnCompilerUtils {
         return dmnRuntime.getModels();
     }
 
-    public static String getCleanedFilename(File fileToClean) {
-        return getCleanedFilename(fileToClean.getPath());
+    /**
+     * This method remove unwanted preceding paths from given <code>File</code>, and always returns a <b>/</b>-separated path,
+     * without leading <b>/</b>
+     * @param fileToClean
+     * @return
+     */
+    public static String getCleanedFilenameForURI(File fileToClean) {
+        return getCleanedFilenameForURI(fileToClean.getPath());
     }
 
-    public static String getCleanedFilename(String filenameToClean) {
+    /**
+     * This method remove unwanted preceding paths from given <code>String</code>, and always returns a <b>/</b>-separated path,
+     * without leading <b>/</b>
+     * @param filenameToClean
+     * @return
+     */
+    public static String getCleanedFilenameForURI(String filenameToClean) {
+        if (filenameToClean == null) {
+            return filenameToClean;
+        }
         String toReturn = filenameToClean;
         for (String patternToClean : CLEANABLE_PATTERNS) {
-            toReturn = getCleanedFileNameByPattern(toReturn, patternToClean);
+            toReturn = getCleanedFileNameForURIByPattern(toReturn, patternToClean);
+        }
+        if (toReturn != null && toReturn.startsWith("/")) {
+            toReturn = toReturn.substring(1);
         }
         return toReturn;
     }
 
-    static String getCleanedFileNameByPattern(String filenameToClean, String patternToClean) {
-        String toReturn = filenameToClean;
-        if (filenameToClean!= null && filenameToClean.contains(patternToClean)) {
-            toReturn = toReturn.substring(toReturn.indexOf(patternToClean) + patternToClean.length());
+    /**
+     * This method remove unwanted preceding paths from given <code>String</code> and always returns a <b>/</b>-separated path,
+     * @param filenameToClean
+     *  @param patternToClean
+     * @return
+     */
+    static String getCleanedFileNameForURIByPattern(String filenameToClean, String patternToClean) {
+        if (filenameToClean == null) {
+            return filenameToClean;
         }
-        if (toReturn != null && toReturn.endsWith(".dmn")) {
+        String toReturn = filenameToClean.replace(File.separator, "/"); // needed because the path could come from a file (e.g. scesim) built on a different OS
+        if (toReturn.endsWith(".dmn")) {
             toReturn = toReturn.substring(0, toReturn.lastIndexOf(".dmn"));
         }
-        if (toReturn != null && toReturn.startsWith("/")) {
-            toReturn = toReturn.substring(1);
+        if (toReturn.contains(patternToClean)) {
+            toReturn = toReturn.substring(toReturn.indexOf(patternToClean) + patternToClean.length());
         }
         return toReturn;
     }

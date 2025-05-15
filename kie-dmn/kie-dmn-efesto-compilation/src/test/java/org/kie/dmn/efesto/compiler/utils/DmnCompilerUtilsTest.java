@@ -20,32 +20,73 @@ package org.kie.dmn.efesto.compiler.utils;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Path;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.CLEANABLE_PATTERNS;
 
 class DmnCompilerUtilsTest {
 
     @Test
-    public void getCleanedFileName() {
-        String fileName = "path/to/File";
-        String fileNameWithPrefixAndSuffix = String.format("/%s.dmn", fileName);
+    void getCleanedFileNameForURIByFile() {
+        String fileNameWithPrefixAndSuffix = File.separator + Path.of("path", "to", "File.dmn");
+        String expected = "path/to/File";
         CLEANABLE_PATTERNS.forEach(patternToClean -> {
-            String filenameToClean = String.format("%s%s", patternToClean, fileNameWithPrefixAndSuffix);
-            assertThat(DmnCompilerUtils.getCleanedFilename(filenameToClean)).isEqualTo(fileName);
-            filenameToClean = String.format("../../%s%s", patternToClean, fileNameWithPrefixAndSuffix);
-            assertThat(DmnCompilerUtils.getCleanedFilename(filenameToClean)).isEqualTo(fileName);
+            File fileToClean = Path.of(patternToClean, fileNameWithPrefixAndSuffix).toFile();
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(fileToClean)).isEqualTo(expected);
+            fileToClean = Path.of("..", "..", patternToClean, fileNameWithPrefixAndSuffix).toFile();
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(fileToClean)).isEqualTo(expected);
         });
     }
 
     @Test
-    public void getCleanedFileNameByPattern() {
-        String fileName = "path/to/File";
-        String fileNameWithPrefixAndSuffix = String.format("/%s.dmn", fileName);
+    void getCleanedFileNameForURIByStringOSDependent() {
+        String fileNameWithPrefixAndSuffix = File.separator + Path.of("path", "to", "File.dmn");
+        String expected = "path/to/File";
         CLEANABLE_PATTERNS.forEach(patternToClean -> {
-            String filenameToClean = String.format("%s%s", patternToClean, fileNameWithPrefixAndSuffix);
-            assertThat(DmnCompilerUtils.getCleanedFileNameByPattern(filenameToClean, patternToClean)).isEqualTo(fileName);
-            filenameToClean = String.format("../../%s%s", patternToClean, fileNameWithPrefixAndSuffix);
-            assertThat(DmnCompilerUtils.getCleanedFileNameByPattern(filenameToClean, patternToClean)).isEqualTo(fileName);
+            String filenameToClean = Path.of(patternToClean, fileNameWithPrefixAndSuffix).toString();
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(filenameToClean)).isEqualTo(expected);
+            filenameToClean = Path.of("..", "..", patternToClean, fileNameWithPrefixAndSuffix).toString();
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(filenameToClean)).isEqualTo(expected);
         });
     }
+
+    @Test
+    void getCleanedFileNameForURIByStringOSAgnostic() {
+        String fileNameWithPrefixAndSuffix = File.separator + Path.of("path", "to", "File.dmn");
+        String expected = "path/to/File";
+        CLEANABLE_PATTERNS.forEach(patternToClean -> {
+            String filenameToClean = Path.of(patternToClean, fileNameWithPrefixAndSuffix).toString().replace(File.separator, "/");
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(filenameToClean)).isEqualTo(expected);
+            filenameToClean = Path.of("..", "..", patternToClean, fileNameWithPrefixAndSuffix).toString().replace(File.separator, "/");
+            assertThat(DmnCompilerUtils.getCleanedFilenameForURI(filenameToClean)).isEqualTo(expected);
+        });
+    }
+
+    @Test
+    void getCleanedFileNameForURIByPatternForURIOSDependent() {
+        String expected = (File.separator + Path.of("path", "to", "File")).replace(File.separator, "/");
+        String fileNameWithPrefixAndSuffix = File.separator + Path.of("path", "to", "File.dmn");
+        CLEANABLE_PATTERNS.forEach(patternToClean -> {
+            String filenameToClean = Path.of(patternToClean, fileNameWithPrefixAndSuffix).toString();
+            assertThat(DmnCompilerUtils.getCleanedFileNameForURIByPattern(filenameToClean, patternToClean)).isEqualTo(expected);
+            filenameToClean = Path.of("..", "..", patternToClean, fileNameWithPrefixAndSuffix).toString();
+            assertThat(DmnCompilerUtils.getCleanedFileNameForURIByPattern(filenameToClean, patternToClean)).isEqualTo(expected);
+        });
+    }
+
+    @Test
+    void getCleanedFileNameForURIByPatternForURIOSAgnostic() {
+        String expected = (File.separator + Path.of("path", "to", "File")).replace(File.separator, "/");
+        String fileNameWithPrefixAndSuffix = File.separator + Path.of("path", "to", "File.dmn");
+        CLEANABLE_PATTERNS.forEach(patternToClean -> {
+            String filenameToClean = Path.of(patternToClean, fileNameWithPrefixAndSuffix).toString().replace(File.separator, "/");
+            assertThat(DmnCompilerUtils.getCleanedFileNameForURIByPattern(filenameToClean, patternToClean)).isEqualTo(expected);
+            filenameToClean = Path.of("..", "..", patternToClean, fileNameWithPrefixAndSuffix).toString().replace(File.separator, "/");
+            assertThat(DmnCompilerUtils.getCleanedFileNameForURIByPattern(filenameToClean, patternToClean)).isEqualTo(expected);
+        });
+    }
+
+
 }

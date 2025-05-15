@@ -38,10 +38,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilename;
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
 /**
@@ -49,11 +47,9 @@ import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
  */
 public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerServiceDMN {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNInputStream.class);
-
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoInputStreamResource && ((EfestoInputStreamResource) toProcess).getModelType().equalsIgnoreCase("dmn");
+        return toProcess instanceof EfestoInputStreamResource efestoInputStreamResource && efestoInputStreamResource.getModelType().equalsIgnoreCase("dmn");
     }
 
     @Override
@@ -77,10 +73,10 @@ public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerService
                 DMNValidator.Validation.ANALYZE_DECISION_TABLE);
         if (DmnCompilerUtils.hasError(messages)) {
             String errors = messages.stream().map(DMNMessage::getText).collect(Collectors.joining("\n"));
-            throw new KieCompilerServiceException(String.format("Validation errors from %s:\r\n%s", ((EfestoInputStreamResource) toProcess).getFileName(), errors));
+            throw new KieCompilerServiceException(String.format("Validation errors from %s:%n%s", ((EfestoInputStreamResource) toProcess).getFileName(), errors));
 
         } else {
-            String fileName = getCleanedFilename(inputStreamResource.getFileName());
+            String fileName = getCleanedFilenameForURI(inputStreamResource.getFileName());
             LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
                     .get(KieDmnComponentRoot.class)
                     .get(DmnIdFactory.class)

@@ -124,14 +124,6 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         EfestoCompilationContext efestoCompilationContext = ContextStorage.getEfestoCompilationContext(pmmlModelLocalUriID);
 
         EfestoLocalRuntimeContext runtimeContext = getEfestoRuntimeContext(parentClassloader, efestoCompilationContext.getGeneratedResourcesMap());
-//        if (!(isPresentExecutableOrModelOrRedirect(pmmlModelLocalUriID, runtimeContext))) {
-//            LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
-//                     pmmlFileName,
-//                     modelName);
-//            Map<String, GeneratedResources> generatedResourcesMap = compileFile(pmmlFileName,
-//                                                                                parentClassloader);
-//            runtimeContext.getGeneratedResourcesMap().putAll(generatedResourcesMap);
-//        }
         String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriID.asLocalUri().parent()).getComponent() + ".pmml";
 
         Map<String, Object> pmmlRequestData = getPMMLRequestData(UUID.randomUUID().toString(), modelName, pmmlFileName,
@@ -163,25 +155,6 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         }
     }
 
-//    protected Map<String, GeneratedResources> compileFile(String fileName,
-//                                                          ClassLoader parentClassLoader) {
-//        try {
-//            EfestoCompilationContext compilationContext =
-//                    EfestoCompilationContextUtils.buildWithParentClassLoader(parentClassLoader);
-//            EfestoInputStreamResource toProcess = new EfestoInputStreamResource(documentResource.getInputStream(),
-//                                                                                fileName);
-//            compilationManager.processResource(compilationContext, toProcess);
-//            return compilationContext.getGeneratedResourcesMap();
-//        } catch (Exception t) {
-//            String errorMessage = String.format("Compilation error for %s due to %s: please %s",
-//                                                fileName,
-//                                                t.getMessage(),
-//                                                CHECK_CLASSPATH);
-//            LOG.error(errorMessage);
-//            throw new KieCompilerServiceException(errorMessage, t);
-//        }
-//    }
-
     protected Map<String, Object> getPMMLRequestData(String correlationId, String modelName, String fileName,
                                                DMNResult dmnr) {
         Map<String, Object> toReturn = new HashMap<>();
@@ -198,13 +171,4 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return EfestoRuntimeContextUtils.buildWithParentClassLoader(parentClassloader, generatedResourcesMap);
     }
 
-//    private ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {
-//        String path = "/pmml/" + getFileNameNoSuffix(fileName) + SLASH + getSanitizedClassName(modelName);
-//        LocalUri parsed = LocalUri.parse(path);
-//        return new ModelLocalUriId(parsed);
-//    }
-
-//    private String getFileNameNoSuffix(String fileName) {
-//        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
-//    }
 }
