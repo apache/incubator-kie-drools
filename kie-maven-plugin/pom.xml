@@ -39,9 +39,7 @@
   <properties>
     <java.module.name>org.kie.maven.plugin</java.module.name>
     <plugin.testing.harness.version>3.3.0</plugin.testing.harness.version>
-    <plugin.plugin.version>3.6.4</plugin.plugin.version>
-    <sisu.inject.version>1.4.2</sisu.inject.version>
-    <maven.resolver.api.version>1.7.3</maven.resolver.api.version>
+    <sisu.plexus.version>0.9.0.M3</sisu.plexus.version>
   </properties>
 
   <build>
@@ -114,9 +112,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.sonatype.sisu</groupId>
-        <artifactId>sisu-inject-plexus</artifactId>
-        <version>${sisu.inject.version}</version>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>${sisu.plexus.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -340,8 +338,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-inject-plexus</artifactId>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
