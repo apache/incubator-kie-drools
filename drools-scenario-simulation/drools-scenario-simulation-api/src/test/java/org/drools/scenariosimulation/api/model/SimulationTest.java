@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,19 +20,19 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SimulationTest {
+class SimulationTest {
 
     private Simulation simulation;
     private Scenario originalScenario;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         simulation = new Simulation();
         FactIdentifier factIdentifier = FactIdentifier.create("Test", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("Test", FactMappingType.GIVEN);
@@ -44,7 +44,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void addData_failsOutsideBoundaries() {
+    void addData_failsOutsideBoundaries() {
         simulation.addData(1);
 
         assertThatThrownBy(() -> simulation.addData(-1)).isInstanceOf(IndexOutOfBoundsException.class);
@@ -53,7 +53,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void cloneModel() {
+    void cloneModel() {
         final Simulation cloned = simulation.cloneModel();
         
         assertThat(cloned).isNotNull();
@@ -68,7 +68,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void cloneData() {
+    void cloneData() {
         Scenario clonedScenario = simulation.cloneData(0, 1);
 
         assertThat(clonedScenario.getDescription()).isEqualTo(originalScenario.getDescription());
@@ -81,7 +81,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void cloneData_failOutsideBoundaries() {
+    void cloneData_failOutsideBoundaries() {
 
         assertThatThrownBy(() -> simulation.cloneData(-1, 1)).isInstanceOf(IndexOutOfBoundsException.class);
 
@@ -93,7 +93,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void removeFactMappingByIndex() {
+    void removeFactMappingByIndex() {
         simulation.removeFactMappingByIndex(0);
         
         assertThat(simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
@@ -101,7 +101,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void removeFactMapping() {
+    void removeFactMapping() {
         simulation.removeFactMapping(simulation.getScesimModelDescriptor().getFactMappingByIndex(0));
         
         assertThat(simulation.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
@@ -109,7 +109,7 @@ public class SimulationTest {
     }
 
     @Test
-    public void getScenarioWithIndex() {
+    void getScenarioWithIndex() {
         List<ScenarioWithIndex> scenarios = simulation.getScenarioWithIndex();
         
         assertThat(scenarios).hasSameSizeAs(simulation.getUnmodifiableData());

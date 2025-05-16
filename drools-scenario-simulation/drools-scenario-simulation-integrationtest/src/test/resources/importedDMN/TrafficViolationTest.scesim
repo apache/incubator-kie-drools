@@ -1308,7 +1308,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/test/resources/importedDMN/TrafficViolation.dmn</dmnFilePath>
+    <dmnFilePath>../../../../main/resources/importedDMN/TrafficViolation.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_F4681E8D-C4A7-4EEB-915D-3B23B5E0A547</dmnNamespace>
     <dmnName>Traffic Violation</dmnName>

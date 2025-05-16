@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,14 +26,14 @@ import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DOMParserUtilTest {
+class DOMParserUtilTest {
 
     private static final String MAIN_NODE = "Main";
     private static final String MAIN_ATTRIBUTE_NAME = "mainattribute";
@@ -70,12 +70,11 @@ public class DOMParserUtilTest {
             "</" + MAIN_NODE + ">";
 
     @Test
-    public void cleanupNodesString() throws Exception {
+    void cleanupNodesString() throws Exception {
         String retrieved = DOMParserUtil.cleanupNodes(XML, CHILD_NODE, TEST_NODE);
         assertThat(retrieved).isNotNull();
         Map<Node, List<Node>> childrenNodes = DOMParserUtil.getChildrenNodesMap(retrieved, MAIN_NODE, TEST_NODE);
-        assertThat(childrenNodes).isNotNull();
-        assertThat(childrenNodes).hasSize(1);
+        assertThat(childrenNodes).isNotNull().hasSize(1);
         Node keyNode = childrenNodes.keySet().iterator().next();
         assertThat(keyNode.getNodeName()).isEqualTo(MAIN_NODE);
         List<Node> valueNodes = childrenNodes.get(keyNode);
@@ -101,13 +100,12 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void cleanupNodesDocument() throws Exception {
+    void cleanupNodesDocument() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         DOMParserUtil.cleanupNodes(document, CHILD_NODE, TEST_NODE);
         assertThat(document).isNotNull();
         Map<Node, List<Node>> childrenNodes = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, TEST_NODE);
-        assertThat(childrenNodes).isNotNull();
-        assertThat(childrenNodes).hasSize(1);
+        assertThat(childrenNodes).isNotNull().hasSize(1);
         Node keyNode = childrenNodes.keySet().iterator().next();
         assertThat(keyNode.getNodeName()).isEqualTo(MAIN_NODE);
         List<Node> valueNodes = childrenNodes.get(keyNode);
@@ -132,77 +130,67 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void replaceNodeText() throws Exception {
+    void replaceNodeText() throws Exception {
         final String replacement = "replacement";
         Document document = DOMParserUtil.getDocument(XML);
         DOMParserUtil.replaceNodeText(document, MAIN_NODE, TEST_NODE, TEST_NODE_CONTENT, replacement);
         final Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, TEST_NODE);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         List<Node> testNodes = retrieved.values().iterator().next();
-        assertThat(testNodes).isNotNull();
-        assertThat(testNodes).hasSize(1);
+        assertThat(testNodes).isNotNull().hasSize(1);
         assertThat(testNodes.get(0).getTextContent()).isEqualTo(replacement);
     }
 
     @Test
-    public void replaceNodeName() throws Exception {
+    void replaceNodeName() throws Exception {
         final String replacement = "replacement";
         Document document = DOMParserUtil.getDocument(XML);
         
         DOMParserUtil.replaceNodeName(document, MAIN_NODE, TEST_NODE, replacement);
         
         final Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, replacement);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         
         List<Node> testNodes = retrieved.values().iterator().next();
-        assertThat(testNodes).isNotNull();
-        assertThat(testNodes).hasSize(1);
+        assertThat(testNodes).isNotNull().hasSize(1);
         assertThat(testNodes.get(0).getNodeName()).isEqualTo("replacement");
     }
 
     @Test
-    public void getAttributeValuesByNode() throws Exception {
+    void getAttributeValuesByNode() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
 
         Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, MAIN_NODE, MAIN_ATTRIBUTE_NAME);
         
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         assertThat(retrieved.values().toArray()[0]).isEqualTo(ATTRIBUTE_VALUE);
         
         retrieved = DOMParserUtil.getAttributeValues(document, MAIN_NODE, NOT_EXISTING);
         
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isEmpty();
+        assertThat(retrieved).isNotNull().isEmpty();
         
         retrieved = DOMParserUtil.getAttributeValues(document, CHILD_NODE, CHILD_ATTRIBUTE_NAME);
         
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(2);
+        assertThat(retrieved).isNotNull().hasSize(2);
         retrieved.values().forEach(attributeValue -> assertThat(attributeValue).isEqualTo(ATTRIBUTE_VALUE));
         
         retrieved = DOMParserUtil.getAttributeValues(document, CHILD_NODE, NOT_EXISTING);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isEmpty();
+        assertThat(retrieved).isNotNull().isEmpty();
     }
 
     @Test
-    public void getAllAttributeValues() throws Exception {
+    void getAllAttributeValues() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, MAIN_ATTRIBUTE_NAME);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         assertThat(retrieved.values().toArray()[0]).isEqualTo(ATTRIBUTE_VALUE);
         retrieved = DOMParserUtil.getAttributeValues(document, CHILD_ATTRIBUTE_NAME);
-        assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(2);
         retrieved.values().forEach(attributeValue -> assertThat(attributeValue).isEqualTo(ATTRIBUTE_VALUE));
     }
 
     @Test
-    public void setAttributeValue() throws Exception {
+    void setAttributeValue() throws Exception {
         final String newValue = "NEW_VALUE";
         Document document = DOMParserUtil.getDocument(XML);
         DOMParserUtil.setAttributeValue(document, MAIN_NODE, MAIN_ATTRIBUTE_NAME, newValue);
@@ -218,7 +206,7 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void createNodes() throws Exception {
+    void createNodes() throws Exception {
         final String newNodeName = "NEW_NODE_NAME";
         final String newNodeValue = "NEW_NODE_VALUE";
         Document document = DOMParserUtil.getDocument(XML);
@@ -252,7 +240,7 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void createNestedNodes() throws Exception {
+    void createNestedNodes() throws Exception {
         final String newNodeName = "NEW_NODE_NAME";
         final String newNodeValue = "NEW_NODE_VALUE";
         Document document = DOMParserUtil.getDocument(XML);
@@ -286,7 +274,7 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void createNodeAtPosition() throws Exception {
+    void createNodeAtPosition() throws Exception {
         String newNodeName = "NEW_NODE_NAME_0";
         String newNodeValue = "NEW_NODE_VALUE_=";
         Document document = DOMParserUtil.getDocument(XML);
@@ -319,7 +307,7 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void createNodeAndAppend() throws Exception {
+    void createNodeAndAppend() throws Exception {
         String newNodeName0 = "NEW_NODE_NAME_0";
         String newNodeValue0 = "NEW_NODE_VALUE_=";
         Document document = DOMParserUtil.getDocument(XML);
@@ -365,11 +353,10 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void getChildrenNodesFromDocument() throws Exception {
+    void getChildrenNodesFromDocument() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, TEST_NODE);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         Node keyNode = retrieved.keySet().iterator().next();
         assertThat(keyNode).isNotNull();
         assertThat(keyNode.getNodeName()).isEqualTo(MAIN_NODE);
@@ -378,19 +365,17 @@ public class DOMParserUtilTest {
         assertThat(valueNodes.get(0).getNodeName()).isEqualTo(TEST_NODE);
         
         retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, NOT_EXISTING);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         assertThat(retrieved.values().iterator().next()).isEmpty();
         
         retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, CHILD_NODE);
-        assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(1);
         keyNode = retrieved.keySet().iterator().next();
         assertThat(keyNode).isNotNull();
         assertThat(keyNode.getNodeName()).isEqualTo(MAIN_NODE);
         valueNodes = retrieved.get(keyNode);
         assertThat(valueNodes).isNotNull().hasSize(2);
-        assertThat(valueNodes).extracting(x -> x.getNodeName()).containsExactly(CHILD_NODE, CHILD_NODE);
+        assertThat(valueNodes).extracting(Node::getNodeName).containsExactly(CHILD_NODE, CHILD_NODE);
         
         List<String> nodeToTest = List.of(TEST_NODE, OTHER_NODE);
         for (String childNodeName : nodeToTest) {
@@ -407,12 +392,11 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void getChildrenNodesFromNode() throws Exception {
+    void getChildrenNodesFromNode() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, MAIN_NODE, CHILD_NODE);
         
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         
         Node mainNode = (Node) retrieved.keySet().toArray()[0];
         
@@ -422,33 +406,29 @@ public class DOMParserUtilTest {
         nodes.forEach(childNode -> assertThat(childNode.getNodeName()).isEqualTo(CHILD_NODE));
         retrieved = DOMParserUtil.getChildrenNodesMap(nodes.get(0), NESTING_NODE, NESTED_NODE);
 
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(1);
+        assertThat(retrieved).isNotNull().hasSize(1);
         
         Node childNode = (Node) retrieved.keySet().toArray()[0];
         
         assertThat(childNode.getNodeName()).isEqualTo(NESTING_NODE);
         
         nodes = retrieved.get(childNode);
-        assertThat(nodes).isNotNull();
-        assertThat(nodes).hasSize(1);
+        assertThat(nodes).isNotNull().hasSize(1);
         assertThat(nodes.get(0).getNodeName()).isEqualTo(NESTED_NODE);
     }
 
     @Test
-    public void getNestedChildrenNodesMap() throws Exception {
+    void getNestedChildrenNodesMap() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, MAIN_NODE, CHILD_NODE, TEST_NODE);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(2);
+        assertThat(retrieved).isNotNull().hasSize(2);
         retrieved.forEach((childNode, testNodes) -> {
             assertThat(childNode.getNodeName()).isEqualTo(CHILD_NODE);
             assertThat(testNodes).hasSize(1);
             assertThat(testNodes.get(0).getNodeName()).isEqualTo(TEST_NODE);
         });
         retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, CHILD_NODE, NESTING_NODE, NESTED_NODE);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(2);
+        assertThat(retrieved).isNotNull().hasSize(2);
         retrieved.forEach((nestingNode, nestedNodes) -> {
         	assertThat(nestingNode.getNodeName()).isEqualTo(NESTING_NODE);
         	assertThat(nestedNodes).hasSize(1);
@@ -457,12 +437,11 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void getNestedChildrenNodesList() throws Exception {
+    void getNestedChildrenNodesList() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, MAIN_NODE, CHILD_NODE, TEST_NODE);
         
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(2);
+        assertThat(retrieved).isNotNull().hasSize(2);
 
         retrieved.forEach(testNode -> assertThat(testNode.getNodeName()).isEqualTo(TEST_NODE));
         retrieved = DOMParserUtil.getNestedChildrenNodesList(document, CHILD_NODE, NESTING_NODE, NESTED_NODE);
@@ -472,14 +451,14 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void getDocument() throws Exception {
+    void getDocument() throws Exception {
         Document retrieved = DOMParserUtil.getDocument(XML);
         
         assertThat(retrieved).isNotNull();
     }
 
     @Test
-    public void getString() throws Exception {
+    void getString() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document document = builder.newDocument();
@@ -490,7 +469,7 @@ public class DOMParserUtilTest {
     }
 
     @Test
-    public void asStream() throws Exception {
+    void asStream() throws Exception {
         Document document = DOMParserUtil.getDocument(XML);
         final NodeList mainNodeList = document.getElementsByTagName("Main");
         commonCheckNodeStream(mainNodeList);

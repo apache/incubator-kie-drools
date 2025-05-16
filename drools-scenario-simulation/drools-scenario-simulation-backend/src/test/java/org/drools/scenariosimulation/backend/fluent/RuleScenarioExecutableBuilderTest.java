@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.definitions.rule.impl.QueryImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RuleScenarioExecutableBuilderTest {
+class RuleScenarioExecutableBuilderTest {
 
     @Test
-    public void createBuilder() {
+    void createBuilder() {
         RuleScenarioExecutableBuilder statelessBuilder = RuleScenarioExecutableBuilder.createBuilder(null, null, true);
         assertThat(statelessBuilder).isInstanceOf(RuleStatelessScenarioExecutableBuilder.class);;
 
@@ -49,7 +49,7 @@ public class RuleScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void getAvailableRules() {
+    void getAvailableRules() {
         Map<String, List<String>> packagesToRules = Map.of("package1", List.of("rule1", "rule2", "rule3"), "package2", List.of("rule4", "rule5", "rule6"));
         Map<String, List<String>> queryToRules = Map.of("package1", List.of("query1", "query2"), "package2", List.of());
         Map<String, String> ruleToAgendaGroup = Map.of("rule1", "agenda1", "rule2", "agenda1", "rule3", "agenda1", "rule4", "agenda2");

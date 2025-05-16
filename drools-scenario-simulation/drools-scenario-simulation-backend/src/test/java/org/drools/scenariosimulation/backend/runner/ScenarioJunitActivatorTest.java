@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,23 +26,21 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieContainer;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ScenarioJunitActivatorTest {
+@ExtendWith(MockitoExtension.class)
+@Deprecated
+class ScenarioJunitActivatorTest {
 
     @Mock
     private ScenarioSimulationXMLPersistence xmlReaderMock;
@@ -62,22 +60,17 @@ public class ScenarioJunitActivatorTest {
     @Mock
     private RunNotifier runNotifierMock;
 
-    private Simulation simulationLocal;
-    private Settings settingsLocal;
-
-    @Before
-    public void setup() throws Exception {
-        simulationLocal = new Simulation();
-        settingsLocal = new Settings();
+    @Test
+    void getChildrenTest() throws Exception {
+        Simulation simulationLocal = new Simulation();
+        Settings settingsLocal = new Settings();
         settingsLocal.setSkipFromBuild(true);
+
         when(xmlReaderMock.unmarshal(any())).thenReturn(scenarioSimulationModelMock);
         when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationLocal);
         when(scenarioSimulationModelMock.getSettings()).thenReturn(settingsLocal);
-    }
 
-    @Test
-    public void getChildrenTest() throws InitializationError {
-        assertThat(getScenarioJunitActivator().getChildren()).hasSize(0);
+        assertThat(getScenarioJunitActivator().getChildren()).isEmpty();
 
         settingsLocal.setSkipFromBuild(false);
 
@@ -85,7 +78,7 @@ public class ScenarioJunitActivatorTest {
     }
 
     @Test
-    public void runChildTest() throws InitializationError {
+    void runChildTest() throws InitializationError {
         getScenarioJunitActivator().runChild(scenarioRunnerDTOMock, runNotifierMock);
         verify(runnerMock, times(1)).run(runNotifierMock);
     }

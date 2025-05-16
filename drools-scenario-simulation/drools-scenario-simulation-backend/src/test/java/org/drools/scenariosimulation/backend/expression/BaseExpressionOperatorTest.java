@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.scenariosimulation.backend.expression;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,20 +32,20 @@ import static org.drools.scenariosimulation.backend.expression.BaseExpressionOpe
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.RANGE;
 import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.values;
 
-public class BaseExpressionOperatorTest {
+class BaseExpressionOperatorTest {
 
     private static final ClassLoader classLoader = BaseExpressionOperatorTest.class.getClassLoader();
 
     @Test
-    public void evaluateLiteralExpression() {
+    void evaluateLiteralExpression() {
         Arrays.stream(values())
                 .filter(e -> !EQUALS.equals(e))
-                .forEach(operator -> {
+                .forEach(operator ->
                     assertThatThrownBy(
                             () -> operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader))
                             .isInstanceOf(IllegalStateException.class)
-                            .hasMessageEndingWith(" operator cannot be used in a GIVEN clause");
-                });
+                            .hasMessageEndingWith(" operator cannot be used in a GIVEN clause")
+                );
 
         assertThat(EQUALS.evaluateLiteralExpression(String.class.getName(), "= Test", classLoader)).isEqualTo("Test");
         assertThat(EQUALS.evaluateLiteralExpression(String.class.getName(), "= ", classLoader)).isEqualTo("");
@@ -61,7 +61,7 @@ public class BaseExpressionOperatorTest {
     }
 
     @Test
-    public void findOperator() {
+    void findOperator() {
         assertThat(BaseExpressionOperator.findOperator("Test")).isEqualTo(EQUALS);
         assertThat(BaseExpressionOperator.findOperator(" Test ")).isEqualTo(EQUALS);
         assertThat(BaseExpressionOperator.findOperator("= Test ")).isEqualTo(EQUALS);
@@ -69,7 +69,7 @@ public class BaseExpressionOperatorTest {
     }
 
     @Test
-    public void equalsTest() {
+    void equalsTest() {
         String test1 = "2019-12-02";
         LocalDate test2 = LocalDate.of(2019, 12, 2);
 
@@ -82,7 +82,7 @@ public class BaseExpressionOperatorTest {
     }
 
     @Test
-    public void notEqualsTest() {
+    void notEqualsTest() {
         String test1 = "2019-12-02";
         LocalDate test2 = LocalDate.of(2019, 12, 2);
 
@@ -99,14 +99,14 @@ public class BaseExpressionOperatorTest {
     }
 
     @Test
-    public void rangeTest() {
+    void rangeTest() {
         assertThat(RANGE.eval("", "test", String.class, classLoader)).isFalse();
 
         assertThat(RANGE.eval(">2", 3, int.class, classLoader)).isTrue();
     }
 
     @Test
-    public void listOfValuesTest() {
+    void listOfValuesTest() {
         assertThat(LIST_OF_VALUES.eval("", "test", String.class, classLoader)).isFalse();
 
         assertThatThrownBy(() -> LIST_OF_VALUES.eval("[ 2", "", String.class, classLoader))
@@ -117,7 +117,7 @@ public class BaseExpressionOperatorTest {
     }
 
     @Test
-    public void listOfConditionsTest() {
+    void listOfConditionsTest() {
         assertThat(LIST_OF_CONDITION.eval("", "test", String.class, classLoader)).isFalse();
 
         assertThat(LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, int.class, classLoader)).isTrue();
@@ -131,7 +131,7 @@ public class BaseExpressionOperatorTest {
     }
 
     private static class OuterClass {
-        public enum InnerEnum {
+        enum InnerEnum {
             INNER_1,
             INNER_2
         }

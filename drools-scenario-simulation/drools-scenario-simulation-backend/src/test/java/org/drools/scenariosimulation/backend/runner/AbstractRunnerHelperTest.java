@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorResul
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AbstractRunnerHelperTest {
+class AbstractRunnerHelperTest {
 
     AbstractRunnerHelper abstractRunnerHelper = new AbstractRunnerHelper() {
         @Override
@@ -75,7 +75,7 @@ public class AbstractRunnerHelperTest {
     };
 
     @Test
-    public void isFactMappingValueToSkip() {
+    void isFactMappingValueToSkip() {
         FactIdentifier factIdentifier = FactIdentifier.create("MyInstance", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
 
@@ -87,7 +87,7 @@ public class AbstractRunnerHelperTest {
     }
 
     @Test
-    public void fillResult() {
+    void fillResult() {
         FactIdentifier factIdentifier = FactIdentifier.create("MyInstance", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
         FactMappingValue expectedResultSpy = spy(new FactMappingValue(factIdentifier, expressionIdentifier, VALUE));
@@ -132,7 +132,7 @@ public class AbstractRunnerHelperTest {
     }
     
 	@Test
-    public void getResultWrapper() {
+    void getResultWrapper() {
         ExpressionEvaluator expressionEvaluatorMock = mock(ExpressionEvaluator.class);
         Object resultRaw = "test";
         Object expectedResultRaw = "";
@@ -197,7 +197,7 @@ public class AbstractRunnerHelperTest {
         when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenThrow(new IllegalArgumentException(genericErrorMessage));
         FactMappingValue expectedResult5 = new FactMappingValue();
         valueWrapper = abstractRunnerHelper.getResultWrapper(Map.class.getCanonicalName(), expectedResult5, expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
-        assertThat(valueWrapper.getErrorMessage().get()).isEqualTo(genericErrorMessage);
+        assertThat(valueWrapper.getErrorMessage()).contains(genericErrorMessage);
         assertThat(expectedResult5.getExceptionMessage()).isEqualTo(genericErrorMessage);
     }
 }

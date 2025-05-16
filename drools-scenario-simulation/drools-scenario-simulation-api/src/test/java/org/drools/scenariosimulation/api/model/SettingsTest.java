@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,12 +18,12 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SettingsTest {
+class SettingsTest {
 
     private static final String DMO_SESSION = "dmoSession";
     private static final String DMN_PATH = "dmnfile.dmn";
@@ -36,8 +36,8 @@ public class SettingsTest {
 
     private Settings settings;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         settings = new Settings();
         settings.setDmoSession(DMO_SESSION);
         settings.setDmnFilePath(DMN_PATH);
@@ -53,7 +53,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void cloneEmptySettings() {
+    void cloneEmptySettings() {
         final Settings cloneSettings = new Settings().cloneSettings();
         
         assertThat(cloneSettings.getDmoSession()).isNull();
@@ -70,7 +70,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void cloneSettings() {
+    void cloneSettings() {
         final Settings cloneSettings = settings.cloneSettings();
         assertThat(cloneSettings.getDmoSession()).isEqualTo(DMO_SESSION);
         assertThat(cloneSettings.getDmnFilePath()).isEqualTo(DMN_PATH);
@@ -86,7 +86,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void cloneSettingsAndModifyIt() {
+    void cloneSettingsAndModifyIt() {
         final Settings cloneSettings = settings.cloneSettings();
         cloneSettings.setDmoSession(DMO_SESSION + "cl");
         settings.setDmnFilePath("src/" + DMN_PATH);

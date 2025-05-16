@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 
@@ -40,10 +40,10 @@ import static org.assertj.core.api.Assertions.within;
 import static org.drools.scenariosimulation.backend.TestUtils.commonCheckAuditLogLine;
 import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 
-public class SimulationRunMetadataBuilderTest {
+class SimulationRunMetadataBuilderTest {
 
     @Test
-    public void build() {
+    void build() {
         ScenarioWithIndex scenarioWithIndex1 = new ScenarioWithIndex(1, new Scenario());
 
         ScenarioResultMetadata result1 = new ScenarioResultMetadata(scenarioWithIndex1);

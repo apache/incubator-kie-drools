@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,15 +18,15 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 
-public class FactIdentifierTest {
+class FactIdentifierTest {
 
     @Test
-    public void importedFactIdentifierTest() {
+    void importedFactIdentifierTest() {
         String importedBookName = IMPORTED_PREFIX + "." + "Book";
         FactIdentifier factIdentifier = FactIdentifier.create(importedBookName, importedBookName, IMPORTED_PREFIX);
         assertThat(factIdentifier.getName()).isEqualTo(importedBookName);
@@ -35,33 +35,33 @@ public class FactIdentifierTest {
     }
 
     @Test
-    public void getClassNameWithoutPackage() {
+    void getClassNameWithoutPackage() {
         commonGetClassNameWithoutPackage("test", "com.Test", "Test");
     }
 
     @Test
-    public void getClassNameWithoutPackage_LongPackage() {
+    void getClassNameWithoutPackage_LongPackage() {
         commonGetClassNameWithoutPackage("test", "com.project.Test", "Test");
     }
 
     @Test
-    public void getClassNameWithoutPackage_NoPackage() {
+    void getClassNameWithoutPackage_NoPackage() {
         commonGetClassNameWithoutPackage("test", "Test", "Test");
     }
 
 
     @Test
-    public void getPackageWithoutClassName() {
+    void getPackageWithoutClassName() {
         commonGetPackageWithoutClassName("test", "com.Test", "com");
     }
 
     @Test
-    public void getPackageWithoutClassName_LongPackage() {
+    void getPackageWithoutClassName_LongPackage() {
         commonGetPackageWithoutClassName("test", "com.project.Test", "com.project");
     }
 
     @Test
-    public void getPackageWithoutClassName_NoPackage() {
+    void getPackageWithoutClassName_NoPackage() {
         commonGetPackageWithoutClassName("test", "Test", "");
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.scenariosimulation.backend.model.SubPerson;
 import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.util.model.EnumTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,14 +46,14 @@ import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.getFie
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
 
-public class ScenarioBeanUtilTest {
+class ScenarioBeanUtilTest {
 
-    private static String FIRST_NAME = "firstNameToSet";
-    private static int AGE = 10;
-    private static ClassLoader classLoader = ScenarioBeanUtilTest.class.getClassLoader();
+    private static final String FIRST_NAME = "firstNameToSet";
+    private static final int AGE = 10;
+    private static final ClassLoader classLoader = ScenarioBeanUtilTest.class.getClassLoader();
 
     @Test
-    public void fillBeanTest() {
+    void fillBeanTest() {
         Map<List<String>, Object> paramsToSet = Map.of(List.of("creator", "firstName"), FIRST_NAME, List.of("creator", "age"), AGE);
 
         Object result = ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
@@ -66,59 +66,68 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void fillBeanTestWithInitialInstanceTest() {
+    void fillBeanTestWithInitialInstanceTest() {
         Dispute dispute = new Dispute();
 
         Map<List<String>, Object> paramsToSet = Map.of(List.of("creator", "firstName"), FIRST_NAME, List.of("creator", "age"), AGE);
 
         Object result = ScenarioBeanUtil.fillBean(of(dispute), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
 
-        assertThat(result).isInstanceOf(Dispute.class);
-        assertThat(result).isSameAs(dispute);
+        assertThat(result).isInstanceOf(Dispute.class).isSameAs(dispute);
 
-        assertThat(FIRST_NAME).isEqualTo(dispute.getCreator().getFirstName());
-        assertThat(AGE).isEqualTo(dispute.getCreator().getAge());
-    }
-
-    @Test(expected = ScenarioException.class)
-    public void fillBeanLoadClassTest() {
-        ScenarioBeanUtil.fillBean(errorEmptyMessage(), "FakeCanonicalName", new HashMap<>(), classLoader);
-    }
-
-    @Test(expected = ScenarioException.class)
-    public void fillBeanFailNotEmptyConstructorTest() {
-        Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(List.of("name"), null);
-
-        ScenarioBeanUtil.fillBean(errorEmptyMessage(), NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
-    }
-
-    @Test(expected = ScenarioException.class)
-    public void fillBeanFailTest() {
-        Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(List.of("fakeField"), null);
-
-        ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
-    }
-
-    @Test(expected = ScenarioException.class)
-    public void fillBeanFailNullClassTest() {
-        Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(List.of("fakeField"), null);
-
-        ScenarioBeanUtil.fillBean(errorEmptyMessage(), null, paramsToSet, classLoader);
-    }
-
-    @Test(expected = ScenarioException.class)
-    public void fillBeanFailWrongTypeTest() {
-        Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(List.of("description"), new ArrayList<>());
-
-        ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+        assertThat(dispute.getCreator().getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(dispute.getCreator().getAge()).isEqualTo(AGE);
     }
 
     @Test
-    public void fillBeanEmptyValueTest() {
+    void fillBeanLoadClassTest() {
+        assertThatThrownBy(() ->
+                ScenarioBeanUtil.fillBean(errorEmptyMessage(), "FakeCanonicalName", new HashMap<>(), classLoader))
+                .isInstanceOf(ScenarioException.class);
+    }
+
+    @Test
+    void fillBeanFailNotEmptyConstructorTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(List.of("name"), null);
+
+        assertThatThrownBy(() ->
+                ScenarioBeanUtil.fillBean(errorEmptyMessage(), NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader))
+                .isInstanceOf(ScenarioException.class);
+    }
+
+    @Test
+    void fillBeanFailTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(List.of("fakeField"), null);
+
+        assertThatThrownBy(() ->
+                ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader))
+                .isInstanceOf(ScenarioException.class);
+    }
+
+    @Test
+    void fillBeanFailNullClassTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(List.of("fakeField"), null);
+
+        assertThatThrownBy(() ->
+                ScenarioBeanUtil.fillBean(errorEmptyMessage(), null, paramsToSet, classLoader))
+                .isInstanceOf(ScenarioException.class);
+    }
+
+    @Test
+    void fillBeanFailWrongTypeTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(List.of("description"), new ArrayList<>());
+
+        assertThatThrownBy(() ->
+                ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader))
+                .isInstanceOf(ScenarioException.class);
+    }
+
+    @Test
+    void fillBeanEmptyValueTest() {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(List.of(), null);
 
@@ -126,7 +135,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void navigateToObjectTest() {
+    void navigateToObjectTest() {
         Dispute dispute = new Dispute();
         Person creator = new Person();
         creator.setFirstName(FIRST_NAME);
@@ -142,7 +151,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void navigateToObjectFakeFieldTest() {
+    void navigateToObjectFakeFieldTest() {
         Dispute dispute = new Dispute();
         List<String> pathToProperty = List.of("fakeField");
 
@@ -153,7 +162,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void navigateToObjectNoStepCreationTest() {
+    void navigateToObjectNoStepCreationTest() {
         Dispute dispute = new Dispute();
         List<String> pathToProperty = List.of("creator", "firstName");
 
@@ -164,7 +173,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertValue_manyCases() {
+    void convertValue_manyCases() {
         assertThat(convertValue(String.class.getCanonicalName(), "Test", classLoader)).isEqualTo("Test");
         assertThat(convertValue(BigDecimal.class.getCanonicalName(), "13.33", classLoader)).isEqualTo(BigDecimal.valueOf(13.33));
         assertThat(convertValue(BigDecimal.class.getCanonicalName(), "13", classLoader)).isEqualTo(BigDecimal.valueOf(13));
@@ -216,7 +225,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void revertValue_manyCases() {
+    void revertValue_manyCases() {
         assertThat(revertValue("Test")).isEqualTo("Test");
         assertThat(revertValue(BigDecimal.valueOf(10000.83))).isEqualTo("10000.83");
         assertThat(revertValue(BigDecimal.valueOf(10000))).isEqualTo("10000");
@@ -253,7 +262,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertAndRevertValue() {
+    void convertAndRevertValue() {
         assertThat(revertValue(convertValue(String.class.getCanonicalName(), "Test", classLoader))).isEqualTo("Test");
         assertThat(revertValue(convertValue(boolean.class.getCanonicalName(), "false", classLoader))).isEqualTo("false");
         assertThat(revertValue(convertValue(Boolean.class.getCanonicalName(), "true", classLoader))).isEqualTo("true");
@@ -307,7 +316,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void revertAndConvertValueTest() {
+    void revertAndConvertValueTest() {
         assertThat(convertValue(String.class.getCanonicalName(), revertValue("Test"), classLoader)).isEqualTo("Test");
         assertThat(convertValue(boolean.class.getCanonicalName(), revertValue(false), classLoader)).isEqualTo(false);
         assertThat(convertValue(Boolean.class.getCanonicalName(), revertValue(Boolean.TRUE), classLoader)).isEqualTo(Boolean.TRUE);
@@ -352,35 +361,35 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertValueFailLoadClassTest() {
+    void convertValueFailLoadClassTest() {
         assertThatThrownBy(() -> convertValue("my.NotExistingClass", "Test", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Impossible to load ");
     }
 
     @Test
-    public void convertValueFailUnsupportedTest() {
+    void convertValueFailUnsupportedTest() {
         assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageEndingWith("Please use an MVEL expression to use it.");
     }
 
     @Test
-    public void convertValueFailPrimitiveNullTest() {
+    void convertValueFailPrimitiveNullTest() {
         assertThatThrownBy(() -> convertValue("int", null, classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(" is not a String or an instance of");
     }
 
     @Test
-    public void convertValueFailNotStringOrTypeTest() {
+    void convertValueFailNotStringOrTypeTest() {
         assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Object 1 is not a String or an instance of");
     }
 
     @Test
-    public void convertValueFailParsing() {
+    void convertValueFailParsing() {
         String integerCanonicalName = Integer.class.getCanonicalName();
         assertThatThrownBy(() -> convertValue(integerCanonicalName, "wrongValue", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -388,7 +397,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertValueEnumWrongValue() {
+    void convertValueEnumWrongValue() {
         String enumTestCanonicalName = EnumTest.class.getCanonicalName();
         assertThatThrownBy(() -> convertValue(EnumTest.class.getCanonicalName(), "FIRS", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -396,7 +405,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void loadClassTest() {
+    void loadClassTest() {
         assertThat(loadClass(String.class.getCanonicalName(), classLoader)).isEqualTo(String.class);
         assertThat(loadClass(int.class.getCanonicalName(), classLoader)).isEqualTo(int.class);
         assertThat(loadClass(RuleScenarioRunnerHelperTest.class.getCanonicalName(), classLoader)).isEqualTo(RuleScenarioRunnerHelperTest.class);
@@ -412,7 +421,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void getFieldTest() {
+    void getFieldTest() {
         assertThat(getField(Person.class, "firstName")).isNotNull();
         assertThat(getField(SubPerson.class, "firstName")).isNotNull();
         assertThat(getField(SubPerson.class, "additionalField")).isNotNull();

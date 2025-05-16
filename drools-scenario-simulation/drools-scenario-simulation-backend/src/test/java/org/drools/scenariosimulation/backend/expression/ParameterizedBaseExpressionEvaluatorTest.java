@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,21 +21,36 @@ package org.drools.scenariosimulation.backend.expression;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
-public class ParameterizedBaseExpressionEvaluatorTest {
+@ExtendWith(MockitoExtension.class)
+class ParameterizedBaseExpressionEvaluatorTest {
 
-    private final static ClassLoader classLoader = ParameterizedBaseExpressionEvaluatorTest.class.getClassLoader();
-    private final static BaseExpressionEvaluator baseExpressionEvaluator = new BaseExpressionEvaluator(classLoader);
+    private static final ClassLoader classLoader = ParameterizedBaseExpressionEvaluatorTest.class.getClassLoader();
+    private static final BaseExpressionEvaluator baseExpressionEvaluator = new BaseExpressionEvaluator(classLoader);
 
-    @Parameterized.Parameters(name = "{index}: Expr \"{0} {1}\" should be true")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("evaluateUnaryExpressionData")
+    void evaluateUnaryExpression(ExpressionEvaluatorResult expectedResult, Object resultValue, String exprToTest, Class<?> clazz) {
+        if (!(resultValue instanceof Class)) {
+            assertThat(baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz).isSuccessful())
+                    .isEqualTo(expectedResult.isSuccessful());
+        } else {
+            try {
+                baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, true, clazz);
+                fail("Should have failed");
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    static Collection<Object[]> evaluateUnaryExpressionData() {
         return Arrays.asList(new Object[][]{
                 {ExpressionEvaluatorResult.ofSuccessful(), 1, "1", int.class},
                 {ExpressionEvaluatorResult.ofSuccessful(), 2, "!= 1", int.class},
@@ -90,31 +105,5 @@ public class ParameterizedBaseExpressionEvaluatorTest {
                 {ExpressionEvaluatorResult.ofSuccessful(), Error.class, ">> 3", void.class},
                 {ExpressionEvaluatorResult.ofSuccessful(), Error.class, "< - 1 1", int.class}
         });
-    }
-
-    @Parameterized.Parameter(0)
-    public ExpressionEvaluatorResult expectedResult;
-
-    @Parameterized.Parameter(1)
-    public Object resultValue;
-
-    @Parameterized.Parameter(2)
-    public String exprToTest;
-
-    @Parameterized.Parameter(3)
-    public Class<?> clazz;
-
-    @Test
-    public void evaluateUnaryExpression() {
-
-        if (!(resultValue instanceof Class)) {
-            assertThat(baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz).isSuccessful()).isEqualTo(expectedResult.isSuccessful());
-        } else {
-            try {
-                baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, true, clazz);
-                fail("Should have failed");
-            } catch (Exception ignored) {
-            }
-        }
     }
 }

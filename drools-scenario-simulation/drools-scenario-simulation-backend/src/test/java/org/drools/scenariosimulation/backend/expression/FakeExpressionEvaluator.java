@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,7 +17,6 @@
  * under the License.
  */
 package org.drools.scenariosimulation.backend.expression;
-
 
 import java.util.AbstractMap;
 import java.util.HashMap;
