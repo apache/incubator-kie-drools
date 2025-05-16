@@ -24,6 +24,7 @@ import java.util.Map;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.instance.rule.RuleType;
@@ -66,7 +67,12 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             Map<String, String> parameters = new HashMap<>();
             for (DataAssociation dataAssociation : ruleSetNode.getIoSpecification().getDataInputAssociation()) {
                 for (Assignment assignment : dataAssociation.getAssignments()) {
-                    parameters.put(assignment.getTo().getLabel(), assignment.getFrom().getExpression());
+                    DataDefinition fromDefinition = assignment.getFrom();
+                    String fromValue = fromDefinition.getExpression();
+                    if (!fromDefinition.hasExpression()) {
+                        fromValue = String.format("#{%s}", fromDefinition.getId());
+                    }
+                    parameters.put(assignment.getTo().getLabel(), fromValue);
                 }
             }
 

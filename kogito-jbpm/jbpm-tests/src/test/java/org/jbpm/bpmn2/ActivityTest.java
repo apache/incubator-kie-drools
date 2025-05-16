@@ -177,6 +177,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
@@ -1204,6 +1206,23 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
     }
 
+    @ParameterizedTest
+    @CsvSource({ "JohnsRuleFlow, john", "MarysRuleFlow, mary" })
+    public void testBusinessRuleTaskWithDataInputsWithDynamicUnitName(String ruleFlowName, String expectedName) throws Exception {
+        kruntime = createKogitoProcessRuntime("BPMN2-BusinessRuleTaskWithDynamicUnitName.bpmn2",
+                "BPMN2-BusinessRuleTaskWithDynamicRule.drl");
+
+        Person person = new Person();
+        Map<String, Object> params = new HashMap<>();
+        params.put("person", person);
+        params.put("unitName", ruleFlowName);
+        KogitoProcessInstance processInstance = kruntime.startProcess(
+                "BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, kruntime);
+        assertThat(person.getName()).isEqualTo(expectedName);
+    }
+
     @Test
     public void testBusinessRuleTaskWithContionalEvent() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-ConditionalEventRuleTask.bpmn2",
@@ -1716,6 +1735,28 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         BigDecimal vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertThat(vacationDays).isEqualTo(BigDecimal.valueOf(5));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "dynamic-dmn1, https://www.drools.org/kie-dmn1, Extra days case 1, 5",
+            "dynamic-dmn1, https://www.drools.org/kie-dmn1, Extra days case 2, 5",
+            "dynamic-dmn2, https://www.drools.org/kie-dmn2, Extra days case 1, 10",
+            "dynamic-dmn2, https://www.drools.org/kie-dmn2, Extra days case 2, 10" })
+    public void testDMNBusinessRuleTaskWithDynamicVariables(String dmn, String namespace, String decision, int expectedVacationDays) throws Exception {
+        kruntime = createKogitoProcessRuntime(
+                "dmn/BPMN2-BusinessRuleTaskDMNByDynamicVariable.bpmn2", String.format("dmn/%s.dmn", dmn));
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("age", 16);
+        params.put("yearsOfService", 1);
+        params.put("model_name", dmn);
+        params.put("namespace", namespace);
+        params.put("decision_name", decision);
+        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, kruntime);
+        BigDecimal vacationDays = (BigDecimal) ((KogitoWorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertThat(vacationDays).isEqualTo(BigDecimal.valueOf(expectedVacationDays));
     }
 
     @Disabled
