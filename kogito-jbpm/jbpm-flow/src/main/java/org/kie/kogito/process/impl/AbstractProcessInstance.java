@@ -595,40 +595,40 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public void completeWorkItem(String id, Map<String, Object> variables, Policy... policies) {
+    public void completeWorkItem(String workItemId, Map<String, Object> variables, Policy... policies) {
         processInstanceLockStrategy.executeOperation(id, () -> {
             syncWorkItems();
-            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().completeWorkItem(id, variables, policies);
+            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().completeWorkItem(workItemId, variables, policies);
             removeOnFinish();
             return null;
         });
     }
 
     @Override
-    public <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy... policies) {
+    public <R> R updateWorkItem(String workItemId, Function<KogitoWorkItem, R> updater, Policy... policies) {
         return processInstanceLockStrategy.executeOperation(id, () -> {
             syncWorkItems();
-            R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, updater, policies);
+            R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(workItemId, updater, policies);
             ((MutableProcessInstances<T>) process.instances()).update(this.id(), this);
             return result;
         });
     }
 
     @Override
-    public void abortWorkItem(String id, Policy... policies) {
+    public void abortWorkItem(String workItemId, Policy... policies) {
         processInstanceLockStrategy.executeOperation(id, () -> {
             syncWorkItems();
-            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().abortWorkItem(id, policies);
+            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().abortWorkItem(workItemId, policies);
             removeOnFinish();
             return null;
         });
     }
 
     @Override
-    public void transitionWorkItem(String id, WorkItemTransition transition) {
+    public void transitionWorkItem(String workItemId, WorkItemTransition transition) {
         processInstanceLockStrategy.executeOperation(id, () -> {
             syncWorkItems();
-            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().transitionWorkItem(id, transition);
+            getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().transitionWorkItem(workItemId, transition);
             removeOnFinish();
             return null;
         });
