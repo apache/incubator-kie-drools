@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -58,7 +57,8 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
-import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
+import org.kie.dmn.core.pmml.EfestoPMMLUtils;
+import org.kie.dmn.core.pmml.PMMLInvocationEvaluatorFactory;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.pmml.PMMLModelInfo;
 import org.kie.dmn.core.util.Msg;
@@ -101,6 +101,7 @@ import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.Quantified;
 import org.kie.dmn.model.api.Relation;
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -541,7 +542,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         if (funcDef.getExpression() instanceof Context) {
             Context context = (Context) funcDef.getExpression();
             String pmmlDocument = null;
-            String pmmlModel = null;
+            String pmmlModelName = null;
             for (ContextEntry ce : context.getContextEntry()) {
                 if (ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() instanceof LiteralExpression) {
                     LiteralExpression ceLitExpr = (LiteralExpression) ce.getExpression();
@@ -551,7 +552,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                         }
                     } else if (ce.getVariable().getName().equals("model")) {
                         if (ceLitExpr.getText() != null) {
-                            pmmlModel = stripQuotes(ceLitExpr.getText().trim());
+                            pmmlModelName = stripQuotes(ceLitExpr.getText().trim());
                         }
                     }
                 }
@@ -562,19 +563,18 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             if (lookupImport.isPresent()) {
                 Import theImport = lookupImport.get();
                 logger.trace("theImport: {}", theImport);
-                Resource pmmlResource = DMNCompilerImpl.resolveRelativeResource(getRootClassLoader(), model,
-                                                                                theImport, funcDef,
-                                                                                ctx.getRelativeResolver());
-                logger.trace("pmmlResource: {}", pmmlResource);
+                ModelLocalUriId pmmlModelLocalUriID = EfestoPMMLUtils.getPmmlModelLocalUriId(theImport,pmmlModelName,
+                                                                                             ctx.getRelativeResolver());
+                logger.trace("pmmlResource: {}", pmmlModelLocalUriID);
                 DMNImportPMMLInfo pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
                 logger.trace("pmmlInfo: {}", pmmlInfo);
-                if (pmmlModel == null || pmmlModel.isEmpty()) {
+                if (pmmlModelName == null || pmmlModelName.isEmpty()) {
                     List<String> pmmlModelNames = pmmlInfo.getModels()
                             .stream()
                             .map(PMMLModelInfo::getName)
                             .filter(x -> x != null)
-                            .collect(Collectors.toList());
-                    if (pmmlModelNames.size() > 0) {
+                            .toList();
+                    if (!pmmlModelNames.isEmpty()) {
                         MsgUtil.reportMessage(logger,
                                               DMNMessage.Severity.WARN,
                                               funcDef,
@@ -588,8 +588,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                 AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
                                                                                                      getRootClassLoader(),
                                                                                                      funcDef,
-                                                                                                     pmmlResource,
-                                                                                                     pmmlModel,
+                                                                                                     pmmlModelLocalUriID,
+                                                                                                     pmmlModelName,
                                                                                                      pmmlInfo);
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node, funcDef);
                 for (InformationItem p : funcDef.getFormalParameter()) {

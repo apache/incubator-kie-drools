@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.identifiers;
+package org.kie.efesto.compilationmanager.api.model;
 
-public class DecisionServiceIds {
-    private final LocalDecisionId parentId;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-    public DecisionServiceIds(LocalDecisionId parentId) {
-        this.parentId = parentId;
+public final class EfestoStringResource implements EfestoResource<String> {
+
+    private final String content;
+    private final ModelLocalUriId modelLocalUriId;
+
+    /**
+     *
+     * @param content
+     * @param modelLocalUriId
+     */
+    public EfestoStringResource(String content, ModelLocalUriId modelLocalUriId) {
+        this.content = content;
+        this.modelLocalUriId = modelLocalUriId;
     }
 
-    public LocalDecisionServiceId get(String serviceId) {
-        return new LocalDecisionServiceId(parentId, serviceId);
+    @Override
+    public String getContent() {
+        return content;
+    }
+
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
     }
 }

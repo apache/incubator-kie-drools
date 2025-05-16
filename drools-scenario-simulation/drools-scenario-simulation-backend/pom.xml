@@ -94,6 +94,14 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-compilation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-runtime</artifactId>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
@@ -115,6 +123,10 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
+    </dependency>
 
   </dependencies>
 
@@ -126,6 +138,18 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

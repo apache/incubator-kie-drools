@@ -20,18 +20,17 @@ package org.drools.commands.runtime.pmml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.drools.commands.IdentifiableResult;
 import org.kie.api.command.ExecutableCommand;
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.internal.command.RegistryContext;
@@ -41,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 @XmlRootElement(name = "apply-pmml-model-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
+public class ApplyPmmlModelCommand implements ExecutableCommand<Map<String, Object>>,
                                               IdentifiableResult {
 
     private static Logger logger = LoggerFactory.getLogger(ApplyPmmlModelCommand.class);
@@ -54,7 +53,7 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
     @XmlAttribute(name = "hasMining")
     private Boolean hasMining;
     @XmlElement(name = "requestData")
-    private PMMLRequestData requestData;
+    private Map<String, Object> requestData;
     @XmlElements(
             @XmlElement(name = "complexInputObject", type = Object.class)
     )
@@ -65,29 +64,29 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
         super();
     }
 
-    public ApplyPmmlModelCommand(PMMLRequestData requestData) {
+    public ApplyPmmlModelCommand(Map<String, Object> requestData) {
         initialize(requestData, null, null);
     }
 
-    public ApplyPmmlModelCommand(PMMLRequestData requestData, List<Object> complexInputList) {
+    public ApplyPmmlModelCommand(Map<String, Object> requestData, List<Object> complexInputList) {
         initialize(requestData, complexInputList, null);
     }
 
-    public ApplyPmmlModelCommand(PMMLRequestData requestData, List<Object> complexInputList, Boolean hasMining) {
+    public ApplyPmmlModelCommand(Map<String, Object> requestData, List<Object> complexInputList, Boolean hasMining) {
         initialize(requestData, complexInputList, hasMining);
     }
 
-    private void initialize(PMMLRequestData requestData, List<Object> complexInputList, Boolean hasMining) {
+    private void initialize(Map<String, Object> requestData, List<Object> complexInputList, Boolean hasMining) {
         this.requestData = requestData;
         this.complexInputObjects = complexInputList != null ? new ArrayList(complexInputList) : new ArrayList<>();
         this.hasMining = hasMining != null ? hasMining : Boolean.FALSE;
     }
 
-    public PMMLRequestData getRequestData() {
+    public Map<String, Object> getRequestData() {
         return requestData;
     }
 
-    public void setRequestData(PMMLRequestData requestData) {
+    public void setRequestData(Map<String, Object> requestData) {
         this.requestData = requestData;
     }
 
@@ -128,16 +127,18 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>,
     }
 
     @Override
-    public PMML4Result execute(Context context) {
+    public Map<String, Object> execute(Context context) {
         if (requestData == null) {
-            throw new IllegalStateException("ApplyPmmlModelCommand requires request data (PMMLRequestData) to execute");
+            throw new IllegalStateException("ApplyPmmlModelCommand requires request data (Map<String, Object>) to " +
+                                                    "execute");
         }
         RegistryContext registryContext = (RegistryContext) context;
-        PMML4Result toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData, context);
+        Map<String, Object> toReturn = PMMLCommandExecutorFactory.get().newPMMLCommandExecutor().execute(requestData,
+                                                                                                         context);
         // Needed to update the ExecutionResultImpl and the Registry context,
         // as done inside legacy implementation
         Optional<ExecutionResults> execRes = Optional.ofNullable(registryContext.lookup(ExecutionResults.class));
-        registryContext.register(PMML4Result.class, toReturn);
+        registryContext.register(Map.class, toReturn);
         execRes.ifPresent(result -> result.setResult("results", toReturn));
         return toReturn;
     }

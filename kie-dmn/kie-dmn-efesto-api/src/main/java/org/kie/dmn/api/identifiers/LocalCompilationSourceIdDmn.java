@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,40 +21,43 @@ package org.kie.dmn.api.identifiers;
 import org.kie.efesto.common.api.identifiers.Id;
 import org.kie.efesto.common.api.identifiers.LocalId;
 import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.LocalUriId;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalDecisionId extends LocalUriId implements Id {
-    public static final String PREFIX = "decisions";
+import java.util.Objects;
 
-    private final String namespace;
-    private final String name;
+public class LocalCompilationSourceIdDmn extends ModelLocalUriId implements Id {
+    public static final String PREFIX = "dmn";
+    private static final long serialVersionUID = 8621199867598971641L;
 
-    public LocalDecisionId(String namespace, String name) {
-        super(makeLocalUri(namespace, name));
-        this.namespace = namespace;
-        this.name = name;
+    private final String fileName;
+
+    public LocalCompilationSourceIdDmn(String fileName) {
+        super(LocalUri.Root.append(PREFIX).append(fileName));
+        this.fileName = fileName;
     }
 
-    public String namespace() {
-        return namespace;
+    public String getFileName() {
+        return fileName;
     }
 
-    public String name() {
-        return name;
-    }
-
-    public DecisionServiceIds services() {
-        return new DecisionServiceIds(this);
-    }
 
     @Override
     public LocalId toLocalId() {
         return this;
     }
 
-    private static LocalUri makeLocalUri(String namespace, String name) {
-        String fullId = String.format("%s#%s", namespace, name);
-        return LocalUri.Root.append(PREFIX).append(fullId);
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+        ModelLocalUriId that = (ModelLocalUriId) o;
+        return Objects.equals(this.fullPath(), that.fullPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

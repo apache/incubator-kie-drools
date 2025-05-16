@@ -18,8 +18,6 @@ package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,7 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
-import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -94,14 +91,10 @@ import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
-import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
 import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolvePMMLImportType;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -248,10 +241,10 @@ public class DMNCompilerImpl implements DMNCompiler {
             ImportType importType = DMNImportsUtil.whichImportType(i);
             switch(importType) {
                 case DMN :
-                    resolveDMNImportType(i, dmnModels, model, toMerge);
+                    DMNImportsUtil.resolveDMNImportType(i, dmnModels, model, toMerge);
                     break;
                 case PMML:
-                    resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
+                    DMNImportsUtil.resolvePMMLImportType(model, dmndefs, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                     break;
                 default :
@@ -290,50 +283,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                   Msg.FUNC_DEF_PMML_ERR_LOCATIONURI,
                                   i.getLocationURI());
         }
-
     }
-    protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
-        if (relativeResolver != null) {
-            Reader reader = relativeResolver.apply(i.getLocationURI());
-            return ResourceFactory.newReaderResource(reader);
-        } else if (model.getResource() != null) {
-            return pmmlImportResource(classLoader, model, i, node);
-        }
-        throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
-    }
-
-    protected static Resource pmmlImportResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
-        String locationURI = i.getLocationURI();
-        logger.trace("locationURI: {}", locationURI);
-        Resource pmmlResource = null;
-        try {
-            URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-            pmmlResource = resolveRelativeURI.isAbsolute() ?
-                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
-                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
-        } catch (URISyntaxException | IOException e) {
-            new PMMLImportErrConsumer(model, i, node).accept(e);
-        }
-        logger.trace("pmmlResource: {}", pmmlResource);
-        return pmmlResource;
-    }
-
-    protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {
-        URI relativeAsURI = new URI(null, null, relative, null);
-        if (model.getResource() instanceof FileSystemResource) {
-            FileSystemResource fsr = (FileSystemResource) model.getResource();
-            logger.trace("fsr: {}", fsr.getURL());
-            URI resolve = fsr.getURL().toURI().resolve(relativeAsURI);
-            return resolve;
-        } else {
-            URI dmnModelURI = new URI(null, null, model.getResource().getSourcePath(), null);
-            logger.trace("dmnModelURI: {}", dmnModelURI);
-            URI relativeURI = dmnModelURI.resolve(relativeAsURI);
-            return relativeURI;
-        }
-    }
-
-
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();

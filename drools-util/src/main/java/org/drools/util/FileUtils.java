@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,12 +29,15 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility to access files
  */
 public class FileUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
     private FileUtils() {
         // Avoid instantiating class

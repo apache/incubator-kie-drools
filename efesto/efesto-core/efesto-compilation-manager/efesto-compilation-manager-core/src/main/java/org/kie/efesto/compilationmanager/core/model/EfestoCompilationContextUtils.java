@@ -31,6 +31,10 @@ public class EfestoCompilationContextUtils {
         return new EfestoCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
     }
 
+    public static EfestoCompilationContext buildWithParentClassLoaderWithoutSetup(ClassLoader parentClassLoader) {
+        return new EfestoCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader), false);
+    }
+
     public static EfestoCompilationContext buildFromContext(EfestoCompilationContextImpl original, Class<?
             extends EfestoCompilationContext> toInstantiate) {
         try {
