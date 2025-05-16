@@ -106,6 +106,10 @@ public interface PropagationEntry {
         public PropagationEntry getSplitForPartition(int partitionNr) {
             throw new UnsupportedOperationException();
         }
+
+        public InternalFactHandle getHandle() {
+            throw new UnsupportedOperationException( "This method is not supported for this type of PropagationEntry" );
+        }
     }
 
     abstract class AbstractPartitionedPropagationEntry extends AbstractPropagationEntry {
@@ -295,6 +299,7 @@ public interface PropagationEntry {
             return "Insert of " + handle.getObject();
         }
 
+        @Override
         public InternalFactHandle getHandle() {
             return handle;
         }
@@ -356,6 +361,11 @@ public interface PropagationEntry {
         @Override
         public PropagationEntry getSplitForPartition( int partitionNr ) {
             return new PartitionedUpdate( handle, context, objectTypeConf, partitionNr );
+        }
+
+        @Override
+        public InternalFactHandle getHandle() {
+            return handle;
         }
 
         @Override
