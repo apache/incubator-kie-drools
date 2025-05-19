@@ -24,10 +24,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +44,17 @@ public class MixedArgumentTest extends BaseModelTest {
             "    $person2 : Person(age == 40)\n" +
             "    $child2 : Child(age == 5 && parent == \"Bob\")\n" +
             "    $personNo : Integer() from doNothing($person1, $child1.getName, $child2.getName, $person2.getName)\n" +
+            "    $person_method : Integer() from doNothingAgain($person1.addAges($child1.getAge, $child2.getAge))\n" +
             "then \n" +
             "     result.add($personNo); \n " +
             "end \n" +
             "\n" +
             "function Integer doNothing(Person person, String firstName, String secondName, String thirdName) {\n" +
             "    return 1; \n" +
+            "}\n" +
+            "function Integer doNothingAgain(int age) {\n" +
+            "    return 1; \n" +
             "}";
-
 
     @ParameterizedTest
     @MethodSource("parameters")
