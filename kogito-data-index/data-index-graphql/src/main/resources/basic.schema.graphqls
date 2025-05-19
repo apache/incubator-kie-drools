@@ -205,6 +205,7 @@ input ProcessInstanceArgument {
     createdBy: StringArgument
     updatedBy: StringArgument
     definition: ProcessDefinitionArgument
+    slaDueDate: DateArgument
     cloudEventId: StringArgument
     cloudEventSource: StringArgument
 }
@@ -227,6 +228,7 @@ input NodeInstanceArgument {
     exit: DateArgument
     errorMessage: StringArgument
     retrigger: BooleanArgument
+    slaDueDate: DateArgument
 }
 
 input MilestoneStatusArgument {
@@ -415,6 +417,7 @@ input UserTaskInstanceArgument {
     lastUpdate: DateArgument
     comments: CommentArgument
     attachments: AttachmentArgument
+    slaDueDate: DateArgument
 }
 
 input CommentArgument {

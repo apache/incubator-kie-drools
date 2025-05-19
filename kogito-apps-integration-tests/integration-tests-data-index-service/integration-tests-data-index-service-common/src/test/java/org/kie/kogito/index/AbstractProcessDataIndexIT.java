@@ -168,6 +168,20 @@ public abstract class AbstractProcessDataIndexIT {
 
         await()
                 .atMost(TIMEOUT)
+                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ProcessInstances(where:{slaDueDate:{isNull: false}})" +
+                                "{ id, processId, state, createdBy, slaDueDate} }\" }")
+                        .when().post("/graphql")
+                        .then().statusCode(200)
+                        .body("data.ProcessInstances.size()", is(1))
+                        .body("data.ProcessInstances[0].id", is(pId))
+                        .body("data.ProcessInstances[0].processId", is("approvals"))
+                        .body("data.ProcessInstances[0].state", is("ACTIVE"))
+                        .body("data.ProcessInstances[0].createdBy", nullValue())
+                        .body("data.ProcessInstances[0].slaDueDate", notNullValue()));
+
+        await()
+                .atMost(TIMEOUT)
                 .untilAsserted(() -> addCheck(given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                         .body("{ \"query\" : \"{ProcessDefinitions{ id, version, name, source} }\" }")
                         .when().post("/graphql")
