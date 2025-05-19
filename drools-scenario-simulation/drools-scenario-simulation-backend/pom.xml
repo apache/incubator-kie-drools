@@ -37,18 +37,6 @@
     <java.module.name>org.drools.scenariosimulation.backend</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -176,6 +164,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <profiles>
     <profile>
