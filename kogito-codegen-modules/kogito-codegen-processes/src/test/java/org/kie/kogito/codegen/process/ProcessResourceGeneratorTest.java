@@ -20,7 +20,6 @@ package org.kie.kogito.codegen.process;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -36,8 +35,8 @@ import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.process.util.CodegenUtil;
-import org.kie.kogito.codegen.usertask.UserTaskCodegen;
+import org.kie.kogito.codegen.faultTolerance.FaultToleranceAnnotator;
+import org.kie.kogito.codegen.faultTolerance.FaultToleranceUtil;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.github.javaparser.StaticJavaParser;
@@ -50,11 +49,10 @@ import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.kie.kogito.codegen.process.ProcessResourceGenerator.INVALID_CONTEXT_TEMPLATE;
 
-class ProcessResourceGeneratorTest {
+public class ProcessResourceGeneratorTest {
 
     private static final String SIGNAL_METHOD = "signal_";
     private static final List<String> JAVA_AND_QUARKUS_REST_ANNOTATIONS = List.of("DELETE", "GET", "POST");
@@ -187,10 +185,10 @@ class ProcessResourceGeneratorTest {
         KogitoBuildContext kogitoBuildContext = contextBuilder.build();
         Collection<MethodDeclaration> restEndpoints = processResourceGenerator.getRestMethods(compilationUnit);
         // before processResourceGenerator.manageTransactional, the annotation is not there
-        testTransaction(restEndpoints, kogitoBuildContext, false);
+        testTransactionAnnotationIsPresent(restEndpoints, kogitoBuildContext, false);
         processResourceGenerator.manageTransactional(compilationUnit);
-        // the annotation is (conditionally) add after processResourceGenerator.manageTransactional
-        testTransaction(restEndpoints, kogitoBuildContext, transactionEnabled);
+        // the annotation is (conditionally) added after processResourceGenerator.manageTransactional
+        testTransactionAnnotationIsPresent(restEndpoints, kogitoBuildContext, transactionEnabled);
     }
 
     @ParameterizedTest
@@ -206,82 +204,80 @@ class ProcessResourceGeneratorTest {
         KogitoBuildContext kogitoBuildContext = contextBuilder.build();
         Collection<MethodDeclaration> restEndpoints = processResourceGenerator.getRestMethods(compilationUnit);
         // before processResourceGenerator.manageTransactional, the annotation is not there
-        testTransaction(restEndpoints, kogitoBuildContext, false);
+        testTransactionAnnotationIsPresent(restEndpoints, kogitoBuildContext, false);
         processResourceGenerator.manageTransactional(compilationUnit);
-        // the annotation is (conditionally) add after processResourceGenerator.manageTransactional
-        testTransaction(restEndpoints, kogitoBuildContext, transactionEnabled);
+        // the annotation is (conditionally) added after processResourceGenerator.manageTransactional
+        testTransactionAnnotationIsPresent(restEndpoints, kogitoBuildContext, transactionEnabled);
     }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
-    void testUserTaskManageTransactionalEnabledByDefault(KogitoBuildContext.Builder contextBuilder) {
+    void testProcessRestResourceGenerationWithFaultToleranceDisabled(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/startsignal/StartSignalEventNoPayload.bpmn2";
+        ProcessResourceGenerator processResourceGenerator = getProcessResourceGenerator(contextBuilder, fileName, false, false);
+        CompilationUnit compilationUnit =
+                processResourceGenerator.createCompilationUnit(processResourceGenerator.createTemplatedGeneratorBuilder());
+        assertThat(compilationUnit).isNotNull();
+
         KogitoBuildContext context = contextBuilder.build();
-        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
-        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
-        assertThat(restEndpoints).isNotEmpty();
-        for (MethodDeclaration method : restEndpoints) {
-            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
-        }
+        Collection<MethodDeclaration> restEndpoints = processResourceGenerator.getRestMethods(compilationUnit);
+
+        // before processResourceGenerator.manageFaultTolerance, the annotation is not there
+        testFaultToleranceAnnotationIsPresent(restEndpoints, context, false);
+
+        processResourceGenerator.manageFaultTolerance(compilationUnit);
+        // the annotation is (conditionally) added after processResourceGenerator.manageFaultTolerance
+        testFaultToleranceAnnotationIsPresent(restEndpoints, context, false);
     }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
-    void testUserTaskManageTransactionalDisabled(KogitoBuildContext.Builder contextBuilder) {
+    void testProcessRestResourceGenerationWithFaultToleranceEnabled(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/startsignal/StartSignalEventNoPayload.bpmn2";
+        ProcessResourceGenerator processResourceGenerator = getProcessResourceGenerator(contextBuilder, fileName, true, true);
+        CompilationUnit compilationUnit =
+                processResourceGenerator.createCompilationUnit(processResourceGenerator.createTemplatedGeneratorBuilder());
+        assertThat(compilationUnit).isNotNull();
+
         KogitoBuildContext context = contextBuilder.build();
-        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
-        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "false");
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
-        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
-        assertThat(restEndpoints).isNotEmpty();
-        for (MethodDeclaration method : restEndpoints) {
-            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isEmpty();
-        }
+        Collection<MethodDeclaration> restEndpoints = processResourceGenerator.getRestMethods(compilationUnit);
+
+        // before processResourceGenerator.manageFaultTolerance, the annotation is not there
+        testFaultToleranceAnnotationIsPresent(restEndpoints, context, false);
+
+        processResourceGenerator.manageFaultTolerance(compilationUnit);
+        // the annotation is (conditionally) added after processResourceGenerator.manageFaultTolerance
+        testFaultToleranceAnnotationIsPresent(restEndpoints, context, true);
     }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
-    void testUserTaskManageTransactionalGeneratorDisabled(KogitoBuildContext.Builder contextBuilder) {
-        KogitoBuildContext context = contextBuilder.build();
-        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
-        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "false");
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
-        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
-        assertThat(restEndpoints).isNotEmpty();
+    void testProcessRestResourceGenerationWithFaultToleranceEnabledWithTransactionsDisabled(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/startsignal/StartSignalEventNoPayload.bpmn2";
+        ProcessResourceGenerator processResourceGenerator = getProcessResourceGenerator(contextBuilder, fileName, false, true);
+        CompilationUnit compilationUnit =
+                processResourceGenerator.createCompilationUnit(processResourceGenerator.createTemplatedGeneratorBuilder());
+        assertThat(compilationUnit).isNotNull();
+
+        assertThatThrownBy(() -> {
+            processResourceGenerator.manageFaultTolerance(compilationUnit);
+        }).isInstanceOf(ProcessCodegenException.class)
+                .hasMessageContaining("Fault tolerance is enabled, but transactions are disabled. Please enable transactions before fault tolerance.");
+    }
+
+    public static void testFaultToleranceAnnotationIsPresent(Collection<MethodDeclaration> restEndpoints, KogitoBuildContext context, boolean shouldAnnotationBeThere) {
+        FaultToleranceAnnotator faultToleranceAnnotator = FaultToleranceUtil.lookFaultToleranceAnnotatorForContext(context);
+
         for (MethodDeclaration method : restEndpoints) {
-            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isEmpty();
+            if (shouldAnnotationBeThere) {
+                assertThat(findAnnotationExpr(method, faultToleranceAnnotator.getRetryAnnotationName())).isPresent();
+            } else {
+                assertThat(findAnnotationExpr(method, faultToleranceAnnotator.getRetryAnnotationName())).isNotPresent();
+            }
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
-    void testUserTaskManageTransactionalEnabled(KogitoBuildContext.Builder contextBuilder) {
-        KogitoBuildContext context = contextBuilder.build();
-        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
-        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "true");
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
-        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
-        assertThat(restEndpoints).isNotEmpty();
-        for (MethodDeclaration method : restEndpoints) {
-            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
-    void testUserTaskManageTransactionalGeneratorEnabled(KogitoBuildContext.Builder contextBuilder) {
-        KogitoBuildContext context = contextBuilder.build();
-        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
-        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "true");
-        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
-        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
-        assertThat(restEndpoints).isNotEmpty();
-        for (MethodDeclaration method : restEndpoints) {
-            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
-        }
-    }
-
-    Optional<AnnotationExpr> findAnnotationExpr(MethodDeclaration method, String fqn) {
+    public static Optional<AnnotationExpr> findAnnotationExpr(MethodDeclaration method, String fqn) {
         for (AnnotationExpr expr : method.getAnnotations()) {
             if (expr.getNameAsString().equals(fqn)) {
                 return Optional.of(expr);
@@ -290,7 +286,7 @@ class ProcessResourceGeneratorTest {
         return Optional.empty();
     }
 
-    void testTransaction(Collection<MethodDeclaration> restEndpoints,
+    public static void testTransactionAnnotationIsPresent(Collection<MethodDeclaration> restEndpoints,
             KogitoBuildContext kogitoBuildContext,
             boolean enabled) {
         String transactionalAnnotation =
@@ -331,18 +327,24 @@ class ProcessResourceGeneratorTest {
 
     private CompilationUnit getCompilationUnit(KogitoBuildContext.Builder contextBuilder,
             KogitoWorkflowProcess process) {
-        ProcessResourceGenerator processResourceGenerator = getProcessResourceGenerator(contextBuilder, process, true);
+        ProcessResourceGenerator processResourceGenerator = getProcessResourceGenerator(contextBuilder, process, true, false);
         return StaticJavaParser.parse(processResourceGenerator.generate());
     }
 
     private ProcessResourceGenerator getProcessResourceGenerator(KogitoBuildContext.Builder contextBuilder,
             String fileName, boolean withTransaction) {
-        return getProcessResourceGenerator(contextBuilder, parseProcess(fileName), withTransaction);
+        return getProcessResourceGenerator(contextBuilder, parseProcess(fileName), withTransaction, false);
+    }
+
+    private ProcessResourceGenerator getProcessResourceGenerator(KogitoBuildContext.Builder contextBuilder,
+            String fileName, boolean withTransaction, boolean wihtFaultTolerance) {
+        return getProcessResourceGenerator(contextBuilder, parseProcess(fileName), withTransaction, wihtFaultTolerance);
     }
 
     private ProcessResourceGenerator getProcessResourceGenerator(KogitoBuildContext.Builder contextBuilder,
             KogitoWorkflowProcess process,
-            boolean withTransaction) {
+            boolean withTransaction,
+            boolean withFaultTolerance) {
         KogitoBuildContext context = createContext(contextBuilder);
 
         ProcessExecutableModelGenerator execModelGen =
@@ -361,7 +363,8 @@ class ProcessResourceGeneratorTest {
         toReturn
                 .withSignals(metaData.getSignals())
                 .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
-                .withTransaction(withTransaction);
+                .withTransaction(withTransaction)
+                .withFaultTolerance(withFaultTolerance);
         return toReturn;
     }
 

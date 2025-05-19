@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.rest.RestAnnotator;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -48,9 +49,9 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.AbstractGenerator;
+import org.kie.kogito.codegen.faultTolerance.FaultToleranceAnnotator;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.codegen.process.ProcessParsingException;
-import org.kie.kogito.codegen.process.util.CodegenUtil;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
@@ -77,6 +78,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.faultTolerance.FaultToleranceUtil.lookFaultToleranceAnnotatorForContext;
+import static org.kie.kogito.codegen.process.util.CodegenUtil.isFaultToleranceEnabled;
+import static org.kie.kogito.codegen.process.util.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 public class UserTaskCodegen extends AbstractGenerator {
@@ -157,22 +161,76 @@ public class UserTaskCodegen extends AbstractGenerator {
         }
 
         if (context().hasRESTForGenerator(this)) {
-            generatedFiles.add(generateRestEndpiont());
+            generatedFiles.add(generateRestEndpoint());
         }
 
         return generatedFiles;
     }
 
-    public GeneratedFile generateRestEndpiont() {
+    public GeneratedFile generateRestEndpoint() {
         String packageName = context().getPackageName();
-        CompilationUnit compilationUnit = restTemplateGenerator.compilationUnitOrThrow("Not rest endpoints template found for user tasks");
+        CompilationUnit compilationUnit = createRestEndpointCompilationUnit();
         compilationUnit.setPackageDeclaration(packageName);
-        if (CodegenUtil.isTransactionEnabled(this, context())) {
-            compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).forEach(context().getDependencyInjectionAnnotator()::withTransactional);
-        }
-        String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+
+        manageTransactional(compilationUnit);
+
+        manageFaultTolerance(compilationUnit);
+
+        String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new ProcessCodegenException("UserTaskResourceTemplate doesn't contain a class or interface declaration!"))
+                .getNameAsString();
+
         Path basePath = UserTaskCodegenHelper.path(packageName);
+
         return new GeneratedFile(GeneratedFileType.REST, basePath.resolve(className + ".java"), compilationUnit.toString());
+    }
+
+    protected CompilationUnit createRestEndpointCompilationUnit() {
+        return restTemplateGenerator.compilationUnitOrThrow("Not rest endpoints template found for user tasks");
+    }
+
+    /**
+     * Conditionally add the <code>Transactional</code> annotation
+     *
+     * @param compilationUnit
+     *
+     */
+    protected void manageTransactional(CompilationUnit compilationUnit) {
+        if (isTransactionEnabled(this, context())) {
+            getRestMethods(compilationUnit).forEach(context().getDependencyInjectionAnnotator()::withTransactional);
+        }
+    }
+
+    /**
+     * Conditionally add the Fault Tolerance annotations
+     *
+     * @param compilationUnit
+     *
+     */
+    protected void manageFaultTolerance(CompilationUnit compilationUnit) {
+        if (isFaultToleranceEnabled(context())) {
+            if (!isTransactionEnabled(this, context())) {
+                throw new ProcessCodegenException("Fault tolerance is enabled, but transactions are disabled. Please enable transactions before fault tolerance.");
+            }
+            FaultToleranceAnnotator annotator = lookFaultToleranceAnnotatorForContext(context());
+            getRestMethods(compilationUnit)
+                    .forEach(annotator::addFaultToleranceAnnotations);
+        }
+    }
+
+    /**
+     * Retrieves all the <b>Rest endpoint</b> <code>MethodDeclaration</code>s from the given
+     * <code>CompilationUnit</code>
+     *
+     * @param compilationUnit
+     * @return
+     */
+    protected Collection<MethodDeclaration> getRestMethods(CompilationUnit compilationUnit) {
+        RestAnnotator restAnnotator = context().getRestAnnotator();
+        return compilationUnit.findAll(MethodDeclaration.class)
+                .stream()
+                .filter(restAnnotator::isRestAnnotated)
+                .toList();
     }
 
     public GeneratedFile generateProducer() {

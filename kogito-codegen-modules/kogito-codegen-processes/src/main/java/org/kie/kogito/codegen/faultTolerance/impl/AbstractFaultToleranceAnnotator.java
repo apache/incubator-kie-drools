@@ -16,19 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.codegen.api.context;
+package org.kie.kogito.codegen.faultTolerance.impl;
 
-public final class ContextAttributesConstants {
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.faultTolerance.FaultToleranceAnnotator;
 
-    /**
-     * OpenAPI Generator Descriptors with information of every REST client generated indexed by the spec resource file.
-     */
-    public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";
+public abstract class AbstractFaultToleranceAnnotator implements FaultToleranceAnnotator {
 
-    public static final String PROCESS_AUTO_SVG_MAPPING = "processAutoSVGMapping";
+    protected KogitoBuildContext context;
 
-    public static final String KOGITO_FAULT_TOLERANCE_ENABLED = "kogito.faultToleranceEnabled";
-
-    private ContextAttributesConstants() {
+    public AbstractFaultToleranceAnnotator(KogitoBuildContext context) {
+        this.context = context;
     }
 }

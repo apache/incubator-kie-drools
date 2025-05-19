@@ -16,19 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.codegen.api.context;
+package org.kie.kogito.codegen.faultTolerance;
 
-public final class ContextAttributesConstants {
+import com.github.javaparser.ast.body.MethodDeclaration;
 
-    /**
-     * OpenAPI Generator Descriptors with information of every REST client generated indexed by the spec resource file.
-     */
-    public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";
+/**
+ * Helper class to add FaultTolerance annotation
+ */
+public interface FaultToleranceAnnotator {
 
-    public static final String PROCESS_AUTO_SVG_MAPPING = "processAutoSVGMapping";
+    void addFaultToleranceAnnotations(MethodDeclaration methodDeclaration);
 
-    public static final String KOGITO_FAULT_TOLERANCE_ENABLED = "kogito.faultToleranceEnabled";
-
-    private ContextAttributesConstants() {
-    }
+    String getRetryAnnotationName();
 }

@@ -73,6 +73,7 @@ import static java.util.stream.Collectors.toList;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_PATH;
 import static org.kie.kogito.codegen.process.util.BusinessCalendarUtil.conditionallyAddCustomBusinessCalendar;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.generatorProperty;
+import static org.kie.kogito.codegen.process.util.CodegenUtil.isFaultToleranceEnabled;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
@@ -378,7 +379,8 @@ public class ProcessCodegen extends AbstractGenerator {
                         .withWorkItems(processIdToWorkItemModel.get(workFlowProcess.getId()))
                         .withSignals(metaData.getSignals())
                         .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
-                        .withTransaction(isTransactionEnabled(this, context()));
+                        .withTransaction(isTransactionEnabled(this, context()))
+                        .withFaultTolerance(isFaultToleranceEnabled(context()));
 
                 rgs.add(processResourceGenerator);
             }

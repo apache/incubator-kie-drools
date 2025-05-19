@@ -26,6 +26,8 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.kogito.codegen.api.context.ContextAttributesConstants.KOGITO_FAULT_TOLERANCE_ENABLED;
+
 public final class CodegenUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(CodegenUtil.class);
@@ -33,6 +35,11 @@ public final class CodegenUtil {
      * Flag used to configure transaction enabling. Default to <code>true</code>
      */
     public static final String TRANSACTION_ENABLED = "transactionEnabled";
+
+    /**
+     * Flag used to configure fault tolerance enabling. Default to <code>true</code>
+     */
+    public static final String FAULT_TOLERANCE_ENABLED = "faultToleranceEnabled";
 
     private CodegenUtil() {
         // do nothing
@@ -107,5 +114,13 @@ public final class CodegenUtil {
 
     private static String getApplicationProperty(KogitoBuildContext context, String property) {
         return context.getApplicationProperty(property).orElseThrow(() -> new IllegalArgumentException("Property " + property + " defined but does not contain proper value"));
+    }
+
+    public static boolean isFaultToleranceEnabled(KogitoBuildContext context) {
+        boolean isFaultToleranceEnabled = context.getApplicationProperty(KOGITO_FAULT_TOLERANCE_ENABLED)
+                .map(Boolean::parseBoolean)
+                .orElse(true);
+
+        return !JavaKogitoBuildContext.CONTEXT_NAME.equals(context.name()) && isFaultToleranceEnabled;
     }
 }

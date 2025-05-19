@@ -16,19 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.codegen.api.context;
+package org.kie.kogito.codegen.faultTolerance.impl;
 
-public final class ContextAttributesConstants {
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-    /**
-     * OpenAPI Generator Descriptors with information of every REST client generated indexed by the spec resource file.
-     */
-    public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";
+import com.github.javaparser.ast.body.MethodDeclaration;
 
-    public static final String PROCESS_AUTO_SVG_MAPPING = "processAutoSVGMapping";
+public class QuarkusFaultToleranceAnnotator extends AbstractFaultToleranceAnnotator {
 
-    public static final String KOGITO_FAULT_TOLERANCE_ENABLED = "kogito.faultToleranceEnabled";
+    public static final String RETRY_ANNOTATION = "org.eclipse.microprofile.faulttolerance.Retry";
 
-    private ContextAttributesConstants() {
+    public QuarkusFaultToleranceAnnotator(KogitoBuildContext context) {
+        super(context);
+    }
+
+    @Override
+    public String getRetryAnnotationName() {
+        return RETRY_ANNOTATION;
+    }
+
+    @Override
+    public void addFaultToleranceAnnotations(MethodDeclaration methodDeclaration) {
+        methodDeclaration.addAnnotation(RETRY_ANNOTATION);
     }
 }

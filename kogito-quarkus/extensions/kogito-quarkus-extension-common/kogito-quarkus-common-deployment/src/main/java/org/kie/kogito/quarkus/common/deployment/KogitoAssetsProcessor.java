@@ -80,6 +80,7 @@ import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.makeBuildItems;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
+import static org.kie.kogito.codegen.api.context.ContextAttributesConstants.KOGITO_FAULT_TOLERANCE_ENABLED;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.dumpFilesToDisk;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getHotReloadSupportSource;
@@ -278,6 +279,13 @@ public class KogitoAssetsProcessor {
         if (!hasRestCapabilities && kogitoGenerateRest(context).orElse(true)) {
             throw new MissingRestCapabilityException();
         }
+
+        // disable Fault Tolerance if SmallRye Fault Tolerance extension is not available (user can override via property)
+        if (!capabilities.isPresent(Capability.SMALLRYE_FAULT_TOLERANCE)) {
+            context.setApplicationProperty(KOGITO_FAULT_TOLERANCE_ENABLED, "false");
+            LOGGER.info("Disabling Kogito Fault Tolerance because SmallRye Fault Tolerance extension is not available");
+        }
+
     }
 
     private Optional<Boolean> kogitoGenerateRest(KogitoBuildContext context) {
