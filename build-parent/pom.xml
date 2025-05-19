@@ -223,6 +223,9 @@
 
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
+    <!-- plugin used to enforce architectural constraints -->
+    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+    <version.archunit.junit5>1.4.0</version.archunit.junit5>
   </properties>
 
   <dependencyManagement>
@@ -1191,6 +1194,13 @@
         <artifactId>jboss-logging</artifactId>
         <version>${version.org.jboss.logging}</version>
       </dependency>
+
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${version.archunit.junit5}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>
@@ -1863,6 +1873,12 @@
           <groupId>com.github.eirslett</groupId>
           <artifactId>frontend-maven-plugin</artifactId>
           <version>${version.com.github.eirslett}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.societegenerale.commons</groupId>
+          <artifactId>arch-unit-maven-plugin</artifactId>
+          <version>${archunit.maven.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

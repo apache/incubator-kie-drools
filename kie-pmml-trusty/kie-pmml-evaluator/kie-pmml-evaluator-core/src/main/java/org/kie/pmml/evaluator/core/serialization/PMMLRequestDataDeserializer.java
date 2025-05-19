@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import java.io.IOException;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 

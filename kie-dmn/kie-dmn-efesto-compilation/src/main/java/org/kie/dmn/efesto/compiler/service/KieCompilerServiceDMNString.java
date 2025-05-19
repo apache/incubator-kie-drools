@@ -67,7 +67,7 @@ public class KieCompilerServiceDMNString extends AbstractKieCompilerServiceDMN {
                                                        DMNValidator.Validation.VALIDATE_MODEL,
                                                        DMNValidator.Validation.VALIDATE_COMPILATION,
                                                        DMNValidator.Validation.ANALYZE_DECISION_TABLE);
-        // TODO how to deal ?
+        // see https://github.com/apache/incubator-kie-issues/issues/1619
 //        if (DmnCompilerUtils.hasError(messages)) {
 //            return Collections.emptyList();
 //        }

@@ -36,10 +36,6 @@
   <name>KIE :: Decision Model Notation</name>
   <description>Top level pom for the KIE DMN support implementation</description>
 
-  <properties>
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
-  </properties>
-
   <modules>
     <module>kie-dmn-xsd-resources</module>
     <module>kie-dmn-api</module>
@@ -78,15 +74,6 @@
   </dependencyManagement>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.societegenerale.commons</groupId>
-          <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
