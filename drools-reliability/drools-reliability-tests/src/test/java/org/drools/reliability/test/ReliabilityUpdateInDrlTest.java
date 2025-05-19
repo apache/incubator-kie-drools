@@ -259,5 +259,56 @@ class ReliabilityUpdateInDrlTest extends ReliabilityTestBasics {
         assertThat(getResults(session2)).isEmpty();
     }
 
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithExplicitSafepoints")
+    void insertFireUpdateFailoverFire_shouldNotFireTheSameRuleTwice(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy) {
+        String rule = "import " + Person.class.getCanonicalName() + ";\n" +
+                """
+                        global java.util.List results;
+                        
+                        rule R1
+                        when
+                            $p : Person( age < 50 )
+                        then
+                            results.add("R1");
+                        end
+                        
+                        rule R2
+                        when
+                            $a : Integer()
+                            $p : Person( age == $a )
+                        then
+                            results.add("R2");
+                        
+                            modify($p) {
+                                setAge($a + 1)
+                            }
+                        
+                            delete($a);
+                        end
+                        """;
+        createSession(rule, persistenceStrategy, safepointStrategy);
+
+        insert(new Person("John",32));
+
+        assertThat(fireAllRules()).isEqualTo(1);
+        assertThat(getResults()).containsExactly("R1");
+
+        failover();
+
+        restoreSession(rule, persistenceStrategy,safepointStrategy);
+        clearResults();
+
+        insert(32);
+
+        assertThat(fireAllRules()).isEqualTo(2);
+        assertThat(getResults()).containsExactly("R2", "R1");
+
+        failover();
+
+        restoreSession(rule, persistenceStrategy,safepointStrategy);
+
+        assertThat(fireAllRules()).isZero();
+    }
 }
 
