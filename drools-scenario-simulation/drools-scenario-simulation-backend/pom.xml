@@ -116,7 +116,7 @@
       <artifactId>mvel2</artifactId>
     </dependency>
 
-    <!-- DMN dependencies -->
+    <!-- DMN & PMML dependencies -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
@@ -136,6 +136,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-efesto-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
     </dependency>
 
     <!-- Logs -->
@@ -171,11 +175,6 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-core</artifactId>
-    </dependency>
-
   </dependencies>
 
   <dependencyManagement>

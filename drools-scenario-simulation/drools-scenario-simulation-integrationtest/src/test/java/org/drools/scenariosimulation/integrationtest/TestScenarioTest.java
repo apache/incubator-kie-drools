@@ -21,6 +21,6 @@ package org.drools.scenariosimulation.integrationtest;
 import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
 
 @TestScenarioActivator
-public class ScenarioTest {
+public class TestScenarioTest {
 
 }
