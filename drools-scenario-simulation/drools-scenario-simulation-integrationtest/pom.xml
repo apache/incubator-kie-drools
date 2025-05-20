@@ -49,6 +49,16 @@
         <artifactId>kie-drl-map-input-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -61,6 +71,15 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-xml-support</artifactId>
+    </dependency>
+    <!-- DMN EFESTO -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-compilation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-efesto-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

@@ -100,7 +100,7 @@ public final class IndexFile extends File {
     }
 
     public String getModel() {
-        return getModel(getSuffix());
+        return getModel(this.getName());
     }
 
     @Override

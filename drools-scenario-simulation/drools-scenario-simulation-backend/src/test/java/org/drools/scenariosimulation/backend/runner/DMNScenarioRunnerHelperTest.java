@@ -90,13 +90,15 @@ class DMNScenarioRunnerHelperTest {
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
     private static final String DMN_FILE_PATH = "dmnFilePath";
+    private static final String DMN_NAMESPACE = "dmnNamespace";
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
     private final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper() {
+
         @Override
-        protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
+        protected DMNScenarioExecutableBuilder createBuilderWrapper() {
             return dmnScenarioExecutableBuilderMock;
         }
     };
@@ -140,6 +142,8 @@ class DMNScenarioRunnerHelperTest {
         settings = new Settings();
         settings.setType(ScenarioSimulationModel.Type.DMN);
         settings.setDmnFilePath(DMN_FILE_PATH);
+        settings.setDmnName(NAME);
+        settings.setDmnNamespace(DMN_NAMESPACE);
         personFactIdentifier = FactIdentifier.create("Fact 1", "Fact 1");
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
@@ -443,7 +447,7 @@ class DMNScenarioRunnerHelperTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH, NAME);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
         assertThat(keyCaptor.getAllValues()).containsAll(expectedInputDataToLoad);
         for (int i = 0; i < inputObjects; i++) {
@@ -535,6 +539,7 @@ class DMNScenarioRunnerHelperTest {
         Map<String, Object> subValuePerson = (Map<String, Object>) value.get("Person");
         assertThat(subValuePerson).hasSize(2).contains(givenImportedPersonFactData, givenImportedPersonFactData2);
     }
+
 
     private void commonExtractResultMetadata(List<DMNMessage> messages) {
         Set<DecisionNode> decisions = new HashSet<>();
