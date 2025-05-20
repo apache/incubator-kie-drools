@@ -248,7 +248,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>../../../../main/resources/dmnPmml/KiePMMLRegression.dmn</dmnFilePath>
+    <dmnFilePath>KiePMMLRegression.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456</dmnNamespace>
     <dmnName>TestRegressionDMN</dmnName>
