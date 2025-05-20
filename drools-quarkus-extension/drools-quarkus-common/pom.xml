@@ -29,17 +29,20 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <name>Drools :: Quarkus Extension :: Util :: Deployment</name>
-    <artifactId>drools-quarkus-util-deployment</artifactId>
-
-    <properties>
-        <java.module.name>org.drools.quarkus.util</java.module.name>
-    </properties>
+    <artifactId>drools-quarkus-common</artifactId>
+    <name>Drools :: Quarkus Extension :: Runtime :: Common</name>
+    <description>Define and execute your business rules with Drools</description>
+    <url>https://www.drools.org/</url>
+    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.kie</groupId>
-            <artifactId>kie-memory-compiler</artifactId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -47,11 +50,15 @@
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-codegen-common</artifactId>
+            <artifactId>drools-kiesession</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-xml-support</artifactId>
+            <artifactId>drools-tms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-compiler</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -61,27 +68,43 @@
         <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-core-deployment</artifactId>
+            <artifactId>quarkus-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.arc</groupId>
+            <artifactId>arc-processor</artifactId>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-internal</artifactId>
+            <scope>test</scope>
             <exclusions>
-              <exclusion>
-                <groupId>org.jboss</groupId>
-                <artifactId>jandex</artifactId>
-              </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-xml-impl</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-arc-deployment</artifactId>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest-server-spi-deployment</artifactId>
-        </dependency>
-        
 
     </dependencies>
 </project>

@@ -36,12 +36,36 @@
     <java.module.name>org.drools.quarkus.ruleunits.deployment</java.module.name>
   </properties>
 
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-quarkus-deployment</artifactId>
+      <artifactId>drools-quarkus-ruleunits</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-quarkus-util-deployment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-xml-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-codegen</artifactId>
+        </dependency>
+
       <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -65,11 +89,39 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
         </dependency>
+
+    <!-- test -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-quarkus-ruleunits</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-internal</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-xml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-xml-impl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
   </dependencies>
 
     <build>
@@ -131,5 +183,4 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
-</project>
+    </build></project>

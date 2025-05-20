@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.drools</groupId>
-        <artifactId>drools-quarkus-extension</artifactId>
+        <artifactId>drools-quarkus-common</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
 
@@ -39,10 +39,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-quarkus</artifactId>
-        </dependency>
 	    <dependency>
 	      <groupId>org.drools</groupId>
 	      <artifactId>drools-ruleunits-engine</artifactId>
@@ -51,6 +47,46 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-extension-maven-plugin</artifactId>
+                <version>${version.io.quarkus}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>extension-descriptor</goal>
+                        </goals>
+                        <configuration>
+                            <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+                            <capabilities>
+                                <provides>org.drools</provides>
+                            </capabilities>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-extension-processor</artifactId>
+                            <version>${version.io.quarkus}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-AlegacyConfigRoot=true</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+            </plugin>
+        
 		      <plugin>
 		        <artifactId>maven-jar-plugin</artifactId>
 		        <executions>
