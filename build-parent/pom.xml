@@ -210,7 +210,6 @@
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
     <version.org.awaitility>4.2.0</version.org.awaitility>
-    <version.io.github.bonigarcia>5.1.1</version.io.github.bonigarcia>
 
     <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule --> 
     <version.jdk>${maven.compiler.release}</version.jdk>
@@ -1105,13 +1104,6 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${version.org.awaitility}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.github.bonigarcia</groupId>
-        <artifactId>webdrivermanager</artifactId>
-        <version>${version.io.github.bonigarcia}</version>
         <scope>test</scope>
       </dependency>
 
