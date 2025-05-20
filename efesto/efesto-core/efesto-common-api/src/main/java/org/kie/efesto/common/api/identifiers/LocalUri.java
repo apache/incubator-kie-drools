@@ -18,10 +18,10 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -129,16 +129,16 @@ public abstract class LocalUri {
 
         private LocalUriPathComponent(LocalUri parent, String component) {
             this.parent = parent;
-            try {
-                this.component = URLEncoder.encode(component, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            this.component = URLEncoder.encode(component, StandardCharsets.UTF_8);
         }
 
         @Override
         public LocalUri parent() {
             return parent;
+        }
+
+        public String getComponent() {
+            return component;
         }
 
         /**

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,6 +49,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
@@ -66,8 +67,9 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         if (!ScenarioSimulationModel.Type.DMN.equals(settings.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
-        DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper(kieContainer);
-        executableBuilder.setActiveModel(settings.getDmnFilePath());
+        DMNScenarioExecutableBuilder executableBuilder = createBuilderWrapper();
+        String fileName = DmnCompilerUtils.getCleanedFilenameForURI(settings.getDmnFilePath());
+        executableBuilder.setActiveModel(fileName, settings.getDmnName());
 
         defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(executableBuilder::setValue);
 
@@ -289,7 +291,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return toReturn;
     }
 
-    protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
-        return DMNScenarioExecutableBuilder.createBuilder(kieContainer);
+    protected DMNScenarioExecutableBuilder createBuilderWrapper() {
+        return DMNScenarioExecutableBuilder.createBuilder();
     }
 }

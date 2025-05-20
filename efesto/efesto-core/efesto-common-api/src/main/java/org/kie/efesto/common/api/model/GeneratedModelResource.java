@@ -18,14 +18,16 @@
  */
 package org.kie.efesto.common.api.model;
 
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
+@JsonIgnoreProperties(value = { "compiledModel" })
 public final class GeneratedModelResource<T> implements GeneratedResource {
+
 
     private static final long serialVersionUID = 6588314882989626752L;
     /**

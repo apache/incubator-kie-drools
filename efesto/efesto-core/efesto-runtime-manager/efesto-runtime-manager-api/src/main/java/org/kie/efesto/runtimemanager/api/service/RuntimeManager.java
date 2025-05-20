@@ -24,6 +24,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
+@SuppressWarnings("rawtypes")
 public interface RuntimeManager {
 
     /**

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,12 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.identifiers;
+package org.kie.dmn.efesto.compiler.model;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
+import java.util.Set;
+import org.kie.api.io.Resource;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 
-public class DecisionIds implements ComponentRoot {
-    public LocalDecisionId get(String namespace, String name) {
-        return new LocalDecisionId(namespace, name);
+/**
+ * Resource set for "dmn" files
+ */
+public class DMNResourceSetResource extends EfestoSetResource<Resource> {
+
+
+    public DMNResourceSetResource(Set<Resource> dmnResources, ModelLocalUriId modelLocalUriId) {
+        super(dmnResources, modelLocalUriId);
     }
+
 }

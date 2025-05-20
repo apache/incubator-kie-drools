@@ -625,7 +625,7 @@ class ValidatorTest extends AbstractValidatorTest {
     private void testDirectoryInJar(JarFile jarFile, String directory) {
         Resource[] resources = Collections.list(jarFile.entries())
                 .stream()
-                .filter(entry -> entry.getName().startsWith(directory) && !entry.isDirectory())
+                .filter(entry -> entry.getName().startsWith(directory) && !entry.isDirectory() && entry.getName().endsWith(".dmn"))
                 .map(ZipEntry::getName)
                 .map(ClassPathResource::new)
                 .toArray(Resource[]::new);

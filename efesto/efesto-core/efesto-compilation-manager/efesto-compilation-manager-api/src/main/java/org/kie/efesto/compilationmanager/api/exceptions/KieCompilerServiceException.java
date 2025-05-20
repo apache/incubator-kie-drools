@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,12 @@
  */
 package org.kie.efesto.compilationmanager.api.exceptions;
 
+import java.io.Serial;
+
 public class KieCompilerServiceException extends RuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = 8287001272309028060L;
 
     public KieCompilerServiceException() {
     }

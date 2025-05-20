@@ -19,8 +19,6 @@
 package org.kie.drl.engine.runtime.kiesession.local.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Optional;
-
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
@@ -34,8 +32,11 @@ import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
+import java.util.Optional;
+
 import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoRuntimeContext> {
 
     private static final ObjectMapper objectMapper = JSONUtils.getObjectMapper();
