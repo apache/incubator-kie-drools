@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,6 +224,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         return additionalArguments;
     }
 
+    @Disabled() // See https://github.com/apache/incubator-kie-issues/issues/1960
     @Test
     public void testBPMN2HotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-instrumentation-reload-bpmn");
@@ -298,6 +300,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         LOGGER.info("[testBPMN2HotReload] done.");
     }
 
+    @Disabled() // See https://github.com/apache/incubator-kie-issues/issues/1960
     @Test
     public void testDMNHotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-instrumentation-reload-dmn");
@@ -369,6 +372,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         LOGGER.info("[testDMNHotReload] done.");
     }
 
+    @Disabled() // See https://github.com/apache/incubator-kie-issues/issues/1960
     @Test
     public void testDRLHotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-instrumentation-reload-drl");
@@ -440,6 +444,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         LOGGER.info("done.");
     }
 
+    @Disabled() // See https://github.com/apache/incubator-kie-issues/issues/1960
     @Test
     public void testStaticResource() throws MavenInvocationException {
         testDir = initProject("projects/simple-dmn", "projects/simple-dmn-static-resource");

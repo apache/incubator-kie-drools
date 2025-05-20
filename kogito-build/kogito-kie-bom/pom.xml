@@ -254,6 +254,17 @@
         <artifactId>kie-dmn-openapi</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!--  Efesto decisions -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
 
       <!-- PMML -->
       <dependency>

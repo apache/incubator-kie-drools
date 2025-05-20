@@ -275,7 +275,7 @@ under the License.
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/main/resources/com/myspace/puppa/KiePMMLTree.dmn</dmnFilePath>
+    <dmnFilePath>src/test/resources/dmnPmml/KiePMMLTree.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE1</dmnNamespace>
     <dmnName>TestTreeDMN</dmnName>

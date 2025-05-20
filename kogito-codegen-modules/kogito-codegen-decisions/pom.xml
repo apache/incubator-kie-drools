@@ -71,6 +71,10 @@
             <groupId>org.kie</groupId>
             <artifactId>kie-dmn-openapi</artifactId>
         </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+      </dependency>
 
         <!--    Required because of GrafanaConfigurationWriter    -->
         <dependency>

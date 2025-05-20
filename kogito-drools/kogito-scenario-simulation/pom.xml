@@ -61,7 +61,8 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-pmml</artifactId>
       </dependency>
-<!--       EFESTO -->
+     <!-- EFESTO -->
+      <!-- DRL -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-compilation-common</artifactId>
@@ -69,6 +70,15 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-map-input-runtime</artifactId>
+      </dependency>
+      <!-- DMN -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
       </dependency>
 
 

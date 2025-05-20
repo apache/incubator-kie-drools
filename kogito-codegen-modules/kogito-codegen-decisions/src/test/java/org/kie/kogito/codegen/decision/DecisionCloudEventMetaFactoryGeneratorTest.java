@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DecisionCloudEventMetaFactoryGeneratorTest {
 
     private static final String MODEL_PATH = "src/test/resources/decision/models/vacationDays";
-    private static final int EXPECTED_FILES_WITH_CLOUDEVENTS = 5;
-    private static final int EXPECTED_FILES_WITHOUT_CLOUDEVENTS = 4;
+    private static final int EXPECTED_FILES_WITH_CLOUDEVENTS = 6; // Now it includes IndexFile.dmn_json
+    private static final int EXPECTED_FILES_WITHOUT_CLOUDEVENTS = 5; // Now it includes IndexFile.dmn_json
     private static final String EXPECTED_FILE_PATH = "org/kie/kogito/app/DecisionCloudEventMetaFactory.java";
 
     @Test
