@@ -38,7 +38,6 @@ import org.drools.quarkus.examples.otn.model.MyInterface;
 import org.drools.quarkus.examples.otn.model.MyUnusedClass;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
@@ -54,7 +53,7 @@ import io.quarkus.test.QuarkusUnitTest;
  * The scope of these tests is to check the resulting BuildItems as produced by this drools-quarkus-extension.
  */
 
-@Disabled
+
 public class BuildItemsTest {
     
     static final Logger LOG = LoggerFactory.getLogger(BuildItemsTest.class);
