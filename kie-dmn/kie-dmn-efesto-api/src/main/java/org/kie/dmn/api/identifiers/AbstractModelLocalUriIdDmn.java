@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,37 +18,50 @@
  */
 package org.kie.dmn.api.identifiers;
 
+import java.util.Objects;
+
 import org.kie.efesto.common.api.identifiers.Id;
 import org.kie.efesto.common.api.identifiers.LocalId;
-import org.kie.efesto.common.api.identifiers.LocalUriId;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class LocalDecisionServiceId extends LocalUriId implements LocalId {
-    public static final String PREFIX = "services";
+public class AbstractModelLocalUriIdDmn extends ModelLocalUriId implements Id {
 
-    private final Id decisionId;
-    private final String serviceId;
+    private static final long serialVersionUID = -4610916178245973385L;
+    protected final String fileName;
+    protected final String name;
 
-    public LocalDecisionServiceId(Id decisionId, String serviceId) {
-        super(decisionId.toLocalId().asLocalUri().append(PREFIX).append(serviceId));
-        LocalId localDecisionId = decisionId.toLocalId();
-        if (!localDecisionId.toLocalId().asLocalUri().startsWith(LocalDecisionId.PREFIX)) {
-            throw new IllegalArgumentException("Not a valid decision path"); // fixme use typed exception
-        }
-        this.decisionId = decisionId;
-        this.serviceId = serviceId;
+    public AbstractModelLocalUriIdDmn(LocalUri path, String fileName, String name) {
+        super(path);
+        this.fileName = fileName;
+        this.name = name;
     }
 
-    public Id decisionId() {
-        return decisionId;
+    public String getFileName() {
+        return fileName;
     }
 
-    public String serviceId() {
-        return serviceId;
+    public String name() {
+        return name;
     }
 
     @Override
     public LocalId toLocalId() {
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) {
+            return false;
+        }
+        ModelLocalUriId that = (ModelLocalUriId) o;
+        return Objects.equals(this.fullPath(), that.fullPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }
