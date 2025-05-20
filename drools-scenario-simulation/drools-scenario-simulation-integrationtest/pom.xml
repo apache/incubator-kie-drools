@@ -68,10 +68,6 @@
       <artifactId>drools-scenario-simulation-backend</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-xml-support</artifactId>
-    </dependency>
     <!-- DMN EFESTO -->
     <dependency>
       <groupId>org.kie</groupId>
