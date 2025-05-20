@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.legacy;
+package org.drools.scesim;
 
-import org.kie.kogito.legacy.Hello;
+import org.drools.scesim.Hello;
 
 rule HelloApprove when
     $l: Hello( greeting.equals("foo") )
