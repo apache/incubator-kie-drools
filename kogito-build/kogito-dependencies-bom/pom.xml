@@ -83,7 +83,7 @@
     -->
     <version.io.fabric8.kubernetes-client>6.13.4</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.org.flywaydb>10.17.3</version.org.flywaydb>
+    <version.org.flywaydb>11.8.0</version.org.flywaydb>
     <version.org.postgresql>42.7.4</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
