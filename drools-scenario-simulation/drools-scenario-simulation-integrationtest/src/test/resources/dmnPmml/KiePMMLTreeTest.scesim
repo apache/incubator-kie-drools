@@ -274,7 +274,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>../../../../main/resources/dmnPmml/KiePMMLTree.dmn</dmnFilePath>
+    <dmnFilePath>../../../main/resources/dmnPmml/KiePMMLTree.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_FAA4232D-9D61-4089-BB05-5F5D7C1AECE1</dmnNamespace>
     <dmnName>TestTreeDMN</dmnName>
