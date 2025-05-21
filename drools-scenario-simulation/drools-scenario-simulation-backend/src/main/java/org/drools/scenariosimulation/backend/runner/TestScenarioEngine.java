@@ -51,8 +51,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
-
 /**
  * It implements a TestEngine that discovers and executes Test Scenario files that live in the final
  * user project. A Java Class in the src/test/java directory with the {@link TestScenarioActivator} annotation
