@@ -37,7 +37,6 @@
 
   <modules>
     <module>drools-quarkus-util-deployment</module>
-    <module>drools-quarkus-common</module>
     <module>drools-quarkus</module>
     <module>drools-quarkus-deployment</module>
     <module>drools-quarkus-ruleunits</module>
