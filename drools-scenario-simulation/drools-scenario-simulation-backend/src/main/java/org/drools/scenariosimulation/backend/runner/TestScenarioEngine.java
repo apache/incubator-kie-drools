@@ -63,7 +63,6 @@ public class TestScenarioEngine implements TestEngine {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestScenarioEngine.class);
     private static final String TEST_ENGINE_ID = "kie-test-scenario";
     private static final String TEST_ENGINE_DESCRIPTION = "Apache KIE Test Scenario engine";
-    private static final String TEST_SOURCE_PATH = "." + File.separator + "target" + File.separator + "test-classes";
     private static final ScenarioSimulationXMLPersistence XML_READER = ScenarioSimulationXMLPersistence.getInstance();
 
     @Override
@@ -88,7 +87,6 @@ public class TestScenarioEngine implements TestEngine {
     @Override
     public void execute(ExecutionRequest executionRequest) {
         LOGGER.debug("Executing {} Test Scenarios", executionRequest.getRootTestDescriptor().getChildren().size());
-        preTestsExecution();
 
         EngineExecutionListener listener = executionRequest.getEngineExecutionListener();
         executionRequest.getRootTestDescriptor().getChildren().stream()
@@ -140,16 +138,6 @@ public class TestScenarioEngine implements TestEngine {
                     LOGGER.debug("{} Test Scenario suite executed", testSuiteDescriptor.getDisplayName());
                     listener.executionFinished(testSuiteDescriptor, TestExecutionResult.successful());
                 });
-
-        postTestsExecution();
-    }
-
-    static void preTestsExecution() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, TEST_SOURCE_PATH);
-    }
-
-    static void postTestsExecution() {
-        System.clearProperty(INDEXFILE_DIRECTORY_PROPERTY);
     }
 
     static void appendTestSuites(Class<?> javaClass, TestDescriptor engineDescriptor) {
