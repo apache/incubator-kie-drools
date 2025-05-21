@@ -50,7 +50,7 @@ public class ExceptionHandlerTransaction implements ExceptionHandler {
     @Override
     @Transactional(value = TxType.REQUIRES_NEW)
     public void handle(Exception th) {
-        if (processesContainer.isResolvable()) {
+        if (!processesContainer.isResolvable()) {
             return;
         }
 
