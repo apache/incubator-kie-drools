@@ -73,9 +73,9 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.14.5</version.io.micrometer>
-    <version.io.quarkus>3.20.0</version.io.quarkus>
+    <version.io.quarkus>3.20.1</version.io.quarkus>
     <version.io.netty>4.1.118.Final</version.io.netty>
-    <version.io.smallrye.openapi.core>4.0.8</version.io.smallrye.openapi.core>
+    <version.io.smallrye.openapi.core>4.0.10</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
@@ -195,7 +195,7 @@
     <version.org.postgresql>42.7.5</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.2.7</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.3.0</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
