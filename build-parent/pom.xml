@@ -74,7 +74,7 @@
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.14.5</version.io.micrometer>
     <version.io.quarkus>3.20.1</version.io.quarkus>
-    <version.io.netty>4.1.118.Final</version.io.netty>
+    <version.io.netty>4.1.119.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.10</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
 
