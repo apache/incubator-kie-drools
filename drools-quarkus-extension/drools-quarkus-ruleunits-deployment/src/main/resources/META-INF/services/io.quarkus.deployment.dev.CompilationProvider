@@ -17,4 +17,4 @@
 # under the License.
 #
 
-org.drools.quarkus.deployment.DroolsCompilationProvider
+org.drools.quarkus.util.deployment.DroolsCompilationProvider

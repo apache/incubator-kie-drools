@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.quarkus.deployment;
+package org.drools.quarkus.util.deployment;
 
 import java.util.Collections;
 import java.util.HashSet;
