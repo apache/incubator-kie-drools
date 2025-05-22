@@ -278,7 +278,7 @@ public class ExpressionTyper {
         if (drlxExpr instanceof PointFreeExpr pointFreeExpr) {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(pointFreeExpr.getLeft());
             Optional<TypedExpression> optRight = pointFreeExpr.getRight().size() == 1 ? toTypedExpressionRec(pointFreeExpr.getRight().get( 0 )) : Optional.empty();
-            OperatorSpec opSpec = getOperatorSpec(pointFreeExpr.getRight(), pointFreeExpr.getOperator());
+            OperatorSpec opSpec = getOperatorSpec(pointFreeExpr.getRight(), pointFreeExpr.getFullOperatorString());
 
             return optLeft.map(left -> new TypedExpression(opSpec.getExpression( ruleContext, pointFreeExpr, left, this), left.getType())
                     .setStatic(opSpec.isStatic())
@@ -292,13 +292,14 @@ public class ExpressionTyper {
                 throw new CannotTypeExpressionException("left leaf is the same : halfPointFreeExpr = " + halfPointFreeExpr + ", originalExpression = " + context.getOriginalExpression());
             }
             Optional<TypedExpression> optLeft = toTypedExpressionRec(parentLeft);
-            OperatorSpec opSpec = getOperatorSpec(halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
+            OperatorSpec opSpec = getOperatorSpec(halfPointFreeExpr.getRight(), halfPointFreeExpr.getFullOperatorString());
 
             final PointFreeExpr transformedToPointFree =
                     new PointFreeExpr(halfPointFreeExpr.getTokenRange().orElseThrow(() -> new IllegalStateException("Token range is not present!")),
                                       parentLeft,
                                       halfPointFreeExpr.getRight(),
                                       halfPointFreeExpr.getOperator(),
+                                      halfPointFreeExpr.getSubOperator(),
                                       halfPointFreeExpr.isNegated(),
                                       halfPointFreeExpr.getArg1(),
                                       halfPointFreeExpr.getArg2(),
@@ -471,12 +472,11 @@ public class ExpressionTyper {
         return empty();
     }
 
-    private OperatorSpec getOperatorSpec(NodeList<Expression> rightExpressions, SimpleName expressionOperator) {
+    private OperatorSpec getOperatorSpec(NodeList<Expression> rightExpressions, String operator) {
         for (Expression rightExpr : rightExpressions) {
             toTypedExpressionRec(rightExpr);
         }
 
-        String operator = expressionOperator.asString();
         if (ModelGenerator.temporalOperators.contains(operator )) {
             return TemporalOperatorSpec.INSTANCE;
         }

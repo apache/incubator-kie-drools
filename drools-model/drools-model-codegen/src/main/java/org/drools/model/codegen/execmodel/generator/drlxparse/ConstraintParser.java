@@ -841,7 +841,7 @@ public class ConstraintParser {
 
     private static PointFreeExpr completeHalfPointFreeExpr(Expression left, HalfPointFreeExpr halfRight, RuleContext context) {
         ParserLogUtils.logHalfConstraintWarn(halfRight, Optional.of(context));
-        return new PointFreeExpr( halfRight.getTokenRange().orElse( null ), left, halfRight.getRight(), halfRight.getOperator(), halfRight.isNegated(), halfRight.getArg1(), halfRight.getArg2(), halfRight.getArg3(), halfRight.getArg4() );
+        return new PointFreeExpr( halfRight.getTokenRange().orElse( null ), left, halfRight.getRight(), halfRight.getOperator(), halfRight.getSubOperator(), halfRight.isNegated(), halfRight.getArg1(), halfRight.getArg2(), halfRight.getArg3(), halfRight.getArg4() );
     }
 
     private static BinaryExpr completeHalfBinaryExpr(HalfBinaryExpr halfRight, RuleContext context) {

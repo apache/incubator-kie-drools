@@ -35,7 +35,7 @@ public class CustomOperatorWrapper implements Operator.SingleValue<Object, Objec
 
     @Override
     public boolean eval( Object o1, Object o2 ) {
-        return evaluator.evaluate(null, null, dummyFactHandleOf(o2), null, dummyFactHandleOf(o1));
+        return evaluator.evaluate(null, null, dummyFactHandleOf(o1), null, dummyFactHandleOf(o2));
     }
 
     @Override
