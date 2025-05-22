@@ -29,7 +29,6 @@ import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.mvel.compiler.Person;
@@ -66,7 +65,7 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
             KieSession kieSession = kieBase.newKieSession();
@@ -74,7 +73,7 @@ public class CustomOperatorWithBracketsTest {
             int fired = kieSession.fireAllRules();
             assertThat(fired).isEqualTo(1);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 
@@ -89,7 +88,7 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
             KieSession kieSession = kieBase.newKieSession();
@@ -97,7 +96,7 @@ public class CustomOperatorWithBracketsTest {
             int fired = kieSession.fireAllRules();
             assertThat(fired).isEqualTo(1);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 
@@ -113,17 +112,16 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
-            ReteDumper.dumpRete(kieBase);
             KieSession kieSession = kieBase.newKieSession();
             kieSession.insert("J");
             kieSession.insert(new Person("John", 35));
             int fired = kieSession.fireAllRules();
             assertThat(fired).isEqualTo(1);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 
@@ -139,10 +137,9 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
-            ReteDumper.dumpRete(kieBase);
             KieSession kieSession = kieBase.newKieSession();
             kieSession.insert("J");
             kieSession.insert(new Person("Paul", 32));
@@ -151,7 +148,7 @@ public class CustomOperatorWithBracketsTest {
             int fired = kieSession.fireAllRules();
             assertThat(fired).isEqualTo(1);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 
@@ -169,10 +166,9 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
-            ReteDumper.dumpRete(kieBase);
             KieSession kieSession = kieBase.newKieSession();
             kieSession.insert("John");
             kieSession.insert(new Person("P", 32));
@@ -181,7 +177,7 @@ public class CustomOperatorWithBracketsTest {
             int fired = kieSession.fireAllRules();
             assertThat(fired).isEqualTo(1);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 
@@ -216,11 +212,11 @@ public class CustomOperatorWithBracketsTest {
                         "then\n" +
                         "end\n";
 
-        System.setProperty(EvaluatorOption.PROPERTY_NAME + "str", F_StrEvaluatorDefinition.class.getName());
+        System.setProperty(EvaluatorOption.PROPERTY_NAME + "F_str", F_StrEvaluatorDefinition.class.getName());
         try {
             KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
         } finally {
-            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "str");
+            System.clearProperty(EvaluatorOption.PROPERTY_NAME + "F_str");
         }
     }
 

@@ -35,6 +35,7 @@ public class CustomOperatorWrapper implements Operator.SingleValue<Object, Objec
 
     @Override
     public boolean eval( Object o1, Object o2 ) {
+        // o1 and o2 are the left and right operands of the expression, so this order. (See Evaluator.evaluate)
         return evaluator.evaluate(null, null, dummyFactHandleOf(o1), null, dummyFactHandleOf(o2));
     }
 
