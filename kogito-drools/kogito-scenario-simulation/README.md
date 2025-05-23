@@ -22,9 +22,6 @@ Kogito Test Scenario runner
 
 This module is a wrapper for Kogito of test scenario runner from `drools` repo.
 
-It contains a JUnit runner to make it possible to run `*.scesim` files via Maven build.
-
-NOTE: it works with JUnit 5 vintange engine
 
 How to use
 ----------
@@ -39,18 +36,21 @@ If you have one or more `*.scesim` files in your project to execute, add this de
 </dependency>
 ```
 
-And then create `KogitoScenarioJunitActivatorTest.java` file in `src/test/java/testscenario` with this content
+And then create `TestScenarioJunitActivatorTest.java` file in `src/test/java/testscenario` with this content
 
 ```java
 package testscenario;
 
+import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
+
 /**
  * KogitoJunitActivator is a custom JUnit runner that enables the execution of Test Scenario files (*.scesim).
  * This activator class, when executed, will load all scesim files available in the project and run them.
- * Each row of the scenario will generate a test JUnit result. */
-@org.junit.runner.RunWith(org.kogito.scenariosimulation.runner.KogitoJunitActivator.class)
-public class KogitoScenarioJunitActivatorTest {
+ * Each row of the scenario will generate a test JUnit result.
+ */
+@TestScenarioActivator
+public class TestScenarioJunitActivatorTest {
 }
 ```
 
-After that execute `mvn clean test` to execute it (you can also execute `KogitoScenarioJunitActivatorTest` in your IDE)
+After that execute `mvn clean test` to execute it (you can also execute `TestScenarioJunitActivatorTest` in your IDE)

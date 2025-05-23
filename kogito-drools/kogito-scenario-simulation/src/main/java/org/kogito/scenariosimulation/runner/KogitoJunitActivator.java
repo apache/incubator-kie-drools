@@ -19,8 +19,15 @@
 package org.kogito.scenariosimulation.runner;
 
 import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
+import org.drools.scenariosimulation.backend.runner.TestScenarioActivator;
 import org.junit.runners.model.InitializationError;
 
+/**
+ * @deprecated This is the JUnit 4 implementation of Test Scenario, based on
+ *             {@link org.junit.runner.Runner} JUnit 4 API. Replaced by {@link TestScenarioActivator}
+ *             Please replace {@code @org.junit.runner.RunWith(ScenarioJunitActivator.class)} with
+ *             {@code @TestScenarioActivator}
+ */
 @Deprecated(since = "10.2", forRemoval = true)
 public class KogitoJunitActivator extends ScenarioJunitActivator {
 

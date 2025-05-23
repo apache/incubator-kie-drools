@@ -123,16 +123,14 @@
     <version.org.postgres>15.9-alpine3.20</version.org.postgres>
     <!-- we align to version used by quarkus -->
     <version.org.apache.avro>1.12.0</version.org.apache.avro>
-    <version.org.assertj>3.24.2</version.org.assertj>
+    <version.org.assertj>3.27.3</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
-    <version.org.junit>5.10.2</version.org.junit>
-    <version.org.junit.jupiter>5.10.2</version.org.junit.jupiter>
-    <version.org.junit.vintage>5.10.2</version.org.junit.vintage>
-    <version.org.junit.platform>1.10.2</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
-    <version.junit>4.13.2</version.junit>
-    <version.org.mockito>5.8.0</version.org.mockito>
+    <version.org.junit>4.13.2</version.org.junit>
+    <version.org.junit.jupiter>5.12.2</version.org.junit.jupiter>
+    <version.org.junit.platform>1.12.2</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.mockito>5.17.0</version.org.mockito>
     <version.org.testcontainers>1.20.1</version.org.testcontainers>
     <version.org.xmlunit-core>2.10.0</version.org.xmlunit-core>
     <version.io.rest-assured>5.5.0</version.io.rest-assured>
@@ -478,6 +476,11 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.org.junit}</version>
+      </dependency>
+      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
         <version>${version.org.junit.jupiter}</version>
@@ -508,15 +511,16 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${version.org.junit.vintage}</version>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <version>${version.org.junit.platform}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${version.junit}</version>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

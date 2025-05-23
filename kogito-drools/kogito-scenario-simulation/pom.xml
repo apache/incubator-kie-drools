@@ -107,12 +107,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-scenario-simulation-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.kie.soup</groupId>
-                    <artifactId>kie-soup-project-datamodel-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -129,16 +123,6 @@
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
-                </exclusion>
-
-                <!-- KIE soup -->
-                <exclusion>
-                    <groupId>org.kie.soup</groupId>
-                    <artifactId>kie-soup-commons</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.kie.soup</groupId>
-                    <artifactId>kie-soup-project-datamodel-api</artifactId>
                 </exclusion>
 
                 <!-- MVEL support -->
@@ -166,6 +150,13 @@
                 </exclusion>
 
             </exclusions>
+        </dependency>
+
+        <!-- For unit test logging: configure in src/test/resources/logback.xml -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
