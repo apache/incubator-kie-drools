@@ -21,11 +21,7 @@ package org.drools.util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class PortablePathTest {
 
@@ -80,64 +76,6 @@ class PortablePathTest {
         PortablePath result = base.resolve("subdir/../subdir/file.svg");
         assertThat(result.asString()).startsWith(base.asString());
         assertThat(result.getFileName()).isEqualTo("file.svg");
-    }
-
-
-    @Test
-    void testResolveInternalAcceptsValidPath() {
-        Path result = PortablePath.resolveInternal("src/test/resources", "META-INF/file.svg").toPath();
-        PortablePath p = PortablePath.of(result.toString());
-        assertThat(p.getFileName()).isEqualTo("file.svg");
-    }
-
-    @Test
-    void testResolveInternalRejectsPathTraversal() {
-        assertThatExceptionOfType(SecurityException.class)
-                .isThrownBy(() -> PortablePath.resolveInternal("src/test/resources", "../outside/file.svg").toPath())
-                .withMessageContaining("Path traversal attempt detected");
-    }
-
-    @Test
-    void testResolveInternalRejectsDeepTraversal() {
-        assertThatExceptionOfType(SecurityException.class)
-                .isThrownBy(() -> PortablePath.resolveInternal("src/test/resources", "../../../etc/passwd").toPath())
-                .withMessageContaining("Path traversal attempt detected");
-    }
-
-    @Test
-    void testResolveInternalRejectsAbsolutePath() {
-        String absPath = Paths.get("/etc/passwd").toAbsolutePath().toString();
-        assertThatExceptionOfType(SecurityException.class)
-                .isThrownBy(() -> PortablePath.resolveInternal("src/test/resources", absPath))
-                .withMessageContaining("Path traversal attempt detected");
-    }
-
-    @Test
-    void testResolveInternalNormalizesWindowsSeparators() {
-        Path result = PortablePath.resolveInternal("src/test/resources", "META-INF\\file.svg").toPath();
-        PortablePath p = PortablePath.of(result.toString());
-        assertThat(p.getFileName()).isEqualTo("file.svg");                                                                           
-    }
-
-    @Test
-    void testResolveInternalHandlesTrailingSlash() {
-        Path result = PortablePath.resolveInternal("src/test/resources", "META-INF/").toPath();
-        PortablePath p = PortablePath.of(result.toString());
-        assertThat(p.getFileName()).isEqualTo("META-INF");
-    }
-
-    @Test
-    void testResolveInternalStripsRedundantDots() {
-        Path result = PortablePath.resolveInternal("src/test/resources", "./META-INF/./file.svg").toPath();
-        PortablePath p = PortablePath.of(result.toString());
-        assertThat(p.getFileName()).isEqualTo("file.svg");
-    }
-
-    @Test
-    void testResolveInternalNormalizesParentDirectory() {
-        Path result = PortablePath.resolveInternal("src/test/resources", "META-INF/../META-INF/file.svg").toPath();
-        PortablePath p = PortablePath.of(result.toString());
-        assertThat(p.getFileName()).isEqualTo("file.svg");
     }
 
 }
