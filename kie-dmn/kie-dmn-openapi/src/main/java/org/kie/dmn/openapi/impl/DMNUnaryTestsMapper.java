@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.dmn.openapi.impl.DMNOASConstants.X_NULLABLE;
 import static org.kie.dmn.openapi.impl.RangeNodeSchemaMapper.populateSchemaFromListOfRanges;
 
 public class DMNUnaryTestsMapper {
@@ -64,7 +65,7 @@ public class DMNUnaryTestsMapper {
                 throw new IllegalArgumentException("At most one null value is allowed for enum definition");
             }
             // If there is a NullNode, the item is nullable
-            toPopulate.setNullable(!nullNodes.isEmpty());
+            toPopulate.addExtension(X_NULLABLE, !nullNodes.isEmpty());
             if (enumBaseNodes.size() > nullNodes.size()) {
                 // Let's create enum only if there is at least one node != NullNode
                 enumBaseNodes.forEach(unaryEvaluationNode -> populateSchemaFromBaseNode(toPopulate, unaryEvaluationNode));

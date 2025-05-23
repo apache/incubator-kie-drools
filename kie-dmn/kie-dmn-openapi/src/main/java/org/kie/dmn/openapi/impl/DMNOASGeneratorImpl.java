@@ -18,9 +18,14 @@
  */
 package org.kie.dmn.openapi.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.smallrye.openapi.runtime.io.JsonUtil;
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.runtime.io.IOContext;
+import io.smallrye.openapi.runtime.io.JsonIO;
+import io.smallrye.openapi.runtime.io.media.SchemaIO;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -54,10 +59,14 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private NamingPolicy namingPolicy;
     private final Map<DMNType, Schema> schemas = new HashMap<>();
     private ObjectNode jsonSchema;
+    private JsonIO<JsonNode, ArrayNode, ObjectNode, ArrayNode, ObjectNode> jsonIO;
+    private SchemaIO<JsonNode, ArrayNode, ObjectNode, ArrayNode, ObjectNode> schemaIO;
 
     public DMNOASGeneratorImpl(Collection<DMNModel> models, String refPrefix) {
         this.dmnModels = new ArrayList<>(models);
         this.refPrefix = refPrefix;
+        this.jsonIO = JsonIO.newInstance(OpenApiConfig.fromConfig(ConfigProvider.getConfig()));
+        this.schemaIO = new SchemaIO<>(IOContext.forJson(jsonIO));
     }
 
     @Override
@@ -79,14 +88,14 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     }
 
     private void prepareSerializaton() {
-        ObjectNode tree = JsonUtil.objectNode();
-        ObjectNode definitions = JsonUtil.objectNode();
+        ObjectNode tree = jsonIO.createObject();
+        ObjectNode definitions = jsonIO.createObject();
         tree.set("definitions", definitions);
         // It would be better if the map is a TreeMap, however that breaks test ProcessItemTest.test_together
         // For some reason, it looks like there is some reliance on the map being a HashMap, which should be investigated later as that should never happen.
         final List<Entry<DMNType, Schema>> sortedEntries = schemas.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.comparing(DMNType::getName))).toList();
         for (Entry<DMNType, Schema> kv : sortedEntries) {
-            SchemaWriter.writeSchema(definitions, kv.getValue(), namingPolicy.getName(kv.getKey()));
+            definitions.set(namingPolicy.getName(kv.getKey()), schemaIO.write(kv.getValue()).get());
         }
         jsonSchema = tree;
     }

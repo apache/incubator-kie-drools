@@ -35,19 +35,33 @@ public class RangeNodeSchemaMapper {
         if (range != null) {
             if (range.getLowEndPoint() != null) {
                 if (range.getLowEndPoint() instanceof BigDecimal bigDecimal) {
-                    toPopulate.minimum(bigDecimal);
+                    if (range.getLowBoundary() == Range.RangeBoundary.OPEN){
+                        toPopulate.exclusiveMinimum(bigDecimal);
+                    } else {
+                        toPopulate.minimum(bigDecimal);
+                    }
                 } else {
-                    toPopulate.addExtension(DMNOASConstants.X_DMN_MINIMUM_VALUE, range.getLowEndPoint());
+                    if (range.getLowBoundary() == Range.RangeBoundary.OPEN){
+                        toPopulate.addExtension(DMNOASConstants.X_DMN_EXCLUSIVE_MINIMUM_VALUE, range.getLowEndPoint());
+                    } else {
+                        toPopulate.addExtension(DMNOASConstants.X_DMN_MINIMUM_VALUE, range.getLowEndPoint());
+                    }
                 }
-                toPopulate.exclusiveMinimum(range.getLowBoundary() == Range.RangeBoundary.OPEN);
             }
             if (range.getHighEndPoint() != null) {
                 if (range.getHighEndPoint() instanceof BigDecimal bigDecimal) {
-                    toPopulate.maximum(bigDecimal);
+                    if (range.getHighBoundary() == Range.RangeBoundary.OPEN ){
+                        toPopulate.exclusiveMaximum(bigDecimal);
+                    } else {
+                        toPopulate.maximum(bigDecimal);
+                    }
                 } else {
-                    toPopulate.addExtension(DMNOASConstants.X_DMN_MAXIMUM_VALUE, range.getHighEndPoint());
+                    if (range.getHighBoundary() == Range.RangeBoundary.OPEN){
+                        toPopulate.addExtension(DMNOASConstants.X_DMN_EXCLUSIVE_MAXIMUM_VALUE, range.getHighEndPoint());
+                    } else {
+                        toPopulate.addExtension(DMNOASConstants.X_DMN_MAXIMUM_VALUE, range.getHighEndPoint());
+                    }
                 }
-                toPopulate.exclusiveMaximum(range.getHighBoundary() == Range.RangeBoundary.OPEN);
             }
         }
     }
