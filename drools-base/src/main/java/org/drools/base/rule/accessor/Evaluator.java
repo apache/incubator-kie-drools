@@ -103,18 +103,18 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      * @param valueResolver
      *        The current working memory
      * @param leftExtractor
-     *        The extractor to read the left value. In the above example,
-     *        the "$someName" variable value.
+     *        The extractor to read the left operand value. In the above example,
+     *        the "name" attribute value.
      * @param left
-     *        The source object from where the value of the variable is 
-     *        extracted.
-     * @param rightExtractor
-     *        The extractor to read the right value. In the above example,
-     *        the "name" attribute value. 
-     * @param right
-     *        The right object from where to extract the value. In the
-     *        above example, that is the "Person" instance from where to 
+     *        The object from where to extract the value. In the
+     *        above example, that is the "Person" instance from where to
      *        extract the "name" attribute.
+     * @param rightExtractor
+     *        The extractor to read the right operand value. In the above example,
+     *        the "$someName" variable value.
+     * @param right
+     *        The source object from where the value of the variable is
+     *        extracted.
      * 
      * @return Returns true if evaluation is successful. false otherwise.
      */

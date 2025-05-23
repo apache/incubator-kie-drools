@@ -143,7 +143,11 @@ public class ConstraintPrintVisitor extends DefaultPrettyPrinterVisitor implemen
         }
         printer.print(" ");
         pointFreeExpr.getOperator().accept( this, arg );
-        if (pointFreeExpr.getArg1() != null) {
+        if (pointFreeExpr.getSubOperator() != null) {
+            printer.print("[");
+            pointFreeExpr.getSubOperator().accept( this, arg );
+            printer.print("]");
+        } else if (pointFreeExpr.getArg1() != null) {
             printer.print("[");
             pointFreeExpr.getArg1().accept( this, arg );
             if (pointFreeExpr.getArg2() != null) {
@@ -268,7 +272,11 @@ public class ConstraintPrintVisitor extends DefaultPrettyPrinterVisitor implemen
             printer.print("not ");
         }
         pointFreeExpr.getOperator().accept( this, arg );
-        if (pointFreeExpr.getArg1() != null) {
+        if (pointFreeExpr.getSubOperator() != null) {
+            printer.print("[");
+            pointFreeExpr.getSubOperator().accept( this, arg );
+            printer.print("]");
+        } else if (pointFreeExpr.getArg1() != null) {
             printer.print("[");
             pointFreeExpr.getArg1().accept( this, arg );
             if (pointFreeExpr.getArg2() != null) {

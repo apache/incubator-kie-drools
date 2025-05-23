@@ -756,10 +756,10 @@ public class DroolsMvelParserTest {
 
     @Test
     public void mvelSquareBracketsOperators() {
-        testMvelSquareOperator("this str[startsWith] \"M\"", "str[startsWith]", "this", "\"M\"", false);
-        testMvelSquareOperator("this not str[startsWith] \"M\"", "str[startsWith]", "this", "\"M\"", true);
-        testMvelSquareOperator("this str[endsWith] \"K\"", "str[endsWith]", "this", "\"K\"", false);
-        testMvelSquareOperator("this str[length] 17", "str[length]", "this", "17", false);
+        testMvelSquareOperator("this str[startsWith] \"M\"", "str", "startsWith", "this", "\"M\"", false);
+        testMvelSquareOperator("this not str[startsWith] \"M\"", "str", "startsWith", "this", "\"M\"", true);
+        testMvelSquareOperator("this str[endsWith] \"K\"", "str", "endsWith", "this", "\"K\"", false);
+        testMvelSquareOperator("this str[length] 17", "str", "length", "this", "17", false);
     }
 
     @Test
@@ -1155,13 +1155,14 @@ public class DroolsMvelParserTest {
         assertThat(blockStmt.getStatements().size()).as("Should parse 3 statements").isEqualTo(3);
     }
 
-    private void testMvelSquareOperator(String wholeExpression, String operator, String left, String right, boolean isNegated) {
+    private void testMvelSquareOperator(String wholeExpression, String operator, String subOperator, String left, String right, boolean isNegated) {
         String expr = wholeExpression;
         Expression expression = parseExpression(parser, expr ).getExpr();
         assertThat(expression).isInstanceOf(PointFreeExpr.class);
         assertThat(printNode(expression)).isEqualTo(wholeExpression);
         PointFreeExpr e = (PointFreeExpr)expression;
         assertThat(e.getOperator().asString()).isEqualTo(operator);
+        assertThat(e.getSubOperator().asString()).isEqualTo(subOperator);
         assertThat(toString(e.getLeft())).isEqualTo(left);
         assertThat(toString(e.getRight().get(0))).isEqualTo(right);
         assertThat(e.isNegated()).isEqualTo(isNegated);

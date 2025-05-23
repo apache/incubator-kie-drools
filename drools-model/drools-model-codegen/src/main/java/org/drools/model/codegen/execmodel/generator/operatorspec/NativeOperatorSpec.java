@@ -45,7 +45,8 @@ public class NativeOperatorSpec implements OperatorSpec {
         MethodCallExpr methodCallExpr = createDslTopLevelMethod( EVAL_CALL );
 
         String opName = pointFreeExpr.getOperator().asString();
-        Operator operator = addOperatorArgument( context, methodCallExpr, opName );
+        String subOpName = pointFreeExpr.getSubOperator() != null ? pointFreeExpr.getSubOperator().asString() : null;
+        Operator operator = addOperatorArgument( context, methodCallExpr, opName, subOpName );
         if (operator != null && !operator.isCompatibleWithType( left.getRawClass() )) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Cannot use contains on class " + left.getRawClass() + " in expression '" + PrintUtil.printNode(pointFreeExpr) + "'" ) );
         }
@@ -72,7 +73,10 @@ public class NativeOperatorSpec implements OperatorSpec {
                 methodCallExpr;
     }
 
-    protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
+    protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName, String subOpName ) {
+        if (subOpName != null) {
+            opName = opName + "[" + subOpName + "]"; // native operators are registered with full name
+        }
         Operator operator = Operator.Register.getOperator( opName );
         try {
             // if the operator has an INSTANCE field avoid the operator lookup at runtime

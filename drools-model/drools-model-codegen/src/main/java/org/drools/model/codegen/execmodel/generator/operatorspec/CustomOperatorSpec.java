@@ -36,18 +36,19 @@ public class CustomOperatorSpec extends NativeOperatorSpec {
     private List<String> operatorDeclarations = new ArrayList<>();
 
     @Override
-    protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
+    protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName, String subOpName ) {
         EvaluatorDefinition evalDef = context.getEvaluatorDefinition( opName );
         if (evalDef == null) {
             throw new RuntimeException( "Unknown custom operator: " + opName );
         }
 
-        String operatorInstance = "OPERATOR_" + opName + "_INSTANCE";
+        String fullOpName = subOpName == null ? opName : opName + "_" + subOpName;
+        String operatorInstance = "OPERATOR_" + fullOpName + "_INSTANCE";
 
-        if (generatedOperators.add(opName)) {
+        if (generatedOperators.add(fullOpName)) {
             String operatorFieldDeclaration = "public static final " + Operator.class.getCanonicalName() + ".SingleValue<Object, Object> " + operatorInstance +
                     " = new " + CustomOperatorWrapper.class.getCanonicalName() + "( new " + evalDef.getClass().getCanonicalName() + "().getEvaluator(" +
-                    ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\");";
+                    ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, \"" + subOpName + "\"), \"" + opName + "\");";
             operatorDeclarations.add(operatorFieldDeclaration);
         }
 

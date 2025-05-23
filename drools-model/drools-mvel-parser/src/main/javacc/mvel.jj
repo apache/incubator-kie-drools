@@ -421,9 +421,6 @@ TOKEN :
 | < WHEN: "when" >
 | < NOT: "not" >
 | < MODIFY: "modify" >
-| < MVEL_STARTS_WITH: "str[startsWith]" >
-| < MVEL_ENDS_WITH: "str[endsWith]" >
-| < MVEL_LENGTH: "str[length]" >
 | < DOT_DOT_SLASH: "../" >
 | < CUSTOM_OPERATOR_PREFIX: "##" >
 | < HASHMARK: "#" >
@@ -6441,6 +6438,20 @@ Expression PointFreeExpr():
     )
 }
 
+SimpleName StringInBrackets():
+{
+    String bracketStr;
+    TokenRange range;
+}
+{
+    "["
+    bracketStr = Identifier() { range=tokenRange(); }
+    "]"
+    {
+        return new SimpleName(range, bracketStr);
+    }
+}
+
 Expression PointFreeExprMvel():
 {
     JavaToken begin;
@@ -6448,7 +6459,8 @@ Expression PointFreeExprMvel():
     NodeList<Expression> right = emptyNodeList();
     boolean negated = false;
     Expression tempExpr;
-    Token mvelOperator = null;
+    SimpleName operator = null;
+    SimpleName subOperator = null;
 }
 {
     (
@@ -6459,11 +6471,12 @@ Expression PointFreeExprMvel():
                           { negated = true; }
             )*
             (
-                (mvelOperator = <MVEL_STARTS_WITH> | mvelOperator = <MVEL_ENDS_WITH> | mvelOperator = <MVEL_LENGTH>)
+                operator = SimpleName()
+                subOperator = StringInBrackets()
                 ( tempExpr = PrimaryExpression() { right = add(right, tempExpr); } )
             )
             {
-                return new PointFreeExpr(range(begin, token()), left, right, new SimpleName(mvelOperator.toString()), negated, null, null, null, null);
+                return new PointFreeExpr(range(begin, token()), left, right, operator, subOperator, negated, null, null, null, null);
             }
 
         )
@@ -6512,7 +6525,8 @@ Expression HalfPointFreeExprMvel():
     NodeList<Expression> right = emptyNodeList();
     boolean negated = false;
     Expression tempExpr;
-    Token mvelOperator = null;
+    SimpleName operator = null;
+    SimpleName subOperator = null;
 }
 {
     (
@@ -6522,11 +6536,12 @@ Expression HalfPointFreeExprMvel():
                           { negated = true; }
             )*
             (
-                (mvelOperator = <MVEL_STARTS_WITH> | mvelOperator = <MVEL_ENDS_WITH> | mvelOperator = <MVEL_LENGTH>) { begin = token(); }
+                operator = SimpleName() { begin = token(); }
+                subOperator = StringInBrackets()
                 ( tempExpr = PrimaryExpression() { right = add(right, tempExpr); } )
             )
             {
-                return new HalfPointFreeExpr(range(begin, token()), right, new SimpleName(mvelOperator.toString()), negated, null, null, null, null);
+                return new HalfPointFreeExpr(range(begin, token()), right, operator, subOperator, negated, null, null, null, null);
             }
 
         )

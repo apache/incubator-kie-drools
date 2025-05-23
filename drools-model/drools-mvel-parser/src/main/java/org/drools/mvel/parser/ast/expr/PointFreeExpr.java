@@ -33,6 +33,7 @@ public class PointFreeExpr extends Expression {
     private final NodeList<Expression> right;
 
     private final SimpleName operator;
+    private final SimpleName subOperator;
     private boolean negated;
     private final Expression arg1;
     private final Expression arg2;
@@ -40,10 +41,15 @@ public class PointFreeExpr extends Expression {
     private final Expression arg4;
 
     public PointFreeExpr( TokenRange tokenRange, Expression left, NodeList<Expression> right, SimpleName operator, Boolean negated, Expression arg1, Expression arg2, Expression arg3, Expression arg4 ) {
+        this(tokenRange, left, right, operator, null, negated, arg1, arg2, arg3, arg4 );
+    }
+
+    public PointFreeExpr( TokenRange tokenRange, Expression left, NodeList<Expression> right, SimpleName operator, SimpleName subOperator, Boolean negated, Expression arg1, Expression arg2, Expression arg3, Expression arg4 ) {
         super(tokenRange);
         this.left = left;
         this.right = right;
         this.operator = operator;
+        this.subOperator = subOperator;
         this.negated = negated;
         this.arg1 = arg1;
         this.arg2 = arg2;
@@ -71,6 +77,14 @@ public class PointFreeExpr extends Expression {
 
     public SimpleName getOperator() {
         return operator;
+    }
+
+    public SimpleName getSubOperator() {
+        return subOperator;
+    }
+
+    public String getFullOperatorString() {
+        return operator.asString() + (subOperator != null ? "[" + subOperator.asString() + "]" : "");
     }
 
     public boolean isNegated() {
