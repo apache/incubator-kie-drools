@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,14 +25,14 @@ import java.util.function.Function;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.internal.command.RegistryContext;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
@@ -40,8 +40,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ValidateFactCommandTest {
+@ExtendWith(MockitoExtension.class)
+class ValidateFactCommandTest {
 
     @Mock
     private KieSession kieSession;
@@ -57,8 +57,8 @@ public class ValidateFactCommandTest {
 
 	private ValidateFactCommand validateFactCommand;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         when(registryContext.lookup(KieSession.class)).thenReturn(kieSession);
         Function<Object, ValueWrapper> alwaysMatchFunction = ValueWrapper::of;
 
@@ -66,7 +66,7 @@ public class ValidateFactCommandTest {
     }
     
     @Test
-    public void execute_setResultIsCalled() {
+    void execute_setResultIsCalled() {
         when(kieSession.getObjects(any(ObjectFilter.class))).thenReturn(Collections.singleton(null));
 
         validateFactCommand.execute(registryContext);
@@ -75,7 +75,7 @@ public class ValidateFactCommandTest {
     }
     
     @Test
-    public void execute_setResultIsNotCalled() {
+    void execute_setResultIsNotCalled() {
         when(kieSession.getObjects(any(ObjectFilter.class))).thenReturn(List.of());
         when(scenarioResult.getFactMappingValue()).thenReturn(factMappingValue);
 

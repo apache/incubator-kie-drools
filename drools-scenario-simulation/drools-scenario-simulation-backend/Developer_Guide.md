@@ -18,10 +18,10 @@
   -->
 # SCESIM BACKEND
 
-Currently, SCESIM engine is based on JUnit 4, and it is fired annotating a test class with
+The Test Scenario engine is based on JUnit 5 Test Engine, and it is fired annotating a test class with
 
 ```java
-@org.junit.runner.RunWith(ScenarioJunitActivator.class)
+@TestScenarioActivator
 ```
 
 It provides two runners, one for Decision engine and one for Rules engine.
@@ -37,8 +37,3 @@ Scope of the `RunnerHelper`s is to
 
 For `ExecutableBuilder` instantiation, the `RuleScenarioRunnerHelper` uses the tradition approach, based on KieContainer and related APIs.
 `DMNScenarioRunnerHelper`, on the other side, features the Efesto APIs, thus not requiring the KieContainer instantiation and usage.
-
-
-
-
-

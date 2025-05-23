@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ScenarioSimulationSharedUtilsTest {
+class ScenarioSimulationSharedUtilsTest {
 
     List<String> listValues = Arrays.asList(List.class.getCanonicalName(),
                                             ArrayList.class.getCanonicalName(),
@@ -44,33 +44,33 @@ public class ScenarioSimulationSharedUtilsTest {
                                            TreeMap.class.getCanonicalName());
 
     @Test
-    public void isCollectionOrMap() {
+    void isCollectionOrMap() {
         assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap);
         assertThat(mapValues).allMatch(ScenarioSimulationSharedUtils::isCollectionOrMap);
         assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
-    public void isCollection() {
+    void isCollection() {
         assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isCollection);
         assertThat(mapValues).noneMatch(ScenarioSimulationSharedUtils::isCollection);
         assertThat(ScenarioSimulationSharedUtils.isCollectionOrMap(Collection.class.getCanonicalName())).isTrue();
     }
 
     @Test
-    public void isList() {
+    void isList() {
         assertThat(listValues).allMatch(ScenarioSimulationSharedUtils::isList);
         assertThat(mapValues).noneMatch(ScenarioSimulationSharedUtils::isList);
         assertThat(ScenarioSimulationSharedUtils.isList(Collection.class.getCanonicalName())).isFalse();
     }
 
     @Test
-    public void isMap() {
+    void isMap() {
         assertThat(mapValues).allMatch(ScenarioSimulationSharedUtils::isMap);
     }
 
     @Test
-    public void isEnumCanonicalName() {
+    void isEnumCanonicalName() {
         assertThat(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getCanonicalName())).isTrue();
         assertThat(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getSimpleName())).isFalse();
     }

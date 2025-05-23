@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.drools.util.ResourceHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
@@ -36,7 +36,7 @@ import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +46,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("rawtypes")
-public class DMNScenarioExecutableBuilderTest {
+class DMNScenarioExecutableBuilderTest {
 
-    public static final Logger LOG = LoggerFactory.getLogger(DMNScenarioExecutableBuilderTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNScenarioExecutableBuilderTest.class);
 
     @Test
-    public void testCreateBuilderNoException() {
+    void testCreateBuilderNoException() {
         Map<String, GeneratedResources> generatedResourcesMap = new HashMap<>();
         Collection<File> dmnFiles = new ArrayList<>();
         Collection<File> pmmlFiles = new ArrayList<>();
@@ -80,7 +80,7 @@ public class DMNScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void testCreateBuilderException() {
+    void testCreateBuilderException() {
         Collection<File> dmnFiles = new ArrayList<>();
         Collection<File> pmmlFiles = new ArrayList<>();
         try (MockedStatic<DMNSimulationUtils> mockDMNSimulationUtils = Mockito.mockStatic(DMNSimulationUtils.class);
@@ -101,7 +101,7 @@ public class DMNScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void testSetActiveModelNoException() {
+    void testSetActiveModelNoException() {
         String fileName = "/this/is/filename";
         String modelName = "modelName";
         ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
@@ -132,7 +132,7 @@ public class DMNScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void testSetActiveModelException() {
+    void testSetActiveModelException() {
         String fileName = "/this/is/filename";
         String modelName = "modelName";
         ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
