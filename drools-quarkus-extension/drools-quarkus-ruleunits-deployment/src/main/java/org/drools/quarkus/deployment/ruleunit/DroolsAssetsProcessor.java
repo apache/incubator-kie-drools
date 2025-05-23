@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.quarkus.deployment;
+package org.drools.quarkus.deployment.ruleunit;
 
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
