@@ -26,8 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
 import org.kie.kogito.test.resources.JobServiceTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -37,23 +35,18 @@ import io.cloudevents.SpecVersion;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
 import static org.kie.kogito.it.jobs.JobRecipientMock.JOB_RECIPIENT_MOCK;
 import static org.kie.kogito.it.jobs.JobRecipientMock.JOB_RECIPIENT_MOCK_URL_PROPERTY;
+import static org.kie.kogito.it.jobs.JobRecipientMock.verifyJobWasExecuted;
+import static org.kie.kogito.test.TestUtils.assertJobExists;
 import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResource.JOBS_SERVICE_URL;
 
 @QuarkusIntegrationTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
 @QuarkusTestResource(JobRecipientMock.class)
 @JobServiceTestResource(knativeEventingEnabled = true)
-public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAware {
+class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAware, JobServiceHealthAware {
 
     private static final String APPLICATION_CLOUD_EVENTS = "application/cloudevents+json";
     private static final String SPECVERSION = "specversion";
@@ -99,8 +92,8 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        verifyJobWasExecuted(jobId, 0);
-        assertJobExists(jobId, false, 1, 60);
+        verifyJobWasExecuted(jobRecipient, jobId, 0);
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
     }
 
     @Test
@@ -127,7 +120,7 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        assertJobExists(jobId, true, 1, 60);
+        assertJobExists(jobServiceUrl(), jobId, true, 60);
 
         ObjectNode delete = objectMapper.createObjectNode()
                 .put("id", jobId);
@@ -146,7 +139,7 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        assertJobExists(jobId, false, 1, 60);
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
     }
 
     @Test
@@ -177,7 +170,7 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        verifyJobWasExecuted(jobId, 0);
+        verifyJobWasExecuted(jobRecipient, jobId, 0);
     }
 
     @Test
@@ -208,7 +201,7 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        assertJobExists(jobId, true, 1, 60);
+        assertJobExists(jobServiceUrl(), jobId, true, 60);
 
         ObjectNode deleteCloudEvent = objectMapper.createObjectNode()
                 .put(ID, UUID.randomUUID().toString())
@@ -231,36 +224,7 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
                 .then()
                 .statusCode(202);
 
-        assertJobExists(jobId, false, 1, 60);
-    }
-
-    private void verifyJobWasExecuted(String jobId, int limit) {
-        await()
-                .atMost(600, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> jobRecipient.verify(1,
-                        postRequestedFor(urlEqualTo("/" + JOB_RECIPIENT_MOCK + "?limit=" + limit))
-                                .withHeader("jobId", equalTo(jobId))));
-    }
-
-    private static void assertJobExists(String jobId,
-            boolean exists,
-            long atLeastTimeoutInSeconds,
-            long atMostTimeoutInSeconds) {
-
-        String query = jobServiceUrl() + "/v2/jobs/" + jobId;
-        int expectedCode = exists ? 200 : 404;
-
-        Awaitility.await()
-                .atLeast(atLeastTimeoutInSeconds, SECONDS)
-                .atMost(atMostTimeoutInSeconds, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> RestAssured.given()
-                        .contentType(ContentType.JSON)
-                        .accept(ContentType.JSON)
-                        .get(query)
-                        .then()
-                        .statusCode(expectedCode));
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
     }
 
     private ObjectNode createJob(String jobId, String startTimeStr, String jobRecipientUrl) {
@@ -279,11 +243,12 @@ public class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAwar
         return job;
     }
 
-    private static String jobServiceEventsUrl() {
+    public String jobServiceEventsUrl() {
         return jobServiceUrl() + "/v2/jobs/events";
     }
 
-    private static String jobServiceUrl() {
+    @Override
+    public String jobServiceUrl() {
         return System.getProperty(JOBS_SERVICE_URL);
     }
 

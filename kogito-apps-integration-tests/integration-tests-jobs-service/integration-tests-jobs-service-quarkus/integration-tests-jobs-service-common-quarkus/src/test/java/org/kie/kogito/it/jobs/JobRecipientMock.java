@@ -33,7 +33,12 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.request;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 
 /**
  * Mock an external JobRecipient to verify the proper execution of jobs service api over http.
@@ -78,5 +83,14 @@ public class JobRecipientMock implements QuarkusTestResourceLifecycleManager {
         if (testInstance instanceof JobRecipientMockAware) {
             ((JobRecipientMockAware) testInstance).setWireMockServer(wireMockServer);
         }
+    }
+
+    public static void verifyJobWasExecuted(WireMockServer jobRecipient, String jobId, int limit) {
+        await()
+                .atMost(600, SECONDS)
+                .with().pollInterval(1, SECONDS)
+                .untilAsserted(() -> jobRecipient.verify(1,
+                        postRequestedFor(urlEqualTo("/" + JOB_RECIPIENT_MOCK + "?limit=" + limit))
+                                .withHeader("jobId", equalTo(jobId))));
     }
 }
