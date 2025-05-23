@@ -210,7 +210,6 @@
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
     <version.org.awaitility>4.2.0</version.org.awaitility>
-    <version.io.github.bonigarcia>5.1.1</version.io.github.bonigarcia>
 
     <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule --> 
     <version.jdk>${maven.compiler.release}</version.jdk>
@@ -223,6 +222,9 @@
 
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
+    <!-- plugin used to enforce architectural constraints -->
+    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+    <version.archunit.junit5>1.4.0</version.archunit.junit5>
   </properties>
 
   <dependencyManagement>
@@ -1105,13 +1107,6 @@
         <scope>test</scope>
       </dependency>
 
-      <dependency>
-        <groupId>io.github.bonigarcia</groupId>
-        <artifactId>webdrivermanager</artifactId>
-        <version>${version.io.github.bonigarcia}</version>
-        <scope>test</scope>
-      </dependency>
-
       <!-- Used inside kie-ci -->
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -1190,6 +1185,13 @@
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
         <version>${version.org.jboss.logging}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${version.archunit.junit5}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
 
@@ -1863,6 +1865,12 @@
           <groupId>com.github.eirslett</groupId>
           <artifactId>frontend-maven-plugin</artifactId>
           <version>${version.com.github.eirslett}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.societegenerale.commons</groupId>
+          <artifactId>arch-unit-maven-plugin</artifactId>
+          <version>${archunit.maven.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
