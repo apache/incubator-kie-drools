@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,6 +21,8 @@ package org.drools.util;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
+
+import static org.drools.util.PathUtils.trimTrailingSeparator;
 
 public class PortablePath implements Serializable {
 
@@ -118,7 +120,4 @@ public class PortablePath implements Serializable {
         return of(path.substring(beginIndex, endIndex));
     }
 
-    public static String trimTrailingSeparator(String p) {
-        return !p.isEmpty() && p.charAt( p.length() -1 ) == '/' ? p.substring( 0, p.length() -1 ) : p;
-    }
 }
