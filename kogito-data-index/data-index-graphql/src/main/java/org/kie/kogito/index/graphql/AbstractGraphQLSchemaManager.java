@@ -132,6 +132,8 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         if (supportsCount()) {
             builder.dataFetcher("CountProcessInstances", this::countProcessInstances);
             builder.dataFetcher("CountUserTaskInstances", this::countUserTaskInstances);
+            builder.dataFetcher("CountJobs", this::countJobs);
+            builder.dataFetcher("CountProcessDefinitions", this::countProcessDefinitions);
         }
     }
 
@@ -254,6 +256,14 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected long countUserTaskInstances(DataFetchingEnvironment env) {
         return executeCount(cacheService.getUserTaskInstanceStorage(), env);
+    }
+
+    protected long countJobs(DataFetchingEnvironment env) {
+        return executeCount(cacheService.getJobsStorage(), env);
+    }
+
+    protected long countProcessDefinitions(DataFetchingEnvironment env) {
+        return executeCount(cacheService.getProcessDefinitionStorage(), env);
     }
 
     protected <K, T> List<T> executeAdvancedQueryForCache(StorageFetcher<K, T> cache, DataFetchingEnvironment env) {
