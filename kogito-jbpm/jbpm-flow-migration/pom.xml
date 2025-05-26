@@ -34,7 +34,7 @@
         <java.module.name>org.kie.kogito.jbpm.flow.migration</java.module.name>
     </properties>
 
-    <name>jbpm-flow-migration</name>
+    <name>Kogito :: jBPM :: Flow Migration</name>
 
     <dependencies>
         <dependency>

@@ -62,6 +62,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>jbpm-xsd-resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>
     </dependency>
     <dependency>
@@ -72,7 +76,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
@@ -96,14 +99,10 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/xsd</directory>
       </resource>
     </resources>
 
@@ -117,6 +116,47 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
+    <plugins>
+      <!-- Unpack XSD resources from org.kie.kogito:jbpm-xsd-resources -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.kie.kogito</groupId>
+                  <artifactId>jbpm-xsd-resources</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/classes/META-INF</outputDirectory>
+                  <!-- fetch only those specific xsd -->
+                  <includes>
+                    **/20100501/BPMN20.xsd,
+                    **/20100501/BPMNDI.xsd,
+                    **/20100501/DC.xsd,
+                    **/20100501/DI.xsd,
+                    **/20100501/Semantic.xsd
+                  </includes>
+                  <fileMappers>
+                    <!-- remove all parent directories from it, flattening it under the classes directory -->
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper/>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
 
   </build>
 

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Licensed to the Apache Software Foundation (ASF) under one
+     or more contributor license agreements.  See the NOTICE file
+     distributed with this work for additional information
+     regarding copyright ownership.  The ASF licenses this file
+     to you under the Apache License, Version 2.0 (the
+     "License"); you may not use this file except in compliance
+     with the License.  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing,
+     software distributed under the License is distributed on an
+     "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+     specific language governing permissions and limitations
+     under the License.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-runtimes</artifactId>
+        <version>999-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>jbpm-xsd-resources</artifactId>
+    <name>Kogito :: jBPM :: XSD-Bundle</name>
+    <description>Module meant to bundle all BPMN-related xsd files</description>
+
+    <properties>
+        <java.module.name>org.kie.dmn.xsd.resources</java.module.name>
+        <output.spec.directory>${project.build.directory}/classes/org/omg/spec/BPMN</output.spec.directory>
+    </properties>
+
+<build>
+<plugins>
+    <plugin>
+        <groupId>com.societegenerale.commons</groupId>
+        <artifactId>arch-unit-maven-plugin</artifactId>
+        <configuration>
+            <skip>true</skip>
+        </configuration>
+    </plugin>
+    <plugin>
+        <groupId>io.github.download-maven-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+            <!-- BPMN 2.0 -->
+            <execution>
+                <id>20100501_bpmn</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>wget</goal>
+                </goals>
+                <configuration>
+                    <url>https://www.omg.org/spec/BPMN/20100501/BPMN20.xsd</url>
+                    <unpack>false</unpack>
+                    <outputDirectory>${output.spec.directory}/20100501/</outputDirectory>
+                    <md5>a9ca10c41d60127161609ce9053b45a4</md5>
+                </configuration>
+            </execution>
+            <execution>
+                <id>20100501_bpmndi</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>wget</goal>
+                </goals>
+                <configuration>
+                    <url>https://www.omg.org/spec/BPMN/20100501/BPMNDI.xsd</url>
+                    <unpack>false</unpack>
+                    <outputDirectory>${output.spec.directory}/20100501/</outputDirectory>
+                    <md5>59cc95a525cc3c045dee8b4b67c06813</md5>
+                </configuration>
+            </execution>
+            <execution>
+                <id>20100501_dc</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>wget</goal>
+                </goals>
+                <configuration>
+                    <url>https://www.omg.org/spec/BPMN/20100501/DC.xsd</url>
+                    <unpack>false</unpack>
+                    <outputDirectory>${output.spec.directory}/20100501/</outputDirectory>
+                    <md5>f7945fe8800f45f6f10b95375a2281bf</md5>
+                </configuration>
+            </execution>
+            <execution>
+                <id>20100501_di</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>wget</goal>
+                </goals>
+                <configuration>
+                    <url>https://www.omg.org/spec/BPMN/20100501/DI.xsd</url>
+                    <unpack>false</unpack>
+                    <outputDirectory>${output.spec.directory}/20100501/</outputDirectory>
+                    <md5>d019b4b9e7e58629c4aac99a33807141</md5>
+                </configuration>
+            </execution>
+            <execution>
+                <id>20100501_semantic</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>wget</goal>
+                </goals>
+                <configuration>
+                    <url>https://www.omg.org/spec/BPMN/20100501/Semantic.xsd</url>
+                    <unpack>false</unpack>
+                    <outputDirectory>${output.spec.directory}/20100501/</outputDirectory>
+                    <md5>aceeaf99459f3ba31fcf958c5fbd9903</md5>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+
+</build>
+
+</project>

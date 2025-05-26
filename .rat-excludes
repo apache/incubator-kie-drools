@@ -36,38 +36,6 @@ test_regression.pmml
 test_tree.pmml
 # drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_regression.pmml
 test_regression.pmml
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMN20.xsd
-BPMN20.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMNDI.xsd
-BPMNDI.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/DC.xsd
-DC.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/DI.xsd
-DI.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/DiagramDefinition.xsd
-DiagramDefinition.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/DiagramInterchange.xsd
-DiagramInterchange.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/Semantic.xsd
-Semantic.xsd
-# jbpm/jbpm-bpmn2/src/main/resources/META-INF/bpsim.xsd
-bpsim.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/BPMN20.xsd
-BPMN20.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/BPMNDI.xsd
-BPMNDI.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/DC.xsd
-DC.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/DI.xsd
-DI.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/DiagramDefinition.xsd
-DiagramDefinition.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/DiagramInterchange.xsd
-DiagramInterchange.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/Semantic.xsd
-Semantic.xsd
-# jbpm/jbpm-bpmn2/src/main/xsd/bpsim.xsd
-bpsim.xsd
 # jbpm/jbpm-flow/src/main/resources/META-INF/services/org.jbpm.ruleflow.core.factory.provider.NodeFactoryProvider
 org.jbpm.ruleflow.core.factory.provider.NodeFactoryProvider
 # jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilder
