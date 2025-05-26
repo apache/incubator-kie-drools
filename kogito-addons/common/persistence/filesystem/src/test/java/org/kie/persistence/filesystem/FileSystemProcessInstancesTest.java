@@ -233,7 +233,49 @@ class FileSystemProcessInstancesTest {
         assertEmpty(fileSystemBasedStorage);
     }
 
-    private class FileSystemProcessInstancesFactory extends AbstractProcessInstancesFactory {
+    @Test
+    void testResolveSecureRejectsPathTraversalViaFindById() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        FileSystemProcessInstances fsInstances = (FileSystemProcessInstances) process.instances();
+
+        assertThatExceptionOfType(SecurityException.class)
+                .isThrownBy(() -> fsInstances.findById("../hack"))
+                .withMessageContaining("Path traversal attempt detected");
+    }
+
+    @Test
+    void testResolveSecureRejectsPathTraversalViaCreate() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        FileSystemProcessInstances fsInstances = (FileSystemProcessInstances) process.instances();
+        ProcessInstance<BpmnVariables> pi = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "value")));
+        pi.start();
+        assertThatExceptionOfType(SecurityException.class)
+                .isThrownBy(() -> fsInstances.create("../malicious", pi))
+                .withMessageContaining("Path traversal attempt detected");
+    }
+
+    @Test
+    void testResolveSecureRejectsPathTraversalViaUpdate() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        FileSystemProcessInstances fsInstances = (FileSystemProcessInstances) process.instances();
+        ProcessInstance<BpmnVariables> pi = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "value")));
+        pi.start();
+        assertThatExceptionOfType(SecurityException.class)
+                .isThrownBy(() -> fsInstances.update("../../invalid", pi))
+                .withMessageContaining("Path traversal attempt detected");
+    }
+
+    @Test
+    void testResolveSecureRejectsPathTraversalViaRemove() {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        FileSystemProcessInstances fsInstances = (FileSystemProcessInstances) process.instances();
+
+        assertThatExceptionOfType(SecurityException.class)
+                .isThrownBy(() -> fsInstances.remove("../../../etc/passwd"))
+                .withMessageContaining("Path traversal attempt detected");
+    }
+
+    private static class FileSystemProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
         public FileSystemProcessInstancesFactory() {
             super("target");
@@ -241,8 +283,7 @@ class FileSystemProcessInstancesTest {
 
         @Override
         public FileSystemProcessInstances createProcessInstances(Process<?> process) {
-            FileSystemProcessInstances instances = spy(super.createProcessInstances(process));
-            return instances;
+            return spy(super.createProcessInstances(process));
         }
 
     }

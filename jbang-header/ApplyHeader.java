@@ -46,7 +46,7 @@ public class ApplyHeader {
             // Find files matching the glob pattern recursively
             Files.walkFileTree(rootFolder, new ModifyHeader(matcher, header));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Failed to apply migration header", e);
         }
     }
 

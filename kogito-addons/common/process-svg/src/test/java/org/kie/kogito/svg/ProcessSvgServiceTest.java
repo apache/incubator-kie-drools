@@ -34,7 +34,8 @@ import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Diff;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Fail.fail;
 
 public abstract class ProcessSvgServiceTest {
 
@@ -55,15 +56,23 @@ public abstract class ProcessSvgServiceTest {
     @Test
     public void getProcessSvgFromFileSystemSuccessTest() throws Exception {
         String fileContent = getTravelsSVGFile();
-        getTestedProcessSvgService().setSvgResourcesPath(Optional.of("./src/test/resources/META-INF/processSVG/"));
-        Optional<String> svgContent = getTestedProcessSvgService().getProcessSvg(PROCESS_ID);
+
+        Path svgPath = Paths.get("src/test/resources/META-INF/processSVG/").toAbsolutePath();
+
+        AbstractProcessSvgService svgService = getTestedProcessSvgService();
+        svgService.setSvgResourcesPath(Optional.of(svgPath.toString()));
+
+        Optional<String> svgContent = svgService.getProcessSvg(PROCESS_ID);
         assertThat(svgContent).isPresent().hasValue(fileContent);
     }
 
     @Test
-    public void getProcessSvgFromFileSystemFailTest() throws Exception {
+    public void getProcessSvgFromFileSystemFailTest() {
         getTestedProcessSvgService().setSvgResourcesPath(Optional.of("./src/test/resources/META-INF/processSVG/"));
-        assertThat(getTestedProcessSvgService().getProcessSvg("UnexistingProcessId")).isEmpty();
+
+        assertThatExceptionOfType(SecurityException.class)
+                .isThrownBy(() -> getTestedProcessSvgService().getProcessSvg("UnexistingProcessId"))
+                .withMessageContaining("Path traversal attempt detected");
     }
 
     @Test
