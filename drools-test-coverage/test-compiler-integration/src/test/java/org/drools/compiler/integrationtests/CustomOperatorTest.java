@@ -57,11 +57,11 @@ public class CustomOperatorTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCustomOperatorUsingCollections(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
+                        "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
@@ -75,12 +75,12 @@ public class CustomOperatorTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testNoOperatorInstancesCreatedAtRuntime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n" +
-                "    Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
+                        "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n" +
+                        "    Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
 
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
 
@@ -88,12 +88,12 @@ public class CustomOperatorTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCustomOperatorUsingCollectionsInverted(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6983
         String constraints =
                 "    $bob : Person(name == \"Bob\")\n" +
-                "    $alice : Person(name == \"Alice\", $bob.addresses " + SUPERSET_OF + " this.addresses)\n";
+                        "    $alice : Person(name == \"Alice\", $bob.addresses " + SUPERSET_OF + " this.addresses)\n";
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
@@ -146,42 +146,52 @@ public class CustomOperatorTest {
             INSTANCES_COUNTER++;
         }
 
+        @Override
         public String[] getEvaluatorIds() {
             return SupersetOfEvaluatorDefinition.SUPPORTED_IDS;
         }
 
+        @Override
         public boolean isNegatable() {
             return true;
         }
 
+        @Override
         public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText, final Target leftTarget, final Target rightTarget) {
             return new SupersetOfEvaluator(type, isNegated);
         }
 
+        @Override
         public Evaluator getEvaluator(final ValueType type, final String operatorId, final boolean isNegated, final String parameterText) {
             return getEvaluator(type, operatorId, isNegated, parameterText, Target.FACT, Target.FACT);
         }
 
+        @Override
         public Evaluator getEvaluator(final ValueType type, final Operator operator, final String parameterText) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), parameterText);
         }
 
+        @Override
         public Evaluator getEvaluator(final ValueType type, final Operator operator) {
             return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), null);
         }
 
+        @Override
         public boolean supportsType(final ValueType vt) {
             return true;
         }
 
+        @Override
         public Target getTarget() {
             return Target.FACT;
         }
 
+        @Override
         public void writeExternal(final ObjectOutput out) throws IOException {
             out.writeObject(evaluator);
         }
 
+        @Override
         public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
             evaluator = (Evaluator[]) in.readObject();
         }
@@ -193,32 +203,55 @@ public class CustomOperatorTest {
             super(type, isNegated ? SupersetOfEvaluatorDefinition.NOT_SUPERSET_OF : SupersetOfEvaluatorDefinition.SUPERSET_OF);
         }
 
+        // In this method, 'factHandle' is the left operand of the expression. 'value' is the right operand.
+        @Override
         public boolean evaluate(final ValueResolver valueResolver, final ReadAccessor extractor, final FactHandle factHandle, final FieldValue value) {
             final Object objectValue = extractor.getValue(valueResolver, factHandle);
-            return evaluateAll((Collection) value.getValue(), (Collection) objectValue);
+            return evaluateExpression((Collection) objectValue, (Collection) value.getValue());
         }
 
-        public boolean evaluate(final ValueResolver valueResolver, final ReadAccessor ira, final FactHandle left, final ReadAccessor ira1, final FactHandle right) {
-            return evaluateAll((Collection) left.getObject(), (Collection) right.getObject());
+        // In this method, 'left' and 'right' literally mean the left and right operands of the expression. No need to invert.
+        // for example, [addresses supersetOf $alice.addresses]
+        //     leftOperandFact.getObject() is addresses
+        //     rightOperandFact.getObject() is $alice.addresses
+        @Override
+        public boolean evaluate(final ValueResolver valueResolver, final ReadAccessor ira, final FactHandle leftOperandFact, final ReadAccessor ira1, final FactHandle rightOperandFact) {
+            return evaluateExpression((Collection) leftOperandFact.getObject(), (Collection) rightOperandFact.getObject());
         }
 
+        // In this method, 'left' means leftInput to the JoinNode. 'right' means RightInput to the JoinNode.
+        // To evaluate the expression, RightInput is the left operand and leftInput is the right operand. So, need to invert.
+        // for example, [addresses supersetOf $alice.addresses]
+        //     valRight is addresses
+        //     context.left is $alice.addresses
+        @Override
         public boolean evaluateCachedLeft(final ValueResolver valueResolver, final VariableRestriction.VariableContextEntry context, final FactHandle right) {
             final Object valRight = context.extractor.getValue(valueResolver, right.getObject());
-            return evaluateAll((Collection) ((VariableRestriction.ObjectVariableContextEntry) context).left, (Collection) valRight);
+            return evaluateExpression((Collection) valRight, (Collection) ((VariableRestriction.ObjectVariableContextEntry) context).left);
         }
 
+        // In this method, 'left' means leftInput to the JoinNode. 'right' means RightInput to the JoinNode.
+        // To evaluate the expression, RightInput is the left operand and leftInput is the right operand. So, need to invert.
+        // for example, [addresses supersetOf $alice.addresses]
+        //     context.right is addresses
+        //     varLeft is $alice.addresses
+        @Override
         public boolean evaluateCachedRight(final ValueResolver reteEvaluator, final VariableRestriction.VariableContextEntry context, final FactHandle left) {
             final Object varLeft = context.declaration.getExtractor().getValue(reteEvaluator, left);
-            return evaluateAll((Collection) varLeft, (Collection) ((VariableRestriction.ObjectVariableContextEntry) context).right);
+            return evaluateExpression((Collection) ((VariableRestriction.ObjectVariableContextEntry) context).right, (Collection) varLeft);
         }
 
-        public boolean evaluateAll(final Collection leftCollection, final Collection rightCollection) {
-            return getOperator().isNegated() ^ rightCollection.containsAll(leftCollection);
+        // In this method, 'left' and 'right' literally mean the left and right operands of the expression.
+        // for example, [addresses supersetOf $alice.addresses]
+        //     leftOperandCollection is addresses
+        //     rightOperandCollection is $alice.addresses
+        private boolean evaluateExpression(final Collection leftOperandCollection, final Collection rightOperandCollection) {
+            return getOperator().isNegated() ^ leftOperandCollection.containsAll(rightOperandCollection);
         }
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCustomOperatorOnKieModule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Address.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
