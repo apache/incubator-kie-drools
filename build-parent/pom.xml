@@ -57,7 +57,7 @@
     <version.commons-codec>1.18.0</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
-    <version.commons-io>2.18.0</version.commons-io>
+    <version.commons-io>2.19.0</version.commons-io>
     <version.common-text>1.11.0</version.common-text>
     <version.com.fasterxml.jackson>2.18.4</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.18.4</version.com.fasterxml.jackson.databind>
