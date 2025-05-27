@@ -118,6 +118,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                     builder.dataFetcher("parentProcessInstance", this::getParentProcessInstanceValue);
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
+                    builder.dataFetcher("timers", this::getProcessInstanceTimers);
                     builder.dataFetcher("diagram", this::getProcessInstanceDiagram);
                     builder.dataFetcher("source", this::getProcessInstanceSource);
                     builder.dataFetcher("nodeDefinitions", this::getProcessInstanceNodes);

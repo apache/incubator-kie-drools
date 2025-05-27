@@ -20,9 +20,7 @@ package org.kie.kogito.index.addon.api;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,10 +31,8 @@ import org.kie.kogito.Model;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
-import org.kie.kogito.index.model.Node;
-import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.model.*;
+import org.kie.kogito.index.model.Timer;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -190,6 +186,19 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
         }
     }
 
+    @Override
+    public CompletableFuture<List<Timer>> getProcessInstanceTimers(String serviceUrl, ProcessInstance processInstance) {
+        return CompletableFuture.completedFuture(executeOnProcessInstance(processInstance.getProcessId(), processInstance.getId(), pInstance -> {
+            try {
+                return pInstance.timers().stream()
+                        .map(Timer::from)
+                        .toList();
+            } catch (Exception ex) {
+                throw new DataIndexServiceException("Failure getting timers for process instance " + pInstance.id(), ex);
+            }
+        }));
+    }
+
     private static Map<String, String> mapMetadata(org.kie.api.definition.process.Node n) {
         return n.getMetaData().entrySet().stream().filter(e -> e.getValue() != null).collect(toMap(Map.Entry::getKey, e -> e.getValue().toString()));
     }
@@ -277,8 +286,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
         return throwUnsupportedException();
     }
 
-    private String executeOnProcessInstance(String processId, String processInstanceId, Function<org.kie.kogito.process.ProcessInstance<?>, String> supplier) {
-
+    private <T> T executeOnProcessInstance(String processId, String processInstanceId, Function<org.kie.kogito.process.ProcessInstance<?>, T> supplier) {
         Process<?> process = processes != null ? processes.processById(processId) : null;
 
         if (process == null) {

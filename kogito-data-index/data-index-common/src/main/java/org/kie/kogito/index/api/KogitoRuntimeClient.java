@@ -22,11 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.Node;
-import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.model.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -81,4 +77,6 @@ public interface KogitoRuntimeClient {
 
     CompletableFuture<String> deleteUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance, String user,
             List<String> groups, String attachmentId);
+
+    CompletableFuture<List<Timer>> getProcessInstanceTimers(String serviceUrl, ProcessInstance processInstance);
 }

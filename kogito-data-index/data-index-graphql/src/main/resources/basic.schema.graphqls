@@ -71,6 +71,14 @@ input ProcessDefinitionArgument {
     type: StringArgument
 }
 
+type TimerInstance {
+    timerId: String!
+    processId: String!
+    processInstanceId: String!
+    nodeInstanceId: String
+    description: String
+}
+
 type ProcessInstance {
     id: String!
     processId: String!
@@ -103,6 +111,7 @@ type ProcessInstance {
     updatedBy: String
     executionSummary: [String]
     slaDueDate: DateTime
+    timers: [TimerInstance]
     cloudEventId: String
     cloudEventSource: String
 }

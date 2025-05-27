@@ -26,10 +26,7 @@ import org.kie.kogito.index.CommonUtils;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
-import org.kie.kogito.index.model.Node;
-import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.model.*;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.usertask.model.CommentInfo;
 import org.slf4j.Logger;
@@ -59,6 +56,8 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public static final String GET_PROCESS_INSTANCE_DIAGRAM_PATH = "/svg/processes/%s/instances/%s";
     public static final String GET_PROCESS_INSTANCE_SOURCE_PATH = "/management/processes/%s/source";
     public static final String GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH = "/management/processes/%s/nodes";
+    public static final String GET_PROCESS_INSTANCE_TIMERS_PATH = "/management/processes/%s/instances/%s/timers";
+
     public static final String UPDATE_VARIABLES_PROCESS_INSTANCE_PATH = "/%s/%s";
     public static final String TRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodes/%s"; //node def
     public static final String RETRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
@@ -117,6 +116,12 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance) {
         String requestURI = format(GET_PROCESS_INSTANCE_DIAGRAM_PATH, processInstance.getProcessId(), processInstance.getId());
         return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance diagram with id: " + processInstance.getId(), null);
+    }
+
+    @Override
+    public CompletableFuture<List<Timer>> getProcessInstanceTimers(String serviceURL, ProcessInstance processInstance) {
+        String requestURI = format(GET_PROCESS_INSTANCE_TIMERS_PATH, processInstance.getProcessId(), processInstance.getId());
+        return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance Timers: " + processInstance.getId(), List.class);
     }
 
     @Override
