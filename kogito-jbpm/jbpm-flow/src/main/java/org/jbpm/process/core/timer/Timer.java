@@ -35,6 +35,7 @@ public class Timer implements Serializable {
     private String period;
     private String date;
     private int timeType;
+    private String name;
 
     public long getId() {
         return id;
@@ -68,6 +69,14 @@ public class Timer implements Serializable {
         this.date = date;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Timer{" +
@@ -76,6 +85,7 @@ public class Timer implements Serializable {
                 ", period='" + period + '\'' +
                 ", date='" + date + '\'' +
                 ", timeType=" + timeType +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -108,11 +118,11 @@ public class Timer implements Serializable {
         }
         Timer timer = (Timer) o;
         return timeType == timer.timeType && id == timer.id && Objects.equals(delay, timer.delay) && Objects.equals(period,
-                timer.period) && Objects.equals(date, timer.date);
+                timer.period) && Objects.equals(date, timer.date) && Objects.equals(name, timer.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, delay, period, date, timeType);
+        return Objects.hash(id, delay, period, date, timeType, name);
     }
 }

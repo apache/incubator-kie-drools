@@ -322,6 +322,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         String timeCycle = (String) node.getMetaData().get(TIME_CYCLE);
         String timeDate = (String) node.getMetaData().get(TIME_DATE);
         Timer timer = new Timer();
+        timer.setName(concatName(compositeNode.getName(), node.getName()));
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
@@ -352,6 +353,16 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
             cancelAction.setMetaData(ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(cancelAction);
             ((EventNode) node).setActions(EVENT_NODE_EXIT, actions);
+        }
+    }
+
+    public static String concatName(String prefix, String suffix) {
+        if (prefix == null) {
+            return suffix;
+        } else if (suffix == null) {
+            return prefix;
+        } else {
+            return prefix.concat('-' + suffix);
         }
     }
 

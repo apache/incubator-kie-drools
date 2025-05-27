@@ -30,6 +30,8 @@ public interface ProcessInstanceManagement<T> {
 
     T getWorkItemsInProcessInstance(String processId, String processInstanceId);
 
+    T getProcessInstanceTimers(String processId, String processInstanceId);
+
     T retriggerInstanceInError(String processId, String processInstanceId);
 
     T skipInstanceInError(String processId, String processInstanceId);
@@ -39,6 +41,8 @@ public interface ProcessInstanceManagement<T> {
     T retriggerNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId);
 
     T cancelNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId);
+
+    T getNodeInstanceTimers(String processId, String processInstanceId, String nodeInstanceId);
 
     T cancelProcessInstanceId(String processId, String processInstanceId);
 

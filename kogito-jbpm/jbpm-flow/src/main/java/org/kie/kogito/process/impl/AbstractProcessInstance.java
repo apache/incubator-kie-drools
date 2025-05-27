@@ -59,6 +59,7 @@ import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
@@ -652,14 +653,21 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     @Override
     public Collection<Milestone> milestones() {
         return processInstanceLockStrategy.executeOperation(id, () -> {
-            return processInstance.milestones();
+            return processInstance().milestones();
+        });
+    }
+
+    @Override
+    public Collection<TimerDescription> timers() {
+        return processInstanceLockStrategy.executeOperation(id, () -> {
+            return processInstance().timers();
         });
     }
 
     @Override
     public Collection<AdHocFragment> adHocFragments() {
         return processInstanceLockStrategy.executeOperation(id, () -> {
-            return processInstance.adHocFragments();
+            return processInstance().adHocFragments();
         });
     }
 

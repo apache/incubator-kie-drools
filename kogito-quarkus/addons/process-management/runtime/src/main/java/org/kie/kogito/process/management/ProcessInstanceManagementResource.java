@@ -127,6 +127,14 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     }
 
     @Override
+    @GET
+    @Path("{processId}/instances/{processInstanceId}/timers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProcessInstanceTimers(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
+        return doGetProcessInstanceTimers(processId, processInstanceId);
+    }
+
+    @Override
     @POST
     @Path("{processId}/instances/{processInstanceId}/retrigger")
     @Produces(MediaType.APPLICATION_JSON)
@@ -164,6 +172,14 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     @Produces(MediaType.APPLICATION_JSON)
     public Response cancelNodeInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeInstanceId") String nodeInstanceId) {
         return doCancelNodeInstanceId(processId, processInstanceId, nodeInstanceId);
+    }
+
+    @Override
+    @GET
+    @Path("{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/timers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNodeInstanceTimers(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeInstanceId") String nodeInstanceId) {
+        return doGetNodeInstanceTimers(processId, processInstanceId, nodeInstanceId);
     }
 
     @Override

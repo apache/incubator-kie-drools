@@ -125,6 +125,7 @@ class BaseProcessInstanceManagementResourceTest {
         lenient().when(processInstance.variables()).thenReturn(variables);
         lenient().when(processInstance.id()).thenReturn(PROCESS_INSTANCE_ID);
         lenient().when(processInstance.status()).thenReturn(ProcessInstance.STATE_ERROR);
+        lenient().when(processInstance.timers()).thenReturn(List.of());
         lenient().when(error.failedNodeId()).thenReturn(NODE_ID_ERROR);
         lenient().when(error.errorMessage()).thenReturn("Test error message");
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
@@ -162,6 +163,11 @@ class BaseProcessInstanceManagementResourceTest {
             }
 
             @Override
+            public Object getProcessInstanceTimers(String processId, String processInstanceId) {
+                return null;
+            }
+
+            @Override
             public Object retriggerInstanceInError(String processId, String processInstanceId) {
                 return null;
             }
@@ -178,6 +184,11 @@ class BaseProcessInstanceManagementResourceTest {
 
             @Override
             public Object retriggerNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId) {
+                return null;
+            }
+
+            @Override
+            public Object getNodeInstanceTimers(String processId, String processInstanceId, String nodeInstanceId) {
                 return null;
             }
 
@@ -338,5 +349,11 @@ class BaseProcessInstanceManagementResourceTest {
         verify(processInstance, times(0)).error();
         verify(processInstance, times(1)).abort();
         assertResultOk(response);
+    }
+
+    @Test
+    void testGetProcessInstanceTimers() {
+        Object response = tested.doGetProcessInstanceTimers(PROCESS_ID, PROCESS_INSTANCE_ID);
+        verify(processInstance, times(1)).timers();
     }
 }

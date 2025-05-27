@@ -542,6 +542,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         String timeCycle = (String) node.getMetaData().get("TimeCycle");
         String timeDate = (String) node.getMetaData().get("TimeDate");
         Timer timer = new Timer();
+        timer.setName(concatName(compositeNode.getName(), node.getName()));
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
@@ -581,6 +582,16 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
             ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
+        }
+    }
+
+    public static String concatName(String prefix, String suffix) {
+        if (prefix == null) {
+            return suffix;
+        } else if (suffix == null) {
+            return prefix;
+        } else {
+            return prefix.concat('-' + suffix);
         }
     }
 

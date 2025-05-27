@@ -95,6 +95,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.internal.process.runtime.MessageException;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
@@ -120,6 +121,7 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
+import static org.kie.kogito.internal.utils.ConversionUtils.isNotEmpty;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.ACTIVE;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.AVAILABLE;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.COMPLETED;
@@ -1366,6 +1368,30 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                             .build();
                 })
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<TimerDescription> timers() {
+
+        List<TimerDescription> toReturn = new ArrayList<>();
+
+        if (isNotEmpty(this.slaTimerId)) {
+            toReturn.add(TimerDescription.Builder.ofProcessInstance(this)
+                    .timerId(slaTimerId)
+                    .timerDescription("[SLA-Process] " + getProcessName())
+                    .build());
+        }
+        if (isNotEmpty(this.cancelTimerId)) {
+            toReturn.add(TimerDescription.Builder.ofProcessInstance(this)
+                    .timerId(cancelTimerId)
+                    .timerDescription("[CANCEL-Process] " + getProcessName())
+                    .build());
+        }
+        getNodeInstances().stream().map(nodeInstance -> (KogitoNodeInstance) nodeInstance)
+                .flatMap(nodeInstance -> nodeInstance.timers().stream())
+                .forEach(toReturn::add);
+
+        return toReturn;
     }
 
     private <N extends org.kie.api.definition.process.Node> Stream<N> getNodesByType(Class<N> nodeClass) {

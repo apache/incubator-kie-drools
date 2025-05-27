@@ -19,11 +19,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 
@@ -40,6 +36,7 @@ import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
@@ -47,6 +44,8 @@ import org.kie.kogito.timer.TimerInstance;
 
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
+import static org.kie.kogito.internal.utils.ConversionUtils.isNotEmpty;
 
 /**
  * Runtime counterpart of an event node.
@@ -115,7 +114,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
     }
 
     private void cancelSlaTimer() {
-        if (this.slaTimerId != null && !this.slaTimerId.trim().isEmpty()) {
+        if (isNotEmpty(this.slaTimerId)) {
             JobsService jobService = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService();
             jobService.cancelJob(this.slaTimerId);
             logger.debug("SLA Timer {} has been canceled", this.slaTimerId);
@@ -229,7 +228,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
         } else {
             getProcessInstance().addEventListener(eventType, getEventListener(), true);
         }
-        if (this.slaTimerId != null && !this.slaTimerId.trim().isEmpty()) {
+        if (isNotEmpty(this.slaTimerId)) {
             addTimerListener();
         }
     }
@@ -279,4 +278,18 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
         return Collections.singleton(new BaseEventDescription(getEventType(), getNodeDefinitionId(), getNodeName(), "signal", getStringId(), getProcessInstance().getStringId(), dataType));
     }
 
+    @Override
+    public Collection<TimerDescription> timers() {
+        if (isEmpty(slaTimerId)) {
+            return super.timers();
+        }
+
+        Collection<TimerDescription> toReturn = super.timers();
+        TimerDescription slaTimer = TimerDescription.Builder.ofNodeInstance(this)
+                .timerId(slaTimerId)
+                .timerDescription("[SLA] " + resolveExpression(getNodeName()))
+                .build();
+        toReturn.add(slaTimer);
+        return toReturn;
+    }
 }

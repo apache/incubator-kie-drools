@@ -18,13 +18,7 @@
  */
 package org.jbpm.workflow.instance.node;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -36,6 +30,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
@@ -156,5 +151,20 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         properties.put("Date", getTimerNode().getTimer().getDate());
         return Collections
                 .singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getStringId(), getProcessInstance().getStringId(), null, properties));
+    }
+
+    @Override
+    public Collection<TimerDescription> timers() {
+        if (this.timerId == null) {
+            return super.timers();
+        }
+
+        Collection<TimerDescription> toReturn = super.timers();
+        TimerDescription timerDescription = TimerDescription.Builder.ofNodeInstance(this)
+                .timerId(timerId)
+                .timerDescription(resolveExpression(getNodeName()))
+                .build();
+        toReturn.add(timerDescription);
+        return toReturn;
     }
 }

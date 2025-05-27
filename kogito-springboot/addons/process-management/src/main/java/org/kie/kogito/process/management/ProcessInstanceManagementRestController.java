@@ -102,6 +102,12 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     }
 
     @Override
+    @GetMapping(value = "{processId}/instances/{processInstanceId}/timers", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getProcessInstanceTimers(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId) {
+        return doGetProcessInstanceTimers(processId, processInstanceId);
+    }
+
+    @Override
     @PostMapping(value = "{processId}/instances/{processInstanceId}/retrigger", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity retriggerInstanceInError(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId) {
         return doRetriggerInstanceInError(processId, processInstanceId);
@@ -131,6 +137,13 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     public ResponseEntity cancelNodeInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId,
             @PathVariable("nodeInstanceId") String nodeInstanceId) {
         return doCancelNodeInstanceId(processId, processInstanceId, nodeInstanceId);
+    }
+
+    @Override
+    @GetMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/timers", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getNodeInstanceTimers(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("nodeInstanceId") String nodeInstanceId) {
+        return doGetNodeInstanceTimers(processId, processInstanceId, nodeInstanceId);
     }
 
     @Override

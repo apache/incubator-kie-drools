@@ -32,6 +32,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 
@@ -275,6 +276,8 @@ public interface ProcessInstance<T> {
      * @return All the process milestones with their current status
      */
     Collection<Milestone> milestones();
+
+    Collection<TimerDescription> timers();
 
     /**
      * Returns the process adHocFragments

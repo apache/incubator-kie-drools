@@ -18,10 +18,7 @@
  */
 package org.kie.kogito.process.management;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -31,6 +28,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
@@ -224,6 +222,22 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             } else {
                 return buildOkResponse(processInstance.variables());
             }
+        });
+    }
+
+    public T doGetProcessInstanceTimers(String processId, String processInstanceId) {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> buildOkResponse(processInstance.timers()));
+    }
+
+    public T doGetNodeInstanceTimers(String processId, String processInstanceId, String nodeInstanceId) {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
+            Collection<KogitoNodeInstance> nodeInstances = processInstance.findNodes(nodeInstance -> nodeInstance.getId().equals(nodeInstanceId));
+
+            if (nodeInstances.isEmpty()) {
+                return badRequestResponse(String.format("Failure getting timers for node instance '%s' from proces instance '%s', node instance couldn't be found", nodeInstanceId, processInstanceId));
+            }
+
+            return buildOkResponse(nodeInstances.iterator().next().timers());
         });
     }
 

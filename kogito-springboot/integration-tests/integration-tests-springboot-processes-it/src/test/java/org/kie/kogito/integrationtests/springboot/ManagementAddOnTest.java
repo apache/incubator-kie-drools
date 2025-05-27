@@ -20,6 +20,7 @@ package org.kie.kogito.integrationtests.springboot;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +32,13 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
@@ -44,6 +46,7 @@ class ManagementAddOnTest extends BaseRestTest {
 
     private static final String HELLO1_NODE = "_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0";
     private static final String GREETINGS = "greetings";
+    private static final String TIMERS = "timers";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -126,6 +129,75 @@ class ManagementAddOnTest extends BaseRestTest {
         List<String> newNodeInstanceIds = whenGetNodeInstances(pid);
         assertThat(newNodeInstanceIds).isNotEmpty();
         assertThat(newNodeInstanceIds).doesNotContainAnyElementsOf(nodeInstanceIds);
+    }
+
+    @Test
+    void testManagementTimersEndpoint() {
+        String processInstanceId = given()
+                .body(Map.of())
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/timers")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .extract().path("id");
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(1))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/timers", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(4))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA-Process] timers"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[CANCEL-Process] timers"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA] Task"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "Task-Boundary Timer"))));
+
+        given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/timers", TIMERS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(2))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA] Task"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "Task-Boundary Timer"))));
     }
 
     private String givenGreetingsProcess() {
