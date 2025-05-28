@@ -35,6 +35,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.openapi.impl.DMNOASConstants.X_NULLABLE;
 
 class EnumGenerationTest extends BaseDMNOASTest {
 
@@ -65,8 +66,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
             assertThat(e).isInstanceOf(DecimalNode.class);
             assertThat(expected).contains(e.decimalValue());
         });
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isFalse();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isFalse();
     }
 
     @Test
@@ -80,8 +81,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
             assertThat(e).isInstanceOf(TextNode.class);
             assertThat(expected).contains(e.textValue());
         });
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isFalse();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isFalse();
     }
 
     @Test
@@ -94,8 +95,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
         assertThat(arrayNode).allSatisfy(e -> {
             assertThat(expected).contains(e.textValue());
         });
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isTrue();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isTrue();
     }
 
     @Test
@@ -109,8 +110,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
             assertThat(e).isInstanceOf(DecimalNode.class);
             assertThat(expected).contains(e.decimalValue());
         });
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isFalse();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isFalse();
     }
 
     @Test
@@ -124,8 +125,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
             assertThat(e).isInstanceOf(TextNode.class);
             assertThat(expected).contains(e.textValue());
         });
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isFalse();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isFalse();
     }
 
     @Test
@@ -137,7 +138,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
         
         assertThat(arrayNode).extracting(node1 -> node1.textValue()).containsExactlyInAnyOrder("a", "b", "c", null);
 
-        assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
-        assertThat(node.get("nullable").asBoolean()).isTrue();
+        assertThat(node.get(X_NULLABLE)).isNotNull().isInstanceOf(BooleanNode.class);
+        assertThat(node.get(X_NULLABLE).asBoolean()).isTrue();
     }
 }

@@ -147,7 +147,7 @@ public class DMNTypeSchemas {
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {
-        Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
+        Schema schema = OASFactory.createObject(Schema.class).addType(SchemaType.OBJECT);
         if (ct.getBaseType() == null) { // main case
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
@@ -170,7 +170,7 @@ public class DMNTypeSchemas {
 
     private Schema nestAsItemIfCollection(Schema original, DMNType t) {
         if (t.isCollection()) {
-            return OASFactory.createObject(Schema.class).type(SchemaType.ARRAY).items(original);
+            return OASFactory.createObject(Schema.class).addType(SchemaType.ARRAY).items(original);
         } else {
             return original;
         }
