@@ -23,9 +23,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -34,14 +34,14 @@ import jakarta.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 class KnativeServiceDiscoveryTest {
 
     private static final String REMOTE_SERVICE_HOST = "serverless-workflow-greeting-quarkus.default.10.99.154.147.sslip.io";
     private static final String NAMESPACE = "default";
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     @Inject
     KnativeServiceDiscovery knativeServiceDiscovery;

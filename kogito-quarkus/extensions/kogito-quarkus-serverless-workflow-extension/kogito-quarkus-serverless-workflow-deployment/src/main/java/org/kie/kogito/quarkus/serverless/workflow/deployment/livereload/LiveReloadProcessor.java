@@ -138,7 +138,7 @@ public class LiveReloadProcessor {
             Collection<GeneratedFile> generatedFiles = new ArrayList<>(generateSources(codeGenProvider));
             Collection<GeneratedBeanBuildItem> generatedBeans = compileGeneratedSources(generatedFiles);
             if (!generatedBeans.isEmpty()) {
-                classLoader.addElement(new MemoryClassPathElement(
+                classLoader.addNormalPriorityElement(new MemoryClassPathElement(
                         generatedBeans.stream().collect(Collectors.toMap(x -> x.getName().replace('.', '/').concat(".class"), GeneratedBeanBuildItem::getData)), true));
             }
             return !generatedFiles.isEmpty() ? new CodeGenerationResult(generatedFiles, indexCompiledSources(generatedBeans))
@@ -189,7 +189,7 @@ public class LiveReloadProcessor {
                 Path classPath = outDir.getParent().getParent().resolve("classes");
                 Path serviceLoaderPath = classPath.resolve("META-INF/services");
                 if (Files.isDirectory(classPath) && Files.isDirectory(serviceLoaderPath)) {
-                    classLoader.addElement(new PathTreeClassPathElement(PathTree.ofDirectoryOrFile(classPath), true));
+                    classLoader.addNormalPriorityElement(new PathTreeClassPathElement(PathTree.ofDirectoryOrFile(classPath), true));
                 }
             }
         }

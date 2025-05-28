@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.pmml.openapi.PMMLOASUtils;
 import org.kie.kogito.pmml.openapi.api.PMMLOASResult;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.ResultCode;
@@ -32,8 +33,6 @@ import org.kie.pmml.api.models.OutputField;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
-import io.smallrye.openapi.runtime.io.JsonUtil;
 
 import static org.kie.kogito.pmml.openapi.PMMLOASUtils.addIntervals;
 import static org.kie.kogito.pmml.openapi.PMMLOASUtils.addToSetNode;
@@ -51,8 +50,8 @@ public class PMMLOASResultImpl implements PMMLOASResult {
     protected final ObjectNode jsonNodes;
 
     private PMMLOASResultImpl() {
-        jsonNodes = JsonUtil.objectNode();
-        ObjectNode definitions = JsonUtil.objectNode();
+        jsonNodes = PMMLOASUtils.objectNode();
+        ObjectNode definitions = PMMLOASUtils.objectNode();
         jsonNodes.set(DEFINITIONS, definitions);
         addOutputSet();
     }
@@ -77,12 +76,12 @@ public class PMMLOASResultImpl implements PMMLOASResult {
 
     protected void addMiningFields(List<MiningField> toAdd) {
         final ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
-        final ObjectNode inputSetNode = JsonUtil.objectNode();
+        final ObjectNode inputSetNode = PMMLOASUtils.objectNode();
         definitionsNode.set(INPUT_SET, inputSetNode);
         inputSetNode.set(TYPE, new TextNode(OBJECT));
-        final ArrayNode requiredNode = JsonUtil.arrayNode();
+        final ArrayNode requiredNode = PMMLOASUtils.arrayNode();
         inputSetNode.set(REQUIRED, requiredNode);
-        final ObjectNode propertiesNode = JsonUtil.objectNode();
+        final ObjectNode propertiesNode = PMMLOASUtils.objectNode();
         inputSetNode.set(PROPERTIES, propertiesNode);
         toAdd.forEach(miningField -> {
             if (isRequired(miningField)) { // A MiningField may be not predicted AND not required if it has a
@@ -93,7 +92,7 @@ public class PMMLOASResultImpl implements PMMLOASResult {
                 addToResultSet(miningField.getName(), miningField.getDataType(), miningField.getAllowedValues());
                 addToResultVariables(miningField.getName(), miningField.getDataType(), miningField.getAllowedValues());
             } else {
-                final ObjectNode typeFieldNode = JsonUtil.objectNode();
+                final ObjectNode typeFieldNode = PMMLOASUtils.objectNode();
                 String mappedType = getMappedType(miningField.getDataType());
                 typeFieldNode.set(TYPE, new TextNode(mappedType));
                 String mappedFormat = getMappedFormat(miningField.getDataType());
@@ -104,7 +103,7 @@ public class PMMLOASResultImpl implements PMMLOASResult {
                     typeFieldNode.set(DEFAULT, new TextNode(miningField.getMissingValueReplacement()));
                 }
                 if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty()) {
-                    ArrayNode availableValues = JsonUtil.arrayNode();
+                    ArrayNode availableValues = PMMLOASUtils.arrayNode();
                     miningField.getAllowedValues().forEach(availableValues::add);
                     typeFieldNode.set(ENUM, availableValues);
                 }

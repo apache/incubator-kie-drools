@@ -20,9 +20,9 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogTest;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -31,11 +31,11 @@ import jakarta.inject.Inject;
 import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 class Fabric8KubernetesServiceCatalogTest extends KubernetesServiceCatalogTest {
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     @BeforeEach
     void beforeEach() {

@@ -23,10 +23,10 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * This test covers the queryIngressByName method from {@link IngressUtils}
  */
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 public class IngressUtilsTest {
 
     private final String namespace = "serverless-workflow-greeting-quarkus";
@@ -47,7 +47,7 @@ public class IngressUtilsTest {
     KubernetesResourceDiscovery discovery;
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     @Test
     void testIngressNotFound() {

@@ -24,11 +24,11 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -37,13 +37,13 @@ import jakarta.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 public class PodUtilsTest {
 
     private final String namespace = "serverless-workflow-greeting-quarkus";
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     @Inject
     KubernetesResourceDiscovery discovery;

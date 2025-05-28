@@ -53,13 +53,13 @@ status:
   conditions:
   - type: Available
     status: 'True'
-    lastUpdateTime: '2022-08-22T17:30:30Z'
-    lastTransitionTime: '2022-08-22T17:30:30Z'
+#    lastUpdateTime: '2022-08-22T17:30:30Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+#    lastTransitionTime: '2022-08-22T17:30:30Z'
     message: Deployment config has minimum availability.
   - type: Progressing
     status: 'True'
-    lastUpdateTime: '2022-08-22T17:30:34Z'
-    lastTransitionTime: '2022-08-22T17:30:34Z'
+#    lastUpdateTime: '2022-08-22T17:30:34Z'
+#    lastTransitionTime: '2022-08-22T17:30:34Z'
     reason: NewReplicationControllerAvailable
     message: >-
       replication controller "example-dc-with-service-1" successfully rolled

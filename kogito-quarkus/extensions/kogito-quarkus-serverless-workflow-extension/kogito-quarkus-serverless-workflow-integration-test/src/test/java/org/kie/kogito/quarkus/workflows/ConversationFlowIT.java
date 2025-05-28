@@ -21,6 +21,7 @@ package org.kie.kogito.quarkus.workflows;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -34,6 +35,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTestResource(OperationsMockService.class)
 @QuarkusIntegrationTest
+@Disabled("Disabled due to bug https://github.com/quarkusio/quarkus/issues/46801. When issues are resolved, we need to reenable.")
 class ConversationFlowIT {
 
     @BeforeAll

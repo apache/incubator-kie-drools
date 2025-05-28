@@ -146,6 +146,13 @@
               </goals>
             </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>io.smallrye.config</groupId>
+              <artifactId>smallrye-config</artifactId>
+              <version>${version.io.smallrye-config}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>

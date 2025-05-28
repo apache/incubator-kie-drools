@@ -46,8 +46,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import io.smallrye.openapi.runtime.io.JsonUtil;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.pmml.openapi.PMMLOASUtils.INFINITY_SYMBOL;
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.BOOLEAN;
@@ -211,7 +209,7 @@ class PMMLOASUtilsTest {
 
     @Test
     void addIntervals() {
-        ObjectNode typeFieldNode = JsonUtil.objectNode();
+        ObjectNode typeFieldNode = PMMLOASUtils.objectNode();
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.emptyList());
         assertThat(typeFieldNode).isEmpty();
         //
@@ -223,7 +221,7 @@ class PMMLOASUtilsTest {
         assertThat(typeFieldNode.get(MAXIMUM)).isNull();
         assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
-        typeFieldNode = JsonUtil.objectNode();
+        typeFieldNode = PMMLOASUtils.objectNode();
         interval = new Interval(null, 35.0);
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.singletonList(interval));
         assertThat(typeFieldNode.get(MINIMUM)).isNull();
@@ -232,7 +230,7 @@ class PMMLOASUtilsTest {
         assertThat(numericNode.asDouble()).isEqualTo(interval.getRightMargin().doubleValue());
         assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
-        typeFieldNode = JsonUtil.objectNode();
+        typeFieldNode = PMMLOASUtils.objectNode();
         interval = new Interval(-34.23, 35.0);
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.singletonList(interval));
         assertThat(typeFieldNode.get(MINIMUM)).isNotNull();
@@ -243,7 +241,7 @@ class PMMLOASUtilsTest {
         assertThat(numericNode.asDouble()).isEqualTo(interval.getRightMargin().doubleValue());
         assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
-        typeFieldNode = JsonUtil.objectNode();
+        typeFieldNode = PMMLOASUtils.objectNode();
         List<Interval> intervals = IntStream.range(0, 3)
                 .mapToObj(i -> new Interval(i * 2 + 3, i * 3 + 4))
                 .collect(Collectors.toList());
@@ -308,7 +306,7 @@ class PMMLOASUtilsTest {
 
     @Test
     void conditionallyCreateEnumNode() {
-        ObjectNode parentNode = JsonUtil.objectNode();
+        ObjectNode parentNode = PMMLOASUtils.objectNode();
         ArrayNode created = PMMLOASUtils.conditionallyCreateEnumNode(parentNode);
         assertThat(created).isNotNull().isEmpty();
 
@@ -321,7 +319,7 @@ class PMMLOASUtilsTest {
 
     @Test
     void createSetNodeInParent() {
-        ObjectNode parentNode = JsonUtil.objectNode();
+        ObjectNode parentNode = PMMLOASUtils.objectNode();
         String nodeToCreate = "nodeToCreate";
         ObjectNode retrieved = PMMLOASUtils.createSetNodeInParent(parentNode, nodeToCreate);
         commonValidateSetNode(retrieved);

@@ -41,7 +41,7 @@ public class EnumEchoServiceMock implements QuarkusTestResourceLifecycleManager 
     }
 
     private void configureWiremockServer() {
-        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().extensions(new ResponseTemplateTransformer(false)).dynamicPort());
+        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().extensions(new ResponseTemplateTransformer(null, false, null, java.util.Collections.emptyList())).dynamicPort());
         wireMockServer.start();
 
         wireMockServer.stubFor(post(urlEqualTo("/echo"))

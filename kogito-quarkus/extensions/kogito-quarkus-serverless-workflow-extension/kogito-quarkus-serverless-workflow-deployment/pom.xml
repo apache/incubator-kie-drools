@@ -76,7 +76,7 @@
     <!-- Quarkus Deployment Extensions Dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-deployment</artifactId>
+      <artifactId>quarkus-messaging-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.reactivemessaging.http</groupId>

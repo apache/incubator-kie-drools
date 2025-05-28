@@ -41,7 +41,7 @@ status:
     conditions:
     - type: Admitted
       status: 'True'
-      lastTransitionTime: '2022-08-22T18:14:25Z'
+#      lastTransitionTime: '2022-08-22T18:14:25Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
     wildcardPolicy: None
     routerCanonicalHostname: >-
       test-route.org

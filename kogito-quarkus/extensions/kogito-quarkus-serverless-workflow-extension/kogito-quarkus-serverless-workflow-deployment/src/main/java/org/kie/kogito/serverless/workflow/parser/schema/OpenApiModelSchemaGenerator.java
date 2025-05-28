@@ -53,7 +53,7 @@ public final class OpenApiModelSchemaGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenApiModelSchemaGenerator.class);
 
-    private static final Schema ID_SCHEMA = OASFactory.createSchema().type(SchemaType.STRING).description("Process instance id");
+    private static final Schema ID_SCHEMA = OASFactory.createSchema().type(List.of(SchemaType.STRING)).description("Process instance id");
     private static final String INPUT_SUFFIX = "_input";
     private static final String OUTPUT_SUFFIX = "_output";
 

@@ -19,18 +19,28 @@
 package org.kie.kogito.events.mongodb;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 
+import com.mongodb.ClientBulkWriteException;
 import com.mongodb.ClientSessionOptions;
+import com.mongodb.ReadConcern;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.ChangeStreamIterable;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.ListDatabasesIterable;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCluster;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
+import com.mongodb.client.model.bulk.ClientBulkWriteOptions;
+import com.mongodb.client.model.bulk.ClientBulkWriteResult;
+import com.mongodb.client.model.bulk.ClientNamespacedWriteModel;
 import com.mongodb.connection.ClusterDescription;
 
 import io.quarkus.test.Mock;
@@ -46,6 +56,56 @@ import static org.mockito.Mockito.when;
 public class MockMongoClient implements MongoClient {
 
     private MongoDatabase mongoDatabase = mock(MongoDatabase.class);
+
+    @Override
+    public CodecRegistry getCodecRegistry() {
+        return null;
+    }
+
+    @Override
+    public ReadPreference getReadPreference() {
+        return null;
+    }
+
+    @Override
+    public WriteConcern getWriteConcern() {
+        return null;
+    }
+
+    @Override
+    public ReadConcern getReadConcern() {
+        return null;
+    }
+
+    @Override
+    public Long getTimeout(TimeUnit timeUnit) {
+        return 0L;
+    }
+
+    @Override
+    public MongoCluster withCodecRegistry(CodecRegistry codecRegistry) {
+        return null;
+    }
+
+    @Override
+    public MongoCluster withReadPreference(ReadPreference readPreference) {
+        return null;
+    }
+
+    @Override
+    public MongoCluster withWriteConcern(WriteConcern writeConcern) {
+        return null;
+    }
+
+    @Override
+    public MongoCluster withReadConcern(ReadConcern readConcern) {
+        return null;
+    }
+
+    @Override
+    public MongoCluster withTimeout(long timeout, TimeUnit timeUnit) {
+        return null;
+    }
 
     @Override
     public MongoDatabase getDatabase(String databaseName) {
@@ -138,6 +198,26 @@ public class MockMongoClient implements MongoClient {
 
     @Override
     public <TResult> ChangeStreamIterable<TResult> watch(ClientSession clientSession, List<? extends Bson> pipeline, Class<TResult> tResultClass) {
+        return null;
+    }
+
+    @Override
+    public ClientBulkWriteResult bulkWrite(List<? extends ClientNamespacedWriteModel> models) throws ClientBulkWriteException {
+        return null;
+    }
+
+    @Override
+    public ClientBulkWriteResult bulkWrite(List<? extends ClientNamespacedWriteModel> models, ClientBulkWriteOptions options) throws ClientBulkWriteException {
+        return null;
+    }
+
+    @Override
+    public ClientBulkWriteResult bulkWrite(ClientSession clientSession, List<? extends ClientNamespacedWriteModel> models) throws ClientBulkWriteException {
+        return null;
+    }
+
+    @Override
+    public ClientBulkWriteResult bulkWrite(ClientSession clientSession, List<? extends ClientNamespacedWriteModel> models, ClientBulkWriteOptions options) throws ClientBulkWriteException {
         return null;
     }
 

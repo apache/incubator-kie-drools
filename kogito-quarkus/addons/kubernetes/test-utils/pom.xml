@@ -32,11 +32,15 @@
     <name>KIE Add-On Kubernetes Tests Utils</name>
     <description>Util classes intended to be used in test scope.</description>
 
-  <properties>
-     <java.module.name>org.kie.kogito.addons.quarkus.k8s.test.utils</java.module.name>
-  </properties>
+    <properties>
+        <java.module.name>org.kie.kogito.addons.quarkus.k8s.test.utils</java.module.name>
+    </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openshift-server-mock</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-kubernetes-client</artifactId>

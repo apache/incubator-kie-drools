@@ -29,13 +29,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.k8s.Endpoint;
 import org.kie.kogito.addons.k8s.EndpointDiscovery;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.ServiceSpec;
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -47,11 +47,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 public class KubernetesServiceEndpointDiscoveryTest {
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     @Named("default")
     @Inject

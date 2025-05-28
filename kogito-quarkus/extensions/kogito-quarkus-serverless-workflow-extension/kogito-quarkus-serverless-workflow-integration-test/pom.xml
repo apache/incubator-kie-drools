@@ -119,8 +119,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock-jre8</artifactId>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -244,7 +244,7 @@
               <arguments>
                 <argument>${project.build.directory}/generated-sources/grpc</argument>
               </arguments>
-              <mainClass>io.quarkus.grpc.deployment.GrpcPostProcessing</mainClass>
+              <mainClass>io.quarkus.grpc.codegen.GrpcPostProcessing</mainClass>
             </configuration>
           </execution>
         </executions>

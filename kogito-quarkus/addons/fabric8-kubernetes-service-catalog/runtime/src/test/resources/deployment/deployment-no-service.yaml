@@ -49,14 +49,14 @@ status:
   conditions:
   - type: Available
     status: 'True'
-    lastUpdateTime: '2022-08-18T13:15:57Z'
-    lastTransitionTime: '2022-08-18T13:15:57Z'
+#    lastUpdateTime: '2022-08-18T13:15:57Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+#    lastTransitionTime: '2022-08-18T13:15:57Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
     reason: MinimumReplicasAvailable
     message: Deployment has minimum availability.
   - type: Progressing
     status: 'True'
-    lastUpdateTime: '2022-08-18T13:15:57Z'
-    lastTransitionTime: '2022-08-18T13:15:53Z'
+#    lastUpdateTime: '2022-08-18T13:15:57Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+#    lastTransitionTime: '2022-08-18T13:15:53Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
     reason: NewReplicaSetAvailable
     message: >-
       ReplicaSet "example-deployment-no-service-585b54b56f" has successfully

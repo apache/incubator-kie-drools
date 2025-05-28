@@ -19,8 +19,8 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.kie.kogito</groupId>
@@ -31,10 +31,10 @@
     <artifactId>kogito-codegen-decisions</artifactId>
     <name>Kogito :: Codegen Decisions</name>
 
-  <properties>
-    <java.module.name>org.kie.kogito.codegen.decision</java.module.name>
-    <dependency-plugin.version>3.6.1</dependency-plugin.version>
-  </properties>
+    <properties>
+        <java.module.name>org.kie.kogito.codegen.decision</java.module.name>
+        <dependency-plugin.version>3.6.1</dependency-plugin.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -45,12 +45,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-          <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-dmn-test-resources</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-          </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-dmn-test-resources</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -84,12 +84,17 @@
 
 
         <!-- test -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-test-resources</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>io.smallrye.config</groupId>
+            <artifactId>smallrye-config</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-test-resources</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-api</artifactId>
@@ -121,52 +126,53 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-events-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-events-api</artifactId>
+        </dependency>
     </dependencies>
 
-  <build>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-      <testResource>
-        <directory>${project.build.directory}/generated-test-resources</directory>
-      </testResource>
-    </testResources>
-    <plugins>
-      <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.kie</groupId>
-                  <artifactId>kie-dmn-test-resources</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>tests</classifier>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/generated-test-resources</outputDirectory>
-                  <includes>**/*.dmn</includes>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>${project.build.directory}/generated-test-resources</directory>
+            </testResource>
+        </testResources>
+        <plugins>
+            <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kie</groupId>
+                                    <artifactId>kie-dmn-test-resources</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>tests</classifier>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-test-resources
+                                    </outputDirectory>
+                                    <includes>**/*.dmn</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

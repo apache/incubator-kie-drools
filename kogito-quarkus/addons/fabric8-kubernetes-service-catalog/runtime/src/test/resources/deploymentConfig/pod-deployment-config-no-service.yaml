@@ -123,19 +123,19 @@ status:
   - type: Initialized
     status: 'True'
     lastProbeTime: null
-    lastTransitionTime: '2022-08-22T17:30:11Z'
+#    lastTransitionTime: '2022-08-22T17:30:11Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
   - type: Ready
     status: 'True'
     lastProbeTime: null
-    lastTransitionTime: '2022-08-22T17:30:30Z'
+#    lastTransitionTime: '2022-08-22T17:30:30Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
   - type: ContainersReady
     status: 'True'
     lastProbeTime: null
-    lastTransitionTime: '2022-08-22T17:30:30Z'
+#    lastTransitionTime: '2022-08-22T17:30:30Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
   - type: PodScheduled
     status: 'True'
     lastProbeTime: null
-    lastTransitionTime: '2022-08-22T17:30:11Z'
+#    lastTransitionTime: '2022-08-22T17:30:11Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
   hostIP: 10.240.0.25
   podIP: 172.17.25.190
   podIPs:

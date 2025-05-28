@@ -54,14 +54,14 @@ status:
   address:
     url: http://serverless-workflow-greeting-quarkus.default.svc.cluster.local
   conditions:
-    - lastTransitionTime: '2022-08-17T13:59:00Z'
-      status: 'True'
+#    - lastTransitionTime: '2022-08-17T13:59:00Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+    - status: 'True'
       type: ConfigurationsReady
-    - lastTransitionTime: '2022-08-17T13:59:00Z'
-      status: 'True'
+#    - lastTransitionTime: '2022-08-17T13:59:00Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+    - status: 'True'
       type: Ready
-    - lastTransitionTime: '2022-08-17T13:59:00Z'
-      status: 'True'
+#    - lastTransitionTime: '2022-08-17T13:59:00Z' Commented out temporarily due to bug in fabric 7.1.0. https://github.com/fabric8io/kubernetes-client/issues/6906
+    - status: 'True'
       type: RoutesReady
   latestCreatedRevisionName: serverless-workflow-greeting-quarkus-00001
   latestReadyRevisionName: serverless-workflow-greeting-quarkus-00001

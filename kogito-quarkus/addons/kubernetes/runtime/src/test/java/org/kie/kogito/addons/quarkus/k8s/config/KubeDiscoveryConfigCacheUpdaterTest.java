@@ -23,9 +23,9 @@ import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
-import org.kie.kogito.addons.quarkus.k8s.test.utils.OpenShiftMockServerTestResource;
+import org.kie.kogito.addons.quarkus.k8s.test.utils.KubernetesMockServerTestResource;
 
-import io.fabric8.openshift.client.OpenShiftClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.addons.quarkus.k8s.test.utils.KubeTestUtils.createKnativeServiceIfNotExists;
 
 @QuarkusTest
-@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTestResource(KubernetesMockServerTestResource.class)
 class KubeDiscoveryConfigCacheUpdaterTest {
 
     private static final String remoteServiceUrl = "http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io";
@@ -44,7 +44,7 @@ class KubeDiscoveryConfigCacheUpdaterTest {
     KubernetesServiceCatalog kubernetesServiceCatalog;
 
     @Inject
-    OpenShiftClient client;
+    KubernetesClient client;
 
     KubeDiscoveryConfigCacheUpdater kubeDiscoveryConfigCacheUpdater;
 

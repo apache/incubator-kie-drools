@@ -20,6 +20,7 @@ package org.kie.kogito.infinispan.health;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
@@ -34,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
+@Disabled("Disabled because of agreement to remove Infinispan code https://lists.apache.org/thread/zdhdyzrzqrp4v25btloyfgk60bry4stz")
 public class InfinispanHealthCheckIT {
 
     private InfinispanHealthCheck healthCheck;

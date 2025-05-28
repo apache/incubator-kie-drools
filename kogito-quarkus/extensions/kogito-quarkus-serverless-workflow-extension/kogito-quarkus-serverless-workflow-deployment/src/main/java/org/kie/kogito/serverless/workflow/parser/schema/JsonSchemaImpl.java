@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.parser.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +27,9 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.media.SchemaImpl;
 
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.DEFS_PREFIX;
@@ -41,7 +42,33 @@ import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.D
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JsonSchemaImpl extends SchemaImpl {
 
+    public static final String REF_PREFIX_SCHEMA = "#/components/schemas/";
+
     private Map<String, Schema> defs;
+
+    private List<Schema.SchemaType> type;
+
+    @JsonSetter("type")
+    public void setType(JsonNode typeNode) {
+        if (typeNode.isArray()) {
+            List<Schema.SchemaType> types = new ArrayList<>();
+            for (JsonNode node : typeNode) {
+                types.add(Schema.SchemaType.valueOf(node.asText().toUpperCase()));
+            }
+            this.type = types;
+        } else if (typeNode.isTextual()) {
+            this.type = new ArrayList<>();
+            this.type.add(Schema.SchemaType.valueOf(typeNode.asText().toUpperCase()));
+        }
+    }
+
+    public List<Schema.SchemaType> getType() {
+        return type;
+    }
+
+    public void setType(List<Schema.SchemaType> type) {
+        this.type = type;
+    }
 
     @JsonSetter("$defs")
     @JsonDeserialize(contentAs = JsonSchemaImpl.class)
@@ -52,7 +79,7 @@ public class JsonSchemaImpl extends SchemaImpl {
     @JsonSetter("$ref")
     @Override
     public void setRef(String ref) {
-        super.setRef(ref.replace(DEFS_PREFIX, OpenApiConstants.REF_PREFIX_SCHEMA));
+        super.setRef(ref.replace(DEFS_PREFIX, REF_PREFIX_SCHEMA));
     }
 
     public Map<String, Schema> getDefs() {
