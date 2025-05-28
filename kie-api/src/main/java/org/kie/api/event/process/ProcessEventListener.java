@@ -127,4 +127,28 @@ public interface ProcessEventListener
      * @param event
      */
     default void onError (ErrorEvent event) {}
+
+    /**
+     * This listener method is invoked right before a process instance is modified.
+     * @param event
+     */
+    default void beforeProcessStateChanged(ProcessStateEvent event) {}
+
+    /**
+     * This listener method is invoked right after a process instance is modified.
+     * @param event
+     */
+    default void afterProcessStateChanged(ProcessStateEvent event) {}
+
+    /**
+     * This listener method is invoked right before a node in a process instance is modified.
+     * @param event
+     */
+    default void beforeNodeStateChanged(ProcessNodeStateEvent event) {}
+
+    /**
+     * This listener method is invoked right after a node in a process instance is modified.
+     * @param event
+     */
+    default void afterNodeStateChanged(ProcessNodeStateEvent event) {}
 }
