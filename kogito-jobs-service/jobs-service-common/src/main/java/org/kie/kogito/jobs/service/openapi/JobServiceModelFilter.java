@@ -60,7 +60,7 @@ public class JobServiceModelFilter implements OASFilter {
         Schema jsonObjectSchema = openAPI.getComponents().getSchemas().get(JSON_NODE_SCHEMA);
         if (jsonObjectSchema != null) {
             LOGGER.debug("Setting {} schema type to: {}.", JSON_NODE_SCHEMA, Schema.SchemaType.OBJECT);
-            jsonObjectSchema.type(Schema.SchemaType.OBJECT);
+            jsonObjectSchema.type(List.of(Schema.SchemaType.OBJECT));
         } else {
             LOGGER.warn("{} schema type is not present it the OpenAPI document.", JSON_NODE_SCHEMA);
         }
@@ -126,7 +126,7 @@ public class JobServiceModelFilter implements OASFilter {
     }
 
     private static Discriminator addDiscriminator(Schema schema, String discriminatorProperty) {
-        schema.addProperty(discriminatorProperty, OASFactory.createSchema().type(Schema.SchemaType.STRING));
+        schema.addProperty(discriminatorProperty, OASFactory.createSchema().type(List.of(Schema.SchemaType.STRING)));
         schema.discriminator(OASFactory.createDiscriminator().propertyName(discriminatorProperty));
         if (schema.getRequired() == null || !schema.getRequired().contains(discriminatorProperty)) {
             schema.addRequired(discriminatorProperty);

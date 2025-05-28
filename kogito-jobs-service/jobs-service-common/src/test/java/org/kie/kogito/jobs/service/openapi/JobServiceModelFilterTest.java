@@ -19,6 +19,7 @@
 package org.kie.kogito.jobs.service.openapi;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ class JobServiceModelFilterTest {
     void filterOpenAPI() {
         OpenAPI openAPI = OASFactory.createOpenAPI();
         Components components = OASFactory.createComponents()
-                .addSchema(JSON_NODE_SCHEMA, OASFactory.createSchema().type(Schema.SchemaType.ARRAY))
+                .addSchema(JSON_NODE_SCHEMA, OASFactory.createSchema().type(List.of(Schema.SchemaType.ARRAY)))
                 .addSchema(SPEC_VERSION_SCHEMA, OASFactory.createSchema().enumeration(Arrays.asList("V03", "V1")))
                 .addSchema(RECIPIENT_SCHEMA, OASFactory.createSchema())
                 .addSchema(SCHEDULE_SCHEMA, OASFactory.createSchema());
@@ -56,7 +57,8 @@ class JobServiceModelFilterTest {
 
         Schema jsonNodeSchema = openAPI.getComponents().getSchemas().get(JSON_NODE_SCHEMA);
         assertThat(jsonNodeSchema).isNotNull();
-        assertThat(jsonNodeSchema.getType()).isEqualTo(Schema.SchemaType.OBJECT);
+        assertThat(jsonNodeSchema.getType()).hasSize(1);
+        assertThat(jsonNodeSchema.getType().get(0)).isEqualTo(Schema.SchemaType.OBJECT);
 
         Schema specVersionSchema = openAPI.getComponents().getSchemas().get(SPEC_VERSION_SCHEMA);
         assertThat(specVersionSchema).isNotNull();

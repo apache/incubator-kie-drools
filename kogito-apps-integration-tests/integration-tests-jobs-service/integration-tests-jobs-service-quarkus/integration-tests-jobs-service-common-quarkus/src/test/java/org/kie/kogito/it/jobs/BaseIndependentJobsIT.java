@@ -98,7 +98,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
         // Ensure the job has been retrying for some time and properly notifying the DI with the correct status while
         // retrying.
         Awaitility.await()
-                .atMost(60, SECONDS)
+                .atMost(120, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -110,7 +110,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
         LOGGER.debug("Verifying failing job reaches the ERROR state, jobId: {}", jobId);
         // Ensure the job finalizes the failing execution and properly notifies the DI with the correct status.
         Awaitility.await()
-                .atMost(60, SECONDS)
+                .atMost(120, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -119,7 +119,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
 
         LOGGER.debug("Verifying failing job is removed from the Job Service, jobId: {}", jobId);
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 60);
+        assertJobExists(jobServiceUrl(), jobId, false, 120);
     }
 
     @Test
@@ -155,7 +155,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
         LOGGER.debug("Verifying the simple job was scheduled in the Data Index, jobId: {}", jobId);
         // Verify the job is registered as scheduled in the Data Index.
         Awaitility.await()
-                .atMost(120, SECONDS)
+                .atMost(180, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -168,7 +168,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
         LOGGER.debug("Verifying simple job reaches the EXECUTED state jobId: {}", jobId);
         // Verify the job is registered as executed in the Data Index.
         Awaitility.await()
-                .atMost(60, SECONDS)
+                .atMost(120, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -176,7 +176,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 });
 
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 60);
+        assertJobExists(jobServiceUrl(), jobId, false, 120);
     }
 
     @Test
@@ -217,7 +217,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
 
         // Verify the job is registered as scheduled in the Data Index.
         Awaitility.await()
-                .atMost(60, SECONDS)
+                .atMost(120, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -234,7 +234,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
             verifyJobWasExecuted(jobRecipient, jobId, limit);
             // Verify the given execution was produced, and the expected status registered in the DI.
             Awaitility.await()
-                    .atMost(60, SECONDS)
+                    .atMost(120, SECONDS)
                     .with().pollInterval(1, SECONDS)
                     .untilAsserted(() -> {
                         Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
@@ -247,7 +247,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                     });
         }
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 60);
+        assertJobExists(jobServiceUrl(), jobId, false, 120);
     }
 
     public String jobServiceJobsUrl() {

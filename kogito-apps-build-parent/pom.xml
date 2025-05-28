@@ -62,7 +62,7 @@
         <!-- OptaPlanner version -->
         <version.org.optaplanner>${project.version}</version.org.optaplanner>
 
-        <version.org.hibernate>6.6.3.Final</version.org.hibernate>
+        <version.org.hibernate>6.6.11.Final</version.org.hibernate>
         <version.org.apache.opennlp>2.3.2</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.10.0</version.org.apache.commons.csv>
         <version.org.jredisearch>2.2.0</version.org.jredisearch>
@@ -75,7 +75,7 @@
         <version.explainability-core>1.22.1.Final</version.explainability-core>
 
         <!-- Mutiny Zero Flow Adapters -->
-        <version.io.smallrye.reactive.mutiny-zero>1.0.0</version.io.smallrye.reactive.mutiny-zero>
+        <version.io.smallrye.reactive.mutiny-zero>1.1.1</version.io.smallrye.reactive.mutiny-zero>
         <version.drools.util>${project.version}</version.drools.util>
     </properties>
 

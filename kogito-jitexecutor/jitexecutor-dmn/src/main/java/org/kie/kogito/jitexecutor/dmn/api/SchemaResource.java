@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -37,10 +38,14 @@ import org.kie.kogito.jitexecutor.dmn.DMNEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.runtime.io.IOContext;
+import io.smallrye.openapi.runtime.io.JsonIO;
+import io.smallrye.openapi.runtime.io.media.SchemaIO;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -62,10 +67,18 @@ public class SchemaResource {
     static {
         OASFactoryResolver.instance();
         x = OASFactory.createObject(OpenAPI.class);
-        resourceWithURI = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT)
-                .addProperty("URI", OASFactory.createObject(Schema.class).type(SchemaType.STRING))
-                .addProperty("content", OASFactory.createObject(Schema.class).type(SchemaType.STRING))
+        resourceWithURI = OASFactory.createObject(Schema.class).type(List.of(SchemaType.OBJECT))
+                .addProperty("URI", OASFactory.createObject(Schema.class).type(List.of(SchemaType.STRING)))
+                .addProperty("content", OASFactory.createObject(Schema.class).type(List.of(SchemaType.STRING)))
                 .required(List.of("URI", "content"));
+    }
+
+    private JsonIO<JsonNode, ArrayNode, ObjectNode, ArrayNode, ObjectNode> jsonIO;
+    private SchemaIO<JsonNode, ArrayNode, ObjectNode, ArrayNode, ObjectNode> schemaIO;
+
+    public SchemaResource() {
+        this.jsonIO = JsonIO.newInstance(OpenApiConfig.fromConfig(ConfigProvider.getConfig()));
+        this.schemaIO = new SchemaIO<>(IOContext.forJson(jsonIO));
     }
 
     @POST
@@ -89,17 +102,17 @@ public class SchemaResource {
 
         DMNType is = oasResult.lookupIOSetsByModel(dmnModel).getInputSet();
         String isRef = oasResult.getNamingPolicy().getRef(is);
-        Schema schema = OASFactory.createObject(Schema.class).type(SchemaType.OBJECT);
-        schema.addProperty("context", OASFactory.createObject(Schema.class).type(SchemaType.OBJECT).ref(isRef));
+        Schema schema = OASFactory.createObject(Schema.class).type(List.of(SchemaType.OBJECT));
+        schema.addProperty("context", OASFactory.createObject(Schema.class).type(List.of(SchemaType.OBJECT)).ref(isRef));
         if (singleModel) {
-            schema.addProperty("model", OASFactory.createObject(Schema.class).type(SchemaType.STRING));
+            schema.addProperty("model", OASFactory.createObject(Schema.class).type(List.of(SchemaType.STRING)));
         } else {
-            schema.addProperty("mainURI", OASFactory.createObject(Schema.class).type(SchemaType.STRING));
-            schema.addProperty("resources", OASFactory.createObject(Schema.class).type(SchemaType.ARRAY).items(resourceWithURI));
+            schema.addProperty("mainURI", OASFactory.createObject(Schema.class).type(List.of(SchemaType.STRING)));
+            schema.addProperty("resources", OASFactory.createObject(Schema.class).type(List.of(SchemaType.ARRAY)).items(resourceWithURI));
         }
         ObjectNode schemasNode = jsNode.putObject("properties");
         for (Map.Entry<String, Schema> entry : schema.getProperties().entrySet()) {
-            SchemaWriter.writeSchema(schemasNode, entry.getValue(), entry.getKey());
+            schemasNode.set(entry.getKey(), schemaIO.write(entry.getValue()).get());
         }
         jsNode.put("type", "object");
         ArrayNode requiredArray = jsNode.putArray("required").add("context");
