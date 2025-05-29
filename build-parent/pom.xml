@@ -59,9 +59,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.19.0</version.commons-io>
     <version.common-text>1.11.0</version.common-text>
-    <version.com.fasterxml.jackson>2.18.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.18.4</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.18.4</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.19.0</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.19.0</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.19.0</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.37.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -220,6 +220,7 @@
 
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
+    <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
     <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
@@ -1893,11 +1894,20 @@
           <artifactId>frontend-maven-plugin</artifactId>
           <version>${version.com.github.eirslett}</version>
         </plugin>
-
         <plugin>
           <groupId>com.societegenerale.commons</groupId>
           <artifactId>arch-unit-maven-plugin</artifactId>
           <version>${archunit.maven.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.github.download-maven-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <version>${version.download-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>properties-maven-plugin</artifactId>
+          <version>${version.property-maven-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -2038,12 +2048,6 @@
                 </execution>
               </executions>
             </plugin>
-            <plugin>
-              <groupId>io.github.download-maven-plugin</groupId>
-              <artifactId>download-maven-plugin</artifactId>
-              <version>${version.download-maven-plugin}</version>
-            </plugin>
-
           </plugins>
         </pluginManagement>
       </build>
