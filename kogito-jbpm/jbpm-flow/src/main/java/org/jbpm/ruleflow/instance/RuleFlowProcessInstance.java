@@ -45,4 +45,5 @@ public class RuleFlowProcessInstance extends WorkflowProcessInstanceImpl {
         List<Node> autoStartNodes = getRuleFlowProcess().getAutoStartNodes();
         autoStartNodes.forEach(autoStartNode -> signalEvent(autoStartNode.getName(), null));
     }
+
 }

@@ -18,13 +18,9 @@
  */
 package org.kie.kogito.signal;
 
-public interface SignalManagerHub {
+public interface SignalManagerHub extends SignalManager {
 
-    void publish(String type, Object signalData);
+    void addProcessInstanceResolver(ProcessInstanceResolver<?> processInstanceResolver);
 
-    void publishTargeting(String id, String type, Object signalData);
-
-    void subscribe(String type, SignalManager signalManager);
-
-    void unsubscribe(String type, SignalManager signalManager);
+    void removeProcessInstanceResolver(ProcessInstanceResolver<?> processInstanceResolver);
 }

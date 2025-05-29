@@ -25,14 +25,24 @@ import java.util.Objects;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcess;
 
 public class BpmnProcesses implements Processes {
 
     private Map<String, Process<? extends Model>> mappedProcesses = new HashMap<>();
 
+    private ProcessInstancesFactory processInstancesFactory;
+
+    public void setProcessInstancesFactory(ProcessInstancesFactory processInstancesFactory) {
+        this.processInstancesFactory = processInstancesFactory;
+    }
+
     public BpmnProcesses addProcess(Process<? extends Model> process) {
         mappedProcesses.put(process.id(), process);
+        ((AbstractProcess) process).setProcessInstancesFactory(processInstancesFactory);
+        process.activate();
         return this;
     }
 

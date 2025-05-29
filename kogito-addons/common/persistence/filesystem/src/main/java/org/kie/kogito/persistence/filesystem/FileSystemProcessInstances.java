@@ -25,29 +25,35 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.util.PathUtils;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.kie.kogito.Model;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
-import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
-@SuppressWarnings({ "rawtypes" })
-public class FileSystemProcessInstances implements MutableProcessInstances {
-
+public class FileSystemProcessInstances<T extends Model> implements MutableProcessInstances<T> {
+    private final String EVENT_SEPARATOR = "::";
     public static final String PI_DESCRIPTION = "ProcessInstanceDescription";
     public static final String PI_STATUS = "ProcessInstanceStatus";
 
     private Process<?> process;
     private Path storage;
+    private Path eventTypeStorage;
 
     private ProcessInstanceMarshallerService marshaller;
 
@@ -58,36 +64,45 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     public FileSystemProcessInstances(Process<?> process, Path storage, ProcessInstanceMarshallerService marshaller) {
         this.process = process;
         this.storage = Paths.get(storage.toString(), process.id());
+        this.eventTypeStorage = PathUtils.getSecuredPath(this.storage, "events.types");
         this.marshaller = marshaller;
 
         try {
             Files.createDirectories(this.storage);
+            if (!Files.exists(eventTypeStorage)) {
+                Files.createFile(eventTypeStorage);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Unable to create directories for file based storage of process instances", e);
         }
     }
 
     @Override
-    public Optional<AbstractProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
+    public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
         Path processInstanceStorage = PathUtils.getSecuredPath(storage, id);
         if (Files.notExists(processInstanceStorage) || !Files.isRegularFile(processInstanceStorage)) {
             return Optional.empty();
         }
         byte[] data = readBytesFromFile(processInstanceStorage);
-        AbstractProcessInstance pi = (AbstractProcessInstance) marshaller.unmarshallProcessInstance(data, process, mode);
-        if (pi != null && !ProcessInstanceReadMode.READ_ONLY.equals(mode)) {
-            disconnect(processInstanceStorage, pi);
-        }
-        return Optional.ofNullable(pi);
+        AbstractProcessInstance<T> pi = (AbstractProcessInstance<T>) marshaller.unmarshallProcessInstance(data, process, mode);
+        connectInstance(processInstanceStorage, pi);
+        return Optional.of(pi);
     }
 
     @Override
-    public Stream<ProcessInstance> stream(ProcessInstanceReadMode mode) {
+    public Stream<ProcessInstance<T>> stream(ProcessInstanceReadMode mode) {
         try {
             return Files.walk(storage)
                     .filter(file -> !Files.isDirectory(file))
+                    .filter(file -> Files.exists(file))
+                    .filter(file -> !file.equals(eventTypeStorage))
                     .map(this::readBytesFromFile)
-                    .map(marshaller.createUnmarshallFunction(process, mode));
+                    .map(data -> {
+                        ProcessInstance<T> pi = (ProcessInstance<T>) marshaller.unmarshallProcessInstance(data, process, mode);
+                        Path processInstanceStorage = PathUtils.getSecuredPath(storage.toString(), pi.id());
+                        connectInstance(processInstanceStorage, pi);
+                        return pi;
+                    });
         } catch (IOException e) {
             throw new UncheckedIOException("Unable to read process instances ", e);
         }
@@ -99,30 +114,28 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         return Files.exists(processInstanceStorage) && Files.isRegularFile(processInstanceStorage);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-
-    public void create(String id, ProcessInstance instance) {
-        if (isActive(instance)) {
+    public void create(String id, ProcessInstance<T> instance) {
+        if (isActive(instance) || instance.status() == ProcessInstance.STATE_PENDING) {
             Path processInstanceStorage = PathUtils.getSecuredPath(storage, id);
-            if (Files.notExists(processInstanceStorage) || !Files.isRegularFile(processInstanceStorage)) {
-                storeProcessInstance(processInstanceStorage, instance);
-            } else {
+            if (Files.exists(processInstanceStorage)) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
+
+            storeProcessInstance(processInstanceStorage, instance);
+            storeEventType(instance);
+            connectInstance(processInstanceStorage, instance);
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void update(String id, ProcessInstance instance) {
-        if (isActive(instance)) {
+    public void update(String id, ProcessInstance<T> instance) {
+        if (isActive(instance) || instance.status() == ProcessInstance.STATE_PENDING) {
             Path processInstanceStorage = PathUtils.getSecuredPath(storage, id);
-            if (Files.notExists(processInstanceStorage) || !Files.isRegularFile(processInstanceStorage)) {
-                throw new ProcessInstanceNotFoundException(id);
-            } else {
+            if (Files.exists(processInstanceStorage)) {
                 storeProcessInstance(processInstanceStorage, instance);
-                disconnect(processInstanceStorage, instance);
+                connectInstance(processInstanceStorage, instance);
+                storeEventType(instance);
             }
         }
     }
@@ -132,8 +145,60 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         Path processInstanceStorage = PathUtils.getSecuredPath(storage, id);
         try {
             Files.deleteIfExists(processInstanceStorage);
+            cleanEventType(id);
         } catch (IOException e) {
             throw new RuntimeException("Unable to remove process instance with id " + id, e);
+        }
+    }
+
+    @Override
+    public Stream<ProcessInstance<T>> waitingForEventType(String eventType, ProcessInstanceReadMode mode) {
+        try {
+            if (!Files.exists(eventTypeStorage)) {
+                return Collections.<ProcessInstance<T>> emptyList().stream();
+            }
+            List<String> processInstanceIds = Files.readAllLines(eventTypeStorage)
+                    .stream()
+                    .filter(line -> line.startsWith(eventType + ":"))
+                    .map(line -> line.substring(line.indexOf(EVENT_SEPARATOR) + EVENT_SEPARATOR.length())).toList();
+            List<ProcessInstance<T>> waitingInstances = new ArrayList<>();
+            for (String processInstanceId : processInstanceIds) {
+                Path processInstanceStorage = PathUtils.getSecuredPath(storage, processInstanceId);
+                byte[] data = readBytesFromFile(processInstanceStorage);
+                AbstractProcessInstance<T> pi = (AbstractProcessInstance<T>) marshaller.unmarshallProcessInstance(data, process, mode);
+                connectInstance(processInstanceStorage, pi);
+                waitingInstances.add(pi);
+            }
+            return waitingInstances.stream();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to store process events with id " + eventType, e);
+        }
+    }
+
+    protected void storeEventType(ProcessInstance<?> instance) {
+        try {
+            cleanEventType(instance.id());
+            Set<String> eventTypes = Stream.of(((AbstractProcessInstance<T>) instance).internalGetProcessInstance().getEventTypes()).collect(Collectors.toSet());
+            for (String eventType : eventTypes) {
+                Files.write(eventTypeStorage, (eventType + EVENT_SEPARATOR + instance.id() + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to store process instance with id " + instance.id(), e);
+        }
+    }
+
+    protected void cleanEventType(String processInstanceId) {
+        try {
+            if (!Files.exists(eventTypeStorage)) {
+                return;
+            }
+            List<String> lines = Files.readAllLines(eventTypeStorage).stream()
+                    .filter(line -> !line.endsWith(EVENT_SEPARATOR + processInstanceId)).toList();
+            String fileContent = String.join(System.lineSeparator(), lines);
+
+            Files.write(eventTypeStorage, (fileContent + System.lineSeparator()).getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to store process instance events with id " + processInstanceId, e);
         }
     }
 
@@ -157,10 +222,9 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         }
     }
 
-    protected void disconnect(Path processInstanceStorage, ProcessInstance instance) {
+    protected void connectInstance(Path processInstanceStorage, ProcessInstance instance) {
         Supplier<byte[]> supplier = () -> readBytesFromFile(processInstanceStorage);
         ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(supplier));
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
     }
 
     public String getMetadata(Path file, String key) {
@@ -204,4 +268,5 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             return false;
         }
     }
+
 }

@@ -204,6 +204,7 @@ public class ProcessInstanceMarshallerService {
                         processInstanceMarshallerFactory.newKogitoProcessInstanceMarshaller();
                 marshaller.reloadProcessInstance(context, processInstance);
             } catch (Exception e) {
+                e.printStackTrace();
                 LOGGER.warn("Process Instance {} cannot be reloaded", processInstance.id(), e);
             }
         };

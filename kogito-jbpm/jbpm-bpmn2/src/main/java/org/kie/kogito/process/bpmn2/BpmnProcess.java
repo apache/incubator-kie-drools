@@ -19,30 +19,21 @@
 package org.kie.kogito.process.bpmn2;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Process;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.process.impl.AbstractProcess;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
-import org.kie.kogito.process.impl.StaticProcessConfig;
-
-import static org.kie.kogito.services.uow.StaticUnitOfWorkManger.staticUnitOfWorkManager;
 
 public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
-    private static BpmnProcessCompiler COMPILER = new BpmnProcessCompiler();
+    private static StaticApplicationAssembler COMPILER = new StaticApplicationAssembler();
 
     private final Process process;
 
@@ -55,9 +46,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     public BpmnProcess(Process process, ProcessConfig config, Application application) {
         super(config, application);
         this.process = process;
-        application.get(BpmnProcesses.class).addProcess(this);
         this.application = application;
-        this.activate();
     }
 
     public Application getApplication() {
@@ -113,25 +102,6 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     public BpmnVariables createModel() {
         VariableScope variableScope = (VariableScope) ((WorkflowProcess) get()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
         return new BpmnVariables(variableScope.getVariables(), new HashMap<>());
-    }
-
-    /**
-     *
-     */
-    public static void overrideCompiler(BpmnProcessCompiler compiler) {
-        COMPILER = Objects.requireNonNull(compiler);
-    }
-
-    public static List<BpmnProcess> from(Resource... resource) {
-        return from(new DefaultWorkItemHandlerConfig(), resource);
-    }
-
-    public static List<BpmnProcess> from(WorkItemHandlerConfig config, Resource... resource) {
-        return from(new StaticProcessConfig(config, new DefaultProcessEventListenerConfig(), staticUnitOfWorkManager()), resource);
-    }
-
-    public static List<BpmnProcess> from(ProcessConfig config, Resource... resources) {
-        return COMPILER.from(config, resources);
     }
 
 }

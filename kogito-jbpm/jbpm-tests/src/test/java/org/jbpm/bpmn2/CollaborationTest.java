@@ -34,7 +34,7 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -50,10 +50,10 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
         variables.setMessageId("2");
         org.kie.kogito.process.ProcessInstance<CollaborationBoundaryMessageModel> processInstance = processDefinition.createInstance(variables);
         processInstance.start();
-        processInstance.send(Sig.of("Message-collaboration", new Message("1", "example")));
+        processInstance.send(SignalFactory.of("Message-collaboration", new Message("1", "example")));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        processInstance.send(SignalFactory.of("Message-collaboration", new Message("2", "example")));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
     }
@@ -71,7 +71,7 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
         org.kie.kogito.process.Process<CollaborationStartMessageModel> processDefinition = CollaborationStartMessageProcess.newProcess(application);
 
-        processDefinition.send(Sig.of("collaboration", new Message("1", "example")));
+        processDefinition.send(SignalFactory.of("collaboration", new Message("1", "example")));
 
         assertThat(processInstanceId).hasSize(1);
 
@@ -90,7 +90,7 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
         org.kie.kogito.process.Process<CollaborationStartMessageModel> processDefinition = CollaborationStartMessageProcess.newProcess(application);
 
-        processDefinition.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        processDefinition.send(SignalFactory.of("Message-collaboration", new Message("2", "example")));
 
         assertThat(processInstanceId).hasSize(0);
 
@@ -105,10 +105,10 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
         variables.setMessageId("2");
         org.kie.kogito.process.ProcessInstance<CollaborationIntermediateMessageModel> processInstance = processDefinition.createInstance(variables);
         processInstance.start();
-        processInstance.send(Sig.of("Message-collaboration", new Message("1", "example")));
+        processInstance.send(SignalFactory.of("Message-collaboration", new Message("1", "example")));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        processInstance.send(SignalFactory.of("Message-collaboration", new Message("2", "example")));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
     }
@@ -124,10 +124,10 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
         processInstance.start();
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            processInstance.send(Sig.of("Message-collaboration", new Message(null, "example")));
+            processInstance.send(SignalFactory.of("Message-collaboration", new Message(null, "example")));
         });
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        processInstance.send(SignalFactory.of("Message-collaboration", new Message("2", "example")));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }

@@ -40,6 +40,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>process-serialization-protobuf</artifactId>
+        </dependency>
         <!-- compilation required-->
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -105,6 +109,10 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
         </dependency>
     </dependencies>
 

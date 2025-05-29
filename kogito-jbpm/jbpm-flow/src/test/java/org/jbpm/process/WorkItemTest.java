@@ -49,11 +49,9 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerNotFoundException;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
 
@@ -109,12 +107,7 @@ public class WorkItemTest extends AbstractBaseTest {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workName,
                 null);
 
-        try {
-            kruntime.abortProcessInstance(processInstanceId);
-            fail("should fail if WorkItemHandler for" + workName + "is not registered");
-        } catch (KogitoWorkItemHandlerNotFoundException wihnfe) {
-
-        }
+        kruntime.abortProcessInstance(processInstanceId);
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }

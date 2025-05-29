@@ -312,7 +312,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KogitoProcessInstance getProcessInstance(String processInstanceId) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.getProcessInstance(processInstanceId);
     }
 
     @Override

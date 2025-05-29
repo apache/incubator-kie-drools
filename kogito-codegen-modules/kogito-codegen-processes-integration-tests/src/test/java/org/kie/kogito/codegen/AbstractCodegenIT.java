@@ -36,7 +36,6 @@ import java.util.function.BiFunction;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.util.PortablePath;
-import org.jbpm.process.instance.LightWorkItemManager;
 import org.junit.platform.commons.util.ClassLoaderUtils;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.api.AddonsConfig;
@@ -48,10 +47,6 @@ import org.kie.kogito.codegen.core.ApplicationGenerator;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.usertask.UserTaskCodegen;
-import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
-import org.kie.kogito.process.Process;
-import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
@@ -262,7 +257,4 @@ public abstract class AbstractCodegenIT {
         }
     }
 
-    protected KogitoWorkItemHandler getWorkItemHandler(Process<?> p, WorkItem workItem) {
-        return ((LightWorkItemManager) ((AbstractProcess<?>) p).getProcessRuntime().getKogitoWorkItemManager()).getWorkItemHandler(workItem.getId());
-    }
 }

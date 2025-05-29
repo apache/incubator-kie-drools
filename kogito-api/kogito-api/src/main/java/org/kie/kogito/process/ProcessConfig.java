@@ -26,6 +26,7 @@ import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 public interface ProcessConfig extends KogitoConfig {
+
     WorkItemHandlerConfig workItemHandlers();
 
     ProcessEventListenerConfig processEventListeners();

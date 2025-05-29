@@ -29,7 +29,7 @@ import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +52,7 @@ public class EventSubProcessIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("MySignal", null));
+        processInstance.send(SignalFactory.of("MySignal", null));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
@@ -74,7 +74,7 @@ public class EventSubProcessIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("MySignal", new Person("john", 20)));
+        processInstance.send(SignalFactory.of("MySignal", new Person("john", 20)));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         Model result = (Model) processInstance.variables();

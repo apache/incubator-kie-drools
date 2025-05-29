@@ -44,6 +44,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessService;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
@@ -163,7 +164,7 @@ public class ProcessServiceImpl implements ProcessService {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
                 () -> process.instances().findById(id)
                         .map(pi -> {
-                            pi.send(Sig.of(signalName, data));
+                            pi.send(SignalFactory.of(signalName, data));
                             return pi.checkError().variables().toModel();
                         }));
     }
@@ -191,7 +192,7 @@ public class ProcessServiceImpl implements ProcessService {
     private <T extends Model> Optional<WorkItem> findWorkItem(ProcessInstance<T> pi, String taskName, Policy... policy) {
         KogitoNode node = pi.process().findNodes(worktItemNodeNamed(taskName)).iterator().next();
         String taskNodeName = node.getName();
-        pi.send(Sig.of(taskNodeName, emptyMap()));
+        pi.send(SignalFactory.of(taskNodeName, emptyMap()));
         return getWorkItemByTaskName(pi, taskName, policy);
     }
 

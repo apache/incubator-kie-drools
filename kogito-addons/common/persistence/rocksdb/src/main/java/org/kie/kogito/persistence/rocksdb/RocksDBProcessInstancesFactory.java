@@ -41,7 +41,7 @@ public class RocksDBProcessInstancesFactory implements ProcessInstancesFactory, 
 
     @Override
     public RocksDBProcessInstances<?> createProcessInstances(Process<?> process) {
-        return new RocksDBProcessInstances<>(process, db, headersConfig);
+        return new RocksDBProcessInstances(process, db, headersConfig);
     }
 
     @Override

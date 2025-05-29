@@ -44,6 +44,7 @@ import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.util.MVELEvaluator;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -89,6 +90,7 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance.CancelType;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
@@ -139,6 +141,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     private Map<String, List<KogitoEventListener>> eventListeners = new HashMap<>();
     private Map<String, List<KogitoEventListener>> externalEventListeners = new HashMap<>();
 
+    private KogitoEventListener compensationEventListener;
     private List<String> completedNodeIds = new ArrayList<>();
     private List<String> activatingNodeIds;
     private Map<String, Integer> iterationLevels = new HashMap<>();
@@ -415,6 +418,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public void setState(final int state, String outcome) {
+
         // TODO move most of this to ProcessInstanceImpl
         if (state == KogitoProcessInstance.STATE_COMPLETED
                 || state == KogitoProcessInstance.STATE_ABORTED) {
@@ -431,18 +435,25 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
             InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
             processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
-            // JBPM-8094 - set state after event
-            super.setState(state, outcome);
 
-            // deactivate all node instances of this process instance
             while (!nodeInstances.isEmpty()) {
                 NodeInstance nodeInstance = nodeInstances.get(0);
-                nodeInstance.cancel();
+                nodeInstance.cancel(state == KogitoProcessInstance.STATE_COMPLETED ? CancelType.OBSOLETE : CancelType.ABORTED);
             }
+
             cancelTimer(processRuntime, slaTimerId);
             cancelTimer(processRuntime, cancelTimerId);
 
+            if (state == KogitoProcessInstance.STATE_ABORTED && automaticCompensation()) {
+                signalEvent(Metadata.COMPENSATION, CompensationScope.IMPLICIT_COMPENSATION_PREFIX + getProcessId());
+            }
+
+            // deactivate listeners already
             removeEventListeners();
+            unregisterExternalEventNodeListeners();
+
+            super.setState(state, outcome);
+
             processRuntime.getProcessInstanceManager().removeProcessInstance(this);
             if (isSignalCompletion()) {
 
@@ -531,7 +542,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     public void start(String trigger) {
         synchronized (this) {
             setStartDate(new Date());
-            registerExternalEventNodeListeners();
             // activate timer event sub processes
             org.kie.api.definition.process.Node[] nodes = getNodeContainer().getNodes();
             for (org.kie.api.definition.process.Node node : nodes) {
@@ -638,11 +648,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 }
             }
         }
-        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
-            addEventListener("Compensation", new CompensationEventListener(this), true);
-        }
-        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
-
+        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION) || getWorkflowProcess().getMetaData().containsKey(Metadata.COMPENSATE_WHEN_ABORTED)) {
+            this.compensationEventListener = new CompensationEventListener(this);
+            addEventListener("Compensation", compensationEventListener, true);
         }
     }
 
@@ -651,6 +659,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             if (node instanceof EventNode && "external".equals(((EventNode) node).getScope())) {
                 externalEventListeners.remove(((EventNode) node).getType());
             }
+        }
+        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION) || getWorkflowProcess().getMetaData().containsKey(Metadata.COMPENSATE_WHEN_ABORTED)) {
+            removeEventListener("Compensation", this.compensationEventListener, true);
+            this.compensationEventListener = null;
         }
     }
 
@@ -981,9 +993,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     private void removeEventListeners() {
         for (String type : externalEventListeners.keySet()) {
-            ((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime())
-                    .getSignalManager().removeEventListener(type, this);
+            ((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime()).getSignalManager().removeEventListener(type, this);
         }
+        getNodeInstances(true).stream()
+                .filter(EventBasedNodeInstanceInterface.class::isInstance)
+                .map(EventBasedNodeInstanceInterface.class::cast)
+                .forEach(EventBasedNodeInstanceInterface::removeEventListeners);
     }
 
     @Override

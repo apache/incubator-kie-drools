@@ -38,6 +38,6 @@ states:
     transition: SmallDelay
   - name: SmallDelay
     type: sleep
-    duration: PT1S
+    duration: PT3S
     end:
       terminate: true

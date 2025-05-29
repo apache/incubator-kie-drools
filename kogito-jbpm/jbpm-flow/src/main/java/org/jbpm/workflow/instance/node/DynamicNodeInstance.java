@@ -27,6 +27,7 @@ import org.drools.core.common.InternalAgenda;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.Node;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.kogito.event.process.ContextAwareEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -38,6 +39,22 @@ import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_ENTER;
 public class DynamicNodeInstance extends CompositeContextNodeInstance {
 
     private static final long serialVersionUID = 510l;
+
+    private ProcessEventListener completeEventListener;
+    private ProcessEventListener activationEventListener;
+
+    public DynamicNodeInstance() {
+        activationEventListener = ContextAwareEventListener.using(listener -> {
+            if (canActivate() && getState() == KogitoProcessInstance.STATE_PENDING) {
+                triggerActivated();
+            }
+        });
+        completeEventListener = ContextAwareEventListener.using(listener -> {
+            if (canComplete() && getState() == KogitoProcessInstance.STATE_ACTIVE) {
+                triggerCompleted(CONNECTION_DEFAULT_TYPE);
+            }
+        });
+    }
 
     private String getRuleFlowGroupName() {
         return getNodeName();
@@ -65,7 +82,6 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
             triggerActivated();
         } else {
             setState(KogitoProcessInstance.STATE_PENDING);
-            addActivationListener();
         }
     }
 
@@ -81,27 +97,22 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     }
 
     private boolean canComplete() {
-
         return getNodeInstances(false).isEmpty() && getDynamicNode().canComplete(ContextFactory.fromNode(this));
     }
 
-    private void addActivationListener() {
-        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(ContextAwareEventListener.using(listener -> {
-            if (canActivate() && getState() == KogitoProcessInstance.STATE_PENDING) {
-                triggerActivated();
-                getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(listener);
-            }
-        }));
+    @Override
+    public void addEventListeners() {
+        super.addEventListeners();
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(activationEventListener);
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().addEventListener(completeEventListener);
+
     }
 
-    private void addCompletionListener() {
-        getProcessInstance().getKnowledgeRuntime()
-                .getProcessRuntime()
-                .addEventListener(ContextAwareEventListener.using(listener -> {
-                    if (canComplete()) {
-                        triggerCompleted(CONNECTION_DEFAULT_TYPE);
-                    }
-                }));
+    @Override
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(activationEventListener);
+        getProcessInstance().getKnowledgeRuntime().getProcessRuntime().removeEventListener(completeEventListener);
     }
 
     @Override
@@ -118,13 +129,11 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
         if (isTerminated(nodeInstance) || canComplete()) {
             triggerCompleted(CONNECTION_DEFAULT_TYPE);
         }
-        if (!canComplete()) {
-            addCompletionListener();
-        }
     }
 
     @Override
     public void triggerCompleted(String outType) {
+        setState(KogitoProcessInstance.STATE_COMPLETED);
         if (getProcessInstance().getKnowledgeRuntime().getAgenda() != null) {
             ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda()).getAgendaGroupsManager()
                     .deactivateRuleFlowGroup(getRuleFlowGroupName());

@@ -35,7 +35,7 @@
   <itemDefinition id="_2_MessageType" structureRef="String" />
   <message id="HelloMessage" itemRef="_2_MessageType" />
 
-  <process processType="Private" isExecutable="true" id="ReceiveTask" name="Receive Task" >
+  <process processType="Private" isExecutable="true" id="ReceiveTask" name="Receive Task" tns:packageName="org.jbpm.bpmn2.handler">
 
     <!-- process variables -->
     <property id="isCheckedCheckbox" itemSubjectRef="_sItem"/>

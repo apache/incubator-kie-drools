@@ -22,21 +22,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.prediction.api.PredictionAwareHumanTaskWorkItemHandler;
 import org.kie.kogito.prediction.api.PredictionService;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
@@ -44,8 +40,6 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 public class SmileRandomForestPredictionTest {
 
     private PredictionService predictionService;
-
-    private ProcessConfig config;
 
     @BeforeEach
     public void configure() {
@@ -62,9 +56,6 @@ public class SmileRandomForestPredictionTest {
         configuration.setNumTrees(1);
 
         predictionService = new SmileRandomForest(configuration);
-        CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
-        wiConfig.register("Human Task", new PredictionAwareHumanTaskWorkItemHandler(predictionService));
-        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         for (int i = 0; i < 10; i++) {
             predictionService.train(null, Collections.singletonMap("ActorId", "john"), Collections.singletonMap("output", "predicted value"));
@@ -74,10 +65,23 @@ public class SmileRandomForestPredictionTest {
         }
     }
 
+    private BpmnProcess createProcess(String fileName) {
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new PredictionAwareHumanTaskWorkItemHandler(predictionService))
+                .build();
+
+        Application application = StaticApplicationAssembler.instance().newStaticApplication(null, processConfig, fileName);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        return (BpmnProcess) process;
+    }
+
     @Test
     public void testUserTaskWithPredictionService() {
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.configure();
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 

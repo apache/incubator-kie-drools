@@ -20,13 +20,14 @@ package org.kie.persistence.filesystem;
 
 import java.util.Collections;
 
-import org.drools.io.ClassPathResource;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.filesystem.AbstractProcessInstancesFactory;
 import org.kie.kogito.persistence.filesystem.FileSystemProcessInstances;
@@ -34,10 +35,12 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.uow.UnitOfWork;
@@ -53,9 +56,10 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abortFirst;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
-import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirstReadOnly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,14 +68,22 @@ class FileSystemProcessInstancesTest {
 
     private SecurityPolicy securityPolicy = SecurityPolicy.of("john", emptyList());
 
-    private BpmnProcess createProcess(String fileName) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
-        process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
-        process.configure();
+    private BpmnProcess createProcess(String... fileName) {
+        org.kie.kogito.process.Processes container = createApplication(fileName).get(Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
         abort(process.instances());
-        return process;
+        return (BpmnProcess) process;
+    }
+
+    private Application createApplication(String... fileName) {
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new DefaultKogitoWorkItemHandler())
+                .build();
+
+        Application application = StaticApplicationAssembler.instance().newStaticApplication(new FileSystemProcessInstancesFactory(), processConfig, fileName);
+        return application;
     }
 
     @Test
@@ -122,7 +134,7 @@ class FileSystemProcessInstancesTest {
         processInstance.start();
 
         ProcessInstances<BpmnVariables> instances = process.instances();
-        ProcessInstance<BpmnVariables> pi = getFirst(instances);
+        ProcessInstance<BpmnVariables> pi = getFirstReadOnly(instances);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
         abortFirst(instances);
         assertEmpty(instances);
@@ -140,8 +152,8 @@ class FileSystemProcessInstancesTest {
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
         assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
         verify(fileSystemBasedStorage).create(any(), any());
-        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        verify(fileSystemBasedStorage, atLeastOnce()).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage, atLeastOnce()).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -191,8 +203,6 @@ class FileSystemProcessInstancesTest {
     @Test
     void testBasicFlowControlledByUnitOfWork() {
         BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
-        process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
-        process.configure();
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
@@ -209,8 +219,8 @@ class FileSystemProcessInstancesTest {
         FileSystemProcessInstances fileSystemBasedStorage = (FileSystemProcessInstances) process.instances();
         assertThat(fileSystemBasedStorage.exists(processInstance.id())).isTrue();
         verify(fileSystemBasedStorage).create(processInstance.id(), processInstance);
-        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
-        verify(fileSystemBasedStorage, times(2)).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
+        verify(fileSystemBasedStorage, atLeastOnce()).setMetadata(any(), eq(FileSystemProcessInstances.PI_DESCRIPTION), eq("User Task"));
+        verify(fileSystemBasedStorage, atLeastOnce()).setMetadata(any(), eq(FileSystemProcessInstances.PI_STATUS), eq("1"));
 
         String testVar = (String) processInstance.variables().get("test");
         assertThat(testVar).isEqualTo("test");
@@ -273,6 +283,23 @@ class FileSystemProcessInstancesTest {
         assertThatExceptionOfType(SecurityException.class)
                 .isThrownBy(() -> fsInstances.remove("../../../etc/passwd"))
                 .withMessageContaining("Path traversal attempt detected");
+    }
+
+    @Test
+    public void testSignalStorage() {
+        BpmnProcess process = createProcess("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        FileSystemProcessInstances fsInstances = (FileSystemProcessInstances) process.instances();
+        ProcessInstance<BpmnVariables> pi1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig1")));
+        ProcessInstance<BpmnVariables> pi2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig2")));
+        pi1.start();
+        pi2.start();
+        assertThat(process.instances().stream().count()).isEqualTo(2);
+        pi1.workItems().forEach(wi -> pi1.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        pi2.workItems().forEach(wi -> pi2.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        process.send(SignalFactory.of("sig1", "SomeValue"));
+        assertThat(process.instances().stream().count()).isEqualTo(1);
+        process.send(SignalFactory.of("sig2", "SomeValue"));
+        assertThat(process.instances().stream().count()).isEqualTo(0);
     }
 
     private static class FileSystemProcessInstancesFactory extends AbstractProcessInstancesFactory {

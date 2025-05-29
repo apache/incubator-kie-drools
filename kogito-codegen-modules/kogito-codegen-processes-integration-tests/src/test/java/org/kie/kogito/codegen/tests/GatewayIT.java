@@ -30,7 +30,8 @@ import org.kie.kogito.jbpm.usertask.handler.UserTaskKogitoWorkItemHandlerProcess
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTasks;
@@ -56,7 +57,7 @@ public class GatewayIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("First", "test"));
+        processInstance.send(SignalFactory.of("First", "test"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
@@ -72,7 +73,7 @@ public class GatewayIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("Second", "value"));
+        processInstance.send(SignalFactory.of("Second", "value"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
@@ -122,6 +123,7 @@ public class GatewayIT extends AbstractCodegenIT {
         offer.setSalary(50000);
         userTaskInstance_1.transition(COMPLETE, Map.of("Offer", offer), IdentityProviders.of("mary"));
 
+        ((AbstractProcessInstance) processInstance).reload();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
     }
 }

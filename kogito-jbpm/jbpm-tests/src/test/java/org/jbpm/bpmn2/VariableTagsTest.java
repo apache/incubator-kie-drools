@@ -20,12 +20,11 @@ package org.jbpm.bpmn2;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.io.ClassPathResource;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.support.InMemoryProcessInstancesFactory;
 import org.jbpm.bpmn2.tags.ApprovalWithCustomVariableTagsModel;
 import org.jbpm.bpmn2.tags.ApprovalWithCustomVariableTagsProcess;
 import org.jbpm.bpmn2.tags.ApprovalWithReadonlyVariableTagsModel;
@@ -44,7 +43,8 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
+import org.kie.kogito.process.impl.StaticProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -144,10 +144,18 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testRequiredVariableFiltering() {
-        DefaultWorkItemHandlerConfig config = new DefaultWorkItemHandlerConfig();
-        config.register("Human Task", new TestWorkItemHandler());
-        List<BpmnProcess> processes = BpmnProcess.from(config, new ClassPathResource("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithCustomVariableTags.bpmn2"));
-        BpmnProcess process = processes.get(0);
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new TestWorkItemHandler())
+                .build();
+
+        Application application =
+                StaticApplicationAssembler.instance().newStaticApplication(new InMemoryProcessInstancesFactory(),
+                        processConfig,
+                        "org/jbpm/bpmn2/tags/BPMN2-ApprovalWithCustomVariableTags.bpmn2");
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+
+        BpmnProcess process = (BpmnProcess) container.processById("ApprovalWithCustomVariableTags");
         Map<String, Object> params = new HashMap<>();
         params.put("approver", "john");
         org.kie.kogito.process.ProcessInstance<BpmnVariables> instance = process.createInstance(BpmnVariables.create(params));

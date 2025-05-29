@@ -20,6 +20,8 @@ package org.kie.kogito.process.impl;
 
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.calendar.BusinessCalendar;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
@@ -35,15 +37,15 @@ import static org.kie.kogito.services.uow.StaticUnitOfWorkManger.staticUnitOfWor
 
 public class StaticProcessConfig implements ProcessConfig {
 
-    private final WorkItemHandlerConfig workItemHandlerConfig;
-    private final ProcessEventListenerConfig processEventListenerConfig;
-    private final SignalManagerHub signalManager;
-    private final UnitOfWorkManager unitOfWorkManager;
-    private final JobsService jobsService;
-    private final ProcessVersionResolver versionResolver;
+    private WorkItemHandlerConfig workItemHandlerConfig;
+    private ProcessEventListenerConfig processEventListenerConfig;
+    private SignalManagerHub signalManager;
+    private UnitOfWorkManager unitOfWorkManager;
+    private JobsService jobsService;
+    private ProcessVersionResolver versionResolver;
 
-    private final IdentityProvider identityProvider;
-    private final BusinessCalendar businessCalendar;
+    private IdentityProvider identityProvider;
+    private BusinessCalendar businessCalendar;
 
     public StaticProcessConfig(JobsService jobService) {
         this(new DefaultWorkItemHandlerConfig(),
@@ -128,5 +130,41 @@ public class StaticProcessConfig implements ProcessConfig {
     @Override
     public BusinessCalendar getBusinessCalendar() {
         return this.businessCalendar;
+    }
+
+    public static StaticProcessConfigBuilder newStaticProcessConfigBuilder() {
+        return new StaticProcessConfig().new StaticProcessConfigBuilder();
+    }
+
+    public class StaticProcessConfigBuilder {
+        public StaticProcessConfigBuilder() {
+            StaticProcessConfig.this.unitOfWorkManager = staticUnitOfWorkManager();
+            StaticProcessConfig.this.workItemHandlerConfig = new DefaultWorkItemHandlerConfig();
+            StaticProcessConfig.this.processEventListenerConfig = new DefaultProcessEventListenerConfig();
+            StaticProcessConfig.this.signalManager = new DefaultSignalManagerHub();
+            StaticProcessConfig.this.jobsService = staticJobService();
+            StaticProcessConfig.this.versionResolver = process -> process.version();
+            StaticProcessConfig.this.identityProvider = new NoOpIdentityProvider();
+            StaticProcessConfig.this.businessCalendar = null;
+        }
+
+        public StaticProcessConfig build() {
+            return StaticProcessConfig.this;
+        }
+
+        public StaticProcessConfigBuilder withWorkItemHandler(String name, KogitoWorkItemHandler testWorkItemHandler) {
+            ((DefaultWorkItemHandlerConfig) StaticProcessConfig.this.workItemHandlerConfig).register(name, testWorkItemHandler);
+            return this;
+        }
+
+        public StaticProcessConfigBuilder withProcessListener(KogitoProcessEventListener listener) {
+            ((DefaultProcessEventListenerConfig) StaticProcessConfig.this.processEventListenerConfig).register(listener);
+            return this;
+        }
+
+        public StaticProcessConfigBuilder withCalendar(BusinessCalendar businessCalendar) {
+            StaticProcessConfig.this.businessCalendar = businessCalendar;
+            return this;
+        }
     }
 }

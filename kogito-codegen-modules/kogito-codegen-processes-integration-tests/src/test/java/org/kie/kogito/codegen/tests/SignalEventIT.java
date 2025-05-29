@@ -36,8 +36,8 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.uow.UnitOfWork;
 import org.mockito.ArgumentCaptor;
 
@@ -125,7 +125,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(eventDescriptions)
                 .extracting("processInstanceId").contains(processInstance.id());
 
-        processInstance.send(Sig.of("MyMessage", "test"));
+        processInstance.send(SignalFactory.of("MyMessage", "test"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
@@ -164,7 +164,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(eventDescriptions)
                 .extracting("processInstanceId").contains(processInstance.id());
 
-        processInstance.send(Sig.of("MySignal", "test"));
+        processInstance.send(SignalFactory.of("MySignal", "test"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
@@ -192,7 +192,7 @@ public class SignalEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("MySignal", "test"));
+        processInstance.send(SignalFactory.of("MySignal", "test"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
@@ -239,7 +239,7 @@ public class SignalEventIT extends AbstractCodegenIT {
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
-        processInstance.send(Sig.of("MyMessage", "test"));
+        processInstance.send(SignalFactory.of("MyMessage", "test"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 

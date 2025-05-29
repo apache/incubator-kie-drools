@@ -58,7 +58,7 @@ import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.test.utils.ProcessTestHelper.left;
@@ -123,7 +123,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.Process<TopLevelEscalationModel> definition = TopLevelEscalationProcess.newProcess(app);
         TopLevelEscalationModel model = definition.createModel();
         model.setData("data");
-        definition.send(Sig.of("Escalation-START_NEW", "data"));
+        definition.send(SignalFactory.of("Escalation-START_NEW", "data"));
         assertThat(instances).hasSize(1);
     }
 

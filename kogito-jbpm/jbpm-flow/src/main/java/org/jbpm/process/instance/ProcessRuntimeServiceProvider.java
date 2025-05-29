@@ -37,4 +37,5 @@ public interface ProcessRuntimeServiceProvider {
     KogitoProcessEventSupport getEventSupport();
 
     UnitOfWorkManager getUnitOfWorkManager();
+
 }

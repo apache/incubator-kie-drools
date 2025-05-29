@@ -36,6 +36,10 @@ abstract class Repository {
     static final String PROCESS_VERSION_IS_NULL = "and process_version is null";
     static final String MIGRATE_BULK = "UPDATE process_instances SET process_id = ?, process_version = ? WHERE process_id = ? ";
     static final String MIGRATE_INSTANCE = "UPDATE process_instances SET process_id = ?, process_version = ? WHERE id = ANY (?) and process_id = ? ";
+    static final String FIND_ALL_WAITING_FOR_EVENT_TYPE =
+            "SELECT payload, version FROM event_types, process_instances WHERE process_instances.id = event_types.process_instance_id AND process_id = ? AND event_type = ?";
+    static final String DELETE_ALL_WAITING_FOR_EVENT_TYPE = "DELETE FROM event_types WHERE process_instance_id = ?";
+    static final String INSERT_WAITING_FOR_EVENT_TYPE = "INSERT INTO event_types (process_instance_id, event_type) VALUES(?,?)";
 
     static class Record {
         private final byte[] payload;
@@ -55,11 +59,11 @@ abstract class Repository {
         }
     }
 
-    abstract void insertInternal(String processId, String processVersion, UUID id, byte[] payload, String businessKey);
+    abstract void insertInternal(String processId, String processVersion, UUID id, byte[] payload, String businessKey, String[] eventTypes);
 
-    abstract void updateInternal(String processId, String processVersion, UUID id, byte[] payload);
+    abstract void updateInternal(String processId, String processVersion, UUID id, byte[] payload, String[] eventTypes);
 
-    abstract boolean updateWithLock(String processId, String processVersion, UUID id, byte[] payload, long version);
+    abstract boolean updateWithLock(String processId, String processVersion, UUID id, byte[] payload, long version, String[] eventTypes);
 
     abstract boolean deleteInternal(String processId, String processVersion, UUID id);
 
@@ -69,6 +73,8 @@ abstract class Repository {
 
     abstract Stream<Record> findAllInternal(String processId, String processVersion);
 
+    abstract Stream<Record> findAllInternalWaitingFor(String id, String version, String eventType);
+
     protected RuntimeException uncheckedException(Exception ex, String message, Object... param) {
         return new RuntimeException(String.format(message, param), ex);
     }
@@ -76,4 +82,5 @@ abstract class Repository {
     abstract long migrate(String id, String version, String targetProcessId, String targetProcessVersion);
 
     abstract void migrate(String id, String version, String targetProcessId, String targetProcessVersion, String[] processIds);
+
 }

@@ -101,7 +101,7 @@ public class ProtobufProcessInstanceReader {
         processInstance.setInternalProcess(((AbstractProcess<?>) context.get(MarshallerContextName.MARSHALLER_PROCESS)).get());
 
         processInstance.setId(processInstanceProtobuf.getId());
-        processInstance.setState(processInstanceProtobuf.getState());
+        processInstance.setInternalState(processInstanceProtobuf.getState());
         processInstance.setSignalCompletion(processInstanceProtobuf.getSignalCompletion());
 
         if (processInstanceProtobuf.hasStartDate()) {

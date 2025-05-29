@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
-import org.drools.io.ClassPathResource;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -35,6 +34,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.mongodb.utils.DocumentConstants;
@@ -44,7 +45,7 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
@@ -65,10 +66,11 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ERROR;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.DOCUMENT_ID;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abortFirst;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
-import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirstReadOnly;
 
 @Testcontainers
 class MongoDBProcessInstancesIT {
@@ -115,13 +117,26 @@ class MongoDBProcessInstancesIT {
         transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
     }
 
-    private void test(AbstractTransactionManager transactionManager) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
-        process.configure();
+    private BpmnProcess createProcess(AbstractTransactionManager transactionManager, String name) {
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new DefaultKogitoWorkItemHandler())
+                .build();
 
+        Application application =
+                StaticApplicationAssembler.instance().newStaticApplication(new MongoDBProcessInstancesFactory(mongoClient, transactionManager), processConfig, name);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        BpmnProcess compiledProcess = (BpmnProcess) process;
+
+        abort(process.instances());
+        return compiledProcess;
+    }
+
+    private void test(AbstractTransactionManager transactionManager) {
+        BpmnProcess process = createProcess(transactionManager, "BPMN2-UserTask.bpmn2");
         testIndexCreation(process);
 
         Map<String, Object> parameters = new HashMap<>();
@@ -205,11 +220,9 @@ class MongoDBProcessInstancesIT {
     }
 
     void testFindByIdReadMode(AbstractTransactionManager transactionManager) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
+        BpmnProcess process = createProcess(transactionManager, "BPMN2-UserTask-Script.bpmn2");
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
-        for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
+        for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
             if (node instanceof ActionNode) {
                 DroolsAction a = ((ActionNode) node).getAction();
                 a.setMetaData("Action", (Action) kcontext -> {
@@ -218,8 +231,6 @@ class MongoDBProcessInstancesIT {
                 });
             }
         }
-        process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
-        process.configure();
 
         ProcessInstance<BpmnVariables> mutablePi = process.createInstance(BpmnVariables.create(Collections.singletonMap("var", "value")));
         mutablePi.start();
@@ -267,18 +278,14 @@ class MongoDBProcessInstancesIT {
     }
 
     void testValuesReadMode(AbstractTransactionManager transactionManager) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
-        process.configure();
+        BpmnProcess process = createProcess(transactionManager, "BPMN2-UserTask.bpmn2");
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
 
         ProcessInstances<BpmnVariables> instances = process.instances();
-        ProcessInstance<BpmnVariables> pi = getFirst(instances);
+        ProcessInstance<BpmnVariables> pi = getFirstReadOnly(instances);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
         abortFirst(instances);
         assertEmpty(instances);

@@ -27,8 +27,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,14 +45,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
-import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.*;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,14 +72,14 @@ public class KafkaProcessInstancesTest {
     Process process;
 
     @Mock
-    ReadOnlyKeyValueStore<String, byte[]> store;
+    KeyValueStore<String, byte[]> store;
 
     @Mock
     ProcessInstanceMarshallerService marshaller;
 
     String id = UUID.randomUUID().toString();
 
-    String storedId = processId + "-" + id;
+    String storedId = "process-" + processId + "-" + id;
 
     @BeforeEach
     public void setup() {
@@ -84,7 +88,7 @@ public class KafkaProcessInstancesTest {
         instances = new KafkaProcessInstances(process, producer);
         instances.setStore(store);
         instances.setMarshaller(marshaller);
-        lenient().when(marshaller.createUnmarshallFunction(any(), any())).thenCallRealMethod();
+        lenient().when(marshaller.unmarshallProcessInstance(any(), any())).thenCallRealMethod();
     }
 
     @Test
@@ -108,13 +112,17 @@ public class KafkaProcessInstancesTest {
     public void testProcessInstancesRemove() {
         doReturn(mock(Future.class)).when(producer).send(any());
 
+        KeyValueIterator<String, byte[]> iterator = mock(KeyValueIterator.class);
+        when(store.prefixScan(contains("events"), any())).thenReturn(iterator);
+        when(iterator.hasNext()).thenReturn(false);
+
         instances.remove(id);
 
         ArgumentCaptor<ProducerRecord> captor = ArgumentCaptor.forClass(ProducerRecord.class);
-        verify(producer).send(captor.capture());
-        assertThat(captor.getValue().value()).isNull();
-        assertThat(captor.getValue().key()).isEqualTo(storedId);
-        assertThat(captor.getValue().topic()).isEqualTo(topicName());
+        verify(producer, times(2)).send(captor.capture());
+        assertThat(captor.getAllValues().get(0).value()).isNull();
+        assertThat(captor.getAllValues().get(0).key()).isEqualTo(storedId);
+        assertThat(captor.getAllValues().get(0).topic()).isEqualTo(topicName());
     }
 
     @Test
@@ -173,21 +181,20 @@ public class KafkaProcessInstancesTest {
     @Test
     public void testProcessInstancesValues() {
         KeyValueIteratorMock iterator = new KeyValueIteratorMock();
-        doReturn(iterator).when(store).prefixScan(eq(processId), any());
+        doReturn(iterator).when(store).prefixScan(contains(processId), any());
         assertOne(instances);
     }
 
     @Test
     public void testProcessInstancesValuesMutable() {
         KeyValueIteratorMock iterator = new KeyValueIteratorMock();
-        doReturn(iterator).when(store).prefixScan(eq(processId), any());
+        doReturn(iterator).when(store).prefixScan(contains(processId), any());
         assertOne(instances, ProcessInstanceReadMode.MUTABLE);
     }
 
     @Test
     public void testProcessInstancesSize() {
-        doReturn(mock(KeyValueIterator.class)).when(store).prefixScan(eq(processId), any());
-
+        doReturn(mock(KeyValueIterator.class)).when(store).prefixScan(contains(processId), any());
         assertEmpty(instances);
     }
 
@@ -198,15 +205,21 @@ public class KafkaProcessInstancesTest {
         doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
 
+        KeyValueIterator<String, byte[]> iterator = mock(KeyValueIterator.class);
+        when(store.prefixScan(contains("events"), any())).thenReturn(iterator);
+        when(iterator.hasNext()).thenReturn(false);
+        WorkflowProcessInstance processInstance = mock(WorkflowProcessInstance.class);
+        when(processInstance.getEventTypes()).thenReturn(new String[0]);
+        when(instance.internalGetProcessInstance()).thenReturn(processInstance);
+
         instances.update(id, instance);
 
         ArgumentCaptor<ProducerRecord> captor = ArgumentCaptor.forClass(ProducerRecord.class);
-        verify(producer).send(captor.capture());
-        assertThat(captor.getValue().value()).isEqualTo(new byte[] {});
-        assertThat(captor.getValue().key()).isEqualTo(storedId);
-        assertThat(captor.getValue().topic()).isEqualTo(topicName());
+        verify(producer, times(2)).send(captor.capture());
+        assertThat(captor.getAllValues().get(0).value()).isEqualTo(new byte[] {});
+        assertThat(captor.getAllValues().get(0).key()).isEqualTo(storedId);
+        assertThat(captor.getAllValues().get(0).topic()).isEqualTo(topicName());
 
-        verify(instance).internalRemoveProcessInstance();
         verify(marshaller).createdReloadFunction(any());
     }
 
@@ -236,13 +249,19 @@ public class KafkaProcessInstancesTest {
         AbstractProcessInstance instance = mock(AbstractProcessInstance.class);
         doReturn(new byte[] {}).when(marshaller).marshallProcessInstance(instance);
         when(instance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
+        KeyValueIterator<String, byte[]> iterator = mock(KeyValueIterator.class);
+        when(store.prefixScan(contains("events"), any())).thenReturn(iterator);
+        when(iterator.hasNext()).thenReturn(false);
+        WorkflowProcessInstance processInstance = mock(WorkflowProcessInstance.class);
+        when(processInstance.getEventTypes()).thenReturn(new String[0]);
+        when(instance.internalGetProcessInstance()).thenReturn(processInstance);
         instances.create(id, instance);
 
         ArgumentCaptor<ProducerRecord> kafkaCaptor = ArgumentCaptor.forClass(ProducerRecord.class);
-        verify(producer).send(kafkaCaptor.capture());
-        assertThat(kafkaCaptor.getValue().value()).isEqualTo(new byte[] {});
-        assertThat(kafkaCaptor.getValue().key()).isEqualTo(storedId);
-        assertThat(kafkaCaptor.getValue().topic()).isEqualTo(topicName());
+        verify(producer, times(2)).send(kafkaCaptor.capture());
+        assertThat(kafkaCaptor.getAllValues().get(0).value()).isEqualTo(new byte[] {});
+        assertThat(kafkaCaptor.getAllValues().get(0).key()).isEqualTo(storedId);
+        assertThat(kafkaCaptor.getAllValues().get(0).topic()).isEqualTo(topicName());
 
         ArgumentCaptor<Consumer> supplierCaptor = ArgumentCaptor.forClass(Consumer.class);
         verify(store).get(storedId);

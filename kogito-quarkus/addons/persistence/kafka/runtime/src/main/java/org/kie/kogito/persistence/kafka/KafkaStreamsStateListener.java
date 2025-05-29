@@ -74,6 +74,7 @@ public class KafkaStreamsStateListener implements KafkaStreams.StateListener {
     }
 
     private void setStore(KafkaProcessInstances pi) {
+
         pi.setStore(streams.store(StoreQueryParameters.fromNameAndType(storeName(), QueryableStoreTypes.keyValueStore())));
     }
 

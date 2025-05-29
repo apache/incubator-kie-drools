@@ -20,6 +20,7 @@ package org.kie.kogito.process.impl;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.Model;
+import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.MutableProcessInstances;
@@ -85,6 +87,9 @@ public class AbstractProcessInstanceTest {
         when(pr.getKogitoProcessRuntime()).thenReturn(kogitoProcessRuntime);
         when(unitOfWorkManager.currentUnitOfWork()).thenReturn(unitOfWork);
         when(wpi.getStringId()).thenReturn(UUID.randomUUID().toString());
+        CorrelationService correlationService = mock(CorrelationService.class);
+        when(process.correlations()).thenReturn(correlationService);
+        when(correlationService.findByCorrelatedId(any())).thenReturn(Optional.empty());
         processInstance = new TestProcessInstance(process, new TestModel(), pr);
     }
 

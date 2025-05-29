@@ -24,15 +24,18 @@ import java.util.Optional;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.drools.io.ClassPathResource;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
@@ -50,6 +53,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,15 +66,31 @@ import static org.mockito.Mockito.when;
 
 class PersistentProcessInstancesIT extends TestHelper {
 
+    private BpmnProcess createProcess(String name) {
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new DefaultKogitoWorkItemHandler())
+                .build();
+
+        Application application =
+                StaticApplicationAssembler.instance().newStaticApplication(new MongoDBProcessInstancesFactory(getMongoClient(), getDisabledMongoDBTransactionManager()), processConfig, name);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        BpmnProcess compiledProcess = (BpmnProcess) process;
+
+        abort(process.instances());
+        return compiledProcess;
+    }
+
     @Test
     void testMongoDBPersistence() {
         MongoDBProcessInstancesFactory factory = new MongoDBProcessInstancesFactory(getMongoClient(), getDisabledMongoDBTransactionManager());
 
         StaticProcessConfig config = new StaticProcessConfig();
         ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.setProcessInstancesFactory(factory);
-        process.configure();
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
@@ -128,7 +148,7 @@ class PersistentProcessInstancesIT extends TestHelper {
 
         StaticProcessConfig config = new StaticProcessConfig();
         ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(getMongoClient(), transactionExecutor));
         process.configure();
 
@@ -141,7 +161,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         verify(mongoCollection, times(2)).find(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));
 
         mongodbInstance.remove(id);
-        verify(mongoCollection, times(1)).deleteOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));
+        verify(mongoCollection, times(2)).deleteOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));
 
         WorkflowProcessInstance updatePi = ((AbstractProcessInstance<?>) process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")))).internalGetProcessInstance();
         updatePi.setId(id);
@@ -153,7 +173,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         when(mockUpdateProcessInstance.process()).thenReturn(process);
 
         mongodbInstance.update(id, mockUpdateProcessInstance);
-        verify(mongoCollection, times(1)).replaceOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)), any());
+        verify(mongoCollection, times(2)).replaceOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)), any());
 
         WorkflowProcessInstance createPi = ((AbstractProcessInstance<?>) process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")))).internalGetProcessInstance();
         createPi.setId(id);
@@ -165,7 +185,23 @@ class PersistentProcessInstancesIT extends TestHelper {
         when(mockCreateProcessInstance.process()).thenReturn(process);
 
         mongodbInstance.create(id, mockCreateProcessInstance);
-        verify(mongoCollection, times(1)).insertOne(eq(clientSession), any());
+        verify(mongoCollection, times(2)).insertOne(eq(clientSession), any());
+    }
+
+    @Test
+    public void testSignalStorage() {
+        BpmnProcess process = createProcess("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        MongoDBProcessInstances fsInstances = (MongoDBProcessInstances) process.instances();
+        ProcessInstance<BpmnVariables> pi1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig1")));
+        ProcessInstance<BpmnVariables> pi2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig2")));
+        pi1.start();
+        pi2.start();
+
+        pi1.workItems().forEach(wi -> pi1.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        pi2.workItems().forEach(wi -> pi2.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        process.send(SignalFactory.of("sig1", "SomeValue"));
+        process.send(SignalFactory.of("sig2", "SomeValue"));
+        assertThat(process.instances().stream().count()).isEqualTo(0);
     }
 
     private class MongoDBProcessInstancesFactory extends AbstractProcessInstancesFactory {

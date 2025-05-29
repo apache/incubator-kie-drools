@@ -30,6 +30,7 @@ import org.jbpm.flow.serialization.ProcessInstanceMarshallerException;
 import org.jbpm.flow.serialization.impl.ProtobufVariableReader;
 import org.jbpm.flow.serialization.protobuf.KogitoNodeInstanceContentsProtobuf.WorkItemNodeInstanceContent;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
@@ -56,7 +57,7 @@ public class WorkItemNodeInstanceReader implements NodeInstanceReader {
         try {
             ProtobufVariableReader varReader = new ProtobufVariableReader(context);
             WorkItemNodeInstanceContent content = value.unpack(WorkItemNodeInstanceContent.class);
-            WorkItemNodeInstance nodeInstance = instanceWorkItem();
+            WorkItemNodeInstance nodeInstance = instanceWorkItem(content.getName());
             RuleFlowProcessInstance ruleFlowProcessInstance = context.get(MarshallerContextName.MARSHALLER_PROCESS_INSTANCE);
             nodeInstance.internalSetWorkItemId(content.getWorkItemId());
             InternalKogitoWorkItem workItem = nodeInstance.getWorkItem();
@@ -94,8 +95,8 @@ public class WorkItemNodeInstanceReader implements NodeInstanceReader {
         }
     }
 
-    private WorkItemNodeInstance instanceWorkItem() {
-        WorkItemNodeInstance nodeInstance = new WorkItemNodeInstance();
+    private WorkItemNodeInstance instanceWorkItem(String name) {
+        WorkItemNodeInstance nodeInstance = "Human Task".equals(name) ? new HumanTaskNodeInstance() : new WorkItemNodeInstance();
         KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setId(UUID.randomUUID().toString());
         nodeInstance.internalSetWorkItem(workItem);

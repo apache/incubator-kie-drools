@@ -51,4 +51,9 @@ public interface ProcessInstances<T> {
         return stream(ProcessInstanceReadMode.READ_ONLY);
     }
 
+    default Stream<ProcessInstance<T>> waitingForEventType(String eventType) {
+        return waitingForEventType(eventType, ProcessInstanceReadMode.READ_ONLY);
+    }
+
+    Stream<ProcessInstance<T>> waitingForEventType(String eventType, ProcessInstanceReadMode mode);
 }

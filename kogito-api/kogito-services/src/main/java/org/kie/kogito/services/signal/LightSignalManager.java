@@ -26,17 +26,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
-import org.kie.kogito.signal.SignalManagerHub;
 
 public class LightSignalManager implements SignalManager {
 
-    private SignalManagerHub signalManagerHub;
-    private final EventListenerResolver instanceResolver;
+    private EventListenerResolver instanceResolver;
     private ConcurrentHashMap<String, List<EventListener>> listeners = new ConcurrentHashMap<>();
 
-    public LightSignalManager(EventListenerResolver instanceResolver, SignalManagerHub signalManagerHub) {
+    public LightSignalManager(EventListenerResolver instanceResolver) {
         this.instanceResolver = instanceResolver;
-        this.signalManagerHub = signalManagerHub;
     }
 
     public void addEventListener(String type, EventListener eventListener) {
@@ -47,18 +44,19 @@ public class LightSignalManager implements SignalManager {
             v.add(eventListener);
             return v;
         });
-        signalManagerHub.subscribe(type, this);
     }
 
     public void removeEventListener(String type, EventListener eventListener) {
-        listeners.computeIfPresent(type, (k, v) -> {
+        listeners.compute(type, (k, v) -> {
+            if (v == null) {
+                return null;
+            }
             v.remove(eventListener);
             if (v.isEmpty()) {
-                listeners.remove(type);
+                return null;
             }
             return v;
         });
-        signalManagerHub.unsubscribe(type, this);
     }
 
     public void signalEvent(String type, Object event) {
@@ -68,7 +66,6 @@ public class LightSignalManager implements SignalManager {
                         .forEach(e -> e.signalEvent(type, event));
                 return;
             }
-            signalManagerHub.publish(type, event);
         }
         listeners.getOrDefault(type, Collections.emptyList())
                 .forEach(e -> e.signalEvent(type, event));

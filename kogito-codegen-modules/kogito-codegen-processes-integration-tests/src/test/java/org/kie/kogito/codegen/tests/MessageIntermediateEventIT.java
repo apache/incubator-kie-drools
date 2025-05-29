@@ -34,7 +34,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,7 +95,7 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("Message-customers", "CUS-00998877"));
+        processInstance.send(SignalFactory.of("Message-customers", "CUS-00998877"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
@@ -120,7 +120,7 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("Message-customers", "CUS-00998877"));
+        processInstance.send(SignalFactory.of("Message-customers", "CUS-00998877"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();

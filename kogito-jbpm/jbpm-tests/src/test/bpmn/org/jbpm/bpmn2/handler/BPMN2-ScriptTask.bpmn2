@@ -30,7 +30,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
   <itemDefinition id="_isCheckedItem" structureRef="java.lang.Boolean"/>
-  <process processType="Private" isExecutable="true" id="ScriptTask" name="ScriptTask Process" tns:packageName="com.sample" >
+  <process processType="Private" isExecutable="true" id="ScriptTask" name="ScriptTask Process" tns:packageName="org.jbpm.bpmn2.handler" >
     <property id="isCheckedCheckbox" itemSubjectRef="_isCheckedItem"/>
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />

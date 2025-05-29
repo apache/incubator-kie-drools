@@ -59,6 +59,8 @@ import org.jbpm.bpmn2.loop.MultiInstanceLoopSubprocessBoundaryTimerProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.start.IntermediateThrowEventSignalModel;
+import org.jbpm.bpmn2.start.IntermediateThrowEventSignalProcess;
 import org.jbpm.bpmn2.subprocess.DynamicSignalChildModel;
 import org.jbpm.bpmn2.subprocess.DynamicSignalChildProcess;
 import org.jbpm.bpmn2.subprocess.DynamicSignalParentModel;
@@ -102,7 +104,8 @@ import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
-import org.jbpm.test.utils.ProcessTestHelper.CompletionKogitoEventListener;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -125,13 +128,15 @@ import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
+import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.IterableAssert.assertThatIterable;
+import static org.assertj.core.api.Assertions.assertThatIterable;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -156,7 +161,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
             logger.info("Before node triggered {}", event.getNodeInstance().getNodeName());
         }
-
     };
 
     /*
@@ -175,15 +179,19 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
         listener.waitTillCompleted();
-        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        List<WorkItem> allWorkItems = instance.workItems();
+        assertThat(allWorkItems).hasSize(4);
+        List<WorkItem> workItems = allWorkItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
+        assertThat(workItems).hasSize(1);
+        instance.completeWorkItem(workItems.get(0).getId(), Collections.emptyMap());
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     public void testBoundaryTimerCycleISOVariable() {
         Application app = ProcessTestHelper.newApplication();
-        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer",
-                3);
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
         ProcessTestHelper.registerHandler(app, "Human Task", new TestUserTaskWorkItemHandler());
         ProcessTestHelper.registerProcessEventListener(app, listener);
         org.kie.kogito.process.Process<BoundaryTimerCycleISOVariableModel> definition = BoundaryTimerCycleISOVariableProcess
@@ -194,8 +202,13 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(model);
         instance.start();
         listener.waitTillCompleted();
-        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        List<WorkItem> allWorkItems = instance.workItems();
+        assertThat(allWorkItems).hasSize(4);
+        List<WorkItem> workItems = allWorkItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
+        assertThat(workItems).hasSize(1);
+        instance.completeWorkItem(workItems.get(0).getId(), Collections.emptyMap());
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -220,7 +233,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         signalProcessInstance.start();
 
         assertThat(signalProcessInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        assertThat(taskProcessInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, taskProcessInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -247,7 +261,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         KogitoWorkItem workItem = handler.getWorkItem();
         assertThat(workItem).isNotNull();
         processInstance.completeWorkItem(workItem.getStringId(), null);
-        processInstance.send(Sig.of(signal, signal));
+        processInstance.send(SignalFactory.of(signal, signal));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(eventAfterNodeLeftTriggered).isTrue();
     }
@@ -276,7 +290,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).filteredOn("eventType", "workItem").hasSize(1).extracting("nodeInstanceId")
                 .doesNotContainNull();
 
-        instance.send(Sig.of("MySignal", "value"));
+        instance.send(SignalFactory.of("MySignal", "value"));
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -293,7 +307,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
 
-        instance.send(Sig.of("MySignal", "value"));
+        instance.send(SignalFactory.of("MySignal", "value"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
     }
@@ -330,7 +344,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).extracting("processInstanceId").contains(instance.id());
         assertThat(eventDescriptions).filteredOn("eventType", "signal").hasSize(1).extracting("properties", Map.class)
                 .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
-        instance.send(Sig.of("MyMessage", null));
+        instance.send(SignalFactory.of("MyMessage", null));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -365,7 +379,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<IntermediateThrowEventSignalModel> throwEventSignalProcessInstance = throwEventSignalProcess.createInstance(throwEventSignalProcess.createModel());
         throwEventSignalProcessInstance.start();
         assertThat(throwEventSignalProcessInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
-        assertThat(signalSingleProcessInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, signalSingleProcessInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -388,14 +403,14 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).extracting(EventDescription::getProcessInstanceId).contains(instance.id());
         assertThat(eventDescriptions).extracting(EventDescription::getNodeInstanceId).doesNotContainNull();
 
-        instance.send(Sig.of("Yes", "YesValue"));
+        instance.send(SignalFactory.of("Yes", "YesValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
         instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("No", "NoValue"));
+        instance.send(SignalFactory.of("No", "NoValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -411,14 +426,14 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("Yes", "YesValue"));
+        instance.send(SignalFactory.of("Yes", "YesValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("No", "NoValue"));
+        instance.send(SignalFactory.of("No", "NoValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
     }
 
@@ -433,10 +448,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<EventBasedSplitModel> instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("Yes", "YesValue"));
+        instance.send(SignalFactory.of("Yes", "YesValue"));
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("No", "NoValue"));
+        instance.send(SignalFactory.of("No", "NoValue"));
     }
 
     @Test
@@ -464,7 +479,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).filteredOn("eventType", "timer").hasSize(1).extracting("properties", Map.class)
                 .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Delay"));
 
-        instance.send(Sig.of("Yes", "YesValue"));
+        instance.send(SignalFactory.of("Yes", "YesValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         countDownListener.reset(1);
 
@@ -472,7 +487,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.await();
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -535,12 +551,12 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).extracting(EventDescription::getProcessInstanceId)
                 .contains(instance.id());
 
-        instance.send(Sig.of("Message-YesMessage", "YesValue"));
+        instance.send(SignalFactory.of("Message-YesMessage", "YesValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
         instance = processDefinition.createInstance(model);
         instance.start();
-        instance.send(Sig.of("Message-NoMessage", "NoValue"));
+        instance.send(SignalFactory.of("Message-NoMessage", "NoValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -587,15 +603,15 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // Stop
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("StopSignal", ""));
+        instance.send(SignalFactory.of("StopSignal", ""));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         // Continue and Stop
         instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("ContinueSignal", ""));
+        instance.send(SignalFactory.of("ContinueSignal", ""));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("StopSignal", ""));
+        instance.send(SignalFactory.of("StopSignal", ""));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -640,7 +656,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .contains(instance.id());
 
         for (int i = 0; i < 4; i++) {
-            instance.send(Sig.of("MySignal"));
+            instance.send(SignalFactory.of("MySignal"));
             assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         }
 
@@ -695,7 +711,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .contains(instance.id());
 
         for (int i = 0; i < 4; i++) {
-            instance.send(Sig.of("MySignal"));
+            instance.send(SignalFactory.of("MySignal"));
             assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         }
 
@@ -734,25 +750,25 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItemTopProcess = workItemHandler.getWorkItem();
-        instance.send(Sig.of("MySignal"));
+        instance.send(SignalFactory.of("MySignal"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         instance.completeWorkItem(workItem.getStringId(), null);
-        instance.send(Sig.of("MySignal"));
+        instance.send(SignalFactory.of("MySignal"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         instance.completeWorkItem(workItem.getStringId(), null);
-        instance.send(Sig.of("MySignal"));
+        instance.send(SignalFactory.of("MySignal"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         instance.completeWorkItem(workItem.getStringId(), null);
-        instance.send(Sig.of("MySignal"));
+        instance.send(SignalFactory.of("MySignal"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         workItem = workItemHandler.getWorkItem();
@@ -793,7 +809,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("MySignal"));
+        instance.send(SignalFactory.of("MySignal"));
 
         assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
         assertThat(executedNodes).hasSize(1);
@@ -834,10 +850,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(eventDescriptions).extracting("eventType").contains("signal", "workItem");
         assertThat(eventDescriptions).extracting("processInstanceId").contains(instance.id());
 
-        instance.send(Sig.of("Message-HelloMessage"));
-        definition.send(Sig.of("Message-HelloMessage"));
-        definition.send(Sig.of("Message-HelloMessage"));
-        definition.send(Sig.of("Message-HelloMessage"));
+        instance.send(SignalFactory.of("Message-HelloMessage"));
+        definition.send(SignalFactory.of("Message-HelloMessage"));
+        definition.send(SignalFactory.of("Message-HelloMessage"));
+        definition.send(SignalFactory.of("Message-HelloMessage"));
 
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
@@ -1002,9 +1018,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         Map<String, String> data = new HashMap<>();
-        processInstance.send(Sig.of("Message-MAIL", data));
+        processInstance.send(SignalFactory.of("Message-MAIL", data));
         countDownListener.waitTillCompleted();
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
         assertThat(variableValues).hasSize(2).contains("SCRIPT1", "SCRIPT2");
     }
 
@@ -1055,7 +1072,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<BoundaryMessageEventOnTaskModel> processInstance = process.createInstance(process.createModel());
         processInstance.start();
 
-        processInstance.send(Sig.of("Message-HelloMessage", "message data"));
+        processInstance.send(SignalFactory.of("Message-HelloMessage", "message data"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(triggeredNodes).containsExactlyInAnyOrder("StartProcess", "User Task", "Boundary event", "Condition met", "End2");
@@ -1075,7 +1092,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         processInstance.start();
 
         processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
-        processInstance.send(Sig.of("Message-HelloMessage", "message data"));
+        processInstance.send(SignalFactory.of("Message-HelloMessage", "message data"));
         processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -1105,7 +1122,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .extracting("properties", Map.class)
                 .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Period"));
         countDownListener.waitTillCompleted();
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1122,7 +1140,9 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
-        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+
     }
 
     @Test
@@ -1143,7 +1163,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
-        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1160,7 +1181,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
-        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1219,7 +1241,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         countDownListener.waitTillCompleted();
         logger.debug("Firing timer");
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1237,7 +1260,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
         logger.debug("Firing timer");
-        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1280,7 +1304,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<IntermediateCatchEventSignalModel> processInstance = process.createInstance(process.createModel());
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("MyMessage", "SomeValue"));
+        processInstance.send(SignalFactory.of("MyMessage", "SomeValue"));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(triggeredNodes).containsExactlyInAnyOrder("StartProcess", "UserTask", "Event", "event", "EndProcess");
     }
@@ -1294,7 +1318,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<IntermediateCatchEventMessageModel> instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("Message-HelloMessage", "SomeValue"));
+        instance.send(SignalFactory.of("Message-HelloMessage", "SomeValue"));
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1307,7 +1331,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         // now signal process instance
-        processInstance.send(Sig.of("Message-HelloMessage", "SomeValue"));
+        processInstance.send(SignalFactory.of("Message-HelloMessage", "SomeValue"));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1326,7 +1350,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
-        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1350,7 +1375,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // Wait for the timer to trigger
         countDownListener.waitTillCompleted();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1371,7 +1397,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // Wait for the timer to trigger
         countDownListener.waitTillCompleted();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1392,7 +1419,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // Wait for the timer to trigger
         countDownListener.waitTillCompleted();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1511,6 +1539,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         countDownListener.waitTillCompleted();
+        ((AbstractProcessInstance) processInstance).reload();
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         Integer xValue = processInstance.variables().getX();
         assertThat(xValue).isGreaterThan(0);
@@ -1542,8 +1571,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // Wait for the timer to trigger
         countDownListener.waitTillCompleted();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-
+        ((AbstractProcessInstance<IntermediateCatchEventTimerCycleWithErrorModel>) processInstance).reload();
         // Retrieve the updated model variables
         model = processInstance.variables();
         Integer xValue = model.getX();
@@ -1588,6 +1616,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-BoundaryConditionalEventOnTask.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new TestWorkItemHandler());
         KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryConditionalEventOnTask");
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
         Person person = new Person();
         person.setName("john");
         kruntime.getKieSession().insert(person);
@@ -1621,6 +1651,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new TestWorkItemHandler());
 
         KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryConditionalEventOnTask");
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
         Person person = new Person();
         person.setName("john");
         kruntime.getKieSession().insert(person);
@@ -1637,6 +1669,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 "org/jbpm/bpmn2/intermediate/BPMN2-ConditionalBoundaryEventInterrupting.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         KogitoProcessInstance processInstance = kruntime.startProcess("ConditionalBoundaryEventInterrupting");
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
         assertProcessInstanceActive(processInstance);
 
         Person person = new Person();
@@ -1657,12 +1691,12 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<SignalBoundaryOnSubProcessModel> processInstance = definition.createInstance(definition.createModel());
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("continue", null));
+        processInstance.send(SignalFactory.of("continue", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         processInstance = definition.createInstance(definition.createModel());
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("forward", null));
+        processInstance.send(SignalFactory.of("forward", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1686,11 +1720,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(instance1.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         assertThat(instance2.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance1.send(Sig.of("MyMessage", "SomeValue"));
+        instance1.send(SignalFactory.of("MyMessage", "SomeValue"));
         assertThat(instance1.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance2.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance2.send(Sig.of("MyMessage", "SomeValue"));
+        instance2.send(SignalFactory.of("MyMessage", "SomeValue"));
         assertThat(instance1.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance2.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
@@ -1725,7 +1759,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(2);
 
-        processInstance.send(Sig.of("Outside", null));
+        processInstance.send(SignalFactory.of("Outside", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1747,7 +1781,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(2);
 
-        processInstance.send(Sig.of("Outside", null));
+        processInstance.send(SignalFactory.of("Outside", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         for (KogitoWorkItem wi : workItems) {
@@ -1782,7 +1816,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(2);
-        processInstance.send(Sig.of("Inside", null));
+        processInstance.send(SignalFactory.of("Inside", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1796,11 +1830,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<BoundaryEventWithSignalsModel> processInstance = process.createInstance(model);
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("moveon", ""));
+        processInstance.send(SignalFactory.of("moveon", ""));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         KogitoWorkItem wi = handler.getWorkItem();
         assertThat(wi).isNotNull();
-        processInstance.send(Sig.of("moveon", ""));
+        processInstance.send(SignalFactory.of("moveon", ""));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -1845,12 +1879,13 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(modelIntermediate);
         instanceIntermediate.start();
         assertThat(instanceIntermediate).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        assertThat(instanceBoundary).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        assertThat(instanceBoundary.variables().getX()).isEqualTo("JOHN");
+        Optional<WorkflowProcessInstance> impl = ProcessTestHelper.findRemovedInstance(application, instanceBoundary.id());
+        assertThat(impl)
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(impl.get().getVariables()).containsEntry("x", "JOHN");
     }
 
     @Test
-
     public void testMessageIntermediateThrowWithTransformation() throws Exception {
         StringBuilder messageContent = new StringBuilder();
         Application application = ProcessTestHelper.newApplication();
@@ -1886,7 +1921,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("MyMessage", "SomeValue"));
+        instance.send(SignalFactory.of("MyMessage", "SomeValue"));
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getX()).isNotNull().isEqualTo("SOMEVALUE");
@@ -1935,7 +1970,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
         latch.await(5, TimeUnit.SECONDS);
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1948,22 +1984,33 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("MySignal", null));
+        instance.send(SignalFactory.of("MySignal", null));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     public void testIntermediateCatchEventTimerDurationWithError() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
         Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                latch.countDown();
+            }
+        });
         org.kie.kogito.process.Process<IntermediateCatchEventTimerDurationWithErrorModel> definition = IntermediateCatchEventTimerDurationWithErrorProcess
                 .newProcess(app);
         IntermediateCatchEventTimerDurationWithErrorProcessInstance instance = (IntermediateCatchEventTimerDurationWithErrorProcessInstance) definition
                 .createInstance(definition.createModel());
+
         instance.start();
-        CompletionKogitoEventListener listener = ProcessTestHelper.registerCompletionEventListener(instance);
-        listener.await();
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
-        assertThat(instance.variables().getTestOK()).isEqualTo(Boolean.TRUE);
+
+        latch.await(10L, TimeUnit.SECONDS);
+        Optional<WorkflowProcessInstance> impl = ProcessTestHelper.findRemovedInstance(app, instance.id());
+        assertThat(impl)
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+
+        assertThat(impl.get().getVariables()).containsEntry("TestOK", Boolean.TRUE);
 
     }
 
@@ -1977,7 +2024,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<IntermediateCatchEventMessageWithTransformationModel> instance = definition
                 .createInstance(definition.createModel());
         instance.start();
-        instance.send(Sig.of("Message-HelloMessage", "SomeValue"));
+        instance.send(SignalFactory.of("Message-HelloMessage", "SomeValue"));
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getX()).isNotNull().isEqualTo("SOMEVALUE");
@@ -2002,7 +2049,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        instance.send(Sig.of("MySignal", "john"));
+        instance.send(SignalFactory.of("MySignal", "john"));
 
         assertThat(trackerListener.tracked()).anyMatch(ProcessTestHelper.triggered("start"))
                 .anyMatch(ProcessTestHelper.triggered("User Task 1"))
@@ -2021,9 +2068,9 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<MultipleMessageSignalSubprocessModel> processInstance = process.createInstance(model);
         processInstance.start();
         logger.debug("Parent Process ID: " + processInstance.id());
-        processInstance.send(Sig.of("Message-Message 1", "Test"));
+        processInstance.send(SignalFactory.of("Message-Message 1", "Test"));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("Message-Message 1", "Test"));
+        processInstance.send(SignalFactory.of("Message-Message 1", "Test"));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -2039,7 +2086,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<IntermediateCatchEventSignalWithRefModel> processInstance = process.createInstance(model);
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("Signal1", "SomeValue"));
+        processInstance.send(SignalFactory.of("Signal1", "SomeValue"));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThatIterable(tracker.tracked()).extracting(a -> a.getNodeInstance().getNodeName()).contains(nodes);
     }
@@ -2095,7 +2142,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         countDownListener.reset(1);
         assertThat(countDownListener.await()).isTrue();
-        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -2180,22 +2228,25 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsTaskSequentialModel> instance = definition.createInstance(model);
         instance.start();
 
+        List<String> parameters = new ArrayList<>();
         List<KogitoWorkItem> workItems = null;
         workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(1);
-        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("1");
+        parameters.add((String) workItems.get(0).getParameter("Item"));
         ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
 
         workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(1);
-        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("2");
+        parameters.add((String) workItems.get(0).getParameter("Item"));
         ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
 
         workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(1);
-        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("3");
+        parameters.add((String) workItems.get(0).getParameter("Item"));
         ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
 
+        // order is not guaranteed
+        assertThat(parameters).containsExactlyInAnyOrder("1", "2", "3");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -2252,7 +2303,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         countDownListener3.waitTillCompleted();
         countDownProcessEventListener.waitTillCompleted();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, processInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -2410,7 +2462,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of(signalVar, "SomeValue"));
+        processInstance.send(SignalFactory.of(signalVar, "SomeValue"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(triggeredNodes).containsExactlyInAnyOrder("StartProcess", "UserTask", "Event", "event", "EndProcess");
@@ -2446,7 +2498,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<IntermediateThrowEventSignalWithVariableModel> throwProcessInstance = throwProcess.createInstance(throwModel);
         throwProcessInstance.start();
         assertThat(throwProcessInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        assertThat(catchProcessInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, catchProcessInstance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(triggeredNodes).contains("StartProcess", "UserTask", "Event", "event", "EndProcess");
     }
 
@@ -2600,11 +2653,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<EventSubprocessErrorSignalEmbeddedModel> instance = definition
                 .createInstance(definition.createModel());
         instance.start();
-        instance.send(Sig.of("signal1", null));
+        instance.send(SignalFactory.of("signal1", null));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("signal2", null));
+        instance.send(SignalFactory.of("signal2", null));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        instance.send(Sig.of("signal3", null));
+        instance.send(SignalFactory.of("signal3", null));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
     }
 
@@ -2622,7 +2675,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        processInstance.send(Sig.of("signalling"));
+        processInstance.send(SignalFactory.of("signalling"));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
@@ -2685,7 +2738,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance<IntermediateThrowEventSignalWithDataModel> processInstance = definition.createInstance(model);
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("mysignal", null));
+        processInstance.send(SignalFactory.of("mysignal", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 

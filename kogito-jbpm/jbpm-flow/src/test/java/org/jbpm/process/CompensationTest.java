@@ -20,6 +20,7 @@ package org.jbpm.process;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -48,6 +49,7 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.NodeContainer;
@@ -149,7 +151,10 @@ public class CompensationTest extends AbstractBaseTest {
         for (String workItem : workItemNames) {
             kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.createProcessInstance(processId, Collections.emptyMap());
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
+        kruntime.startProcessInstance(processInstance.getId());
 
         // call compensation on the uncompleted work 1 (which should not fire)
 
@@ -190,7 +195,10 @@ public class CompensationTest extends AbstractBaseTest {
         for (String workItem : workItemNames) {
             kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.createProcessInstance(processId, Collections.emptyMap());
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
+        kruntime.startProcessInstance(processInstance.getId());
 
         // general compensation should not cause anything to happen
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
@@ -280,7 +288,10 @@ public class CompensationTest extends AbstractBaseTest {
         for (String workItem : workItemNames) {
             kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.createProcessInstance(processId, Collections.emptyMap());
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
+        kruntime.startProcessInstance(processInstance.getId());
 
         // call compensation on the uncompleted work 1 (which should not fire)
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
@@ -324,7 +335,10 @@ public class CompensationTest extends AbstractBaseTest {
         for (String workItem : workItemNames) {
             kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workItem, workItemHandler);
         }
-        KogitoProcessInstance processInstance = kruntime.startProcess(processId);
+        KogitoProcessInstance processInstance = kruntime.createProcessInstance(processId, Collections.emptyMap());
+        WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) processInstance;
+        pi.reconnect();
+        kruntime.startProcessInstance(processInstance.getId());
 
         // pre and sub process work item
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);

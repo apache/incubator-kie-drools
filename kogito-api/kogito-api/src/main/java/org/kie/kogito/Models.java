@@ -74,6 +74,8 @@ public class Models {
     public static void setId(Object m, String id) {
         try {
             m.getClass().getMethod("setId", String.class).invoke(m, id);
+        } catch (NoSuchMethodException e) {
+            // do nothing
         } catch (ReflectiveOperationException e) {
             throw new ReflectiveModelAccessException(e);
         }

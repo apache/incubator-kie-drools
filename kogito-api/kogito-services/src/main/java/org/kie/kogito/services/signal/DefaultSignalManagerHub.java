@@ -18,61 +18,98 @@
  */
 package org.kie.kogito.services.signal;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.kogito.signal.SignalManager;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.SignalFactory;
+import org.kie.kogito.signal.ProcessInstanceResolver;
 import org.kie.kogito.signal.SignalManagerHub;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.synchronizedSet;
 
 public class DefaultSignalManagerHub implements SignalManagerHub {
 
-    private ConcurrentHashMap<String, Set<SignalManager>> signalManagers = new ConcurrentHashMap<>();
+    private Set<ProcessInstanceResolver<?>> workflowInstanceResolver = synchronizedSet(new HashSet<>());
+    private ConcurrentMap<String, List<EventListener>> listeners = new ConcurrentHashMap<>();
 
     @Override
-    public void publish(String type, Object signalData) {
-        Set<SignalManager> list = signalManagers.getOrDefault(type, Collections.emptySet());
-        for (SignalManager sm : list) {
-            sm.signalEvent(type, signalData);
+    public boolean accept(String eventType, Object event) {
+        if (listeners.containsKey(eventType)) {
+            return true;
         }
+        return workflowInstanceResolver.stream().map(e -> e.waitingForEvents(eventType)).flatMap(List::stream).count() > 0;
+    }
 
-        if (signalData instanceof ProcessInstance) {
-            list = signalManagers.getOrDefault(((ProcessInstance) signalData).getProcessId(), Collections.emptySet());
-
-            for (SignalManager sm : list) {
-                sm.signalEvent(type, signalData);
+    @Override
+    public void signalEvent(String eventType, Object payload) {
+        // we signal memory first
+        List<String> idList = new ArrayList<>();
+        listeners.getOrDefault(eventType, emptyList()).forEach(eventListener -> {
+            eventListener.signalEvent(eventType, payload);
+            if (eventListener instanceof KogitoProcessInstance kogitoProcessInstance) {
+                idList.add(kogitoProcessInstance.getId());
             }
-        }
+        });
+
+        var processInstancesWaiting = workflowInstanceResolver.stream()
+                .map(e -> e.waitingForEvents(eventType))
+                .flatMap(List::stream)
+                .filter(p -> !idList.contains(p.id()))
+                .toList();
+
+        processInstancesWaiting.forEach(eventListener -> eventListener.send(SignalFactory.of(eventType, payload)));
     }
 
     @Override
-    public void publishTargeting(String id, String type, Object signalData) {
-        signalManagers.getOrDefault(type, Collections.emptySet())
-                .forEach(e -> e.signalEvent(id, type, signalData));
+    public void signalEvent(String processInstanceId, String eventType, Object payload) {
+        workflowInstanceResolver.stream()
+                .map(e -> e.findById(processInstanceId))
+                .filter(Objects::nonNull)
+                .forEach(eventListener -> eventListener.send(SignalFactory.of(eventType, payload)));
     }
 
     @Override
-    public void subscribe(String type, SignalManager signalManager) {
-        this.signalManagers.compute(type, (k, v) -> {
+    public void addEventListener(String eventType, EventListener eventListener) {
+        listeners.compute(eventType, (k, v) -> {
             if (v == null) {
-                v = new CopyOnWriteArraySet<>();
+                v = new CopyOnWriteArrayList<>();
             }
-            v.add(signalManager);
+            v.add(eventListener);
             return v;
         });
     }
 
     @Override
-    public void unsubscribe(String type, SignalManager signalManager) {
-        this.signalManagers.computeIfPresent(type, (k, v) -> {
-            v.remove(signalManager);
+    public void removeEventListener(String eventType, EventListener eventListener) {
+        listeners.compute(eventType, (k, v) -> {
+            if (v == null) {
+                return null;
+            }
+            v.remove(eventListener);
             if (v.isEmpty()) {
-                signalManagers.remove(type);
+                return null;
             }
             return v;
         });
+    }
+
+    @Override
+    public void addProcessInstanceResolver(ProcessInstanceResolver<?> processInstanceResolver) {
+        this.workflowInstanceResolver.add(processInstanceResolver);
+    }
+
+    @Override
+    public void removeProcessInstanceResolver(ProcessInstanceResolver<?> processInstanceResolver) {
+        this.workflowInstanceResolver.remove(processInstanceResolver);
     }
 
 }

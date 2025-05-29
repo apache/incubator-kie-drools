@@ -24,24 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.workitem.Policy;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
@@ -55,8 +51,6 @@ public class PredictionAwareHumanTaskLifeCycleTest {
     private List<String> trainedTasks;
 
     private PredictionService predictionService;
-
-    private ProcessConfig config;
 
     @BeforeEach
     public void configure() {
@@ -85,18 +79,27 @@ public class PredictionAwareHumanTaskLifeCycleTest {
                 return "test";
             }
         };
+    }
 
-        CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
-        wiConfig.register("Human Task", new PredictionAwareHumanTaskWorkItemHandler(predictionService));
-        config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+    private BpmnProcess createProcess(String fileName) {
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new PredictionAwareHumanTaskWorkItemHandler(predictionService))
+                .build();
+
+        Application application = StaticApplicationAssembler.instance().newStaticApplication(null, processConfig, fileName);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        return (BpmnProcess) process;
     }
 
     @Test
     public void testUserTaskWithPredictionService() {
         predictNow.set(true);
 
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.configure();
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
@@ -113,8 +116,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
     @Test
     public void testUserTaskWithoutPredictionService() {
 
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-        process.configure();
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 

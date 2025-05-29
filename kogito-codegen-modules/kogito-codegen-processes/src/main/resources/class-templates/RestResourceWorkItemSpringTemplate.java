@@ -25,7 +25,7 @@ import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.TaskMetaInfo;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;

@@ -52,7 +52,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -181,7 +181,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         SubprocessWithParallelSplitTerminateModel model = process.createModel();
         ProcessInstance<SubprocessWithParallelSplitTerminateModel> processInstance = process.createInstance(model);
         processInstance.start();
-        processInstance.send(Sig.of("signal1", null));
+        processInstance.send(SignalFactory.of("signal1", null));
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -192,7 +192,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         ParallelSplitTerminateModel model = process.createModel();
         ProcessInstance<ParallelSplitTerminateModel> processInstance = process.createInstance(model);
         processInstance.start();
-        processInstance.send(Sig.of("Signal 1", null));
+        processInstance.send(SignalFactory.of("Signal 1", null));
         assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 

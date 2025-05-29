@@ -30,7 +30,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import org.drools.io.ClassPathResource;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -38,13 +37,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.rocksdb.Options;
@@ -91,12 +93,19 @@ class RockDBProcessInstancesTest {
     }
 
     private BpmnProcess createProcess(String fileName) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
-        process.setProcessInstancesFactory(factory);
-        process.configure();
-        return process;
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new DefaultKogitoWorkItemHandler())
+                .build();
+
+        Application application =
+                StaticApplicationAssembler.instance().newStaticApplication(factory, processConfig, fileName);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        BpmnProcess compiledProcess = (BpmnProcess) process;
+        return compiledProcess;
     }
 
     @Test
@@ -130,6 +139,22 @@ class RockDBProcessInstancesTest {
         try (Stream<ProcessInstance<?>> stream = pi.stream()) {
             assertThat(stream.count()).isZero();
         }
+    }
+
+    @Test
+    public void testSignalStorage() {
+        BpmnProcess process = createProcess("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        RocksDBProcessInstances fsInstances = (RocksDBProcessInstances) process.instances();
+        ProcessInstance<BpmnVariables> pi1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig1")));
+        ProcessInstance<BpmnVariables> pi2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("name", "sig2")));
+        pi1.start();
+        pi2.start();
+
+        pi1.workItems().forEach(wi -> pi1.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        pi2.workItems().forEach(wi -> pi2.completeWorkItem(wi.getId(), Collections.emptyMap()));
+        process.send(SignalFactory.of("sig1", "SomeValue"));
+        process.send(SignalFactory.of("sig2", "SomeValue"));
+        assertThat(process.instances().stream().count()).isEqualTo(0);
     }
 
     WorkflowProcessInstance createProcessInstance() {

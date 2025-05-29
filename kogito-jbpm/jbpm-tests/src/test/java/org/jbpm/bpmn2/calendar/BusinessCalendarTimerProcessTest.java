@@ -30,12 +30,14 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.jbpm.process.core.timer.CalendarBean;
 import org.jbpm.test.utils.ProcessTestHelper;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcessConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +55,10 @@ public class BusinessCalendarTimerProcessTest {
     @Test
     public void testTimerWithWorkingDayCalendar() throws InterruptedException {
         BusinessCalendar workingDayCalendar = BusinessCalendarImpl.builder().withCalendarBean(new CalendarBean(workingDayCalendarConfiguration)).build();
-        Application app = ProcessTestHelper.newApplication(new MockProcessConfig(workingDayCalendar));
+        StaticProcessConfig config = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withCalendar(workingDayCalendar)
+                .build();
+        Application app = ProcessTestHelper.newApplication(config);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BusinessCalendarTimerModel> processDefinition = BusinessCalendarTimerProcess.newProcess(app);
@@ -62,13 +67,17 @@ public class BusinessCalendarTimerProcessTest {
         instance.start();
         assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         Thread.sleep(2000);
-        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     public void testTimerWithNotWorkingDayCalendar() throws InterruptedException {
         BusinessCalendar notWorkingDayCalendar = BusinessCalendarImpl.builder().withCalendarBean(new CalendarBean(notWorkingDayCalendarConfiguration)).build();
-        Application app = ProcessTestHelper.newApplication(new MockProcessConfig(notWorkingDayCalendar));
+        StaticProcessConfig config = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withCalendar(notWorkingDayCalendar)
+                .build();
+        Application app = ProcessTestHelper.newApplication(config);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BusinessCalendarTimerModel> processDefinition = BusinessCalendarTimerProcess.newProcess(app);

@@ -68,7 +68,7 @@ import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,7 +97,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("jack");
 
-        definition.send(Sig.of("Conditional", person));
+        definition.send(SignalFactory.of("Conditional", person));
 
         assertThat(startedInstances).hasSize(1);
 
@@ -244,7 +244,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         org.kie.kogito.process.Process<SignalStartModel> definition = SignalStartProcess.newProcess(app);
-        definition.send(Sig.of("MySignal", "NewValue"));
+        definition.send(SignalFactory.of("MySignal", "NewValue"));
         assertThat(startedProcesses).hasSize(1);
         assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart");
     }
@@ -262,11 +262,11 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         org.kie.kogito.process.Process<SignalStartModel> definition = SignalStartProcess.newProcess(app);
-        definition.send(Sig.of("MySignal", "NewValue"));
+        definition.send(SignalFactory.of("MySignal", "NewValue"));
         assertThat(startedProcesses).hasSize(1);
         assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart");
         definition.deactivate();
-        definition.send(Sig.of("MySignal", "NewValue"));
+        definition.send(SignalFactory.of("MySignal", "NewValue"));
         assertThat(startedProcesses).hasSize(2);
         assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart", "SignalStart");
     }
@@ -282,7 +282,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         org.kie.kogito.process.Process<MessageStartModel> definition = MessageStartProcess.newProcess(app);
-        definition.send(Sig.of("HelloMessage", "NewValue"));
+        definition.send(SignalFactory.of("HelloMessage", "NewValue"));
         assertThat(startedProcesses).hasSize(1);
     }
 
@@ -507,7 +507,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
             }
         });
         org.kie.kogito.process.Process<SignalStartWithTransformationModel> definition = SignalStartWithTransformationProcess.newProcess(app);
-        definition.send(Sig.of("MySignal", "NewValue"));
+        definition.send(SignalFactory.of("MySignal", "NewValue"));
         countDownListener.waitTillCompleted();
         assertThat(list).extracting(e -> e.getProcessId()).containsExactly("SignalStartWithTransformation");
         assertThat(list).extracting(e -> ((KogitoProcessInstance) e).getVariables()).containsExactly(Collections.singletonMap("x", "NEWVALUE"));

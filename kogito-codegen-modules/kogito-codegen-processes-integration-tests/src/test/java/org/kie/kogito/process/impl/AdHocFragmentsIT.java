@@ -36,6 +36,7 @@ import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
 
@@ -72,7 +73,7 @@ class AdHocFragmentsIT extends AbstractCodegenIT {
         Optional<WorkItem> workItem = processInstance.workItems().stream().filter(wi -> wi.getParameters().get("NodeName").equals(taskName)).findFirst();
         assertThat(workItem).isNotPresent();
 
-        processInstance.send(Sig.of(taskName, p.createModel()));
+        processInstance.send(SignalFactory.of(taskName, p.createModel()));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         workItem = processInstance.workItems().stream().filter(wi -> wi.getParameters().get("NodeName").equals(taskName)).findFirst();
@@ -91,7 +92,7 @@ class AdHocFragmentsIT extends AbstractCodegenIT {
         processInstance.start();
         Map<String, Object> params = new HashMap<>();
         params.put("user", "Juan");
-        processInstance.send(Sig.of("Service Task", params));
+        processInstance.send(SignalFactory.of("Service Task", params));
 
         Model result = processInstance.variables();
         assertThat(result.toMap()).containsEntry("var1", "Hello Juan 5!");

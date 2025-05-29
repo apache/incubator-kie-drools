@@ -92,7 +92,6 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
 
     @Override
     public void internalTrigger(KogitoNodeInstance from, String type) {
-        addEventListeners();
         addAsyncStatus();
 
         final InternalProcessRuntime processRuntime = (InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime();

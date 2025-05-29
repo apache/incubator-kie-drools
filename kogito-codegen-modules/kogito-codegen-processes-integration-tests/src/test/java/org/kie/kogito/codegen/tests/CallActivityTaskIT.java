@@ -32,9 +32,7 @@ import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
-import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.Policy;
-import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.jbpm.usertask.handler.UserTaskKogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -153,9 +151,7 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(wi.getName()).isEqualTo("MyTask");
         assertThat(wi.getPhaseStatus()).isEqualTo(UserTaskKogitoWorkItemHandler.ACTIVATED.getName());
 
-        KogitoWorkItemHandler handler = getWorkItemHandler(p, wi);
-        WorkItemTransition transition = handler.completeTransition(workItems.get(0).getPhaseStatus(), parameters, securityPolicy);
-        processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
+        processInstance.completeWorkItem(wi.getId(), Collections.emptyMap());
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
@@ -192,9 +188,7 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         WorkItem wi = workItems.get(0);
         assertThat(wi.getName()).isEqualTo("MyTask");
 
-        KogitoWorkItemHandler handler = getWorkItemHandler(p, wi);
-        WorkItemTransition transition = handler.completeTransition(workItems.get(0).getPhaseStatus(), parameters, securityPolicy);
-        processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
+        processInstance.completeWorkItem(wi.getId(), Collections.emptyMap());
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 

@@ -21,17 +21,24 @@ package org.kie.kogito.infinispan;
 import java.util.Collections;
 import java.util.Date;
 
-import org.drools.io.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.jbpm.process.instance.impl.Action;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.Node;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
@@ -42,6 +49,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -74,13 +82,29 @@ class CacheProcessInstancesWithLockIT {
     }
 
     private BpmnProcess createProcess(String fileName) {
-        StaticProcessConfig config = new StaticProcessConfig();
-        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
-        AbstractProcessInstancesFactory factory = mock(AbstractProcessInstancesFactory.class);
-        process.setProcessInstancesFactory(factory);
-        process.configure();
-        return process;
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler("Human Task", new DefaultKogitoWorkItemHandler())
+                .build();
+
+        Application application = StaticApplicationAssembler.instance().newStaticApplication(new CacheProcessInstancesFactory(cacheManager), processConfig, fileName);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        String processId = container.processIds().stream().findFirst().get();
+        org.kie.kogito.process.Process<? extends Model> process = container.processById(processId);
+
+        abort(process.instances());
+        BpmnProcess compiledProcess = (BpmnProcess) process;
+        // workaround as BpmnProcess does not compile the scripts but just reads the xml
+        for (Node node : ((WorkflowProcess) ((BpmnProcess) process).process()).getNodes()) {
+            if (node instanceof ActionNode) {
+                DroolsAction a = ((ActionNode) node).getAction();
+                a.setMetaData("Action", (Action) kcontext -> {
+                    System.out.println("The variable value is " + kcontext.getVariable("s") + " about to call toString on it");
+                    kcontext.getVariable("s").toString();
+                });
+            }
+        }
+        return compiledProcess;
     }
 
     @Test
@@ -123,5 +147,13 @@ class CacheProcessInstancesWithLockIT {
         }
         pi.remove(TEST_ID);
         assertThat(pi.exists(TEST_ID)).isFalse();
+    }
+
+    private class CacheProcessInstancesFactory extends AbstractProcessInstancesFactory {
+
+        CacheProcessInstancesFactory(RemoteCacheManager cacheManager) {
+            super(cacheManager, false, null);
+        }
+
     }
 }

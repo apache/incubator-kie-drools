@@ -39,7 +39,6 @@ import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
-import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertSize;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
@@ -98,7 +97,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
 
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -125,7 +124,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -150,7 +149,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -175,7 +174,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -202,7 +201,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -227,7 +226,7 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertThat(listener.waitTillCompleted(TIME_OUT)).isTrue();
         assertThat(processEventListener.waitTillCompleted(TIME_OUT)).isTrue();
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @Test
@@ -257,7 +256,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
 
-        assertEmpty(p.instances());
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     private static void activate(Application app, Process<? extends Model> p) {
@@ -300,6 +299,6 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2);
         abort(p.instances());
-        assertEmpty(p.instances());
+        await().until(() -> p.instances().stream().count() == 0);
     }
 }

@@ -146,7 +146,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
                 // completion of the node instance is after expected SLA due date, mark it accordingly
                 this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
             } else {
-                this.slaCompliance = KogitoProcessInstance.STATE_COMPLETED;
+                this.slaCompliance = KogitoProcessInstance.SLA_MET;
             }
         }
         cancelSlaTimer();

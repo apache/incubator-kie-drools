@@ -18,33 +18,43 @@
  */
 package org.kie.kogito.persistence.kafka;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
+import org.kie.kogito.Model;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.rocksdb.RocksDBException;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toCollection;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
 
-public class KafkaProcessInstances implements MutableProcessInstances {
-
+public class KafkaProcessInstances<T extends Model> implements MutableProcessInstances<T> {
+    private final String EVENT_SEPARATOR = "::";
     private Process<?> process;
     private KafkaProducer<String, byte[]> producer;
     private String topic;
@@ -106,34 +116,51 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     }
 
     protected String getKeyForProcessInstance(String id) {
-        return format("%s-%s", getProcess().id(), id);
+        return format("process-%s-%s", getProcess().id(), id);
+    }
+
+    protected String getKeyForEvents() {
+        return format("events-%s", getProcess().id(), "events");
     }
 
     protected void sendKafkaRecord(String id, byte[] data) throws ExecutionException, InterruptedException {
         producer.send(new ProducerRecord<>(topic, getKeyForProcessInstance(id), data)).get();
     }
 
+    protected void sendEventKafkaRecord(byte[] data) throws ExecutionException, InterruptedException {
+        producer.send(new ProducerRecord<>(topic, getKeyForEvents(), data)).get();
+    }
+
     @Override
-    public void create(String id, ProcessInstance instance) {
+    public void create(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
             if (getProcessInstanceById(id).isPresent()) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
             try {
                 sendKafkaRecord(id, marshaller.marshallProcessInstance(instance));
+                updateEvents(instance);
+                connectInstance(instance);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to persist process instance id: " + id, e);
             }
         }
     }
 
+    public void updateEvents(ProcessInstance<T> instance) throws Exception {
+        Set<String> eventTypes = clearEventTypes(instance.id());
+        eventTypes.addAll(getUniqueEvents(instance));
+        sendEventKafkaRecord(toBytes(eventTypes));
+    }
+
     @Override
-    public void update(String id, ProcessInstance instance) {
+    public void update(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
             byte[] data = marshaller.marshallProcessInstance(instance);
             try {
                 sendKafkaRecord(id, data);
-                disconnect(instance);
+                updateEvents(instance);
+                connectInstance(instance);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to update process instance id: " + id, e);
             }
@@ -144,32 +171,99 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     public void remove(String id) {
         try {
             sendKafkaRecord(id, null);
+            clearEvents(id);
+            // this avoids generates a race condition as one thing is send to kafka and the other is to be processed by the table.
+            while (exists(id)) {
+                Thread.sleep(100L);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Unable to remove process instance id: " + id, e);
         }
     }
 
+    public void clearEvents(String id) throws Exception {
+        Set<String> eventTypes = clearEventTypes(id);
+        sendEventKafkaRecord(toBytes(eventTypes));
+    }
+
     @Override
-    public Optional<ProcessInstance<?>> findById(String id, ProcessInstanceReadMode mode) {
+    public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
         return getProcessInstanceById(id).map(r -> {
-            AbstractProcessInstance pi = (AbstractProcessInstance) marshaller.createUnmarshallFunction(process, mode).apply(r);
-            if (!ProcessInstanceReadMode.READ_ONLY.equals(mode)) {
-                disconnect(pi);
-            }
+            AbstractProcessInstance<T> pi = (AbstractProcessInstance<T>) marshaller.unmarshallProcessInstance(r, process, mode);
+            connectInstance(pi);
             return pi;
         });
     }
 
     @Override
-    public Stream<ProcessInstance<?>> stream(ProcessInstanceReadMode mode) {
-        KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer());
+    public Stream<ProcessInstance<T>> stream(ProcessInstanceReadMode mode) {
+        KeyValueIterator<String, byte[]> iterator = getStore().prefixScan("process-" + getProcess().id(), Serdes.String().serializer());
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
                 .map(k -> k.value)
-                .map(marshaller.createUnmarshallFunction(process, mode)).onClose(iterator::close);
+                .map(data -> {
+                    AbstractProcessInstance<T> pi = (AbstractProcessInstance) marshaller.unmarshallProcessInstance(data, process, mode);
+                    connectInstance(pi);
+                    return (ProcessInstance<T>) pi;
+                })
+                .onClose(iterator::close);
     }
 
-    protected void disconnect(ProcessInstance<?> instance) {
+    protected void connectInstance(ProcessInstance<?> instance) {
+        if (instance == null) {
+            return;
+        }
         ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(() -> getProcessInstanceById(instance.id()).orElseThrow()));
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance();
+    }
+
+    @Override
+    public Stream<ProcessInstance<T>> waitingForEventType(String eventType, ProcessInstanceReadMode mode) {
+
+        KeyValueIterator<String, byte[]> iterator = getStore().prefixScan("events-" + getProcess().id(), Serdes.String().serializer());
+        if (!iterator.hasNext()) {
+            return Collections.<ProcessInstance<T>> emptyList().stream();
+        }
+        KeyValue<String, byte[]> entry = iterator.next();
+
+        byte[] eventData = entry.value;
+        if (eventData == null) {
+            return Collections.<ProcessInstance<T>> emptyList().stream();
+        }
+        String list = new String(eventData);
+        List<String> processInstancesId = Stream.of(list.split(","))
+                .filter(e -> e.startsWith(eventType + EVENT_SEPARATOR))
+                .map(e -> e.substring(e.indexOf(EVENT_SEPARATOR) + EVENT_SEPARATOR.length()))
+                .toList();
+
+        List<ProcessInstance<T>> waitingInstances = new ArrayList<>();
+        for (String processInstanceId : processInstancesId) {
+            byte[] data = getStore().get(getKeyForProcessInstance(processInstanceId));
+            AbstractProcessInstance<T> pi = (AbstractProcessInstance) marshaller.unmarshallProcessInstance(data, process, mode);
+            connectInstance(pi);
+            waitingInstances.add(pi);
+        }
+        return waitingInstances.stream();
+
+    }
+
+    private byte[] toBytes(Set<String> events) {
+        return String.join(",", events).getBytes();
+    }
+
+    private Set<String> clearEventTypes(String processInstanceId) throws RocksDBException {
+        KeyValueIterator<String, byte[]> iterator = getStore().prefixScan("events-" + getProcess().id(), Serdes.String().serializer());
+        if (!iterator.hasNext()) {
+            return new HashSet<>();
+        }
+        KeyValue<String, byte[]> entry = iterator.next();
+
+        byte[] eventData = entry.value;
+        String list = eventData != null ? new String(eventData) : new String();
+        return Stream.of(list.split(",")).filter(e -> !e.endsWith(EVENT_SEPARATOR + processInstanceId)).collect(toCollection(HashSet::new));
+    }
+
+    private Set<String> getUniqueEvents(ProcessInstance<T> instance) {
+        return Stream.of(((AbstractProcessInstance<T>) instance).internalGetProcessInstance().getEventTypes())
+                .map(e -> e + EVENT_SEPARATOR + instance.id())
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

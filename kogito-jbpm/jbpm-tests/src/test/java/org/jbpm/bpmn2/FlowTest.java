@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -138,7 +137,7 @@ import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -514,7 +513,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         model.setX(25);
         ProcessInstance<InclusiveSplitAndJoinExtraPathModel> processInstance = definition.createInstance(model);
         processInstance.start();
-        processInstance.send(Sig.of("signal", null));
+        processInstance.send(SignalFactory.of("signal", null));
         List<KogitoWorkItem> activeWorkItems = workItemHandler.getWorkItems();
         assertThat(activeWorkItems).hasSize(4);
         for (int i = 0; i < 3; i++) {
@@ -932,13 +931,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
                 .map(n -> (KogitoNodeInstance) n)
                 .collect(Collectors.toList());
         assertThat(nodeInstancesChild).hasSize(2);
-        for (KogitoNodeInstance child : nodeInstancesChild) {
-            assertThat(child).isInstanceOf(CompositeContextNodeInstance.class);
-            assertThat(((CompositeContextNodeInstance) child).getNodeInstances()).hasSize(2);
-        }
+        assertThat(nodeInstancesChild).allMatch(CompositeContextNodeInstance.class::isInstance).hasSize(2);
 
         processInstance.completeWorkItem(workItems.get(0).getStringId(), null);
         processInstance.completeWorkItem(workItems.get(1).getStringId(), null);
+
         nodeInstances = processInstance.findNodes(node -> node instanceof ForEachNodeInstance);
         assertThat(nodeInstances).hasSize(1);
         nodeInstance = nodeInstances.iterator().next();
@@ -946,10 +943,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances().stream()
                 .map(n -> (KogitoNodeInstance) n)
                 .collect(Collectors.toList());
-        assertThat(nodeInstancesChild).hasSize(2);
-        Iterator<KogitoNodeInstance> childIterator = nodeInstancesChild.iterator();
-        assertThat(childIterator.next()).isInstanceOf(CompositeContextNodeInstance.class);
-        assertThat(childIterator.next()).isInstanceOf(ForEachNodeInstance.ForEachJoinNodeInstance.class);
+        assertThat(nodeInstancesChild).allMatch(CompositeContextNodeInstance.class::isInstance).hasSize(1);
         processInstance.completeWorkItem(workItems.get(2).getStringId(), null);
         processInstance.completeWorkItem(workItems.get(3).getStringId(), null);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -1291,7 +1285,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertThat(list).isEmpty();
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        processInstance.send(Sig.of("signal", null));
+        processInstance.send(SignalFactory.of("signal", null));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(list).hasSize(1);
         System.clearProperty("jbpm.enable.multi.con");

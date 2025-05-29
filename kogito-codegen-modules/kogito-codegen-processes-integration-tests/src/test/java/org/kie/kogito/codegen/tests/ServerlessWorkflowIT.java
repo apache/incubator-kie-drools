@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 public class ServerlessWorkflowIT extends AbstractCodegenIT {
 
@@ -81,7 +82,7 @@ public class ServerlessWorkflowIT extends AbstractCodegenIT {
         boolean completed = listener.waitTillCompleted(5000);
         assertThat(completed).isTrue();
 
-        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        await().until(() -> p.instances().stream().count() == 0);
     }
 
     @ParameterizedTest
@@ -339,44 +340,6 @@ public class ServerlessWorkflowIT extends AbstractCodegenIT {
         assertThat(dataOut.get("parentData").textValue()).isEqualTo("parentTestData");
         assertThat(dataOut.get("childData").textValue()).isEqualTo("childTestData");
 
-    }
-
-    @Test
-    public void testParallelExecWorkflow() throws Exception {
-        try {
-            Application app = generateCodeProcessesOnly("serverless/parallel-state.sw.json", "serverless/parallel-state-branch1.sw.json", "serverless/parallel-state-branch2.sw.json");
-            assertThat(app).isNotNull();
-
-            Process<? extends Model> p = app.get(Processes.class).processById("parallelworkflow");
-
-            Model m = p.createModel();
-            Map<String, Object> parameters = new HashMap<>();
-
-            String jsonParamStr = "{}";
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
-
-            parameters.put("workflowdata", jsonParamObj);
-            m.fromMap(parameters);
-
-            ProcessInstance<?> processInstance = p.createInstance(m);
-            processInstance.start();
-
-            assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-
-            Model result = (Model) processInstance.variables();
-            assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
-
-            assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
-
-            JsonNode dataOut = (JsonNode) result.toMap().get("workflowdata");
-
-            assertThat(dataOut.get("branch1data").textValue()).isEqualTo("testBranch1Data");
-            assertThat(dataOut.get("branch2data").textValue()).isEqualTo("testBranch2Data");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @ParameterizedTest

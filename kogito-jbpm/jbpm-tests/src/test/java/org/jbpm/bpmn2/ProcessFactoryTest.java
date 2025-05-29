@@ -19,14 +19,12 @@
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.support.InMemoryProcessInstancesFactory;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
-import org.jbpm.process.instance.LightProcessRuntime;
-import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
@@ -38,17 +36,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.Application;
-import org.kie.kogito.Config;
+import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.bpmn2.BpmnProcess;
-import org.kie.kogito.process.bpmn2.BpmnProcesses;
-import org.kie.kogito.process.impl.AbstractProcessConfig;
+import org.kie.kogito.process.bpmn2.StaticApplicationAssembler;
+import org.kie.kogito.process.impl.StaticProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
@@ -58,9 +53,6 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
 import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
@@ -417,30 +409,31 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .connection(two, three)
                 .connection(four, five);
 
-        final RuleFlowProcess process = factory.validate().getProcess();
+        RuleFlowProcess process = factory.validate().getProcess();
 
-        Application application = mock(Application.class);
-        Config config = mock(Config.class);
-        when(application.config()).thenReturn(config);
-        when(config.get(any())).thenReturn(mock(AbstractProcessConfig.class));
-        when(application.get(Processes.class)).thenReturn(new BpmnProcesses().addProcess(new BpmnProcess(process)));
-        final LightProcessRuntime processRuntime = LightProcessRuntime.of(application, Collections.singletonList(process), new LightProcessRuntimeServiceProvider());
-
-        processRuntime.getKogitoWorkItemManager().registerWorkItemHandler(task, new ExceptionOnPurposeHandler());
-
-        final List<String> completedNodes = new ArrayList<>();
-        final KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
+        List<String> completedNodes = new ArrayList<>();
+        KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 completedNodes.add(event.getNodeInstance().getNodeName());
                 super.afterNodeLeft(event);
             }
         };
-        processRuntime.addEventListener(listener);
 
-        ProcessInstance processInstance = processRuntime.startProcess(processId);
+        StaticProcessConfig processConfig = StaticProcessConfig.newStaticProcessConfigBuilder()
+                .withWorkItemHandler(task, new ExceptionOnPurposeHandler())
+                .withProcessListener(listener)
+                .build();
 
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        Application application = StaticApplicationAssembler.instance().newStaticApplication(new InMemoryProcessInstancesFactory(), processConfig, process);
+
+        org.kie.kogito.process.Processes container = application.get(org.kie.kogito.process.Processes.class);
+        org.kie.kogito.process.Process<? extends Model> processDefinition = container.processById(processId);
+        org.kie.kogito.process.ProcessInstance<? extends Model> processInstance = processDefinition.createInstance(processDefinition.createModel());
+
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
         assertThat(completedNodes).contains(startNode, task, boundaryErrorEvent, endOnError);
     }
 }
