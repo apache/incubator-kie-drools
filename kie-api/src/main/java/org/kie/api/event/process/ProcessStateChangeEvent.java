@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,8 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.kie.api.event.process;
 
-public interface ProcessNodeStateEvent extends ProcessNodeEvent{
+/**
+ * An event when a process instance has been started.
+ */
+public interface ProcessStateChangeEvent
+    extends
+    ProcessEvent {
+
 }
