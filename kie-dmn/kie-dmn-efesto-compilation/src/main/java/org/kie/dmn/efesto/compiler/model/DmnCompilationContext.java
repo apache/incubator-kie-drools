@@ -21,9 +21,9 @@ package org.kie.dmn.efesto.compiler.model;
 import java.util.Set;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.validation.DMNValidator;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
-import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -31,25 +31,46 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 public interface DmnCompilationContext extends EfestoCompilationContext {
 
     static DmnCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader) {
-        return new DmnCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader));
+        return DmnCompilationContextImpl.builder(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader)).build();
     }
 
     static DmnCompilationContext buildWithMemoryCompilerClassLoader(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        return new DmnCompilationContextImpl(memoryCompilerClassLoader);
+        return DmnCompilationContextImpl.builder(memoryCompilerClassLoader).build();
     }
 
     static DmnCompilationContext buildWithEfestoCompilationContext(EfestoCompilationContextImpl context) {
-        return (DmnCompilationContext) EfestoCompilationContextUtils.buildFromContext(context, DmnCompilationContextImpl.class);
+        return DmnCompilationContextImpl.builder(context)
+                .build();
     }
 
-    static DmnCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader, Set<DMNProfile> customDMNProfiles,
+    static DmnCompilationContext buildWithEfestoCompilationContext(EfestoCompilationContextImpl context,
+                                                                   Set<DMNProfile> customDMNProfiles,
+                                                                   Set<DMNValidator.Validation> validations,
+                                                                   RuntimeTypeCheckOption runtimeTypeCheckOption) {
+        return DmnCompilationContextImpl.builder(context)
+                .withCustomDMNProfiles(customDMNProfiles)
+                .withValidations(validations)
+                .withRuntimeTypeCheckOption(runtimeTypeCheckOption)
+                .build();
+    }
+
+
+    static DmnCompilationContext buildWithParentClassLoader(ClassLoader parentClassLoader,
+                                                            Set<DMNProfile> customDMNProfiles,
+                                                            Set<DMNValidator.Validation> validations,
                                                             RuntimeTypeCheckOption runtimeTypeCheckOption) {
-        return new DmnCompilationContextImpl(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader), customDMNProfiles, runtimeTypeCheckOption);
+        return DmnCompilationContextImpl.builder(new KieMemoryCompiler.MemoryCompilerClassLoader(parentClassLoader))
+                .withCustomDMNProfiles(customDMNProfiles)
+                .withValidations(validations)
+                .withRuntimeTypeCheckOption(runtimeTypeCheckOption)
+                .build();
     }
 
     KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();
 
     Set<DMNProfile> getCustomDMNProfiles();
+
+    Set<DMNValidator.Validation> getValidations();
 
     RuntimeTypeCheckOption getRuntimeTypeCheckOption();
 

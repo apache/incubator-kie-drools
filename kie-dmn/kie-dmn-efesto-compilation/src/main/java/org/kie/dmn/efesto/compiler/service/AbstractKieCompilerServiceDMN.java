@@ -18,23 +18,41 @@
  */
 package org.kie.dmn.efesto.compiler.service;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
+import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.core.storage.ContextStorage;
+import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
+import org.slf4j.Logger;
 
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 
 public abstract class AbstractKieCompilerServiceDMN implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
 
-    static final DMNValidator validator = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()));
+    static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
+
 
     @Override
     public boolean hasCompilationSource(String fileName) {
@@ -57,6 +75,86 @@ public abstract class AbstractKieCompilerServiceDMN implements KieCompilerServic
     @Override
     public String getModelType() {
         return "dmn";
+    }
+
+    protected DmnCompilationContext getDmnCompilationContext(EfestoCompilationContext context) {
+        return context instanceof DmnCompilationContext dmnCompilationContext ? dmnCompilationContext : DmnCompilationContext.buildWithEfestoCompilationContext((EfestoCompilationContextImpl) context);
+    }
+
+    protected void validateDMN(EfestoCompilationContext context, String modelSource) {
+        DmnCompilationContext dmnCompilationContext = getDmnCompilationContext(context);
+        if (dmnCompilationContext.getValidations() == null || dmnCompilationContext.getValidations().isEmpty()) {
+            return;
+        }
+
+        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
+                                                       dmnCompilationContext.getValidations().toArray(new DMNValidator.Validation[]{}));
+        // see https://github.com/apache/incubator-kie-issues/issues/1619
+        if (DmnCompilerUtils.hasError(messages)) {
+            throw new KieCompilerServiceException("Validation of DMN failed: " + messages);
+        }
+    }
+
+    protected List<EfestoCompilationOutput> getListEfestoCompilationOutput(List<ModelSourceTuple> modelSourceTuples,
+                                                                           DmnCompilationContext dmnContext,
+                                                                           Logger logger) {
+        try {
+            Map<LocalCompilationSourceIdDmn, ModelSourceTuple> mappedModelSourceTuple = modelSourceTuples
+                    .stream()
+                    .collect(Collectors.toMap(this::getLocalCompilationSourceIdDmnFromModelSourceTuple,
+                                              modelSourceTuple -> modelSourceTuple));
+            List<EfestoCompilationOutput> toReturn = new ArrayList<>();
+            mappedModelSourceTuple.values()
+                    .forEach(modelSourceTuple -> {
+                        validateDMN(dmnContext, modelSourceTuple.source);
+                        DMNModel dmnModel = modelSourceTuple.model;
+                        String modelSource = modelSourceTuple.source;
+                        File dmnFile = new File(dmnModel.getResource().getSourcePath());
+                        toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilenameForURI(dmnFile),
+                                                                                        dmnModel.getName(),
+                                                                                        modelSource,
+                                                                                        dmnModel));
+                    });
+            storeMappedModelTuple(mappedModelSourceTuple);
+            return toReturn;
+        } catch (Exception e) {
+            logger.error("ERROR", e);
+            throw new KieCompilerServiceException(e);
+        }
+    }
+
+    protected void storeMappedModelTuple(Map<LocalCompilationSourceIdDmn, ModelSourceTuple> mappedModelTuple) {
+        mappedModelTuple.forEach((localCompilationSourceIdDmn, modelSourceTuple) ->
+                                         ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSourceTuple.source));
+    }
+
+    protected LocalCompilationSourceIdDmn getLocalCompilationSourceIdDmnFromModelSourceTuple(ModelSourceTuple modelSourceTuple) {
+        return new EfestoAppRoot()
+                .get(KieDmnComponentRoot.class)
+                .get(DmnIdFactory.class)
+                .get(modelSourceTuple.model.getName());
+    }
+
+    protected ModelSourceTuple readDMNModel(DMNModel toRead) {
+        return new ModelSourceTuple(toRead, readResource(toRead.getResource()));
+    }
+
+    private String readResource(Resource toRead) {
+        try (InputStream is = toRead.getInputStream()) {
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new KieCompilerServiceException(e);
+        }
+    }
+
+    protected static class ModelSourceTuple {
+        protected final DMNModel model;
+        protected final String source;
+
+        public ModelSourceTuple(DMNModel model, String source) {
+            this.model = model;
+            this.source = source;
+        }
     }
 
 }

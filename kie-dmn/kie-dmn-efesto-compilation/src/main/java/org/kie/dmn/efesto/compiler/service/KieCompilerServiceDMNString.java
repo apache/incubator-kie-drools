@@ -18,21 +18,14 @@
  */
 package org.kie.dmn.efesto.compiler.service;
 
-import java.io.StringReader;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.identifiers.DmnIdFactory;
-import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
-import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
-import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
-import org.kie.dmn.validation.DMNValidator;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
-import org.kie.efesto.common.core.storage.ContextStorage;
-import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -40,51 +33,39 @@ import org.kie.efesto.compilationmanager.api.model.EfestoStringResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
+@SuppressWarnings("rawtypes")
 public class KieCompilerServiceDMNString extends AbstractKieCompilerServiceDMN {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNString.class);
 
     @Override
-    @SuppressWarnings( "rawtypes")
     public boolean canManageResource(EfestoResource toProcess) {
-        return toProcess instanceof EfestoStringResource && ((EfestoStringResource) toProcess).getModelLocalUriId().model().equalsIgnoreCase("dmn");
+        return toProcess instanceof EfestoStringResource efestoStringResource && efestoStringResource.getModelLocalUriId().model().equalsIgnoreCase("dmn");
     }
 
     @Override
-    @SuppressWarnings( "rawtypes")
     public List<EfestoCompilationOutput> processResource(EfestoResource toProcess, EfestoCompilationContext context) {
         if (!canManageResource(toProcess)) {
             throw new KieCompilerServiceException(String.format("%s can not process %s",
                                                                 this.getClass().getName(),
                                                                 toProcess.getClass().getName()));
         }
+        if (!(context instanceof DmnCompilationContext dmnContext)) {
+            throw new KieCompilerServiceException(String.format("Wrong %s context parameter for from %s",
+                                                                context.getClass().getName(),
+                                                                this.getClass().getName()));
+        }
         EfestoStringResource stringResource = (EfestoStringResource) toProcess;
         String modelSource = stringResource.getContent();
-        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
-                                                       DMNValidator.Validation.VALIDATE_SCHEMA,
-                                                       DMNValidator.Validation.VALIDATE_MODEL,
-                                                       DMNValidator.Validation.VALIDATE_COMPILATION,
-                                                       DMNValidator.Validation.ANALYZE_DECISION_TABLE);
-        // see https://github.com/apache/incubator-kie-issues/issues/1619
-//        if (DmnCompilerUtils.hasError(messages)) {
-//            return Collections.emptyList();
-//        }
-        try {
-            ModelLocalUriId modelLocalUriId =stringResource.getModelLocalUriId();
-            String basePath = modelLocalUriId.basePath();
-            String fileName = basePath.substring(0, basePath.lastIndexOf("/"));
-            LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                    .get(KieDmnComponentRoot.class)
-                    .get(DmnIdFactory.class)
-                    .get(fileName);
-            ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
-            DMNModel dmnModel = getDMNModel(modelSource);
-            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(modelLocalUriId,
-                    modelSource, dmnModel));
-        } catch (Exception e) {
-            throw new EfestoCompilationManagerException(e);
-        }
+        ModelLocalUriId modelLocalUriId = stringResource.getModelLocalUriId();
+        String basePath = ((LocalUri.LocalUriPathComponent)modelLocalUriId.asLocalUri().parent()).getComponent();
+        String fileName =  URLDecoder.decode(basePath, StandardCharsets.UTF_8);
+        fileName = getCleanedFilenameForURI(fileName);
+        List<ModelSourceTuple> modelSourceTuples =
+                Collections.singletonList(new ModelSourceTuple(getDMNModel(modelSource, fileName), modelSource));
+        return getListEfestoCompilationOutput(modelSourceTuples, dmnContext, LOGGER);
     }
 }

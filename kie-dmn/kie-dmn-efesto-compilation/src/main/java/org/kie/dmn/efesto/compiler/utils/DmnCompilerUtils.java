@@ -65,8 +65,13 @@ public class DmnCompilerUtils {
         return new EfestoCallableOutputDMN(modelLocalUriId, modelSource, dmnModel);
     }
 
-    public static DMNModel getDMNModel(String modelSource) {
+    public static DMNModel getDMNModel(String modelSource, String fileName) {
         Resource modelResource = ResourceFactory.newReaderResource(new StringReader(modelSource), "UTF-8");
+        modelResource.setSourcePath(fileName);
+        return getDMNModel(modelResource);
+    }
+
+    public static DMNModel getDMNModel(Resource modelResource) {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
                 .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
         return dmnRuntime.getModels().get(0);

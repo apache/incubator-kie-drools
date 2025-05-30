@@ -20,77 +20,32 @@ package org.kie.dmn.efesto.compiler.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
-import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
-import org.kie.dmn.efesto.compiler.model.EfestoCallableOutputDMN;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SuppressWarnings("unchecked")
 class KieCompilerServiceDMNInputStreamTest extends AbstractKieCompilerServiceDMNTest {
 
-    private static EfestoInputStreamResource toProcess;
 
     @BeforeAll
     static void setUp() {
         kieCompilationService = new KieCompilerServiceDMNInputStream();
         commonSetUp();
+        notToProcessDmn = new EfestoFileResource(dmnFile);
+        notToProcessDmnPmml = new EfestoFileResource(dmnPmmlFile);
     }
 
     @BeforeEach
     void init() {
-        InputStream is = new ByteArrayInputStream(dmnFile.getContent());
-        toProcess = new EfestoInputStreamResource(is,  DMN_FULL_PATH_FILE_NAME);
-    }
+        InputStream toProcessDmnIs = new ByteArrayInputStream(dmnFile.getContent());
+        toProcessDmn = new EfestoInputStreamResource(toProcessDmnIs,  DMN_FULL_PATH_FILE_NAME);
 
-    @Test
-    void canManageResource() {
-        assertThat(kieCompilationService.canManageResource(toProcess)).isTrue();
-        EfestoFileResource notToProcess = new EfestoFileResource(dmnFile);
-        assertThat(kieCompilationService.canManageResource(notToProcess)).isFalse();
-    }
+        InputStream toProcessDmnPmmlIs = new ByteArrayInputStream(dmnPmmlFile.getContent());
+        toProcessDmnPmml = new EfestoInputStreamResource(toProcessDmnPmmlIs,  DMN_PMML_FULL_PATH_FILE_NAME);
 
-    @Test
-    void processResource() {
-        List<EfestoCompilationOutput> retrieved = kieCompilationService.processResource(toProcess,
-                                                                                        DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
-        assertThat(retrieved).isNotNull().hasSize(1);
-        EfestoCompilationOutput retrievedOutput = retrieved.get(0);
-        assertThat(retrievedOutput).isNotNull().isExactlyInstanceOf(EfestoCallableOutputDMN.class);
-        EfestoCallableOutputDMN callableOutput = (EfestoCallableOutputDMN) retrievedOutput;
-        ModelLocalUriId modelLocalUriId = callableOutput.getModelLocalUriId();
-        assertThat(modelLocalUriId).isExactlyInstanceOf(LocalComponentIdDmn.class);
-        LocalComponentIdDmn localComponentIdDmn = (LocalComponentIdDmn) modelLocalUriId;
-        assertThat(localComponentIdDmn.getFileName()).isEqualTo(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX);
-        assertThat(localComponentIdDmn.getName()).isEqualTo(DMN_MODEL_NAME);
+        InputStream toProcessInvalidDmnIs = new ByteArrayInputStream(dmnInvalidFile.getContent());
+        toProcessInvalidDmn = new EfestoInputStreamResource(toProcessInvalidDmnIs,  DMN_INVALID_FULL_PATH_FILE_NAME);
     }
-
-    @Test
-    void hasCompilationSource() {
-        kieCompilationService.processResource(toProcess,
-                                              DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
-        assertThat(kieCompilationService.hasCompilationSource(DMN_FULL_FILE_NAME)).isTrue();
-    }
-
-    @Test
-    void getCompilationSource() {
-        kieCompilationService.processResource(toProcess,
-                                              DmnCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader()));
-        String retrieved = kieCompilationService.getCompilationSource(DMN_FULL_FILE_NAME);
-        assertThat(retrieved).isNotNull();
-        String expected = new String(dmnFile.getContent(), StandardCharsets.UTF_8);
-        assertThat(retrieved).isEqualTo(expected);
-    }
-
 
 }
