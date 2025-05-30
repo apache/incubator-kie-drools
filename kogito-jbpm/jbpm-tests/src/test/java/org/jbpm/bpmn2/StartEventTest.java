@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -36,23 +37,7 @@ import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalProcess;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.bpmn2.start.MessageStartModel;
-import org.jbpm.bpmn2.start.MessageStartProcess;
-import org.jbpm.bpmn2.start.MultipleEventBasedStartEventProcessProcess;
-import org.jbpm.bpmn2.start.SignalStartModel;
-import org.jbpm.bpmn2.start.SignalStartProcess;
-import org.jbpm.bpmn2.start.SignalStartWithTransformationModel;
-import org.jbpm.bpmn2.start.SignalStartWithTransformationProcess;
-import org.jbpm.bpmn2.start.StartTimerCycleProcess;
-import org.jbpm.bpmn2.start.StartTimerDurationProcess;
-import org.jbpm.bpmn2.start.TimerStartCycleLegacyModel;
-import org.jbpm.bpmn2.start.TimerStartCycleLegacyProcess;
-import org.jbpm.bpmn2.start.TimerStartDurationModel;
-import org.jbpm.bpmn2.start.TimerStartDurationProcess;
-import org.jbpm.bpmn2.start.TimerStartISOModel;
-import org.jbpm.bpmn2.start.TimerStartISOProcess;
-import org.jbpm.bpmn2.start.TimerStartModel;
-import org.jbpm.bpmn2.start.TimerStartProcess;
+import org.jbpm.bpmn2.start.*;
 import org.jbpm.process.workitem.builtin.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.utils.EventTrackerProcessListener;
@@ -142,6 +127,25 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.Process<TimerStartModel> definition = TimerStartProcess.newProcess(app);
         assertThat(startedInstances).isEmpty();
         countDownListener.waitTillCompleted();
+        assertThat(startedInstances).hasSize(5);
+    }
+
+    @Test
+    public void testTimerStartCycle() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 11);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        final List<String> startedInstances = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                startedInstances.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+            }
+        });
+        TimerStartCycleProcess.newProcess(app);
+        assertThat(startedInstances).isEmpty();
+        countDownListener.waitTillCompleted();
+        Thread.sleep(500);
         assertThat(startedInstances).hasSize(5);
     }
 
