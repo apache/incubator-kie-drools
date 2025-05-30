@@ -235,31 +235,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>runTurtleTests</id>
-      <activation>
-        <property>
-          <name>runTurtleTests</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <artifactId>maven-surefire-plugin</artifactId>
-		    <configuration>
-		        <systemProperties>
-		            <property>
-		                <name>runTurtleTests</name>
-		                <value>true</value>
-		            </property>
-		        </systemProperties>
-    		</configuration>            
-    		</plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
 </project>
