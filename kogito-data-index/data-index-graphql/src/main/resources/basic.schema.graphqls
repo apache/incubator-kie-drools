@@ -19,6 +19,8 @@ type Mutation {
     ProcessInstanceRetry(id: String): String
     ProcessInstanceSkip(id: String): String
     ProcessInstanceUpdateVariables(id: String, variables: String): String
+    ProcessInstanceRescheduleSlaTimer(id: String!, expirationTime: DateTime!): String
+    NodeInstanceRescheduleSlaTimer(processInstanceId: String!, nodeInstanceId: String!, expirationTime: DateTime!): String
     NodeInstanceTrigger(id: String, nodeId: String): String
     NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
     NodeInstanceCancel(id: String, nodeInstanceId: String): String

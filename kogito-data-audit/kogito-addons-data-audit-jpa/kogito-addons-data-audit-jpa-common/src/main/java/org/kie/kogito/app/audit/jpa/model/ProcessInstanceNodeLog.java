@@ -52,7 +52,8 @@ public class ProcessInstanceNodeLog extends AbstractProcessInstanceLog {
         OBSOLETE,
         SKIPPED,
         ERROR,
-        SLA_VIOLATION
+        SLA_VIOLATION,
+        STATE_UPDATED
     }
 
     @Id

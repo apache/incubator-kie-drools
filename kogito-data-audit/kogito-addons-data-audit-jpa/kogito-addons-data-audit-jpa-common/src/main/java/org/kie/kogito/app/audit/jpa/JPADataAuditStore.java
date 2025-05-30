@@ -93,23 +93,22 @@ public class JPADataAuditStore implements DataAuditStore {
         setProcessCommonAttributes(log, event);
         log.setState(String.valueOf(event.getData().getState()));
         log.setRoles(event.getData().getRoles());
+        log.setSlaDueDate(event.getData().getSlaDueDate());
+        log.setEventType(fromProcessInstanceStateDataEvent(event));
 
         EntityManager entityManager = context.getContext();
-        switch (event.getData().getEventType()) {
-            case ProcessInstanceStateEventBody.EVENT_TYPE_STARTED:
-                log.setEventType(ProcessStateLogType.ACTIVE);
-                entityManager.persist(log);
-                break;
-            case ProcessInstanceStateEventBody.EVENT_TYPE_ENDED:
-                log.setEventType(ProcessStateLogType.COMPLETED);
-                entityManager.persist(log);
-                break;
-            case ProcessInstanceStateEventBody.EVENT_TYPE_MIGRATED:
-                log.setEventType(ProcessStateLogType.MIGRATED);
-                entityManager.persist(log);
-                break;
-        }
 
+        entityManager.persist(log);
+    }
+
+    private ProcessStateLogType fromProcessInstanceStateDataEvent(ProcessInstanceStateDataEvent event) {
+        return switch (event.getData().getEventType()) {
+            case ProcessInstanceStateEventBody.EVENT_TYPE_STARTED -> ProcessStateLogType.ACTIVE;
+            case ProcessInstanceStateEventBody.EVENT_TYPE_ENDED -> ProcessStateLogType.COMPLETED;
+            case ProcessInstanceStateEventBody.EVENT_TYPE_MIGRATED -> ProcessStateLogType.MIGRATED;
+            case ProcessInstanceStateEventBody.EVENT_TYPE_UPDATED -> ProcessStateLogType.STATE_UPDATED;
+            default -> throw new IllegalArgumentException("Unknown ProcessInstanceStateDataEvent type " + event.getData().getEventType());
+        };
     }
 
     @Override
@@ -134,35 +133,29 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setConnection(event.getData().getConnectionNodeDefinitionId());
         log.setNodeDefinitionId(event.getData().getNodeDefinitionId());
         log.setNodeType(event.getData().getNodeType());
+        log.setSlaDueDate(event.getData().getSlaDueDate());
 
         log.setNodeInstanceId(event.getData().getNodeInstanceId());
         log.setNodeName(event.getData().getNodeName());
 
-        switch (event.getData().getEventType()) {
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER:
-                log.setEventType(NodeLogType.ENTER);
-                break;
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT:
-                log.setEventType(NodeLogType.EXIT);
-                break;
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED:
-                log.setEventType(NodeLogType.ABORTED);
-                break;
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED:
-                log.setEventType(NodeLogType.SKIPPED);
-                break;
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE:
-                log.setEventType(NodeLogType.OBSOLETE);
-                break;
-            case ProcessInstanceNodeEventBody.EVENT_TYPE_ERROR:
-                log.setEventType(NodeLogType.ERROR);
-                break;
-
-        }
+        log.setEventType(fromProcessInstanceNodeDataEvent(event));
 
         log.setWorkItemId(event.getData().getWorkItemId());
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
+    }
+
+    private NodeLogType fromProcessInstanceNodeDataEvent(ProcessInstanceNodeDataEvent event) {
+        return switch (event.getData().getEventType()) {
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER -> NodeLogType.ENTER;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT -> NodeLogType.EXIT;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED -> NodeLogType.ABORTED;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED -> NodeLogType.SKIPPED;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE -> NodeLogType.OBSOLETE;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_ERROR -> NodeLogType.ERROR;
+            case ProcessInstanceNodeEventBody.EVENT_TYPE_UPDATED -> NodeLogType.STATE_UPDATED;
+            default -> throw new IllegalArgumentException("Unknown ProcessInstanceNodeDataEvent type " + event.getData().getEventType());
+        };
     }
 
     @Override

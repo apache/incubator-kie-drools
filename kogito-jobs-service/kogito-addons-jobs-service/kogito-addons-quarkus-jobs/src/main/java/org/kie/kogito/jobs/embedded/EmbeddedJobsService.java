@@ -88,4 +88,10 @@ public class EmbeddedJobsService implements JobsService {
         }
     }
 
+    @Override
+    public String rescheduleJob(JobDescription description) {
+        cancelJob(description.id());
+        return scheduleJob(description);
+    }
+
 }

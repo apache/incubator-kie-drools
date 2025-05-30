@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.service.api;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -62,6 +63,8 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public static final String TRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodes/%s"; //node def
     public static final String RETRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
     public static final String CANCEL_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
+    public static final String UPDATE_NODE_INSTANCE_SLA_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s/sla";
+    public static final String UPDATE_PROCESS_INSTANCE_SLA_PATH = "/management/processes/%s/instances/%s/sla";
 
     public static final String GET_TASK_SCHEMA_PATH = "/%s/%s/%s/%s/schema";
     public static final String UPDATE_USER_TASK_INSTANCE_PATH = "/management/usertasks/%s";
@@ -110,6 +113,18 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public CompletableFuture<String> updateProcessInstanceVariables(String serviceURL, ProcessInstance processInstance, String variables) {
         String requestURI = format(UPDATE_VARIABLES_PROCESS_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId());
         return sendJSONPutClientRequest(getWebClient(serviceURL), requestURI, "UPDATE VARIABLES of ProcessInstance with id: " + processInstance.getId(), variables);
+    }
+
+    @Override
+    public CompletableFuture<String> rescheduleNodeInstanceSla(String serviceURL, ProcessInstance processInstance, String nodeInstanceId, ZonedDateTime expirationTime) {
+        String requestURI = format(UPDATE_NODE_INSTANCE_SLA_PATH, processInstance.getProcessId(), processInstance.getId(), nodeInstanceId);
+        return sendPatchClientRequest(getWebClient(serviceURL), requestURI, "Update SLA of NodesInstance with id: " + nodeInstanceId, new JsonObject(expirationTime.toString()));
+    }
+
+    @Override
+    public CompletableFuture<String> rescheduleProcessInstanceSla(String serviceURL, ProcessInstance processInstance, ZonedDateTime expirationTime) {
+        String requestURI = format(UPDATE_PROCESS_INSTANCE_SLA_PATH, processInstance.getProcessId(), processInstance.getId());
+        return sendPatchClientRequest(getWebClient(serviceURL), requestURI, "Update SLA of ProcessInstance with id: " + processInstance.getId(), new JsonObject(expirationTime.toString()));
     }
 
     @Override

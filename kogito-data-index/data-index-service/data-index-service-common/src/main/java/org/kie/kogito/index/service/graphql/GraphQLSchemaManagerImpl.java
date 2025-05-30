@@ -98,6 +98,8 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                     builder.dataFetcher("NodeInstanceCancel", this::cancelNodeInstance);
                     builder.dataFetcher("JobCancel", this::cancelJob);
                     builder.dataFetcher("JobReschedule", this::rescheduleJob);
+                    builder.dataFetcher("NodeInstanceRescheduleSlaTimer", this::rescheduleNodeInstanceSla);
+                    builder.dataFetcher("ProcessInstanceRescheduleSlaTimer", this::rescheduleProcessInstanceSla);
                     builder.dataFetcher("UserTaskInstanceUpdate", this::updateUserTaskInstance);
                     builder.dataFetcher("UserTaskInstanceCommentCreate", this::createTaskInstanceComment);
                     builder.dataFetcher("UserTaskInstanceAttachmentCreate", this::createTaskInstanceAttachment);

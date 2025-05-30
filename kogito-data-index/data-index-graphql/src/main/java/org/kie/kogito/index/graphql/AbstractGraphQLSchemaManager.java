@@ -463,6 +463,31 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
     }
 
+    public CompletableFuture<String> rescheduleNodeInstanceSla(DataFetchingEnvironment env) {
+        String id = env.getArgument("processInstanceId");
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().rescheduleNodeInstanceSla(
+                    getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
+                    processInstance,
+                    env.getArgument("nodeInstanceId"),
+                    env.getArgument("expirationTime"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> rescheduleProcessInstanceSla(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().rescheduleProcessInstanceSla(
+                    getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
+                    processInstance,
+                    env.getArgument("expirationTime"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
     protected CompletableFuture<String> getUserTaskInstanceSchema(DataFetchingEnvironment env) {
         UserTaskInstance userTaskInstance = env.getSource();
         return getDataIndexApiExecutor().getUserTaskSchema(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
