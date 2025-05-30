@@ -18,18 +18,7 @@
  */
 package org.kie.kogito.uow.events;
 
-import org.kie.api.event.process.ErrorEvent;
-import org.kie.api.event.process.MessageEvent;
-import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessEvent;
-import org.kie.api.event.process.ProcessMigrationEvent;
-import org.kie.api.event.process.ProcessNodeLeftEvent;
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.event.process.ProcessRetriggeredEvent;
-import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.api.event.process.SLAViolatedEvent;
-import org.kie.api.event.process.SignalEvent;
+import org.kie.api.event.process.*;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -64,6 +53,16 @@ public class UnitOfWorkProcessEventListener extends DefaultKogitoProcessEventLis
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
+        intercept(event);
+    }
+
+    @Override
+    public void onProcessStateChanged(ProcessStateChangeEvent event) {
+        intercept(event);
+    }
+
+    @Override
+    public void onNodeStateChanged(ProcessNodeStateChangeEvent event) {
         intercept(event);
     }
 

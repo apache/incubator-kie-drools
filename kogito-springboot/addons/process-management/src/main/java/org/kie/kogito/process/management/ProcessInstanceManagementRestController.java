@@ -24,12 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -150,6 +145,19 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     @DeleteMapping(value = "{processId}/instances/{processInstanceId}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity cancelProcessInstanceId(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId) {
         return doCancelProcessInstanceId(processId, processInstanceId);
+    }
+
+    @Override
+    @PatchMapping(value = "{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla")
+    public ResponseEntity updateNodeInstanceSla(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("nodeInstanceId") String nodeInstanceId, @RequestBody SlaPayload slaPayload) {
+        return doUpdateNodeInstanceSla(processId, processInstanceId, nodeInstanceId, slaPayload);
+    }
+
+    @Override
+    @PatchMapping(value = "{processId}/instances/{processInstanceId}/sla")
+    public ResponseEntity updateProcessInstanceSla(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId, @RequestBody SlaPayload slaPayload) {
+        return doUpdateProcessInstanceSla(processId, processInstanceId, slaPayload);
     }
 
 }

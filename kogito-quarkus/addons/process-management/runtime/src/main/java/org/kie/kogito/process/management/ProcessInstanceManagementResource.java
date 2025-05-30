@@ -23,12 +23,7 @@ import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -189,4 +184,22 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     public Response cancelProcessInstanceId(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         return doCancelProcessInstanceId(processId, processInstanceId);
     }
+
+    @Override
+    @PATCH
+    @Path("{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateNodeInstanceSla(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, @PathParam("nodeInstanceId") String nodeInstanceId,
+            SlaPayload slaPayload) {
+        return doUpdateNodeInstanceSla(processId, processInstanceId, nodeInstanceId, slaPayload);
+    }
+
+    @Override
+    @PATCH
+    @Path("{processId}/instances/{processInstanceId}/sla")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateProcessInstanceSla(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, SlaPayload slaPayload) {
+        return doUpdateProcessInstanceSla(processId, processInstanceId, slaPayload);
+    }
+
 }

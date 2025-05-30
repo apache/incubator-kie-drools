@@ -21,12 +21,7 @@ package org.jbpm.process.instance.event.listeners;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.event.process.ProcessNodeLeftEvent;
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.*;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
@@ -75,6 +70,16 @@ public class RuleAwareProcessEventListener implements ProcessEventListener {
     }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+        // do nothing
+    }
+
+    @Override
+    public void onProcessStateChanged(ProcessStateChangeEvent event) {
+        // do nothing
+    }
+
+    @Override
+    public void onNodeStateChanged(ProcessNodeStateChangeEvent event) {
         // do nothing
     }
 

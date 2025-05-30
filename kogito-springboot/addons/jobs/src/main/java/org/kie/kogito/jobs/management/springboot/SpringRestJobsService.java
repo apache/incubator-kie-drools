@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.jobs.management.springboot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.management.RestJobsService;
 import org.kie.kogito.jobs.service.api.Job;
@@ -27,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -99,12 +103,43 @@ public class SpringRestJobsService extends RestJobsService {
         }
     }
 
+    @Override
+    public String rescheduleJob(JobDescription jobDescription) {
+        String callback = getCallbackEndpoint(jobDescription);
+        LOGGER.debug("Job to be rescheduled {} with callback URL {}", jobDescription, callback);
+        final Job job = buildJob(jobDescription, callback);
+        final HttpEntity<String> request = buildJobRequest(job);
+        ResponseEntity<String> response = restTemplate.exchange(
+                getJobsServiceUri(),
+                HttpMethod.PATCH,
+                request,
+                String.class);
+        if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(200))) {
+            LOGGER.debug("Rescheduling of the job {} done with status code {} ", job, response.getStatusCode());
+        }
+        return "Job Rescheduled";
+    }
+
     private HttpEntity<String> buildJobRequest(Job job) {
         String json;
         try {
             json = objectMapper.writeValueAsString(job);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("It was not possible to create the http request for the job: " + job, e);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(json, headers);
+    }
+
+    private HttpEntity<String> buildJobRequest(String id) {
+        String json;
+        try {
+            Map<String, String> job = new HashMap<>();
+            job.put("id", id);
+            json = objectMapper.writeValueAsString(job);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("It was not possible to create the http request for the job id: " + id, e);
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

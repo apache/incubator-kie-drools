@@ -16,31 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs;
+package org.kie.kogito.event.impl.adapter;
 
-/**
- * JobsService provides an entry point for working with different types of jobs
- * that are meant by default to run in background.
- *
- */
-public interface JobsService {
+import org.kie.api.event.process.ProcessStateChangeEvent;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-    /**
-     * Schedules process job that is responsible for starting new process instances
-     * based on the given description.
-     *
-     * @param description defines what kind of process should be started upon expiration time
-     * @return returns unique id of the job
-     */
-    String scheduleJob(JobDescription description);
+public class ProcessStateChangeEventDataEventAdapter extends AbstractDataEventAdapter {
 
-    /**
-     * Cancels given job
-     * 
-     * @param id unique id of the job
-     * @return returns true if the cancellation was successful, otherwise false
-     */
-    boolean cancelJob(String id);
+    public ProcessStateChangeEventDataEventAdapter() {
+        super(ProcessStateChangeEvent.class);
+    }
 
-    String rescheduleJob(JobDescription jobDescription);
+    @Override
+    public DataEvent<?> adapt(Object payload) {
+        ProcessStateChangeEvent event = (ProcessStateChangeEvent) payload;
+        return adapt(event, ProcessInstanceStateEventBody.EVENT_TYPE_UPDATED, ((KogitoProcessInstance) event.getProcessInstance()).getStartDate());
+    }
 }

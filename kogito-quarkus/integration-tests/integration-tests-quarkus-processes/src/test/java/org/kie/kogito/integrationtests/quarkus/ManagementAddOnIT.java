@@ -18,9 +18,12 @@
  */
 package org.kie.kogito.integrationtests.quarkus;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.process.management.SlaPayload;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -32,14 +35,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.*;
 
 @QuarkusIntegrationTest
 class ManagementAddOnIT {
 
     private static final String HELLO1_NODE = "_3CDC6E61-DCC5-4831-8BBB-417CFF517CB0";
     private static final String GREETINGS = "greetings";
+    private static final String TIMERS = "timers";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -150,5 +153,141 @@ class ManagementAddOnIT {
                 .then()
                 .statusCode(200)
                 .extract().response().jsonPath().getList("nodeInstanceId");
+    }
+
+    @Test
+    void testManagementTimersEndpoint() {
+        String processInstanceId = given()
+                .body(Map.of())
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/{processId}", TIMERS)
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .extract().path("id");
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(1))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/timers", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(4))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA-Process] timers"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[CANCEL-Process] timers"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA] Task"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "Task-Boundary Timer"))));
+
+        given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/timers", TIMERS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(2))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "[SLA] Task"))))
+                .body("", hasItem(allOf(
+                        hasEntry("processId", "timers"),
+                        hasEntry("processInstanceId", processInstanceId),
+                        hasEntry("nodeInstanceId", nodeInstanceId),
+                        hasKey("timerId"),
+                        hasEntry("description", "Task-Boundary Timer"))));
+    }
+
+    @Test
+    public void testRescheduleSLATimersEndpoints() {
+        String processInstanceId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/{processId}", TIMERS)
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .extract().path("id");
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(1))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/sla", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Process Instance '" + processInstanceId + "' SLA due date successfully updated"));
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .when()
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla", TIMERS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Node Instance '" + nodeInstanceId + "' SLA due date successfully updated"));
+    }
+
+    @Test
+    public void testRescheduleSLATimersProcessInstanceWithoutSLAsConfigured() {
+        String processInstanceId = givenGreetingsProcess();
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/sla", GREETINGS, processInstanceId)
+                .then()
+                .statusCode(400)
+                .body(equalTo("Cannot update SLA: Process Instance has NO SLA configured"));
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(2))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .when()
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla", GREETINGS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(400)
+                .body(equalTo("Cannot update SLA: Node has NO SLA configured"));
     }
 }

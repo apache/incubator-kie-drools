@@ -23,15 +23,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-import org.kie.api.event.process.MessageEvent;
-import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.api.event.process.ProcessNodeLeftEvent;
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.event.process.ProcessRetriggeredEvent;
-import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.api.event.process.SLAViolatedEvent;
-import org.kie.api.event.process.SignalEvent;
+import org.kie.api.event.process.*;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.auth.IdentityProvider;
@@ -111,6 +103,12 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
     }
 
     @Override
+    public void fireOnProcessStateChanged(KogitoProcessInstance instance, KieRuntime kruntime) {
+        final ProcessStateChangeEvent event = new ProcessStateChangeEventImpl(instance, kruntime, identityProvider.getName());
+        notifyAllListeners(l -> l.onProcessStateChanged(event));
+    }
+
+    @Override
     public void fireBeforeNodeTriggered(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
         final ProcessNodeTriggeredEvent event = new KogitoProcessNodeTriggeredEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.beforeNodeTriggered(event));
@@ -132,6 +130,12 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
     public void fireAfterNodeLeft(final KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
         final ProcessNodeLeftEvent event = new KogitoProcessNodeLeftEventImpl(nodeInstance, kruntime, identityProvider.getName());
         notifyAllListeners(l -> l.afterNodeLeft(event));
+    }
+
+    @Override
+    public void fireOnNodeStateChanged(KogitoNodeInstance nodeInstance, KieRuntime kruntime) {
+        final ProcessNodeStateChangeEvent event = new KogitoProcessNodeStateChangeEventImpl(nodeInstance, kruntime, identityProvider.getName());
+        notifyAllListeners(l -> l.onNodeStateChanged(event));
     }
 
     @Override

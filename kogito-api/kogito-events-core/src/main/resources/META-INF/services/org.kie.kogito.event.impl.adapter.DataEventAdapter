@@ -3,7 +3,9 @@ org.kie.kogito.event.impl.adapter.ProcessErrorEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessMigratedEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessNodeEnteredEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessNodeLeftEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessNodeStateChangeDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessSLAEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessStateChangeEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessStartedEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessRetriggeredEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessVariableEventDataEventAdapter

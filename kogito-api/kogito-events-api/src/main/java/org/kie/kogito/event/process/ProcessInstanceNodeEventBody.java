@@ -53,6 +53,8 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
     public static final int EVENT_TYPE_ERROR = 6;
 
+    public static final int EVENT_TYPE_UPDATED = 7;
+
     // common fields for events
 
     private Date eventDate;

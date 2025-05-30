@@ -18,12 +18,14 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.process.management.SlaPayload;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -38,6 +40,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -198,6 +201,74 @@ class ManagementAddOnTest extends BaseRestTest {
                         hasEntry("nodeInstanceId", nodeInstanceId),
                         hasKey("timerId"),
                         hasEntry("description", "Task-Boundary Timer"))));
+    }
+
+    @Test
+    public void testRescheduleSLATimersEndpoints() {
+        String processInstanceId = given()
+                .body(Map.of())
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/timers")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .extract().path("id");
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(1))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/sla", TIMERS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Process Instance '" + processInstanceId + "' SLA due date successfully updated"));
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .when()
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla", TIMERS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Node Instance '" + nodeInstanceId + "' SLA due date successfully updated"));
+    }
+
+    @Test
+    public void testRescheduleSLATimersProcessInstanceWithoutSLAsConfigured() {
+        String processInstanceId = givenGreetingsProcess();
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/sla", GREETINGS, processInstanceId)
+                .then()
+                .statusCode(400)
+                .body(equalTo("Cannot update SLA: Process Instance has NO SLA configured"));
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances", GREETINGS, processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(2))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .when()
+                .patch("/management/processes/{processId}/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla", GREETINGS, processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(400)
+                .body(equalTo("Cannot update SLA: Node has NO SLA configured"));
     }
 
     private String givenGreetingsProcess() {

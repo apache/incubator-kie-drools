@@ -321,4 +321,30 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
     protected abstract T badRequestResponse(String message);
 
     protected abstract T notFoundResponse(String message);
+
+    public T doUpdateNodeInstanceSla(String processId, String processInstanceId, String nodeInstanceId, SlaPayload sla) {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
+            try {
+                processInstance.updateNodeInstanceSla(nodeInstanceId, sla.getExpirationTime());
+                Map<String, Object> message = new HashMap<>();
+                message.put("message", "Node Instance '" + nodeInstanceId + "' SLA due date successfully updated");
+                return buildOkResponse(message);
+            } catch (Exception e) {
+                return badRequestResponse(e.getMessage());
+            }
+        });
+    }
+
+    public T doUpdateProcessInstanceSla(String processId, String processInstanceId, SlaPayload sla) {
+        return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
+            try {
+                processInstance.updateProcessInstanceSla(sla.getExpirationTime());
+                Map<String, Object> message = new HashMap<>();
+                message.put("message", "Process Instance '" + processInstanceId + "' SLA due date successfully updated");
+                return buildOkResponse(message);
+            } catch (Exception e) {
+                return badRequestResponse(e.getMessage());
+            }
+        });
+    }
 }

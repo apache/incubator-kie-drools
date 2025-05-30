@@ -18,6 +18,7 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import org.drools.core.common.InternalAgenda;
@@ -51,9 +52,11 @@ import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Objects.isNull;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 import static org.kie.kogito.internal.utils.ConversionUtils.isNotEmpty;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, KogitoEventListener {
@@ -493,5 +496,21 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         }
 
         return toReturn;
+    }
+
+    @Override
+    public void rescheduleSlaTimer(ZonedDateTime slaDueDate) {
+        if (isNull(slaDueDate)) {
+            throw new IllegalArgumentException("Cannot update SLA: slaDueDate cannot be null");
+        }
+
+        if (isEmpty(slaTimerId)) {
+            throw new IllegalStateException("Cannot update SLA: Node has NO SLA configured");
+        }
+
+        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime());
+        ((WorkflowProcessInstanceImpl) getProcessInstance()).rescheduleTimer(slaTimerId, slaDueDate, getId());
+        this.slaDueDate = Date.from(slaDueDate.toInstant());
+        processRuntime.getProcessEventSupport().fireOnNodeStateChanged(this, getProcessInstance().getKnowledgeRuntime());
     }
 }

@@ -133,7 +133,8 @@ public class ProcessInstanceSLAEventBody implements KogitoMarshallEventSupport, 
 
     @Override
     public String toString() {
-        return "ProcessErrorEventBody [processId=" + processId + ", processInstanceId=" + processInstanceId + ", nodeDefinitionId=" + nodeDefinitionId + ", nodeInstanceId=" + nodeInstanceId + "]";
+        return "ProcessInstanceSLAEventBody [processId=" + processId + ", processInstanceId=" + processInstanceId + ", nodeDefinitionId=" + nodeDefinitionId + ", nodeInstanceId=" + nodeInstanceId
+                + "]";
     }
 
     public static Builder create() {

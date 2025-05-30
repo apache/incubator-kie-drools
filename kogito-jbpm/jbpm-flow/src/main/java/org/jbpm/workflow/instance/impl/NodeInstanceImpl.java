@@ -19,6 +19,7 @@
 package org.jbpm.workflow.instance.impl;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -629,6 +630,10 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     protected void configureSla() {
 
+    }
+
+    public void rescheduleSlaTimer(ZonedDateTime slaDueDate) {
+        throw new UnsupportedOperationException("Unsupported operation");
     }
 
     @Override

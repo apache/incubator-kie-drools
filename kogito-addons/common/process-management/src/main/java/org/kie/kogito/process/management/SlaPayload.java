@@ -16,31 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs;
 
-/**
- * JobsService provides an entry point for working with different types of jobs
- * that are meant by default to run in background.
- *
- */
-public interface JobsService {
+package org.kie.kogito.process.management;
 
-    /**
-     * Schedules process job that is responsible for starting new process instances
-     * based on the given description.
-     *
-     * @param description defines what kind of process should be started upon expiration time
-     * @return returns unique id of the job
-     */
-    String scheduleJob(JobDescription description);
+import java.time.ZonedDateTime;
 
-    /**
-     * Cancels given job
-     * 
-     * @param id unique id of the job
-     * @return returns true if the cancellation was successful, otherwise false
-     */
-    boolean cancelJob(String id);
+public class SlaPayload {
+    private ZonedDateTime expirationTime;
 
-    String rescheduleJob(JobDescription jobDescription);
+    public SlaPayload() {
+    }
+
+    public SlaPayload(ZonedDateTime expirationTime) {
+        this.expirationTime = expirationTime;
+    }
+
+    public ZonedDateTime getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(ZonedDateTime expirationTime) {
+        this.expirationTime = expirationTime;
+    }
 }

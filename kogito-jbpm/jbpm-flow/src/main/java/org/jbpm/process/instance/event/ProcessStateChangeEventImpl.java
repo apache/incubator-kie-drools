@@ -16,31 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs;
+package org.jbpm.process.instance.event;
 
-/**
- * JobsService provides an entry point for working with different types of jobs
- * that are meant by default to run in background.
- *
- */
-public interface JobsService {
+import org.kie.api.event.process.ProcessStateChangeEvent;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.ProcessInstance;
 
-    /**
-     * Schedules process job that is responsible for starting new process instances
-     * based on the given description.
-     *
-     * @param description defines what kind of process should be started upon expiration time
-     * @return returns unique id of the job
-     */
-    String scheduleJob(JobDescription description);
+public class ProcessStateChangeEventImpl extends ProcessEvent implements ProcessStateChangeEvent {
 
-    /**
-     * Cancels given job
-     * 
-     * @param id unique id of the job
-     * @return returns true if the cancellation was successful, otherwise false
-     */
-    boolean cancelJob(String id);
+    private static final long serialVersionUID = 510l;
 
-    String rescheduleJob(JobDescription jobDescription);
+    public ProcessStateChangeEventImpl(ProcessInstance instance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
+    }
+
+    @Override
+    public String toString() {
+        return "==>[ProcessStateChangeEvent(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
+    }
+
 }

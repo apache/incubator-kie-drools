@@ -18,9 +18,11 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.process.management.SlaPayload;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -105,5 +107,42 @@ public class ProcessManagementIT {
                         hasEntry("nodeInstanceId", nodeInstanceId),
                         hasKey("timerId"),
                         hasEntry("description", "Task-Boundary Timer"))));
+    }
+
+    @Test
+    public void testRescheduleSLATimersEndpoints() {
+        String processInstanceId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/timers")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .extract().path("id");
+
+        String nodeInstanceId = given()
+                .when()
+                .get("/management/processes/timers/instances/{processInstanceId}/nodeInstances", processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(1))
+                .extract().path("[0].nodeInstanceId");
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .patch("/management/processes/timers/instances/{processInstanceId}/sla", processInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Process Instance '" + processInstanceId + "' SLA due date successfully updated"));
+
+        given()
+                .body(new SlaPayload(ZonedDateTime.now()))
+                .contentType(ContentType.JSON)
+                .when()
+                .patch("/management/processes/timers/instances/{processInstanceId}/nodeInstances/{nodeInstanceId}/sla", processInstanceId, nodeInstanceId)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo("Node Instance '" + nodeInstanceId + "' SLA due date successfully updated"));
     }
 }
