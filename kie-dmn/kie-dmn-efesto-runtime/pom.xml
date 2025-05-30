@@ -42,17 +42,17 @@
             <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-efesto-api</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>efesto-runtime-manager-api</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
           </dependency>
           <dependency>
             <groupId>org.kie</groupId>
             <artifactId>efesto-runtime-manager-core</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
           </dependency>
         </dependencies>
     </dependencyManagement>
