@@ -221,9 +221,10 @@
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
+    <version.jdepend.maven.plugin>2.1</version.jdepend.maven.plugin>
     <!-- plugin used to enforce architectural constraints -->
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
-    <version.archunit.junit5>1.4.0</version.archunit.junit5>
+    <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
+    <version.archunit.junit5>1.4.1</version.archunit.junit5>
   </properties>
 
   <dependencyManagement>
@@ -1897,7 +1898,7 @@
         <plugin>
           <groupId>com.societegenerale.commons</groupId>
           <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
+          <version>${version.archunit.maven.plugin}</version>
         </plugin>
         <plugin>
           <groupId>io.github.download-maven-plugin</groupId>
@@ -1908,6 +1909,11 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>properties-maven-plugin</artifactId>
           <version>${version.property-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jdepend-maven-plugin</artifactId>
+          <version>${version.jdepend.maven.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -36,11 +36,6 @@
   <name>KIE :: PMML</name>
   <description>Support for PMML-Encoded Predictive Models</description>
 
-  <properties>
-    <rewrite.maven.plugin.version>4.42.0</rewrite.maven.plugin.version>
-    <rewrite.testing.frameworks.version>1.22.0</rewrite.testing.frameworks.version>
-  </properties>
-
   <modules>
     <module>kie-pmml-commons</module>
     <module>kie-pmml-compiler</module>
@@ -90,15 +85,6 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-maven-plugin</artifactId>
-          <version>${rewrite.maven.plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -140,7 +126,6 @@
           <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-testing-frameworks</artifactId>
-            <version>${rewrite.testing.frameworks.version}</version>
           </dependency>
         </dependencies>
       </plugin>
