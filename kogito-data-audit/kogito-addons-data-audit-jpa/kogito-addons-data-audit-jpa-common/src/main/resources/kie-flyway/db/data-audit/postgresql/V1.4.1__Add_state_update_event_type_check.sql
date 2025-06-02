@@ -17,8 +17,8 @@
  * under the License.
  */
 
-alter table if exists Process_Instance_Node_Log drop constraint Process_Instance_Node_Log_event_type_check;
-alter table if exists Process_Instance_State_Log drop constraint Process_Instance_State_Log_event_type_check;
+alter table Process_Instance_Node_Log drop constraint Process_Instance_Node_Log_event_type_check;
+alter table Process_Instance_State_Log drop constraint Process_Instance_State_Log_event_type_check;
 
-alter table if exists Process_Instance_Node_Log add constraint Process_Instance_Node_Log_event_type_check check (event_type in ('ENTER','EXIT','ABORTED','ASYNC_ENTER','OBSOLETE','SKIPPED','ERROR','SLA_VIOLATION','STATE_UPDATED'));
-alter table if exists Process_Instance_State_Log add constraint Process_Instance_State_Log_event_type_check check (event_type in ('ACTIVE','STARTED','COMPLETED','ABORTED','SLA_VIOLATION','PENDING','SUSPENDING','ERROR','STATE_UPDATED'));
+alter table Process_Instance_Node_Log add constraint Process_Instance_Node_Log_event_type_check check (event_type in ('ENTER','EXIT','ABORTED','ASYNC_ENTER','OBSOLETE','SKIPPED','ERROR','SLA_VIOLATION','STATE_UPDATED'));
+alter table Process_Instance_State_Log add constraint Process_Instance_State_Log_event_type_check check (event_type in ('ACTIVE','COMPLETED','SLA_VIOLATION','MIGRATED','STATE_UPDATED'));
