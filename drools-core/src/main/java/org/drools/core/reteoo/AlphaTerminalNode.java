@@ -96,6 +96,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
         TerminalNode rtn = (TerminalNode) leftTuple.getSink();
+        leftTuple.setStagedType(Tuple.DELETE);
         PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple );
     }
 
