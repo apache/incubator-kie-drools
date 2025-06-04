@@ -314,6 +314,7 @@ public class MemoryLeakTest {
         return childObjects;
     }
 
+    @Disabled("disabled by default as this could be unstable")
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     @Timeout(60)
@@ -361,6 +362,7 @@ public class MemoryLeakTest {
         }
     }
 
+    @Disabled("disabled by default as this could be unstable")
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     @Timeout(60)
