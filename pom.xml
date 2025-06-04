@@ -181,8 +181,9 @@
         </property>
       </activation>
       <modules>
+        <!-- this profile is not productized anymore and due removed modules it won't build
         <module>drools-docs</module>
-        <module>drools-distribution</module>
+        <module>drools-distribution</module> -->
       </modules>
     </profile>
     <profile>
