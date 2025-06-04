@@ -45,9 +45,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.PatternExpr;
+import com.github.javaparser.ast.expr.RecordPatternExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
+import com.github.javaparser.ast.expr.TypePatternExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -171,7 +173,12 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
     }
 
     @Override
-    public TypedExpression visit(PatternExpr n, VisitorContext arg) {
+    public TypedExpression visit(TypePatternExpr n, VisitorContext arg) {
+        return null;
+    }
+
+    @Override
+    public TypedExpression visit(RecordPatternExpr n, VisitorContext arg) {
         return null;
     }
 

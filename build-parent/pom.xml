@@ -198,7 +198,7 @@
     <version.io.smallrye.jandex>3.3.0</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
-    <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
+    <version.com.github.javaparser>3.26.4</version.com.github.javaparser>
 
     <version.com.google.guava>32.0.1-jre</version.com.google.guava>
 
