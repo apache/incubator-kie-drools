@@ -316,7 +316,7 @@ public class MemoryLeakTest {
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
-    @Timeout(60000)
+    @Timeout(60)
     public void testLeakWithMatchAndDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -344,7 +344,6 @@ public class MemoryLeakTest {
                 ksession.fireAllRules();
 
                 if (i % 1000 == 0) {
-                    System.out.println("Processed " + i + " persons");
                     System.gc();
                     long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
                     System.out.println("Used memory: " + usedMemory);
@@ -352,19 +351,19 @@ public class MemoryLeakTest {
             }
             System.out.println("------------------");
             // Allow some memory for the processing overhead
-            // The memoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
-            long memoryOverhead = 10 * 1000 * 1024; // 10 MB
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
+            long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
             System.gc();
             long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             System.out.println("Base memory: " + baseMemory);
             System.out.println("User memory: " + usedMemory);
-            assertThat(usedMemory).isLessThan(baseMemory + memoryOverhead);
+            assertThat(usedMemory).isLessThan(baseMemory + acceptableMemoryOverhead);
         }
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
-    @Timeout(60000)
+    @Timeout(60)
     public void testLeakWithJoinMatchAndDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -399,7 +398,6 @@ public class MemoryLeakTest {
                 ksession.fireAllRules();
 
                 if (i % 1000 == 0) {
-                    System.out.println("Processed " + i + " persons");
                     System.gc();
                     long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
                     System.out.println("Used memory: " + usedMemory);
@@ -407,13 +405,13 @@ public class MemoryLeakTest {
             }
             System.out.println("------------------");
             // Allow some memory for the processing overhead
-            // The memoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
-            long memoryOverhead = 10 * 1000 * 1024; // 10 MB
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
+            long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
             System.gc();
             long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             System.out.println("Base memory: " + baseMemory);
             System.out.println("User memory: " + usedMemory);
-            assertThat(usedMemory).isLessThan(baseMemory + memoryOverhead);
+            assertThat(usedMemory).isLessThan(baseMemory + acceptableMemoryOverhead);
         }
     }
 }
