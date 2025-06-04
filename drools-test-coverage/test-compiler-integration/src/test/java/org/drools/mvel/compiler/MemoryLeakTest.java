@@ -351,7 +351,7 @@ public class MemoryLeakTest {
             }
             System.out.println("------------------");
             // Allow some memory for the processing overhead
-            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it if it's not a memory leak.
             long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
             System.gc();
             long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -405,7 +405,7 @@ public class MemoryLeakTest {
             }
             System.out.println("------------------");
             // Allow some memory for the processing overhead
-            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it unless it's not a memory leak.
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it if it's not a memory leak.
             long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
             System.gc();
             long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
