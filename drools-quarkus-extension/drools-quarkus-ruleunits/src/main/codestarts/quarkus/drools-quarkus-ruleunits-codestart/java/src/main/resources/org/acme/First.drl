@@ -16,28 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.quarkus.deployment;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+package org.acme;
 
-import org.kie.api.io.ResourceType;
+unit FirstUnit;
 
-public class DroolsCompilationProvider extends AbstractCompilationProvider {
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.RuleUnitData;
 
-    private static final Set<String> MANAGED_EXTENSIONS = initExtensions();
-
-    private static Set<String> initExtensions() {
-        Set<String> extensions = new HashSet<>();
-        extensions.addAll(ResourceType.DRL.getAllExtensions());
-        extensions.addAll(ResourceType.DTABLE.getAllExtensions());
-        extensions.addAll(ResourceType.YAML.getAllExtensions());
-        return Collections.unmodifiableSet(extensions);
-    }
-
-    @Override
-    public Set<String> handledExtensions() {
-        return MANAGED_EXTENSIONS;
-    }
-}
+rule "MyRule"
+when
+    /input [ text == "Hello" ];
+then
+    System.out.println("Hi 1");
+    output.append(new RuleOutput1("Hi 1"));
+end

@@ -66,11 +66,7 @@ When you have your Quarkus project configured, you can add the Drools Quarkus ex
 ----
 <dependency>
     <groupId>org.drools</groupId>
-    <artifactId>drools-quarkus</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-ruleunits-engine</artifactId>
+    <artifactId>drools-quarkus-ruleunits</artifactId>
 </dependency>
 
 <dependency>
