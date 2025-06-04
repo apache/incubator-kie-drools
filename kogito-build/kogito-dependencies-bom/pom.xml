@@ -56,7 +56,7 @@
     <version.io.quarkiverse.reactivemessaging.http>2.5.0-lts</version.io.quarkiverse.reactivemessaging.http>
     <version.io.quarkiverse.embedded.postgresql>0.5.0</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
-    <version.com.github.javaparser>3.26.3</version.com.github.javaparser>
+    <version.com.github.javaparser>3.26.4</version.com.github.javaparser>
     <version.com.fasterxml.jackson.datatype>2.18.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.org.wiremock>3.13.0</version.org.wiremock>
