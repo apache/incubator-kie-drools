@@ -23,16 +23,19 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 /**
  * A <code>EfestoCallableOutput</code> containing model source (e.g. for DMN execution)
  */
-public abstract class EfestoCallableOutputModelContainer<T> implements EfestoCallableOutput {
+public abstract class EfestoCallableOutputModelContainer<T, E> implements EfestoCallableOutput {
 
     private final ModelLocalUriId modelLocalUriId;
     private final String modelSource;
     private final T compiledModel;
+    private final E additionalInfo;
 
-    protected EfestoCallableOutputModelContainer(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel) {
+
+    protected EfestoCallableOutputModelContainer(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel, E additionalInfo) {
         this.modelLocalUriId = modelLocalUriId;
         this.modelSource = modelSource;
         this.compiledModel = compiledModel;
+        this.additionalInfo = additionalInfo;
     }
 
     @Override
@@ -46,5 +49,9 @@ public abstract class EfestoCallableOutputModelContainer<T> implements EfestoCal
 
     public T getCompiledModel() {
         return compiledModel;
+    }
+
+    public E getAdditionalInfo() {
+        return additionalInfo;
     }
 }

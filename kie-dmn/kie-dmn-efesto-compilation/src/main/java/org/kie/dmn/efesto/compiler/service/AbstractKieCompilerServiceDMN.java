@@ -24,9 +24,10 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -81,17 +82,13 @@ public abstract class AbstractKieCompilerServiceDMN implements KieCompilerServic
         return context instanceof DmnCompilationContext dmnCompilationContext ? dmnCompilationContext : DmnCompilationContext.buildWithEfestoCompilationContext((EfestoCompilationContextImpl) context);
     }
 
-    protected void validateDMN(EfestoCompilationContext context, String modelSource) {
+    protected List<DMNMessage> validateDMN(EfestoCompilationContext context, String modelSource) {
         DmnCompilationContext dmnCompilationContext = getDmnCompilationContext(context);
         if (dmnCompilationContext.getValidations() == null || dmnCompilationContext.getValidations().isEmpty()) {
-            return;
-        }
-
-        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
-                                                       dmnCompilationContext.getValidations().toArray(new DMNValidator.Validation[]{}));
-        // see https://github.com/apache/incubator-kie-issues/issues/1619
-        if (DmnCompilerUtils.hasError(messages)) {
-            throw new KieCompilerServiceException("Validation of DMN failed: " + messages);
+            return Collections.emptyList();
+        } else {
+            return validator.validate(new StringReader(modelSource),
+                                      dmnCompilationContext.getValidations().toArray(new DMNValidator.Validation[]{}));
         }
     }
 
@@ -99,21 +96,27 @@ public abstract class AbstractKieCompilerServiceDMN implements KieCompilerServic
                                                                            DmnCompilationContext dmnContext,
                                                                            Logger logger) {
         try {
-            Map<LocalCompilationSourceIdDmn, ModelSourceTuple> mappedModelSourceTuple = modelSourceTuples
-                    .stream()
-                    .collect(Collectors.toMap(this::getLocalCompilationSourceIdDmnFromModelSourceTuple,
-                                              modelSourceTuple -> modelSourceTuple));
+            Map<LocalCompilationSourceIdDmn, ModelSourceTuple> mappedModelSourceTuple = new HashMap<>();
+            for (ModelSourceTuple modelSourceTuple : modelSourceTuples) {
+                LocalCompilationSourceIdDmn key = getLocalCompilationSourceIdDmnFromModelSourceTuple(modelSourceTuple);
+                if (mappedModelSourceTuple.containsKey(key)) {
+                    logger.warn("Duplicate LocalCompilationSourceIdDmn key {} for model {}  ", key, modelSourceTuple.model);
+                } else {
+                    mappedModelSourceTuple.put(key, modelSourceTuple);
+                }
+            }
             List<EfestoCompilationOutput> toReturn = new ArrayList<>();
             mappedModelSourceTuple.values()
                     .forEach(modelSourceTuple -> {
-                        validateDMN(dmnContext, modelSourceTuple.source);
+                        List<DMNMessage> validationMessages = validateDMN(dmnContext, modelSourceTuple.source);
                         DMNModel dmnModel = modelSourceTuple.model;
                         String modelSource = modelSourceTuple.source;
                         File dmnFile = new File(dmnModel.getResource().getSourcePath());
                         toReturn.add(DmnCompilerUtils.getDefaultEfestoCompilationOutput(getCleanedFilenameForURI(dmnFile),
                                                                                         dmnModel.getName(),
                                                                                         modelSource,
-                                                                                        dmnModel));
+                                                                                        dmnModel,
+                                                                                        validationMessages));
                     });
             storeMappedModelTuple(mappedModelSourceTuple);
             return toReturn;
@@ -129,10 +132,12 @@ public abstract class AbstractKieCompilerServiceDMN implements KieCompilerServic
     }
 
     protected LocalCompilationSourceIdDmn getLocalCompilationSourceIdDmnFromModelSourceTuple(ModelSourceTuple modelSourceTuple) {
+        String fileName = modelSourceTuple.model.getResource().getSourcePath();
+        fileName = getCleanedFilenameForURI(fileName);
         return new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
-                .get(modelSourceTuple.model.getName());
+                .get(fileName);
     }
 
     protected ModelSourceTuple readDMNModel(DMNModel toRead) {

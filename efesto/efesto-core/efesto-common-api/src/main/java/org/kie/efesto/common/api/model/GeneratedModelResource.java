@@ -26,7 +26,7 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
 @JsonIgnoreProperties(value = { "compiledModel" })
-public final class GeneratedModelResource<T> implements GeneratedResource {
+public final class GeneratedModelResource<T, E> implements GeneratedResource {
 
 
     private static final long serialVersionUID = 6588314882989626752L;
@@ -40,14 +40,17 @@ public final class GeneratedModelResource<T> implements GeneratedResource {
 
     private final T compiledModel;
 
+    private final E additionalInfo;
+
     public GeneratedModelResource() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
-    public GeneratedModelResource(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel) {
+    public GeneratedModelResource(ModelLocalUriId modelLocalUriId, String modelSource, T compiledModel, E additionalInfo) {
         this.modelLocalUriId = modelLocalUriId;
         this.modelSource = modelSource;
         this.compiledModel = compiledModel;
+        this.additionalInfo = additionalInfo;
     }
 
     public ModelLocalUriId getModelLocalUriId() {
@@ -60,6 +63,10 @@ public final class GeneratedModelResource<T> implements GeneratedResource {
 
     public T getCompiledModel() {
         return compiledModel;
+    }
+
+    public E getAdditionalInfo() {
+        return additionalInfo;
     }
 
     @Override

@@ -37,7 +37,6 @@ import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
-import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
@@ -47,7 +46,6 @@ import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class AbstractKieCompilerServiceDMNTest {
@@ -152,21 +150,21 @@ public abstract class AbstractKieCompilerServiceDMNTest {
     void  hasCompilationSourceDmn() {
         kieCompilationService.processResource(toProcessDmn,
                                               dmnCompilationContext);
-        assertThat(kieCompilationService.hasCompilationSource(DMN_MODEL_NAME)).isTrue();
+        assertThat(kieCompilationService.hasCompilationSource(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX)).isTrue();
     }
 
     @Test
     void hasCompilationSourceDmnPmml() {
         kieCompilationService.processResource(toProcessDmnPmml,
                                               dmnCompilationContext);
-        assertThat(kieCompilationService.hasCompilationSource(DMN_PMML_MODEL_NAME)).isTrue();
+        assertThat(kieCompilationService.hasCompilationSource(DMN_PMML_FULL_PATH_FILE_NAME)).isTrue();
     }
 
     @Test
     void getCompilationSourceDmn() {
         kieCompilationService.processResource(toProcessDmn,
                                               dmnCompilationContext);
-        String retrieved = kieCompilationService.getCompilationSource(DMN_MODEL_NAME);
+        String retrieved = kieCompilationService.getCompilationSource(DMN_FULL_PATH_FILE_NAME_NO_SUFFIX);
         assertThat(retrieved).isNotNull();
         String expected = new String(dmnFile.getContent(), StandardCharsets.UTF_8);
         assertThat(retrieved).isEqualTo(expected);
@@ -176,7 +174,7 @@ public abstract class AbstractKieCompilerServiceDMNTest {
     void getCompilationSourceDmnPmml() {
         kieCompilationService.processResource(toProcessDmnPmml,
                                               dmnCompilationContext);
-        String retrieved = kieCompilationService.getCompilationSource(DMN_PMML_MODEL_NAME);
+        String retrieved = kieCompilationService.getCompilationSource(DMN_PMML_FULL_PATH_FILE_NAME_NO_SUFFIX);
         assertThat(retrieved).isNotNull();
         String expected = new String(dmnPmmlFile.getContent(), StandardCharsets.UTF_8);
         assertThat(retrieved).isEqualTo(expected);
@@ -184,18 +182,18 @@ public abstract class AbstractKieCompilerServiceDMNTest {
 
     @Test
     void withoutValidationWrongModel() {
-        kieCompilationService.processResource(toProcessInvalidDmn,
+        List<?> retrievedList = kieCompilationService.processResource(toProcessInvalidDmn,
                                               dmnCompilationContext);
-        String retrieved = kieCompilationService.getCompilationSource(DMN_INVALID_MODEL_NAME);
-        assertThat(retrieved).isNotNull();
-        String expected = new String(dmnInvalidFile.getContent(), StandardCharsets.UTF_8);
-        assertThat(retrieved).isEqualTo(expected);
+        assertThat(retrievedList).isNotNull().hasSize(1).anyMatch(EfestoCallableOutputDMN.class::isInstance);
+        assertThat(((EfestoCallableOutputDMN) retrievedList.get(0)).getAdditionalInfo()).isNotNull().isEmpty();
     }
 
     @Test
     void withValidationWrongModel() {
-        assertThatThrownBy(() -> kieCompilationService.processResource(toProcessInvalidDmn,
-                                                                       dmnValidatingCompilationContext)).isInstanceOf(KieCompilerServiceException.class);
+        List<?> retrievedList = kieCompilationService.processResource(toProcessInvalidDmn,
+                                                                      dmnValidatingCompilationContext);
+        assertThat(retrievedList).isNotNull().hasSize(1).anyMatch(EfestoCallableOutputDMN.class::isInstance);
+        assertThat(((EfestoCallableOutputDMN) retrievedList.get(0)).getAdditionalInfo()).isNotNull().hasSize(1);
     }
 
     protected static void commonSetUp() {

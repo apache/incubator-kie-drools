@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
@@ -28,25 +29,28 @@ import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputModelCont
 import java.util.Collections;
 import java.util.List;
 
-public class EfestoCallableOutputDMN extends EfestoCallableOutputModelContainer<DMNModel> {
+public class EfestoCallableOutputDMN extends EfestoCallableOutputModelContainer<DMNModel, List<DMNMessage>> {
 
-    public EfestoCallableOutputDMN(String fileName, String modelName, String modelSource, DMNModel dmnModel) {
-        super(new EfestoAppRoot()
+    public EfestoCallableOutputDMN(String fileName, String modelName, String modelSource, DMNModel dmnModel, List<DMNMessage> validationMessages) {
+        this(new EfestoAppRoot()
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
                 .get(fileName, modelName),
               modelSource,
-              dmnModel);
+              dmnModel, validationMessages);
+
     }
 
-    public EfestoCallableOutputDMN(ModelLocalUriId modelLocalUriId, String modelSource, DMNModel dmnModel) {
+    public EfestoCallableOutputDMN(ModelLocalUriId modelLocalUriId, String modelSource, DMNModel dmnModel, List<DMNMessage> validationMessages) {
         super(modelLocalUriId,
               modelSource,
-              dmnModel);
+              dmnModel,
+              validationMessages);
     }
 
     @Override
     public List<String> getFullClassNames() {
         return Collections.emptyList();
     }
+
 }

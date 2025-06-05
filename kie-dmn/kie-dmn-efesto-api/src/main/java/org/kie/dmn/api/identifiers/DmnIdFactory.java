@@ -18,8 +18,6 @@
  */
 package org.kie.dmn.api.identifiers;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
-
 public class DmnIdFactory implements DmnComponentRoot {
 
     public LocalComponentIdDmn get(String fileName, String modelName) {
@@ -27,9 +25,6 @@ public class DmnIdFactory implements DmnComponentRoot {
     }
 
     public LocalCompilationSourceIdDmn get(String fileName) {
-        if (fileName.contains(LocalUri.SLASH)) {
-            fileName = fileName.substring(fileName.lastIndexOf(LocalUri.SLASH) + 1);
-        }
         if (fileName.contains(".")) {
             fileName = fileName.substring(0, fileName.lastIndexOf('.'));
         }

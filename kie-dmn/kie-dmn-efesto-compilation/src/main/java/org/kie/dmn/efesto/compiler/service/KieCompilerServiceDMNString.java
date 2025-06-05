@@ -61,7 +61,9 @@ public class KieCompilerServiceDMNString extends AbstractKieCompilerServiceDMN {
         EfestoStringResource stringResource = (EfestoStringResource) toProcess;
         String modelSource = stringResource.getContent();
         ModelLocalUriId modelLocalUriId = stringResource.getModelLocalUriId();
-        String basePath = ((LocalUri.LocalUriPathComponent)modelLocalUriId.asLocalUri().parent()).getComponent();
+
+        String parentComponent = ((LocalUri.LocalUriPathComponent)modelLocalUriId.asLocalUri().parent()).getComponent();
+        String basePath = parentComponent.equals(modelLocalUriId.model()) ? modelLocalUriId.basePath() : parentComponent;
         String fileName =  URLDecoder.decode(basePath, StandardCharsets.UTF_8);
         fileName = getCleanedFilenameForURI(fileName);
         List<ModelSourceTuple> modelSourceTuples =

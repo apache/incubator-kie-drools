@@ -57,12 +57,12 @@ public class DmnCompilerUtils {
         return dmnMessages.stream().anyMatch(dmnMessage -> dmnMessage.getLevel().equals(Message.Level.ERROR));
     }
 
-    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(String fileName, String modelName, String modelSource, DMNModel dmnModel) {
-        return new EfestoCallableOutputDMN(fileName, modelName, modelSource, dmnModel);
+    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(String fileName, String modelName, String modelSource, DMNModel dmnModel, List<DMNMessage> validationMessages) {
+        return new EfestoCallableOutputDMN(fileName, modelName, modelSource, dmnModel, validationMessages);
     }
 
-    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(ModelLocalUriId modelLocalUriId, String modelSource, DMNModel dmnModel) {
-        return new EfestoCallableOutputDMN(modelLocalUriId, modelSource, dmnModel);
+    public static EfestoCompilationOutput getDefaultEfestoCompilationOutput(ModelLocalUriId modelLocalUriId, String modelSource, DMNModel dmnModel, List<DMNMessage> validationMessages) {
+        return new EfestoCallableOutputDMN(modelLocalUriId, modelSource, dmnModel, validationMessages);
     }
 
     public static DMNModel getDMNModel(String modelSource, String fileName) {
