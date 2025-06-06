@@ -142,12 +142,20 @@ public class ProtobufProcessInstanceWriter {
         }
 
         HeadersPersistentConfig headersConfig = context.get(MARSHALLER_HEADERS_CONFIG);
-        if (workFlow.getHeaders() != null && headersConfig != null && headersConfig.enabled()) {
-            Stream<Entry<String, List<String>>> stream = workFlow.getHeaders().entrySet().stream();
+        Map<String, List<String>> headers = workFlow.getHeaders();
+        if (headers != null && headersConfig != null && headersConfig.enabled()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Headers {} associated to workflow {}", headers.keySet(), workFlow.getId());
+            }
+            Stream<Entry<String, List<String>>> stream = headers.entrySet().stream();
             if (headersConfig.excluded() != null && !headersConfig.excluded().isEmpty()) {
                 stream = stream.filter(e -> !headersConfig.excluded().contains(e.getKey()));
             }
-            instance.addAllHeaders(stream.map(e -> HeaderEntry.newBuilder().setKey(e.getKey()).addAllValue(e.getValue()).build()).collect(Collectors.toList()));
+            List<HeaderEntry> headersToStore = stream.map(e -> HeaderEntry.newBuilder().setKey(e.getKey()).addAllValue(e.getValue()).build()).collect(Collectors.toList());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Headers {} stored for workflow {}", headersToStore.stream().map(h -> h.getKey()).collect(Collectors.joining()), workFlow.getId());
+            }
+            instance.addAllHeaders(headersToStore);
         }
 
         instance.addAllSwimlaneContext(buildSwimlaneContexts((SwimlaneContextInstance) workFlow.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE)));
