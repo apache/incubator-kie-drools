@@ -32,7 +32,7 @@ public class LocalCompilationSourceIdDmn extends ModelLocalUriId implements Id {
     private final String fileName;
 
     public LocalCompilationSourceIdDmn(String fileName) {
-        super(LocalUri.Root.append(PREFIX).append(fileName));
+        super(getLocalUri(fileName));
         this.fileName = fileName;
     }
 
@@ -58,6 +58,15 @@ public class LocalCompilationSourceIdDmn extends ModelLocalUriId implements Id {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    static LocalUri getLocalUri(String fileName) {
+        LocalUri toReturn = LocalUri.Root.append(PREFIX);
+        String[] parts = fileName.split(LocalUri.SLASH);
+        for (String part : parts) {
+            toReturn = toReturn.append(part);
+        }
+        return toReturn;
     }
 
 }
