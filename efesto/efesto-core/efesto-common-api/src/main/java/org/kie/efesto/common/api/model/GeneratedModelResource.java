@@ -25,7 +25,7 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 /**
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
-@JsonIgnoreProperties(value = { "compiledModel" })
+@JsonIgnoreProperties(value = { "compiledModel", "additionalInfo" })
 public final class GeneratedModelResource<T, E> implements GeneratedResource {
 
 
