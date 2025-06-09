@@ -69,19 +69,19 @@ public class GeneratedFileWriter {
     public static class Builder {
         //Default-access for testing purpose
         final String classesDir;
-        final String sourcesDir;
         final String resourcesDir;
+        final String sourcesDir;
 
         /**
          *
          * @param classesDir usually target/classes/
-         * @param sourcesDir usually target/generated-sources/kogito/
          * @param resourcesDir usually target/generated-resources/kogito/
+         * @param sourcesDir usually target/generated-sources/kogito/
          */
         private Builder(String classesDir, String resourcesDir, String sourcesDir) {
             this.classesDir = classesDir;
-            this.sourcesDir = sourcesDir;
             this.resourcesDir = resourcesDir;
+            this.sourcesDir = sourcesDir;
         }
 
         /**
@@ -92,25 +92,25 @@ public class GeneratedFileWriter {
         public GeneratedFileWriter build(Path basePath) {
             return new GeneratedFileWriter(
                     basePath.resolve(classesDir),
-                    basePath.resolve(sourcesDir),
-                    basePath.resolve(resourcesDir));
+                    basePath.resolve(resourcesDir),
+                    basePath.resolve(sourcesDir));
         }
     }
 
     private final Path classesDir;
-    private final Path sourcesDir;
     private final Path resourcesDir;
+    private final Path sourcesDir;
     /**
      *
      * @param classesDir usually target/classes/
-     * @param sourcesDir usually target/generated-sources/kogito/
      * @param resourcesDir usually target/generated-resources/kogito/
+     * @param sourcesDir usually target/generated-sources/kogito/
      */
     //Default-access for testing purpose
-    GeneratedFileWriter(Path classesDir, Path sourcesDir, Path resourcesDir) {
+    GeneratedFileWriter(Path classesDir, Path resourcesDir, Path sourcesDir) {
         this.classesDir = classesDir;
-        this.sourcesDir = sourcesDir;
         this.resourcesDir = resourcesDir;
+        this.sourcesDir = sourcesDir;
     }
 
     public void writeAll(Collection<GeneratedFile> generatedFiles) {
@@ -141,13 +141,14 @@ public class GeneratedFileWriter {
         return classesDir;
     }
 
+    public Path getResourcesDir() {
+        return resourcesDir;
+    }
+
     public Path getSourcesDir() {
         return sourcesDir;
     }
 
-    public Path getResourcesDir() {
-        return resourcesDir;
-    }
     void writeGeneratedFile(GeneratedFile f, Path location) throws IOException {
         if (location == null) {
             return;
