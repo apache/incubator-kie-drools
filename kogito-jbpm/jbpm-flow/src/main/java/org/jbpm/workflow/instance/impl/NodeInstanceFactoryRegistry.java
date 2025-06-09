@@ -18,10 +18,7 @@
  */
 package org.jbpm.workflow.instance.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import org.jbpm.util.JbpmClassLoaderUtil;
 import org.kie.api.definition.process.Node;
@@ -30,18 +27,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NodeInstanceFactoryRegistry {
+    public static final String NODE_INSTANCE_FACTORY_REGISTRY_KEY = "NodeInstanceFactoryRegistry";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeInstanceFactoryRegistry.class);
     private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
 
-    private Map<Class<? extends Node>, NodeInstanceFactory> registry;
+    private static final Map<String, NodeInstanceFactoryRegistry> LOADED_NODE_INSTANCE_FACTORY_REGISTRIES = new HashMap<>();
+
+    private final Map<Class<? extends Node>, NodeInstanceFactory> registry;
 
     public static NodeInstanceFactoryRegistry getInstance(Environment environment) {
-        // allow custom NodeInstanceFactoryRegistry to be given as part of the environment - e.g simulation
-        if (environment != null && environment.get("NodeInstanceFactoryRegistry") != null) {
-            return (NodeInstanceFactoryRegistry) environment.get("NodeInstanceFactoryRegistry");
-        }
+        return getFactoryRegistryFromEnvironment(environment).orElse(INSTANCE);
+    }
 
-        return INSTANCE;
+    private static Optional<NodeInstanceFactoryRegistry> getFactoryRegistryFromEnvironment(Environment environment) {
+        if (environment != null && environment.get(NODE_INSTANCE_FACTORY_REGISTRY_KEY) != null) {
+            String factoryRegistryClassName = (String) environment.get(NODE_INSTANCE_FACTORY_REGISTRY_KEY);
+            return Optional.of(LOADED_NODE_INSTANCE_FACTORY_REGISTRIES.computeIfAbsent(factoryRegistryClassName,
+                    className -> {
+                        try {
+                            return (NodeInstanceFactoryRegistry) Class.forName(className, true, JbpmClassLoaderUtil.findClassLoader()).getConstructor().newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException("Could not create an instance of NodeInstanceFactoryRegistry with java type '" + className + "'", e);
+                        }
+                    }));
+        }
+        return Optional.empty();
     }
 
     protected NodeInstanceFactoryRegistry() {

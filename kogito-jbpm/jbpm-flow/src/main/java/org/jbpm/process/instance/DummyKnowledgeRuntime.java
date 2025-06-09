@@ -63,6 +63,7 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
+import static org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry.NODE_INSTANCE_FACTORY_REGISTRY_KEY;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.
@@ -81,7 +82,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
         if (Objects.nonNull(calendar)) {
             environment.set(BUSINESS_CALENDAR_ENVIRONMENT_KEY, calendar);
         }
-        environment.set("NodeInstanceFactoryRegistry", new CodegenNodeInstanceFactoryRegistry());
+        environment.set(NODE_INSTANCE_FACTORY_REGISTRY_KEY, CodegenNodeInstanceFactoryRegistry.class.getName());
     }
 
     @Override
