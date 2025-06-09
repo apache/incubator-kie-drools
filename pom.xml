@@ -176,6 +176,7 @@
     <module>drools-retediagram</module>
     <module>drools-fastutil</module>
     <module>efesto</module>
+    <module>kie-download-maven-plugin</module>
     <module>kie-drl</module>
     <module>kie-dmn</module>
     <module>kie-pmml-trusty</module>

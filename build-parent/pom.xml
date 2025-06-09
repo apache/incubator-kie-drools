@@ -218,7 +218,7 @@
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
     <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
 
-    <!-- download-maven-plugin used to download arbitrary files at compile time -->
+    <!-- io.github.download-maven-plugin:download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
@@ -1903,6 +1903,11 @@
           <groupId>io.github.download-maven-plugin</groupId>
           <artifactId>download-maven-plugin</artifactId>
           <version>${version.download-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-download-maven-plugin</artifactId>
+          <version>${project.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
