@@ -39,7 +39,6 @@ import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import io.quarkus.restclient.runtime.RestClientBuilderFactory;
 
-import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -66,7 +65,7 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
                     });
                 }
             }
-        }, Priorities.AUTHENTICATION - 1).build(clazz);
+        }, Integer.MIN_VALUE).build(clazz);
         try {
             return internalExecute(ref, parameters);
         } catch (WebApplicationException ex) {
