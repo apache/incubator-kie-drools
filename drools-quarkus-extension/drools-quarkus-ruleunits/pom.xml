@@ -29,16 +29,20 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>drools-quarkus</artifactId>
-    <name>Drools :: Quarkus Extension :: Runtime</name>
-    <description>Define and execute your business rules with Drools</description>
+    <artifactId>drools-quarkus-ruleunits</artifactId>
+    <name>Drools :: Quarkus Extension :: Runtime :: Ruleunits</name>
+    <description>Define and execute your business rules with Drools and Ruleunits</description>
     <url>https://www.drools.org/</url>
 
     <properties>
-        <java.module.name>org.drools.quarkus.runtime</java.module.name>
+        <java.module.name>org.drools.quarkus.ruleunits.runtime</java.module.name>
     </properties>
 
-	<dependencies>
+    <dependencies>
+	    <dependency>
+	      <groupId>org.drools</groupId>
+	      <artifactId>drools-ruleunits-engine</artifactId>
+	    </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
@@ -108,7 +112,7 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+     </dependencies>
 
     <build>
         <plugins>
@@ -151,6 +155,7 @@
                 <groupId>io.smallrye</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
             </plugin>
+        
 		      <plugin>
 		        <artifactId>maven-jar-plugin</artifactId>
 		        <executions>
