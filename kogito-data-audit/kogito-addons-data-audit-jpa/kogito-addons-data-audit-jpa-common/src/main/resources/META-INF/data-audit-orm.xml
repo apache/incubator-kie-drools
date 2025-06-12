@@ -312,7 +312,8 @@
 	               log.outcome as outcome,
 	               log.state as state,
 	               log.sla_due_date as slaDueDate,
-	               roles.role as role
+	               roles.role as role,
+                   log.event_user as eventUser
 	          FROM Process_Instance_State_Log log
 	     LEFT JOIN Process_Instance_State_Log log_newer ON log.event_date &lt; log_newer.event_date AND log.process_instance_id = log_newer.process_instance_id
 	     LEFT JOIN Process_Instance_State_Roles_Log roles ON log.id = roles.process_instance_state_log_id 
@@ -339,7 +340,8 @@
                log.outcome as outcome,
                log.state as state,
                log.sla_due_date as slaDueDate,
-               roles.role as role
+               roles.role as role,
+               log.event_user as eventUser
           FROM Process_Instance_State_Log log
      LEFT JOIN Process_Instance_State_Log log_newer ON log.event_date &lt; log_newer.event_date AND log.process_instance_id = log_newer.process_instance_id
      LEFT JOIN Process_Instance_State_Roles_Log roles ON log.id = roles.process_instance_state_log_id 
@@ -366,7 +368,8 @@
                log.outcome as outcome,
                log.state as state,
                log.sla_due_date as slaDueDate,
-               roles.role as role
+               roles.role as role,
+               log.event_user as eventUser
           FROM Process_Instance_State_Log log
      LEFT JOIN Process_Instance_State_Log log_newer ON log.event_date &lt; log_newer.event_date AND log.process_instance_id = log_newer.process_instance_id
      LEFT JOIN Process_Instance_State_Roles_Log roles ON log.id = roles.process_instance_state_log_id 
@@ -394,7 +397,8 @@
                log.outcome as outcome,
                log.state as state,
                log.sla_due_date as slaDueDate,
-               roles.role as role
+               roles.role as role,
+               log.event_user as eventUser
           FROM Process_Instance_State_Log log
      LEFT JOIN Process_Instance_State_Roles_Log roles ON log.id = roles.process_instance_state_log_id 
          WHERE log.process_instance_id = :processInstanceId
@@ -420,7 +424,8 @@
                log.outcome as outcome,
                log.state as state,
                log.sla_due_date as slaDueDate,
-               roles.role as role
+               roles.role as role,
+               log.event_user as eventUser
           FROM Process_Instance_State_Log log
      LEFT JOIN Process_Instance_State_Roles_Log roles ON log.id = roles.process_instance_state_log_id 
          WHERE log.business_key = :businessKey
@@ -450,7 +455,8 @@
                log.connection,
                log.work_item_id,
                log.sla_due_date,
-               log.event_data
+               log.event_data,
+               log.event_user as eventUser
           FROM Process_Instance_Node_Log log
      LEFT JOIN Process_Instance_Node_Log log_newer ON log.event_date &lt; log_newer.event_date AND log.process_instance_id = log_newer.process_instance_id AND log.node_instance_id = log_newer.node_instance_id 
          WHERE log_newer.event_id IS NULL AND log.process_instance_id = :processInstanceId
@@ -475,7 +481,8 @@
                log.business_key,
                log.error_message,
                log.node_definition_id,
-               log.node_instance_id
+               log.node_instance_id,
+               log.event_user as eventUser
           FROM Process_Instance_Error_Log log
          WHERE log.process_instance_id = :processInstanceId
       ORDER BY log.event_date DESC
@@ -498,7 +505,8 @@
 	               log.business_key,
 	               log.variable_id,
 	               log.variable_name,
-	               log.variable_value
+	               log.variable_value,
+                   log.event_user as eventUser
 	          FROM Process_Instance_Variable_Log log
 	     LEFT JOIN Process_Instance_Variable_Log log_newer ON log.event_date &lt; log_newer.event_date 
 	                                                   AND log.process_instance_id = log_newer.process_instance_id 
@@ -524,7 +532,8 @@
                    log.business_key,
                    log.variable_id,
                    log.variable_name,
-                   log.variable_value
+                   log.variable_value,
+                   log.event_user as eventUser
           FROM Process_Instance_Variable_Log log
          WHERE log.process_instance_id = :processInstanceId
       ORDER BY log.variable_id ASC, log.event_date DESC

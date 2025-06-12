@@ -45,6 +45,9 @@ public abstract class AbstractProcessInstanceLog {
     @Column(name = "event_date")
     private Date eventDate;
 
+    @Column(name = "event_user")
+    private String eventUser;
+
     @Column(name = "process_type")
     private String processType;
 
@@ -154,5 +157,13 @@ public abstract class AbstractProcessInstanceLog {
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
+    }
+
+    public String getEventUser() {
+        return eventUser;
+    }
+
+    public void setEventUser(String eventUser) {
+        this.eventUser = eventUser;
     }
 }

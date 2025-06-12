@@ -94,7 +94,9 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setState(String.valueOf(event.getData().getState()));
         log.setRoles(event.getData().getRoles());
         log.setSlaDueDate(event.getData().getSlaDueDate());
+
         log.setEventType(fromProcessInstanceStateDataEvent(event));
+        log.setEventUser(event.getData().getEventUser());
 
         EntityManager entityManager = context.getContext();
 
@@ -120,6 +122,9 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setErrorMessage(event.getData().getErrorMessage());
         log.setNodeDefinitionId(event.getData().getNodeDefinitionId());
         log.setNodeInstanceId(event.getData().getNodeInstanceId());
+
+        log.setEventUser(event.getData().getEventUser());
+
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
     }
@@ -139,6 +144,7 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setNodeName(event.getData().getNodeName());
 
         log.setEventType(fromProcessInstanceNodeDataEvent(event));
+        log.setEventUser(event.getData().getEventUser());
 
         log.setWorkItemId(event.getData().getWorkItemId());
         EntityManager entityManager = context.getContext();
@@ -191,6 +197,9 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setVariableId(event.getData().getVariableId());
         log.setVariableName(event.getData().getVariableName());
         log.setVariableValue(toJsonString(event.getData().getVariableValue()));
+
+        log.setEventUser(event.getData().getEventUser());
+
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
 
@@ -295,7 +304,10 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setName(event.getData().getUserTaskName());
         log.setDescription(event.getData().getUserTaskDescription());
         log.setState(event.getData().getState());
+
         log.setEventType(event.getData().getEventType());
+        log.setEventUser(event.getData().getEventUser());
+
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
 
@@ -308,6 +320,7 @@ public class JPADataAuditStore implements DataAuditStore {
         setUserTaskCommonAttributes(log, event);
 
         log.setEventUser(event.getData().getEventUser());
+
         log.setUserTaskDefinitionId(event.getData().getUserTaskDefinitionId());
         log.setVariableId(event.getData().getVariableId());
         log.setVariableName(event.getData().getVariableName());

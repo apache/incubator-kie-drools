@@ -51,9 +51,11 @@ public class ProcessInstanceVariableTO {
 
     private JsonNode variableValue;
 
+    private String eventUser;
+
     public ProcessInstanceVariableTO(String eventId, Date eventDate, String processType, String processId,
             String processVersion, String parentProcessInstanceId, String rootProcessId, String rootProcessInstanceId, String processInstanceId,
-            String businessKey, String variableId, String variableName, String variableValue) {
+            String businessKey, String variableId, String variableName, String variableValue, String eventUser) {
         this.eventId = eventId;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
         this.processType = processType;
@@ -67,6 +69,7 @@ public class ProcessInstanceVariableTO {
         this.variableId = variableId;
         this.variableName = variableName;
         this.variableValue = JsonUtil.toJsonNode(variableValue);
+        this.eventUser = eventUser;
     }
 
     public String getEventId() {
@@ -173,4 +176,11 @@ public class ProcessInstanceVariableTO {
         this.variableValue = variableValue;
     }
 
+    public String getEventUser() {
+        return eventUser;
+    }
+
+    public void setEventUser(String eventUser) {
+        this.eventUser = eventUser;
+    }
 }

@@ -56,13 +56,15 @@ public class ProcessInstanceStateTO {
 
     private Set<String> roles;
 
+    private String eventUser;
+
     public ProcessInstanceStateTO() {
         roles = new HashSet<>();
     }
 
     public ProcessInstanceStateTO(String eventId, Date eventDate, String processType, String processId,
             String processVersion, String parentProcessInstanceId, String rootProcessId, String rootProcessInstanceId, String processInstanceId,
-            String businessKey, String eventType, String outcome, String state, Date slaDueDate) {
+            String businessKey, String eventType, String outcome, String state, Date slaDueDate, String eventUser) {
         this();
         this.eventId = eventId;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
@@ -80,6 +82,7 @@ public class ProcessInstanceStateTO {
         if (slaDueDate != null) {
             this.slaDueDate = OffsetDateTime.ofInstant(slaDueDate.toInstant(), ZoneId.of("UTC"));
         }
+        this.eventUser = eventUser;
     }
 
     public String getEventId() {
@@ -198,4 +201,11 @@ public class ProcessInstanceStateTO {
         this.roles.add(role);
     }
 
+    public String getEventUser() {
+        return eventUser;
+    }
+
+    public void setEventUser(String eventUser) {
+        this.eventUser = eventUser;
+    }
 }

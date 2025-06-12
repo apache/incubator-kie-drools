@@ -22,6 +22,7 @@ type JobExecutionLog {
 type ProcessInstanceStateLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     processType : String
     processId : String
     processVersion : String
@@ -40,6 +41,7 @@ type ProcessInstanceStateLog {
 type ProcessInstanceNodeLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     processType : String
     processId : String
     processVersion : String
@@ -61,6 +63,7 @@ type ProcessInstanceNodeLog {
 type ProcessInstanceErrorLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     processType : String
     processId : String
     processVersion : String
@@ -77,6 +80,7 @@ type ProcessInstanceErrorLog {
 type ProcessInstanceVariableLog {
     eventId : String
     eventDate : DateTime
+    eventUser: String
     processType : String
     processId : String
     processVersion : String
@@ -99,6 +103,7 @@ type ProcessInstanceVariableHistoryLog {
 type UserTaskInstanceStateLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String
@@ -114,6 +119,7 @@ type UserTaskInstanceStateLog {
 type UserTaskInstanceAssignmentLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String
@@ -126,6 +132,7 @@ type UserTaskInstanceAssignmentLog {
 type UserTaskInstanceAttachmentLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String
@@ -139,6 +146,7 @@ type UserTaskInstanceAttachmentLog {
 type UserTaskInstanceCommentLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String
@@ -151,6 +159,7 @@ type UserTaskInstanceCommentLog {
 type UserTaskInstanceDeadlineLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String
@@ -162,6 +171,7 @@ type UserTaskInstanceDeadlineLog {
 type UserTaskInstanceVariableLog {
     eventId : String!
     eventDate : DateTime
+    eventUser: String
     userTaskDefinitionId : String
     userTaskInstanceId : String
     processInstanceId : String

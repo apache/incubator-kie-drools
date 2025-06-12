@@ -49,9 +49,11 @@ public class ProcessInstanceErrorTO {
 
     private String nodeInstanceId;
 
+    private String eventUser;
+
     public ProcessInstanceErrorTO(String eventId, Date eventDate, String processType, String processId,
             String processVersion, String parentProcessInstanceId, String rootProcessId, String rootProcessInstanceId, String processInstanceId,
-            String businessKey, String errorMessage, String nodeDefinitionId, String nodeInstanceId) {
+            String businessKey, String errorMessage, String nodeDefinitionId, String nodeInstanceId, String eventUser) {
         this.eventId = eventId;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
         this.processType = processType;
@@ -65,6 +67,7 @@ public class ProcessInstanceErrorTO {
         this.errorMessage = errorMessage;
         this.nodeDefinitionId = nodeDefinitionId;
         this.nodeInstanceId = nodeInstanceId;
+        this.eventUser = eventUser;
     }
 
     public String getEventId() {
@@ -171,4 +174,11 @@ public class ProcessInstanceErrorTO {
         this.nodeInstanceId = nodeInstanceId;
     }
 
+    public String getEventUser() {
+        return eventUser;
+    }
+
+    public void setEventUser(String eventUser) {
+        this.eventUser = eventUser;
+    }
 }

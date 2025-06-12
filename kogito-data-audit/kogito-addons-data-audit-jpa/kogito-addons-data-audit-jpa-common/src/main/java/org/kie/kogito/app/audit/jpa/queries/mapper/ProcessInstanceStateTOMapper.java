@@ -57,7 +57,7 @@ public class ProcessInstanceStateTOMapper implements DataMapper<ProcessInstanceS
             current.setState((String) row[12]);
             current.setSlaDueDate(toDateTime((Date) row[13]));
             current.addRole((String) data.get(idx)[14]);
-
+            current.setEventUser((String) data.get(idx)[15]);
         }
 
         return transformedData;

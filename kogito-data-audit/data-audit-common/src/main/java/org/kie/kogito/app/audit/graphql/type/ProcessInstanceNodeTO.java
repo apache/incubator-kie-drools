@@ -59,10 +59,12 @@ public class ProcessInstanceNodeTO {
 
     private Object eventData;
 
+    private String eventUser;
+
     public ProcessInstanceNodeTO(String eventId, Date eventDate, String processType, String processId,
             String processVersion, String parentProcessInstanceId, String rootProcessId, String rootProcessInstanceId, String processInstanceId,
             String businessKey, String eventType, String nodeType,
-            String nodeName, String nodeInstanceId, String connection, String workItemId, Date slaDueDate, String eventData) {
+            String nodeName, String nodeInstanceId, String connection, String workItemId, Date slaDueDate, String eventData, String eventUser) {
         this.eventId = eventId;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
         this.processType = processType;
@@ -83,6 +85,7 @@ public class ProcessInstanceNodeTO {
             this.slaDueDate = OffsetDateTime.ofInstant(slaDueDate.toInstant(), ZoneId.of("UTC"));
         }
         this.eventData = JsonUtil.toJsonNode(eventData);
+        this.eventUser = eventUser;
     }
 
     public String getEventId() {
@@ -229,4 +232,11 @@ public class ProcessInstanceNodeTO {
         this.eventData = eventData;
     }
 
+    public String getEventUser() {
+        return eventUser;
+    }
+
+    public void setEventUser(String eventUser) {
+        this.eventUser = eventUser;
+    }
 }

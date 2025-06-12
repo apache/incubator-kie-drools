@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.quarkus;
+package org.kie.kogito.app.audit.springboot;
 
 import java.util.List;
 import java.util.Map;
@@ -27,34 +27,27 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.kie.kogito.app.audit.api.SubsystemConstants;
 import org.kie.kogito.event.EventPublisher;
-import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
-import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
-import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.*;
 import org.kie.kogito.process.ProcessInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-
-import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.deriveProcessInstanceStateEvent;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.newProcessInstanceErrorEvent;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.newProcessInstanceNodeEvent;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.newProcessInstanceStateEvent;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.newProcessInstanceVariableEvent;
-import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.wrapQuery;
+import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.*;
 
-@QuarkusTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "server_port=0")
 @TestInstance(Lifecycle.PER_CLASS)
-public class QuarkusAuditProcessInstanceServiceTest {
+public class SpringbootAuditProcessInstanceServiceTest {
 
-    @Inject
+    @LocalServerPort
+    private Integer port;
+
+    @Autowired
     EventPublisher publisher;
 
     @BeforeAll
@@ -118,6 +111,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -144,6 +138,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -169,6 +164,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -197,6 +193,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -224,6 +221,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -249,6 +247,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -275,6 +274,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -301,6 +301,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -326,6 +327,7 @@ public class QuarkusAuditProcessInstanceServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
