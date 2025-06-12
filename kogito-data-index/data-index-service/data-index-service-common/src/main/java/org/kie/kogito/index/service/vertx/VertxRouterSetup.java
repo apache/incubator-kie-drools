@@ -39,29 +39,34 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 
+import static org.kie.kogito.index.service.vertx.IndexRouteRegistrar.CONFIG_KEY_UI_PATH;
+
 @ApplicationScoped
 public class VertxRouterSetup {
 
-    @Inject
     @ConfigProperty(name = "quarkus.oidc.enabled", defaultValue = "false")
     Boolean authEnabled;
 
-    @Inject
     @ConfigProperty(name = "kogito.data-index.vertx-graphql.ui.path", defaultValue = "/graphiql")
     String graphUIPath;
+
+    @ConfigProperty(name = CONFIG_KEY_UI_PATH, defaultValue = "")
+    Optional<String> indexUIPath;
 
     @Inject
     Vertx vertx;
 
     void setupRouter(@Observes Router router) {
         router.route().handler(LoggerHandler.create());
-        GraphiQLHandler graphiQLHandler = GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true));
+        GraphiQLHandler graphiQLHandler = GraphiQLHandler.create(vertx, new GraphiQLHandlerOptions().setEnabled(true));
         if (Boolean.TRUE.equals(authEnabled)) {
             addGraphiqlRequestHeader(graphiQLHandler);
         }
         router.route().handler(BodyHandler.create());
         router.route(graphUIPath + "/*").handler(graphiQLHandler);
-        router.route("/").handler(ctx -> ctx.response().putHeader("location", graphUIPath + "/").setStatusCode(302).end());
+        if (indexUIPath.isEmpty()) {
+            router.route("/").handler(ctx -> ctx.response().putHeader("location", graphUIPath + "/").setStatusCode(302).end());
+        }
         router.route().handler(FaviconHandler.create(vertx));
     }
 

@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.service.vertx;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +84,7 @@ public class VertxRouterSetupTest {
     public void testAuthEnabledTrue() {
         vertxRouterSetup.authEnabled = true;
         vertxRouterSetup.graphUIPath = "/graphiql";
+        vertxRouterSetup.indexUIPath = Optional.empty();
         vertxRouterSetup.setupRouter(routerMock);
 
         verify(vertxRouterSetup).addGraphiqlRequestHeader(any());
@@ -92,6 +94,7 @@ public class VertxRouterSetupTest {
     public void testAuthEnabledFalse() {
         vertxRouterSetup.authEnabled = false;
         vertxRouterSetup.graphUIPath = "/graphiql";
+        vertxRouterSetup.indexUIPath = Optional.empty();
         vertxRouterSetup.setupRouter(routerMock);
 
         verify(vertxRouterSetup, never()).addGraphiqlRequestHeader(any());

@@ -104,3 +104,7 @@ application.properties
 org.eclipse.microprofile.config.spi.ConfigSource
 # trusty/trusty-service/trusty-service-common/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker
 org.mockito.plugins.MockMaker
+# data-index/data-index-service/data-index-service-inmemory/src/test/resources/ui/index.html
+index.html
+# data-index/data-index-service/data-index-service-inmemory/src/test/resources/ui/styles.css
+styles.css
