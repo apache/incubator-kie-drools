@@ -24,6 +24,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -52,11 +53,18 @@ public class IndexRouteRegistrar {
                             .setStatusCode(302)
                             .end());
 
-            router.route("/index.html").handler(StaticHandler.create(dir).setIndexPage("index.html"));
+            final String normalized = dir.endsWith("/") ? dir.substring(0, dir.length() - 1) : dir;
+            final FileSystemAccess fsa = normalized.startsWith("/") ? FileSystemAccess.ROOT : FileSystemAccess.RELATIVE;
+            final StaticHandler handler = StaticHandler.create(fsa, normalized)
+                    .setDefaultContentEncoding("utf-8")
+                    .setDirectoryListing(false)
+                    .setAlwaysAsyncFS(true)
+                    .setIndexPage("index.html")
+                    .setCacheEntryTimeout(86400) // cache for one day
+                    .setEnableFSTuning(true);
 
-            router.route("/ui/*")
-                    .handler(StaticHandler.create(dir)
-                            .setIndexPage("index.html"));
+            router.route("/index.html").handler(handler);
+            router.route("/ui/*").handler(handler);
         });
     }
 }

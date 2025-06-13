@@ -20,12 +20,14 @@ package org.kie.kogito.index.service;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 
 import static org.hamcrest.Matchers.equalTo;
 
 @QuarkusTest
+@QuarkusTestResource(CustomUIResource.class)
 public class CustomUIPageIT {
     /**
      * Override the property to point to our test resources' directory.
