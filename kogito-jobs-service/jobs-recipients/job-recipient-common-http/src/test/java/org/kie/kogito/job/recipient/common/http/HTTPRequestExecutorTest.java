@@ -146,7 +146,7 @@ public abstract class HTTPRequestExecutorTest<R extends Recipient<?>, E extends 
     @SuppressWarnings("unchecked")
     private Map<String, String>[] executeAndCollectRequestInfo(HttpRequest<Buffer> request, MultiMap params, MultiMap headers,
             JobDetails scheduledJob, boolean mockError) {
-        doReturn(request).when(webClient).request(HttpMethod.POST, PORT, HOST, PATH);
+        doReturn(request).when(webClient).requestAbs(HttpMethod.POST, ENDPOINT);
         doReturn(request).when(request).timeout(anyLong());
         doReturn(params).when(request).queryParams();
         doReturn(headers).when(request).headers();
@@ -157,7 +157,7 @@ public abstract class HTTPRequestExecutorTest<R extends Recipient<?>, E extends 
         doReturn(Uni.createFrom().item(httpResponse)).when(request).sendBuffer(any());
 
         JobExecutionResponse response = tested.execute(scheduledJob).onFailure().recoverWithNull().await().indefinitely();
-        verify(webClient).request(HttpMethod.POST, PORT, HOST, PATH);
+        verify(webClient).requestAbs(HttpMethod.POST, ENDPOINT);
         verify(request).sendBuffer(bufferCaptor.capture());
         verify(request).queryParams();
         verify(request).headers();

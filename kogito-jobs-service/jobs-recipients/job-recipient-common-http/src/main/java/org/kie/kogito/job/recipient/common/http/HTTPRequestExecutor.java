@@ -18,14 +18,12 @@
  */
 package org.kie.kogito.job.recipient.common.http;
 
-import java.net.URI;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.job.recipient.common.http.converters.HttpConverters;
-import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.exception.JobExecutionException;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -104,11 +102,9 @@ public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
 
     protected Uni<HttpResponse<Buffer>> executeRequest(HTTPRequest request, long timeout) {
         LOGGER.debug("Executing request {}", request);
-        final URI uri = URIBuilder.toURI(request.getUrl());
-        final HttpRequest<Buffer> clientRequest = client.request(HttpConverters.convertHttpMethod(request.getMethod()),
-                uri.getPort(),
-                uri.getHost(),
-                uri.getPath()).timeout(timeout);
+        final HttpRequest<Buffer> clientRequest = client.requestAbs(HttpConverters.convertHttpMethod(
+                request.getMethod()),
+                request.getUrl()).timeout(timeout);
         clientRequest.queryParams().addAll(filterEntries(request.getQueryParams()));
         clientRequest.headers().addAll(filterEntries(request.getHeaders()));
         if (request.getBody() != null) {
