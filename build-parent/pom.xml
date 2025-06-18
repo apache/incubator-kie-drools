@@ -135,7 +135,7 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.org.antlr4>4.10.1</version.org.antlr4>
+    <version.org.antlr4>4.13.2</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.io.swagger>1.6.2</version.io.swagger>
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
