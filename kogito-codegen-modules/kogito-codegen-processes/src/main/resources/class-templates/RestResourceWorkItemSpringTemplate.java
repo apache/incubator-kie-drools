@@ -56,7 +56,7 @@ public class $Type$Resource {
                         .created(uriComponentsBuilder
                                 .path("/$name$/{id}/$taskName$/{taskId}")
                                 .buildAndExpand(id, task.getId()).toUri())
-                        .body(task.getResults()))
+                        .body(task))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 

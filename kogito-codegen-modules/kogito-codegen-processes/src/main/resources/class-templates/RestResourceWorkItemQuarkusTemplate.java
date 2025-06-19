@@ -49,7 +49,7 @@ public class $Type$Resource {
         return processService.signalWorkItem(process, id, "$taskName$", SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)))
                 .map(task -> Response
                         .created(uriInfo.getAbsolutePathBuilder().path(task.getId()).build())
-                        .entity(task.getResults())
+                        .entity(task)
                         .build())
                 .orElseThrow(NotFoundException::new);
     }
