@@ -489,17 +489,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         if (remove) {
             cancel();
         }
-        isRetrigger = true;
-        triggerNode(getNodeId(), !remove);
+        retriggerNode(nodeId, !remove);
     }
 
-    public void triggerNode(WorkflowElementIdentifier nodeId) {
-        triggerNode(nodeId, true);
-    }
-
-    public void triggerNode(WorkflowElementIdentifier nodeId, boolean fireEvents) {
-        org.jbpm.workflow.instance.NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+    private void retriggerNode(WorkflowElementIdentifier nodeId, boolean fireEvents) {
+        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
                 .getNodeInstance(((KogitoNode) getNode()).getParentContainer().getNode(nodeId));
+
+        nodeInstance.internalSetRetrigger(true);
+
         triggerNodeInstance(nodeInstance, Node.CONNECTION_DEFAULT_TYPE, fireEvents);
     }
 
