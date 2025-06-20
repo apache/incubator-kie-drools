@@ -28,8 +28,6 @@ import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.dmndi.DMNDI;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -176,22 +174,4 @@ public class TDefinitions extends TNamedElement implements Definitions {
     public List<DecisionService> getDecisionService() {
         return drgElement.stream().filter(DecisionService.class::isInstance).map(DecisionService.class::cast).collect(Collectors.toList());
     }
-
-//    public void normalize() {
-//        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
-//            processQNameURIs(itemDefinition, this.namespace);
-//        }
-//    }
-
-//    private static void processQNameURIs(ItemDefinition iDef, String defaultNamespace) {
-//        final QName typeRef = iDef.getTypeRef();
-//        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
-//            String prefix = typeRef.getPrefix();
-//            final String namespace = prefix != null && !prefix.isEmpty() ? iDef.getNamespaceURI(prefix) : defaultNamespace;
-//            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
-//        }
-//        for (ItemDefinition comp : iDef.getItemComponent()) {
-//            processQNameURIs(comp, defaultNamespace);
-//        }
-//    }
 }
