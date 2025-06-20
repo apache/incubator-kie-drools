@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -177,20 +177,21 @@ public class TDefinitions extends TNamedElement implements Definitions {
         return drgElement.stream().filter(DecisionService.class::isInstance).map(DecisionService.class::cast).collect(Collectors.toList());
     }
 
-    public void normalize() {
-        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
-            processQNameURIs(itemDefinition);
-        }
-    }
+//    public void normalize() {
+//        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
+//            processQNameURIs(itemDefinition, this.namespace);
+//        }
+//    }
 
-    private static void processQNameURIs(ItemDefinition iDef) {
-        final QName typeRef = iDef.getTypeRef();
-        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
-            final String namespace = iDef.getNamespaceURI(typeRef.getPrefix());
-            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
-        }
-        for (ItemDefinition comp : iDef.getItemComponent()) {
-            processQNameURIs(comp);
-        }
-    }
+//    private static void processQNameURIs(ItemDefinition iDef, String defaultNamespace) {
+//        final QName typeRef = iDef.getTypeRef();
+//        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
+//            String prefix = typeRef.getPrefix();
+//            final String namespace = prefix != null && !prefix.isEmpty() ? iDef.getNamespaceURI(prefix) : defaultNamespace;
+//            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
+//        }
+//        for (ItemDefinition comp : iDef.getItemComponent()) {
+//            processQNameURIs(comp, defaultNamespace);
+//        }
+//    }
 }
