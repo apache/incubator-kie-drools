@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.it.jobs;
 
-import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.test.resources.JobServiceTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -27,7 +26,6 @@ import io.quarkus.test.junit.QuarkusIntegrationTest;
 @QuarkusIntegrationTest
 @QuarkusTestResource(JobRecipientMock.class)
 @JobServiceTestResource(kafkaEnabled = true, dataIndexEnabled = true)
-@Disabled("Disabled because the test fails randomly. It needs to be investigated why.")
 class IndependentJobsIT extends BaseIndependentJobsIT {
 
 }

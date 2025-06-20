@@ -23,6 +23,6 @@ import org.kie.kogito.test.resources.JobServiceTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-@JobServiceTestResource(kafkaEnabled = true)
+@JobServiceTestResource(kafkaEnabled = true, dataIndexEnabled = true)
 class CallbackStateTimeoutsIT extends BaseCallbackStateTimeoutsIT {
 }

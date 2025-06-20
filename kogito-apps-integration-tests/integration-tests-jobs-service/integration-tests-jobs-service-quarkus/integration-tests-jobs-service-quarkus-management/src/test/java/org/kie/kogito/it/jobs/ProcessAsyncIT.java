@@ -19,16 +19,13 @@
 package org.kie.kogito.it.jobs;
 
 import org.kie.kogito.test.resources.JobServiceTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResource.JOBS_SERVICE_URL;
 
 @QuarkusIntegrationTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
-@JobServiceTestResource
+@JobServiceTestResource(kafkaEnabled = true, dataIndexEnabled = true)
 class ProcessAsyncIT extends BaseProcessAsyncIT {
 
     @Override

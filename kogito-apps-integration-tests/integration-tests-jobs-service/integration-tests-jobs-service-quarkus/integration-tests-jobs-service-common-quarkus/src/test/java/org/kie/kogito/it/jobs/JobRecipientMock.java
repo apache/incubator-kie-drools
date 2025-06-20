@@ -27,12 +27,17 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.Testcontainers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.matching.RegexPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
+import jakarta.ws.rs.core.Response;
+
+import static com.github.tomakehurst.wiremock.client.CountMatchingStrategy.GREATER_THAN_OR_EQUAL;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.request;
@@ -48,8 +53,11 @@ public class JobRecipientMock implements QuarkusTestResourceLifecycleManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobRecipientMock.class);
     private WireMockServer wireMockServer;
     public static final String JOB_RECIPIENT_MOCK_URL_PROPERTY = "kogito.job-recipient-mock.url";
+    private static final String JOB_LIMIT_REGEX = "\\?limit\\=(\\d+)";
     public static final String JOB_RECIPIENT_MOCK = "job-recipient-mock";
-    public static final String JOB_RECIPIENT_MOCK_REGEX = "\\/" + JOB_RECIPIENT_MOCK + "\\?limit\\=(\\d+)$";
+    public static final String JOB_RECIPIENT_MOCK_REGEX = "\\/" + JOB_RECIPIENT_MOCK + JOB_LIMIT_REGEX + "$";
+    public static final String FAILING_JOB_RECIPIENT_MOCK = "failing-job-recipient-mock";
+    public static final String FAILING_JOB_RECIPIENT_MOCK_REGEX = "\\/" + FAILING_JOB_RECIPIENT_MOCK + JOB_LIMIT_REGEX + "$";
 
     public interface JobRecipientMockAware {
         void setWireMockServer(WireMockServer jobRecipient);
@@ -64,6 +72,11 @@ public class JobRecipientMock implements QuarkusTestResourceLifecycleManager {
         wireMockServer.start();
 
         wireMockServer.stubFor(request("POST", new UrlPattern(new RegexPattern(JOB_RECIPIENT_MOCK_REGEX), true)));
+
+        wireMockServer.stubFor(request("POST", new UrlPattern(new RegexPattern(FAILING_JOB_RECIPIENT_MOCK_REGEX), true))
+                .willReturn(ResponseDefinitionBuilder.responseDefinition()
+                        .withStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .withStatusMessage(String.format("The %s service is designed to always fail.", FAILING_JOB_RECIPIENT_MOCK))));
 
         LOGGER.info("JobRecipientMock test resource started");
         return Collections.singletonMap(JOB_RECIPIENT_MOCK_URL_PROPERTY, String.format("http://host.testcontainers.internal:%s", wireMockServer.port()));
@@ -85,12 +98,21 @@ public class JobRecipientMock implements QuarkusTestResourceLifecycleManager {
         }
     }
 
-    public static void verifyJobWasExecuted(WireMockServer jobRecipient, String jobId, int limit) {
+    public static void verifyJobWasExecuted(WireMockServer jobRecipient, int waitAtMostInSeconds, String jobId, int limit) {
         await()
-                .atMost(600, SECONDS)
+                .atMost(waitAtMostInSeconds, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> jobRecipient.verify(1,
                         postRequestedFor(urlEqualTo("/" + JOB_RECIPIENT_MOCK + "?limit=" + limit))
+                                .withHeader("jobId", equalTo(jobId))));
+    }
+
+    public static void verifyFailingJobWasExecutedAtLeastCount(WireMockServer jobRecipient, int waitAtMostInSeconds, int atLeastCount, String jobId, int limit) {
+        await()
+                .atMost(waitAtMostInSeconds, SECONDS)
+                .with().pollInterval(1, SECONDS)
+                .untilAsserted(() -> jobRecipient.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, atLeastCount),
+                        postRequestedFor(urlEqualTo("/" + FAILING_JOB_RECIPIENT_MOCK + "?limit=" + limit))
                                 .withHeader("jobId", equalTo(jobId))));
     }
 }

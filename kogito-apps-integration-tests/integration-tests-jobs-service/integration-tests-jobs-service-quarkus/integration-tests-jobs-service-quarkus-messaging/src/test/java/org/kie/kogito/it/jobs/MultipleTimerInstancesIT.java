@@ -25,7 +25,7 @@ import io.quarkus.test.junit.QuarkusIntegrationTest;
 import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResource.JOBS_SERVICE_URL;
 
 @QuarkusIntegrationTest
-@JobServiceTestResource(kafkaEnabled = true)
+@JobServiceTestResource(kafkaEnabled = true, dataIndexEnabled = true)
 class MultipleTimerInstancesIT extends BaseMultipleTimerInstancesQuarkusIT {
 
     @Override

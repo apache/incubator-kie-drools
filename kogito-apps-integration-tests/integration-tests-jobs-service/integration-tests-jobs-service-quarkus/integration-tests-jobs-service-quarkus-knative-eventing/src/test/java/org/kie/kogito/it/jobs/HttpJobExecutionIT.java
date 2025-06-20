@@ -92,7 +92,7 @@ class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAware, JobS
                 .then()
                 .statusCode(202);
 
-        verifyJobWasExecuted(jobRecipient, jobId, 0);
+        verifyJobWasExecuted(jobRecipient, 120, jobId, 0);
         assertJobExists(jobServiceUrl(), jobId, false, 60);
     }
 
@@ -170,7 +170,7 @@ class HttpJobExecutionIT implements JobRecipientMock.JobRecipientMockAware, JobS
                 .then()
                 .statusCode(202);
 
-        verifyJobWasExecuted(jobRecipient, jobId, 0);
+        verifyJobWasExecuted(jobRecipient, 120, jobId, 0);
     }
 
     @Test

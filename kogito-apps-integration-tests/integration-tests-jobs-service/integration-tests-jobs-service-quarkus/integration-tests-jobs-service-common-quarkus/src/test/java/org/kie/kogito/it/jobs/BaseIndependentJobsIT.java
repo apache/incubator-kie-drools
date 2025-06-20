@@ -20,9 +20,18 @@ package org.kie.kogito.it.jobs;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.api.Job;
@@ -31,21 +40,26 @@ import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.jobs.service.api.serialization.SerializationUtils;
+import org.kie.kogito.jobs.service.model.JobStatus;
+import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
+import io.cloudevents.CloudEvent;
 import io.restassured.RestAssured;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.kie.kogito.it.jobs.JobRecipientMock.FAILING_JOB_RECIPIENT_MOCK;
 import static org.kie.kogito.it.jobs.JobRecipientMock.JOB_RECIPIENT_MOCK;
 import static org.kie.kogito.it.jobs.JobRecipientMock.JOB_RECIPIENT_MOCK_URL_PROPERTY;
+import static org.kie.kogito.it.jobs.JobRecipientMock.verifyFailingJobWasExecutedAtLeastCount;
 import static org.kie.kogito.it.jobs.JobRecipientMock.verifyJobWasExecuted;
-import static org.kie.kogito.test.TestUtils.JOB_EXECUTION_COUNTER_FIELD;
-import static org.kie.kogito.test.TestUtils.JOB_RETRIES_FIELD;
 import static org.kie.kogito.test.TestUtils.JOB_STATUS_FIELD;
 import static org.kie.kogito.test.TestUtils.assertJobExists;
 import static org.kie.kogito.test.TestUtils.assertJobInDataIndexAndReturn;
@@ -55,6 +69,15 @@ import static org.kie.kogito.test.resources.JobServiceCompositeQuarkusTestResour
 public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecipientMockAware, JobServiceHealthAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseIndependentJobsIT.class);
+    private static final String KOGITO_JOBS_EVENTS_TOPIC = "kogito-jobs-events";
+
+    private static final Function<String, Predicate<ScheduledJob>> IS_RETRY_EVENT_FOR_JOB = jobId -> {
+        return scheduledJob -> jobId.equals(scheduledJob.getId()) && JobStatus.RETRY == scheduledJob.getStatus();
+    };
+
+    private static final Function<String, Predicate<ScheduledJob>> IS_SCHEDULED_EVENT_FOR_JOB = jobId -> {
+        return scheduledJob -> jobId.equals(scheduledJob.getId()) && JobStatus.SCHEDULED == scheduledJob.getStatus();
+    };
 
     protected WireMockServer jobRecipient;
 
@@ -69,6 +92,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
 
     @Test
     void testFailingJob() throws Exception {
+        String jobRecipientUrl = jobRecipientMockUrl() + "/" + FAILING_JOB_RECIPIENT_MOCK;
         String jobId = UUID.randomUUID().toString();
         Job job = Job.builder()
                 .id(jobId)
@@ -77,9 +101,10 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                         .startTime(getNowPlusSeconds(5))
                         .build())
                 .recipient(HttpRecipient.builder().forStringPayload()
-                        .url("http://never.existing.kogito.service")
+                        .url(jobRecipientUrl)
                         .method("POST")
                         .payload(HttpRecipientStringPayloadData.from("Irrelevant"))
+                        .header("jobId", jobId)
                         .build())
                 .build();
 
@@ -94,19 +119,6 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 .then()
                 .statusCode(200);
 
-        LOGGER.debug("Verifying failing job retrials in Data Index, jobId: {}", jobId);
-        // Ensure the job has been retrying for some time and properly notifying the DI with the correct status while
-        // retrying.
-        Awaitility.await()
-                .atMost(120, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> {
-                    Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
-                    int retries = (Integer) dataIndexJob.get(JOB_RETRIES_FIELD);
-                    assertThat(retries).isGreaterThan(10);
-                    assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.RETRY.name());
-                });
-
         LOGGER.debug("Verifying failing job reaches the ERROR state, jobId: {}", jobId);
         // Ensure the job finalizes the failing execution and properly notifies the DI with the correct status.
         Awaitility.await()
@@ -119,7 +131,15 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
 
         LOGGER.debug("Verifying failing job is removed from the Job Service, jobId: {}", jobId);
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 120);
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
+
+        // For the default configurations we should expect that at least 30 reties where produced.
+        int minExpectedRetries = 30;
+        verifyFailingJobWasExecutedAtLeastCount(jobRecipient, 30, minExpectedRetries, jobId, 0);
+
+        // For the default configurations we should expect at least 30 events where produced notifying every retry.
+        waitForAtLeastJobEvents(createKafkaTestClient(jobId, kafkaBootstrapServers()), KOGITO_JOBS_EVENTS_TOPIC,
+                60, IS_RETRY_EVENT_FOR_JOB.apply(jobId), minExpectedRetries, true);
     }
 
     @Test
@@ -130,7 +150,7 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 .id(jobId)
                 .correlationId(jobId)
                 .schedule(TimerSchedule.builder()
-                        .startTime(getNowPlusSeconds(50))
+                        .startTime(getNowPlusSeconds(5))
                         .build())
                 .recipient(HttpRecipient.builder().forStringPayload()
                         .url(jobRecipientUrl)
@@ -152,18 +172,8 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 .then()
                 .statusCode(200);
 
-        LOGGER.debug("Verifying the simple job was scheduled in the Data Index, jobId: {}", jobId);
-        // Verify the job is registered as scheduled in the Data Index.
-        Awaitility.await()
-                .atMost(180, SECONDS)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> {
-                    Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
-                    assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.SCHEDULED.name());
-                });
-
         // Verify the job was executed.
-        verifyJobWasExecuted(jobRecipient, jobId, 0);
+        verifyJobWasExecuted(jobRecipient, 120, jobId, 0);
 
         LOGGER.debug("Verifying simple job reaches the EXECUTED state jobId: {}", jobId);
         // Verify the job is registered as executed in the Data Index.
@@ -176,7 +186,10 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 });
 
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 120);
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
+
+        waitForAtLeastJobEvents(createKafkaTestClient(jobId, kafkaBootstrapServers()), KOGITO_JOBS_EVENTS_TOPIC,
+                60, IS_SCHEDULED_EVENT_FOR_JOB.apply(jobId), 1, true);
     }
 
     @Test
@@ -190,9 +203,9 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 .id(jobId)
                 .correlationId(jobId)
                 .schedule(TimerSchedule.builder()
-                        .startTime(getNowPlusSeconds(30))
-                        .repeatCount(2)
-                        .delay(30L)
+                        .startTime(getNowPlusSeconds(5))
+                        .repeatCount(repeatCount)
+                        .delay(5L)
                         .delayUnit(TemporalUnit.SECONDS)
                         .build())
                 .recipient(HttpRecipient.builder().forStringPayload()
@@ -215,43 +228,34 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
                 .then()
                 .statusCode(200);
 
-        // Verify the job is registered as scheduled in the Data Index.
+        LOGGER.debug("Verifying the repetitive job programmed executions are produced jobId: {}", jobId);
+        for (int i = 1; i <= expectedExecutions; i++) {
+            // limit goes 2,1,0
+            int limit = expectedExecutions - i;
+            verifyJobWasExecuted(jobRecipient, 120, jobId, limit);
+        }
+
+        LOGGER.debug("Verifying repetitive job reaches the EXECUTED state jobId: {}", jobId);
+        // Verify the job is registered as executed in the Data Index.
         Awaitility.await()
                 .atMost(120, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> {
                     Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
-                    assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.SCHEDULED.name());
+                    assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.EXECUTED.name());
                 });
 
-        LOGGER.debug("Verifying the repetitive job programmed executions are produced jobId: {}", jobId);
-        for (int i = 1; i <= expectedExecutions; i++) {
-            // executions goes 1,2,3
-            final int execution = i;
-            // limit goes 2,1,0
-            int limit = expectedExecutions - execution;
-            // Verify the job was executed.
-            verifyJobWasExecuted(jobRecipient, jobId, limit);
-            // Verify the given execution was produced, and the expected status registered in the DI.
-            Awaitility.await()
-                    .atMost(120, SECONDS)
-                    .with().pollInterval(1, SECONDS)
-                    .untilAsserted(() -> {
-                        Map<String, Object> dataIndexJob = assertJobInDataIndexAndReturn(dataIndexUrl(), jobId);
-                        assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_EXECUTION_COUNTER_FIELD, execution);
-                        if (execution < expectedExecutions) {
-                            assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.SCHEDULED.name());
-                        } else {
-                            assertThat(dataIndexJob).hasFieldOrPropertyWithValue(JOB_STATUS_FIELD, Job.State.EXECUTED.name());
-                        }
-                    });
-        }
         // Ensure the job as removed from the jobs service.
-        assertJobExists(jobServiceUrl(), jobId, false, 120);
-    }
+        assertJobExists(jobServiceUrl(), jobId, false, 60);
 
-    public String jobServiceJobsUrl() {
-        return jobServiceUrl() + "/v2/jobs";
+        // Ensure status changes where produced incrementing the execution counter.
+        // Note, the SCHEDULED event is produced many times.
+        List<ScheduledJob> scheduledJobs = waitForAtLeastJobEvents(createKafkaTestClient(jobId, kafkaBootstrapServers()), KOGITO_JOBS_EVENTS_TOPIC,
+                60, IS_SCHEDULED_EVENT_FOR_JOB.apply(jobId), 9, true);
+        for (int i = 0; i <= expectedExecutions; i++) {
+            int execution = i;
+            assertThat(scheduledJobs.stream().anyMatch(scheduledJob -> scheduledJob.getExecutionCounter().equals(execution))).isTrue();
+        }
     }
 
     public String jobServiceUrl() {
@@ -264,5 +268,56 @@ public abstract class BaseIndependentJobsIT implements JobRecipientMock.JobRecip
 
     public String jobRecipientMockUrl() {
         return System.getProperty(JOB_RECIPIENT_MOCK_URL_PROPERTY);
+    }
+
+    public String kafkaBootstrapServers() {
+        return System.getProperty(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY);
+    }
+
+    public String jobServiceJobsUrl() {
+        return jobServiceUrl() + "/v2/jobs";
+    }
+
+    public static List<ScheduledJob> waitForAtLeastJobEvents(KafkaTestClient kafkaClient, String topic, int atMostTimeoutInSeconds,
+            Predicate<ScheduledJob> filter, int atLeastCount,
+            boolean shutdownAfterConsume) throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(atLeastCount);
+        final List<ScheduledJob> scheduledJobs = new ArrayList<>();
+        kafkaClient.consume(topic, rawCloudEvent -> {
+            CloudEvent cloudEvent;
+            ScheduledJob scheduledJob;
+            try {
+                cloudEvent = SerializationUtils.DEFAULT_OBJECT_MAPPER.readValue(rawCloudEvent, CloudEvent.class);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format("Failed to parse %s from rawCloudEvent: %s.", CloudEvent.class, rawCloudEvent));
+            }
+            try {
+                scheduledJob = SerializationUtils.DEFAULT_OBJECT_MAPPER.readValue(cloudEvent.getData().toBytes(), ScheduledJob.class);
+                if (filter.test(scheduledJob)) {
+                    scheduledJobs.add(scheduledJob);
+                    countDownLatch.countDown();
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException(String.format("Failed to parse %s from cloudEventData: %s.", ScheduledJob.class, cloudEvent.getData().toString()));
+            }
+        });
+        // consume events during configured time.
+        Assertions.assertThat(countDownLatch.await(atMostTimeoutInSeconds, TimeUnit.SECONDS))
+                .withFailMessage("At least %d events where expected but %d where produced in the configured time frame", atLeastCount, atLeastCount - countDownLatch.getCount())
+                .isTrue();
+        if (shutdownAfterConsume) {
+            kafkaClient.shutdown();
+        }
+        return scheduledJobs;
+    }
+
+    private static KafkaTestClient createKafkaTestClient(String jobId, String kafkaBoostrapServers) {
+        Properties additionalProperties = new Properties();
+        additionalProperties.put(ConsumerConfig.GROUP_ID_CONFIG, jobEventConsumerGroup(jobId));
+        return new KafkaTestClient(kafkaBoostrapServers, additionalProperties);
+    }
+
+    private static String jobEventConsumerGroup(String jobId) {
+        return jobId + "Consumer";
     }
 }

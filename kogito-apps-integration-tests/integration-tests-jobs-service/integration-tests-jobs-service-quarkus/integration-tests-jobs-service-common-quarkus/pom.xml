@@ -51,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>jobs-service-internal-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-test-utils</artifactId>
       <exclusions>
         <exclusion>
