@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.util.ContextFactory;
@@ -33,6 +32,7 @@ import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.utils.CaseInsensitiveSet;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
@@ -46,7 +46,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler {
 
-    private static final Collection<String> excludedHeaders = Set.of("User-Agent", "Host", "Content-Length", "Accept", "Accept-Encoding", "Connection");
+    private static final Collection<String> excludedHeaders = new CaseInsensitiveSet("User-Agent", "Host", "Content-Length", "Accept", "Accept-Encoding", "Connection");
 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
