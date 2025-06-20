@@ -617,7 +617,6 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a composite type
             // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {
-                // @TODO and here's where the QName of Person is set, using the model namespace as namespace
                 type = (CompositeTypeImpl) dmnModel.getTypeRegistry().resolveType(dmnModel.getNamespace(), itemDef.getName());
             } else {
                 DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
