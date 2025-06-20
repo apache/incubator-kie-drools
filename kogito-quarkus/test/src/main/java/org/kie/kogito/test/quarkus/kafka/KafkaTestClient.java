@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.test.quarkus.kafka;
 
+import java.util.Properties;
+
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -25,4 +27,9 @@ public class KafkaTestClient extends KafkaTypedTestClient<String, StringSerializ
     public KafkaTestClient(String hosts) {
         super(hosts, StringSerializer.class, StringDeserializer.class);
     }
+
+    public KafkaTestClient(String hosts, Properties additionalConfig) {
+        super(hosts, additionalConfig, StringSerializer.class, StringDeserializer.class);
+    }
+
 }

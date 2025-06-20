@@ -60,6 +60,7 @@ public class KafkaTypedTestClient<T, S extends Serializer<T>, D extends Deserial
     private Class<D> deserializer;
 
     private String hosts;
+    private Properties additionalConfig;
 
     public KafkaTypedTestClient(String hosts, Class<S> serializer, Class<D> deserializer) {
         this.hosts = hosts;
@@ -67,7 +68,12 @@ public class KafkaTypedTestClient<T, S extends Serializer<T>, D extends Deserial
         this.deserializer = deserializer;
     }
 
-    private KafkaConsumer<String, T> createDefaultConsumer(String hosts) {
+    public KafkaTypedTestClient(String hosts, Properties additionalConfig, Class<S> serializer, Class<D> deserializer) {
+        this(hosts, serializer, deserializer);
+        this.additionalConfig = additionalConfig;
+    }
+
+    private Properties createDefaultConfig(String hosts) {
         Properties consumerConfig = new Properties();
         consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -75,7 +81,15 @@ public class KafkaTypedTestClient<T, S extends Serializer<T>, D extends Deserial
         consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getName());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTypedTestClient.class.getName() + "Consumer");
-        return new KafkaConsumer<>(consumerConfig);
+        return consumerConfig;
+    }
+
+    private KafkaConsumer<String, T> createDefaultConsumer(String hosts) {
+        Properties resultConfig = createDefaultConfig(hosts);
+        if (additionalConfig != null) {
+            resultConfig.putAll(additionalConfig);
+        }
+        return new KafkaConsumer<>(resultConfig);
     }
 
     private KafkaProducer<String, T> createDefaultProducer(String hosts) {
