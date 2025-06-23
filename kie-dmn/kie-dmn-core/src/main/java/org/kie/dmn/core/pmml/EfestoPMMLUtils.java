@@ -147,6 +147,8 @@ public class EfestoPMMLUtils {
                         .findFirst()
                         .orElse(null);
         ContextStorage.putEfestoCompilationContext(pmmlModelLocalUriId, pmmlCompilationContext);
+        ModelLocalUriId sourceLocalUriId = getPmmlModelLocalUriId(fileName, "source");
+        ContextStorage.putEfestoCompilationSource(sourceLocalUriId, pmmlSource);
     }
 
     /**
