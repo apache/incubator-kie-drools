@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,6 +53,7 @@ import org.drools.io.BaseResource;
 import org.drools.io.FileSystemResource;
 import org.drools.io.ReaderResource;
 import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -330,7 +332,7 @@ public class DMNValidatorImpl implements DMNValidator {
         @Override
         public List<DMNMessage> theseModels(Reader... readers) {
             Resource[] array =
-                    Arrays.stream(readers).map(ReaderResource::new).collect(Collectors.toList()).toArray(new Resource[]{});
+                    Arrays.stream(readers).map(ReaderResource::new).toList().toArray(new Resource[]{});
             return theseModels(array);
         }
 
@@ -691,12 +693,12 @@ public class DMNValidatorImpl implements DMNValidator {
                 .map(Import::getNamespace)
                 .toList();
         List<Definitions> otherModelsDefinitions = new ArrayList<>();
-        otherModels.forEach(dmnResource -> {
-            Definitions other = dmnResource.getDefinitions();
-            if (unnamedImports.contains(dmnResource.getModelID().getNamespaceURI())) {
-                mergeDefinitions(mainDefinitions, other);
+        otherModels.forEach(otherModel -> {
+            Definitions otherDefinitions = otherModel.getDefinitions();
+            if (unnamedImports.contains(otherModel.getModelID().getNamespaceURI())) {
+                mergeDefinitions(mainDefinitions, otherDefinitions);
             }
-            otherModelsDefinitions.add(other);
+            otherModelsDefinitions.add(otherDefinitions);
         });
 
         StatelessKieSession kieSession;
@@ -721,13 +723,45 @@ public class DMNValidatorImpl implements DMNValidator {
                 .collect(toList());
 
         BatchExecutionCommand batch =
-                CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements,
-                                                                                                "DEFAULT", false,
-                                                                                                "DEFAULT"),
-                                                                                     CommandFactory.newInsertElements(otherModelsDefinitions, "DMNImports", false, "DMNImports")));
+                CommandFactory.newBatchExecution(getBatchExecutionCommands(dmnModelElements, otherModelsDefinitions, unnamedImports));
         kieSession.execute(batch);
-
         return reporter.getMessages().getMessages();
+    }
+
+    @SuppressWarnings("rawtypes")
+    private List<Command> getBatchExecutionCommands(List<DMNModelInstrumentedBase> dmnModelElements,
+                                                    List<Definitions> otherModelsDefinitions,
+                                                    List<String> unnamedImports) {
+       List<Command> toReturn = new ArrayList<>();
+       // inserting dmnModelElements as DEFAULT
+       toReturn.add(CommandFactory.newInsertElements(dmnModelElements,
+                                         "DEFAULT", false,
+                                         "DEFAULT"));
+        // inserting otherModelsDefinitions as DMNImports
+        toReturn.add(CommandFactory.newInsertElements(otherModelsDefinitions, "DMNImports", false, "DMNImports"));
+        //  inserting a Set of nested unnamed-imports as RelatedImports
+        Set<Definitions> nestedImports = new HashSet<>();
+        populateNestedUnnamedImports(nestedImports, otherModelsDefinitions, unnamedImports);
+        toReturn.add(CommandFactory.newInsertElements(nestedImports, "RelatedImports", false, "RelatedImports"));
+        return toReturn;
+    }
+
+    static void populateNestedUnnamedImports(Set<Definitions> toPopulate, List<Definitions> otherModelsDefinitions, List<String> unnamedImports) {
+        Set<Definitions> toIterate = otherModelsDefinitions.stream()
+                .filter(definitions -> unnamedImports.contains(definitions.getNamespace())).collect(Collectors.toSet());
+        populateNestedUnnamedImports(toPopulate, toIterate, otherModelsDefinitions);
+    }
+
+    static void populateNestedUnnamedImports(Set<Definitions> toPopulate, Import imported, List<Definitions> otherModelsDefinitions) {
+        Set<Definitions> toIterate = otherModelsDefinitions.stream().filter(definitions -> definitions.getNamespace().equals(imported.getNamespace())).collect(Collectors.toSet());
+        populateNestedUnnamedImports(toPopulate, toIterate, otherModelsDefinitions);
+    }
+
+    static void populateNestedUnnamedImports(Set<Definitions> toPopulate, Set<Definitions> toIterate, List<Definitions> otherModelsDefinitions) {
+        toIterate.forEach(definitionsToAdd -> {
+            toPopulate.add(definitionsToAdd);
+            definitionsToAdd.getImport().forEach(nestedImport -> populateNestedUnnamedImports(toPopulate, nestedImport, otherModelsDefinitions));
+        });
     }
 
     private List<DMNMessage> validateCompilation(DMNResource dmnR) {

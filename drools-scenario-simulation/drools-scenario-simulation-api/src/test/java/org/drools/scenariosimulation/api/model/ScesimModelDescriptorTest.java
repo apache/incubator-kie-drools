@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,8 +20,8 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -29,17 +29,16 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
 import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 
-public class ScesimModelDescriptorTest {
-
-
+class ScesimModelDescriptorTest {
+    
     private ScesimModelDescriptor modelDescriptor;
     private FactIdentifier factIdentifier;
     private ExpressionIdentifier expressionIdentifier;
     private FactIdentifier factIdentifier2;
     private ExpressionIdentifier expressionIdentifier2;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         modelDescriptor = new ScesimModelDescriptor();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", EXPECT);
@@ -48,14 +47,14 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void getFactIdentifiers() {
+    void getFactIdentifiers() {
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         
         assertThat(modelDescriptor.getFactIdentifiers()).isNotNull().hasSize(1).containsExactly(factIdentifier);
     }
 
     @Test
-    public void addFactMapping_byIndexAndFactMapping() {
+    void addFactMapping_byIndexAndFactMapping() {
         FactMapping toClone = new FactMapping();
         toClone.setFactAlias("ALIAS");
         toClone.setExpressionAlias("EXPRESSION_ALIAS");
@@ -67,7 +66,7 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void addFactMapping_byFactIdentifierAndExpressionIdentifier() {
+    void addFactMapping_byFactIdentifierAndExpressionIdentifier() {
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         modelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier2);
         
@@ -80,14 +79,14 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void addFactMapping_byFactIdentifierAndExpressionIdentifier_fail() {
+    void addFactMapping_byFactIdentifierAndExpressionIdentifier_fail() {
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
 
         assertThatIllegalArgumentException().isThrownBy(() -> modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier));
     }
 
     @Test
-    public void addFactMapping_byIndexAndFactIdentifierAndExpressionIdentifier() {
+    void addFactMapping_byIndexAndFactIdentifierAndExpressionIdentifier() {
         modelDescriptor.addFactMapping(0, factIdentifier, expressionIdentifier);
         modelDescriptor.addFactMapping(0, factIdentifier2, expressionIdentifier2);
         
@@ -100,12 +99,12 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void addFactMappingByIndexAndFactIdentifierAndExpressionIdentifierFail() {
+    void addFactMappingByIndexAndFactIdentifierAndExpressionIdentifierFail() {
         assertThatIllegalArgumentException().isThrownBy(() -> modelDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier));
     }
 
     @Test
-    public void removeFactMappingByIndex() {
+    void removeFactMappingByIndex() {
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         
         modelDescriptor.removeFactMappingByIndex(0);
@@ -114,7 +113,7 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void removeFactMapping() {
+    void removeFactMapping() {
         FactMapping retrieved = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         
         modelDescriptor.removeFactMapping(retrieved);
@@ -123,7 +122,7 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void getIndexByIdentifierTest() {
+    void getIndexByIdentifierTest() {
         FactMapping factMapping0 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         FactMapping factMapping1 = modelDescriptor.addFactMapping(factIdentifier2, expressionIdentifier);
         int indexToCheck = 0;
@@ -138,14 +137,14 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void getIndexByIdentifierTestFail() {
+    void getIndexByIdentifierTestFail() {
         FactIdentifier notExisting = new FactIdentifier();
         
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> modelDescriptor.getIndexByIdentifier(notExisting, expressionIdentifier));
     }
 
     @Test
-    public void getFactMappingsByFactName() {
+    void getFactMappingsByFactName() {
         modelDescriptor.addFactMapping(FactIdentifier.create("test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 0", EXPECT));
         modelDescriptor.addFactMapping(FactIdentifier.create("test", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 1", EXPECT));
         modelDescriptor.addFactMapping(FactIdentifier.create("TEST", String.class.getCanonicalName()), ExpressionIdentifier.create("test expression 2", EXPECT));
@@ -158,7 +157,7 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void moveFactMappingTest() {
+    void moveFactMappingTest() {
         ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", GIVEN);
         ExpressionIdentifier expressionIdentifier3 = ExpressionIdentifier.create("Test expression 3", GIVEN);
         FactMapping factMapping1 = modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
@@ -173,7 +172,7 @@ public class ScesimModelDescriptorTest {
     }
 
     @Test
-    public void moveFactMapping_failsOutsideBoundaries() {
+    void moveFactMapping_failsOutsideBoundaries() {
         ExpressionIdentifier expressionIdentifier2 = ExpressionIdentifier.create("Test expression 2", GIVEN);
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         modelDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);

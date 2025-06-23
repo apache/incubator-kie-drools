@@ -52,6 +52,8 @@ import io.quarkus.test.QuarkusUnitTest;
 /*
  * The scope of these tests is to check the resulting BuildItems as produced by this drools-quarkus-extension.
  */
+
+
 public class BuildItemsTest {
     
     static final Logger LOG = LoggerFactory.getLogger(BuildItemsTest.class);
@@ -65,6 +67,7 @@ public class BuildItemsTest {
                 b.addBuildStep(new BuildStep() {
                     @Override
                     public void execute(BuildContext context) {
+                    	
                         GlobalsBuildItem gbi = context.consume(GlobalsBuildItem.class);
                         assertGlobals(gbi.getGlobals());
                         

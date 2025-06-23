@@ -329,4 +329,8 @@ public class Person extends AbstractReactiveObject {
     public static boolean isEvenFloat( float i ){
         return (i % 2) == 0;
     }
+
+    public int addAges(int age1, int age2) {
+        return age1 + age2;
+    }
 }

@@ -19,13 +19,14 @@
 package org.drools.ruleunits.api.conf;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.event.rule.RuleEventListener;
 
 /**
- * A class which encapsulates configurations to create {@link org.drools.ruleunits.api.RuleUnitInstance}
+ * A class which encapsulates configurations to create {@link org.drools.ruleunits.api.RuleUnitInstance}. Used at runtime.
  *
  */
 public interface RuleConfig {
@@ -36,4 +37,7 @@ public interface RuleConfig {
 
     List<RuleEventListener> getRuleEventListeners();
 
+    ClockType getClockType();
+
+    void setClockType(ClockType clockType);
 }

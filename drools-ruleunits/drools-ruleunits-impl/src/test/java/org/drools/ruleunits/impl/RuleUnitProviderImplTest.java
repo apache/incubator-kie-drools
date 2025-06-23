@@ -195,29 +195,6 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
-    public void addEventListeners() {
-        TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
-        TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();
-        TestRuleEventListener testRuleEventListener = new TestRuleEventListener();
-
-        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
-        ruleConfig.getAgendaEventListeners().add(testAgendaEventListener);
-        ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
-        ruleConfig.getRuleEventListeners().add(testRuleEventListener);
-
-        HelloWorldUnit unit = new HelloWorldUnit();
-        unit.getStrings().add("Hello World");
-
-        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
-            assertThat(unitInstance.fire()).isEqualTo(1);
-            assertThat(unit.getResults()).containsExactly("it worked!");
-            assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");
-            assertThat(testRuleRuntimeEventListener.getResults()).containsExactly("objectInserted : Hello World");
-            assertThat(testRuleEventListener.getResults()).containsExactly("onBeforeMatchFire : HelloWorld", "onAfterMatchFire : HelloWorld");
-        }
-    }
-
-    @Test
     public void fireWithAgendaFilter() {
         RuleNameUnit unit = new RuleNameUnit();
         unit.getStrings().add("Hello World");

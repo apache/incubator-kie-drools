@@ -894,12 +894,19 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Collection<String> collectUsedDeclarationsInExpression(Expression expr) {
-        return expr.findAll(NameExpr.class)
-                   .stream()
-                   .map(NameExpr::getName)
-                   .map(SimpleName::getIdentifier)
-                   .collect(toList());
+    public static List<String> collectUsedDeclarationsInExpression(Expression expr) {
+        return exprToOrderedNameExprStream(expr)
+                .map(NameExpr::getName)
+                .map(SimpleName::getIdentifier)
+                .distinct()
+                .collect(toList());
+    }
+
+    private static Stream<NameExpr> exprToOrderedNameExprStream(Expression expr) {
+        return expr instanceof MethodCallExpr methodCallExpr ?
+                Stream.concat(methodCallExpr.getScope().stream(), methodCallExpr.getArguments().stream())
+                        .flatMap(DrlxParseUtil::exprToOrderedNameExprStream) :
+                expr.findAll(NameExpr.class).stream();
     }
 
     public static Optional<java.lang.reflect.Type> safeResolveType(TypeResolver typeResolver, String typeName) {

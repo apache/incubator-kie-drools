@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,8 +27,9 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
@@ -42,22 +43,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class RuleStatefulScenarioExecutableBuilderTest {
+@ExtendWith(MockitoExtension.class)
+class RuleStatefulScenarioExecutableBuilderTest {
 
     @Mock
     private ExecutableBuilder executableBuilderMock;
@@ -78,7 +78,7 @@ public class RuleStatefulScenarioExecutableBuilderTest {
     private ArgumentCaptor<ExecutableCommand<?>> commandArgumentCaptor;
 
     @Test
-    public void testPseudoClock() {
+    void testPseudoClock() {
         KieContainer kieContainerMock = mock(KieContainer.class);
         assertThatThrownBy(() -> RuleStatefulScenarioExecutableBuilder.forcePseudoClock.apply(null, kieContainerMock))
                 .isInstanceOf(ScenarioException.class);
@@ -88,7 +88,7 @@ public class RuleStatefulScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void testBuilder() {
+    void testBuilder() {
         when(executableBuilderMock.newApplicationContext(anyString())).thenReturn(executableBuilderMock);
         when(executableBuilderMock.setKieContainer(any())).thenReturn(kieContainerFluent);
         when(kieContainerFluent.newSessionCustomized(any(), any())).thenReturn(kieSessionFluentMock);
@@ -119,15 +119,15 @@ public class RuleStatefulScenarioExecutableBuilderTest {
                 null);
 
         builder.setActiveAgendaGroup(agendaGroup);
-        verify(kieSessionFluentMock, times(1)).setActiveAgendaGroup(eq(agendaGroup));
+        verify(kieSessionFluentMock, times(1)).setActiveAgendaGroup(agendaGroup);
         reset(kieContainerFluent);
 
         builder.setActiveRuleFlowGroup(ruleFlowGroup);
-        verify(kieSessionFluentMock, times(1)).setActiveAgendaGroup(eq(agendaGroup));
+        verify(kieSessionFluentMock, times(1)).setActiveAgendaGroup(agendaGroup);
         reset(kieContainerFluent);
 
         builder.insert(toInsert);
-        verify(kieSessionFluentMock, times(1)).insert(eq(toInsert));
+        verify(kieSessionFluentMock, times(1)).insert(toInsert);
         reset(kieContainerFluent);
 
         builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(indexFMV, null));
@@ -139,6 +139,6 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         List<ExecutableCommand<?>> allAddCommands = commandArgumentCaptor.getAllValues();
         assertThat(allAddCommands).anyMatch(x ->x instanceof ValidateFactCommand).anyMatch(x ->x instanceof AddCoverageListenerCommand);
         assertThat(result).containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER);
-        verify(kieSessionFluentMock, times(1)).out(eq(RULES_AVAILABLE));
+        verify(kieSessionFluentMock, times(1)).out(RULES_AVAILABLE);
     }
 }

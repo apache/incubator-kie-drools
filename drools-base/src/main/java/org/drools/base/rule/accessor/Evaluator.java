@@ -99,30 +99,32 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      * 
      * This method will be used to extract and evaluate both
      * the "name" attribute and the "$someName" variable at once.
-     *  
+     *
+     * Note that in this method signature, 'left' means the left operand and 'right' means the right operand,
+     *
      * @param valueResolver
      *        The current working memory
      * @param leftExtractor
-     *        The extractor to read the left value. In the above example,
-     *        the "$someName" variable value.
-     * @param left
-     *        The source object from where the value of the variable is 
-     *        extracted.
-     * @param rightExtractor
-     *        The extractor to read the right value. In the above example,
-     *        the "name" attribute value. 
-     * @param right
-     *        The right object from where to extract the value. In the
-     *        above example, that is the "Person" instance from where to 
+     *        The extractor to read the left operand value. In the above example,
+     *        the "name" attribute value.
+     * @param leftOperandFact
+     *        The object from where to extract the value. In the
+     *        above example, that is the "Person" instance from where to
      *        extract the "name" attribute.
-     * 
+     * @param rightExtractor
+     *        The extractor to read the right operand value. In the above example,
+     *        the "$someName" variable value.
+     * @param rightOperandFact
+     *        The source object from where the value of the variable is
+     *        extracted.
+     *
      * @return Returns true if evaluation is successful. false otherwise.
      */
     public boolean evaluate(ValueResolver valueResolver,
                             ReadAccessor leftExtractor,
-                            FactHandle left,
+                            FactHandle leftOperandFact,
                             ReadAccessor rightExtractor,
-                            FactHandle right);
+                            FactHandle rightOperandFact);
 
     /**
      * Returns true if this evaluator implements a temporal evaluation,

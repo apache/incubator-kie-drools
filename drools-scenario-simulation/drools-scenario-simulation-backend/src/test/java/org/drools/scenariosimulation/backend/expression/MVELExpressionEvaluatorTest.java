@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,9 +27,9 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.assertj.core.api.Condition;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mvel2.CompileException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,20 +37,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 
-public class MVELExpressionEvaluatorTest {
+class MVELExpressionEvaluatorTest {
 	
-	private Condition<ExpressionEvaluatorResult> successful= new Condition<>(x -> x.isSuccessful(), "isSuccessful");
-	private Condition<ExpressionEvaluatorResult> notSuccessful= new Condition<>(x -> !x.isSuccessful(), "isSuccessful");
+	private final Condition<ExpressionEvaluatorResult> successful = new Condition<>(x -> x.isSuccessful(), "isSuccessful");
+	private final Condition<ExpressionEvaluatorResult> notSuccessful = new Condition<>(x -> !x.isSuccessful(), "isSuccessful");
 
     private MVELExpressionEvaluator evaluator;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         evaluator = new MVELExpressionEvaluator(MVELExpressionEvaluatorTest.class.getClassLoader());
     }
     
     @Test
-    public void evaluateUnaryExpression() {
+    void evaluateUnaryExpression() {
         assertThat(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", \"Test\")"), "Test", String.class)).is(successful);
         assertThat(evaluator.evaluateUnaryExpression(mvelExpression("java.util.Objects.equals(" + ACTUAL_VALUE_IDENTIFIER + ", " + "\"Test\")"), "Test1", String.class)).is(notSuccessful);
         assertThat(evaluator.evaluateUnaryExpression(mvelExpression("1"), 1, Integer.class)).is(successful);
@@ -76,7 +76,7 @@ public class MVELExpressionEvaluatorTest {
     }
 
     @Test
-    public void evaluateLiteralExpression_many() {
+    void evaluateLiteralExpression_many() {
         assertThat(evaluateLiteralExpression("1", Integer.class)).isEqualTo(1);
 
         assertThat(evaluateLiteralExpression("\"Value\"", String.class)).isEqualTo("Value");
@@ -141,9 +141,9 @@ public class MVELExpressionEvaluatorTest {
                 .hasMessageStartingWith("Cannot assign a 'java.lang.Integer");
     }
 
-    @Ignore("https://issues.redhat.com/browse/DROOLS-4649")
+    @Disabled("https://issues.redhat.com/browse/DROOLS-4649")
     @Test
-    public void evaluateLiteralExpression_Array() {
+    void evaluateLiteralExpression_Array() {
         assertThat(evaluateLiteralExpression("{\"Jim\", \"Michael\"}", Object[].class)).isEqualTo(new String[]{"Jim", "Michael"});
 
         assertThat(evaluateLiteralExpression("{ }", Object[].class)).isEqualTo(new String[]{});
@@ -154,14 +154,14 @@ public class MVELExpressionEvaluatorTest {
     }
 
     @Test
-    public void fromObjectToExpression() {
+    void fromObjectToExpression() {
         assertThatThrownBy(() -> evaluator.fromObjectToExpression(null))
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage("The condition has not been satisfied");
     }
 
     @Test
-    public void cleanExpression() {
+    void cleanExpression() {
         assertThat(evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + "test")).isEqualTo("test");
         assertThat(evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " test")).isEqualTo(" test");
         assertThat(evaluator.cleanExpression(MVEL_ESCAPE_SYMBOL + " " + MVEL_ESCAPE_SYMBOL + " test")).isEqualTo(" " + MVEL_ESCAPE_SYMBOL + " test");

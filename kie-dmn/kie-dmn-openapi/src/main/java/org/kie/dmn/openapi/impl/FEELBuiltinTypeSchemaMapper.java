@@ -26,6 +26,8 @@ import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 
+import java.util.List;
+
 public class FEELBuiltinTypeSchemaMapper {
 
     public static Schema from(DMNType t) {
@@ -41,10 +43,10 @@ public class FEELBuiltinTypeSchemaMapper {
         switch (t.getName()) {
             case SimpleType.YEARS_AND_MONTHS_DURATION:
             case "yearMonthDuration":
-                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:years and months duration").type(SchemaType.STRING).format("years and months duration").example("P1Y2M");
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:years and months duration").addType(SchemaType.STRING).format("years and months duration").examples(List.of("P1Y2M"));
             case SimpleType.DAYS_AND_TIME_DURATION:
             case "dayTimeDuration":
-                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:days and time duration").type(SchemaType.STRING).format("days and time duration").example("P1D");
+                return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:days and time duration").addType(SchemaType.STRING).format("days and time duration").examples(List.of("P1D"));
             default:
                 throw new IllegalArgumentException();
         }
@@ -55,17 +57,17 @@ public class FEELBuiltinTypeSchemaMapper {
             case UNKNOWN:
                 return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:Any"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:Any is {}
             case DATE:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.STRING).format("date").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date");
             case TIME:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:time");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.STRING).format("time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:time");
             case DATE_TIME:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).format("date-time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date and time");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.STRING).format("date-time").addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:date and time");
             case BOOLEAN:
-                return OASFactory.createObject(Schema.class).type(SchemaType.BOOLEAN).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:boolean");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.BOOLEAN).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:boolean");
             case NUMBER:
-                return OASFactory.createObject(Schema.class).type(SchemaType.NUMBER).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:number");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.NUMBER).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:number");
             case STRING:
-                return OASFactory.createObject(Schema.class).type(SchemaType.STRING).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:string");
+                return OASFactory.createObject(Schema.class).addType(SchemaType.STRING).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:string");
             case CONTEXT:
                 return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:context"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:context is {}
             case DURATION:

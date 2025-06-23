@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,18 +20,18 @@ package org.drools.scenariosimulation.api.model;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 
-public class FactMappingTest {
+class FactMappingTest {
 
     private FactMapping original;
 
     @Test
-    public void cloneFactMapping() {
+    void cloneFactMapping() {
         original = new FactMapping("FACT_ALIAS", FactIdentifier.create("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", GIVEN));
         original.addExpressionElement("FIRST_STEP", String.class.getName());
         original.setExpressionAlias("EA_TEST");
@@ -41,22 +41,22 @@ public class FactMappingTest {
     }
 
     @Test
-    public void getExpressionElementsWithoutClass_missingExpression() {
+    void getExpressionElementsWithoutClass_missingExpression() {
         original = new FactMapping("FACT_ALIAS", FactIdentifier.create("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", GIVEN));
         
         assertThatThrownBy(original::getExpressionElementsWithoutClass)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("ExpressionElements malformed");
-        assertThat(original.getExpressionElements()).hasSize(0);
+        assertThat(original.getExpressionElements()).isEmpty();
 
     }
     
     @Test
-    public void getExpressionElementsWithoutClass_properlyFormed() {
+    void getExpressionElementsWithoutClass_properlyFormed() {
         original = new FactMapping("FACT_ALIAS", FactIdentifier.create("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", GIVEN));
         original.addExpressionElement("STEP", String.class.getCanonicalName());
 
-        assertThat(original.getExpressionElementsWithoutClass()).hasSize(0);
+        assertThat(original.getExpressionElementsWithoutClass()).isEmpty();
         assertThat(original.getExpressionElements()).hasSize(1);
     }
 

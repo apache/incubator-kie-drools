@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,9 +21,6 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.Artifact;
 import org.kie.dmn.model.api.BusinessContextElement;
@@ -195,27 +192,6 @@ public class TDefinitions extends TNamedElement implements Definitions {
                ", exporter='" + exporter + '\'' +
                ", exporterVersion='" + exporterVersion + '\'' +
                '}';
-    }
-
-    /**
-     * Utility method to ensure any QName references contained inside the ItemDefinitions have the namespace correctly valorized, also accordingly to the prefix.
-     * (Even in the case of {@link XMLConstants.DEFAULT_NS_PREFIX} it will take the DMN model namespace for the no-prefix accordingly.)
-     */
-    public void normalize() {
-        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
-            processQNameURIs(itemDefinition);
-        }
-    }
-
-    private static void processQNameURIs(ItemDefinition iDef) {
-        final QName typeRef = iDef.getTypeRef();
-        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
-            final String namespace = iDef.getNamespaceURI(typeRef.getPrefix());
-            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
-        }
-        for (ItemDefinition comp : iDef.getItemComponent()) {
-            processQNameURIs(comp);
-        }
     }
 
     @Override

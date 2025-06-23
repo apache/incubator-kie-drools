@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,21 +18,22 @@
  */
 package org.drools.scenariosimulation.api.model;
 
+import java.util.Comparator;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class BackgroundTest {
+class BackgroundTest {
 
     private Background background;
     private BackgroundData originalBackgroundData;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         background = new Background();
         FactIdentifier factIdentifier = FactIdentifier.create("Test", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("Test", FactMappingType.GIVEN);
@@ -44,7 +45,7 @@ public class BackgroundTest {
     }
 
     @Test
-    public void addData() {
+    void addData() {
         background.addData(1);
 
         assertThatThrownBy(() -> background.addData(-1)).isInstanceOf(IndexOutOfBoundsException.class);
@@ -53,7 +54,7 @@ public class BackgroundTest {
     }
 
     @Test
-    public void cloneModel() {
+    void cloneModel() {
         final Background cloned = background.cloneModel();
         
         assertThat(cloned).isNotNull();
@@ -64,11 +65,11 @@ public class BackgroundTest {
         assertThat(clonedDescriptor.getUnmodifiableFactMappings()).hasSameSizeAs(originalDescriptor.getUnmodifiableFactMappings());
         assertThat(clonedDescriptor.getUnmodifiableFactMappings()).isEqualTo(originalDescriptor.getUnmodifiableFactMappings());
         assertThat(cloned.getUnmodifiableData()).hasSameSizeAs(background.getUnmodifiableData());
-        assertThat(cloned.getUnmodifiableData()).usingElementComparator((x, y) -> x.getDescription().compareTo(y.getDescription())).isEqualTo(background.getUnmodifiableData());
+        assertThat(cloned.getUnmodifiableData()).usingElementComparator(Comparator.comparing(AbstractScesimData::getDescription)).isEqualTo(background.getUnmodifiableData());
     }
 
     @Test
-    public void cloneData() {
+    void cloneData() {
         BackgroundData clonedBackgroundData = background.cloneData(0, 1);
 
         assertThat(clonedBackgroundData.getDescription()).isEqualTo(originalBackgroundData.getDescription());
@@ -80,7 +81,7 @@ public class BackgroundTest {
     }
 
     @Test
-    public void cloneScesimDataFail() {
+    void cloneScesimDataFail() {
 
         assertThatThrownBy(() -> background.cloneData(-1, 1)).isInstanceOf(IndexOutOfBoundsException.class);
 
@@ -92,23 +93,23 @@ public class BackgroundTest {
     }
 
     @Test
-    public void removeFactMappingByIndex() {
+    void removeFactMappingByIndex() {
         background.removeFactMappingByIndex(0);
         
         assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
-        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).hasSize(0);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).isEmpty();
     }
 
     @Test
-    public void removeFactMapping() {
+    void removeFactMapping() {
         background.removeFactMapping(background.getScesimModelDescriptor().getFactMappingByIndex(0));
         
         assertThat(background.getUnmodifiableData().get(0).getUnmodifiableFactMappingValues()).hasSize(1);
-        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).hasSize(0);
+        assertThat(background.getScesimModelDescriptor().getUnmodifiableFactMappings()).isEmpty();
     }
 
     @Test
-    public void getBackgroundDataWithIndex() {
+    void getBackgroundDataWithIndex() {
         List<BackgroundDataWithIndex> backgroundDatas = background.getBackgroundDataWithIndex();
         
         assertThat(backgroundDatas).hasSameSizeAs(background.getUnmodifiableData());

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,15 +29,15 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,8 +46,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class RuleStatelessScenarioExecutableBuilderTest {
+@ExtendWith(MockitoExtension.class)
+class RuleStatelessScenarioExecutableBuilderTest {
 
     @Mock
     private KieContainer kieContainerMock;
@@ -59,7 +59,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     private KieBase kieBaseMock;
 
     @Test
-    public void testBuilder() {
+     void testBuilder() {
         when(kieContainerMock.newStatelessKieSession(anyString())).thenReturn(statelessKieSessionMock);
         when(statelessKieSessionMock.getKieBase()).thenReturn(kieBaseMock);
         when(kieBaseMock.getKiePackages()).thenReturn(List.of());
@@ -73,7 +73,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void generateCommands_twoCommands() {
+     void generateCommands_twoCommands() {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
 
         Command<ExecutionResults> batchCommand = builder.generateCommands(null);
@@ -85,7 +85,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void generateCommands_threeCommands() {
+     void generateCommands_threeCommands() {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
         builder.setActiveAgendaGroup("test");
 
@@ -99,7 +99,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     }
 
     @Test
-    public void generateCommands_fourCommands() {
+     void generateCommands_fourCommands() {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
         builder.setActiveAgendaGroup("test");
         builder.insert(new Object());
@@ -116,7 +116,7 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     
     
     @Test
-    public void generateCommands_fiveCommands() {
+    void generateCommands_fiveCommands() {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
         builder.setActiveAgendaGroup("test");
         builder.insert(new Object());

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.drools.scenariosimulation.api.model.AuditLogLine;
@@ -56,11 +55,23 @@ public class TestUtils {
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
 
+    public static String getFilePath(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String filePath = ResourceHelper.getResourcesByExtension(extension)
+                .stream()
+                .filter(path -> path.endsWith(fileName))
+                .findFirst()
+                .orElse(null);
+        assertThat(filePath).isNotNull();
+
+        return filePath;
+    }
+
     public static List<DMNMessage> getRandomlyGeneratedDMNMessageList() {
         return IntStream.range(0, 5).mapToObj(index -> {
             Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
             return createDMNMessageMock("dmnMessage-" + index, level);
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public static void commonCheckAuditLogLine(AuditLogLine toCheck, String expectedDecisionOrRuleName, String expectedResult, String expectedMessage) {
@@ -76,7 +87,6 @@ public class TestUtils {
         assertThat(toCheck.getResult()).isEqualTo(expectedResult);
         assertThat(toCheck.getMessage()).isNotPresent();
     }
-    
 
     private static DMNMessage createDMNMessageMock(String text, Message.Level level) {
         DMNMessage dmnMessageMock = mock(DMNMessage.class);

@@ -39,7 +39,6 @@
   <properties>
     <rewrite.maven.plugin.version>4.42.0</rewrite.maven.plugin.version>
     <rewrite.testing.frameworks.version>1.22.0</rewrite.testing.frameworks.version>
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
   </properties>
 
   <modules>
@@ -97,11 +96,6 @@
           <groupId>org.openrewrite.maven</groupId>
           <artifactId>rewrite-maven-plugin</artifactId>
           <version>${rewrite.maven.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.societegenerale.commons</groupId>
-          <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

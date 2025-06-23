@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,9 +49,9 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -65,7 +65,8 @@ import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -82,20 +83,22 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DMNScenarioRunnerHelperTest {
+@ExtendWith(MockitoExtension.class)
+class DMNScenarioRunnerHelperTest {
 
     private static final String NAME = "NAME";
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
     private static final String DMN_FILE_PATH = "dmnFilePath";
+    private static final String DMN_NAMESPACE = "dmnNamespace";
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluatorFactory expressionEvaluatorFactory = ExpressionEvaluatorFactory.create(classLoader, ScenarioSimulationModel.Type.DMN);
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
     private final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper() {
+
         @Override
-        protected DMNScenarioExecutableBuilder createBuilderWrapper(KieContainer kieContainer) {
+        protected DMNScenarioExecutableBuilder createBuilderWrapper() {
             return dmnScenarioExecutableBuilderMock;
         }
     };
@@ -133,14 +136,14 @@ public class DMNScenarioRunnerHelperTest {
     private FactMappingValue amountNameExpectedFactMappingValue;
     private FactMappingValue firstNameExpectedValue;
 
-    @Before
-    public void init() {
-        when(dmnScenarioExecutableBuilderMock.run()).thenReturn(mock(RequestContext.class));
-
+    @BeforeEach
+    void init() {
         simulation = new Simulation();
         settings = new Settings();
         settings.setType(ScenarioSimulationModel.Type.DMN);
         settings.setDmnFilePath(DMN_FILE_PATH);
+        settings.setDmnName(NAME);
+        settings.setDmnNamespace(DMN_NAMESPACE);
         personFactIdentifier = FactIdentifier.create("Fact 1", "Fact 1");
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getScesimModelDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
@@ -174,16 +177,15 @@ public class DMNScenarioRunnerHelperTest {
         scenario2.addMappingValue(personFactIdentifier, firstNameExpectedExpressionIdentifier, FEEL_EXPRESSION_NAME);
         scenario2.addMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, AMOUNT);
         amountNameExpectedFactMappingValue = scenario2.addMappingValue(disputeFactIdentifier, amountExpectedExpressionIdentifier, AMOUNT);
-
-        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
-        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_MODEL)).thenReturn(dmnModelMock);
     }
 
     @Test
-    public void verifyConditions_noDecisionGeneratedForSpecificName() {
+    void verifyConditions_noDecisionGeneratedForSpecificName() {
         // test 1 - no decision generated for specific decisionName
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
+
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
 
         assertThatThrownBy(() -> runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData, expressionEvaluatorFactory, requestContextMock))
                 .isInstanceOf(ScenarioException.class)
@@ -191,29 +193,30 @@ public class DMNScenarioRunnerHelperTest {
     }
     
     @Test
-    public void verifyConditions_decisionResultContainsANull() {
+    void verifyConditions_decisionResultContainsANull() {
         // test 2 - when decisionResult contains a null value skip the steps and just do the comparison (that should be false in this case)
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
 
         when(dmnResultMock.getDecisionResultByName(anyString())).thenReturn(dmnDecisionResultMock);
         when(dmnDecisionResultMock.getEvaluationStatus()).thenReturn(DecisionEvaluationStatus.SUCCEEDED);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
 
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData, expressionEvaluatorFactory, requestContextMock);
 
         assertThat(scenarioRunnerData.getResults()).hasSize(1);
         assertThat(scenarioRunnerData.getResults().get(0).getResult()).isFalse();
-
     }
     
     @Test
-    public void verifyConditions_decisionResultIsNotNullButMalformed() {
+    void verifyConditions_decisionResultIsNotNullButMalformed() {
         // test 3 - now result is not null but data structure is wrong (expected steps but data is a simple string)
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
         when(dmnResultMock.getDecisionResultByName(anyString())).thenReturn(dmnDecisionResultMock);
         when(dmnDecisionResultMock.getEvaluationStatus()).thenReturn(DecisionEvaluationStatus.SUCCEEDED);
         when(dmnDecisionResultMock.getResult()).thenReturn("");
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
 
         assertThatThrownBy(() -> runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData, expressionEvaluatorFactory, requestContextMock))
                 .isInstanceOf(ScenarioException.class)
@@ -221,7 +224,7 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void verifyConditions_checksArePerformed_fail() {
+    void verifyConditions_checksArePerformed_fail() {
         // test 4 - check are performed (but fail)
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
@@ -231,7 +234,7 @@ public class DMNScenarioRunnerHelperTest {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("firstName", "WrongValue");
         when(dmnDecisionResultMock.getResult()).thenReturn(resultMap);
-
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
 
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData, expressionEvaluatorFactory, requestContextMock);
 
@@ -240,7 +243,7 @@ public class DMNScenarioRunnerHelperTest {
     }
     
     @Test
-    public void verifyConditions_checksArePerformed_success() {
+    void verifyConditions_checksArePerformed_success() {
         // test 5 - check are performed (but success)
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
@@ -252,7 +255,7 @@ public class DMNScenarioRunnerHelperTest {
         resultMap.put("firstName", NAME);
 
         when(dmnDecisionResultMock.getResult()).thenReturn(resultMap);
-
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
 
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData, expressionEvaluatorFactory, requestContextMock);
 
@@ -262,7 +265,7 @@ public class DMNScenarioRunnerHelperTest {
     
     
     @Test
-    public void verifyConditions_errorsAreReported() {
+    void verifyConditions_errorsAreReported() {
         // test 6 - verify that when expression evaluation fails the corresponding expression is marked as error
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
         scenarioRunnerData.addExpect(new ScenarioExpect(personFactIdentifier, List.of(firstNameExpectedValue)));
@@ -272,6 +275,7 @@ public class DMNScenarioRunnerHelperTest {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("firstName", NAME);
 
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
         when(dmnDecisionResultMock.getResult()).thenReturn(resultMap);
 
         ExpressionEvaluatorFactory expressionEvaluatorFactoryMock = mock(ExpressionEvaluatorFactory.class);
@@ -287,7 +291,7 @@ public class DMNScenarioRunnerHelperTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void createObject() {
+    void createObject() {
         Map<List<String>, Object> params = new HashMap<>();
         params.put(List.of("creator", "name"), "TestName");
         params.put(List.of("creator", "surname"), "TestSurname");
@@ -307,7 +311,7 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void createObject_directMappingSimpleType() {
+    void createObject_directMappingSimpleType() {
         Map<List<String>, Object> params = new HashMap<>();
         String directMappingSimpleTypeValue = "TestName";
         params.put(List.of(), directMappingSimpleTypeValue);
@@ -319,7 +323,7 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void createObject_directMappingSimpleTypeNull() {
+    void createObject_directMappingSimpleTypeNull() {
         Map<List<String>, Object> params = new HashMap<>();
         params.put(List.of(), null);
         ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
@@ -331,7 +335,7 @@ public class DMNScenarioRunnerHelperTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void createObject_directMappingComplexType() {
+    void createObject_directMappingComplexType() {
         Map<List<String>, Object> params = new HashMap<>();
         Map<String, Object> directMappingComplexTypeValue = new HashMap<>();
         directMappingComplexTypeValue.put("key1", "value1");
@@ -350,18 +354,18 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void extractResultMetadata_noDecisionResultMessages() {
+    void extractResultMetadata_noDecisionResultMessages() {
         commonExtractResultMetadata();
     }
 
     @Test
-    public void extractResultMetadata_decisionResultMessages() {
+    void extractResultMetadata_decisionResultMessages() {
         List<DMNMessage> messages = getRandomlyGeneratedDMNMessageList();
         commonExtractResultMetadata(messages);
     }
 
     @Test
-    public void getSingleFactValueResult_failDecision() {
+    void getSingleFactValueResult_failDecision() {
         DMNDecisionResult failedDecision = createDecisionResultMock("Test", false, new ArrayList<>());
         
         ValueWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
@@ -377,7 +381,7 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void getSingleFactValueResult_failDecisionWithMessages() {
+    void getSingleFactValueResult_failDecisionWithMessages() {
         DMNMessage errorMessage = new DMNMessageImpl(ERROR, "DMN Internal Error", DMNMessageType.FEEL_EVALUATION_ERROR, null);
         DMNMessage warnMessage = new DMNMessageImpl(WARN, "DMN Internal Warn", DMNMessageType.FEEL_EVALUATION_ERROR, null);
 
@@ -395,7 +399,10 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void executeScenario() {
+    void executeScenario() {
+        when(dmnScenarioExecutableBuilderMock.run()).thenReturn(mock(RequestContext.class));
+
+
         FactIdentifier bookFactIdentifier = FactIdentifier.create("Book", "Book");
         FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX);
         FactIdentifier importedDisputeFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX + ".Dispute", IMPORTED_PREFIX);
@@ -440,7 +447,7 @@ public class DMNScenarioRunnerHelperTest {
 
         runnerHelper.executeScenario(kieContainerMock, scenarioRunnerData, expressionEvaluatorFactory, simulation.getScesimModelDescriptor(), settings);
 
-        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH);
+        verify(dmnScenarioExecutableBuilderMock, times(1)).setActiveModel(DMN_FILE_PATH, NAME);
         verify(dmnScenarioExecutableBuilderMock, times(inputObjects)).setValue(keyCaptor.capture(), valueCaptor.capture());
         assertThat(keyCaptor.getAllValues()).containsAll(expectedInputDataToLoad);
         for (int i = 0; i < inputObjects; i++) {
@@ -481,7 +488,7 @@ public class DMNScenarioRunnerHelperTest {
     }
 
     @Test
-    public void validateScenario_wrongImportPrefix() {
+    void validateScenario_wrongImportPrefix() {
         String wrongPrefix = "WrongPrefix";
         FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(IMPORTED_PREFIX + ".Person", IMPORTED_PREFIX + ".Person", wrongPrefix);
 
@@ -502,7 +509,9 @@ public class DMNScenarioRunnerHelperTest {
     /* If a malicious user injects a regex as a prefix in both importPrefix and as a part of fact name, the injected
        regex shouldn't be applied, but it should be used as a plain string */
     @Test
-    public void validateUnSecureImportPrefix() {
+    void validateUnSecureImportPrefix() {
+        when(dmnScenarioExecutableBuilderMock.run()).thenReturn(mock(RequestContext.class));
+
         String injectedPrefix = "/.(a+)+$/";
         FactIdentifier importedPersonFactIdentifier = FactIdentifier.create(injectedPrefix + ".Person", injectedPrefix + ".Person", injectedPrefix);
 
@@ -531,7 +540,8 @@ public class DMNScenarioRunnerHelperTest {
         assertThat(subValuePerson).hasSize(2).contains(givenImportedPersonFactData, givenImportedPersonFactData2);
     }
 
-    public void commonExtractResultMetadata(List<DMNMessage> messages) {
+
+    private void commonExtractResultMetadata(List<DMNMessage> messages) {
         Set<DecisionNode> decisions = new HashSet<>();
         IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
         when(dmnModelMock.getDecisions()).thenReturn(decisions);
@@ -541,6 +551,8 @@ public class DMNScenarioRunnerHelperTest {
         decisionResults.add(createDecisionResultMock("decision3", false, messages));
 
         when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_MODEL)).thenReturn(dmnModelMock);
 
         ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
@@ -564,7 +576,7 @@ public class DMNScenarioRunnerHelperTest {
         }
     }
 
-    public void commonExtractResultMetadata() {
+    private void commonExtractResultMetadata() {
         Set<DecisionNode> decisions = new HashSet<>();
         IntStream.range(0, 5).forEach(index -> decisions.add(createDecisionMock("decision" + index)));
         when(dmnModelMock.getDecisions()).thenReturn(decisions);
@@ -574,6 +586,8 @@ public class DMNScenarioRunnerHelperTest {
         decisionResults.add(createDecisionResultMock("decision3", false, null));
 
         when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_MODEL)).thenReturn(dmnModelMock);
 
         ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
@@ -603,7 +617,7 @@ public class DMNScenarioRunnerHelperTest {
                 .thenReturn(success ? DecisionEvaluationStatus.SUCCEEDED :
                                     DecisionEvaluationStatus.FAILED);
         if (messages != null) {
-            when(decisionResultMock.getMessages()).thenReturn(messages);
+            Mockito.lenient().when(decisionResultMock.getMessages()).thenReturn(messages);
         }
         return decisionResultMock;
     }

@@ -20,7 +20,7 @@ package org.drools.mvel.parser;
 
 import com.github.javaparser.JavaToken;
 
-import static com.github.javaparser.utils.Utils.EOL;
+import static com.github.javaparser.utils.LineSeparator.SYSTEM;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.*;
 
 /**
@@ -67,13 +67,13 @@ public class TokenTypes {
      * @return the kind of EOL token to use on the platform you're running on.
      */
     public static int eolTokenKind() {
-        if (EOL.equals("\n")) {
+        if (SYSTEM.asRawString().equals("\n")) {
             return UNIX_EOL;
         }
-        if (EOL.equals("\r\n")) {
+        if (SYSTEM.asRawString().equals("\r\n")) {
             return WINDOWS_EOL;
         }
-        if (EOL.equals("\r")) {
+        if (SYSTEM.asRawString().equals("\r")) {
             return OLD_MAC_EOL;
         }
         throw new AssertionError("Unknown EOL character sequence");

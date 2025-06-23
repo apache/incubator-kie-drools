@@ -52,7 +52,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
 
     @Override
     public KieBase getKieBase(String name) {
-        return kbases.computeIfAbsent( name, n -> KieBaseBuilder.createKieBaseFromModel(model.getModelsForKieBase(n), model.getKieModuleModel().getKieBaseModels().get(n)) );
+        return kbases.computeIfAbsent( name, n -> KieBaseBuilder.createKieBaseFromModel(model.getModelsForKieBase(n), model.getKieModuleModel().getKieBaseModels().get(n), model.getKieModuleModel()) );
     }
 
     @Override

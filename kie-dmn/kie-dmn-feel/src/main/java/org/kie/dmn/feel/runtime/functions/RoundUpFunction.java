@@ -20,10 +20,13 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.NoSuchElementException;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
+import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
 public class RoundUpFunction
         extends BaseFEELFunction implements FEELNumberFunction {
@@ -38,17 +41,18 @@ public class RoundUpFunction
         return invoke(n, BigDecimal.ZERO);
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
-        if ( n == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("n") BigDecimal n, @ParameterName("scale") BigDecimal scale) {
+        try {
+            if (n == null) {
+                throw new NoSuchElementException("n");
+            }
+            int coercedScale = coerceIntegerNumber(scale).orElseThrow(() -> new NoSuchElementException("scale"));
+            if (coercedScale < -6111 || coercedScale > 6176) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
+            }
+            return FEELFnResult.ofResult( n.setScale( coercedScale, RoundingMode.UP ) );
+        } catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));
         }
-        if ( scale == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
-        }
-        // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
-        if (scale.compareTo(BigDecimal.valueOf(-6111)) < 0 || scale.compareTo(BigDecimal.valueOf(6176)) > 0) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
-        }
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.UP ) );
     }
 }
