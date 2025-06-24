@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.runtime.functions.FunctionTestUtil.assertResultError;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -55,14 +57,14 @@ class DateAndTimeFunctionTest {
 
     @Test
     void invokeParamStringNull() {
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke(null), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeParamStringNotDateOrTime() {
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke("test"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke("2017-09-test"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke("2017-09-T89"), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke("test"), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke("2017-09-test"), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke("2017-09-T89"), InvalidParametersEvent.class);
     }
 
     @Test
@@ -103,11 +105,11 @@ class DateAndTimeFunctionTest {
 
     @Test
     void invokeParamTemporalNulls() {
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke((Temporal) null, null),
+        assertResultError(dateTimeFunction.invoke((Temporal) null, null),
                 InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke(null, LocalTime.of(10, 6, 20)),
+        assertResultError(dateTimeFunction.invoke(null, LocalTime.of(10, 6, 20)),
                 InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(dateTimeFunction.invoke(LocalDate.of(2017, 6, 12), null),
+        assertResultError(dateTimeFunction.invoke(LocalDate.of(2017, 6, 12), null),
                 InvalidParametersEvent.class);
     }
 
@@ -116,11 +118,11 @@ class DateAndTimeFunctionTest {
         // reminder: 1st parameter accordingly to FEEL Spec Table 58 "date is a date or date time [...] creates a
         // date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date`
         // parameter, too]
-        FunctionTestUtil.assertResultError(
+        assertResultError(
                 dateTimeFunction.invoke(
                         LocalDate.of(2017, 6, 12),
                         LocalDateTime.of(2017, 6, 12, 0, 0)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(
+        assertResultError(
                 dateTimeFunction.invoke(
                         LocalDateTime.of(2017, 6, 12, 0, 0),
                         LocalDateTime.of(2017, 6, 12, 0, 0)), InvalidParametersEvent.class);
@@ -147,8 +149,7 @@ class DateAndTimeFunctionTest {
     @Test
     void invokeParamStringDateTimeZone() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
-                        LocalTime.of(23, 59, 0),
-                        "America/Costa_Rica"),
+                        LocalTime.of(23, 59, 0), "America/Costa_Rica"),
                 ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
         FEELFnResult<TemporalAccessor> expectedResult = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "America/Costa_Rica");
         assertThat(expectedResult.isRight()).isTrue();
@@ -174,52 +175,59 @@ class DateAndTimeFunctionTest {
     }
 
     @Test
+    void testInvalidDateTimeAndTimezone() {
+        assertResultError(dateTimeFunction.invoke(null, LocalTime.of(23, 59, 0), "Z"), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), null, "Z"), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), null), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "Foo/Bar"), InvalidParametersEvent.class);
+    }
+
+    @Test
     void invokeParamStringDateTimeZoneNull() {
-        FEELFnResult<TemporalAccessor> invoke = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
-                LocalTime.of(23, 59, 0), null);
-        FunctionTestUtil.assertResultError(invoke, InvalidParametersEvent.class);
-//        FunctionTestUtil.assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
-//                LocalTime.of(23, 59, 0), null), InvalidParametersEvent.class);
+        assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
+                LocalTime.of(23, 59, 0), null), InvalidParametersEvent.class);
     }
 
     @Test
     void testValidateDate() {
-        FunctionTestUtil.assertResult(DateAndTimeFunction.validateDate(LocalDate.of(2024, 12, 24)),
-                LocalDate.of(2024, 12, 24));
+        LocalDate date = LocalDate.of(2023, 6, 23);
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(date);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(date);
     }
 
     @Test
     void testValidateTime() {
-        FunctionTestUtil.assertResult(DateAndTimeFunction.validateTime(LocalTime.of(23, 59, 0)),
-                LocalTime.of(23, 59, 0, 0));
-    }
-
-    @Test
-    void testValidateNullDate() {
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateDate(null),
-                InvalidParametersEvent.class);
-    }
-
-    @Test
-    void testValidateNullTime() {
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateTime(null),
-                InvalidParametersEvent.class);
+        LocalTime time = LocalTime.of(23, 59, 0, 0);
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(time);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(time);
     }
 
     @Test
     void testValidateTimeZone() {
-        FunctionTestUtil.assertResult(DateAndTimeFunction.validateTimeZone("Europe/Paris"), ZoneId.of("Europe/Paris"));
+        String timeZone = "Europe/Paris";
+        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone(timeZone);
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(ZoneId.of("Europe/Paris"));
+    }
+
+    @Test
+    void testValidateNullDate() {
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(null);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void testValidateNullTime() {
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(null);
+        assertThat(result).isEmpty();
     }
 
     @Test
     void testValidateNullTimeZone() {
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateTimeZone(null),
-                InvalidParametersEvent.class);
-    }
-
-    @Test
-    void testValidateInvalidTimeZone() {
-        FunctionTestUtil.assertResultError(DateAndTimeFunction.validateTimeZone("Foo/Bar"),
-                InvalidParametersEvent.class);
+        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone(null);
+        assertThat(result).isEmpty();
     }
 }
