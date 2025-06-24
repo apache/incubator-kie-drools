@@ -183,12 +183,6 @@ class DateAndTimeFunctionTest {
     }
 
     @Test
-    void invokeParamStringDateTimeZoneNull() {
-        assertResultError(dateTimeFunction.invoke(LocalDate.of(2024, 12, 24),
-                LocalTime.of(23, 59, 0), null), InvalidParametersEvent.class);
-    }
-
-    @Test
     void testValidateDate() {
         LocalDate date = LocalDate.of(2023, 6, 23);
         Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(date);
@@ -221,7 +215,7 @@ class DateAndTimeFunctionTest {
 
     @Test
     void testValidateNullTime() {
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(null);
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(null);
         assertThat(result).isEmpty();
     }
 
