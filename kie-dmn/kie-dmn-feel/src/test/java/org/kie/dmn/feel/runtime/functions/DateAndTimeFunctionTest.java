@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.runtime.functions.FunctionTestUtil.assertResultError;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -222,6 +223,24 @@ class DateAndTimeFunctionTest {
     @Test
     void testValidateNullTimeZone() {
         Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone(null);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void testInvalidDate() {
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void testInvalidTime() {
+        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(DayOfWeek.MONDAY);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void testInvalidTimeZone() {
+        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone("Foo/Bar");
         assertThat(result).isEmpty();
     }
 }
