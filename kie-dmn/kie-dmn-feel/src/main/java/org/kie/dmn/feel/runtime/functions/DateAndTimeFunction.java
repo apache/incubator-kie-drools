@@ -105,7 +105,7 @@ public class DateAndTimeFunction
         try {
             TemporalAccessor validatedDate = dateValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'date' is missing or invalid."));
             TemporalAccessor validatedTime = timeValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'time' is missing or invalid."));
-            if (date instanceof LocalDate && time instanceof LocalTime) {
+            if (validatedDate instanceof LocalDate && validatedTime instanceof LocalTime) {
                 return zoneId.map(zone ->
                                 FEELFnResult.ofResult((TemporalAccessor) ZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zone)))
                         .orElse(FEELFnResult.ofResult(LocalDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime)));
