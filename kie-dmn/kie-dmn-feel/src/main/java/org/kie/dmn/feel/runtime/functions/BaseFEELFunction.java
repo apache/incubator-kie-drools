@@ -268,6 +268,7 @@ public abstract class BaseFEELFunction
                                    Supplier<List<String>> parameterNamesSupplier,
                                    Supplier<List<Object>> parameterValuesSupplier) {
         source = getFEELDialectAdaptedEither(ctx, source);
+        source = getMessagedValueEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                         if (left instanceof InvalidParametersEvent invalidParametersEvent) {
@@ -297,6 +298,23 @@ public abstract class BaseFEELFunction
         } else {
             return source;
         }
+    }
+
+    /**
+     * Resolves a value from the given Either, notifying the EvaluationContext
+     * if it contains a FEELEvent from a FEELFnResult
+     * @param ctx the evaluation context to notify of events
+     * @param source the input value, possibly a FEELFnResult with an event
+     * @return a right Either with the resolved value if an event is present, else the original source
+     */
+    private Either<FEELEvent, Object> getMessagedValueEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
+        if(source instanceof FEELFnResult<Object>feelFnresult && feelFnresult.getEvent() != null) {
+            ctx.notifyEvt(feelFnresult::getEvent);
+            return Either.ofRight(feelFnresult.getOrElse(null));
+        } else {
+            return source;
+        }
+
     }
 
     /**

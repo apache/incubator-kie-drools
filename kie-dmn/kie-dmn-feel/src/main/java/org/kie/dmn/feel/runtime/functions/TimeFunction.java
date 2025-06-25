@@ -39,7 +39,9 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELTimeFunction;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
 
@@ -94,7 +96,8 @@ public class TimeFunction
             if (parsed.query(TemporalQueries.offset()) != null) {
                 // it is an offset-zoned time, so I can know for certain an OffsetTime
                 OffsetTime asOffSetTime = parsed.query(OffsetTime::from);
-                return FEELFnResult.ofResult(asOffSetTime);
+                return FEELFnResult.ofEventedResult( asOffSetTime, new FEELEventBase( Severity.WARN,
+                        Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE), null));
             } else if (parsed.query(TemporalQueries.zone()) == null) {
                 // if it does not contain any zone information at all, then I know for certain is a local time.
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
@@ -104,7 +107,8 @@ public class TimeFunction
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 ZoneId zoneId = parsed.query(TemporalQueries.zone());
                 ZoneTime zoneTime = ZoneTime.of(asLocalTime, zoneId, hasSeconds);
-                return FEELFnResult.ofResult(zoneTime);
+                return FEELFnResult.ofEventedResult( zoneTime, new FEELEventBase( Severity.WARN,
+                        Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE) ,null));
             }
             return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
