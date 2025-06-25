@@ -104,16 +104,14 @@ public class DateAndTimeFunction
         Optional<TemporalAccessor> timeValidationResult = getValidTime(time);
 
         try {
-            date = dateValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'date' is missing or invalid."));
-            time = timeValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'time' is missing or invalid."));
+            TemporalAccessor validatedDate = dateValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'date' is missing or invalid."));
+            TemporalAccessor validatedTime = timeValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'time' is missing or invalid."));
             if (date instanceof LocalDate && time instanceof LocalTime) {
-                if (zoneId.isPresent()) {
-                    return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, (LocalTime) time, zoneId.get()));
-                } else {
-                    return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
-                }
-            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), zoneId.isPresent() ? zoneId.get() : ZoneId.from(time)));
+                return zoneId.map(zone ->
+                                FEELFnResult.ofResult((TemporalAccessor) ZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zone)))
+                        .orElse(FEELFnResult.ofResult(LocalDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime)));
+            } else if (validatedDate instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
+                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId.orElseGet(() -> ZoneId.from(validatedTime))));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
         } catch (NoSuchElementException e) {
