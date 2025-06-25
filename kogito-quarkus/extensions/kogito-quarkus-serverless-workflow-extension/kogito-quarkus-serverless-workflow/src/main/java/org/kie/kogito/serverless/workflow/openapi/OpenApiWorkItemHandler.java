@@ -48,12 +48,16 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
 
     private static final Collection<String> excludedHeaders = new CaseInsensitiveSet("User-Agent", "Host", "Content-Length", "Accept", "Accept-Encoding", "Connection");
 
+    static String CONFIG_KEY_SUFFIX_PROP = "openApiConfigKeySuffix";
+
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
         Class<T> clazz = getRestClass();
-        T ref = RestClientBuilderFactory.build(clazz, calculatedConfigKey(workItem)).register(new ClientRequestFilter() {
+        final Optional<String> configKey = calculatedConfigKey(workItem);
+        T ref = RestClientBuilderFactory.build(clazz, configKey).register(new ClientRequestFilter() {
             @Override
             public void filter(ClientRequestContext requestContext) throws IOException {
+                configKey.ifPresent(c -> requestContext.setProperty(CONFIG_KEY_SUFFIX_PROP, c));
                 MultivaluedMap<String, Object> contextHeaders = requestContext.getHeaders();
                 ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> contextHeaders.put(k, Collections.singletonList(v)));
                 Map<String, List<String>> headers = workItem.getProcessInstance().getHeaders();

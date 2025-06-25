@@ -20,6 +20,7 @@ package io.quarkus.restclient.runtime;
 
 import java.util.Optional;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -37,10 +38,14 @@ public class RestClientBuilderFactory extends RestClientBase {
         return build(restClass, Optional.empty());
     }
 
+    public static String buildConfigKey(String configKey, Optional<String> suffix) {
+        return suffix.map(c -> configKey + ConfigProvider.getConfig().getOptionalValue("kogito.rest_client.config_key.separator", String.class).orElse(".") + c).orElse(configKey);
+    }
+
     public static RestClientBuilder build(Class<?> restClass, Optional<String> calculatedConfigKey) {
         RegisterRestClient annotation = restClass.getAnnotation(RegisterRestClient.class);
         RestClientBuilderFactory instance =
-                new RestClientBuilderFactory(restClass, annotation.baseUri(), calculatedConfigKey.map(c -> annotation.configKey() + "." + c).orElse(annotation.configKey()));
+                new RestClientBuilderFactory(restClass, annotation.baseUri(), buildConfigKey(annotation.configKey(), calculatedConfigKey));
         RestClientBuilder builder = RestClientBuilder.newBuilder();
         instance.configureBaseUrl(builder);
         instance.configureTimeouts(builder);
