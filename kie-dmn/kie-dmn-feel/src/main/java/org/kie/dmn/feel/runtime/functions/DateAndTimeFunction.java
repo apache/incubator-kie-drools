@@ -87,7 +87,6 @@ public class DateAndTimeFunction
         return Optional.of(time);
     }
 
-
     static Optional<ZoneId> getValidTimeZone(String timeZone) {
         if (timeZone == null || timeZone.isEmpty()) {
             return Optional.empty();
