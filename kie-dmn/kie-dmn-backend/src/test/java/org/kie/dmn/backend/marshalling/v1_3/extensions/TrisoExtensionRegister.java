@@ -22,9 +22,16 @@ import javax.xml.namespace.QName;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.QNameMap;
+import java.util.Collections;
+import java.util.Set;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 
 public class TrisoExtensionRegister implements DMNExtensionRegister {
+
+    @Override
+    public Set<String> allowedModelPackages() {
+        return Collections.singleton("org.kie.dmn.trisotech.model.**");
+    }
 
     @Override
     public void registerExtensionConverters(XStream xStream) {

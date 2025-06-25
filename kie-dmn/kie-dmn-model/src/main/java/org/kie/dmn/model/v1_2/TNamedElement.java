@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,20 +18,8 @@
  */
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.impl.AbstractTNamedElement;
 
-public class TNamedElement extends TDMNElement implements NamedElement {
-
-    protected String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String value) {
-        this.name = value;
-    }
+public class TNamedElement extends AbstractTNamedElement implements URIFEELed {
 
 }

@@ -294,6 +294,64 @@
             </configuration>
           </execution>
 
+          <!-- DMN 1.6 -->
+          <execution>
+            <id>20240513_DC</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://www.omg.org/spec/DMN/20180521/DC.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
+              <failOnError>false</failOnError>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DI</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://www.omg.org/spec/DMN/20180521/DI.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
+              <failOnError>false</failOnError>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DMN16</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://www.omg.org/spec/DMN/20240513/DMN16.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>a1a136e9dc0e65f58ce2840bcc9f0ceb</md5>
+              <failOnError>false</failOnError>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DMNDI15</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://www.omg.org/spec/DMN/20230324/DMNDI15.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>b453d960af8c505c14b671373c370d7c</md5>
+              <failOnError>false</failOnError>
+            </configuration>
+          </execution>
+
           <!-- Fallback downloads, if the first are not available due to OMG outage or similar.
                They have overwriting set to false, so if the XSD is already downloaded, the plugins skips the download. -->
           <execution>
@@ -550,6 +608,68 @@
               <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DMNDI15.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20230324/</outputDirectory>
+              <md5>b453d960af8c505c14b671373c370d7c</md5>
+              <failOnError>true</failOnError>
+              <overwrite>false</overwrite>
+            </configuration>
+          </execution>
+
+          <!-- DMN 1.6 -->
+          <execution>
+            <id>20240513_DC-fallback-download</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DC.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
+              <failOnError>true</failOnError>
+              <overwrite>false</overwrite>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DI-fallback-download</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DI.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
+              <failOnError>true</failOnError>
+              <overwrite>false</overwrite>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DMN16-fallback-download</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.6/xsd/DMN16.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
+              <md5>a1a136e9dc0e65f58ce2840bcc9f0ceb</md5>
+              <failOnError>true</failOnError>
+              <overwrite>false</overwrite>
+            </configuration>
+          </execution>
+          <execution>
+            <id>20240513_DMNDI15-fallback-download</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DMNDI15.xsd</url>
+              <unpack>false</unpack>
+              <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
               <md5>b453d960af8c505c14b671373c370d7c</md5>
               <failOnError>true</failOnError>
               <overwrite>false</overwrite>

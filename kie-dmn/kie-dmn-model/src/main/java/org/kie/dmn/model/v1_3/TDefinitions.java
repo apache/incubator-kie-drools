@@ -18,97 +18,15 @@
  */
 package org.kie.dmn.model.v1_3;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.kie.dmn.model.impl.AbstractTDefinitions;
 
-import org.kie.dmn.model.api.Artifact;
-import org.kie.dmn.model.api.BusinessContextElement;
-import org.kie.dmn.model.api.DRGElement;
-import org.kie.dmn.model.api.DecisionService;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.ElementCollection;
-import org.kie.dmn.model.api.Import;
-import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.model.api.dmndi.DMNDI;
+import static org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_FEEL;
 
-
-public class TDefinitions extends TNamedElement implements Definitions {
+public class TDefinitions extends AbstractTDefinitions implements URIFEELed {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = URI_FEEL;
 
     public static final String DEFAULT_TYPE_LANGUAGE = URI_FEEL;
-
-    protected List<Import> _import;
-    protected List<ItemDefinition> itemDefinition;
-    protected List<DRGElement> drgElement;
-    protected List<Artifact> artifact;
-    protected List<ElementCollection> elementCollection;
-    protected List<BusinessContextElement> businessContextElement;
-    protected DMNDI dmndi;
-    protected String expressionLanguage;
-    protected String typeLanguage;
-    protected String namespace;
-    protected String exporter;
-    protected String exporterVersion;
-
-    @Override
-    public List<Import> getImport() {
-        if (_import == null) {
-            _import = new ArrayList<>();
-        }
-        return this._import;
-    }
-
-    @Override
-    public List<ItemDefinition> getItemDefinition() {
-        if (itemDefinition == null) {
-            itemDefinition = new ArrayList<>();
-        }
-        return this.itemDefinition;
-    }
-
-    @Override
-    public List<DRGElement> getDrgElement() {
-        if (drgElement == null) {
-            drgElement = new ArrayList<>();
-        }
-        return this.drgElement;
-    }
-
-    @Override
-    public List<Artifact> getArtifact() {
-        if (artifact == null) {
-            artifact = new ArrayList<>();
-        }
-        return this.artifact;
-    }
-
-    @Override
-    public List<ElementCollection> getElementCollection() {
-        if (elementCollection == null) {
-            elementCollection = new ArrayList<>();
-        }
-        return this.elementCollection;
-    }
-
-    @Override
-    public List<BusinessContextElement> getBusinessContextElement() {
-        if (businessContextElement == null) {
-            businessContextElement = new ArrayList<>();
-        }
-        return this.businessContextElement;
-    }
-
-    @Override
-    public DMNDI getDMNDI() {
-        return dmndi;
-    }
-
-    @Override
-    public void setDMNDI(DMNDI value) {
-        this.dmndi = value;
-    }
 
     @Override
     public String getExpressionLanguage() {
@@ -126,53 +44,5 @@ public class TDefinitions extends TNamedElement implements Definitions {
         } else {
             return typeLanguage;
         }
-    }
-
-    @Override
-    public void setExpressionLanguage(String value) {
-        this.expressionLanguage = value;
-    }
-
-    @Override
-    public void setTypeLanguage(String value) {
-        this.typeLanguage = value;
-    }
-
-    @Override
-    public String getNamespace() {
-        return namespace;
-    }
-
-    @Override
-    public void setNamespace(String value) {
-        this.namespace = value;
-    }
-
-    @Override
-    public String getExporter() {
-        return exporter;
-    }
-
-    @Override
-    public void setExporter(String value) {
-        this.exporter = value;
-    }
-
-    @Override
-    public String getExporterVersion() {
-        return exporterVersion;
-    }
-
-    @Override
-    public void setExporterVersion(String value) {
-        this.exporterVersion = value;
-    }
-
-    /**
-     * Implementing support for internal model
-     */
-    @Override
-    public List<DecisionService> getDecisionService() {
-        return drgElement.stream().filter(DecisionService.class::isInstance).map(DecisionService.class::cast).collect(Collectors.toList());
     }
 }

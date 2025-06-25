@@ -192,6 +192,26 @@ public class DMNValidatorImpl implements DMNValidator {
         }
     }
 
+    static final Schema schemav1_6;
+
+    static {
+        try {
+            schemav1_6 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec" +
+                                                                                                                "/DMN" +
+                                                                                                                "/20230324/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DI" +
+                                                                                                ".xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324" +
+                                                                                                "/DMNDI15.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20240513" +
+                                                                                                "/DMN16.xsd"))
+                    });
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
+        }
+    }
+
     static final Map<DMN_VERSION, Schema> DMNVERSION_SCHEMA_MAP;
 
     static {
@@ -201,7 +221,8 @@ public class DMNValidatorImpl implements DMNValidator {
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_3, schemav1_3);
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_4, schemav1_4);
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_5, schemav1_5);
-        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.UNKNOWN, schemav1_5);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_6, schemav1_6);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.UNKNOWN, schemav1_6);
     }
 
     private Schema overrideSchema = null;
@@ -703,9 +724,9 @@ public class DMNValidatorImpl implements DMNValidator {
 
         StatelessKieSession kieSession;
         // Pattern matching not available in Java 17
-        if (mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
+        if (mainDefinitions instanceof org.kie.dmn.model.v1_1.URIFEELed) {
             kieSession = kb11.newStatelessKieSession();
-        } else if (mainDefinitions instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) {
+        } else if (mainDefinitions instanceof org.kie.dmn.model.v1_2.URIFEELed) {
             kieSession = kb12.newStatelessKieSession();
         } else {
             kieSession = kb13.newStatelessKieSession();

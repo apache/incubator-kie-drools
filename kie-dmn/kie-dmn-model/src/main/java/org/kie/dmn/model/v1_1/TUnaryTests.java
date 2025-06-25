@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,31 +21,10 @@ package org.kie.dmn.model.v1_1;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.model.impl.AbstractTUnaryTests;
 
-public class TUnaryTests extends TExpression implements UnaryTests {
+public class TUnaryTests extends AbstractTUnaryTests implements URIFEELed {
 
-    private String text;
-    private String expressionLanguage;
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public void setText( final String value ) {
-        this.text = value;
-    }
-
-    @Override
-    public String getExpressionLanguage() {
-        return expressionLanguage;
-    }
-
-    @Override
-    public void setExpressionLanguage( final String value ) {
-        this.expressionLanguage = value;
-    }
 
     @Override
     public QName getTypeRef() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,8 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import org.kie.dmn.model.api.Every;
+import org.kie.dmn.model.impl.AbstractTEvery;
 
-public class TEvery extends TQuantified implements Every {
+public class TEvery extends AbstractTEvery implements URIFEELed {
 
 }

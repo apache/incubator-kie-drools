@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,7 @@
  */
 package org.kie.dmn.model.v1_5;
 
-import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.impl.AbstractTInformationItem;
 
-import javax.xml.namespace.QName;
-
-public class TInformationItem extends TNamedElement implements InformationItem {
-
-    protected QName typeRef;
-
-    @Override
-    public QName getTypeRef() {
-        return this.typeRef;
-    }
-
-    @Override
-    public void setTypeRef(QName value) {
-        this.typeRef = value;
-    }
-
+public class TInformationItem extends AbstractTInformationItem implements URIFEELed {
 }

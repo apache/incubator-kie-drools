@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,8 +18,8 @@
  */
 package org.kie.dmn.model.v1_5;
 
-import org.kie.dmn.model.api.Some;
+import org.kie.dmn.model.impl.AbstractTSome;
 
-public class TSome extends TQuantified implements Some {
+public class TSome extends AbstractTSome implements URIFEELed {
 
 }

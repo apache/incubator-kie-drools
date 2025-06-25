@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,48 +18,8 @@
  */
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.api.Association;
-import org.kie.dmn.model.api.AssociationDirection;
-import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.impl.AbstractTAssociation;
 
-public class TAssociation extends TArtifact implements Association {
-
-    protected DMNElementReference sourceRef;
-    protected DMNElementReference targetRef;
-    protected AssociationDirection associationDirection;
-
-    @Override
-    public DMNElementReference getSourceRef() {
-        return sourceRef;
-    }
-
-    @Override
-    public void setSourceRef(DMNElementReference value) {
-        this.sourceRef = value;
-    }
-
-    @Override
-    public DMNElementReference getTargetRef() {
-        return targetRef;
-    }
-
-    @Override
-    public void setTargetRef(DMNElementReference value) {
-        this.targetRef = value;
-    }
-
-    @Override
-    public AssociationDirection getAssociationDirection() {
-        if (associationDirection == null) {
-            return AssociationDirection.NONE;
-        } else {
-            return associationDirection;
-        }
-    }
-
-    @Override
-    public void setAssociationDirection(AssociationDirection value) {
-        this.associationDirection = value;
-    }
+public class TAssociation extends AbstractTAssociation implements URIFEELed {
 
 }

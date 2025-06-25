@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.model.v1_2;
+package org.kie.dmn.model.impl;
 
-public enum TDecisionTableOrientation {
+import org.kie.dmn.model.api.Group;
 
-    RULE_AS_ROW("Rule-as-Row"),
-    RULE_AS_COLUMN("Rule-as-Column"),
-    CROSS_TABLE("CrossTable");
-    private final String value;
+public abstract class AbstractTGroup extends AbstractTArtifact implements Group {
 
-    TDecisionTableOrientation(String v) {
-        value = v;
+    protected String name;
+
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public String value() {
-        return value;
+    @Override
+    public void setName(String value) {
+        this.name = value;
     }
 
-    public static TDecisionTableOrientation fromValue(String v) {
-        for (TDecisionTableOrientation c: TDecisionTableOrientation.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String value) {
+        this.id = value;
     }
 
 }

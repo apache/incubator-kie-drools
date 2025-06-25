@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,20 +18,8 @@
  */
 package org.kie.dmn.model.v1_2;
 
-import org.kie.dmn.model.api.RuleAnnotation;
+import org.kie.dmn.model.impl.AbstractTRuleAnnotation;
 
-public class TRuleAnnotation extends KieDMNModelInstrumentedBase implements RuleAnnotation {
-
-    protected String text;
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public void setText(String value) {
-        this.text = value;
-    }
+public class TRuleAnnotation extends AbstractTRuleAnnotation implements URIFEELed {
 
 }

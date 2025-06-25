@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,35 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.model.impl.AbstractTFunctionItem;
 
-import javax.xml.namespace.QName;
-
-import org.kie.dmn.model.api.FunctionItem;
-import org.kie.dmn.model.api.InformationItem;
-
-public class TFunctionItem extends TDMNElement implements FunctionItem {
-
-    protected List<InformationItem> parameters;
-    protected QName outputTypeRef;
-
-    @Override
-    public List<InformationItem> getParameters() {
-        if (parameters == null) {
-            parameters = new ArrayList<>();
-        }
-        return this.parameters;
-    }
-
-    @Override
-    public QName getOutputTypeRef() {
-        return outputTypeRef;
-    }
-
-    @Override
-    public void setOutputTypeRef(QName value) {
-        this.outputTypeRef = value;
-    }
+public class TFunctionItem extends AbstractTFunctionItem implements URIFEELed {
 
 }

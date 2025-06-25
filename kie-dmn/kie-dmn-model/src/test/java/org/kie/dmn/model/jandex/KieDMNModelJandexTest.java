@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,11 +78,21 @@ public class KieDMNModelJandexTest {
         List<DotName> dotNamesInJSON = fromJson.stream().map(m -> DotName.createSimple((String) m.get("name"))).collect(Collectors.toList());
 
         Set<DotName> foundsViaJandex = founds.stream().map(ClassInfo::name).collect(Collectors.toSet());
-        Set<DotName> foundsViaJSON = dotNamesInJSON.stream().collect(Collectors.toSet());
+        Set<DotName> foundsViaJSON = new HashSet<>(dotNamesInJSON);
+
+        Set<DotName> missingExpected = new HashSet<>(foundsViaJSON);
+        missingExpected.removeAll(foundsViaJandex);
+        assertThat(missingExpected)
+                .as("List of classes expected by JSON file and not found by JANDEX.")
+                .isEmpty();
+        Set<DotName> foundUnexpected = new HashSet<>(foundsViaJandex);
+        foundUnexpected.removeAll(foundsViaJSON);
+        assertThat(foundUnexpected)
+                .as("List of classes found by JANDEX and not listed in JSON file.")
+                .isEmpty();
         assertThat(foundsViaJandex)
                   .as("List of classes found via Jandex during test and listed in JSON file must be same.")
-                  .isEqualTo(foundsViaJSON)
-        ;
+                  .isEqualTo(foundsViaJSON);
     }
 
     private Map<String, Object> toReflectConfigMap(ClassInfo found) {

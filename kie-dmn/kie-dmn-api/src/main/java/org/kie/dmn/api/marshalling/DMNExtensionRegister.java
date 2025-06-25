@@ -20,6 +20,8 @@ package org.kie.dmn.api.marshalling;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.QNameMap;
+import java.util.Collections;
+import java.util.Set;
 
 public interface DMNExtensionRegister {
 
@@ -27,5 +29,13 @@ public interface DMNExtensionRegister {
 
     default void beforeMarshal(Object o, QNameMap qmap) {
         // do nothing.
+    }
+
+    /**
+     * The customized model packages to allow
+     * @return
+     */
+    default Set<String> allowedModelPackages() {
+        return Collections.emptySet();
     }
 }

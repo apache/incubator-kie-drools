@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,21 +18,8 @@
  */
 package org.kie.dmn.model.v1_3;
 
-import org.kie.dmn.model.api.DMNElementReference;
-import org.kie.dmn.model.api.KnowledgeRequirement;
+import org.kie.dmn.model.impl.AbstractTKnowledgeRequirement;
 
-public class TKnowledgeRequirement extends TDMNElement implements KnowledgeRequirement {
-
-    protected DMNElementReference requiredKnowledge;
-
-    @Override
-    public DMNElementReference getRequiredKnowledge() {
-        return requiredKnowledge;
-    }
-
-    @Override
-    public void setRequiredKnowledge(DMNElementReference value) {
-        this.requiredKnowledge = value;
-    }
+public class TKnowledgeRequirement extends AbstractTKnowledgeRequirement implements URIFEELed {
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.model.v1_4;
+package org.kie.dmn.model.impl;
 
-public enum TDecisionTableOrientation {
+import java.util.ArrayList;
+import java.util.List;
+import org.kie.dmn.model.api.Binding;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Invocation;
 
-    RULE_AS_ROW("Rule-as-Row"),
-    RULE_AS_COLUMN("Rule-as-Column"),
-    CROSS_TABLE("CrossTable");
-    private final String value;
+public abstract class AbstractTInvocation extends AbstractTExpression implements Invocation {
 
-    TDecisionTableOrientation(String v) {
-        value = v;
+    protected Expression expression;
+    protected List<Binding> binding;
+
+    @Override
+    public Expression getExpression() {
+        return expression;
     }
 
-    public String value() {
-        return value;
+    @Override
+    public void setExpression(Expression value) {
+        this.expression = value;
     }
 
-    public static TDecisionTableOrientation fromValue(String v) {
-        for (TDecisionTableOrientation c: TDecisionTableOrientation.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
+    @Override
+    public List<Binding> getBinding() {
+        if (binding == null) {
+            binding = new ArrayList<>();
         }
-        throw new IllegalArgumentException(v);
+        return this.binding;
     }
 
 }
