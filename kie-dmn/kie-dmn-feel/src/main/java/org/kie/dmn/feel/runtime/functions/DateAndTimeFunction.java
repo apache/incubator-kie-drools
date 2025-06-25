@@ -99,6 +99,30 @@ public class DateAndTimeFunction
         }
     }
 
+    static FEELFnResult<TemporalAccessor> generateDateTimeAndTimezone(TemporalAccessor date, TemporalAccessor time, Optional<ZoneId> zoneId) {
+        Optional<TemporalAccessor> dateValidationResult = getValidDate(date);
+        Optional<TemporalAccessor> timeValidationResult = getValidTime(time);
+
+        try {
+            date = dateValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'date' is missing or invalid."));
+            time = timeValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'time' is missing or invalid."));
+            if (date instanceof LocalDate && time instanceof LocalTime) {
+                if (zoneId.isPresent()) {
+                    return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, (LocalTime) time, zoneId.get()));
+                } else {
+                    return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
+                }
+            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
+                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), zoneId.isPresent() ? zoneId.get() : ZoneId.from(time)));
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
+        } catch (NoSuchElementException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "Invalid Input", e.getMessage()));
+        } catch (DateTimeException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
+        }
+    }
+
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
@@ -120,23 +144,7 @@ public class DateAndTimeFunction
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time) {
-        Optional<TemporalAccessor> dateValidationResult = getValidDate(date);
-        Optional<TemporalAccessor> timeValidationResult = getValidTime(time);
-
-        try {
-            date = dateValidationResult.orElseThrow(() -> new NoSuchElementException("date"));
-            time = timeValidationResult.orElseThrow(() -> new NoSuchElementException("time"));
-            if (date instanceof LocalDate && time instanceof LocalTime) {
-                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ));
-            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneId.from(time)));
-            }
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
-        } catch (NoSuchElementException ex) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, ex.getMessage(), "should be a valid value"));
-        } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
-        }
+        return generateDateTimeAndTimezone(date, time, Optional.empty());
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day,
@@ -198,24 +206,12 @@ public class DateAndTimeFunction
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") TemporalAccessor date, @ParameterName("time") TemporalAccessor time, @ParameterName("timeZone") String timeZone) {
-        Optional<TemporalAccessor> dateValidationResult = getValidDate(date);
-        Optional<TemporalAccessor> timeValidationResult = getValidTime(time);
         Optional<ZoneId> timeZoneValidationResult = getValidTimeZone(timeZone);
-
         try {
-            date = dateValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'date' is missing or invalid."));
-            time = timeValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'time' is missing or invalid."));
             ZoneId zoneId = timeZoneValidationResult.orElseThrow(() -> new NoSuchElementException("Parameter 'timeZone' is missing or invalid."));
-            if (date instanceof LocalDate && time instanceof LocalTime) {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, (LocalTime) time, zoneId));
-            } else if (date instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), zoneId));
-            }
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
+            return generateDateTimeAndTimezone(date, time, Optional.of(zoneId));
         } catch (NoSuchElementException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "Invalid Input", e.getMessage()));
-        } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
     }
 

@@ -243,4 +243,31 @@ class DateAndTimeFunctionTest {
         Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone("Foo/Bar");
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void testGenerateDateTimeAndTimeZone() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2024, 12, 24),
+                        LocalTime.of(23, 59, 0), Optional.of(ZoneId.of("America/Costa_Rica"))),
+                ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
+    }
+
+    @Test
+    void testGenerateDateTimeOnly() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2017, 6, 12),
+                        OffsetTime.of(10, 6, 20, 0, ZoneOffset.UTC), Optional.empty()),
+                ZonedDateTime.of(2017, 6, 12, 10, 6, 20, 0, ZoneOffset.UTC));
+    }
+
+    @Test
+    void testGenerateDateAndTime() {
+        FunctionTestUtil.assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2024, 12, 24),
+                        LocalTime.of(23, 59, 0), Optional.empty()),
+                LocalDateTime.of(2024, 12, 24, 23, 59, 0, 0));
+    }
+
+    @Test
+    void testInvalidDateTime() {
+        assertResultError(DateAndTimeFunction.generateDateTimeAndTimezone(null,null, Optional.of(ZoneId.of("America/Costa_Rica"))), InvalidParametersEvent.class);
+    }
+
 }
