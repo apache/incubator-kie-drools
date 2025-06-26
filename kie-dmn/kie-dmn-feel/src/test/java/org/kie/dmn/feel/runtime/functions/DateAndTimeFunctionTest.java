@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.dmn.feel.runtime.functions.FunctionTestUtil.assertResultError;
 import static org.kie.dmn.feel.runtime.functions.FunctionTestUtil.assertResult;
 
@@ -32,7 +33,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -183,88 +184,88 @@ class DateAndTimeFunctionTest {
     @Test
     void testValidateDate() {
         LocalDate date = LocalDate.of(2023, 6, 23);
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(date);
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(date);
+        TemporalAccessor result = DateAndTimeFunction.getValidDate(date);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(date);
     }
 
     @Test
     void testValidateTime() {
         LocalTime time = LocalTime.of(23, 59, 0, 0);
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(time);
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(time);
+        TemporalAccessor result = DateAndTimeFunction.getValidTime(time);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(time);
     }
 
     @Test
     void testValidateTimeZone() {
         String timeZone = "Europe/Paris";
-        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone(timeZone);
+        ZoneId result = DateAndTimeFunction.getValidTimeZone(timeZone);
 
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(ZoneId.of("Europe/Paris"));
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(ZoneId.of("Europe/Paris"));
     }
 
     @Test
     void testValidateNullDate() {
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(null);
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidDate(null))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'date' is missing or invalid.");
     }
 
     @Test
     void testValidateNullTime() {
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(null);
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidTime(null))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'time' is missing or invalid.");
     }
 
     @Test
     void testValidateNullTimeZone() {
-        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone(null);
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidTimeZone(null))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
     }
 
     @Test
     void testInvalidDate() {
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY);
-        assertThat(result).isEmpty();
+        TemporalAccessor result = DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY);
+        assertThat(result).isNull();
     }
 
     @Test
     void testInvalidTime() {
-        Optional<TemporalAccessor> result = DateAndTimeFunction.getValidTime(DayOfWeek.MONDAY);
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidTime(DayOfWeek.MONDAY))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'time' is missing or invalid.");
     }
 
     @Test
     void testInvalidTimeZone() {
-        Optional<ZoneId> result = DateAndTimeFunction.getValidTimeZone("Foo/Bar");
-        assertThat(result).isEmpty();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidTimeZone("Foo/Bar"))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
     }
 
     @Test
     void testGenerateDateTimeAndTimeZone() {
         assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2024, 12, 24),
-                        LocalTime.of(23, 59, 0), Optional.of(ZoneId.of("America/Costa_Rica"))),
+                        LocalTime.of(23, 59, 0), ZoneId.of("America/Costa_Rica")),
                 ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneId.of("America/Costa_Rica")));
     }
 
     @Test
     void testGenerateDateTimeOnly() {
         assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2017, 6, 12),
-                        OffsetTime.of(10, 6, 20, 0, ZoneOffset.UTC), Optional.empty()),
+                        OffsetTime.of(10, 6, 20, 0, ZoneOffset.UTC), null),
                 ZonedDateTime.of(2017, 6, 12, 10, 6, 20, 0, ZoneOffset.UTC));
     }
 
     @Test
     void testGenerateDateAndTime() {
         assertResult(DateAndTimeFunction.generateDateTimeAndTimezone(LocalDate.of(2024, 12, 24),
-                        LocalTime.of(23, 59, 0), Optional.empty()),
+                        LocalTime.of(23, 59, 0), null),
                 LocalDateTime.of(2024, 12, 24, 23, 59, 0, 0));
     }
 
     @Test
     void testInvalidDateTime() {
-        assertResultError(DateAndTimeFunction.generateDateTimeAndTimezone(null,null, Optional.of(ZoneId.of("America/Costa_Rica"))), InvalidParametersEvent.class);
+        assertResultError(DateAndTimeFunction.generateDateTimeAndTimezone(null,null, ZoneId.of("America/Costa_Rica")), InvalidParametersEvent.class);
     }
 
 }
