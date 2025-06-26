@@ -226,8 +226,8 @@ class DateAndTimeFunctionTest {
 
     @Test
     void testInvalidDate() {
-        TemporalAccessor result = DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY);
-        assertThat(result).isNull();
+        assertThatThrownBy(() -> DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY))
+                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'date' is missing or invalid.");
     }
 
     @Test

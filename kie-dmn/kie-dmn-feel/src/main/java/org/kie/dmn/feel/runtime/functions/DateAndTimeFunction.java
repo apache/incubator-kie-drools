@@ -77,7 +77,7 @@ public class DateAndTimeFunction
         // FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
         // I try to convert `date` to a LocalDate, if the query method returns null would signify conversion is not possible.
         date = date.query(TemporalQueries.localDate());
-        if (date == null) {
+        if (date != null) {
             return date;
         }
         throw new NoSuchElementException("Parameter 'date' is missing or invalid.");
