@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,17 +18,8 @@
  */
 package org.kie.dmn.backend.marshalling;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.AbstractPullReader;
-import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.StaxWriter;
-import com.thoughtworks.xstream.security.TypeHierarchyPermission;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -43,7 +34,6 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.impl.AbstractKieDMNModelInstrumentedBase;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
