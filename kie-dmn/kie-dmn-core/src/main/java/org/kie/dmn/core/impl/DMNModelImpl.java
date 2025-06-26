@@ -44,6 +44,7 @@ import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -107,6 +108,8 @@ public class DMNModelImpl
 
     private FEELDialect feelDialect;
 
+    private DMNVersion dmnVersion;
+
     public DMNModelImpl() {
         // needed because Externalizable.
     }
@@ -119,6 +122,7 @@ public class DMNModelImpl
         String expressionLanguage = definitions.getExpressionLanguage() != null ? definitions.getExpressionLanguage() : "";
         try {
             feelDialect = FEELDialect.fromNamespace(expressionLanguage);
+            dmnVersion = DMNVersion.inferDMNVersion(definitions.getNsContext().values());
         } catch (IllegalArgumentException e) {
             feelDialect = FEELDialect.FEEL;
         }
@@ -132,6 +136,10 @@ public class DMNModelImpl
 
     public FEELDialect getFeelDialect() {
         return feelDialect;
+    }
+
+    public DMNVersion getDMNVersion() {
+        return dmnVersion;
     }
 
     private void wireTypeRegistry(Definitions definitions) {

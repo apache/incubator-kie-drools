@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+             namespace="https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31"
+             id="_150E738D-C81A-4BE8-8595-D85A63A8D60B"
+             name="DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <decision name="time" id="_13CBFAD6-3811-459A-930D-026239B0B26E">
+    <variable name="time" id="_8809F755-F0B3-4A31-9E10-02AE1C54B2A2" typeRef="time" />
+    <informationRequirement id="_F0D8BBA6-6707-4433-8212-0324F8CB927E">
+      <requiredInput href="#_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20" />
+    </informationRequirement>
+    <literalExpression id="_6A50752C-AFA3-4497-8F04-693338815A09" typeRef="time" label="time">
+      <text>time(a time)</text>
+    </literalExpression>
+  </decision>
+  <inputData name="a time" id="_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20">
+    <variable name="a time" id="_85F94F9C-49AF-4AB2-A772-6A0326280049" typeRef="string" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_4CF8B0C0-E536-4E12-B339-B3DD51296C11" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_6A50752C-AFA3-4497-8F04-693338815A09">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_6C6FB1EF-3A38-4A39-ADC2-A685725800AE" dmnElementRef="_13CBFAD6-3811-459A-930D-026239B0B26E" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="320" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_C2DBDC70-E1CE-452C-BF2C-99E9F25AD0CA" dmnElementRef="_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="340" y="280" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_14682216-2859-4037-9FA4-6019EA3A3F88" dmnElementRef="_F0D8BBA6-6707-4433-8212-0324F8CB927E" sourceElement="_C2DBDC70-E1CE-452C-BF2C-99E9F25AD0CA" targetElement="_6C6FB1EF-3A38-4A39-ADC2-A685725800AE">
+        <di:waypoint x="420" y="320" />
+        <di:waypoint x="400" y="120" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

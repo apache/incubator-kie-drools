@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -45,20 +46,22 @@ public class EvaluationContextImpl implements EvaluationContext {
     private boolean performRuntimeTypeCheck = false;
     private ClassLoader rootClassLoader;
     private final FEELDialect feelDialect;
+    private final DMNVersion dmnVersion;
 
-    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect) {
+    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion) {
         this.eventsManager = eventsManager;
         this.rootClassLoader = cl;
         this.stack = new ArrayDeque<>(stack);
         this.feelDialect = feelDialect;
+        this.dmnVersion = dmnVersion;
     }
 
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect) {
-        this(cl, eventsManager, 32, feelDialect);
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
+        this(cl, eventsManager, 32, feelDialect, dmnVersion);
     }
 
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect) {
-        this(cl, eventsManager, new ArrayDeque<>(), feelDialect);
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion) {
+        this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion);
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
@@ -68,19 +71,20 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     @Deprecated
-    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime, FEELDialect feelDialect) {
-        this(dmnRuntime.getRootClassLoader(), eventsManager, feelDialect);
+    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime, FEELDialect feelDialect, DMNVersion dmnVersion) {
+        this(dmnRuntime.getRootClassLoader(), eventsManager, feelDialect, dmnVersion);
         this.dmnRuntime = dmnRuntime;
     }
 
-    private EvaluationContextImpl(FEELEventListenersManager eventsManager, FEELDialect feelDialect) {
+    private EvaluationContextImpl(FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
         this.eventsManager = eventsManager;
         this.feelDialect = feelDialect;
+        this.dmnVersion = dmnVersion;
     }
 
     @Override
     public EvaluationContext current() {
-        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager, feelDialect);
+        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager, feelDialect, dmnVersion);
         ec.stack = stack.clone();
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
@@ -237,5 +241,10 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public FEELDialect getFEELDialect() {
         return feelDialect;
+    }
+
+    @Override
+    public DMNVersion getDMNVersion() {
+        return dmnVersion;
     }
 }

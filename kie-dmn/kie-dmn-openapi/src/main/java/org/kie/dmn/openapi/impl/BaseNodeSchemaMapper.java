@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -51,7 +52,7 @@ public class BaseNodeSchemaMapper {
     private static BiConsumer<BaseNode, Schema> ATLITERALNODE_CONSUMER = (node, schema) -> {
         // Defaulting FEELDialect to FEEL
         EvaluationContextImpl emptyEvalCtx =
-                new EvaluationContextImpl(BaseNodeSchemaMapper.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+                new EvaluationContextImpl(BaseNodeSchemaMapper.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL, DMNVersion.getLatest());
         Object evaluated = node.evaluate(emptyEvalCtx);
         Object toStore = evaluated != null ? evaluated : ((AtLiteralNode) node).getStringLiteral().toString();
         populateEnumSchema(schema, toStore);

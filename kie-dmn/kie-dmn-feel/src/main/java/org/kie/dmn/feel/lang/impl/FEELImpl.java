@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
@@ -60,8 +61,9 @@ public class FEELImpl
     private final Collection<FEELFunction> customFunctions;
     private final boolean doCompile;
     private final FEELDialect feelDialect;
+    private final DMNVersion dmnVersion;
 
-    FEELImpl(ClassLoader cl, List<FEELProfile> profiles, FEELDialect feelDialect) {
+    FEELImpl(ClassLoader cl, List<FEELProfile> profiles, FEELDialect feelDialect, DMNVersion dmnVersion) {
         this.classLoader = cl;
         this.profiles = Collections.unmodifiableList(profiles);
         ExecutionFrameImpl frame = null;
@@ -85,6 +87,7 @@ public class FEELImpl
         customFrame = Optional.ofNullable(frame);
         customFunctions = Collections.unmodifiableCollection(functions.values());
         this.feelDialect = feelDialect;
+        this.dmnVersion = dmnVersion;
     }
 
     @Override
@@ -174,7 +177,7 @@ public class FEELImpl
      */
     public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
-        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size(), feelDialect);
+        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size(), feelDialect, dmnVersion);
         if (customFrame.isPresent()) {
             ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
             ExecutionFrameImpl interveawedFrame = customFrame.get();
@@ -227,5 +230,9 @@ public class FEELImpl
 
     public FEELDialect getFeelDialect() {
         return feelDialect;
+    }
+
+    public DMNVersion getDMNVersion() {
+        return dmnVersion;
     }
 }
