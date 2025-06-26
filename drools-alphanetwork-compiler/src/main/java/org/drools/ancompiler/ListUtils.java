@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Objects;
 public class ListUtils {
 
     //-----------------------------------------------------------------------
-    /**
+    /*
      * Returns consecutive {@link List#subList(int, int) sublists} of a
      * list, each of the same size (the final list may be smaller). For example,
      * partitioning a list containing {@code [a, b, c, d, e]} with a partition
@@ -56,7 +56,7 @@ public class ListUtils {
         return new Partition<>(list, size);
     }
 
-    /**
+    /*
      * Provides a partition view on a {@link List}.
      * @since 4.0
      */

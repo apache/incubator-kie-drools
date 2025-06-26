@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,7 +56,7 @@ public class ErrorOnInsertLogicalTest {
 			"    insertLogical(new FieldObject(\"o3\", f0(o2)));\n" +
 			"end;";
 	
-	/**
+	/*
 	 * Test object to use in rules.
 	 */
 	public static class FieldObject {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 
-/**
+/*
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -138,7 +138,7 @@ public class TestCases {
     @XmlElement(required = true)
     protected java.util.List<TestCases.TestCase> testCase;
 
-    /**
+    /*
      * Gets the value of the modelName property.
      * 
      * @return
@@ -150,7 +150,7 @@ public class TestCases {
         return modelName;
     }
 
-    /**
+    /*
      * Sets the value of the modelName property.
      * 
      * @param value
@@ -162,7 +162,7 @@ public class TestCases {
         this.modelName = value;
     }
 
-    /**
+    /*
      * Gets the value of the labels property.
      * 
      * @return
@@ -174,7 +174,7 @@ public class TestCases {
         return labels;
     }
 
-    /**
+    /*
      * Sets the value of the labels property.
      * 
      * @param value
@@ -186,7 +186,7 @@ public class TestCases {
         this.labels = value;
     }
 
-    /**
+    /*
      * Gets the value of the testCase property.
      * 
      * <p>
@@ -242,7 +242,7 @@ public class TestCases {
     }
 
 
-    /**
+    /*
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.
@@ -269,7 +269,7 @@ public class TestCases {
 
         protected java.util.List<String> label;
 
-        /**
+        /*
          * Gets the value of the label property.
          * 
          * <p>
@@ -317,7 +317,7 @@ public class TestCases {
     }
 
 
-    /**
+    /*
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.
@@ -402,7 +402,7 @@ public class TestCases {
         @XmlAnyAttribute
         private Map<QName, String> otherAttributes = new HashMap<>();
 
-        /**
+        /*
          * Gets the value of the description property.
          * 
          * @return
@@ -414,7 +414,7 @@ public class TestCases {
             return description;
         }
 
-        /**
+        /*
          * Sets the value of the description property.
          * 
          * @param value
@@ -426,7 +426,7 @@ public class TestCases {
             this.description = value;
         }
 
-        /**
+        /*
          * Gets the value of the inputNode property.
          * 
          * <p>
@@ -455,7 +455,7 @@ public class TestCases {
             return this.inputNode;
         }
 
-        /**
+        /*
          * Gets the value of the resultNode property.
          * 
          * <p>
@@ -484,7 +484,7 @@ public class TestCases {
             return this.resultNode;
         }
 
-        /**
+        /*
          * Gets the value of the extensionElements property.
          * 
          * @return
@@ -496,7 +496,7 @@ public class TestCases {
             return extensionElements;
         }
 
-        /**
+        /*
          * Sets the value of the extensionElements property.
          * 
          * @param value
@@ -508,7 +508,7 @@ public class TestCases {
             this.extensionElements = value;
         }
 
-        /**
+        /*
          * Gets the value of the id property.
          * 
          * @return
@@ -520,7 +520,7 @@ public class TestCases {
             return id;
         }
 
-        /**
+        /*
          * Sets the value of the id property.
          * 
          * @param value
@@ -532,7 +532,7 @@ public class TestCases {
             this.id = value;
         }
 
-        /**
+        /*
          * Gets the value of the type property.
          * 
          * @return
@@ -548,7 +548,7 @@ public class TestCases {
             }
         }
 
-        /**
+        /*
          * Sets the value of the type property.
          * 
          * @param value
@@ -560,7 +560,7 @@ public class TestCases {
             this.type = value;
         }
 
-        /**
+        /*
          * Gets the value of the invocableName property.
          * 
          * @return
@@ -572,7 +572,7 @@ public class TestCases {
             return invocableName;
         }
 
-        /**
+        /*
          * Sets the value of the invocableName property.
          * 
          * @param value
@@ -584,7 +584,7 @@ public class TestCases {
             this.invocableName = value;
         }
 
-        /**
+        /*
          * Gets the value of the name property.
          * 
          * @return
@@ -596,7 +596,7 @@ public class TestCases {
             return name;
         }
 
-        /**
+        /*
          * Sets the value of the name property.
          * 
          * @param value
@@ -608,7 +608,7 @@ public class TestCases {
             this.name = value;
         }
 
-        /**
+        /*
          * Gets a map that contains attributes that aren't bound to any typed property on this class.
          * 
          * <p>
@@ -689,7 +689,7 @@ public class TestCases {
         }
 
 
-        /**
+        /*
          * <p>Java class for anonymous complex type.
          * 
          * <p>The following schema fragment specifies the expected content contained within this class.
@@ -717,7 +717,7 @@ public class TestCases {
             @XmlAnyElement(lax = true)
             protected java.util.List<Object> any;
 
-            /**
+            /*
              * Gets the value of the any property.
              * 
              * <p>
@@ -766,7 +766,7 @@ public class TestCases {
         }
 
 
-        /**
+        /*
          * <p>Java class for anonymous complex type.
          * 
          * <p>The following schema fragment specifies the expected content contained within this class.
@@ -794,7 +794,7 @@ public class TestCases {
             @XmlSchemaType(name = "anySimpleType")
             protected String name;
 
-            /**
+            /*
              * Gets the value of the name property.
              * 
              * @return
@@ -806,7 +806,7 @@ public class TestCases {
                 return name;
             }
 
-            /**
+            /*
              * Sets the value of the name property.
              * 
              * @param value
@@ -862,7 +862,7 @@ public class TestCases {
         }
 
 
-        /**
+        /*
          * <p>Java class for anonymous complex type.
          * 
          * <p>The following schema fragment specifies the expected content contained within this class.
@@ -905,7 +905,7 @@ public class TestCases {
             @XmlAttribute(name = "cast")
             protected String cast;
 
-            /**
+            /*
              * Gets the value of the computed property.
              * 
              * @return
@@ -917,7 +917,7 @@ public class TestCases {
                 return computed;
             }
 
-            /**
+            /*
              * Sets the value of the computed property.
              * 
              * @param value
@@ -929,7 +929,7 @@ public class TestCases {
                 this.computed = value;
             }
 
-            /**
+            /*
              * Gets the value of the expected property.
              * 
              * @return
@@ -941,7 +941,7 @@ public class TestCases {
                 return expected;
             }
 
-            /**
+            /*
              * Sets the value of the expected property.
              * 
              * @param value
@@ -953,7 +953,7 @@ public class TestCases {
                 this.expected = value;
             }
 
-            /**
+            /*
              * Gets the value of the errorResult property.
              * 
              * @return
@@ -969,7 +969,7 @@ public class TestCases {
                 }
             }
 
-            /**
+            /*
              * Sets the value of the errorResult property.
              * 
              * @param value
@@ -981,7 +981,7 @@ public class TestCases {
                 this.errorResult = value;
             }
 
-            /**
+            /*
              * Gets the value of the name property.
              * 
              * @return
@@ -993,7 +993,7 @@ public class TestCases {
                 return name;
             }
 
-            /**
+            /*
              * Sets the value of the name property.
              * 
              * @param value
@@ -1005,7 +1005,7 @@ public class TestCases {
                 this.name = value;
             }
 
-            /**
+            /*
              * Gets the value of the type property.
              * 
              * @return
@@ -1017,7 +1017,7 @@ public class TestCases {
                 return type;
             }
 
-            /**
+            /*
              * Sets the value of the type property.
              * 
              * @param value
@@ -1029,7 +1029,7 @@ public class TestCases {
                 this.type = value;
             }
 
-            /**
+            /*
              * Gets the value of the cast property.
              * 
              * @return
@@ -1041,7 +1041,7 @@ public class TestCases {
                 return cast;
             }
 
-            /**
+            /*
              * Sets the value of the cast property.
              * 
              * @param value

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.builder.impl;
 import org.drools.base.base.ObjectType;
 import org.drools.base.rule.TypeDeclaration;
 
-/**
+/*
  * Public interface to a {@link TypeDeclarationBuilder}
  *
  * Deals with updating a {@link org.kie.api.KieBase}, if there exist a live one.

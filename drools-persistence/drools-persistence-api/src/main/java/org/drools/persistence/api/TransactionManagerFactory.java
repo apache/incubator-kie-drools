@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.runtime.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Abstract factory for creating {@link org.drools.persistence.TransactionManager} instances..
  * 
  * The implementation class can be specified using the {@code org.kie.txm.factory.class} system property.
@@ -51,7 +51,7 @@ public abstract class TransactionManagerFactory {
         setInstance();
     }
     
-    /**
+    /*
      * Retrieves the factory for creating {@link TransactionManager}s.
      * 
      * @return

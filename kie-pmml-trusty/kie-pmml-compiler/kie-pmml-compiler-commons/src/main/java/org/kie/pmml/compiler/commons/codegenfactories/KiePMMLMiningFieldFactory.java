@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -163,7 +163,7 @@ public class KiePMMLMiningFieldFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns a list of <code>Field</code>s filtered by field name
      * @param fields
      * @param fieldName
@@ -176,7 +176,7 @@ public class KiePMMLMiningFieldFactory {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Returns a DataField
      * Expect a list of <code>Field</code>s filtered by field name
      * @param fields List of <code>Field</code>s filtered by field name
@@ -190,7 +190,7 @@ public class KiePMMLMiningFieldFactory {
                 .orElse(null);
     }
 
-    /**
+    /*
      * Expect a list of <code>Field</code>s filtered by field name
      * @param fields List of <code>Field</code>s filtered by field name
      * @param fieldName

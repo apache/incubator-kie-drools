@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -77,7 +77,7 @@ public class SubsumptantSubPatternsTest {
         verifier.dispose();
     }
 
-    /**
+    /*
      * Empty pattern
      *
      * @throws Exception
@@ -116,7 +116,7 @@ public class SubsumptantSubPatternsTest {
         verifier.dispose();
     }
 
-    /**
+    /*
      * Different sources
      *
      * @throws Exception
@@ -155,7 +155,7 @@ public class SubsumptantSubPatternsTest {
         verifier.dispose();
     }
 
-    /**
+    /*
      * Patterns that use from
      *
      * @throws Exception
@@ -195,7 +195,7 @@ public class SubsumptantSubPatternsTest {
         verifier.dispose();
     }
 
-    /**
+    /*
      * Different sources
      *
      * @throws Exception

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.mvel.compiler;
 
 import java.math.BigDecimal;
 
-/**
+/*
  * Created by IntelliJ IDEA.
  * User: davide
  * Date: 2/12/11

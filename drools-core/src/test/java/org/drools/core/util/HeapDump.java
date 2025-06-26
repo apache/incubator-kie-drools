@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ public class HeapDump {
     // field to store the hotspot diagnostic MBean
     private static volatile Object hotspotMBean;
 
-    /**
+    /*
      * Call this method from your application whenever you
      * want to dump the heap snapshot into a file.
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ package org.kie.memorycompiler;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
-/**
+/*
  * The general compiler interface. All compilers implementing
  * this interface should read the resources from the reader
  * and store the java class files into the ResourceStore.
@@ -67,24 +67,24 @@ public interface JavaCompiler {
 
     default void setSourceFolder( String sourceFolder ) { }
 
-    /**
+    /*
      * factory method to create the underlying default settings
      */
     JavaCompilerSettings createDefaultSettings();
 
     void setJavaCompilerSettings( JavaCompilerSettings javaCompilerSettings );
     
-    /**
+    /*
      * uses the default compiler settings and the current classloader
      */
     CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore );
 
-    /**
+    /*
      * uses the default compiler settings
      */
     CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader );
 
-    /**
+    /*
      * Compiles the java resources "some/path/to/MyJava.java"
      * read through the ResourceReader and then stores the resulting
      * classes in the ResourceStore under "some/path/to/MyJava.class".

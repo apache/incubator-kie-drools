@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -95,28 +95,28 @@ public class OrderItem implements Externalizable {
         this.price = price;
     }
 
-    /**
+    /*
      * @return the order
      */
     public Order getOrder() {
         return this.order;
     }
 
-    /**
+    /*
      * @param order the order to set
      */
     public void setOrder(final Order order) {
         this.order = order;
     }
 
-    /**
+    /*
      * @return the seq
      */
     public int getSeq() {
         return this.seq;
     }
 
-    /**
+    /*
      * @param seq the seq to set
      */
     public void setSeq(final int seq) {

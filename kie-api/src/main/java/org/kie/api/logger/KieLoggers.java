@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.api.logger;
 
 import org.kie.api.event.KieRuntimeEventManager;
 
-/**
+/*
  * KieLoggers is a factory for KieRuntimeLogger
  */
 public interface KieLoggers {
 
-    /**
+    /*
      * Creates a new FileLogger with the given name for the given session.
      * The maximum number of log events that are allowed in memory by default is 1000.
      * If this number is reached, all events are written to the file.
@@ -33,7 +33,7 @@ public interface KieLoggers {
     KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                    String fileName);
 
-    /**
+    /*
      * Creates a new FileLogger with the given name for the given session.
      * also setting the maximum number of log events that are allowed in memory.
      * If this number is reached, all events are written to the file.

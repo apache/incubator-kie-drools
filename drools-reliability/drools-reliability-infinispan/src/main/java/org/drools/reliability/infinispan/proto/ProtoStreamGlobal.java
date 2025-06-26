@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-/**
+/*
  * Currently this class supports only one object or an ArrayList of objects. Users should implement Adaptor classes for their own objects.
  */
 public class ProtoStreamGlobal {

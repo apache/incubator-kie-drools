@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 
-/**
+/*
  * Helper class for Descr manipulation.
  */
 public class DescrHelper {
@@ -78,7 +78,7 @@ public class DescrHelper {
         return descr;
     }
 
-    /**
+    /*
      * PatternDescr requires special handling for properties, because it should be updated with PatternBindContext. e.g. label
      */
     public static PatternDescr refreshPatternDescrProperties(PatternDescr descr, DRL10Parser.LhsPatternBindContext ctx) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,10 +44,10 @@ import org.drools.util.bitmask.EmptyBitMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode {
-    /** The rule to invoke upon match. */
+    /* The rule to invoke upon match. */
     private RuleImpl                      rule;
 
-    /**
+    /*
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
@@ -350,7 +350,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -359,7 +359,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -368,7 +368,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -377,7 +377,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode

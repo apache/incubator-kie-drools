@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,14 +19,14 @@
 package org.kie.api.runtime.rule;
 
 public interface Row {
-    /**
+    /*
      * @param identifier the identifier of the bound object
      * @return object that is bound to the given identifier
      */
     Object get(String identifier);
 
 
-    /**
+    /*
      * @return FactHandle associated with the given identifier
      */
     FactHandle getFactHandle(String identifier);

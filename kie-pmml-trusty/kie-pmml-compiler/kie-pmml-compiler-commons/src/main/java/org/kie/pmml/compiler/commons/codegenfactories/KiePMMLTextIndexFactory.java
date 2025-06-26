@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,7 +48,7 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressi
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLTextIndex</code> code-generators
  * out of <code>TextIndex</code>s
  */

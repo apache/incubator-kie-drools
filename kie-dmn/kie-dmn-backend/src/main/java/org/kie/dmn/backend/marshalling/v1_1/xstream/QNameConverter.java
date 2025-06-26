@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Please note this does not extend the DMNBaseConverter as it just need access to the node value itself.
  */
 public class QNameConverter implements Converter {

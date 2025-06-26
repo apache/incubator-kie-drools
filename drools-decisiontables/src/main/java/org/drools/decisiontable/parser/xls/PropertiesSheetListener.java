@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.template.parser.DataListener;
 
-/**
+/*
  * Reads an Excel sheet as key-value properties.
  *
  * Treats the first non-empty cell on a row as a key and any subsequent
@@ -45,7 +45,7 @@ public class PropertiesSheetListener implements DataListener {
 
     private final CaseInsensitiveMap _properties = new CaseInsensitiveMap();
 
-    /**
+    /*
      * Return the key value pairs. If this is called before the sheet is
      * finished, then it will build the properties map with what is known.
      * Subsequent calls will update the properties map.
@@ -81,7 +81,7 @@ public class PropertiesSheetListener implements DataListener {
         _rowProperties.clear();
     }
 
-    /**
+    /*
      * Enter a new row. This is ignored.
      *
      * @param rowNumber

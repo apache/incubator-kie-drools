@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.kie.api.pmml.ParameterInfo;
 
-/**
+/*
  * Class used to convert data to/from different formats
  */
 public class Converter {
@@ -33,7 +33,7 @@ public class Converter {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> values of the given map.
      *
      * @param parameterMap
@@ -47,7 +47,7 @@ public class Converter {
         return toReturn;
     }
 
-    /**
+    /*
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> of the given collection.
      *
      * @param parameterInfos

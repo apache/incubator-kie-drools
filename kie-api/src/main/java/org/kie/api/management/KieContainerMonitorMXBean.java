@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ public interface KieContainerMonitorMXBean {
 
     String getContainerId();
 
-    /**
+    /*
      * The RelaseId configured while creating the KieContainer.
      * <p />
      * If the KieContainer has been created from Classpath instead, the hardcoded value {@link #CLASSPATH_KIECONTAINER_RELEASEID} will be returned. 
@@ -31,7 +31,7 @@ public interface KieContainerMonitorMXBean {
      */
     GAV getConfiguredReleaseId();
 
-    /**
+    /*
      * The RelaseId configured while creating the KieContainer.
      * <p />
      * If the KieContainer has been created from Classpath instead, the hardcoded value {@link #CLASSPATH_KIECONTAINER_RELEASEID} will be returned. 
@@ -39,7 +39,7 @@ public interface KieContainerMonitorMXBean {
      */
     String getConfiguredReleaseIdStr();
 
-    /**
+    /*
      * The actual resolved ReleaseId.
      * <p />
      * If the KieContainer has been created from Classpath instead, the hardcoded value {@link #CLASSPATH_KIECONTAINER_RELEASEID} will be returned. 
@@ -47,7 +47,7 @@ public interface KieContainerMonitorMXBean {
      */
     GAV getResolvedReleaseId();
 
-    /**
+    /*
      * The actual resolved ReleaseId.
      * <p />
      * If the KieContainer has been created from Classpath instead, the hardcoded value {@link #CLASSPATH_KIECONTAINER_RELEASEID} will be returned. 

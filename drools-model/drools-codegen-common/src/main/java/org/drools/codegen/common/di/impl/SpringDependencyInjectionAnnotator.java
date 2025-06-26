@@ -164,7 +164,7 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return node;
     }
 
-    /**
+    /*
      * no-op, Spring beans are not lazy by default.
      *
      * @param node node to be annotated

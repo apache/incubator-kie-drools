@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.model.api;
 
 public interface RuleAnnotationClause extends DMNModelInstrumentedBase {
 
-    /**
+    /*
      * Gets the value of the name property.
      * 
      * @return
@@ -30,7 +30,7 @@ public interface RuleAnnotationClause extends DMNModelInstrumentedBase {
      */
     String getName();
 
-    /**
+    /*
      * Sets the value of the name property.
      * 
      * @param value

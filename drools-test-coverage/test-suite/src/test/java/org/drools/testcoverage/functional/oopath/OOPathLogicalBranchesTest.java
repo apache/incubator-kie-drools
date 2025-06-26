@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests usage of OOPath expressions resulting in multiple conditional branches (e.g. OR operator).
  */
 public class OOPathLogicalBranchesTest {

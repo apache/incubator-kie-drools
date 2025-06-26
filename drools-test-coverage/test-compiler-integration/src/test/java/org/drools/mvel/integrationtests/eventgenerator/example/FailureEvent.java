@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.mvel.integrationtests.eventgenerator.Event;
 
 public class FailureEvent extends Event {
 
-    /**
+    /*
      * Special constructor for a failure event
      * @param parentId The id of the corresponding site, resource, ...
      */
@@ -30,7 +30,7 @@ public class FailureEvent extends Event {
         super(EventType.FAILURE, parentId);
     }
 
-    /**
+    /*
      * Special constructor for a faliure event
      * @param parentId The id of the corresponding site, resource, ...
      * @param start The start instance of the event.

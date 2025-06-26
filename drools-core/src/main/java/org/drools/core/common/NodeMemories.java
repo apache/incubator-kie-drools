@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-/**
+/*
  * An interface for node memories implementation
  */
 public interface NodeMemories {
@@ -34,7 +34,7 @@ public interface NodeMemories {
 
     void clear();
 
-    /**
+    /*
      * Peeks at the content of the node memory for the given
      * node ID. This method has no side effects, so if the
      * given memory slot for the given node ID is null, it
@@ -49,7 +49,7 @@ public interface NodeMemories {
         return NodeTypeEnums.isMemoryFactory(node) ? peekNodeMemory(((MemoryFactory)node).getMemoryId()) : null;
     }
 
-    /**
+    /*
      * Returns the number of positions in this memory
      *
      * @return

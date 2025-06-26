@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
 
-/**
+/*
  * Internal class for an immutable DTO, implementing FEELPropertyAccessible interface, and wrapping a generic POJO.
  */
 public class ImmutableFPAWrappingPOJO implements FEELPropertyAccessible {

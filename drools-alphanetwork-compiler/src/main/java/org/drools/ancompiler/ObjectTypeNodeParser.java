@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
-/**
+/*
  * This class is used for reading an {@link ObjectTypeNode} using callbacks.
  * <p/>
  * The user defines a number of callback methods in a {@link NetworkHandler} that will be called when events occur
@@ -57,7 +57,7 @@ import org.drools.core.util.index.AlphaRangeIndex;
  */
 public class ObjectTypeNodeParser {
 
-    /**
+    /*
      * OTN we are parsing/traversing
      */
     private final ObjectTypeNode objectTypeNode;
@@ -70,7 +70,7 @@ public class ObjectTypeNodeParser {
         this.traverseHashedAlphaNodes = traverseHashedAlphaNodes;
     }
 
-    /**
+    /*
      * Creates a new parser for the specified ObjectTypeNode
      *
      * @param objectTypeNode otn to parse
@@ -79,7 +79,7 @@ public class ObjectTypeNodeParser {
         this.objectTypeNode = objectTypeNode;
     }
 
-    /**
+    /*
      * Parse the {@link #objectTypeNode}.
      * <p/>
      * <p>The application can use this method to instruct the OTN parser to begin parsing an {@link ObjectTypeNode}.</p>
@@ -219,7 +219,7 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    /**
+    /*
      * Returns the ClassFieldReader for the hashed AlphaNode. The AlphaNode's constraint has to be a
      * MvelConstraint. This is the only type of hashed alpha currently supported.
      *

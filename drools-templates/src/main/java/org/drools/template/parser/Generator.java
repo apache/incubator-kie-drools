@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.template.parser;
 
-/**
+/*
  * <a href="stevearoonie@gmail.com">Steven Williams</a>
  * Generate the rules for a decision table
  */

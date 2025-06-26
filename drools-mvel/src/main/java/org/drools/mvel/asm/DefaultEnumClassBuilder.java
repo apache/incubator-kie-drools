@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,13 +36,13 @@ import org.mvel2.asm.Type;
 
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
-/**
+/*
  * A builder to dynamically build simple Javabean(TM) classes
  */
 public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Serializable {
 
 
-    /**
+    /*
      * Dynamically builds, defines and loads a class based on the given class definition
      *
      * @param classDef the class definition object structure

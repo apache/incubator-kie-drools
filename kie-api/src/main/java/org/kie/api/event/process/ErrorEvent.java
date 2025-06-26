@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,11 +20,11 @@ package org.kie.api.event.process;
 
 import org.kie.api.runtime.process.NodeInstance;
 
-/**
+/*
  * An event when a error is thrown
  */
 public interface ErrorEvent extends ProcessNodeEvent {
-    /**
+    /*
      * Error associated to the event
      *
      * @return exception

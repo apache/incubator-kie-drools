@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 
-/**
+/*
  * A registry class for all available evaluators
  */
 public class EvaluatorRegistry
@@ -45,7 +45,7 @@ public class EvaluatorRegistry
     private Map<String, EvaluatorDefinition> evaluators;
     private ClassLoader                      classloader;
 
-    /**
+    /*
      * Default constructor. The registry will use the context classloader (if available)
      * to load the evaluator definition classes or this class classloader if it is
      * not available.
@@ -54,7 +54,7 @@ public class EvaluatorRegistry
         this( null );
     }
 
-    /**
+    /*
      * Creates a new EvaluatorRegistry using the given classloader to load
      * the evaluator definition classes.
      *
@@ -77,7 +77,7 @@ public class EvaluatorRegistry
         }
     }
 
-    /**
+    /*
      * Return the set of registered keys.
      * @return a Set of Strings
      */
@@ -106,7 +106,7 @@ public class EvaluatorRegistry
         return EvaluatorRegistry.class.getClassLoader();
     }
 
-    /**
+    /*
      * Adds an evaluator definition class to the registry using the
      * evaluator class name. The class will be loaded and the corresponting
      * evaluator ID will be added to the registry. In case there exists
@@ -133,7 +133,7 @@ public class EvaluatorRegistry
         }
     }
 
-    /**
+    /*
      * Adds an evaluator definition class to the registry. In case there exists
      * an implementation for that evaluator ID already, the new implementation will
      * replace the previous one.
@@ -146,7 +146,7 @@ public class EvaluatorRegistry
         }
     }
 
-    /**
+    /*
      * Returns the evaluator definition for the given evaluator ID
      * or null if no one was found
      *
@@ -157,7 +157,7 @@ public class EvaluatorRegistry
         return this.evaluators.get( evaluatorId );
     }
 
-    /**
+    /*
      * Returns the evaluator definition for the given operator
      * or null if no one was found
      *
@@ -168,7 +168,7 @@ public class EvaluatorRegistry
         return this.evaluators.get( operator.getOperatorString() );
     }
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -201,7 +201,7 @@ public class EvaluatorRegistry
                                                                        parameterText );
     }
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -229,7 +229,7 @@ public class EvaluatorRegistry
                                                                      parameterText );
     }
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *

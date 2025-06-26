@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.pmml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to provide utility methods to manage implementation to be invoked
  * at runtime
  */
@@ -34,7 +34,7 @@ public class PMMLImplementationsUtil {
     private PMMLImplementationsUtil() {
     }
 
-    /**
+    /*
      * @param classLoader
      * @return <code>true</code> if <b>org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator</b> is found in the given
      * <code>ClassLoader</code>,

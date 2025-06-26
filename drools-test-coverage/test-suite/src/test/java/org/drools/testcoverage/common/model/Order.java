@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,14 +57,14 @@ public class Order implements Serializable {
         this.date = new Date();
     }
 
-    /**
+    /*
      * @return the number
      */
     public int getNumber() {
         return this.number;
     }
 
-    /**
+    /*
      * @param number the number to set
      */
     public void setNumber(final int number) {
@@ -161,14 +161,14 @@ public class Order implements Serializable {
         
     }
 
-    /**
+    /*
      * @return the date
      */
     public Date getDate() {
         return date;
     }
 
-    /**
+    /*
      * @param date the date to set
      */
     public void setDate(final Date date) {

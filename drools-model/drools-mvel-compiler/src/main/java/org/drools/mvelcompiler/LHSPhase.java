@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -70,7 +70,7 @@ import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.ClassUtils.getAccessor;
 import static org.drools.util.ClassUtils.getSetter;
 
-/**
+/*
  * This phase processes the left hand side of a MVEL target expression, if present, such as
  *
  * int a = 0
@@ -212,7 +212,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         });
     }
 
-    /**
+    /*
         Conversion of the compound operator applied to BigDecimal
         $p.salary += 50000B;
         $p.setSalary($p.getSalary().add(new BigDecimal(\"50000\")));
@@ -255,7 +255,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigIntegerArithmeticExprT));
     }
 
-    /**
+    /*
         Conversion of the compound operator applied to number literals
         $p.age += 50;
         $p.setAge($p.getAge() + 50));

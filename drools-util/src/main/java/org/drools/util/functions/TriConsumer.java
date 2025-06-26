@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.util.functions;
 
 import java.util.Objects;
 
-/**
+/*
  * Represents an operation that accepts three input arguments and returns no
  * result.  This is the three-arity specialization of {@link Consumer}.
  * Unlike most other functional interfaces, {@code TriConsumer} is expected
@@ -38,7 +38,7 @@ import java.util.Objects;
 @FunctionalInterface
 public interface TriConsumer<T, U, D> {
 
-    /**
+    /*
      * Performs this operation on the given arguments.
      *
      * @param t the first input argument
@@ -47,7 +47,7 @@ public interface TriConsumer<T, U, D> {
      */
     void accept(T t, U u, D d);
 
-    /**
+    /*
      * Returns a composed {@code TriConsumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
      * operation throws an exception, it is relayed to the caller of the

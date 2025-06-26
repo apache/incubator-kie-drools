@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.util.DoubleLinkedEntry;
 
-/**
+/*
  * A super interface for node memories
  */
 public interface Memory extends DoubleLinkedEntry<Memory> {

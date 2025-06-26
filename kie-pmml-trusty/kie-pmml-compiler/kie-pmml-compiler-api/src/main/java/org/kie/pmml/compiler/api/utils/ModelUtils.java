@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -68,7 +68,7 @@ import org.w3c.dom.Element;
 
 import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
 
-/**
+/*
  * Class to provide common methods to interact with <code>Model</code>, to convert <b>org.dmn.pmml</b> objects to
  * <b>Kie</b> ones, etc...
  */
@@ -77,7 +77,7 @@ public class ModelUtils {
     private ModelUtils() {
     }
 
-    /**
+    /*
      * Return an <code>Optional</code> with the name of the field whose <b>usageType</b> is <code>TARGET</code> or
      * <code>PREDICTED</code>
      * <p>
@@ -93,7 +93,7 @@ public class ModelUtils {
         return getTargetFields(fields, model).stream().map(KiePMMLNameOpType::getName).findFirst();
     }
 
-    /**
+    /*
      * Return the <code>DATA_TYPE</code> of the field whose <b>usageType</b> is <code>TARGET</code> or
      * <code>PREDICTED</code>.
      * It throws exception if none of such fields are found
@@ -110,7 +110,7 @@ public class ModelUtils {
         return getTargetFieldsTypeMap(fields, model).entrySet().iterator().next().getValue();
     }
 
-    /**
+    /*
      * Return a <code>List&lt;KiePMMLNameOpType&gt;</code> of target fields
      * Please note that only <b>predicted/target</b>
      * <code>MiningField</code> are considered.
@@ -131,7 +131,7 @@ public class ModelUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns a <code>Map&lt;String, DATA_TYPE&gt;</code> of target fields, where the key is the name of the field,
      * and the value is the <b>type</b> of the field
      * Please note that only <b>predicted/target</b>
@@ -152,7 +152,7 @@ public class ModelUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * <code>OP_TYPE</code> may be defined inside <code>DataField</code>, <code>MiningField</code> or both.
      * In the latter case, <code>MiningField</code> override <code>DataField</code> definition
      * @param fields
@@ -171,7 +171,7 @@ public class ModelUtils {
                                                                                       " %s", targetFieldName)));
     }
 
-    /**
+    /*
      * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from <code>DataDictionary</code>
      * @param fields
      * @param fieldName
@@ -186,7 +186,7 @@ public class ModelUtils {
                         .findFirst();
     }
 
-    /**
+    /*
      * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from <code>MiningSchema</code>
      * @param miningSchema
      * @param fieldName
@@ -203,7 +203,7 @@ public class ModelUtils {
         }
     }
 
-    /**
+    /*
      * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from <code>Targets</code>
      * @param targets
      * @param fieldName
@@ -220,7 +220,7 @@ public class ModelUtils {
         }
     }
 
-    /**
+    /*
      * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in
      * <b>dataDictionary</b>
      * @param fields
@@ -238,7 +238,7 @@ public class ModelUtils {
                                                                               fieldName)));
     }
 
-    /**
+    /*
      * <code>DATA_TYPE</code> of the given <b>field</b>
      * @param fields
      * @param fieldName
@@ -254,7 +254,7 @@ public class ModelUtils {
                                                                                      fieldName)));
     }
 
-    /**
+    /*
      * Return <code>List&lt;DerivedField&gt;</code>s from the given <code>TransformationDictionary</code> and
      * <code>LocalTransformations</code>
      * @param transformationDictionary
@@ -296,7 +296,7 @@ public class ModelUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Return a <code>List&lt;org.kie.pmml.api.models.MiningField&glt;</code> out of a <code>org.dmg.pmml
      * .MiningSchema</code> one
      * @param toConvert
@@ -321,7 +321,7 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and
      * relative <code>org.dmg.pmml.DataField</code> ones
      * @param toConvert
@@ -364,7 +364,7 @@ public class ModelUtils {
     }
 
 
-    /**
+    /*
      * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml
      * .Output</code> one
      * @param toConvert
@@ -378,7 +378,7 @@ public class ModelUtils {
         return convertToKieOutputFieldList(toConvert.getOutputFields(), fields);
     }
 
-    /**
+    /*
      * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>List&lt;org.dmg.pmml.OutputField&gt;</code> one
      * @param toConvert
      * @return
@@ -399,7 +399,7 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Return a <code>org.kie.pmml.api.models.OutputField</code> out of a <code>org.dmg.pmml.OutputField</code> one
      * @param toConvert
      * @param field - this may be <code>null</code>
@@ -426,7 +426,7 @@ public class ModelUtils {
                                                        allowedValues);
     }
 
-    /**
+    /*
      * Return a <code>List&lt;org.kie.pmml.api.models.TargetField&gt;</code> out of a <code>org.dmg.pmml
      * .Targets</code>
      * @param toConvert
@@ -442,7 +442,7 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Return a <code>org.kie.pmml.api.models.TargetField</code> out of a <code>org.dmg.pmml.Target</code>
      * @param toConvert
      * @return
@@ -466,7 +466,7 @@ public class ModelUtils {
                                rescaleFactor);
     }
 
-    /**
+    /*
      * Return a <code>List&lt;org.kie.pmml.api.models.TargetValue&gt;</code> out of a
      * <code>List&lt;org.dmg.pmml.TargetValue&gt;</code>
      * @param toConvert
@@ -482,7 +482,7 @@ public class ModelUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Return a <code>org.kie.pmml.api.models.TargetValue</code> out of a <code>org.dmg.pmml
      * .TargetValue</code>
      * @param toConvert
@@ -496,7 +496,7 @@ public class ModelUtils {
                                                        toConvert.getDefaultValue().doubleValue());
     }
 
-    /**
+    /*
      * Retrieve the <b>mapped</b> class name of the given <code>ParameterField</code>, <b>eventually</b> boxed (for
      * primitive ones)
      * It returns <b>Object</b> <code>ParameterField.getDataType()</code> is null
@@ -508,7 +508,7 @@ public class ModelUtils {
                 getBoxedClassName(parameterField.getDataType());
     }
 
-    /**
+    /*
      * Retrieve the <b>mapped</b> class name of the given <code>DataType</code>, <b>eventually</b> boxed (for
      * primitive ones).
      * It returns <b>Object</b> if null

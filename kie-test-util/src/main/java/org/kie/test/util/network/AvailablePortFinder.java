@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,30 +25,30 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
+/*
  * Finds currently available server ports.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @see <a href="http://www.iana.org/assignments/port-numbers">IANA.org</a>
  */
 public class AvailablePortFinder {
-    /**
+    /*
      * The minimum number of server port number.
      */
     public static final int MIN_PORT_NUMBER = 1025;
 
-    /**
+    /*
      * The maximum number of server port number.
      */
     public static final int MAX_PORT_NUMBER = 49151;
 
-    /**
+    /*
      * Creates a new instance.
      */
     private AvailablePortFinder() {
     }
 
-    /**
+    /*
      * Returns the {@link Set} of currently available port numbers
      * ({@link Integer}). This method is identical to <code>getAvailablePorts(MIN_PORT_NUMBER, MAX_PORT_NUMBER)</code>.
      * 
@@ -58,7 +58,7 @@ public class AvailablePortFinder {
         return getAvailablePorts(MIN_PORT_NUMBER, MAX_PORT_NUMBER);
     }
 
-    /**
+    /*
      * Gets the next available port starting at the lowest port number.
      * 
      * @throws NoSuchElementException if there are no ports available
@@ -67,7 +67,7 @@ public class AvailablePortFinder {
         return getNextAvailable(MIN_PORT_NUMBER);
     }
 
-    /**
+    /*
      * Gets the next available port starting at a port.
      * 
      * @param fromPort the port to scan for availability
@@ -87,7 +87,7 @@ public class AvailablePortFinder {
         throw new NoSuchElementException("Could not find an available port " + "above " + fromPort);
     }
 
-    /**
+    /*
      * Checks to see if a specific port is available.
      * 
      * @param port the port to check for availability
@@ -123,7 +123,7 @@ public class AvailablePortFinder {
         return false;
     }
 
-    /**
+    /*
      * Returns the {@link Set} of currently avaliable port numbers ({@link Integer})
      * between the specified port range.
      * 

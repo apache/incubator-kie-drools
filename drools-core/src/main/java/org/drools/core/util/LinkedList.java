@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.core.reteoo.TupleImpl;
 
-/**
+/*
  * This is a simple linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
  * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of
@@ -56,7 +56,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
     
     public static final FastIterator fastIterator = new LinkedListFastIterator(); // contains no state, so ok to be static
 
-    /**
+    /*
      * Construct an empty <code>LinkedList</code>
      */
     public LinkedList() {
@@ -109,7 +109,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
             out.writeObject(node.getNext());
         }          
     }
-    /**
+    /*
      * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.
      *
@@ -128,7 +128,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         this.size++;
     }
 
-    /**
+    /*
      * Add a <code>LinkedListNode</code> to the end of the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.
      *
@@ -161,7 +161,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         this.size++;
     }
 
-    /**
+    /*
      * Removes a <code>LinkedListNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.
@@ -183,7 +183,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         }
     }
 
-    /**
+    /*
      * Remove the first node from the list. The next node then becomes the first node. If this is the last
      * node then both first and last node references are set to null.
      *
@@ -206,7 +206,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return node;
     }
 
-    /**
+    /*
      * Remove the last node from the list. The previous node then becomes the last node. If this is the last
      * node then both first and last node references are set to null.
      *
@@ -290,7 +290,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return false;
     }
 
-    /**
+    /*
      * Return the first node in the list
      * @return
      *      The first <code>LinkedListNode</code>.
@@ -299,7 +299,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return this.firstNode;
     }
 
-    /**
+    /*
      * Return the last node in the list
      * @return
      *      The last <code>LinkedListNode</code>.
@@ -327,7 +327,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return null;
     }
 
-    /**
+    /*
      * @return
      *      boolean value indicating the empty status of the list
      */
@@ -335,7 +335,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return (this.firstNode == null);
     }
 
-    /**
+    /*
      * Iterates the list removing all the nodes until there are no more nodes to remove.
      */
     public void clear() {
@@ -346,7 +346,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         size = 0;
     }
 
-    /**
+    /*
      * @return
      *     return size of the list as an int
      */
@@ -417,7 +417,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         return new JavaUtilIterator<>( this );
     }
 
-    /**
+    /*
      * Returns a list iterator
      * @return
      */

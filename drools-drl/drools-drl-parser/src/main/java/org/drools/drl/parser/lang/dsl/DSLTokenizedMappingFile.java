@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
     // Option keywords, i.e., anything on a #/ line.
     private Set<String> optionSet = new HashSet<>();
 
-    /**
+    /*
      * Read a DSL file and convert it to a String. Comment lines are removed.
      * Split lines are joined, inserting a space for an EOL, but maintaining the
      * original number of lines by inserting EOLs. Options are recognized.

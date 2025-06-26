@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,24 +22,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * Java representation of a full <b>audit</b> report
  */
 public class AuditLog {
 
-    /**
+    /*
      * The <code>List</code> of audit log lines
      */
     private List<AuditLogLine> auditLogLines = new ArrayList<>();
 
-    /**
+    /*
      * @return an <b>unmodifiable</b> version of {@link AuditLog#auditLogLines}
      */
     public List<AuditLogLine> getAuditLogLines() {
         return Collections.unmodifiableList(auditLogLines);
     }
 
-    /**
+    /*
      * Add an <code>AuditLogLine</code> to the end of {@link AuditLog#auditLogLines}
      * @param toAdd
      */
@@ -47,7 +47,7 @@ public class AuditLog {
         auditLogLines.add(toAdd);
     }
 
-    /**
+    /*
      * Add a <code>List&lt;AuditLogLine&gt;</code> to the end of {@link AuditLog#auditLogLines}
      * @param toAdd
      */

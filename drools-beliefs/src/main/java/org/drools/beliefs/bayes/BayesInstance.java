@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -359,7 +359,7 @@ public class BayesInstance<T> {
     }
 
 
-    /**
+    /*
      * Passes a message from node1 to node2.
      * node1 projects its trgPotentials into the separator.
      * node2 then absorbs those trgPotentials from the separator.

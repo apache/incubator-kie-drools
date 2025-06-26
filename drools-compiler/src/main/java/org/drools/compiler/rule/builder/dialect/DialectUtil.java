@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public final class DialectUtil {
 
     private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[\\W]");
 
-    /**
+    /*
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
      */
     public static String getUniqueLegalName(final String packageName,

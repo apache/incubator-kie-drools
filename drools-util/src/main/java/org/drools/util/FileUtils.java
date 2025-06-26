@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Utility to access files
  */
 public class FileUtils {
@@ -43,7 +43,7 @@ public class FileUtils {
         // Avoid instantiating class
     }
 
-    /**
+    /*
      * Retrieve the <code>File</code> of the given <b>file</b>
      * This method does not guarantee the returned file if multiple files, with same name, are present in different directories
      * @param fileName
@@ -62,7 +62,7 @@ public class FileUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Retrieve the <code>File</code> of the given <b>file</b>
      * @param fileName
      * @param parentDir
@@ -87,7 +87,7 @@ public class FileUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
      * @param fileName
      * @return
@@ -98,7 +98,7 @@ public class FileUtils {
         return new FileInputStream(sourceFile);
     }
 
-    /**
+    /*
      * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
      * @param fileName
      * @param parentDir
@@ -110,7 +110,7 @@ public class FileUtils {
         return new FileInputStream(sourceFile);
     }
 
-    /**
+    /*
      * Retrieve the <b>content</b> of the given <b>file</b>
      * @param fileName
      * @return
@@ -125,7 +125,7 @@ public class FileUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Retrieve the <b>content</b> of the given <b>file</b>
      * @param fileName
      * @param parentDir
@@ -141,7 +141,7 @@ public class FileUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * @param fileName
      * @param classLoader
      * @return
@@ -151,7 +151,7 @@ public class FileUtils {
         return Optional.ofNullable(classLoader.getResourceAsStream(fileName));
     }
 
-    /**
+    /*
      * delete a directory and all its content
      * @param path path to the directory to delete
      */

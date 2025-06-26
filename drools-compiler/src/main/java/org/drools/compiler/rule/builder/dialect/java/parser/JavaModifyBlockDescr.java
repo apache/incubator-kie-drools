@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.rule.builder.dialect.java.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * A helper class used during java code parsing to identify
  * and handle modify(){} blocks
  */

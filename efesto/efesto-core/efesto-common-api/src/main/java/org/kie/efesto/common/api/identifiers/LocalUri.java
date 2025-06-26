@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-/**
+/*
  * A uri of the form: efesto-local:///a/b/c...
  * <p>
  * For instance: for "/a/b/c" the {@link LocalUri} is represented as:
@@ -95,7 +95,7 @@ public abstract class LocalUri {
         return toUri().toString();
     }
 
-    /**
+    /*
      * Root of a {@link LocalUri}: "/"
      */
     public static class LocalUriRoot extends LocalUri {
@@ -119,7 +119,7 @@ public abstract class LocalUri {
         // it is a singleton: we don't need to override equals, hashCode
     }
 
-    /**
+    /*
      * A component of a {@link LocalUri}.
      */
     public static class LocalUriPathComponent extends LocalUri {
@@ -141,7 +141,7 @@ public abstract class LocalUri {
             return component;
         }
 
-        /**
+        /*
          * Returns true when the path starts with the given argument.
          * <p>
          * e.g. when component = "a" then "/a/b/c" startsWith "a"

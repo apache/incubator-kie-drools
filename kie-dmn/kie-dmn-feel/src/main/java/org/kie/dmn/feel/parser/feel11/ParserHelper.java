@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -303,7 +303,7 @@ public class ParserHelper {
         return ctx.getStart().getInputStream().getText( interval );
     }
     
-    /**
+    /*
      * a specific heuristic for scope retrieval for filterPathExpression
      */
     public int fphStart(ParserRuleContext ctx, Parser parser) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.mvel.compiler;
 
 import java.io.Serializable;
 
-/**
+/*
  * IndexedNumber
  *
  * Created: 22/06/2006
@@ -39,7 +39,7 @@ public class IndexedNumber implements Serializable {
     public IndexedNumber() {
     }
 
-    /**
+    /*
      * @param pNb
      * @param pIndex
      */
@@ -49,35 +49,35 @@ public class IndexedNumber implements Serializable {
         this.index = pIndex;
     }
 
-    /**
+    /*
      * @return le/la/les index.
      */
     public int getIndex() {
         return this.index;
     }
 
-    /**
+    /*
      * @param pIndex le/la/les index sauvegarder.
      */
     public void setIndex(final int pIndex) {
         this.index = pIndex;
     }
 
-    /**
+    /*
      * @return le/la/les nb.
      */
     public int getNumber() {
         return this.number;
     }
 
-    /**
+    /*
      * @param pNb le/la/les nb sauvegarder.
      */
     public void setNumber(final int pNb) {
         this.number = pNb;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String toString() {

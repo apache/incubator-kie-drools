@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-/**
+/*
  * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
  *
  * @see LinkedList
@@ -39,7 +39,7 @@ public abstract class AbstractLinkedListNode<T extends DoubleLinkedEntry<T>>
 
     private T    next;
 
-    /**
+    /*
      * Empty Constructor
      */
     public AbstractLinkedListNode() {

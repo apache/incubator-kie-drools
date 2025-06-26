@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.internal.assembler.ProcessedResource;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderError;
 
-/**
+/*
  * For a given resource, it implements a mechanism to transform
  * such resource in a ProcessedResource.
  *
@@ -38,23 +38,23 @@ import org.kie.internal.builder.KnowledgeBuilderError;
  */
 public interface ResourceProcessor<C extends ProcessedResource> {
 
-    /**
+    /*
      * Perform the processing of the given resource
      */
     void process();
 
-    /**
+    /*
      * @return the resource that is processed by this object
      */
     Resource getResource();
 
-    /**
+    /*
      * @return the processed resource or null if there were errors
      * @throws IllegalStateException if process() was never called
      */
     C getProcessedResource();
 
-    /**
+    /*
      * Returns any error that have been generated while processing the resource.
      * @return empty if no errors occurred and the resource have been successfully processed
      */

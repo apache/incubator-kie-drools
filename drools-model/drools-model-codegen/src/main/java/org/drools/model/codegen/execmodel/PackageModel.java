@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -230,7 +230,7 @@ public class PackageModel {
         packageModel.addAllFunctions( packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
     }
 
-    /**
+    /*
      * Retrieve a package unique identifier. It uses both <b>releaseId</b> and <b>packageName</b>
      * if the former is not null and not a <b>Snapshot</b>; otherwise a <b>randomly</b> generated one
      * @param releaseId
@@ -530,7 +530,7 @@ public class PackageModel {
             return mainRuleClass;
         }
 
-        /**
+        /*
          * Append additional class to source results.
          * @param additionalCU 
          */

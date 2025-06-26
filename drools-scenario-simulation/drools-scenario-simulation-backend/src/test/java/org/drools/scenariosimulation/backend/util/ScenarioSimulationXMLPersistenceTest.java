@@ -473,7 +473,7 @@ class ScenarioSimulationXMLPersistenceTest {
         commonCheckSimulation(retrieved);
     }
 
-    /**
+    /*
      * Verify the given <code>Map</code> has one single entry, whose <code>List</code> value also has a single children.
      * If <b>expectedTextContent</b> is given, it also check the children text content match
      *

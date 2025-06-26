@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Internal Utility class.
  */
 public class DMNRuntimeBuilder {
@@ -88,7 +88,7 @@ public class DMNRuntimeBuilder {
         Reader resolve(String modelNamespace, String modelName, String locationURI);
     }
 
-    /**
+    /*
      * Internal Utility class.
      */
     public static DMNRuntimeBuilder fromDefaults() {
@@ -126,7 +126,7 @@ public class DMNRuntimeBuilder {
         return this;
     }
 
-    /**
+    /*
      * Internal Utility class.
      */
     public static DMNRuntimeBuilderConfigured usingStrict() {

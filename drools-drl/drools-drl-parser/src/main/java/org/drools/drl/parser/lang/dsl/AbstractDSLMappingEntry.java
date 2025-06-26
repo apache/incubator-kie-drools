@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,21 +40,21 @@ public abstract class AbstractDSLMappingEntry
         super();
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Section getSection() {
         return this.section;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public DSLMappingEntry.MetaData getMetaData() {
         return this.metadata;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String getMappingKey() {
@@ -73,35 +73,35 @@ public abstract class AbstractDSLMappingEntry
         this.keyPattern = keyPattern;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String getMappingValue() {
         return this.value;
     }
 
-    /**
+    /*
      * @param section the section to set
      */
     public void setSection(final Section section) {
         this.section = section;
     }
 
-    /**
+    /*
      * @param metadata the metadata to set
      */
     public void setMetaData(final MetaData metadata) {
         this.metadata = metadata;
     }
 
-    /**
+    /*
      * @return the keyPattern
      */
     public Pattern getKeyPattern() {
         return this.keyPattern;
     }
 
-    /**
+    /*
      * @return the valuePattern
      */
     public String getValuePattern() {
@@ -112,7 +112,7 @@ public abstract class AbstractDSLMappingEntry
         this.valuePattern = valuePattern;
     }
 
-    /**
+    /*
      * @return the variables
      */
     public Map<String, Integer> getVariables() {

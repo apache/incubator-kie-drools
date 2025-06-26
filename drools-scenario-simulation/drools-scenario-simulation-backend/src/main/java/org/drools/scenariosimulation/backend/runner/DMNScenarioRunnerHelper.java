@@ -76,7 +76,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return executableBuilder.run().getOutputs();
     }
 
-    /**
+    /*
      * It returns a {@link Map} which contains the actual data in the DMN Executable Builder (BC) or DMN Context (Kogito)
      * Typically, the Map contains a pair with the <b>Fact Name</b> as a Key and its <b>Object</b> as value
      * (another Map containing the fact properties)
@@ -131,7 +131,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         return inputValues;
     }
 
-    /**
+    /*
      * It manages the merge of two values in case a Fact is defined in both Background and Given input data.
      * In case of DMN scenario, values are Maps. In case of properties present in both values map, the new Value
      * will override the old one.

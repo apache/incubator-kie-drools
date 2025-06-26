@@ -103,7 +103,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
-    /**
+    /*
      * Given a DMNModelInstrumentedBase element, it looks in the DMN hierarchy to retrieve the root element name.
      * Most of the time, the root element is a Decision node OR a BusinessKnowledgeModel node that wrap the Conditional
      * Expression. In all other cases the top level root element identifier is returned.

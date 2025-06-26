@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
 
-/**
+/*
  * An EvaluatorWrapper is used when executing MVEL expressions
  * that have operator calls rewritten as:
  * 
@@ -76,7 +76,7 @@ public class EvaluatorWrapper implements Evaluator {
         selfRight = rightBinding == null || rightBinding.getIdentifier().equals("this");
     }
 
-    /**
+    /*
      * This method is called when operators are rewritten as function calls. For instance,
      * 
      * x after y
@@ -103,7 +103,7 @@ public class EvaluatorWrapper implements Evaluator {
                                     dummyFactHandleOf( rightValue ) );
     }
 
-    /**
+    /*
      * @return
      * @see Evaluator#getValueType()
      */
@@ -111,7 +111,7 @@ public class EvaluatorWrapper implements Evaluator {
         return evaluator.getValueType();
     }
 
-    /**
+    /*
      * @return
      * @see Evaluator#getOperator()
      */
@@ -119,7 +119,7 @@ public class EvaluatorWrapper implements Evaluator {
         return evaluator.getOperator();
     }
 
-    /**
+    /*
      * @return
      * @see Evaluator#getCoercedValueType()
      */
@@ -149,7 +149,7 @@ public class EvaluatorWrapper implements Evaluator {
                                    right );
     }
 
-    /**
+    /*
      * @return
      * @see Evaluator#isTemporal()
      */
@@ -157,7 +157,7 @@ public class EvaluatorWrapper implements Evaluator {
         return evaluator.isTemporal();
     }
 
-    /**
+    /*
      * @return
      * @see Evaluator#getInterval()
      */

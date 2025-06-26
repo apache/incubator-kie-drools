@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
-/**
+/*
  * For the moment being, use this for DMN "validation", since DMN does not have a code-generation phase
  */
 public class KieCompilerServiceDMNInputStream extends AbstractKieCompilerServiceDMN {

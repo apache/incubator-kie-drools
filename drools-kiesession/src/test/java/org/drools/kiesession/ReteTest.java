@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -69,7 +69,7 @@ public class ReteTest {
         this.entryPoint = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();;
     }
 
-    /**
+    /*
      * Tests ObjectTypeNodes are correctly added to the Rete object
      *
      * @throws Exception
@@ -99,7 +99,7 @@ public class ReteTest {
         assertThat(list.contains(stringTypeNode)).isTrue();
     }
 
-    /**
+    /*
      * Tests that interfaces and parent classes for an asserted  class are  cached, for  quick future iterations
      */
     @Test
@@ -161,7 +161,7 @@ public class ReteTest {
 
     }
 
-    /**
+    /*
      * Test asserts correctly propagate
      *
      * @throws Exception
@@ -302,7 +302,7 @@ public class ReteTest {
         assertThat(nodes.contains(collectionOtn)).isTrue();
     }
 
-    /**
+    /*
      * All objects deleted from a RootNode must be propagated to all children
      * ObjectTypeNodes.
      */

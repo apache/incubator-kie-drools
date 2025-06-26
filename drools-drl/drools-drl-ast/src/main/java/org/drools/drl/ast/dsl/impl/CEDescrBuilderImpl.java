@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.drl.ast.dsl.GroupByDescrBuilder;
 import org.drools.drl.ast.dsl.NamedConsequenceDescrBuilder;
 import org.drools.drl.ast.dsl.PatternDescrBuilder;
 
-/**
+/*
  * An implementation for the CEDescrBuilder
  */
 public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends AnnotatedBaseDescr> extends BaseDescrBuilderImpl<P, T>
@@ -47,7 +47,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         super( parent, descr );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, AndDescr> and() {
@@ -56,7 +56,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return new CEDescrBuilderImpl<>( this, andDescr );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or() {
@@ -65,7 +65,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return new CEDescrBuilderImpl<>( this, orDescr );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, NotDescr> not() {
@@ -74,7 +74,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return not;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, ExistsDescr> exists() {
@@ -83,7 +83,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return exists;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public ForallDescrBuilder<CEDescrBuilder<P, T>> forall() {
@@ -92,7 +92,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return forall;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate() {
@@ -119,7 +119,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return groupBy;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public EvalDescrBuilder<CEDescrBuilder<P, T>> eval() {
@@ -128,7 +128,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return eval;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern( String type ) {
@@ -137,7 +137,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return pattern;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern() {
@@ -146,7 +146,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return pattern;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public AnnotationDescrBuilder<CEDescrBuilder<P, T>> newAnnotation( String name ) {
@@ -155,7 +155,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return annotation;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public NamedConsequenceDescrBuilder<CEDescrBuilder<P, T>> namedConsequence() {
@@ -164,7 +164,7 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
         return namedConsequence;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public ConditionalBranchDescrBuilder<CEDescrBuilder<P, T>> conditionalBranch() {

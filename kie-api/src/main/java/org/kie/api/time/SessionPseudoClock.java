@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.time;
 import java.util.concurrent.TimeUnit;
 
 
-/**
+/*
  * A clock interface for the implementation of pseudo clocks,
  * that are clocks where the user have control over the actual
  * clock working.
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface SessionPseudoClock extends SessionClock {
 
-    /**
+    /*
      * Advances the clock time in the specified unit amount. 
      * 
      * @param amount the amount of units to advance in the clock

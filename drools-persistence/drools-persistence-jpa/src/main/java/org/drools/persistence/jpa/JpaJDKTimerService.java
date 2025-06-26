@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * A default Scheduler implementation that uses the
  * JDK built-in ScheduledThreadPoolExecutor as the
  * scheduler and the system clock as the clock.

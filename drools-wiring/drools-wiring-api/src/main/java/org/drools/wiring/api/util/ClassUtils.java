@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -107,7 +107,7 @@ public abstract class ClassUtils {
         return obj1 == null ? obj2 == null : obj1.equals(obj2);
     }
 
-    /**
+    /*
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
      */
@@ -115,7 +115,7 @@ public abstract class ClassUtils {
         return stripExtension(pResourceName).replace('/', '.');
     }
 
-    /**
+    /*
      * Please do not use - internal
      * org.my.Class -> org/my/Class.class
      */
@@ -128,7 +128,7 @@ public abstract class ClassUtils {
                               '/' ) + ".class";
     }
 
-    /**
+    /*
      * Please do not use - internal
      * org/my/Class.xxx -> org/my/Class
      */
@@ -161,7 +161,7 @@ public abstract class ClassUtils {
         return name.toString();
     }
 
-    /**
+    /*
      * This method will attempt to load the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
      */
@@ -222,7 +222,7 @@ public abstract class ClassUtils {
                 (ClassLoader)null);
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
      */
@@ -238,7 +238,7 @@ public abstract class ClassUtils {
         return object;
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
@@ -259,7 +259,7 @@ public abstract class ClassUtils {
         return object;
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
@@ -270,7 +270,7 @@ public abstract class ClassUtils {
         return instantiateObject(className, null, args);
     }
 
-    /**
+    /*
      * Populates the import style pattern map from give comma delimited string
      */
     public static void addImportStylePatterns(Map<String, Object> patterns,
@@ -308,7 +308,7 @@ public abstract class ClassUtils {
         }
     }
 
-    /**
+    /*
      * Determines if a given full qualified class name matches any import style patterns.
      */
     public static boolean isMatched(Map<String, Object> patterns,
@@ -339,7 +339,7 @@ public abstract class ClassUtils {
         }
     }
 
-    /**
+    /*
      * Extracts the package name from the given class object
      */
     public static String getPackage(Class<?> cls) {
@@ -776,7 +776,7 @@ public abstract class ClassUtils {
         return System.getProperty("jboss.server.name") != null;
     }
 
-    /**
+    /*
      * Checks if running on Android operating system
      */
     public static boolean isAndroid() {

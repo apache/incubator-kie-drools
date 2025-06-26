@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -60,7 +60,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutionResults;
 
 
-/**
+/*
  * <p>Java class for BatchExecutionCommand complex type.
  *
  * DO NOT ADD NEW COMMANDS TO THIS CLASS
@@ -123,7 +123,7 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
         this.lookup = lookup;
     }
 
-    /**
+    /*
      * Gets the value of the abortWorkItemOrCompleteWorkItemOrFireAllRules property.
      *
      * <p>

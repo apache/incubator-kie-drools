@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime;
 
 import org.kie.api.runtime.conf.KieSessionOptionsConfiguration;
 
-/**
+/*
  * A class to store Session related configuration. It must be used at session instantiation time
  * or not used at all.
  *

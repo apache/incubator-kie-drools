@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.compiler.compiler;
 
 import org.kie.internal.jci.CompilationProblem;
 
-/**
+/*
  * Utility class for compilation results
  */
 public final class BuilderResultUtils {
@@ -30,7 +30,7 @@ public final class BuilderResultUtils {
     private BuilderResultUtils() {
     }
 
-    /**
+    /*
      * Appends compilation problems to summary message if object is an array of {@link CompilationProblem}
      * separated with backspaces
      *
@@ -42,7 +42,7 @@ public final class BuilderResultUtils {
         return getProblemMessage( object, summary, DEFAULT_SEPARATOR );
     }
 
-    /**
+    /*
      * Appends compilation problems to summary message if object is an array of {@link CompilationProblem}
      * with custom separator
      *
@@ -58,7 +58,7 @@ public final class BuilderResultUtils {
         return summary;
     }
 
-    /**
+    /*
      * Appends compilation problems to builder if object is an array of {@link CompilationProblem}
      * or object itself if not
      *

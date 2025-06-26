@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public class ImpactAnalysisHelper {
         this.linkFilter = linkFilter;
     }
 
-    /**
+    /*
      * Forward graph of impact analysis. Collect impacted nodes from a changed node.
      * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
      * @param graph
@@ -59,7 +59,7 @@ public class ImpactAnalysisHelper {
         return filterImpactedNodes(graph, changedNode);
     }
 
-    /**
+    /*
      * Forward graph of impact analysis. Collect impacted nodes from a changed node.
      * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
      * @param graph
@@ -94,7 +94,7 @@ public class ImpactAnalysisHelper {
         return subMap;
     }
 
-    /**
+    /*
      * Backward graph of impact analysis. Collect impacting nodes from a target node.
      * Set targetNode status to Status.IMPACTED and impacting nodes status to Status.IMPACTING
      * @param graph
@@ -109,7 +109,7 @@ public class ImpactAnalysisHelper {
         return filterImpactingNodes(graph, targetNode);
     }
 
-    /**
+    /*
      * Backward graph of impact analysis. Collect impacting nodes from a target node.
      * Set targetNode status to Status.TARGET and impacting nodes status to Status.IMPACTING
      * @param graph

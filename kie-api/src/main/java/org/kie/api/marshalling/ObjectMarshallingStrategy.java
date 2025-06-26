@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 
 public interface ObjectMarshallingStrategy {
 
-    /**
+    /*
      * Override this method if you want multiple marshalling strategies of the same implementation in environment
      * @return the unique name in runtime environment of the ObjectMarshallingStrategy
      */
@@ -39,7 +39,7 @@ public interface ObjectMarshallingStrategy {
 
     public Object read(ObjectInputStream os) throws IOException, ClassNotFoundException;
 
-    /**
+    /*
      * This method is analogous to the write() method, but instead
      * of writing the object into an output stream, it returns
      * the marshalled object as a byte[].
@@ -53,7 +53,7 @@ public interface ObjectMarshallingStrategy {
                            ObjectOutputStream os,
                            Object object ) throws IOException;
 
-    /**
+    /*
      * This method is analogous to the read method, but instead of reading it from an
      * input stream, it reads it from a byte[]
      *
@@ -67,18 +67,18 @@ public interface ObjectMarshallingStrategy {
                              byte[] object,
                              ClassLoader classloader ) throws IOException, ClassNotFoundException;
 
-    /**
+    /*
      * Creates a new marshalling context
      */
     public Context createContext();
 
     public static interface Context {
-        /**
+        /*
          * Loads the context from the given object input stream
          */
         public void read(ObjectInputStream ois) throws IOException, ClassNotFoundException;
 
-        /**
+        /*
          * Writes the context to the given object output stream
          */
         public void write(ObjectOutputStream oos) throws IOException;

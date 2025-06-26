@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public class SupportRequest implements java.io.Serializable {
     private boolean premium;
     private String area;
     private String description;
-    /**
+    /*
      * This `priority` is deliberately not part of the arguments constructor
      */
     private String priority;

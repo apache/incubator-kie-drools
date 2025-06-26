@@ -20,7 +20,7 @@ package org.kie.efesto.compilationmanager.api.model;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A <code>EfestoCallableOutput</code> containing model source (e.g. for DMN execution)
  */
 public abstract class EfestoCallableOutputModelContainer<T> implements EfestoCallableOutput {

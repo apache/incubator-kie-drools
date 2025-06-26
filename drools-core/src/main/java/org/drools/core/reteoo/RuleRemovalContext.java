@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 
-/**
+/*
  * This context class is used during rule removal to ensure
  * network consistency.
  */
@@ -58,7 +58,7 @@ public class RuleRemovalContext implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    /**
+    /*
      * Returns the reference to the rule being removed from the kbase
      * 
      * @return

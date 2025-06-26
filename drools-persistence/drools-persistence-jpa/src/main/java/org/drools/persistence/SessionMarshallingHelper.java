@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ public class SessionMarshallingHelper {
     private InternalMarshaller            marshaller;
     private Environment                   env;
 
-    /**
+    /*
      * Exist Info, so load session from here
      */
     public SessionMarshallingHelper( KieBase kbase,
@@ -58,7 +58,7 @@ public class SessionMarshallingHelper {
                           (InternalMarshaller) MarshallerFactory.newMarshaller( kbase ) ;
     }
 
-    /** 
+    /* 
      * new session, don't write now as info will request it on update callback
      */
     public SessionMarshallingHelper( KieSession ksession,

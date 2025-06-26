@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
-/**
+/*
  * Class used to generate <code>KiePMMLScorecard</code> out of a <code>DataDictionary</code> and a
  * <code>ScorecardModel</code>
  */
@@ -69,7 +69,7 @@ public class KiePMMLScorecardModelFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and
      * <code>Scorecard</code>.
      * <b>It also populate the given <code>Map</code> that has to be used for final

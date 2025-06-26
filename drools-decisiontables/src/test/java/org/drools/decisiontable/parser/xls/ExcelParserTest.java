@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  *
  * Some unit tests for the corners of ExcelParser that are not explicitly
  * covered by integration tests.
@@ -54,7 +54,7 @@ public class ExcelParserTest {
         }
     }
     
-    /**
+    /*
      * This should test to see if a cell is in a certain range or not. 
      * If it is in a merged range, then it should return the top left cell.
      * @throws Exception

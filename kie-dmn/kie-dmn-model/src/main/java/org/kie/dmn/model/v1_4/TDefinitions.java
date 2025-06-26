@@ -168,7 +168,7 @@ public class TDefinitions extends TNamedElement implements Definitions {
         this.exporterVersion = value;
     }
 
-    /**
+    /*
      * Implementing support for internal model
      */
     @Override

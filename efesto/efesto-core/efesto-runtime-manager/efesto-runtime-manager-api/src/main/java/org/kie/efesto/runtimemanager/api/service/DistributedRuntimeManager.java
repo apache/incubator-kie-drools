@@ -22,12 +22,12 @@ import java.util.Optional;
 
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
-/**
+/*
  * This is the implementation that run on different JVMs
  */
 public interface DistributedRuntimeManager {
 
-    /**
+    /*
      * Return an <code>Optional&lt;EfestoOutput&gt;</code> from the given <b>modelLocalUriIdString</b> and <b>inputDataString</b>
      *
      * @param modelLocalUriIdString

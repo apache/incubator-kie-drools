@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import java.util.zip.GZIPOutputStream;
 import org.drools.base.common.DroolsObjectInputStream;
 import org.drools.base.common.DroolsObjectOutputStream;
 
-/**
+/*
  * Created by IntelliJ IDEA.
  * User: sg0521861
  * Date: Mar 27, 2008
@@ -38,7 +38,7 @@ import org.drools.base.common.DroolsObjectOutputStream;
  */
 public class DroolsStreamUtils {
 
-    /**
+    /*
      * This routine would stream out the give object uncompressed and store the streamed contents in
      * the return byte array.  The output contents could only be read by the corresponding "streamIn"
      * method of this class.
@@ -50,7 +50,7 @@ public class DroolsStreamUtils {
         return streamOut(object, false);
     }
 
-    /**
+    /*
      * This routine would stream out the give object, uncompressed or compressed depending on the given flag,
      * and store the streamed contents in the return byte array. The output contents could only be read by
      * the corresponding "streamIn" method of this class.
@@ -68,7 +68,7 @@ public class DroolsStreamUtils {
         return bytes.toByteArray();
     }
 
-    /**
+    /*
      * This method would stream out the given object to the given output stream uncompressed.
      * The output contents could only be read by the corresponding "streamIn" method of this class.
      * @param out
@@ -79,7 +79,7 @@ public class DroolsStreamUtils {
         streamOut(out, object, false);
     }
 
-    /**
+    /*
      * This method would stream out the given object to the given output stream uncompressed or compressed
      * depending on the given flag.  The output contents could only be read by the corresponding "streamIn"
      * methods of this class.
@@ -105,7 +105,7 @@ public class DroolsStreamUtils {
         }
     }
 
-    /**
+    /*
      * This method reads the contents from the given byte array and returns the object.  It is expected that
      * the contents in the given buffer was not compressed, and the content stream was written by the corresponding
      * streamOut methods of this class.
@@ -118,7 +118,7 @@ public class DroolsStreamUtils {
         return streamIn(bytes, null);
     }
 
-    /**
+    /*
      * This method reads the contents from the given byte array and returns the object.  It is expected that
      * the contents in the given buffer was not compressed, and the content stream was written by the corresponding
      * streamOut methods of this class.
@@ -133,7 +133,7 @@ public class DroolsStreamUtils {
         return streamIn(bytes, classLoader, false);
     }
 
-    /**
+    /*
      * This method reads the contents from the given byte array and returns the object.  The contents in the given
      * buffer could be compressed or uncompressed depending on the given flag.  It is assumed that the content
      * stream was written by the corresponding streamOut methods of this class.
@@ -147,7 +147,7 @@ public class DroolsStreamUtils {
         return streamIn(new ByteArrayInputStream(bytes), null, compressed);
     }
 
-    /**
+    /*
      * This method reads the contents from the given byte array and returns the object.  The contents in the given
      * buffer could be compressed or uncompressed depending on the given flag.  It is assumed that the content
      * stream was written by the corresponding streamOut methods of this class.
@@ -163,7 +163,7 @@ public class DroolsStreamUtils {
         return streamIn(new ByteArrayInputStream(bytes), classLoader, compressed);
     }
 
-    /**
+    /*
      * This method reads the contents from the given input stream and returns the object.  It is expected that
      * the contents in the given stream was not compressed, and it was written by the corresponding
      * streamOut methods of this class.
@@ -176,7 +176,7 @@ public class DroolsStreamUtils {
         return streamIn(in, null, false);
     }
 
-    /**
+    /*
      * This method reads the contents from the given input stream and returns the object.  It is expected that
      * the contents in the given stream was not compressed, and it was written by the corresponding
      * streamOut methods of this class.
@@ -191,7 +191,7 @@ public class DroolsStreamUtils {
         return streamIn(in, classLoader, false);
     }
 
-    /**
+    /*
      * This method reads the contents from the given input stream and returns the object.  The contents in the given
      * stream could be compressed or uncompressed depending on the given flag.  It is assumed that the content
      * stream was written by the corresponding streamOut methods of this class.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -185,7 +185,7 @@ public class SingleBetaConstraints
         return new BetaConstraint[]{this.constraint};
     }
 
-    /**
+    /*
      * Determine if another object is equal to this.
      *
      * @param object The object to test.

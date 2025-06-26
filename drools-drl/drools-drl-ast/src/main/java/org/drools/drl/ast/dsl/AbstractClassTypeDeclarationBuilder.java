@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ public interface AbstractClassTypeDeclarationBuilder<T extends BaseDescr>
 
 
 
-    /**
+    /*
      * Adds a field to this type declaration
      *
      * @param name the name of the field

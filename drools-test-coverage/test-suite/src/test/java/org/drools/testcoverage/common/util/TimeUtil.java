@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.testcoverage.common.util;
 
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * Utility class providing methods for coping with timing issues, such as
  * {@link java.lang.Thread#sleep(long, int)} inaccuracy, on certain OS.
  * <p/>
@@ -36,7 +36,7 @@ public class TimeUtil {
     private TimeUtil() {
     }
 
-    /**
+    /*
      * Sleeps for specified amount of time in milliseconds.
      * @param duration the amount of milliseconds to wait
      * @throws InterruptedException if the current thread gets interrupted
@@ -45,7 +45,7 @@ public class TimeUtil {
         sleepNanos(TimeUnit.MILLISECONDS.toNanos(duration));
     }
 
-    /**
+    /*
      * Sleeps for specified amount of time in nanoseconds.
      * @param nanoDuration the amount of nanoseconds to wait
      * @throws InterruptedException if the current thread gets interrupted

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-/**
+/*
  * Marshalling helper class to perform serialize/de-serialize a given object
  */
 public class SerializationHelper {

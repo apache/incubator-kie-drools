@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ import static org.kie.maven.plugin.helpers.DMNValidationHelper.performDMNDTAnaly
 import static org.kie.maven.plugin.helpers.DMNValidationHelper.shallPerformDMNDTAnalysis;
 import static org.kie.maven.plugin.helpers.ExecutorHelper.setSystemProperties;
 
-/**
+/*
  * This executor builds the Drools files belonging to the kproject.
  */
 public class BuildDrlExecutor {

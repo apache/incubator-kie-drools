@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * The idea behind <code>LinkedListNodeWrapper</code> is to be able to add
  * the same <code>LinkedListNode</code> to multiple <code>LinkedList</code>s
  * where the node can have different previous and next nodes in each list.

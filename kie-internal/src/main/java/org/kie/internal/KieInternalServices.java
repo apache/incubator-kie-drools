@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ public interface KieInternalServices {
 
     CorrelationKeyFactory newCorrelationKeyFactory();
 
-    /**
+    /*
      * A Factory for this KieServices
      */
     public static class Factory {
@@ -38,7 +38,7 @@ public interface KieInternalServices {
             }
         }
 
-        /**
+        /*
          * Returns a reference to the KieServices singleton
          */
         public static KieInternalServices get() {

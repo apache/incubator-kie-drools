@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import com.github.javaparser.ast.stmt.ForEachStmt;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-/**
+/*
  * A ForEachStatement downcasting the iterable variable
  */
 public class ForEachDowncastStmtT implements TypedExpression {

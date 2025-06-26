@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This class configures the package compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
  * Normally you will not need to look at this class, unless you want to override the defaults.
@@ -70,7 +70,7 @@ public class KnowledgeBuilderFlowConfigurationImpl extends BaseConfiguration<Kno
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderFlowConfigurationImpl.class);
 
 
-    /**
+    /*
      * Programmatic properties file, added with lease precedence
      */
     public KnowledgeBuilderFlowConfigurationImpl(CompositeConfiguration<KnowledgeBuilderOption, SingleValueKieBuilderOption, MultiValueKieBuilderOption> compConfig) {

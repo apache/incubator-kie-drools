@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.runtime.conf;
 
 import java.util.Objects;
 
-/**
+/*
  * A class for the session persistence configuration.
  */
 public class PersistedSessionOption implements SingleValueKieSessionOption {
@@ -42,7 +42,7 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         }
     }
 
-    /**
+    /*
      * NONE : On restoring a session, filter firing based on StoredObject.isPropagated
      * ACTIVATION_KEY : On restoring a session, filter firing based on StoredObject.isPropagated and persisted ActivationKey
      */
@@ -50,7 +50,7 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         NONE, ACTIVATION_KEY
     }
 
-    /**
+    /*
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.persistedsession";
@@ -81,7 +81,7 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         return new PersistedSessionOption(sessionId);
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

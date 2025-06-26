@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,13 +20,13 @@ package org.kie.efesto.common.api.model;
 
 import java.util.Objects;
 
-/**
+/*
  * A <code>GeneratedResource</code> meant to map a <code>Class</code>
  */
 public final class GeneratedClassResource implements GeneratedResource {
 
     private static final long serialVersionUID = 8140824908598306598L;
-    /**
+    /*
      * the full class name of generated class
      */
     private final String fullClassName;

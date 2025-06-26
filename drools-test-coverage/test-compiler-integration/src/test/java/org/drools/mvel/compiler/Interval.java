@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,28 +29,28 @@ public class Interval {
         this.duration = duration;
     }
 
-    /**
+    /*
      * @return the start
      */
     public long getStart() {
         return start;
     }
 
-    /**
+    /*
      * @param start the start to set
      */
     public void setStart( long start ) {
         this.start = start;
     }
 
-    /**
+    /*
      * @return the duration
      */
     public long getDuration() {
         return duration;
     }
 
-    /**
+    /*
      * @param duration the duration to set
      */
     public void setDuration( long duration ) {

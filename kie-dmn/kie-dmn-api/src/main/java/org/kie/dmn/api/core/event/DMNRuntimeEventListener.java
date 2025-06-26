@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,13 +48,13 @@ public interface DMNRuntimeEventListener {
 
     default void afterEvaluateAll(AfterEvaluateAllEvent event) {}
 
-    /**
+    /*
      * Fired after the if <b>if</b> conditional is evaluated
      *
      */
     default void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {}
 
-    /**
+    /*
      * Fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
      *
      */

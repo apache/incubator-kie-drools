@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 
 public interface BeliefSystem<M extends ModedAssertion<M>> {
     
-    /**
+    /*
      * TypeConf is already available, so we pass it, to avoid additional lookups
      */
     BeliefSet<M> insert(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf);
 
     BeliefSet<M> insert(M mode, RuleImpl rule, TruthMaintenanceSystemInternalMatch activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf);
 
-    /**
+    /*
      * The typeConf has not yet been looked up, so we leave it to the implementation to decide if it needs it or not.
      */
     void delete(LogicalDependency<M> node, BeliefSet<M> beliefSet, PropagationContext context);

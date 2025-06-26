@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,7 +57,7 @@ public class ClassFieldAccessorStore implements ReadAccessorSupplier, Externaliz
 
     private ClassFieldAccessorCache cache;
 
-    /**
+    /*
      * This field is just there to assist in testing
      */
     private boolean                           eagerWire = true;

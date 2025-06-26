@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.DefaultEventHandle;
 
-/**
+/*
  * A class to hold a list of the right tuples that belong to a 
  * window (sliding, tumbling, etc)
  * 

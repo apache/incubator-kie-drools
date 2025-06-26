@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.mvel.compiler;
 
 import java.io.Serializable;
 
-/**
+/*
  * A grand parent class
  */
 public class GrandParent implements Serializable {
@@ -33,14 +33,14 @@ public class GrandParent implements Serializable {
         this.name = name;
     }
 
-    /**
+    /*
      * @return the name
      */
     public String getName() {
         return this.name;
     }
 
-    /**
+    /*
      * @param name the name to set
      */
     public void setName(final String name) {

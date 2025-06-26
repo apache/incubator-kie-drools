@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.impact.analysis.model.right;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * This class represents a delete action for a specific fact.
  * Use this action when you know the fact's properties to be deleted, assuming other facts of the same class still
  * exist in the working memory. (Usually, you don't know the fact's properties)

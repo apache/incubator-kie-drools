@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
 
     void makeImmutable();
 
-    /**
+    /*
      * Gets an option value
      *
      * @param option the option class for the option being requested
@@ -38,7 +38,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
      */
     <C extends T> void setOption( C option );
 
-    /**
+    /*
      * Gets an option value
      *
      * @param optionKey SingleValueOption OptionKey to look up the valye for.
@@ -49,7 +49,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
      */
     <C extends S> C getOption( OptionKey<C> optionKey );
 
-    /**
+    /*
      * Gets an option value for the given option + key. This method should
      * be used for multi-value options, like accumulate functions configuration
      * where one option has multiple values, distinguished by a sub-key.
@@ -65,7 +65,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
         return null; // not all configurations have multi options,
     }
 
-    /**
+    /*
      * Deprecated, KEY now exists top level, and its preferred to be explicit that this is a sub key
      * @param optionKey
      * @return
@@ -76,7 +76,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
         return getOptionSubKeys(optionKey);
     }
 
-    /**
+    /*
      * Retrieves the set of all sub keys for a MultiValueOption.
      *
      * @param optionKey The OptionKey for the MultiValueOption

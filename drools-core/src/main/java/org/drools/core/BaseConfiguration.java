@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -88,7 +88,7 @@ public abstract class BaseConfiguration<T extends Option, S extends SingleValueO
         return value;
     }
 
-    /**
+    /*
      * Makes the configuration object immutable. Once it becomes immutable,
      * there is no way to make it mutable again.
      * This is done to keep consistency.
@@ -97,7 +97,7 @@ public abstract class BaseConfiguration<T extends Option, S extends SingleValueO
         this.immutable = true;
     }
 
-    /**
+    /*
      * Returns true if this configuration object is immutable or false otherwise.
      */
     public final boolean isImmutable() {

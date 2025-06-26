@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 
 import static org.drools.util.StringUtils.lcFirstForBean;
 
-/**
+/*
  * This provides access to fields, and what their numerical index/object type is.
  * This is basically a wrapper class around dynamically generated subclasses of
  * BaseClassFieldExtractor,

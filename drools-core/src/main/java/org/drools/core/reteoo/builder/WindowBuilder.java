@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,14 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.WindowDeclaration;
 
-/**
+/*
  * A builder for patterns
  */
 public class WindowBuilder {
     
     public static final WindowBuilder INSTANCE = new WindowBuilder();
 
-    /**
+    /*
      * @inheritDoc
      */
     public void build( final BuildContext context,
@@ -47,7 +47,7 @@ public class WindowBuilder {
         context.setAttachPQN( true );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean requiresLeftActivation( final BuildUtils utils,

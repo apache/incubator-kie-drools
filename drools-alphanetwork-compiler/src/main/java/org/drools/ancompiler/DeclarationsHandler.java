@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
-/**
+/*
  * This handler is used to create the member declarations section of a generated subclass of a {@link CompiledNetwork}.
  * Currently we only create member variables for the following types of nodes:
  * <p/>
@@ -48,7 +48,7 @@ import org.drools.core.util.index.AlphaRangeIndex;
 public class DeclarationsHandler extends AbstractCompilerHandler {
     private static final String PRIVATE_MODIFIER = "private";
 
-    /**
+    /*
      * This field keeps track of the current set of hashed AlphaNodes for a ClassReader.
      *
      * @see #startHashedAlphaNodes(org.kie.base.ClassFieldReader)
@@ -61,7 +61,7 @@ public class DeclarationsHandler extends AbstractCompilerHandler {
     private final StringBuilder builder;
     private boolean disableContextEntry;
 
-    /**
+    /*
      * Keeps track of all the ClassFieldReaders for hashed alphas, and the maps that contain hashed values/node ids
      * for said alphas.
      */

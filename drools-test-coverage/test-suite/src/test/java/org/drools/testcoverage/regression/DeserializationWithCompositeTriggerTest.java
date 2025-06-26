@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.api.runtime.conf.TimerJobFactoryOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Verifies that serialization and de-serialization of a composite trigger succeeds (BZ 1142914).
  */
 public class DeserializationWithCompositeTriggerTest {
@@ -91,7 +91,7 @@ public class DeserializationWithCompositeTriggerTest {
         }
     }
 
-    /**
+    /*
      * Verifies that serialization of a rule with composite trigger does not fail on
      * org.drools.core.time.impl.CompositeMaxDurationTrigger class serialization.
      */

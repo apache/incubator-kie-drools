@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -67,7 +67,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.resources}", required = true)
     private List<org.apache.maven.model.Resource> resourcesDirectories;
 
-    /**
+    /*
      * Directory containing the generated JAR.
      */
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
@@ -76,7 +76,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.build.testSourceDirectory}")
     private File testDir;
 
-    /**
+    /*
      * Project resources folder.
      */
     @Parameter(required = true, defaultValue = "src/main/resources")

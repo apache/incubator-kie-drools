@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.memorycompiler;
 
 public interface CompilationProblem {
 
-    /**
+    /*
      * is the problem an error and compilation cannot continue
      * or just a warning and compilation can proceed
      *
@@ -28,14 +28,14 @@ public interface CompilationProblem {
      */
     boolean isError();
 
-    /**
+    /*
      * name of the file where the problem occurred
      *
      * @return
      */
     String getFileName();
 
-    /**
+    /*
      * position of where the problem starts in the source code
      *
      * @return
@@ -43,7 +43,7 @@ public interface CompilationProblem {
     int getStartLine();
     int getStartColumn();
 
-    /**
+    /*
      * position of where the problem stops in the source code
      *
      * @return
@@ -51,7 +51,7 @@ public interface CompilationProblem {
     int getEndLine();
     int getEndColumn();
 
-    /**
+    /*
      * the description of the problem
      *
      * @return

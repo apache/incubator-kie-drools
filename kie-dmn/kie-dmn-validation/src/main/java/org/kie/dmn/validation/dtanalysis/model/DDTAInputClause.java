@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -67,7 +67,7 @@ public class DDTAInputClause implements Domain {
         return discreteValues != null && !discreteValues.isEmpty();
     }
 
-    /**
+    /*
      * Used by MC/DC
      * NOT to be used by Gap analysis, as domain ordering is not necessarily respected while modeling.
      */
@@ -75,7 +75,7 @@ public class DDTAInputClause implements Domain {
         return discreteDMNOrder;
     }
 
-    /**
+    /*
      * the null was explicitly specified in lov
      */
     public boolean isAllowNull() {

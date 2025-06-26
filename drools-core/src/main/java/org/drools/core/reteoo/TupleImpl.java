@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -456,7 +456,7 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         return handle;
     }
 
-    /**
+    /*
      * This method is used by the consequence invoker (generated via asm by the ConsequenceGenerator)
      * to always pass to the consequence the original fact handle even in case when it has been
      * cloned and linked by a WindowNode

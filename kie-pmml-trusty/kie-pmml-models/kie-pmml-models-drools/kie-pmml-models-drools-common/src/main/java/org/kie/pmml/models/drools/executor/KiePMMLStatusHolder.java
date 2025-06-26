@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.models.drools.executor;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
+/*
  * Class used inside drools. Rules are fired based on the value of status
  */
 public class KiePMMLStatusHolder {

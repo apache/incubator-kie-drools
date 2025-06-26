@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
-/**
+/*
  * DTO class used to bring around data related to Pre/Post processing
  * phases
  */
@@ -47,7 +47,7 @@ public class ProcessingDTO {
     private Object affinity;
     private Map<String, Double> probabilityMap;
 
-    /**
+    /*
      *
      * @param model
      * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
@@ -73,7 +73,7 @@ public class ProcessingDTO {
         this.miningFields = model.getMiningFields();
     }
 
-    /**
+    /*
      * @param defineFunctions
      * @param derivedFields
      * @param outputFields
@@ -122,7 +122,7 @@ public class ProcessingDTO {
         return Collections.unmodifiableList(kiePMMLNameValues);
     }
 
-    /**
+    /*
      * Add the given <code>KiePMMLNameValue</code> to <b>kiePMMLNameValues</b>
      * if there is not another with the same name; otherwise replace it.
      *

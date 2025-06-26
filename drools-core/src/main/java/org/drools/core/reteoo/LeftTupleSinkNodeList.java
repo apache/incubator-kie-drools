@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
+/*
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
  * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of
@@ -53,7 +53,7 @@ public class LeftTupleSinkNodeList
 
     private int               size;
 
-    /**
+    /*
      * Construct an empty <code>LinkedList</code>
      */
     public LeftTupleSinkNodeList() {
@@ -97,7 +97,7 @@ public class LeftTupleSinkNodeList
         }        
     }
 
-    /**
+    /*
      * Add a <code>TupleSinkNode</code> to the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.
      *
@@ -116,7 +116,7 @@ public class LeftTupleSinkNodeList
         this.size++;
     }  
 
-    /**
+    /*
      * Removes a <code>TupleSinkNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.
@@ -141,7 +141,7 @@ public class LeftTupleSinkNodeList
         }
     }
 
-    /**
+    /*
      * Return the first node in the list
      * @return
      *      The first <code>TupleSinkNode</code>.
@@ -150,7 +150,7 @@ public class LeftTupleSinkNodeList
         return this.firstNode;
     }
 
-    /**
+    /*
      * Return the last node in the list
      * @return
      *      The last <code>TupleSinkNode</code>.
@@ -159,7 +159,7 @@ public class LeftTupleSinkNodeList
         return this.lastNode;
     }
 
-    /**
+    /*
      * Remove the first node from the list. The next node then becomes the first node. If this is the last
      * node then both first and last node references are set to null.
      *
@@ -182,7 +182,7 @@ public class LeftTupleSinkNodeList
         return node;
     }
 
-    /**
+    /*
      * Remove the last node from the list. The previous node then becomes the last node. If this is the last
      * node then both first and last node references are set to null.
      *
@@ -205,7 +205,7 @@ public class LeftTupleSinkNodeList
         return node;
     }
 
-    /**
+    /*
      * @return
      *      boolean value indicating the empty status of the list
      */
@@ -213,7 +213,7 @@ public class LeftTupleSinkNodeList
         return (this.firstNode == null);
     }
 
-    /**
+    /*
      * Iterates the list removing all the nodes until there are no more nodes to remove.
      */
     public void clear() {
@@ -221,7 +221,7 @@ public class LeftTupleSinkNodeList
         }
     }
 
-    /**
+    /*
      * @return
      *     return size of the list as an int
      */
@@ -229,7 +229,7 @@ public class LeftTupleSinkNodeList
         return this.size;
     }
 
-    /**
+    /*
      * Returns a list iterator
      * @return
      */

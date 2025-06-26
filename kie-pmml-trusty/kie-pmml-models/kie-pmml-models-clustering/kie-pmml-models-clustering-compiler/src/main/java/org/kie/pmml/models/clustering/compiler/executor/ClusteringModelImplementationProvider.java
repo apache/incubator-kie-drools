@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Default <code>ModelImplementationProvider</code> for <b>Clustering</b>
  */
 public class ClusteringModelImplementationProvider implements ModelImplementationProvider<ClusteringModel,KiePMMLClusteringModel>{

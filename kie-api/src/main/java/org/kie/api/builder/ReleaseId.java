@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.builder;
 
-/**
+/*
  * ReleaseId is a full identifier far a given version of an artifact.
  * Following the Maven conventions it is composed of 3 parts: a groupId, an artifactId and a version
  */

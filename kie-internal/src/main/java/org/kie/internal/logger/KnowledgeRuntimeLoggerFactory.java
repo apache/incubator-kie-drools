@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.logger.KieRuntimeLogger;
 
-/**
+/*
  * <p>
  * The KnowledgeRuntimeLogger uses the comprehensive event system to create an audit log that can be used
  * to log the execution of the session for later inspection, in tools such as the Eclipse audit viewer.
@@ -42,7 +42,7 @@ public class KnowledgeRuntimeLoggerFactory {
 
     private static KieLoggers knowledgeRuntimeLoggerFactoryService;
 
-    /**
+    /*
      * Creates a file logger in the current thread. The file is in XML format, suitable for interpretation by Eclipse's Drools Audit View
      * or other tools. Note that while events are written as they happen, the file will not be flushed until it is closed or the underlying
      * file buffer is filled. If you need real time logging then use a Console Logger or a Threaded File Logger.
@@ -57,7 +57,7 @@ public class KnowledgeRuntimeLoggerFactory {
                                                                   fileName );
     }
 
-    /**
+    /*
      * Creates a file logger that executes in a different thread, where information is written on given intervals (in milliseconds).
      * The file is in XML format, suitable for interpretation by Eclipse's Drools Audit View or other tools.
      *
@@ -74,7 +74,7 @@ public class KnowledgeRuntimeLoggerFactory {
                                                                           interval );
     }
 
-    /**
+    /*
      * Logs events to command line console. This is not in XML format, so it cannot be parsed
      * by other tools, but is in real time and is more human readable.
      *

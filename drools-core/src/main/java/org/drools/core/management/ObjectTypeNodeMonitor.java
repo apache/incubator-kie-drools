@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.core.management;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 
-/**
+/*
  * The monitor MBean for ObjectTypeNodes
  */
 public class ObjectTypeNodeMonitor implements ObjectTypeNodeMonitorMBean  {

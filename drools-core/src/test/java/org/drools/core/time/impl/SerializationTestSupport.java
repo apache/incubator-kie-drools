@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,32 +25,32 @@ import java.io.ObjectOutputStream;
 
 import org.junit.jupiter.api.Test;
 
-/**
+/*
  * Base class for unit tests that wish to verify 
  * backwards compatibily of serialization with earlier versions
  * of Quartz.
  */
 public abstract class SerializationTestSupport {
 
-    /**
+    /*
      * Get the object to serialize when generating serialized file for future
      * tests, and against which to validate deserialized object.
      */
     protected abstract Object getTargetObject() throws Exception;
     
-    /**
+    /*
      * Get the Quartz versions for which we should verify
      * serialization backwards compatibility.
      */
     protected abstract String[] getVersions();
     
-    /**
+    /*
      * Verify that the target object and the object we just deserialized 
      * match.
      */
     protected abstract void verifyMatch(Object target, Object deserialized);
     
-    /**
+    /*
      * Test that we can successfully deserialize our target
      * class for all of the given Quartz versions. 
      */
@@ -67,7 +67,7 @@ public abstract class SerializationTestSupport {
         }
     }
     
-    /**
+    /*
      * Deserialize the target object from disk.
      */
     protected Object deserialize(String version, Class clazz) throws Exception {
@@ -83,7 +83,7 @@ public abstract class SerializationTestSupport {
         return obj;
     }
     
-    /**
+    /*
      * Use this method in the future to generate other versions of
      * of the serialized object file.
      */
@@ -100,7 +100,7 @@ public abstract class SerializationTestSupport {
         oos.close();
     }
     
-    /**
+    /*
      * Generate the expected name of the serialized object file.
      */
     private String getSerializedFileName(String version, Class clazz) {

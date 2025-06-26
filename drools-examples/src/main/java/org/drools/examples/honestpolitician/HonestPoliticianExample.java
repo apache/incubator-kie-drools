@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.runtime.KieSession;
 
 public class HonestPoliticianExample {
 
-    /**
+    /*
      * @param args
      */
     public static void main(final String[] args) {

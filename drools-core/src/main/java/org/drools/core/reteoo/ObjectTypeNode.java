@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ import org.drools.util.bitmask.EmptyBitMask;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
-/**
+/*
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
  * fact assertions propagated from the <code>Rete</code> node using <code>ObjectType</code> interface.
  * <p/>
@@ -73,7 +73,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The <code>ObjectType</code> semantic module.
      */
     protected ObjectType objectType;
@@ -94,7 +94,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     }
 
-    /**
+    /*
      * Construct given a semantic <code>ObjectType</code> and the provided
      * unique id. All <code>ObjectTypdeNode</code> have node memory.
      *
@@ -152,7 +152,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         return NodeTypeEnums.ObjectTypeNode;
     }
 
-    /**
+    /*
      * Retrieve the semantic <code>ObjectType</code> differentiator.
      *
      * @return The semantic <code>ObjectType</code> differentiator.
@@ -161,7 +161,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         return this.objectType;
     }
 
-    /**
+    /*
      * Returns the partition ID for which this node belongs to
      */
     @Override
@@ -197,7 +197,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         }
     }
 
-    /**
+    /*
      * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
      * can have the matched facts propagated to them.
@@ -217,7 +217,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         this.sink.propagateAssertObject(factHandle, context, reteEvaluator);
     }
 
-    /**
+    /*
      * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the
      * <code>FactHandleImpl</code> from the node memory.
      *
@@ -328,7 +328,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
                 workingMemory.getEntryPoint(((EntryPointNode)source).getEntryPoint().getEntryPointId()).getObjectStore().getStoreForClass(classType).iterator();
     }
 
-    /**
+    /*
      * Rete needs to know that this ObjectTypeNode has been added
      */
     @Override
@@ -374,7 +374,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         return idGenerator.nextId();
     }
 
-    /**
+    /*
     * OTN needs to override remove to avoid releasing the node ID, since OTN are
     * never removed from the rulebase in the current implementation
     */
@@ -383,7 +383,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return doRemove(context, builder);
     }
 
-    /**
+    /*
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
@@ -416,7 +416,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         return this.source.getId() == other.source.getId() && this.objectType.equals( other.objectType );
     }
 
-    /**
+    /*
      * @return the entryPoint
      */
     public EntryPointId getEntryPoint() {

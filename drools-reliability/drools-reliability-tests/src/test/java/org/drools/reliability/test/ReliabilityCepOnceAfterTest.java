@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -63,7 +63,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
     public static final String KEYWORD = "once_after";
     public static final String RULE_NAME = "R";
 
-    /**
+    /*
      * These rules are created in the same way as OnceAfterDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {

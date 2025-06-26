@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class InfixExecutorUtils {
 
-    /**
+    /*
      * Implements the ternary logic OR operation
      *
      * @deprecated this variant do not allow short-circuit of the operator
@@ -58,7 +58,7 @@ public class InfixExecutorUtils {
         return l || r;
     }
 
-    /**
+    /*
      * Implements the ternary logic AND operation
      *
      * @deprecated this variant do not allow short-circuit of the operator
@@ -117,7 +117,7 @@ public class InfixExecutorUtils {
         }
     }
 
-    /**
+    /*
      * Checks if the multiplication is supported by the DMN specification based on the objects specified as parameters.
      *
      * @param left  Left parameter of the subtraction expression.
@@ -137,7 +137,7 @@ public class InfixExecutorUtils {
         return true;
     }
 
-    /**
+    /*
      * Checks if the subtraction is supported by the DMN specification based on the temporals specified as parameters.
      *
      * @param leftTemporal  Left temporal parameter of the subtraction expression.

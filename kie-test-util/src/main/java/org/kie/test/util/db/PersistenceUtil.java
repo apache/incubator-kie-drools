@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,7 +48,7 @@ public class PersistenceUtil {
     // Setup and marshalling setup constants
     public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
-    /**
+    /*
      * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
      * @return test context
@@ -57,7 +57,7 @@ public class PersistenceUtil {
         return setupWithPoolingDataSource(persistenceUnitName, true);
     }
 
-    /**
+    /*
      * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
      * @return test context
@@ -66,7 +66,7 @@ public class PersistenceUtil {
         return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", testMarshalling);
     }
 
-    /**
+    /*
      * This method does all of the setup for the test and returns a HashMap
      * containing the persistence objects that the test might need.
      *
@@ -86,7 +86,7 @@ public class PersistenceUtil {
         return context;
     }
 
-    /**
+    /*
      * This method should be called in the @After method of a test to clean up
      * the persistence unit and datasource.
      *
@@ -121,7 +121,7 @@ public class PersistenceUtil {
 
     }
 
-    /**
+    /*
      * This method creates default pooling datasource
      * @return a PoolingDataSource
      */
@@ -129,7 +129,7 @@ public class PersistenceUtil {
         return setupPoolingDataSource(getDatasourceProperties());
     }
 
-    /**
+    /*
      * This method uses the "jdbc/testDS1" datasource, which is the default.
      * @param dsProps The properties used to setup the data source.
      * @return a PoolingDataSource
@@ -139,7 +139,7 @@ public class PersistenceUtil {
         return setupPoolingDataSource(dsProps, datasourceName);
     }
 
-    /**
+    /*
      * This sets up a PoolingDataSource.
      *
      * @return PoolingDataSource that has been set up but _not_ initialized.
@@ -159,7 +159,7 @@ public class PersistenceUtil {
         return DataSourceFactory.setupPoolingDataSource(datasourceName, dsProps);
     }
 
-    /**
+    /*
      * Return the default database/datasource properties - These properties use
      * an in-memory H2 database
      *
@@ -186,7 +186,7 @@ public class PersistenceUtil {
         return defaultProperties;
     }
 
-    /**
+    /*
      * This reads in the (maven filtered) datasource properties from the test
      * resource directory.
      *
@@ -220,7 +220,7 @@ public class PersistenceUtil {
         return props;
     }
 
-    /**
+    /*
      * This method returns whether or not transactions should be used when
      * dealing with the SessionInfo object (or any other persisted entity that
      * contains @Lob's )
@@ -239,14 +239,14 @@ public class PersistenceUtil {
         return useTransactions;
     }
 
-    /**
+    /*
      * A class responsible for starting and stopping the H2 database (tcp)
      * server
      */
     private static class H2Server {
         private Server realH2Server;
 
-        /**
+        /*
          * Starts the H2 server in the TCP mode.
          * @param h2Args startup arguments separated by white chars; if {@code null} or empty, no arguments are passed
          */

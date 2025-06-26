@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.dmg.pmml.OutputField;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
-/**
+/*
  * Data-class used to store information needed to generate a <b>Drools rule</b>
  */
 public class KiePMMLDroolsRule {
@@ -71,7 +71,7 @@ public class KiePMMLDroolsRule {
         this.outputFields = outputFields;
     }
 
-    /**
+    /*
      * @param name The rule name
      * @param statusToSet The status to set in the rhs' <b>default</b> <code>then</code>; e.g.:
      * <p><code>then</code></p>
@@ -110,7 +110,7 @@ public class KiePMMLDroolsRule {
         return name;
     }
 
-    /**
+    /*
      * The status to set in the rhs
      * (<code>$statusHolder.setStatus("DONE");</code>
      * <code>update($statusHolder);</code>)
@@ -188,7 +188,7 @@ public class KiePMMLDroolsRule {
         return result;
     }
 
-    /**
+    /*
      * The accumulation to set in the rhs
      * (<code>$statusHolder.accumulate(_toAccumulate_);</code>
      * @return
@@ -197,7 +197,7 @@ public class KiePMMLDroolsRule {
         return toAccumulate;
     }
 
-    /**
+    /*
      * It <code>true</code>, set the overall accumulation as final result
      * @return
      */
@@ -273,7 +273,7 @@ public class KiePMMLDroolsRule {
 
         protected KiePMMLDroolsRule toBuild;
 
-        /**
+        /*
          * @param name
          * @param statusToSet
          * @param outputFields
@@ -282,7 +282,7 @@ public class KiePMMLDroolsRule {
             this.toBuild = new KiePMMLDroolsRule(name, statusToSet, outputFields);
         }
 
-        /**
+        /*
          * The required status to fire the given rule
          * <p>
          * (lhs)
@@ -296,7 +296,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates
@@ -313,7 +313,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates
@@ -330,7 +330,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the "operator" and the "value" fields are evaluated with the <b>value</b> field of the former
          * (e.g entry <b>KiePMMLOperatorValue("OUTLOOK", "==", "sunny"))</b> generates
@@ -347,7 +347,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates
@@ -363,7 +363,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;Object&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"INPUT1"/List(-5,  0.5, 1, 10)</b> generates
@@ -376,7 +376,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;Object&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"INPUT2"/List(3, 8.5)</b> generates
@@ -389,7 +389,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Add a <b>break</b> statement to the lhs of the rule
          * (e.g. ifBreakField = "SEPAL_WIDTH"; ifBreakOperator = ">="; ifBreakValue = 5.45 generates</br>
          *
@@ -407,7 +407,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Set the <b>result code</b> to be returned
          * <p>
          * (rhs)
@@ -420,7 +420,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Set the <b>result</b> to be returned
          * <p>
          * (rhs)
@@ -433,7 +433,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Set the <b>Agenda Group</b> of the rule
          * <p>
          * (lhs)
@@ -446,7 +446,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Set the <b>Activation Group</b> of the rule
          * <p>
          * (lhs)
@@ -459,7 +459,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Set the <b>AgendaGroup</b> to be focused
          * <p>
          * (rhs)
@@ -472,7 +472,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Accumulate the given number to the <code>StatusHolder</code>
          * <p>
          * (rhs)
@@ -485,7 +485,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * If true, return the result of the overall <b>accumulation</b>
          * <p>
          * (rhs)
@@ -498,7 +498,7 @@ public class KiePMMLDroolsRule {
             return this;
         }
 
-        /**
+        /*
          * Add the given <b>reasonCode</b> to the ordered map of matched reason codes.
          * <p>
          * (rhs)

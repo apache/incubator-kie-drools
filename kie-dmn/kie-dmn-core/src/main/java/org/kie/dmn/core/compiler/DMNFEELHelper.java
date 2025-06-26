@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -93,7 +93,7 @@ public class DMNFEELHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * Return a FEEL instance to be used in invokers/impls, which is however configured correctly accordingly to profiles
      * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
      */
@@ -104,7 +104,7 @@ public class DMNFEELHelper {
                 .build();
     }
 
-    /**
+    /*
      * Return a FEEL instance to be used in invokers/impls, which is however configured correctly accordingly to profiles
      * but overrides the used FEELDialect
      * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.

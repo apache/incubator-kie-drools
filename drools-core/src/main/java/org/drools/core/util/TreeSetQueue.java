@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,14 +38,14 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
 
     protected static final Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
 
-    /** The elements in this heap. */
+    /* The elements in this heap. */
     private TreeSet<T> elements;
 
     public TreeSetQueue() {
 
     }
 
-    /**
+    /*
      * Constructs a new <code>BinaryHeap</code>.
      *
      * @param comparator the comparator used to order the elements, null
@@ -64,7 +64,7 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
         out.writeObject(elements);
     }
 
-    /**
+    /*
      * Clears all elements from queue.
      */
     @Override
@@ -77,7 +77,7 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
         return elements;
     }
 
-    /**
+    /*
      * Tests if queue is empty.
      *
      * @return <code>true</code> if queue is empty; <code>false</code>
@@ -88,7 +88,7 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
         return this.elements.isEmpty();
     }
 
-    /**
+    /*
      * Returns the number of elements in this heap.
      *
      * @return the number of elements in this heap
@@ -103,7 +103,7 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
         return isEmpty() ? null : elements.last();
     }
 
-    /**
+    /*
      * Inserts an Queueable into queue.
      *
      * @param element the Queueable to be inserted
@@ -118,7 +118,7 @@ public class TreeSetQueue<T extends QueueEntry> implements Queue<T>, Externaliza
         }
     }
 
-    /**
+    /*
      * Returns the Queueable on top of heap and remove it.
      *
      * @return the Queueable at top of heap

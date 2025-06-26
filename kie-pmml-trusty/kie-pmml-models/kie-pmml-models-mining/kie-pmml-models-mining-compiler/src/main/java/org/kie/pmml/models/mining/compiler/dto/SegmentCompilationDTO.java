@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
 
     private final Segment segment;
 
-    /**
+    /*
      * Private constructor that generates a <code>CommonCompilationDTO</code> creating <b>packageName</b> from
      * source' <b>segmentationPackageName</b> and segment'
      * <b>id</b>, preserving given <b>fields</b>
@@ -51,7 +51,7 @@ public class SegmentCompilationDTO<T extends Model> extends AbstractSpecificComp
         this.segment = segment;
     }
 
-    /**
+    /*
      * Builder that generates a <code>CommonCompilationDTO</code> creating <b>packageName</b> from source'
      * <b>segmentationPackageName</b> and segment' <b>id</b>,
      * preserving given <b>fields</b>

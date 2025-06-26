@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Characteristic</code>
  */
 public class KiePMMLScorecardModelCharacteristicASTFactory {

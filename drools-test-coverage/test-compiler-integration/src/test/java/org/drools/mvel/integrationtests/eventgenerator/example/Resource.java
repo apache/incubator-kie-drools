@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,84 +45,84 @@ public class Resource {
         this.opStatus = new Status(Status.OPERATIONAL, this.id, OPERATIONAL_STATUS_VALUES, STATUS_RED);
     }
 
-    /**
+    /*
      * @return the id
      */
     public String getId() {
         return id;
     }
 
-    /**
+    /*
      * @param id the id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
+    /*
      * @return the resource type
      */
     public String getName() {
         return name;
     }
 
-    /**
+    /*
      * @param type the resource type to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
+    /*
      * @return the opStatus
      */
     public Status getOpStatus() {
         return opStatus;
     }
 
-    /**
+    /*
      * @param opStatus the opStatus to set
      */
     public void setOpStatus(Status status) {
         this.opStatus = status;
     }
 
-    /**
+    /*
      * @return the pressure
      */
     public double getPressure() {
         return pressure;
     }
 
-    /**
+    /*
      * @param pressure the pressure to set
      */
     public void setPressure(double pressure) {
         this.pressure = pressure;
     }
 
-    /**
+    /*
      * @return the temperature
      */
     public double getTemperature() {
         return temperature;
     }
 
-    /**
+    /*
      * @param temperature the temperature to set
      */
     public void setTemperature(double temperature) {
         this.temperature = temperature;
     }
 
-    /**
+    /*
      * @return the lastHeartBeat
      */
     public Calendar getLastHeartBeat() {
         return lastHeartBeat;
     }
 
-    /**
+    /*
      * @param lastHeartBeat the lastHeartBeat to set
      */
     public void setLastHeartBeat(Calendar lastHeartBeat) {

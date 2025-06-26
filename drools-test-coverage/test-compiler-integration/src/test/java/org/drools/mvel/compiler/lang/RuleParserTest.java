@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -1358,7 +1358,7 @@ public class RuleParserTest {
         assertThat(right.getObjectType()).isEqualTo("Cheese");
     }
 
-    /** Test that explicit "&&", "||" works as expected */
+    /* Test that explicit "&&", "||" works as expected */
     @Test
     public void testAndOrRules() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -1413,7 +1413,7 @@ public class RuleParserTest {
                                       (String) rule.getConsequence() );
     }
 
-    /** test basic foo : Fact() || Fact() stuff */
+    /* test basic foo : Fact() || Fact() stuff */
     @Test
     public void testOrWithBinding() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -1442,7 +1442,7 @@ public class RuleParserTest {
                                       (String) rule.getConsequence() );
     }
 
-    /** test basic foo : Fact() || Fact() stuff binding to an "or" */
+    /* test basic foo : Fact() || Fact() stuff binding to an "or" */
     @Test
     public void testOrBindingComplex() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -1500,7 +1500,7 @@ public class RuleParserTest {
                                       (String) rule.getConsequence() );
     }
 
-    /** */
+    /* */
     @Test
     public void testBracketsPrecedence() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -3457,7 +3457,7 @@ public class RuleParserTest {
                               CharStream charStream ) {
         try {
             createParser( charStream );
-            /** Use Reflection to get rule method from parser */
+            /* Use Reflection to get rule method from parser */
             Method ruleName = null;
             Object[] params = null;
             for ( Method method : DRL6Parser.class.getMethods() ) {
@@ -3468,7 +3468,7 @@ public class RuleParserTest {
                 }
             }
 
-            /** Invoke grammar rule, and get the return value */
+            /* Invoke grammar rule, and get the return value */
             Object ruleReturn = ruleName.invoke( parser,
                                                  params );
 

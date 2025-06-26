@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,30 +21,30 @@ package org.drools.drl.parser.lang;
 import java.util.Collections;
 import java.util.LinkedList;
 
-/**
+/*
  * Class that represents a DroolsLanguage sentence. To be used by IDE.
  */
 @SuppressWarnings("unchecked")
 public class DroolsSentence {
 
-    /**
+    /*
      * sentence type
      */
     private DroolsSentenceType type = DroolsSentenceType.RULE;
-    /**
+    /*
      * linked list that stores DroolsTokens and Locations
      */
     private LinkedList content = new LinkedList();
-    /**
+    /*
      * start char offset
      */
     private int startOffset = -1;
-    /**
+    /*
      * end char offset
      */
     private int endOffset = -1;
 
-    /**
+    /*
      * getter of sentence type
      *
      * @return sentence type
@@ -54,7 +54,7 @@ public class DroolsSentence {
         return type;
     }
 
-    /**
+    /*
      * setter of sentence type
      *
      * @param type
@@ -65,7 +65,7 @@ public class DroolsSentence {
         this.type = type;
     }
 
-    /**
+    /*
      * getter for start char offset
      *
      * @return start char offset
@@ -74,7 +74,7 @@ public class DroolsSentence {
         return startOffset;
     }
 
-    /**
+    /*
      * setter for start char offset
      *
      * @param startOffset
@@ -84,7 +84,7 @@ public class DroolsSentence {
         this.startOffset = startOffset;
     }
 
-    /**
+    /*
      * getter for end char offset
      *
      * @return end char offset
@@ -93,7 +93,7 @@ public class DroolsSentence {
         return endOffset;
     }
 
-    /**
+    /*
      * setter for end char offset
      *
      * @param endOffset
@@ -103,7 +103,7 @@ public class DroolsSentence {
         this.endOffset = endOffset;
     }
 
-    /**
+    /*
      * getter of sentence content
      *
      * @return linked list that stores DroolsTokens and Locations
@@ -112,14 +112,14 @@ public class DroolsSentence {
         return content;
     }
 
-    /**
+    /*
      * Reverses the content linked list
      */
     public void reverseContent() {
         Collections.reverse(content);
     }
 
-    /**
+    /*
      * Add a token to the content and sets char offset info
      *
      * @param token
@@ -133,7 +133,7 @@ public class DroolsSentence {
         this.content.add(token);
     }
 
-    /**
+    /*
      * Add a location to the content
      *
      * @param contextInfo

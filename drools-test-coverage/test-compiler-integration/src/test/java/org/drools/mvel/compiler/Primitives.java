@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -166,14 +166,14 @@ public class Primitives
         this.primitiveCharArray = primitiveCharArray;
     }
 
-    /**
+    /*
      * @return the primitiveArrayAttribute
      */
     public int[] getPrimitiveIntArray() {
         return this.primitiveIntArray;
     }
 
-    /**
+    /*
      * @param primitiveArrayAttribute the primitiveArrayAttribute to set
      */
     public void setPrimitiveIntArray(final int[] primitiveArrayAttribute) {
@@ -290,14 +290,14 @@ public class Primitives
         return true;
     }
 
-    /**
+    /*
      * @return the classAttr
      */
     public Class< ? > getClassAttr() {
         return classAttr;
     }
 
-    /**
+    /*
      * @param classAttr the classAttr to set
      */
     public void setClassAttr( Class< ? > classAttr ) {

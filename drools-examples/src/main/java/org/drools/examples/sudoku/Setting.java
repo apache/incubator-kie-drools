@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.examples.sudoku;
 
-/**
+/*
  * Represents a temporary fact used for assigning a value to a cell.
  */
 public class Setting {
@@ -27,7 +27,7 @@ public class Setting {
     private int colNo;
     private Integer value;
     
-    /**
+    /*
      * Constructor.
      * @param row the row number of the Cell to set
      * @param col the column number of the Cell to set
@@ -39,7 +39,7 @@ public class Setting {
         this.value = value;
     }
 
-    /**
+    /*
      * Returns the row number.
      * @return an int value
      */
@@ -47,14 +47,14 @@ public class Setting {
         return rowNo;
     }
 
-    /**
+    /*
      * Returns the column number.
      * @return an int value
      */
     public int getColNo() {
         return colNo;
     }
-    /**
+    /*
      * Returns the value.
      * @return an Integer object
      */

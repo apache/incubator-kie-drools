@@ -544,7 +544,7 @@ public class DMNValidatorImpl implements DMNValidator {
         }));
     }
 
-    /**
+    /*
      * Used only to mark a reference to the original Resource's path, so to have the DMNMessage(s) correctly
      * valorized using existing message-manager infrastructure.
      */

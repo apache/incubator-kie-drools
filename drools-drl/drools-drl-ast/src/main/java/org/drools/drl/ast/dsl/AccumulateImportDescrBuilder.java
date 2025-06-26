@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 
-/**
+/*
  * An interface for the import builder
  */
 public interface AccumulateImportDescrBuilder
     extends
     DescrBuilder<PackageDescrBuilder, AccumulateImportDescr> {
 
-    /**
+    /*
      * Sets the import target
      * 
      * @param target the class or package being imported
@@ -35,7 +35,7 @@ public interface AccumulateImportDescrBuilder
      */
     public AccumulateImportDescrBuilder target( String target );
     
-    /**
+    /*
      * Sets the function name for the accumulate import
      * 
      * @param functionName the function name

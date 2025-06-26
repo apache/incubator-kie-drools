@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ public class SimulateMacOSXClassLoader extends ClassLoader {
     private ClassLoader wrappedRealClassLoader;
     private Set<Class<?>> forClasses = Collections.emptySet();
 
-    /**
+    /*
      * JVM classloader can't "scan" for available classes, hence class in scope of Mac/OSX simulation of this classloader must be added manually.
      * @param wrappedRealClassLoader a real classloader wrapped by this simulator.
      * @param forClasses collection of classes to be added in scope of this simulation.
@@ -80,7 +80,7 @@ public class SimulateMacOSXClassLoader extends ClassLoader {
     }
 
 
-    /**
+    /*
      * JVM classloader can't "scan" for available classes, hence class in scope of Mac/OSX simulation of this classloader must be added manually.
      * @param clazz class to be added in scope of this simulation.
      */

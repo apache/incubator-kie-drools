@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import static org.drools.mvel.MVEL.executeExpression;
 
 
 
-/**
+/*
  * Porting of ArithmeticTests from MVEL project.
  * 
  * Disabled tests are failing for various causes

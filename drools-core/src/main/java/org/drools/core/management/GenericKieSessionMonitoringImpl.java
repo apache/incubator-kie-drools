@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.management.GenericKieSessionMonitoringMXBean;
 
-/**
+/*
  * An MBean to monitor a given knowledge session
  */
 public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessionMonitoringMXBean {

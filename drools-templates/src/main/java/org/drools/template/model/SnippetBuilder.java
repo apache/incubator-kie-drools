@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import static org.drools.util.StringUtils.splitConstraints;
 
-/**
+/*
  * This utility class exists to convert rule script snippets to actual code. The
  * snippets contain place holders for values to be substituted into. See the
  * test case for how it really works !
@@ -56,7 +56,7 @@ public class SnippetBuilder {
 
     private final boolean trim;
 
-    /**
+    /*
      * @param snippetTemplate The snippet including the "place holder" for a parameter. If
      * no "place holder" is present,
      */
@@ -85,7 +85,7 @@ public class SnippetBuilder {
         return SnippetType.SINGLE;
     }
 
-    /**
+    /*
      * @param cellValue The value from the cell to populate the snippet with. If no
      * place holder exists, will just return the snippet.
      * @return The final snippet.
@@ -144,7 +144,7 @@ public class SnippetBuilder {
         return splitList.toArray(new String[splitList.size()]);
     }
 
-    /**
+    /*
      * @param cellValue
      * @return
      */
@@ -157,7 +157,7 @@ public class SnippetBuilder {
 
     }
 
-    /**
+    /*
      * Simple replacer.
      * jakarta commons provided the inspiration for this.
      */

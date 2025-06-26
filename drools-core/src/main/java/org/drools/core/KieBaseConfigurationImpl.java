@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * RuleBaseConfiguration
  *
  * A class to store RuleBase related configuration. It must be used at rule base instantiation time
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: This API is under review and may change in the future.
  */
 
-/**
+/*
  * Available configuration options:
  * <pre>
  * drools.maintainTms = &lt;true|false&gt;
@@ -94,7 +94,7 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
     // this property activates MBean monitoring and management
     private boolean mbeansEnabled;
 
-    /**
+    /*
      * A constructor that sets the classloader to be used as the parent classloader
      * of this rule base classloader, and the properties to be used
      * as base configuration options
@@ -154,7 +154,7 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
         return null;
     }
 
-    /**
+    /*
      * Defines if the RuleBase should expose management and monitoring MBeans
      *
      * @param mbeansEnabled true for multi-thread or
@@ -165,7 +165,7 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
         this.mbeansEnabled = mbeansEnabled;
     }
 
-    /**
+    /*
      * Returns true if the management and monitoring through MBeans is active 
      *
      * @return

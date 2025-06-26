@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.pmml.api.models.PMMLModel;
 
 public interface PMMLRuntime {
 
-    /**
+    /*
      * Evaluate the model, given the context
      * @param modelName the name of the model to evaluate
      * @param context the context with all the input variables
@@ -34,14 +34,14 @@ public interface PMMLRuntime {
      */
     PMML4Result evaluate(final String modelName, final PMMLRuntimeContext context);
 
-    /**
+    /*
      * Returns a list of all models available to this runtime
      * @return the list of available models. An empty list in
      * case no model is available.
      */
     List<PMMLModel> getPMMLModels(final PMMLRuntimeContext context);
 
-    /**
+    /*
      * Returns the model registered with the given model name.
      * @param modelName the name of the model
      * @return the corresponding an <code>Optional</code> with

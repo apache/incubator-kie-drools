@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Set;
 
 public interface MultiMap<Key extends Comparable, Value, ListType extends List<Value>> {
 
-    /**
+    /*
      * Merges the second MultiMap into the first.
      */
     static <Key extends Comparable, V, ListType extends List<V>> MultiMap<Key, V, ListType> merge(final MultiMap<Key, V, ListType> first,

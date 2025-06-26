@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.io.Reader;
 
 public class ReaderInputStream extends InputStream {
 
-    /** Source Reader */
+    /* Source Reader */
     private Reader in;
 
     private String encoding = System.getProperty("file.encoding");
@@ -36,7 +36,7 @@ public class ReaderInputStream extends InputStream {
 
     private int begin;
 
-    /**
+    /*
      * Construct a <code>ReaderInputStream</code>
      * for the specified <code>Reader</code>.
      *
@@ -55,7 +55,7 @@ public class ReaderInputStream extends InputStream {
         }
     }
 
-    /**
+    /*
      * Construct a <code>ReaderInputStream</code>
      * for the specified <code>Reader</code>,
      * with the specified encoding.
@@ -72,7 +72,7 @@ public class ReaderInputStream extends InputStream {
         }
     }
 
-    /**
+    /*
      * Reads from the <code>Reader</code>, returning the same value.
      *
      * @return the value of the next character in the <code>Reader</code>.
@@ -101,7 +101,7 @@ public class ReaderInputStream extends InputStream {
         return result & 0xFF;
     }
 
-    /**
+    /*
      * Reads from the <code>Reader</code> into a byte array
      *
      * @param b  the byte array to read into
@@ -144,7 +144,7 @@ public class ReaderInputStream extends InputStream {
         return len;
     }
 
-    /**
+    /*
      * Marks the read limit of the Reader.
      *
      * @param limit the maximum limit of bytes that can be read before the
@@ -159,7 +159,7 @@ public class ReaderInputStream extends InputStream {
     }
 
 
-    /**
+    /*
      * @return   the current number of bytes ready for reading
      * @exception IOException if an error occurs
      */
@@ -176,14 +176,14 @@ public class ReaderInputStream extends InputStream {
         return 0;
     }
 
-    /**
+    /*
      * @return false - mark is not supported
      */
     public boolean markSupported () {
         return false;   // would be imprecise
     }
 
-    /**
+    /*
      * Resets the Reader.
      *
      * @exception IOException if the Reader fails to be reset
@@ -196,7 +196,7 @@ public class ReaderInputStream extends InputStream {
         in.reset();
     }
 
-    /**
+    /*
      * Closes the Reader.
      *
      * @exception IOException if the original Reader fails to be closed

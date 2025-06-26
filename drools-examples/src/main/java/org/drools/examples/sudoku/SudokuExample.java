@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.
  * This Class hooks together the GUI and the model and allows you to 
  * load different grids.

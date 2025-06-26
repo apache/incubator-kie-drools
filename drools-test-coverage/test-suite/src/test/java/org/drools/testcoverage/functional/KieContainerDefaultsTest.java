@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
+/*
  * This class's purpose is to test obtaining default KieSessions and default KieBases from KieContainer. It tests
  * KieContainer's behaviour in other cases than simple one default KieBase with one default KieSession.
  */
@@ -58,7 +58,7 @@ public class KieContainerDefaultsTest {
         kieServices = KieServices.Factory.get();
     }
 
-    /**
+    /*
      * This test checks if default KieBases behave as expected.
      */
     @Test
@@ -78,7 +78,7 @@ public class KieContainerDefaultsTest {
         assertThat(kieContainer.getKieBase()).isNotEqualTo(secondKBase);
     }
 
-    /**
+    /*
      * This test checks how KieBases behave when all are explicitly set not to be default.
      */
     @Test
@@ -96,7 +96,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default KieBase");
     }
 
-    /**
+    /*
      * This test checks if default KieSessions behave as expected.
      */
     @Test
@@ -121,7 +121,7 @@ public class KieContainerDefaultsTest {
         }
     }
 
-    /**
+    /*
      * This test checks how KieSessions behave when more than one is set as default.
      */
     @Test
@@ -139,7 +139,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default KieSession");
     }
 
-    /**
+    /*
      * This test checks how KieSessions behave when all are explicitly set not to be default.
      */
     @Test
@@ -157,7 +157,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default KieSession");
     }
 
-    /**
+    /*
      * This test checks how KieSessions behave when default state isn't explicitly set.
      */
     @Test
@@ -175,7 +175,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default KieSession");
     }
 
-    /**
+    /*
      * This test checks if default KieSessions behave as expected even if one of them is Stateless.
      */
     @Test
@@ -199,7 +199,7 @@ public class KieContainerDefaultsTest {
         }
     }
 
-    /**
+    /*
      * This test checks if default StatelessKieSessions behave as expected.
      */
     @Test
@@ -219,7 +219,7 @@ public class KieContainerDefaultsTest {
         assertThat(secondKSession).isNotEqualTo(((InternalKieContainer) kieContainer).getStatelessKieSession());
     }
 
-    /**
+    /*
      * This test checks how StatelessKieSessions behave when more than one is set as default.
      */
     @Test
@@ -237,7 +237,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
-    /**
+    /*
      * This test checks how StatelessKieSessions behave when all are explicitly set not to be default.
      */
     @Test
@@ -255,7 +255,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
-    /**
+    /*
      * This test checks how StatelessKieSessions behave when default state isn't explicitly set.
      */
     @Test
@@ -273,7 +273,7 @@ public class KieContainerDefaultsTest {
                 .hasMessageContaining("Cannot find a default StatelessKieSession");
     }
 
-    /**
+    /*
      * This is a helper method that prevents code copying.
      *
      * @param kieModule KieModuleModel used in the particular test.

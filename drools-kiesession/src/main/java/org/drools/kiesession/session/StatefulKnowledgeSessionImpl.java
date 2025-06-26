@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -171,15 +171,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public    byte[] bytes;
     protected Long    id;
 
-    /** The actual memory for the <code>JoinNode</code>s. */
+    /* The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
 
-    /** Global values which are associated with this memory. */
+    /* Global values which are associated with this memory. */
     protected GlobalResolver globalResolver;
 
     protected Calendars   calendars;
 
-    /** The eventSupport */
+    /* The eventSupport */
     protected RuleRuntimeEventSupport ruleRuntimeEventSupport;
 
     protected RuleEventListenerSupport ruleEventListenerSupport;
@@ -188,17 +188,17 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected List<KieBaseEventListener> kieBaseEventListeners;
 
-    /** The <code>RuleBase</code> with which this memory is associated. */
+    /* The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalKnowledgeBase kBase;
 
     protected FactHandleFactory handleFactory;
 
-    /** Rule-firing agenda. */
+    /* Rule-firing agenda. */
     protected InternalAgenda agenda;
 
     protected ReentrantLock lock;
 
-    /**
+    /*
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
      */
@@ -606,7 +606,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return EntryPointId.DEFAULT.getEntryPointId();
     }
     
-    /**
+    /*
      * (This shall NOT be exposed on public API)  
      */
     public QueryResultsImpl getQueryResultsFromRHS(String queryName, Object... arguments) {
@@ -1099,7 +1099,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return fireCount;
     }
 
-    /**
+    /*
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
      * added to an active agenda group or rule flow group.
@@ -1111,7 +1111,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         fireUntilHalt( null );
     }
 
-    /**
+    /*
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
      * added to an active agenda group or rule flow group.
@@ -1135,7 +1135,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    /**
+    /*
      * Returns the fact Object for the given <code>FactHandle</code>. It
      * actually attempts to return the value from the handle, before retrieving
      * it from objects map.
@@ -1158,14 +1158,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.entryPointsManager.getDefaultEntryPoint().getObjectStore();
     }
 
-    /**
+    /*
      * @see org.drools.core.WorkingMemory
      */
     public InternalFactHandle getFactHandle(final Object object) {
         return (InternalFactHandle) this.entryPointsManager.getDefaultEntryPoint().getFactHandle(object);
     }
 
-    /**
+    /*
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
@@ -1173,7 +1173,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getObjectStore().iterateObjects();
     }
 
-    /**
+    /*
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
@@ -1181,7 +1181,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getObjectStore().iterateObjects(filter);
     }
 
-    /**
+    /*
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
@@ -1189,7 +1189,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getObjectStore().iterateFactHandles();
     }
 
-    /**
+    /*
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
@@ -1217,7 +1217,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return tmsEnabled;
     }
 
-    /**
+    /*
      * @see org.drools.core.WorkingMemory
      */
     public FactHandle insert(final Object object) {
@@ -1316,7 +1316,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.entryPointsManager.getDefaultEntryPoint().update(handle, object, modifiedProperties);
     }
 
-    /**
+    /*
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.
      *
@@ -1331,7 +1331,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.entryPointsManager.getDefaultEntryPoint().update(factHandle, object, mask, modifiedClass, internalMatch);
     }
 
-    /**
+    /*
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
      * @param node
@@ -1511,7 +1511,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return result;
     }
 
-    /**
+    /*
      * This method must be called before starting any new work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine
      * idle time counter.
@@ -1533,7 +1533,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.endOperationListener = listener;
     }
 
-    /**
+    /*
      * This method must be called after finishing any work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine
      * idle time counter.
@@ -1564,7 +1564,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return kBase;
     }
 
-    /**
+    /*
      * Returns the number of time units (usually ms) that the engine is idle
      * according to the session clock or -1 if it is not idle.
      *
@@ -1579,7 +1579,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.lastIdleTimestamp.get();
     }
 
-    /**
+    /*
      * Returns the number of time units (usually ms) to
      * the next scheduled job
      *

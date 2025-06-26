@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,14 +55,14 @@ import org.kie.api.definition.type.Expires.Policy;
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
-/**
+/*
  * A builder for patterns
  */
 public class PatternBuilder
     implements
     ReteooComponentBuilder {
 
-    /**
+    /*
      * @inheritDoc
      */
     public void build(final BuildContext context,
@@ -383,7 +383,7 @@ public class PatternBuilder
         context.setObjectSource( utils.attachNode( context, otn ) );
     }
 
-    /**
+    /*
      * @param context
      * @param pattern
      * @param betaConstraints
@@ -404,7 +404,7 @@ public class PatternBuilder
         }
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean requiresLeftActivation(final BuildUtils utils,

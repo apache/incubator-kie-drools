@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * ExecutableInterceptor that will lock underlying <code>Runner</code> until transaction completion.
  * In case there is no transaction active lock is released directly.
  *

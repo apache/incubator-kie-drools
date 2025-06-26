@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.internal.runtime.conf;
 
-/**
+/*
  * Handler responsible for controlling access to writable properties.
  * It's main responsibility is to accept or reject given value depending
  * on the underlying implementation e.g. disallow null values
@@ -27,7 +27,7 @@ package org.kie.internal.runtime.conf;
  */
 public interface BuilderHandler {
 
-    /**
+    /*
      * Verifies if given <code>value</code> is acceptable to be written via builder
      * @param value
      * @return

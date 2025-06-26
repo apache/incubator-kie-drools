@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.api.builder.model.KieBaseModel;
 
 import static java.util.stream.Collectors.toList;
 
-/**
+/*
  * Generates metadata for "classic" kmodule.xml
  */
 public class KieSessionModelBuilder {
@@ -71,7 +71,7 @@ public class KieSessionModelBuilder {
 
     }
 
-    /**
+    /*
      * Provides rules model names by KieBase.
      *
      * @param packageSources Package code sources for code generation.
@@ -93,7 +93,7 @@ public class KieSessionModelBuilder {
         return modelsByKBase;
     }
 
-    /**
+    /*
      * Provides rules model names that are part of a KieBase. Checks which packages should be included in a KieBase,
      * based on package names and "includes" configuration.
      *
@@ -115,7 +115,7 @@ public class KieSessionModelBuilder {
         return modelsForKieBase;
     }
 
-    /**
+    /*
      * Provides rules model names that are part of a KieBase.
      *
      * @param kieBaseModel KieBase model for which the rule models are returned.

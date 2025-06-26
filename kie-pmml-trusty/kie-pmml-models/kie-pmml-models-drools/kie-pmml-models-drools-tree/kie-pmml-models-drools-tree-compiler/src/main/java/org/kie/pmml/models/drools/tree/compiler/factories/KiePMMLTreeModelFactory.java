@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
-/**
+/*
  * Class used to generate <code>KiePMMLTreeModel</code> out of a <code>DataDictionary</code> and a
  * <code>TreeModel</code>
  */
@@ -76,7 +76,7 @@ public class KiePMMLTreeModelFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and
      * <code>TreeModel</code>.
      * <b>It also populate the given <code>Map</code> that has to be used for final <code>KiePMMLTreeModel</code></b>

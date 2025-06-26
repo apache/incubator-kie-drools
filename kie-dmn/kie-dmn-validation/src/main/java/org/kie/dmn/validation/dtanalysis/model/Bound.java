@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -154,7 +154,7 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
         return true;
     }
 
-    /**
+    /*
      * Returns true if left is overlapping or adjacent to right
      */
     public static boolean adOrOver(Bound<?> left, Bound<?> right) {

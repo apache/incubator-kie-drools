@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,26 +20,26 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the timer job factory manager configuration.
  */
 public class TimerJobFactoryOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the timer job factory manager configuration
      */
     public static final String PROPERTY_NAME = "drools.timerJobFactory";
 
     public static OptionKey<TimerJobFactoryOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * Timer Job Type
      */
     private final String timerJobType;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param timerJobType
      */
@@ -47,7 +47,7 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
         this.timerJobType = timerJobType;
     }
 
-    /**
+    /*
      * This is a factory method for this timer job factory manager configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -60,14 +60,14 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
         return new TimerJobFactoryOption( timerJobType );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * @return the configured timer job factory manager
      */
     public String getTimerJobType() {

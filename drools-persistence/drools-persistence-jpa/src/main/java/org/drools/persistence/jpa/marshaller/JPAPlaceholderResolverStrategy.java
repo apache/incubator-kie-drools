@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -188,7 +188,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return  (Serializable) emf.getPersistenceUnitUtil().getIdentifier( o );
     }
     
-    /**
+    /*
      * Changed implementation, using EntityManager Metamodel in spite of Reflection. 
      * @param o
      * @return

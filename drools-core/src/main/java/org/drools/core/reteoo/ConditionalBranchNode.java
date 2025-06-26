@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.AbstractLinkedListNode;
 
-/**
+/*
  * Node which allows to follow different paths in the Rete-OO network,
  * based on the result of a boolean <code>Test</code>.
  */
@@ -78,7 +78,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         getLeftTupleSource().networkUpdated(updateContext);
     }
 
-    /**
+    /*
      * Produce a debug string.
      *
      * @return The debug string.
@@ -114,7 +114,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return tupleMemoryEnabled;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -123,7 +123,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -132,7 +132,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -141,7 +141,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode

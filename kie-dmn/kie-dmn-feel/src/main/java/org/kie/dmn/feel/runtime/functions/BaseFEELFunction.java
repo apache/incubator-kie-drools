@@ -152,7 +152,7 @@ public abstract class BaseFEELFunction
         return Collections.emptyList();
     }
 
-    /**
+    /*
      * this method should be overriden by custom function implementations that should be invoked reflectively
      * @param ctx
      * @param params
@@ -167,7 +167,7 @@ public abstract class BaseFEELFunction
         return getCandidateMethod(inputTypes, outputType) != null;
     }
 
-    /**
+    /*
      * @param ctx
      * @param originalInput
      * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside
@@ -244,7 +244,7 @@ public abstract class BaseFEELFunction
         return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedInput);
     }
 
-    /**
+    /*
      * Returns the <b>left</b> <code>CandidateMethod</code> if its <b>fineScore</b> is greater than the <b>right</b> one,
      * otherwise returns the <b>right</b> <code>CandidateMethod</code>
      *
@@ -282,7 +282,7 @@ public abstract class BaseFEELFunction
         }, Function.identity());
     }
 
-    /**
+    /*
      * Adapt the given <code>Either&lt;FEELEvent, Object&gt;</code> to contain FEEL-Dialect-specific value, if needed
      *
      * @param ctx
@@ -299,7 +299,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    /**
+    /*
      * Adapt the given <code>Object</code> to FEEL-Dialect-specific value, if needed
      *
      * @param ctx
@@ -316,7 +316,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    /**
+    /*
      * Adapt the given <code>List</code> to FEEL-Dialect-specific values, if needed
      *
      * @param ctx

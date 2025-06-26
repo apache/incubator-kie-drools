@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimplePredic
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTruePredicateFactory.getTruePredicateVariableDeclaration;
 
-/**
+/*
  * Facade for actual implementations
  */
 public class KiePMMLPredicateFactory {

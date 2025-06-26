@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.builder.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * An option to disable trimming of spaces for values in decision tables
  *
  * drools.trimCellsInDTable = &lt;true|false&gt;
@@ -33,7 +33,7 @@ public enum TrimCellsInDTableOption implements SingleValueRuleBuilderOption, Sin
     ENABLED(true),
     DISABLED(false);
 
-    /**
+    /*
      * The property name for the enabling/disabling trim of cells values
      */
     public static final String PROPERTY_NAME = "drools.trimCellsInDTable";

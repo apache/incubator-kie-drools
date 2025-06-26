@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ public class XStreamUtils {
         "org.drools.core.runtime.help.impl.XStreamXMLTest$Message"
     };
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -58,7 +58,7 @@ public class XStreamUtils {
         return internalCreateXStream( new XStream() );
     }
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -67,7 +67,7 @@ public class XStreamUtils {
         return internalCreateXStream( new XStream(hierarchicalStreamDriver) );
     }
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -76,7 +76,7 @@ public class XStreamUtils {
         return internalCreateXStream( new XStream(null, hierarchicalStreamDriver, new ClassLoaderReference( classLoader )) );
     }
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -85,7 +85,7 @@ public class XStreamUtils {
         return internalCreateXStream( new XStream(reflectionProvider) );
     }
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -98,7 +98,7 @@ public class XStreamUtils {
         });
     }
 
-    /**
+    /*
      * Vulnerable to CVE-210137285 variants. Do not use. Will be removed in the next few days!
      * @deprecated in favor of {@link #createTrustingXStream()} and {@link #createNonTrustingXStream()}
      */
@@ -111,7 +111,7 @@ public class XStreamUtils {
         return xstream;
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -120,7 +120,7 @@ public class XStreamUtils {
         return internalCreateTrustingXStream( new XStream() );
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -129,7 +129,7 @@ public class XStreamUtils {
         return internalCreateTrustingXStream( new XStream(hierarchicalStreamDriver) );
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -138,7 +138,7 @@ public class XStreamUtils {
         return internalCreateTrustingXStream( new XStream(null, hierarchicalStreamDriver, new ClassLoaderReference( classLoader )) );
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -147,7 +147,7 @@ public class XStreamUtils {
         return internalCreateTrustingXStream( new XStream(reflectionProvider) );
     }
     
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -156,7 +156,7 @@ public class XStreamUtils {
         return internalCreateTrustingXStream( new XStream(reflectionProvider, hierarchicalStreamDriver) );
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -169,7 +169,7 @@ public class XStreamUtils {
         });
     }
 
-    /**
+    /*
      * Only use for XML or JSON that comes from a 100% trusted source.
      * The XML/JSON must be as safe as executable java code.
      * Otherwise, you MUST use {@link #createNonTrustingXStream()}.
@@ -181,7 +181,7 @@ public class XStreamUtils {
         return xstream;
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -190,7 +190,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream( new XStream() );
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -199,7 +199,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream( new XStream(hierarchicalStreamDriver) );
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -208,7 +208,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream( new XStream(null, hierarchicalStreamDriver, new ClassLoaderReference( classLoader )) );
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -219,7 +219,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream(builder.apply(hierarchicalStreamDriver, new ClassLoaderReference(classLoader)));
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -228,7 +228,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream( new XStream(reflectionProvider) );
     }
     
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -237,7 +237,7 @@ public class XStreamUtils {
         return internalCreateNonTrustingXStream( new XStream(reflectionProvider, hierarchicalStreamDriver) );
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -253,7 +253,7 @@ public class XStreamUtils {
         });
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.
@@ -266,7 +266,7 @@ public class XStreamUtils {
         });
     }
 
-    /**
+    /*
      * Use for XML or JSON that might not come from a trusted source (such as REST services payloads, ...).
      * Automatically allowlists all classes with an {@link XStreamAlias} annotation.
      * Often requires allowlisting additional domain specific classes, which you'll need to expose in your API's.

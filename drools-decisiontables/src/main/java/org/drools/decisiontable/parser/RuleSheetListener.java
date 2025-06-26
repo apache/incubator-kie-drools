@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,18 +22,18 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensiti
 import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
 
-/**
+/*
  *
  * SheetListener used for creating rules
  */
 public interface RuleSheetListener extends DataListener {
 
-    /**
+    /*
      * Return the rule sheet properties
      */
     public abstract CaseInsensitiveMap getProperties();
 
-    /**
+    /*
      * Build the final ruleset as parsed.
      */
     public abstract Package getRuleSet();

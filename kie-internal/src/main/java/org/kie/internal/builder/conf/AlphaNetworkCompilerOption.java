@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * An Enum for AlphaNetworkCompilerOption option.
  *
  * drools.alphaNetworkCompiler = &lt;disabled|inmemory|load&gt;
@@ -51,7 +51,7 @@ public enum AlphaNetworkCompilerOption implements SingleValueRuleBuilderOption {
         return value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

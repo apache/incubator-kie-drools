@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,28 +50,28 @@ public class DomainObject {
         this.value2 = value2;
     }
 
-    /**
+    /*
      * @return the id
      */
     public long getId() {
         return id;
     }
 
-    /**
+    /*
      * @param id the id to set
      */
     public void setId( long id ) {
         this.id = id;
     }
 
-    /**
+    /*
      * @return the interval
      */
     public Interval getInterval() {
         return interval;
     }
 
-    /**
+    /*
      * @param interval the interval to set
      */
     public void setInterval( Interval interval ) {

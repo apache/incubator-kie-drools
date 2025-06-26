@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.ruleunits.api;
 
-/**
+/*
  * A {@link DataSource} of immutable data.
  * By default, this Stream doesn't retain any data and just forwards the facts appended to it to the {@link DataProcessor}s
  * that are registered at the time of insertion. In particular this means that if a fact is inserted into the DataStream declared in a
@@ -28,7 +28,7 @@ package org.drools.ruleunits.api;
  */
 public interface DataStream<T> extends DataSource<T> {
 
-    /**
+    /*
      * Append an object to this stream of data.
      */
     void append(T value);

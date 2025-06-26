@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
     protected org.kie.dmn.model.api.dmndi.Style sharedStyle;
     protected String id;
 
-    /**
+    /*
      * Gets the value of the extension property.
      * 
      * @return
@@ -44,7 +44,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         return extension;
     }
 
-    /**
+    /*
      * Sets the value of the extension property.
      * 
      * @param value
@@ -56,7 +56,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         this.extension = value;
     }
 
-    /**
+    /*
      * an optional locally-owned style for this diagram element.
      * 
      * @return
@@ -69,7 +69,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         return style;
     }
 
-    /**
+    /*
      * Sets the value of the style property.
      * 
      * @param value
@@ -82,7 +82,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         this.style = value;
     }
 
-    /**
+    /*
      * Gets the value of the sharedStyle property.
      * 
      * @return
@@ -94,7 +94,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         return sharedStyle;
     }
 
-    /**
+    /*
      * Sets the value of the sharedStyle property.
      * 
      * @param value
@@ -106,7 +106,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         this.sharedStyle = value;
     }
 
-    /**
+    /*
      * Gets the value of the id property.
      * 
      * @return
@@ -118,7 +118,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
         return id;
     }
 
-    /**
+    /*
      * Sets the value of the id property.
      * 
      * @param value

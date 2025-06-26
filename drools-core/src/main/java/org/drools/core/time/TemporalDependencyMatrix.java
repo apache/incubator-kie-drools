@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.base.time.Interval;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
-/**
+/*
  * A class to abstract the management of temporal
  * dependency management information
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.drools.drl.ast.dsl.CEDescrBuilder;
 import org.drools.drl.ast.dsl.DescrBuilder;
 import org.drools.drl.ast.dsl.PatternDescrBuilder;
 
-/**
+/*
  * An implementation for the CollectDescrBuilder
  */
 public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, AccumulateDescr>
@@ -46,7 +46,7 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
         super( parent, accumulateDescr );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern( String type ) {
@@ -55,7 +55,7 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
         return pattern;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<AccumulateDescrBuilder<P>> pattern() {

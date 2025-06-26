@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
-/**
+/*
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
  *
  * <p>
@@ -55,13 +55,13 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     protected BitMask                 leftNegativeMask = EmptyBitMask.get();
 
 
-    /** The left input <code>TupleSource</code>. */
+    /* The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
 
 
     private ObjectTypeNodeId leftInputOtnId = ObjectTypeNodeId.DEFAULT_ID;
 
-    /** The destination for <code>Tuples</code>. */
+    /* The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;
 
     private int pathIndex;
@@ -75,7 +75,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     }
 
-    /**
+    /*
      * Single parameter constructor that specifies the unique id of the node.
      *
      * @param id
@@ -126,7 +126,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         objectCount = count;
     }
 
-    /**
+    /*
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
      *
@@ -155,7 +155,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         return sinkPropagator;
     }
 
-    /**
+    /*
      * Removes the <code>TupleSink</code>
      *
      * @param tupleSink

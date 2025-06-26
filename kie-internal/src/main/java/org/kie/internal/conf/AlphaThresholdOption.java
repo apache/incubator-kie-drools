@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,26 +21,26 @@ package org.kie.internal.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * A class for the alpha node hashing threshold configuration.
  */
 public class AlphaThresholdOption implements SingleValueRuleBaseOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the default DIALECT
      */
     public static final String PROPERTY_NAME = "drools.alphaNodeHashingThreshold";
 
     public static OptionKey<AlphaThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * alpha threshold
      */
     private final int threshold;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param threshold
      */
@@ -48,7 +48,7 @@ public class AlphaThresholdOption implements SingleValueRuleBaseOption {
         this.threshold = threshold;
     }
 
-    /**
+    /*
      * This is a factory method for this Alpha Threshold configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -61,14 +61,14 @@ public class AlphaThresholdOption implements SingleValueRuleBaseOption {
         return new AlphaThresholdOption( threshold );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the threshold value for alpha hashing
      *
      * @return

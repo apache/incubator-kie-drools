@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -60,7 +60,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
         return predictedEntry.getKey();
     }
 
-    /**
+    /*
      * A <b>Classification</b> is considered <b>binary</b> if it is of <b>CATEGORICAL</b> type and contains
      * <b>exactly</b> two Regression tables
      *
@@ -198,7 +198,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
             return this;
         }
 
-        /**
+        /*
          * @param categoryTableMap Keep in mind that insertion order matters, so provide an ordered map
          * @return
          */
@@ -209,7 +209,7 @@ public final class KiePMMLClassificationTable extends AbstractKiePMMLTable {
             return this;
         }
 
-        /**
+        /*
          * @param probabilityMapFunction Keep in mind that insertion order matters, so provide an ordered map
          *                               inside the <code>SerializableFunction</code>
          * @return

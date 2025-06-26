@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-/**
+/*
  * Interface to be implemented by <b>code-generated</b> classes to
  * retrieve <code>List&lt;KiePMMLModel&gt;</code>s
  * from kjar inside <code>PMMLAssemblerService</code>.

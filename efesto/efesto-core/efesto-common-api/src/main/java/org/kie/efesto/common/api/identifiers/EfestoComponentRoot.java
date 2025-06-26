@@ -18,7 +18,7 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-/**
+/*
  * Efesto-specific root path of a component.
  * <p>
  * Those are the top-level chidlren of <code>EfestoAppRoot</code>,

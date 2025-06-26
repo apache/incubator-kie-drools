@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
 
-/**
+/*
  * A base class for constraints
  */
 public abstract class MutableTypeConstraint<C>

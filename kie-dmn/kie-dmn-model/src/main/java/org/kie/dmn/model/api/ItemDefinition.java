@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,12 +24,12 @@ import javax.xml.namespace.QName;
 
 public interface ItemDefinition extends NamedElement {
 
-    /**
+    /*
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      */
     QName getTypeRef();
 
-    /**
+    /*
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      */
     void setTypeRef(QName value);
@@ -60,12 +60,12 @@ public interface ItemDefinition extends NamedElement {
 
     String toString();
 
-    /**
+    /*
      * @since DMN v1.3
      */
     FunctionItem getFunctionItem();
 
-    /**
+    /*
      * @since DMN v1.3
      */
     void setFunctionItem(FunctionItem value);

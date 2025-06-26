@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import javax.xml.validation.SchemaFactory;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.xml.sax.SAXException;
 
-/**
+/*
  * XML based deployment descriptor IO manager to read and write descriptors.
  * Underlying uses <code>XStream</code> for serialization with special class
  * and field mapping for more readability of the produced XML output.
@@ -44,7 +44,7 @@ public class DeploymentDescriptorIO {
     private static JAXBContext context = null;
     private static Schema schema = null;
 
-    /**
+    /*
      * Reads XML data from given input stream and produces valid instance of 
      * <code>DeploymentDescriptor</code>
      * @param inputStream input stream that comes with xml data of the descriptor
@@ -62,7 +62,7 @@ public class DeploymentDescriptorIO {
         }
     }
 
-    /**
+    /*
      * Serializes descriptor instance to XML
      * @param descriptor descriptor to be serialized
      * @return xml representation of descriptor as string

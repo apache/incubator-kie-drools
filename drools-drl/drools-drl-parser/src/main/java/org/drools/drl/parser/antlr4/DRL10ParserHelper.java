@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-/**
+/*
  * Collection of static helper methods for DRL10Parser
  */
 public class DRL10ParserHelper {
@@ -44,7 +44,7 @@ public class DRL10ParserHelper {
     private DRL10ParserHelper() {
     }
 
-    /**
+    /*
      * Entry point for parsing DRL.
      * Unlike DRL10ParserWrapper.parse(), this method does not collect errors.
      */
@@ -87,7 +87,7 @@ public class DRL10ParserHelper {
         return parser;
     }
 
-    /**
+    /*
      * DRLVisitorImpl visits a parse tree and creates a PackageDescr
      */
     public static PackageDescr compilationUnitContext2PackageDescr(DRL10Parser.CompilationUnitContext ctx, TokenStream tokenStream, Resource resource) {
@@ -100,7 +100,7 @@ public class DRL10ParserHelper {
         }
     }
 
-    /**
+    /*
      * Given a row and column of the input DRL, return the index of the matched token
      */
     public static Integer computeTokenIndex(DRL10Parser parser, int row, int col) {
@@ -119,7 +119,7 @@ public class DRL10ParserHelper {
         return null;
     }
 
-    /**
+    /*
      * RuleContext.getText() connects all nodes including ErrorNode. This method appends texts only from valid nodes
      */
     public static String getTextWithoutErrorNode(ParseTree tree) {

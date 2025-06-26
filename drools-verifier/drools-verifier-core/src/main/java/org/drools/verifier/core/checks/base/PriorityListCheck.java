@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 
-/**
+/*
  * Wraps more than one check into one.
  * Each check will look for failure in the given order.
  * Once failure is found the rest of the checks are ignored.

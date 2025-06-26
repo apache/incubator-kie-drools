@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * The forall conditional element.
  */
 public class Forall extends ConditionalElement {
@@ -80,7 +80,7 @@ public class Forall extends ConditionalElement {
         return new Forall( basePattern.clone(), clonedPatterns );
     }
 
-    /**
+    /*
      * Forall inner declarations are only provided by the base patterns
      * since it negates the remaining patterns
      */
@@ -92,49 +92,49 @@ public class Forall extends ConditionalElement {
         return inner;
     }
 
-    /**
+    /*
      * Forall does not export any declarations
      */
     public Map<String, Declaration> getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
-    /**
+    /*
      * Forall can only resolve declarations from its base pattern
      */
     public Declaration resolveDeclaration(final String identifier) {
         return this.getInnerDeclarations().get( identifier );
     }
 
-    /**
+    /*
      * @return the basePattern
      */
     public Pattern getBasePattern() {
         return this.basePattern;
     }
 
-    /**
+    /*
      * @param basePattern the basePattern to set
      */
     public void setBasePattern(final Pattern basePattern) {
         this.basePattern = basePattern;
     }
 
-    /**
+    /*
      * @return the remainingPatterns
      */
     public List<Pattern> getRemainingPatterns() {
         return this.remainingPatterns;
     }
 
-    /**
+    /*
      * @param remainingPatterns the remainingPatterns to set
      */
     public void setRemainingPatterns(final List<Pattern> remainingPatterns) {
         this.remainingPatterns = remainingPatterns;
     }
 
-    /**
+    /*
      * Adds one more pattern to the list of remaining patterns
      */
     public void addRemainingPattern(final Pattern pattern) {

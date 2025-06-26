@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class meant to provide static methods related to <b>pre-process</b> manipulation
  */
 public class PreProcess {
@@ -51,7 +51,7 @@ public class PreProcess {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Method to create a <code>ProcessingDTO</code> with <b>fix</b> values from the given <code>KiePMMLModel</code>
      *
      * @param model
@@ -72,7 +72,7 @@ public class PreProcess {
         return toReturn;
     }
 
-    /**
+    /*
      * Try to convert input data to expected data-type, throwing exception when data are not
      * convertible
      *
@@ -97,7 +97,7 @@ public class PreProcess {
         });
     }
 
-    /**
+    /*
      * Verify the invalid values if defined in original PMML as <b>invalidValueTreatment</b>,
      * eventually <b>removing</b> or <b>replacing</b> them, depending on the <b>invalidValueTreatment</b>.
      * <p>
@@ -139,7 +139,7 @@ public class PreProcess {
         });
     }
 
-    /**
+    /*
      * Verify the missing values if defined in original PMML as <b>missingValueTreatment</b>,
      * <b>eventually adding default ones</b>.
      * <p>
@@ -176,7 +176,7 @@ public class PreProcess {
         return new ProcessingDTO(model, kiePMMLNameValues);
     }
 
-    /**
+    /*
      * Execute <b>transformations</b> on input data.
      * @param processingDTO
      * @param requestData
@@ -203,7 +203,7 @@ public class PreProcess {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Manage the <b>invalid value</b> of the given <code>ParameterInfo</code> depending on the
      * <code>INVALID_VALUE_TREATMENT_METHOD</code>
      * of the given <code>MiningField</code>, <b>eventually adding the ParameterInfo to the list of the ones to be
@@ -244,7 +244,7 @@ public class PreProcess {
         }
     }
 
-    /**
+    /*
      * Manage the <b>missing value</b> depending on the <code>INVALID_VALUE_TREATMENT_METHOD</code>
      * of the given <code>MiningField</code>, <b>eventually adding default ont to input data</b>
      *
@@ -276,7 +276,7 @@ public class PreProcess {
         }
     }
 
-    /**
+    /*
      * Verify if the value of the given <code>ParameterInfo</code> is allowed for the given <code>MiningField</code>
      *
      * @param parameterInfo

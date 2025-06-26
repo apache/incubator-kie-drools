@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  *         basic tests for converter utility. Note that some of this may
  *         still use the drools 2.x syntax, as it is not compiled, only tested
  *         that it generates DRL in the correct structure (not that the DRL

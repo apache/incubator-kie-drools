@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.dmn.feel.runtime.events;
 import org.antlr.v4.runtime.RecognitionException;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
-/**
+/*
  * An event class to report a syntax error as returned by the parser
  */
 public class SyntaxErrorEvent extends FEELEventBase implements FEELEvent {

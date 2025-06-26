@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
+/*
  * User-friendly representations to be used by end-consumer, e.g. returned in the Kogito environment
  */
 package org.kie.pmml.api.models;

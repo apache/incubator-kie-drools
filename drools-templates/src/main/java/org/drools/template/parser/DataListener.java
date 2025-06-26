@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,26 @@
  */
 package org.drools.template.parser;
 
-/**
+/*
  * Callback interface for scanning an spreadsheet.
  */
 public interface DataListener {
 
     int NON_MERGED = -1;
 
-    /**
+    /*
      * Start a new sheet
      *
      * @param name the sheet name
      */
     void startSheet(String name);
 
-    /**
+    /*
      * Come to the end of the sheet.
      */
     void finishSheet();
 
-    /**
+    /*
      * Enter a new row.
      *
      * @param rowNumber
@@ -46,7 +46,7 @@ public interface DataListener {
     void newRow(int rowNumber,
             int columns);
 
-    /**
+    /*
      * Enter a new cell.
      * Do NOT call this event for trailling cells at the end of the line.
      * It will just confuse the parser. If all the trailing cells are empty, just

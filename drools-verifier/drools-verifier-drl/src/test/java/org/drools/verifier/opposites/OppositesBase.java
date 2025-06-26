@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ public class OppositesBase extends TestBaseOld {
         assertThat(true).isTrue();
     }
 
-    /**
+    /*
      * Creates opposites map from Opposites objects, one rule may have several
      * opposing dependencies.
      *

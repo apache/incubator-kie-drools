@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.WriteAccessor;
 
-/**
+/*
  * This class implements the WriteAccessor interface
  * allowing the application to write values into a field
  * from a class

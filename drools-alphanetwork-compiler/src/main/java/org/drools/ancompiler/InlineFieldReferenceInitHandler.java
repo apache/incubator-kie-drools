@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ import static org.drools.ancompiler.AbstractCompilerHandler.getVariableName;
 import static org.drools.ancompiler.AbstractCompilerHandler.getVariableType;
 import static org.drools.util.StringUtils.ucFirst;
 
-/**
+/*
  * This handler is used to inline the creation of a constraint and a ResultCollectorSink
  * So that it doesn't depend on the RETE at runtime
  */

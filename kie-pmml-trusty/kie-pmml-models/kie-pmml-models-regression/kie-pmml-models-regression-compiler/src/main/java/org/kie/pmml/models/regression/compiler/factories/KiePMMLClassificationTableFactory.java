@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -165,7 +165,7 @@ public class KiePMMLClassificationTableFactory {
         }
     }
 
-    /**
+    /*
      * Create <b>probabilityMapFunction</b> <code>SerializableFunction</code>
      * @param normalizationMethod
      * @param isBinary
@@ -261,7 +261,7 @@ public class KiePMMLClassificationTableFactory {
         }
     }
 
-    /**
+    /*
      * Create <b>probabilityMapFunction</b> <code>MethodReferenceExpr</code>
      *
      * @param normalizationMethod

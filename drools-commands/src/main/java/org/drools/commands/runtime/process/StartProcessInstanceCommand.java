@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.kie.internal.command.RegistryContext;
 @XmlAccessorType(XmlAccessType.NONE)
 public class StartProcessInstanceCommand implements ExecutableCommand<ProcessInstance>, ProcessInstanceIdCommand {
 
-    /** Generated serial version UID */
+    /* Generated serial version UID */
     private static final long serialVersionUID = -270933342071833447L;
     
     @XmlAttribute(required = true)

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,29 +20,29 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.runtime.process.WorkItemHandler;
 
-/**
+/*
  * WorkItemHandlers configuration option
  */
 public class WorkItemHandlerOption implements MultiValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The prefix for the property name for work item handlers
      */
     public static final String PROPERTY_NAME = "drools.workItemHandlers";
 
-    /**
+    /*
      * work item handler name
      */
     private final String name;
 
-    /**
+    /*
      * the accumulate function instance
      */
     private final WorkItemHandler handler;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param name
      */
@@ -51,7 +51,7 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
         this.handler = handler;
     }
 
-    /**
+    /*
      * This is a factory method for this WorkItemHandler configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -64,21 +64,21 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
         return new WorkItemHandlerOption( name, handler );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME+name;
     }
 
-    /**
+    /*
      * @return the name of the configured work item handler
      */
     public String getName() {
         return name;
     }
 
-    /**
+    /*
      * @return the work item handler instance
      */
     public WorkItemHandler getHandler() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 import org.kie.pmml.api.models.PMMLStep;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
-/**
+/*
  * Common utility methods related to <code>PMMLListener</code>
  */
 public class PMMLListenerUtils {
 
-    /**
+    /*
      * Send the <code>PMMLStep</code> to all registered <code>PMMLListener</code>s
      *
      * @param stepSupplier

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.template.parser.DataListener;
 import org.kie.internal.builder.DecisionTableInputType;
 
-/**
+/*
  * Provides valid input types for decision tables.
  * (which also serve as parser factories).
  */
@@ -39,14 +39,14 @@ public abstract class InputType {
 
     }
 
-    /**
+    /*
      * @param listener
      * @return The appropriate Parser. 
      */
     public abstract DecisionTableParser createParser(DataListener listener);
     public abstract DecisionTableParser createParser(List<DataListener> listeners);
 
-    /**
+    /*
      * Converts DecisionTableInputType to InputType.
      *
      * @param decisionTableInputType DecisionTableInputType to convert

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests how the rule parse tree renders itself to a rule XML fragment.
  */
 public class RuleRenderTest {
@@ -111,7 +111,7 @@ public class RuleRenderTest {
 
     }
 
-    /**
+    /*
      * This checks that if the rule has "nil" salience, then
      * no salience value should be put in the rule definition.
      * This allows default salience to work as advertised.

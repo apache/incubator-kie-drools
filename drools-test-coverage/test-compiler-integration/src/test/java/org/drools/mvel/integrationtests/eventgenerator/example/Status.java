@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ public class Status {
     private int currentValue;
     private long hasValueSince;
 
-    /**
+    /*
      * @param id The status name.
      * @param resourceId The id of the corresponding resource.
      */
@@ -48,7 +48,7 @@ public class Status {
         this.hasValueSince = 0;
     }
 
-    /**
+    /*
      * @param id The status name.
      * @param resourceId The id of the corresponding resource.
      * @param currentValue current value of the status.
@@ -58,7 +58,7 @@ public class Status {
         this.currentValue = currentValue;
     }
 
-    /**
+    /*
      * @param id The status name.
      * @param resourceId The id of the corresponding resource.
      * @param valueList The values this status can have.
@@ -69,42 +69,42 @@ public class Status {
         this.addValues(valueList);
     }
 
-    /**
+    /*
      * @return the status id
      */
     public int getId() {
         return this.id;
     }
 
-    /**
+    /*
      * @param name the status id to set
      */
     public void setId(int id) {
         this.id = id;
     }
 
-    /**
+    /*
      * @return the resourceId
      */
     public String getResourceId() {
         return resourceId;
     }
 
-    /**
+    /*
      * @param resourceId the resourceId to set
      */
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
 
-    /**
+    /*
      * @return the currentValue
      */
     public int getCurrentValue() {
         return currentValue;
     }
 
-    /**
+    /*
      * @param currentValue the currentValue to set
      */
     public void setCurrentValue(int currentValue, long sinceWhen) {
@@ -112,7 +112,7 @@ public class Status {
         this.hasValueSince = sinceWhen;
     }
 
-    /**
+    /*
      * @param oldValue the oldValue to set
      * @param newValue the newValue to set
      */
@@ -121,7 +121,7 @@ public class Status {
             this.setCurrentValue(newValue, sinceWhen);
     }
 
-    /**
+    /*
      * @param oldValue the oldValue to set
      * @param newValue the newValue to set
      */
@@ -129,28 +129,28 @@ public class Status {
         this.switchCurrentValue (Integer.parseInt(oldValue), Integer.parseInt(newValue), sinceWhen);
     }
 
-    /**
+    /*
      * @param currentValue the currentValue to set
      *//*
     public void setCurrentValue(int currentValue) {
         setCurrentValue (currentValue, (Calendar)Calendar.getInstance().clone());
     }*/
 
-    /**
+    /*
      * @return the valueList
      */
     public String[] getValueList() {
         return (String[]) valueList.toArray();
     }
 
-    /**
+    /*
      * @param valueList the valueList to set
      */
     public void addValues(String[] valueList) {
         this.valueList.addAll(Arrays.asList(valueList));
     }
 
-    /**
+    /*
      * @return the hasValueSince
      */
     public long getHasValueSince() {

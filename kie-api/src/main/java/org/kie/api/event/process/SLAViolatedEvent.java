@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.kie.api.event.process;
 
 import org.kie.api.runtime.process.NodeInstance;
 
-/**
+/*
  * An event when a SLA has been violated.
  */
 public interface SLAViolatedEvent
     extends
     ProcessEvent {
     
-    /**
+    /*
      * The node instance this event is related to.
      *
      * @return the node instance

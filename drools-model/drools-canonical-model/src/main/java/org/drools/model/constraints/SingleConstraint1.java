@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,7 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
         this.predicate = predicate;
     }
 
-    /**
+    /*
      * This constructor generates a constraint that cannot be evaluated as it lacks the actual predicate
      * The AlphaNode referring this can be shared, as the exprId is provided
      * Currently it's used only with the Alpha Network Compiler, since the code instantiating

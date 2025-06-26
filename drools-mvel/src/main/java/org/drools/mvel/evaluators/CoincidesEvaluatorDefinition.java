@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the 'coincides' evaluator definition.</p>
  * 
  * <p>The <b><code>coincides</code></b> evaluator correlates two events and matches when both
@@ -94,7 +94,7 @@ public class CoincidesEvaluatorDefinition
         out.writeObject( cache );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -105,7 +105,7 @@ public class CoincidesEvaluatorDefinition
                                   null );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -117,7 +117,7 @@ public class CoincidesEvaluatorDefinition
                                   parameterText );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -133,7 +133,7 @@ public class CoincidesEvaluatorDefinition
 
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -161,28 +161,28 @@ public class CoincidesEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.BOTH;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType(ValueType type) {
@@ -191,7 +191,7 @@ public class CoincidesEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'coincides' evaluator itself
      */
     public static class CoincidesEvaluator extends BaseEvaluator {
@@ -377,7 +377,7 @@ public class CoincidesEvaluatorDefinition
             return endDev == other.endDev && startDev == other.startDev;
         }
 
-        /**
+        /*
          * This methods sets the parameters appropriately.
          *
          * @param parameters

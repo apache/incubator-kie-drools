@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 
 public interface Marshaller {
 
-    /**
+    /*
      * Marshalls the given KieSession into the provided OutputStream
      * @param stream
      * @param ksession
@@ -37,7 +37,7 @@ public interface Marshaller {
     void marshall(OutputStream stream,
                   KieSession ksession) throws IOException;
 
-    /**
+    /*
      * Creates KieSession using default KieSessionConfiguration and
      * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
@@ -49,7 +49,7 @@ public interface Marshaller {
      */
     KieSession unmarshall(InputStream stream) throws IOException, ClassNotFoundException;
 
-    /**
+    /*
      * Creates KieSession using the given KieSessionConfiguration and
      * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
@@ -65,7 +65,7 @@ public interface Marshaller {
                           KieSessionConfiguration config,
                           Environment environment) throws IOException, ClassNotFoundException;
 
-    /**
+    /*
      * Unmarshall the stream into the KieSession. All existing state in the session will be lost.
      *
      * @param stream
@@ -76,7 +76,7 @@ public interface Marshaller {
     void unmarshall(InputStream stream,
                     KieSession ksession) throws IOException, ClassNotFoundException;
 
-    /**
+    /*
      * @return the {@link org.kie.api.marshalling.MarshallingConfiguration} object for this marshaller.
      */
     MarshallingConfiguration getMarshallingConfiguration();

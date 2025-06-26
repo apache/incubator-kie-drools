@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 
-/**
+/*
  * The compilation-related interface to be implemented by engine-plugin.
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.runtimemanager.api.service.KieRuntimeService</code> file
@@ -33,7 +33,7 @@ import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends EfestoOutput<U>, K extends EfestoRuntimeContext> {
 
     EfestoClassKey getEfestoClassKeyIdentifier();
-    /**
+    /*
      * Every engine is responsible to verify if it can evaluate a result with the resource of the given <code>T</code>
      * (that contains a specific <code>LocalUri</code>)
      *
@@ -43,7 +43,7 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      */
     boolean canManageInput(EfestoInput toEvaluate, K context);
 
-    /**
+    /*
      * Produce one <code>EfestoOutput</code> from the given <code>EfestoInput</code>
      *
      * @param toEvaluate
@@ -52,14 +52,14 @@ public interface KieRuntimeService<S, U, T extends EfestoInput<S>, E extends Efe
      */
     Optional<E> evaluateInput(T toEvaluate, K context);
 
-    /**
+    /*
      * Return the model type that the RuntimeService handles
      *
      * @return model type
      */
     String getModelType();
 
-    /**
+    /*
      * Model-specific implementations are required to implement this to provide model-specific instances.
      * It has to return the same type as received in the KieRuntimeService#evaluateInput.
      * The implementation is guaranteed that the received strings are related to the model returned by

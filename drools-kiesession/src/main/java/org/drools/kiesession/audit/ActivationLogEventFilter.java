@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.kiesession.audit;
 
-/**
+/*
  * An event filter that can be used to filter assertion events.
  * By default, all events are allowed.  You can filter out any of the
  * four types of assertion events by setting the allow boolean
@@ -43,7 +43,7 @@ public class ActivationLogEventFilter
         setAllowAfterActivationFireEvents( allowAfterActivationFireEvents );
     }
 
-    /**
+    /*
      * @see org.kie.audit.event.ILogEventFilter
      */
     public boolean acceptEvent(final LogEvent event) {

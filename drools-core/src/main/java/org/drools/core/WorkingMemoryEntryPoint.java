@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,13 +32,13 @@ import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
 public interface WorkingMemoryEntryPoint extends EntryPoint {
 
-    /**
+    /*
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
      * on the Object to automatically trigger <code>update</code> calls
      * if <code>dynamic</code> is <code>true</code>.
@@ -54,7 +54,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     FactHandle insert(Object object,
                       boolean dynamic);
 
-    /**
+    /*
      * Internal method called by the engine when the session is being disposed, so that the entry point
      * can proceed with the necessary clean ups.
      */

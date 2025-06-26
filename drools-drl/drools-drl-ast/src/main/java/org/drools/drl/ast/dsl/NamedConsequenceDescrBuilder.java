@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.drl.ast.descr.NamedConsequenceDescr;
 
 public interface NamedConsequenceDescrBuilder<P extends DescrBuilder< ? , ? >> extends DescrBuilder<P, NamedConsequenceDescr> {
 
-    /**
+    /*
      * Sets the consequence name
      *
      * @param name the name of the consequence to be invoked
@@ -30,7 +30,7 @@ public interface NamedConsequenceDescrBuilder<P extends DescrBuilder< ? , ? >> e
      */
     public NamedConsequenceDescrBuilder<P> name( String name );
 
-    /**
+    /*
      * Sets the consequence invocation as breaking or not
      *
      * @param breaking

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
         this.results.add(result);
     }
 
-    /**
+    /*
      * This will return true if there were errors in the package building and
      * compiling phase
      */
@@ -127,7 +127,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
         getErrors().add(error);
     }
 
-    /**
+    /*
      * @return A list of Error objects that resulted from building and compiling
      * the package.
      */
@@ -136,7 +136,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
         return new PackageBuilderErrors(errors.toArray(new DroolsError[errors.size()]));
     }
 
-    /**
+    /*
      * Reset the error list. This is useful when incrementally building
      * packages. Care should be used when building this, if you clear this when
      * there were errors on items that a rule depends on (eg functions), then

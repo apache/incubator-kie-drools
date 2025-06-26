@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
-/**
+/*
  * DRLExprTreeTest
  */
 class DRLExprParserTest {
@@ -324,7 +324,7 @@ class DRLExprParserTest {
         assertThat(right.getExpression()).isEqualTo("b");
     }
 
-    /**
+    /*
      * Each test input is a simple expression covering one of the existing keywords. The test is successful if the parser has
      * no errors and the descriptor's expression string is equal to the input.
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.mvel2.debug.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Debug Handler for MVEL dialect.
  *
  * Takes care of registering breakpoints and calling required methods
@@ -42,14 +42,14 @@ public final class MVELDebugHandler {
 
     public static final boolean verbose = false;
 
-    /**
+    /*
      * Notify remote debugger that runtime is ready to get latest breakpoint
      * information
      */
     public static void receiveBreakpoints() {
     }
 
-    /**
+    /*
      * This is catched by the remote debugger
      *
      * @param frame
@@ -105,7 +105,7 @@ public final class MVELDebugHandler {
         onBreakReturn = value;
     }
 
-    /**
+    /*
      * Returns current debug mode.<br/>
      * Holds lazy initialized internal reference to improve performance.<br/>
      * Therefore you can't change System property "mvel.debugger" after isDebugMode is called at least once.<br/>
@@ -120,7 +120,7 @@ public final class MVELDebugHandler {
         return debugMode;
     }
 
-    /**
+    /*
      * Sets debug mode on/off.<br/>
      * Updates local MVELDebugHandler property and System property "mvel.debugger"<br/>
      * <br/>

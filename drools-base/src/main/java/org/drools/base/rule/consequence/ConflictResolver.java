@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.base.rule.consequence;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/**
+/*
  * Strategy for resolving conflicts amongst multiple rules.
  * 
  * <p>

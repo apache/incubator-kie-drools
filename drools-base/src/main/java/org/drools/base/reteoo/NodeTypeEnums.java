@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.base.reteoo;
 
 import org.drools.base.common.NetworkNode;
 
-/**
+/*
  *
  */
 public class NodeTypeEnums {
@@ -120,7 +120,7 @@ public class NodeTypeEnums {
     public static boolean isMemoryFactory(NetworkNode node) {
         return (node.getType() & MemoryFactoryMask) != 0;
     }
-    /**
+    /*
      * This is here because AlphaTerminalNode extends LeftInputAdapter node, so cannot be switched by getType return,
      * when all you need ot know is if it's an lian.
      * @param node

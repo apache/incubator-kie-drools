@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ public class CronExpressionTest extends SerializationTestSupport {
 
     private static final TimeZone EST_TIME_ZONE = TimeZone.getTimeZone("US/Eastern");
 
-    /**
+    /*
      * Get the object to serialize when generating serialized file for future
      * tests, and against which to validate deserialized object.
      */
@@ -49,7 +49,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         return cronExpression;
     }
     
-    /**
+    /*
      * Get the Quartz versions for which we should verify
      * serialization backwards compatibility.
      */
@@ -57,7 +57,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         return VERSIONS;
     }
     
-    /**
+    /*
      * Verify that the target object and the object we just deserialized 
      * match.
      */

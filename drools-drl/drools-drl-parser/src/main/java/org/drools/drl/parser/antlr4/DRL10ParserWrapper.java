@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.drl.parser.antlr4.DRL10ParserHelper.compilationUnitContext2PackageDescr;
 
-/**
+/*
  * Wrapper for DRLParser. Somewhat duplicated from DRLParserHelper, but this class is instantiated and holds errors.
  */
 public class DRL10ParserWrapper {
@@ -46,7 +46,7 @@ public class DRL10ParserWrapper {
         this.resource = resource;
     }
 
-    /**
+    /*
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(String drl) {
@@ -54,7 +54,7 @@ public class DRL10ParserWrapper {
         return parse(drlParser);
     }
 
-    /**
+    /*
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(InputStream is, String encoding) {
@@ -62,7 +62,7 @@ public class DRL10ParserWrapper {
         return parse(drlParser);
     }
 
-    /**
+    /*
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(Reader reader) {

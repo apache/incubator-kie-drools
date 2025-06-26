@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * 
  * Utility class to view Rete models
  *
@@ -71,7 +71,7 @@ public class ReteDumper {
         return writer;
     }
 
-    /**
+    /*
      * Set a writer to which ReteDumper prints results. By default, results will be printed to STDOUT
      * @param writer
      */
@@ -83,7 +83,7 @@ public class ReteDumper {
         return nodeInfoOnly;
     }
 
-    /**
+    /*
      * If true, dump without partition/mask information. Default value is false
      * @param nodeInfoOnly
      */
@@ -240,7 +240,7 @@ public class ReteDumper {
         sb.append("\n");
     }
 
-    /**
+    /*
      * Format a node to informative String
      *
      * @param node
@@ -277,7 +277,7 @@ public class ReteDumper {
         new ReteDumper().dumpAssociatedRules(((InternalRuleBase) kieBase).getRete());
     }
 
-    /**
+    /*
      * Dump nodes with associated rules. Helps to locate rules from a node in problem
      * @param kieBase
      */

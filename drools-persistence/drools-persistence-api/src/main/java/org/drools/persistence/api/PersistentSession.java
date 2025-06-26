@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.persistence.api;
 
-/**
+/*
  * Basic interface so that persisteces can avoid depending on
  * the JPA implementation of a session.
  */

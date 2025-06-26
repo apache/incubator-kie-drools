@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
+/*
  * This class is used to hold information for Hashed {@link org.kie.reteoo.AlphaNode}s for generated subclasses
  * of {@link CompiledNetwork}.
  *
@@ -35,7 +35,7 @@ public class HashedAlphasDeclaration {
     private final String variableName;
     private final ValueType valueType;
 
-    /**
+    /*
      * This map contains keys which are different values of the same field and the node id that of the
      * {@link org.kie.common.NetworkNode} the value is from.
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,13 +22,13 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * A KnowledgeBuilder with a fluent interface allowing to add multiple Resources
  * at the same time, without worrying about cross dependencies among them.
  */
 public interface CompositeKnowledgeBuilder {
 
-    /**
+    /*
      * Set the default resource type of all the subsequently added Resources.
      *
      * @param type the resource type
@@ -36,14 +36,14 @@ public interface CompositeKnowledgeBuilder {
      */
     CompositeKnowledgeBuilder type(ResourceType type);
 
-    /**
+    /*
      * Add a resource of the given ResourceType, using the default type and resource configuration.
      *
      * @param resource the Resource to add
      * @return
      */
     CompositeKnowledgeBuilder add(Resource resource);
-    /**
+    /*
 
      * Add a resource of the given ResourceType, using the default resource configuration.
      *
@@ -53,7 +53,7 @@ public interface CompositeKnowledgeBuilder {
      */
     CompositeKnowledgeBuilder add(Resource resource, ResourceType type);
 
-    /**
+    /*
      * Add a resource of the given ResourceType, using the provided ResourceConfiguration.
      * Resources can be created by calling any of the "newX" factory methods of
      * ResourceFactory. The kind of resource (DRL,  XDRL, DSL,... ) must be
@@ -66,7 +66,7 @@ public interface CompositeKnowledgeBuilder {
      */
     CompositeKnowledgeBuilder add(Resource resource, ResourceType type, ResourceConfiguration configuration);
 
-    /**
+    /*
      * Build all the Resources added during this batch
      */
     void build();

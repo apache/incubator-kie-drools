@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,13 +30,13 @@ import org.mvel2.asm.Opcodes;
 
 import static org.drools.util.IoUtils.readBytesFromInputStream;
 
-/**
+/*
  * The purpose of this utility it to check if 2 method implementations are equivalent, by comparing the bytecode.
  * This essentual for node sharing where java semantics are involved.
  */
 public class MethodComparator {
 
-    /**
+    /*
      * This actually does the comparing.
      * Class1 and Class2 are class reader instances to the respective classes. method1 and method2 are looked up on the 
      * respective classes and their contents compared.
@@ -50,7 +50,7 @@ public class MethodComparator {
         return getMethodBytecode( method1, class1 ).equals( getMethodBytecode( method2, class2 ) );
     }
 
-    /**
+    /*
      * This will return a series of bytecode instructions which can be used to compare one method with another.
      * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
      */
@@ -61,7 +61,7 @@ public class MethodComparator {
         return visit.getText();
     }
 
-    /**
+    /*
      * This will return a series of bytecode instructions which can be used to compare one method with another.
      * debug info like local var declarations and line numbers are ignored, so the focus is on the content.
      */
@@ -74,7 +74,7 @@ public class MethodComparator {
         return visit.getText();
     }
 
-    /**
+    /*
      * Compares 2 bytecode listings.
      * Returns true if they are identical.
      */

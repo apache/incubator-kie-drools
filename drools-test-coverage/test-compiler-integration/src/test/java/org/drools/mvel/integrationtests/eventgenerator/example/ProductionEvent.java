@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.mvel.integrationtests.eventgenerator.Event;
 
 public class ProductionEvent extends Event {
 
-    /**
+    /*
      * Special constructor for a production event
      * @param parentId The id of the corresponding site, resource, ...
      */
@@ -30,7 +30,7 @@ public class ProductionEvent extends Event {
         super(EventType.PRODUCTION, parentId);
     }
 
-    /**
+    /*
      * Special constructor for a production event
      * @param parentId The id of the corresponding site, resource, ...
      * @param start The start instance of the event.

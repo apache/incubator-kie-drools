@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public interface KieStoreServices extends KieService {
                              KieSessionConfiguration configuration,
                              Environment environment);
 
-    /**
+    /*
      * Deprecated use {@link  #loadKieSession(Long, KieBase, KieSessionConfiguration, Environment)} instead
      */
     @Deprecated

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.List;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A  <code>CompilationOutput</code> from one engine that will
  * be an <code>EfestoResource</code> for another one.
  * This will be translated to a <code>GeneratedRedirectResource</code>,
@@ -33,7 +33,7 @@ public abstract class EfestoRedirectOutput<T> extends AbstractEfestoCallableComp
 
     private final String targetEngine;
 
-    /**
+    /*
      * This is the <b>payload</b> to forward to the target compilation-engine
      */
     private final T content;

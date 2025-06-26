@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getF
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getSourcesMapFromCommonDataAndTransformationDictionaryAndModel;
 
-/**
+/*
  * <code>PMMLCompiler</code> default implementation
  */
 public class PMMLCompilerImpl implements PMMLCompiler {
@@ -114,7 +114,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                                        factorySourceMap);
     }
 
-    /**
+    /*
      * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
      * @param packageName the package into which put all the generated classes out of the given <code>PMML</code>
      * @param pmml
@@ -140,7 +140,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
      * @param packageName the package into which put all the generated classes out of the given <code>PMML</code>
      * @param pmmlContext Using <code>PMMLRuntimeContext</code>

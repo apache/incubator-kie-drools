@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.base.base;
 
 import java.io.Externalizable;
 
-/**
+/*
  * Semantic object type differentiator.
  */
 public interface ObjectType
@@ -33,7 +33,7 @@ public interface ObjectType
 
     boolean isAssignableFrom(ObjectType objectType);
 
-    /**
+    /*
      * Returns true if the object type represented by this object
      * is an event object type. False otherwise.
      * @return

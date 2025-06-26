@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public interface DMNNode {
 
     String getModelName();
 
-    /**
+    /*
      * Return the import name (short name alias) as described by this node's parent DMN Model, for the supplied namespace and model name.
      * @param ns the namespace of the imported model
      * @param iModelName the model name of the imported model

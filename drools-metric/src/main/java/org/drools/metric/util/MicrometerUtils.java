@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import io.micrometer.core.instrument.Timer;
 import org.drools.core.common.BaseNode;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * All references to Micrometer are in this class, and therefore Micrometer is only required on the classpath when
  * this class is actually loaded.
  */

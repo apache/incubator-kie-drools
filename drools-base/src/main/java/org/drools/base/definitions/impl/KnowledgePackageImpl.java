@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -83,12 +83,12 @@ public class KnowledgePackageImpl
             "org.drools.tms.beliefsystem.abductive.Abductive",
             "org.drools.tms.beliefsystem.abductive.Abducible"};
 
-    /**
+    /*
      * Name of the pkg.
      */
     protected String name;
 
-    /**
+    /*
      * Set of all rule-names in this <code>Package</code>.
      */
     protected Map<String, RuleImpl> rules = new LinkedHashMap<>();
@@ -117,7 +117,7 @@ public class KnowledgePackageImpl
 
     protected Map<String, Object> cloningResources = new HashMap<>();
 
-    /**
+    /*
      * This is to indicate the the package has no errors during the
      * compilation/building phase
      */
@@ -125,7 +125,7 @@ public class KnowledgePackageImpl
 
     protected boolean needStreamMode = false;
 
-    /**
+    /*
      * This will keep a summary error message as to why this package is not
      * valid
      */
@@ -141,7 +141,7 @@ public class KnowledgePackageImpl
         this(null);
     }
 
-    /**
+    /*
      * Construct.
      *
      * @param name The name of this <code>Package</code>.
@@ -214,7 +214,7 @@ public class KnowledgePackageImpl
         return Collections.unmodifiableCollection(list);
     }
 
-    /**
+    /*
      * Handles the write serialization of the Package. Patterns in Rules may
      * reference generated data which cannot be serialized by default methods.
      * The Package uses PackageCompilationData to hold a reference to the
@@ -261,7 +261,7 @@ public class KnowledgePackageImpl
         }
     }
 
-    /**
+    /*
      * Handles the read serialization of the Package. Patterns in Rules may
      * reference generated data which cannot be serialized by default methods.
      * The Package uses PackageCompilationData to hold a reference to the
@@ -307,7 +307,7 @@ public class KnowledgePackageImpl
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Retrieve the name of this <code>Package</code>.
      *
      * @return The name of this <code>Package</code>.
@@ -457,7 +457,7 @@ public class KnowledgePackageImpl
         this.prototypes.put(prototype.getName(), prototype);
     }
 
-    /**
+    /*
      * Add a <code>Rule</code> to this <code>Package</code>.
      *
      * @param rule The rule to add.
@@ -470,7 +470,7 @@ public class KnowledgePackageImpl
                        rule);
     }
 
-    /**
+    /*
      * Add a rule flow to this package.
      */
     public void addProcess(Process process) {
@@ -479,7 +479,7 @@ public class KnowledgePackageImpl
         rtp.add(process);
     }
 
-    /**
+    /*
      * Get the rule flows for this package. The key is the ruleflow id. It will
      * be Collections.EMPTY_MAP if none have been added.
      */
@@ -488,7 +488,7 @@ public class KnowledgePackageImpl
         return rtp == null? Collections.emptyMap() : rtp.getRuleFlows();
     }
 
-    /**
+    /*
      * Rule flows can be removed by ID.
      */
     public void removeRuleFlow(String id) {
@@ -504,7 +504,7 @@ public class KnowledgePackageImpl
         this.dialectRuntimeRegistry.removeRule(this, rule);
     }
 
-    /**
+    /*
      * Retrieve a <code>Rule</code> by name.
      *
      * @param name The name of the <code>Rule</code> to retrieve.
@@ -520,7 +520,7 @@ public class KnowledgePackageImpl
         return "[Package name=" + this.name + "]";
     }
 
-    /**
+    /*
      * Once this is called, the package will be marked as invalid
      */
     public void setError(final String summary) {
@@ -528,7 +528,7 @@ public class KnowledgePackageImpl
         this.valid = false;
     }
 
-    /**
+    /*
      * Once this is called, the package will be marked as invalid
      */
     public void resetErrors() {
@@ -536,14 +536,14 @@ public class KnowledgePackageImpl
         this.valid = true;
     }
 
-    /**
+    /*
      * @return true (default) if there are no build/structural problems.
      */
     public boolean isValid() {
         return this.valid;
     }
 
-    /**
+    /*
      * This will throw an exception if the package is not valid
      */
     public void checkValidity() {
@@ -552,7 +552,7 @@ public class KnowledgePackageImpl
         }
     }
 
-    /**
+    /*
      * This will return the error summary (if any) if the package is invalid.
      */
     public String getErrorSummary() {

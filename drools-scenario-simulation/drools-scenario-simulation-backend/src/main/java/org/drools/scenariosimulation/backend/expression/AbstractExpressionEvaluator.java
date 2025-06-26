@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         }
     }
 
-    /**
+    /*
      * Check if resultClass represents a structured result
      * @param resultClass
      * @return
@@ -62,7 +62,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return resultClass != null && ScenarioSimulationSharedUtils.isCollectionOrMap(resultClass.getCanonicalName());
     }
 
-    /**
+    /*
      * Check if className represents a structured input
      * @param className
      * @return
@@ -243,7 +243,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return ExpressionEvaluatorResult.ofSuccessful();
     }
 
-    /**
+    /*
      * Verify if given json node has all final values as empty strings
      * @param json
      * @return
@@ -258,7 +258,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         }
     }
 
-    /**
+    /*
      * Verify if all elements of given json array are empty
      * @param json
      * @return
@@ -272,7 +272,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return true;
     }
 
-    /**
+    /*
      * Verify if all fields of given json object are empty
      * @param json
      * @return
@@ -288,7 +288,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return true;
     }
 
-    /**
+    /*
      * Verify if given json node text is empty
      * @param jsonNode
      * @return
@@ -297,7 +297,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return jsonNode.textValue() == null || jsonNode.textValue().isEmpty();
     }
 
-    /**
+    /*
      * A node represent a simple type if it is an object with only one field named "value"
      * @param jsonNode
      * @return
@@ -311,7 +311,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return numberOfFields == 1 && objectNode.has(VALUE);
     }
 
-    /**
+    /*
      * Return text value of a simple type node
      * @param jsonNode
      * @return
@@ -333,7 +333,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     protected abstract void setField(Object toReturn, String fieldName, Object fieldValue);
 
-    /**
+    /*
      * Return a pair with field className as key and list of generics as value
      * @param element : instance to be populated
      * @param fieldName : field to analyze

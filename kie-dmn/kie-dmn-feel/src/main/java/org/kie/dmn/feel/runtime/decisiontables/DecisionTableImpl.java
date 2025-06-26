@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -79,7 +79,7 @@ public class DecisionTableImpl implements DecisionTable {
         this.feel = feel;
     }
 
-    /**
+    /*
      * Evaluates this decision table returning the result
      * @param ctx
      * @param params these are the required information items, not to confuse with the columns of the
@@ -153,7 +153,7 @@ public class DecisionTableImpl implements DecisionTable {
         return msgs;
     }
 
-    /**
+    /*
      * This checks one "column" of the decision table output(s).
      */
     private static void checkOneResult(EvaluationContext ctx, Indexed rule, Map<Integer, String> msgs, DecisionTable.OutputClause dtOutputClause, Object result, int index) {
@@ -206,7 +206,7 @@ public class DecisionTableImpl implements DecisionTable {
         return actualInputs;
     }
 
-    /**
+    /*
      * If valid input values are defined, check that all parameters match the respective valid inputs
      * @param ctx
      * @param params
@@ -242,7 +242,7 @@ public class DecisionTableImpl implements DecisionTable {
         return Either.ofRight(true);
     }
 
-    /**
+    /*
      * Finds all rules that match a given set of parameters
      *
      * @param ctx
@@ -276,7 +276,7 @@ public class DecisionTableImpl implements DecisionTable {
         return matchingDecisionRules;
     }
 
-    /**
+    /*
      * Checks if the parameters match a single rule
      * @param ctx
      * @param params
@@ -296,7 +296,7 @@ public class DecisionTableImpl implements DecisionTable {
         return true;
     }
 
-    /**
+    /*
      * Checks that a given parameter matches a single cell test
      * @param ctx
      * @param param
@@ -313,7 +313,7 @@ public class DecisionTableImpl implements DecisionTable {
         return results;
     }
 
-    /**
+    /*
      *  Each hit results in one output value (multiple outputs are collected into a single context value)
      */
     private Object hitToOutput(EvaluationContext ctx, FEEL feel, DTDecisionRule rule) {
@@ -330,7 +330,7 @@ public class DecisionTableImpl implements DecisionTable {
         }
     }
 
-    /**
+    /*
      *  No hits matched for the DT, so calculate result based on default outputs
      */
     private Object defaultToOutput(EvaluationContext ctx, FEEL feel) {
@@ -367,14 +367,14 @@ public class DecisionTableImpl implements DecisionTable {
         return parameterNames;
     }
 
-    /**
+    /*
      * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
      */
     public void setCompiledParameterNames(List<CompiledExpression> compiledParameterNames) {
         this.compiledParameterNames = compiledParameterNames;
     }
 
-    /**
+    /*
      * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
      */
     public List<CompiledExpression> getCompiledParameterNames() {

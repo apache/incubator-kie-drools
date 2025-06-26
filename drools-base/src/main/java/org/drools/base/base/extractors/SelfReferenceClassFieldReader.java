@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.Externalizable;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 
-/**
+/*
  * A special field extractor for the self reference "this".
  */
 public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader implements Externalizable  {

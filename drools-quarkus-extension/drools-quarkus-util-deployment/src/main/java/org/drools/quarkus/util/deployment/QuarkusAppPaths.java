@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.util.Set;
 import io.quarkus.deployment.pkg.steps.JarResultBuildStep;
 import org.drools.codegen.common.AppPaths;
 
-/**
+/*
  * {@link AppPaths}'s extension in Quarkus context.
  */
 public class QuarkusAppPaths extends AppPaths {
@@ -41,7 +41,7 @@ public class QuarkusAppPaths extends AppPaths {
         CLASSES,
         TEST_CLASSES,
         JAR,
-        /**
+        /*
          * Augmentation Mode from Quarkus. The app is deployed at "target/quarkus-app/dev/app" and behaves as an "exploded" jar.
          * Every resource is in this root path, so all the generated code must also be generated in this very same path.
          *

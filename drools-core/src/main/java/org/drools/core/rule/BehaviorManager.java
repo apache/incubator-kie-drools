@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * A class to encapsulate behavior management for a given beta node
  */
 public class BehaviorManager
@@ -63,7 +63,7 @@ public class BehaviorManager
         out.writeObject( behaviors );
     }
 
-    /**
+    /*
      * Creates the behaviors' context 
      */
     public BehaviorContext[] createBehaviorContext() {
@@ -74,7 +74,7 @@ public class BehaviorManager
         return behaviorCtx;
     }
 
-    /**
+    /*
      * Register a newly asserted right tuple into the behaviors' context
      */
     public boolean assertFact(final Object behaviorContext,
@@ -91,7 +91,7 @@ public class BehaviorManager
         return result;
     }
 
-    /**
+    /*
      * Removes a newly asserted fact handle from the behaviors' context
      */
     public void retractFact(final Object behaviorContext,
@@ -106,7 +106,7 @@ public class BehaviorManager
         }
     }
 
-    /**
+    /*
      * @return the behaviors
      */
     public BehaviorRuntime[] getBehaviors() {

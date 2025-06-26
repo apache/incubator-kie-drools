@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import static org.drools.core.util.KeyStoreConstants.PROP_PVT_PWD;
 import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_PWD;
 import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
 
-/**
+/*
  * A helper class to deal with the key store and signing process during
  * Serialisation
  * <p>
@@ -88,7 +88,7 @@ public class KeyStoreHelper {
     private KeyStore pubKeyStore;
     private KeyStore pwdKeyStore;
 
-    /**
+    /*
      * Creates a KeyStoreHelper and initialises the KeyStore, by loading its entries.
      * @throws RuntimeException in case any error happens when initialising and loading the keystore.
      */
@@ -166,7 +166,7 @@ public class KeyStoreHelper {
         return keyStore;
     }
 
-    /**
+    /*
      * Generates the signature for the given byte[] using MD5 with RSA algorithm and the
      * private key with which this helper was initialised.
      *
@@ -209,7 +209,7 @@ public class KeyStoreHelper {
         return sig.sign();
     }
 
-    /**
+    /*
      * Checks the given byte[] data against the signature, using the
      * public key with which this helper was initialised and the algorithm
      * MD5 with RSA.

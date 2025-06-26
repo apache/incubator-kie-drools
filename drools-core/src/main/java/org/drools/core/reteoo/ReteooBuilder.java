@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.util.TupleRBTree.Node;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * Builds the Rete-OO network for a <code>Package</code>.
  *
  */
@@ -60,7 +60,7 @@ public class ReteooBuilder
 
     private static final long           serialVersionUID = 510l;
 
-    /** The RuleBase */
+    /* The RuleBase */
     private transient InternalRuleBase kBase;
 
     private Map<String, TerminalNode[]>          rules;
@@ -81,7 +81,7 @@ public class ReteooBuilder
 
     }
 
-    /**
+    /*
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
      */
@@ -98,7 +98,7 @@ public class ReteooBuilder
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Add a <code>Rule</code> to the network.
      *
      * @param rule     The rule to add.
@@ -211,7 +211,7 @@ public class ReteooBuilder
         return stillInUse.values();
     }
 
-    /**
+    /*
      * Path's must be removed starting from the outer most path, iterating towards the inner most path.
      * Each time it reaches a subnetwork beta node, the current path evaluation ends, and instead the subnetwork
      * path continues.

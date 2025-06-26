@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ import org.kie.api.runtime.StatelessKieSession;
 
 public interface InternalKieContainer extends KieContainer {
 
-    /**
+    /*
      * Returns an already created defualt KieSession for this KieContainer or creates a new one
      * @throws RuntimeException if this KieContainer doesn't have any defualt KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
      */
     KieSession getKieSession();
 
-    /**
+    /*
      * Returns an already created KieSession with the given name for this KieContainer or creates a new one
      * @throws RuntimeException if this KieContainer doesn't have any defualt KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
@@ -47,7 +47,7 @@ public interface InternalKieContainer extends KieContainer {
 
     StatelessKieSession getStatelessKieSession(String kSessionName);
 
-    /**
+    /*
      * Internal use: returns the RelaseId configured while creating the Kiecontainer, 
      * or alternatively if the RelaseId was NOT configured while creating the Kiecontainer,
      * returns the the ReleaseId of the KieModule wrapped by this KieContainer. 
@@ -63,24 +63,24 @@ public interface InternalKieContainer extends KieContainer {
 
     InputStream getPomAsStream();
 
-    /**
+    /*
      * @return the {@link KieModule} of the {@link #getReleaseId()}
      */
     KieModule getMainKieModule();
 
-    /**
+    /*
      * Returns the ID assigned to the container.
      * @return the ID assigned to the container.
      */
     String getContainerId();
     
-    /**
+    /*
      * Returns the RelaseId configured while creating the Kiecontainer.
      * @return the RelaseId configured while creating the Kiecontainer.
      */
     ReleaseId getConfiguredReleaseId();
     
-    /**
+    /*
      * Returns the actual resolved ReleaseId. 
      * @return the actual resolved ReleaseId. 
      */

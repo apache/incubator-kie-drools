@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.time.Interval;
 
-/**
+/*
  * BaseEvaluator is an Object Comparator that is operator aware
  */
 public abstract class BaseEvaluator implements MvelEvaluator, Externalizable {

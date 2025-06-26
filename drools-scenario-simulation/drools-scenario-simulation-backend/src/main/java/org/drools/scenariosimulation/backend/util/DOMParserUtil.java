@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,7 +48,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/**
+/*
  * Class used to provide parsing methods
  */
 public class DOMParserUtil {
@@ -56,7 +56,7 @@ public class DOMParserUtil {
     private DOMParserUtil() {
     }
 
-    /**
+    /*
      * This method remove the <b>nodeToRemoveName</b> <code>Node</code>s from all the <b>containerNodeName</b> Elements found inside the given <b>fullXml</b>
      * @param fullXml
      * @param containerNodeName
@@ -69,7 +69,7 @@ public class DOMParserUtil {
         return getString(document);
     }
 
-    /**
+    /*
      * This method remove the <b>nodeToRemoveName</b> <code>Node</code>s from all the <b>containerNodeName</b> Elements found inside the given <b>fullXml</b>
      * @param document
      * @param containerNodeName
@@ -96,7 +96,7 @@ public class DOMParserUtil {
         }
     }
 
-    /**
+    /*
      * Replace the text content of the given <b>nodeName</b> inside the given <code>containerNodeName</code>.
      * The replace happen only if the given <b>nodeName</b> text is equals to <b>toReplace</b>
      * @param document
@@ -112,7 +112,7 @@ public class DOMParserUtil {
                         .forEach(childNode -> childNode.setTextContent(replacement)));
     }
 
-    /**
+    /*
      * Replace <b>all childNodeNameToReplace</b> nodes in <b>all containerNodeName</b>s presents in document with <b>childNodeNameReplacement</b>
      * @param document
      * @param containerNodeName
@@ -141,7 +141,7 @@ public class DOMParserUtil {
         return (containerNode.getAttributes() != null && containerNode.getAttributes().getNamedItem(attributeName) != null) ? containerNode.getAttributes().getNamedItem(attributeName).getNodeValue() : null;
     }
 
-    /**
+    /*
      * Return a <code>Map</code> where the <code>key</code> is the <code>Node</code> with the given <b>containerNodeName</b>
      * and the <b>value</b>   is the <b>node value</b> of the attribute with the given <b>attributeName</b>
      * It returns an <b>empty</b> map if such attribute does not exists
@@ -159,7 +159,7 @@ public class DOMParserUtil {
                 ));
     }
 
-    /**
+    /*
      * Return a <code>Map</code> where the <code>key</code> is any <code>Node</code> inside the given <b>document</b>
      * and the <b>value</b>   is the <b>node value</b> of the attribute with the given <b>attributeName</b>
      * <p>
@@ -183,7 +183,7 @@ public class DOMParserUtil {
                 .forEach(attributeNode -> attributeNode.setNodeValue(attributeValue));
     }
 
-    /**
+    /*
      * Create <b>childNodeName</b> nodes in <b>all containerNodeName</b> presents in the document
      * @param document
      * @param containerNodeName
@@ -206,7 +206,7 @@ public class DOMParserUtil {
                 ));
     }
 
-    /**
+    /*
      * Create <b>childNodeName</b> nodes in <b>all containerNodeName</b>s presents in <b>all mainContainerNode</b>s of the document
      * @param document
      * @param containerNodeName
@@ -232,7 +232,7 @@ public class DOMParserUtil {
         return toReturn;
     }
 
-    /**
+    /*
      * Create a <b>nodeToCreateName</b> <code>Node</code> and appends it inside <b>containerNode</b>.
      * @param containerNode
      * @param nodeToCreateName
@@ -243,7 +243,7 @@ public class DOMParserUtil {
         return createNodeAtPosition(containerNode, nodeToCreateName, nodeContent, null);
     }
 
-    /**
+    /*
      * Create a <b>nodeToCreateName</b> <code>Node</code> inside <b>containerNode</b>.
      * If <b>nodeContent</b> is not null, add it as text content.
      * If <b>position</b> is not null, put the created node at position 0
@@ -267,7 +267,7 @@ public class DOMParserUtil {
         return toReturn;
     }
 
-    /**
+    /*
      * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in fullXml
      * @param fullXml
      * @param containerNodeName
@@ -279,7 +279,7 @@ public class DOMParserUtil {
         return getChildrenNodesMap(document, containerNodeName, childNodeName);
     }
 
-    /**
+    /*
      * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in document
      * @param document
      * @param containerNodeName
@@ -311,7 +311,7 @@ public class DOMParserUtil {
         return asStream(node.getChildNodes()).filter(childNode -> Objects.equals(childNode.getNodeName(), childNodeName)).collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Get <b>all childNodeName</b> nodes in <b>all containerNodeName</b>s presents in <b>all mainContainerNodeName</b>s of the document
      * @param document
      * @param mainContainerNodeName
@@ -368,7 +368,7 @@ public class DOMParserUtil {
         return sw.toString();
     }
 
-    /**
+    /*
      * Recursively populate the given <code>Map</code>
      * @param node
      * @param attributeName
@@ -385,7 +385,7 @@ public class DOMParserUtil {
         asStream(node.getChildNodes()).forEach(childNode -> populateAttributeValuesMap(childNode, attributeName, toPopulate));
     }
 
-    /**
+    /*
      * Return a <code>Stream</code> out of the given <code>NodeList</code>.
      * It <b>nodeList</b> is <code>null</code>, returns an empty stream
      * @param nodeList

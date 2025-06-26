@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import static java.lang.String.format;
 import static org.drools.util.Config.getConfig;
 
-/**
+/*
  * Parse an excel spreadsheet, pushing cell info into the SheetListener interface.
  */
 public class ExcelParser
@@ -77,7 +77,7 @@ public class ExcelParser
     private Map<String, List<DataListener>> _listeners = new HashMap<>();
     private boolean _useFirstSheet;
 
-    /**
+    /*
      * Define a map of sheet name to listener handlers.
      * @param sheetListeners map of String to SheetListener
      */

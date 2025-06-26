@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class JSR223ScriptEngineEvaluator {
         }
     }
     
-    /**
+    /*
      * Opinionated evaluation for DMN scope.
      */
     public Object eval(Map<String, Object> ins) throws ScriptException {
@@ -65,7 +65,7 @@ public class JSR223ScriptEngineEvaluator {
         return NumberEvalHelper.coerceNumber(result);
     }
     
-    /**
+    /*
      * Opinionated evaluation for DMN scope.
      */
     public boolean test(Object in, Map<String, Object> context) throws ScriptException {

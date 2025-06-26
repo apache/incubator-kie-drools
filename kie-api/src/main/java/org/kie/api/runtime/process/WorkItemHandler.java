@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime.process;
 
-/**
+/*
  * A work item handler is responsible for executing work items
  * of a specific type.  They represent the glue code between an
  * abstract, high-level work item that is used inside the process
@@ -45,7 +45,7 @@ package org.kie.api.runtime.process;
  */
 public interface WorkItemHandler {
 
-    /**
+    /*
      * The given work item should be executed.
      * @param workItem the work item that should be executed
      * @param manager the manager that requested the work item to be executed
@@ -53,7 +53,7 @@ public interface WorkItemHandler {
     void executeWorkItem(WorkItem workItem,
                          WorkItemManager manager);
 
-    /**
+    /*
      * The given work item should be aborted.
      * @param workItem the work item that should be aborted
      * @param manager the manager that requested the work item to be aborted

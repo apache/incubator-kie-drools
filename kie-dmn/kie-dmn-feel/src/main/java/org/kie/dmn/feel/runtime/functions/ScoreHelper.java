@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to evaluate <code>Method</code> score based on the given inputs.
  * It compares the original input with the "adapted" one to match a given <code>Method</code>.
  * For each condition, a value is provided. The top score is obtained when all the conditions are met.

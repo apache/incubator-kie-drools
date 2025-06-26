@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -257,7 +257,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
     
-    /**
+    /*
      * Internal method to check for common mistakes when writing FEEL unary test in decision tables.
      * @param dt 
      */
@@ -299,7 +299,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    /**
+    /*
      * Builds a feel context containing the named keys for the DRG node dependencies.
      * This helps to detect when a Unary test contains symbols (named reference) and therefore static analysis is not supported (ref DROOLS-4607)
      */
@@ -425,7 +425,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         }
     }
 
-    /**
+    /*
      * Transform a UnaryTestListNode's elements into a List of discrete values for input/output clause enumeration
      */
     private List<Comparable<?>> getDiscreteValues(List<BaseNode> utlnElements) {
@@ -580,7 +580,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         return activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Avoid a situation to "open" a new currentInterval for pair of same-side equals bounds like: x], x]
      */
     private static boolean canBeNewCurrInterval(Bound<?> lastBound, Bound<?> currentBound) {

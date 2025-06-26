@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,21 +20,21 @@ package org.kie.api.event.process;
 
 import java.util.List;
 
-/**
+/*
  * An event when a variable inside a process instance has been changed.
  */
 public interface ProcessVariableChangedEvent
     extends
     ProcessEvent {
 
-    /**
+    /*
      * The unique id of the process variable (definition).
      *
      * @return the variable id
      */
     String getVariableId();
 
-    /**
+    /*
      * The unique id of the process variable instance (as multiple node instances with the
      * same process variable definition exists).  This is an aggregation of the unique id of
      * the instance that contains the variable scope and the variable id.
@@ -43,7 +43,7 @@ public interface ProcessVariableChangedEvent
      */
     String getVariableInstanceId();
 
-    /**
+    /*
      * The old value of the variable.
      * This may be null.
      *
@@ -51,7 +51,7 @@ public interface ProcessVariableChangedEvent
      */
     Object getOldValue();
 
-    /**
+    /*
      * The new value of the variable.
      * This may be null.
      *
@@ -59,13 +59,13 @@ public interface ProcessVariableChangedEvent
      */
     Object getNewValue();
     
-    /**
+    /*
      * List of tags associated with variable that is being changed.
      * @return list of tags if there are any otherwise empty list
      */
     List<String> getTags();
 
-    /**
+    /*
      * Determines if variable that is being changed has given tag associated with it
      * @param tag name of the tag
      * @return returns true if given tag is associated with variable otherwise false

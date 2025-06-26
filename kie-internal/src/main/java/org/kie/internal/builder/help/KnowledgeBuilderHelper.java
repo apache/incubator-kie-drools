@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-/**
+/*
  * Provides helper methods for working with JAXB and a Knowledgebase, it takes care of the Classpath issues when
  * mapping against internal type declarations.
  *
@@ -41,7 +41,7 @@ public class KnowledgeBuilderHelper {
 
     private static DroolsJaxbHelperProvider provider;
 
-    /**
+    /*
      * Generates pojos for a given XSD using XJC and adds them to the specified KnowlegeBase.
      * <pre>
      * Options xjcOpts = new Options();
@@ -77,7 +77,7 @@ public class KnowledgeBuilderHelper {
                                                           systemId );
     }
 
-    /**
+    /*
      * Creates a new JAXBContext, from which the Marshaller and Unmarshaller can be created, which are used by the Transformer
      * pipeline stage.
      *

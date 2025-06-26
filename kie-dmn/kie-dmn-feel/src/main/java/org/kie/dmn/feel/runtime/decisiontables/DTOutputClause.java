@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ public class DTOutputClause implements DecisionTable.OutputClause  {
         this(name, id, outputValues, defaultValue, BuiltInType.UNKNOWN, false);
     }
 
-    /**
+    /*
      * @param isCollection should consider the output can be a collection of feelType; helpful for expressing a DMN isCollection itemDefinition attribute. 
      */
     public DTOutputClause(String name, String id, List<UnaryTest> outputValues, String defaultValue, Type feelType, boolean isCollection) {

@@ -51,7 +51,7 @@ public class BooleanEvalHelper {
         return (Boolean) value;
     }
 
-    /**
+    /*
      * Compares left and right operands using the given predicate and returns TRUE/FALSE accordingly
      *
      * @param left
@@ -96,7 +96,7 @@ public class BooleanEvalHelper {
         return getBooleanOrDialectDefault(null, feelDialect);
     }
 
-    /**
+    /*
      * Compares left and right for equality applying FEEL semantics to specific data types
      *
      * @param left
@@ -140,7 +140,7 @@ public class BooleanEvalHelper {
         return compare(left, right, feelDialect, (l, r) -> l.compareTo(r) == 0);
     }
 
-    /**
+    /*
      * DMNv1.2 Table 48: Specific semantics of equality
      * DMNv1.3 Table 71: Semantic of date and time functions
      */
@@ -159,7 +159,7 @@ public class BooleanEvalHelper {
         return result;
     }
 
-    /**
+    /*
      * DMNv1.2 Table 48: Specific semantics of equality
      * DMNv1.3 Table 71: Semantic of date and time functions
      */
@@ -180,7 +180,7 @@ public class BooleanEvalHelper {
         return result;
     }
 
-    /**
+    /*
      * This method consider if the <code>value</code> object is a <code>String</code>
      * In that case, return the {@link String#equals(Object)} result
      * Otherwise, default to the {@link #isEqual(Object, Object, FEELDialect)}
@@ -199,7 +199,7 @@ public class BooleanEvalHelper {
         }
     }
 
-    /**
+    /*
      * Return the original object or, depending on the FEELDialect, a default value
      *
      * @param rawReturn
@@ -216,7 +216,7 @@ public class BooleanEvalHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
      *
      * @param rawReturn
@@ -231,7 +231,7 @@ public class BooleanEvalHelper {
         }
     }
 
-    /**
+    /*
      * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
      *
      * @param rawReturn

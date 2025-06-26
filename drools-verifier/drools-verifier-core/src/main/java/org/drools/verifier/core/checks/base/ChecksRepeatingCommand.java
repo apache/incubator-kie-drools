@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.drools.verifier.api.CancellableRepeatingCommand;
 import org.drools.verifier.api.Command;
 import org.drools.verifier.api.StatusUpdate;
 
-/**
+/*
  * This class handles processing the analysis itself. It supports "batched" processing
  * of different "chunks". State is a snapshot of the Checks at the time the RepeatingCommand
  * was instantiated.

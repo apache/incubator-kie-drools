@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-/**
+/*
     It assigns a Type to the <code>FactMapping</code> value. Used <b>ONLY</b> in FrontEnd side, to determine if a
     column value should be managed as an Expression.
     - EXPRESSION: The value associated with the Fact is of Expression type.

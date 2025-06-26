@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A <code>GeneratedResource</code> meant to be directly executed, with a <b>full reference name (frn)</b> identifier
  */
 @JsonIgnoreProperties(value = { "compiledModel" })
@@ -30,7 +30,7 @@ public final class GeneratedModelResource<T> implements GeneratedResource {
 
 
     private static final long serialVersionUID = 6588314882989626752L;
-    /**
+    /*
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
     private final ModelLocalUriId modelLocalUriId;
@@ -67,7 +67,7 @@ public final class GeneratedModelResource<T> implements GeneratedResource {
         return Objects.hash(modelLocalUriId);
     }
 
-    /**
+    /*
      * Two <code>GeneratedExecutableResource</code>s are equals if they have the same full path <b>OR</b>
      * if they have the same full reference name
      */

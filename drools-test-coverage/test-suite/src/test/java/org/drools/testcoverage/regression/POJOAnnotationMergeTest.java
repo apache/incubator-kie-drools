@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.type.Position;
 
-/**
+/*
  * Tests merging the POJO annotations (e.g. @Position) with fact declaration in
  * DRL.
  */
@@ -51,7 +51,7 @@ public class POJOAnnotationMergeTest {
             "then\n" +
             "end\n";
 
-    /**
+    /*
      * Tests adding metadata in DRL to the metadata already declared in a POJO.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -60,7 +60,7 @@ public class POJOAnnotationMergeTest {
         KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,true, DRL);
     }
 
-    /**
+    /*
      * Sample event annotated with @Position metadata.
      */
     public static class PositionAnnotatedEvent {

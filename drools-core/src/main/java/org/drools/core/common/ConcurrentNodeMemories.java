@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-/**
+/*
  * A concurrent implementation for the node memories interface
  */
 public class ConcurrentNodeMemories implements NodeMemories {
@@ -77,7 +77,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
         }
     }
 
-    /**
+    /*
      * The implementation tries to delay locking as much as possible, by running
      * some potentially unsafe operations out of the critical session. In case it
      * fails the checks, it will move into the critical sessions and re-check everything
@@ -93,7 +93,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
 
 
-    /**
+    /*
      * Checks if a memory does not exists for the given node and
      * creates it.
      */

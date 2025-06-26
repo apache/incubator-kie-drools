@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,12 +27,12 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests usage of OOPath in DSL.
  */
 public class OOPathDslTest {
 
-    /**
+    /*
      * Shows it's possible to use OOPath including some characters that are significant for both DSL and OOPath.
      */
     @Test

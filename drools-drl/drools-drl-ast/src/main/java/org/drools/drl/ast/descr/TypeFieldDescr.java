@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -75,42 +75,42 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         out.writeBoolean( recursive );
     }
 
-    /**
+    /*
      * @return the identifier
      */
     public String getFieldName() {
         return fieldName;
     }
 
-    /**
+    /*
      * @param fieldName the identifier to set
      */
     public void setFieldName( String fieldName ) {
         this.fieldName = fieldName;
     }
 
-    /**
+    /*
     * @return the initExpr
     */
     public String getInitExpr() {
         return initExpr;
     }
 
-    /**
+    /*
      * @param initExpr the initExpr to set
      */
     public void setInitExpr( String initExpr ) {
         this.initExpr = initExpr;
     }
 
-    /**
+    /*
      * @return the pattern
      */
     public PatternDescr getPattern() {
         return pattern;
     }
 
-    /**
+    /*
      * @param pattern the pattern to set
      */
     public void setPattern( PatternDescr pattern ) {

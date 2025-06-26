@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code> out of a <code>SimplePredicate</code>
  */
 public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
@@ -94,7 +94,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         KiePMMLSimplePredicateWithResultASTFactory.declareRuleFromSimplePredicateSurrogateFalseMatcher(builder, predicateASTFactoryData.getRules());
     }
 
-    /**
+    /*
      * This method will create a <b>rule</b> that, in the RHS,
      * 1) update the status (used for flowing between rules)
      * 2) add <i>outputfields</i> to result variables
@@ -135,7 +135,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicate(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
     }
 
-    /**
+    /*
      * This method will create a <b>rule</b> that, in the RHS,
      * 1) update the status (used for flowing between rules)
      * 2) add <i>outputfields</i> to result variables
@@ -192,7 +192,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
                 .withNotConstraints(constraints);
     }
 
-    /**
+    /*
      * This method will create a <b>rule</b> that, in the RHS,
      * 1) update the status (used for flowing between rules)
      * 2) add <i>outputfields</i> to result variables

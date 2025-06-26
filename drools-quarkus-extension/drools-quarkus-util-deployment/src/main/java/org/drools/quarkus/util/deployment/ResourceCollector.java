@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -52,7 +52,7 @@ public class ResourceCollector {
         // utility class
     }
 
-    /**
+    /*
      * Returns a collection of CollectedResource from the given paths.
      * If a path is a jar, then walks inside the jar.
      */
@@ -76,7 +76,7 @@ public class ResourceCollector {
         return resources;
     }
 
-    /**
+    /*
      * Returns a collection of CollectedResource from the given jar file.
      */
     public static Collection<Resource> fromJarFile(Path jarPath) {
@@ -100,7 +100,7 @@ public class ResourceCollector {
         }
     }
 
-    /**
+    /*
      * Returns a collection of CollectedResource from the given directory.
      */
     public static Collection<Resource> fromDirectory(Path path) {

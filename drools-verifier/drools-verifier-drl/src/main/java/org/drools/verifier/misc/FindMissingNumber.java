@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ public class FindMissingNumber {
 
     public static final int MIN_NUMBER_OF_RESTRICTIONS = 4;
 
-    /**
+    /*
      * Test if the values in constraints are in pattern.
      * 
      * @param restrictions
@@ -67,7 +67,7 @@ public class FindMissingNumber {
         return null;
     }
 
-    /**
+    /*
      * Looks for sum pattern, on each step x is added or removed. -x is the same
      * as +(-x) so this works for both.
      * 
@@ -117,7 +117,7 @@ public class FindMissingNumber {
         return missingNumber;
     }
 
-    /**
+    /*
      * Looks for multiplication pattern, on each step x multiplied or divided.
      * *x is the same as *(1/x) so this works for both.
      * 

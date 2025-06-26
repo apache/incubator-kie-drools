@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.kie.pmml.api.enums.OPERATOR;
 
-/**
+/*
  * Tuple representing the operator and the value to be applied to a given field
  */
 public class KiePMMLOperatorValue implements Serializable {

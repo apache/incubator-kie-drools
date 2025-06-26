@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ class UrlFactory {
     public static final String HTML_FILE_PACKAGES          = "packages.htm";
     public static final String HTML_FILE_VERIFIER_MESSAGES = "verifierMessages.htm";
 
-    /**
+    /*
      * Finds a link to object if one exists.
      * 
      * @param o

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.drools.verifier.components.Consequence.ConsequenceType;
 
-/**
+/*
  * Instance of this class represents a possible combination of
  * PatternPosibilities under one Rule. Each possibility returns true if all the
  * PatternPosibilities in the combination are true.

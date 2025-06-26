@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,22 +30,22 @@ public interface DMNEdge extends Edge {
 
     public void setDmnElementRef(QName value);
 
-    /**
+    /*
      * @since DMN v1.3
      */
     QName getSourceElement();
 
-    /**
+    /*
      * @since DMN v1.3
      */
     void setSourceElement(QName value);
 
-    /**
+    /*
      * @since DMN v1.3
      */
     QName getTargetElement();
 
-    /**
+    /*
      * @since DMN v1.3
      */
     void setTargetElement(QName value);

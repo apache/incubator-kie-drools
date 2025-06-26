@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * An Enum for ShareAlphaNodes option.
  *
  * drools.shareAlphaNodes = &lt;true|false&gt;
@@ -33,7 +33,7 @@ public enum ShareAlphaNodesOption implements SingleValueRuleBaseOption {
     YES(true),
     NO(false);
 
-    /**
+    /*
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.shareAlphaNodes";
@@ -46,7 +46,7 @@ public enum ShareAlphaNodesOption implements SingleValueRuleBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

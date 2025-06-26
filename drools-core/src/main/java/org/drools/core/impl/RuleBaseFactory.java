@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.kie.internal.utils.ChainedProperties;
 
-/**
+/*
  * <p>
  * This factory will create and return a KnowledgeBase instance, an optional KnowledgeBaseConfiguration
  * can be provided. The KnowledgeBaseConfiguration is also itself created from this factory.
@@ -60,7 +60,7 @@ import org.kie.internal.utils.ChainedProperties;
  */
 public class RuleBaseFactory {
 
-    /**
+    /*
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration
      * @return
      *     The KnowledgeBase
@@ -69,7 +69,7 @@ public class RuleBaseFactory {
         return newRuleBase( UUID.randomUUID().toString() );
     }
 
-    /**
+    /*
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration and
      * the given KnowledgeBase ID.
      *
@@ -85,7 +85,7 @@ public class RuleBaseFactory {
         return newRuleBase( kbaseId,  RuleBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
-    /**
+    /*
      * Create a new KnowledgeBase using the given KnowledgeBaseConfiguration
      * @return
      *     The KnowledgeBase
@@ -94,7 +94,7 @@ public class RuleBaseFactory {
         return newRuleBase( UUID.randomUUID().toString(), conf );
     }
 
-    /**
+    /*
      * Create a new KnowledgeBase using the given KnowledgeBaseConfiguration and
      * the given KnowledgeBase ID.
      *
@@ -110,7 +110,7 @@ public class RuleBaseFactory {
         return new KnowledgeBaseImpl(kbaseId, (CompositeBaseConfiguration) conf);
     }
 
-    /**
+    /*
      * Create a KnowledgeBaseConfiguration on which properties can be set.
      * @return
      *     The KnowledgeBaseConfiguration.
@@ -119,7 +119,7 @@ public class RuleBaseFactory {
         return newKnowledgeBaseConfiguration(null, null);
     }
 
-    /**
+    /*
      * Create a KnowledgeBaseConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
      * @return
@@ -145,7 +145,7 @@ public class RuleBaseFactory {
                                               BaseConfigurationFactories.flowConf);
     }
 
-    /**
+    /*
      * Create a KnowledgeSessionConfiguration on which properties can be set.
      * @return
      *     The KnowledgeSessionConfiguration.

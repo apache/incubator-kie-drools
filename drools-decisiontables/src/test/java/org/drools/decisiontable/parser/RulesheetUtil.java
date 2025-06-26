@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.template.parser.DataListener;
 
 public class RulesheetUtil {
 
-    /**
+    /*
      * Utility method showing how to get a rule sheet listener from a stream.
      */
     public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {

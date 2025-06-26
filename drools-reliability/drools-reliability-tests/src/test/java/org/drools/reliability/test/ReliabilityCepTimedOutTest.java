@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -64,7 +64,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
     public static final String KEYWORD = "timed_out";
     public static final String RULE_NAME = "R";
 
-    /**
+    /*
      * These rules are created in the same way as TimedOutDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {

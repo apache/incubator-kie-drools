@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoFinalOutputPMML;
 
-/**
+/*
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerServicePMMLFile {
@@ -61,7 +61,7 @@ public class PMMLCompilerServicePMMLFile {
         return getEfestoFinalOutputPMML(kiePmmlModels, resource.getContent().getName(), pmmlContext);
     }
 
-    /**
+    /*
      * @param pmmlContext
      * @param resources
      * @return
@@ -75,7 +75,7 @@ public class PMMLCompilerServicePMMLFile {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * @param pmmlContext
      * @param resource
      * @return
@@ -95,7 +95,7 @@ public class PMMLCompilerServicePMMLFile {
         }
     }
 
-    /**
+    /*
      * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
      * built starting from the given <code>Resource</code>
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,30 +21,30 @@ package org.kie.internal.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * A class for the alpha node range index threshold configuration.
  */
 public class AlphaRangeIndexThresholdOption implements SingleValueRuleBaseOption {
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name
      */
     public static final String PROPERTY_NAME = "drools.alphaNodeRangeIndexThreshold";
 
     public static OptionKey<AlphaRangeIndexThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * The default value for this option
      */
     public static final int DEFAULT_VALUE = 9;
 
-    /**
+    /*
      * alpha node range index threshold
      */
     private final int threshold;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param threshold
      */
@@ -52,7 +52,7 @@ public class AlphaRangeIndexThresholdOption implements SingleValueRuleBaseOption
         this.threshold = threshold;
     }
 
-    /**
+    /*
      * This is a factory method for this Alpha Range Index Threshold configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -65,14 +65,14 @@ public class AlphaRangeIndexThresholdOption implements SingleValueRuleBaseOption
         return new AlphaRangeIndexThresholdOption( threshold );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the threshold value for alpha range index
      *
      * @return

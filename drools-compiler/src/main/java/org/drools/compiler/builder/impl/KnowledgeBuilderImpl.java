@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -119,12 +119,12 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private final KnowledgeBuilderConfiguration configuration;
 
-    /**
+    /*
      * Optional RuleBase for incremental live building
      */
     private InternalKnowledgeBase kBase;
 
-    /**
+    /*
      * default dialect
      */
     private final String defaultDialect;
@@ -151,7 +151,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     private BuildContext buildContext;
 
-    /**
+    /*
      * Use this when package is starting from scratch.
      */
     public KnowledgeBuilderImpl() {
@@ -159,7 +159,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
              null);
     }
 
-    /**
+    /*
      * This will allow you to merge rules into this pre existing package.
      */
 
@@ -204,7 +204,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
-    /**
+    /*
      * Pass a specific configuration for the PackageBuilder
      * <p>
      * PackageBuilderConfiguration is not thread safe and it also contains
@@ -290,7 +290,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return typeDeclarationManager.getTypeDeclarationBuilder();
     }
 
-    /**
+    /*
      * Load a rule package from DRL source.
      *
      * @throws DroolsParserException
@@ -301,7 +301,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         addPackageFromDrl(reader, new ReaderResource(reader, ResourceType.DRL));
     }
 
-    /**
+    /*
      * Load a rule package from DRL source and associate all loaded artifacts
      * with the given resource.
      *
@@ -396,7 +396,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    /**
+    /*
      * Adds a package from a Descr/AST also triggering its compilation
      * and the generation of the corresponding rete/phreak network
      */
@@ -605,7 +605,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                      newPkg);
     }
 
-    /**
+    /*
      * Merge a new package with an existing package. Most of the work is done by
      * the concrete implementations, but this class does some work (including
      * combining imports, compilation data, globals, and the actual Rule objects
@@ -683,7 +683,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return pkgs;
     }
 
-    /**
+    /*
      * Return the PackageBuilderConfiguration for this PackageBuilder session
      *
      * @return The PackageBuilderConfiguration
@@ -714,7 +714,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return pkgRegistryManager.getPackageDescrs(packageName);
     }
 
-    /**
+    /*
      * Returns an expander for DSLs (only if there is a DSL configured for this
      * package).
      */
@@ -743,7 +743,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return globals;
     }
 
-    /**
+    /*
      * This will return true if there were errors in the package building and
      * compiling phase
      */
@@ -776,7 +776,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         results.reportError(error);
     }
 
-    /**
+    /*
      * @return A list of Error objects that resulted from building and compiling
      * the package.
      */
@@ -784,7 +784,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return results.getErrors();
     }
 
-    /**
+    /*
      * Reset the error list. This is useful when incrementally building
      * packages. Care should be used when building this, if you clear this when
      * there were errors on items that a rule depends on (eg functions), then
@@ -969,7 +969,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     // composite build lifecycle
 
-    /**
+    /*
      * Performs the actual building of rules, but may be empty in subclasses
      */
     protected void doFirstBuildStep( Collection<CompositePackageDescr> packages ) {
@@ -977,7 +977,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         buildRules(packages);
     }
 
-    /**
+    /*
      * Used by subclasses that need to perform the build after the assemblers
      */
     protected void doSecondBuildStep( Collection<CompositePackageDescr> packages ) { }

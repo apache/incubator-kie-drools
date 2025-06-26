@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.Serializable;
 import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.WorkingMemory;
 
-/**
+/*
  * KnowledgeHelper implementation types are injected into consequenses
  * instrumented at compile time and instances passed at runtime. It provides
  * convenience methods for users to interact with the WorkingMemory.

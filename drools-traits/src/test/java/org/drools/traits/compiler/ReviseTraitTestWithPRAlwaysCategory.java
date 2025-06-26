@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.traits.compiler;
 
-/**
+/*
  * Serves as a JUnit's {@link org.junit.experimental.categories.Category} to mark Trait-related test
  * which since the enablement of DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS in the KnowledgeBuilderConfiguration
  * failed to pass with the new default.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.kie.pmml.api.models.PMMLStep;
 
-/**
+/*
  * Common abstract implementation of <code>PMMLStep</code>
  */
 public class AbstractPMMLStep implements PMMLStep {
@@ -38,7 +38,7 @@ public class AbstractPMMLStep implements PMMLStep {
         info.put(infoName, infoValue);
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable map</b> of <code>info</code>
      *
      * @return

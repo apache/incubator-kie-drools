@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * A container for resources that have been processed by a {@link KieAssemblerService}.
  *
  * Resources are expected to be able to be looked up by a "name" or identifier.
@@ -37,7 +37,7 @@ public interface ResourceTypePackage<T> extends Iterable<T>,
                                                 Serializable {
     ResourceType getResourceType();
 
-    /**
+    /*
      * Remove artifacts inside this ResourceTypePackage which belong to the resource passed as parameter.
      * Concrete implementation of this interface shall extend this method in order to properly support incremental KieContainer updates.
      * 

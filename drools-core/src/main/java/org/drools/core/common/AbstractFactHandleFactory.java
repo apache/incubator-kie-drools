@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,10 +31,10 @@ import static java.util.stream.Collectors.toCollection;
 
 public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
 
-    /** The fact id. */
+    /* The fact id. */
     private IdsGenerator idGen;
 
-    /** The number of facts created - used for recency. */
+    /* The number of facts created - used for recency. */
     private AtomicLong counter;
     
     public AbstractFactHandleFactory() {
@@ -143,7 +143,7 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
 
     private static class IdsGenerator {
 
-        /** The fact id. */
+        /* The fact id. */
         private AtomicLong id;
 
         private Queue<Long> usedIds;

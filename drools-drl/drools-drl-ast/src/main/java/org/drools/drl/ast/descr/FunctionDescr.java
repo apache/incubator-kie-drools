@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -118,7 +118,7 @@ public class FunctionDescr extends BaseDescr implements Namespaceable {
         this.offset = offset;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override

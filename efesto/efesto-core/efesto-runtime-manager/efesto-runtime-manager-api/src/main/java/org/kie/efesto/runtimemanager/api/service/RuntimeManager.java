@@ -27,7 +27,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 @SuppressWarnings("rawtypes")
 public interface RuntimeManager {
 
-    /**
+    /*
      * Produce a <code>Collection&lt;EfestoOutput&gt;</code> from the given <code>EfestoInput</code>
      * @param context
      * @param toEvaluate

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,24 +21,24 @@ package org.kie.api.definition.type;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * A field from a declared fact type
  */
 public interface FactField
     extends
     java.io.Externalizable {
 
-    /**
+    /*
      * @return type of this field.
      */
     Class< ? > getType();
 
-    /**
+    /*
      * @return name of this field.
      */
     String getName();
 
-    /**
+    /*
      * @return true if this field is a key field. A key field
      * is included in hashcode() calculation and on the equals()
      * method evaluation. Non-key fields are not checked in this
@@ -46,7 +46,7 @@ public interface FactField
      */
     boolean isKey();
 
-    /**
+    /*
      * Sets the value of this field in the given fact.
      *
      * @param bean fact on which to set the field.
@@ -55,14 +55,14 @@ public interface FactField
     void set(Object bean,
              Object value);
 
-    /**
+    /*
      * @param bean the fact from which the field will be read.
      *
      * @return the value of this field on the given fact.
      */
     Object get(Object bean);
 
-    /**
+    /*
      * Returns the index of this field in the field list for
      * the defining fact type. The list (and thus the index)
      * takes into account the fields inherited from the parent
@@ -72,7 +72,7 @@ public interface FactField
      */
     int getIndex();
 
-    /**
+    /*
      * Returns the list of field-level annotations
      * used in this field definition
      *
@@ -80,7 +80,7 @@ public interface FactField
      */
     List<Annotation> getFieldAnnotations();
 
-    /**
+    /*
      * Returns the annotations of this field definition as
      * key-value pairs.
      *

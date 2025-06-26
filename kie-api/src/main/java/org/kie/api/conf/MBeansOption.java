@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.conf;
 
-/**
+/*
  * An Enum for MBeans Enabled option.
  *
  * kie.mbeans = &lt;enabled|disabled&gt;
@@ -30,7 +30,7 @@ public enum MBeansOption implements SingleValueKieBaseOption {
     ENABLED(true),
     DISABLED(false);
 
-    /**
+    /*
      * The property name for the mbeans option
      */
     public static final String PROPERTY_NAME = "kie.mbeans";
@@ -43,7 +43,7 @@ public enum MBeansOption implements SingleValueKieBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

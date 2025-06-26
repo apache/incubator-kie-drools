@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return this.row.getSubruleIndex();
     }
 
-    /**
+    /*
      * Return a map of Declarations where the key is the identifier and the value
      * is the Declaration.
      *
@@ -56,7 +56,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return this.queryResults.getDeclarations(row.getSubruleIndex());
     }
 
-    /**
+    /*
      * Returns the Object for int position in the Tuple
      *
      * @param i
@@ -81,7 +81,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return get( decl );
     }
 
-    /**
+    /*
      * Return the Object for the given Declaration.
      */
     public Object get(final Declaration declaration) {
@@ -106,7 +106,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return this.row.getHandles()[ i + 1 ];
     }
 
-    /**
+    /*
      * Return the FactHandles for the Tuple.
      * @return
      */
@@ -118,7 +118,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return subArray;
     }
 
-    /**
+    /*
      * The size of the Tuple; i.e. the number of columns (FactHandles) in this row result.
      * @return
      */
@@ -126,7 +126,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return this.row.getHandles().length -1;
     }
 
-    /**
+    /*
      * Get the Object for the given FactHandle
      */
     private Object getObject(FactHandle factHandle) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * <p> A Drools template compiler which takes a ResultSet and compiles it into
  * a template using DefaultTemplateContainer.</p>
  * <p/>
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class ResultSetGenerator {
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param rs       the resultset for the table data
@@ -52,7 +52,7 @@ public class ResultSetGenerator {
                        templateStream);
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param rs             the resultset for the table data
@@ -67,7 +67,7 @@ public class ResultSetGenerator {
                        new TemplateDataListener(tc));
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param rs       the resultset for the table data
@@ -83,7 +83,7 @@ public class ResultSetGenerator {
         return listener.renderDRL();
     }
 
-    /**
+    /*
      * Iterate through the resultset.
      *
      * @param rs        the resultset for the table data

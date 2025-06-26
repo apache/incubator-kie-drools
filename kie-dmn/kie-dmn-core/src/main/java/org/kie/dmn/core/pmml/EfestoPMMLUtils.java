@@ -66,7 +66,7 @@ public class EfestoPMMLUtils {
     private EfestoPMMLUtils() {
     }
 
-    /**
+    /*
      * Compile the given <code>File</code> as PMML model and store it under automatically-generated
      * <code>LocalComponentIdPmml</code>
      * @param pmmlFile
@@ -82,7 +82,7 @@ public class EfestoPMMLUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Compile the given <b>pmml source</b> as PMML model and store it under automatically-generated
      * <code>LocalComponentIdPmml</code>
      *
@@ -101,7 +101,7 @@ public class EfestoPMMLUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Compile the given <code>File</code> as PMML model and store it under the provided
      * <code>ModelLocalUriId</code>
      * @param pmmlFile
@@ -117,7 +117,7 @@ public class EfestoPMMLUtils {
         }
     }
 
-    /**
+    /*
      * Compile the given <b>pmml source</b> as PMML model and store it under the provided
      * <code>LocalComponentIdPmml</code>
      *
@@ -149,7 +149,7 @@ public class EfestoPMMLUtils {
         ContextStorage.putEfestoCompilationContext(pmmlModelLocalUriId, pmmlCompilationContext);
     }
 
-    /**
+    /*
      * Retrieve a <code>LocalComponentIdPmml</code>
      * @param anImport
      * @param modelName
@@ -189,7 +189,7 @@ public class EfestoPMMLUtils {
         return getPmmlModelLocalUriId(locationURI, pmmlModelName);
     }
 
-    /**
+    /*
      * This method consider the actual file name and the model name for <code>ModelLocalUriId</code> instantiation
      * @param pathPart
      * @return
@@ -203,7 +203,7 @@ public class EfestoPMMLUtils {
         return new ModelLocalUriId(localUri);
     }
 
-    /**
+    /*
      * Retrieves a <code>ByteArrayResource</code> of the <code>source</code> stored with the given
      * <code>ModelLocalUriId</code>
      * @param pmmlModelLocalUriID
@@ -214,7 +214,7 @@ public class EfestoPMMLUtils {
         return ResourceFactory.newByteArrayResource(pmmlSource.getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
+    /*
      * Retrieves the <code>source</code> stored with the given <code>ModelLocalUriId</code>
      * @param pmmlModelLocalUriID
      * @return
@@ -223,7 +223,7 @@ public class EfestoPMMLUtils {
         return ContextStorage.getEfestoCompilationSource(pmmlModelLocalUriID);
     }
 
-    /**
+    /*
      * Retrieves the <code>source</code> stored with the given <code>ModelLocalUriId</code>
      * @param pmmlModelLocalUriID
      * @param pmmlSource
@@ -254,7 +254,7 @@ public class EfestoPMMLUtils {
         return parentDir != null ? parentDir.toPath() : null;
     }
 
-    /**
+    /*
      * Return <code>true</code> if the given <code>String</code> represent a relative path, <code>false</code> otherwise
      * @param toParse
      * @return

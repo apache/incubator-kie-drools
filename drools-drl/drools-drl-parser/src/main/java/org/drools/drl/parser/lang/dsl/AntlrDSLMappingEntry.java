@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.drl.parser.lang.dsl;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
+/*
  * An ANTLR-driven implementation for the DSL Mapping Entry interface
  */
 public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
@@ -143,7 +143,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
         }
     }
 
-    /**
+    /*
      * @param value
      *            the value to set
      */

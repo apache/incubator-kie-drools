@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -139,7 +139,7 @@ public class DRLFactory {
         throw new RuntimeException("Unknown language level");
     }
 
-    /**
+    /*
      * Helper method that creates a user friendly token definition
      *
      * @param tokenType

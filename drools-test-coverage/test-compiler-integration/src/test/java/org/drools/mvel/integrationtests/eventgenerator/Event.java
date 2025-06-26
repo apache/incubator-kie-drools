@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public class Event implements Cloneable{
         this.parameters = new HashMap <String, String>();
     }
 
-    /**
+    /*
      * @param eventId The name of the event.
      * @param parentId The id of the corresponding site, resource, ...
      */
@@ -44,7 +44,7 @@ public class Event implements Cloneable{
         this.parentId = parentId;
     }
 
-    /**
+    /*
      * @param eventId The name of the event.
      * @param parentId The id of the corresponding site, resource, ...
      * @param start The start instance of the event.
@@ -56,49 +56,49 @@ public class Event implements Cloneable{
         this.endTime = end;
     }
 
-    /**
+    /*
      * @return the event id
      */
     public EventType getEventId() {
         return this.eventId;
     }
 
-    /**
+    /*
      * @param eventId the event name to set
      */
     public void setEventType(EventType eventId) {
         this.eventId = eventId;
     }
 
-    /**
+    /*
      * @return the endTime
      */
     public long getEndTime() {
         return endTime;
     }
 
-    /**
+    /*
      * @param endTime the endTime to set
      *//*
     public void setEndTime(Calendar endTime) {
         this.endTime = (Calendar)endTime.clone();
     }*/
 
-    /**
+    /*
      * @return the startTime
      */
     public long getStartTime() {
         return startTime;
     }
 
-    /**
+    /*
      * @param startTime the startTime to set
      *//*
     public void setStartTime(Calendar startTime) {
         this.startTime = (Calendar)startTime.clone();
     }*/
 
-    /**
+    /*
      * @param startTime the startTime to set
      * @param endTime the endTime to set
      */
@@ -107,7 +107,7 @@ public class Event implements Cloneable{
         this.endTime = endTime;
     }
 
-    /**
+    /*
      * @param startTime the startTime to set
      * @param endTime the endTime to set
      */
@@ -117,28 +117,28 @@ public class Event implements Cloneable{
         this.endTime = startAndEndTime;
     }
 
-    /**
+    /*
      * @return the parentId
      */
     public String getParentId() {
         return parentId;
     }
 
-    /**
+    /*
      * @param ressourceId the ressourceId to set
      */
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
-    /**
+    /*
      * @return the parameters
      */
     public Map<String, String> getParameters() {
         return parameters;
     }
 
-    /**
+    /*
      * @param parameter name of the parameter
      * @return value of the specified parameter
      */
@@ -146,14 +146,14 @@ public class Event implements Cloneable{
         return parameters.get(parameter);
     }
 
-    /**
+    /*
      * @param parameters the parameters to set
      */
     public void addParameters(Map<String, String> parameters) {
         this.parameters.putAll(parameters);
     }
 
-    /**
+    /*
      * @param paramName the name of the added parameter to set
      * @param paramValue the value of the added parameter to set
      */

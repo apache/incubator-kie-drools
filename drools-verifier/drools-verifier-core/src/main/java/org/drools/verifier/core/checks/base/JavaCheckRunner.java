@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Set;
 import org.drools.verifier.api.Command;
 import org.drools.verifier.api.StatusUpdate;
 
-/**
+/*
  * Just a start for server side runner at the moment. Used by JUnit tests.
  */
 public class JavaCheckRunner

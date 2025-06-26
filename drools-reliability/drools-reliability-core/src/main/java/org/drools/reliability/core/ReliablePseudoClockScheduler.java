@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -67,7 +67,7 @@ public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
         storage.put("internalQueue", createFilteredInternalQueueForPersistence(queue));
     }
 
-    /**
+    /*
      * ExpireJob and TimerNodeJob are recreated by repropagate, so we don't need to persist
      */
     public List<TimerJobInstance> createFilteredInternalQueueForPersistence(PriorityQueue<TimerJobInstance> queue) {

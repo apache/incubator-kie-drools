@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLInlineTable;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionInstanceFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLRowInstanceFactory.getKiePMMLRows;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLInlineTable</code> instance
  * out of <code>InlineTable</code>s
  */

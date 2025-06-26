@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -76,7 +76,7 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
         this.riaRuleMemory = riaRuleMemory;
     }
 
-    /**
+    /*
      * @return the context
      */
     public C getContext() {

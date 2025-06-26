@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
-/**
+/*
  * Whenever a SimpleName is used in an expression, it is wrapped in DrlNameExpr.
  * <br/>In <code>int x = a + 3;</code> a is a SimpleName inside a DrlNameExpr.
  * @author Julio Vilmar Gesser
@@ -59,7 +59,7 @@ public final class DrlNameExpr extends NameExpr implements NodeWithSimpleName<Na
         this(name, 0);
     }
 
-    /**
+    /*
      * This constructor is used by the parser and is considered private.
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")

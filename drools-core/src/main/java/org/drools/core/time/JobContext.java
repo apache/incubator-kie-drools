@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 
 public interface JobContext extends Serializable {
-    /**
+    /*
      * This method should only be called by the scheduler
      */    
     void setJobHandle(JobHandle jobHandle);

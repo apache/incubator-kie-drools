@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,13 +26,13 @@ import java.util.Collection;
 
 import static org.drools.util.Config.getConfig;
 
-/**
+/*
  * Writes {@link GeneratedFile} to the right directory, depending on its
  * {@link GeneratedFileType.Category}
  */
 public class GeneratedFileWriter {
 
-    /**
+    /*
      *
      * @param finalPath e.g. "drools" or "kogito"
      * @param resourcesDirectoryProperty e.g. "drools.codegen.resources.directory" or "kogito.codegen.resources.directory"
@@ -46,7 +46,7 @@ public class GeneratedFileWriter {
                        AppPaths.BT);
     }
 
-    /**
+    /*
      * Default-access for testing purpose
      * @param finalPath
      * @param resourcesDirectoryProperty
@@ -72,7 +72,7 @@ public class GeneratedFileWriter {
         final String resourcePath;
         final String scaffoldedSourcesDir;
 
-        /**
+        /*
          *
          * @param classesDir usually target/classes/
          * @param resourcesDir usually target/generated-resources/kogito/
@@ -84,7 +84,7 @@ public class GeneratedFileWriter {
             this.scaffoldedSourcesDir = scaffoldedSourcesDir;
         }
 
-        /**
+        /*
          * @param basePath the path to which the given subdirectories will be written
          *        e.g. ${basePath}/${classesDir}/myfile.ext
          *
@@ -100,7 +100,7 @@ public class GeneratedFileWriter {
     private final Path classesDir;
     private final Path resourcePath;
     private final Path scaffoldedSourcesDir;
-    /**
+    /*
      *
      * @param classesDir usually target/classes/
      * @param resourcePath usually target/generated-resources/kogito/

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ public interface TupleMemory {
         }
     }
 
-    /**
+    /*
      * The FactHandle is always the context fact and is necessary when the object being modified is in the both left and right
      * node memories. This is because the memory on the opposite side would not have yet memory.removeAdd the fact, so it
      * could potentially be in the wrong bucket. So the bucket matches check always checks to ignore the first facthandle if it's
@@ -57,13 +57,13 @@ public interface TupleMemory {
 
     FastIterator<TupleImpl> fastIterator();
 
-    /**
+    /*
      * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
      * @return
      */
     FastIterator<TupleImpl> fullFastIterator();
 
-    /**
+    /*
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
      * @param tuple
      * @return

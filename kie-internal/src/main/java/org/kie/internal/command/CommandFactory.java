@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>
  * The CommandFactory returns Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
  * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
@@ -49,7 +49,7 @@ import org.kie.api.runtime.rule.FactHandle;
 public class CommandFactory {
     private static volatile ExtendedKieCommands provider;
 
-    /**
+    /*
      * Inserts a new instance
      *
      * @param object
@@ -63,7 +63,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newDispose();
     }
 
-    /**
+    /*
      * Inserts a new instance but references via the outIdentifier, which is returned as part of the ExecutionResults
      *
      * @param object
@@ -76,7 +76,7 @@ public class CommandFactory {
                                                       outIdentifier );
     }
 
-    /**
+    /*
      * Inserts a new instance but references via the outIdentifier, which is returned as part of the ExecutionResults
      * The outIdentifier can be null.
      * The entryPoint, which can also be null, specifies the entrypoint the object is inserted into.
@@ -96,7 +96,7 @@ public class CommandFactory {
                                                       entryPoint );
     }
 
-    /**
+    /*
      * Iterate and insert each of the elements of the Collection.
      *
     *
@@ -108,7 +108,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newInsertElements( objects );
     }
 
-    /**
+    /*
      * Iterate and insert each of the elements of the Collection.
      *
      * @param objects
@@ -177,7 +177,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newGetObjects( filter, outIdentifier );
     }
 
-    /**
+    /*
      * Sets the global. Does not add the global to the ExecutionResults.
      *
      * @param identifier
@@ -192,7 +192,7 @@ public class CommandFactory {
                                                          object );
     }
 
-    /**
+    /*
      * Sets the global but also when the out parameter is true specifies that the global is added to the ExecutionResults.
      *
      * @param identifier
@@ -211,7 +211,7 @@ public class CommandFactory {
                                                          out );
     }
 
-    /**
+    /*
      * Sets the global but also specifies that the global is added to the ExecutionResults. Instead of using the
      * global's identifier it uses the outIdentifier when being added to the ExecutionResults.
      *
@@ -231,7 +231,7 @@ public class CommandFactory {
                                                          outIdentifier );
     }
 
-    /**
+    /*
      * Gets the global and adds it to the ExecutionResults
      * @param identifier
      * @return
@@ -240,7 +240,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newGetGlobal( identifier );
     }
 
-    /**
+    /*
      * Gets the global and adds it ot the BatchExecutionresults using the alternative outIdentifier.
      *
      * @param identifier
@@ -267,7 +267,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newFireAllRules( outidentifier );
     }
 
-    /**
+    /*
      * Start a process
      *
      * @param processId
@@ -277,7 +277,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newStartProcess( processId );
     }
 
-    /**
+    /*
      * Start a process using the given parameters.
      *
      * @param processId
@@ -320,7 +320,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newAbortWorkItem( workItemId );
     }
 
-    /**
+    /*
      * Executes a query. The query results will be added to the ExecutionResults using the
      * given identifier.
      *
@@ -337,7 +337,7 @@ public class CommandFactory {
 
     }
 
-    /**
+    /*
      * Executes a query using the given parameters. The query results will be added to the
      * ExecutionResults using the given identifier.
      *
@@ -353,7 +353,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newQuery( identifier, name, arguments );
     }
 
-    /**
+    /*
      * This is a special composite command and will execute all the supplied commands in turn.
      * @param commands
      * @return
@@ -362,7 +362,7 @@ public class CommandFactory {
         return getCommandFactoryProvider().newBatchExecution( commands, null );
     }
 
-    /**
+    /*
      *
      * @return
      */

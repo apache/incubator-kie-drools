@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This class configures the package compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
  * Normally you will not need to look at this class, unless you want to override the defaults.
@@ -118,7 +118,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderRulesConfigurationImpl.class);
 
 
-    /**
+    /*
      * Programmatic properties file, added with lease precedence
      */
     public KnowledgeBuilderRulesConfigurationImpl(CompositeConfiguration<KnowledgeBuilderOption, SingleValueKieBuilderOption, MultiValueKieBuilderOption> compConfig) {
@@ -317,7 +317,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         }
     }
 
-    /**
+    /*
      * Returns the evaluator registry for this package builder configuration
      * @return
      */
@@ -325,7 +325,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         return this.evaluatorRegistry;
     }
 
-    /**
+    /*
      * Adds an evaluator definition class to the registry using the
      * evaluator class name. The class will be loaded and the corresponting
      * evaluator ID will be added to the registry. In case there exists
@@ -339,7 +339,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         this.evaluatorRegistry.addEvaluatorDefinition(className);
     }
 
-    /**
+    /*
      * Adds an evaluator definition class to the registry. In case there exists
      * an implementation for that evaluator ID already, the new implementation will
      * replace the previous one.

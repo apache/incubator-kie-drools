@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.feel.runtime.events;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
-/**
+/*
  * A base class with common functionality to all events
  */
 public class FEELEventBase implements FEELEvent {

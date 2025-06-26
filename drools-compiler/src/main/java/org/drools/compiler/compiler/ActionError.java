@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ public class ActionError extends DroolsError {
         return this.errorLines;
     }
 
-    /**
+    /*
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */

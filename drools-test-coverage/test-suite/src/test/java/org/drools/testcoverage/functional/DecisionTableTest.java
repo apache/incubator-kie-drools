@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-/**
+/*
  * Tests all features which can be used in decision tables.
  */
 public class DecisionTableTest {
@@ -206,7 +206,7 @@ public class DecisionTableTest {
         session.dispose();
     }
 
-    /**
+    /*
      * test for various evaluations, file sample_eval_dt.xls need to rewrite xls
      * table and maybe add some classes to be able to do the test
      */
@@ -307,7 +307,7 @@ public class DecisionTableTest {
         session.dispose();
     }
 
-    /**
+    /*
      * test for advanced rule settings (no-loop, saliences, ...), file
      * sample_advanced_dt.xls
      * covers also bugfix for Bug724257 (agenda group not added from dtable to
@@ -459,7 +459,7 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    /**
+    /*
      * Test sequential turned on, it overrides all user defined saliences.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -497,7 +497,7 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    /**
+    /*
      * Agenda group rule with auto focus can fire a give focus to agenda group
      * without focus set on whole agenda group.
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.kie.dmn.feel.lang.ast.ASTNode;
 
-/**
+/*
  * When an output entry is NOT a constant/literal, but an expression (even a FQN symbol),
  * and we can only hold the node identity.
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.kie.api.time.SessionPseudoClock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 
-/**
+/*
  * Tests usage of OOPath expressions with CEP (events, event windows, event streams).
  */
 public class OOPathCepTest {

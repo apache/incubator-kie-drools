@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 
-/**
+/*
  * For internal use for the scope of https://github.com/jacoco/jacoco/issues/731
  * and coverage analysis.
  * Similar to {@link jakarta.annotation.Generated}, but with RetentionPolicy.CLASS
@@ -41,7 +41,7 @@ import static java.lang.annotation.ElementType.TYPE;
          LOCAL_VARIABLE, PARAMETER})
 public @interface Generated {
     
-    /**
+    /*
      * The value element MUST have a reference to the used code generator.
      */
     String[] value();

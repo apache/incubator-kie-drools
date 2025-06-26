@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.api.time.SessionClock;
 
 public interface KieRuntime extends RuntimeSession, RuleRuntime, ProcessRuntime, KieRuntimeEventManager {
 
-    /**
+    /*
      * @return the session clock instance assigned to this session
      */
     <T extends SessionClock> T getSessionClock();

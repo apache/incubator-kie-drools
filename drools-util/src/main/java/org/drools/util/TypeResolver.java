@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ public interface TypeResolver {
 
     void registerClass( String className, Class<?> clazz );
 
-    /**
+    /*
      * This will return the fully qualified type name (including the namespace).
      * Eg, if it was a pojo org.drools.core.test.model.Cheese, then if you passed in "Cheese" you should get back
      * "org.drools.core.test.model.Cheese"

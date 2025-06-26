@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ public class JSR223Utils {
         throw new ArithmeticException(String.format("Conversion of %s incurred in loss of precision from BigDecimal", original));
     }
 
-    /**
+    /*
      * TODO PROVISIONAL, as this does not support non-latin characters, and without accents.
      */
     public static String escapeIdentifierForBinding(String original) {

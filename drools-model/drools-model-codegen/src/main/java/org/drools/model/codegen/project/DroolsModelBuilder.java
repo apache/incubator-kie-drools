@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
-/**
+/*
  * Utility class to wrap ModelBuilderImpl + KnowledgeBuilder and extract the generated source code or metadata
  */
 public class DroolsModelBuilder {

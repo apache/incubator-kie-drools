@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.base.time;
 
-/**
+/*
  * A class to represent a time interval. Specially useful to 
  * calculate time distance between events constrained by
  * temporal constraints.
@@ -44,7 +44,7 @@ public class Interval implements Cloneable {
         this.upperBound = upperBound;
     }
 
-    /**
+    /*
      * Calculates the value of the intersection between
      * this Interval and another interval.
      * This is given by the following rule:
@@ -59,7 +59,7 @@ public class Interval implements Cloneable {
         this.upperBound = Math.min( this.upperBound, another.upperBound );
     }
 
-    /**
+    /*
      * Calculates the path addition of this interval with another interval.
      * This is given by the following rule:
      * 
@@ -93,7 +93,7 @@ public class Interval implements Cloneable {
         return new Interval( this.lowerBound, this.upperBound );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String toString() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.fail;
 
-/** Run all the tests with the ReteOO engine implementation */
+/* Run all the tests with the ReteOO engine implementation */
 public class OutOfMemoryTest {
 
     public static Stream<KieBaseTestConfiguration> parameters() {
@@ -51,7 +51,7 @@ public class OutOfMemoryTest {
 
     private static Logger logger = LoggerFactory.getLogger(OutOfMemoryTest.class);
     
-    /**
+    /*
      * This test can take a while (> 1 minute).
      * @throws Exception
      */

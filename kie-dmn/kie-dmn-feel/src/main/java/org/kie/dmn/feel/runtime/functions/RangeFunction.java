@@ -163,7 +163,7 @@ public class RangeFunction extends BaseFEELFunction {
         return ALLOWED_TYPES.stream().anyMatch(objectPredicate -> objectPredicate.test(value));
     }
 
-    /**
+    /*
      * @param leftObject
      * @param leftObject
      * @return

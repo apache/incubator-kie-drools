@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDescr;
 
-/**
+/*
  * <p>
  * Convenience Factory to provide Resource implementations for the desired IO resource.
  * </p>

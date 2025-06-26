@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.verifier.data.VerifierComponent;
 
 public class PatternSolverTest {
 
-    /**
+    /*
      * <pre>
      *      and
      *     /   \
@@ -63,7 +63,7 @@ public class PatternSolverTest {
         assertThat(list.get(0).size()).isEqualTo(2);
     }
 
-    /**
+    /*
      * <pre>
      *       or
      *      /  \
@@ -97,7 +97,7 @@ public class PatternSolverTest {
         assertThat(list.get(1).size()).isEqualTo(1);
     }
 
-    /**
+    /*
      * <pre>
      *       or
      *      /  \
@@ -143,7 +143,7 @@ public class PatternSolverTest {
         assertThat(list.get(1).contains(literalRestriction3)).isTrue();
     }
 
-    /**
+    /*
      * <pre>
      *       and
      *      /  \
@@ -190,7 +190,7 @@ public class PatternSolverTest {
         assertThat(list.get(1).contains(literalRestriction3)).isTrue();
     }
 
-    /**
+    /*
      * <pre>
      *            and
      *         /        \
@@ -254,7 +254,7 @@ public class PatternSolverTest {
         assertThat(list.get(3).contains(literalRestriction4)).isTrue();
     }
 
-    /**
+    /*
      * <pre>
      *             or
      *         /        \
@@ -306,7 +306,7 @@ public class PatternSolverTest {
         assertThat(list.get(1).contains(literalRestriction4)).isTrue();
     }
 
-    /**
+    /*
      * <pre>
      *             or
      *         /        \
@@ -362,7 +362,7 @@ public class PatternSolverTest {
         assertThat(list.get(2).contains(literalRestriction4)).isTrue();
     }
 
-    /**
+    /*
      * <pre>
      *                   and
      *          /         |      \

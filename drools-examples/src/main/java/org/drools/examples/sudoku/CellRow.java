@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,12 +18,12 @@
  */
 package org.drools.examples.sudoku;
 
-/**
+/*
  * Represents a row of Sudoku grid cells.
  */
 public class CellRow extends CellFile {
     
-    /**
+    /*
      * Constructor.
      * 
      * @param number the row number.

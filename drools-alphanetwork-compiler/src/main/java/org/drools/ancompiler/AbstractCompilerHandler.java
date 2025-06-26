@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.core.reteoo.Sink;
 import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.index.AlphaRangeIndex;
 
-/**
+/*
  * This handler is used as a base class for all {@link org.drools.ancompiler.NetworkHandler}s used for
  * generating a compiled network. It provides methods to return the variable type and names used for storing
  * refernces to different {@link NetworkNode}s and variable names for ClassFieldReaders.
@@ -78,7 +78,7 @@ abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
         return MAP_VARIABLE_NAME_SUFFIX;
     }
 
-    /**
+    /*
      * Returns a variable name based on the simple name of the specified class appended with the specified
      * nodeId.
      *

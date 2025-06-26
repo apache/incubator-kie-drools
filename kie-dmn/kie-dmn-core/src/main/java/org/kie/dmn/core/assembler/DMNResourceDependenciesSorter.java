@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class DMNResourceDependenciesSorter {
 
-    /**
+    /*
      * Return a new list of DMNResource sorted by dependencies (required dependencies comes first)
      */
     public static List<DMNResource> sort(List<DMNResource> ins) {
@@ -44,7 +44,7 @@ public class DMNResourceDependenciesSorter {
         return dfv;
     }
 
-    /**
+    /*
      * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
      */
     private static void dfVisit(DMNResource node, List<DMNResource> allNodes, Collection<DMNResource> visited, List<DMNResource> dfv) {

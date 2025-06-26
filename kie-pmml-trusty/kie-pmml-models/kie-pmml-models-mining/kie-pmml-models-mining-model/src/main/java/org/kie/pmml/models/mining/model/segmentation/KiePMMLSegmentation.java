@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html#xsdElement_Segmentation>Segmentation</a>
  */
 public class KiePMMLSegmentation extends AbstractKiePMMLComponent {
@@ -38,7 +38,7 @@ public class KiePMMLSegmentation extends AbstractKiePMMLComponent {
         this.multipleModelMethod = multipleModelMethod;
     }
 
-    /**
+    /*
      * Builder to auto-generate the <b>id</b>
      * @return
      */

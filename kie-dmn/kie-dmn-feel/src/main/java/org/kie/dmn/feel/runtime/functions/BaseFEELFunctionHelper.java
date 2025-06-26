@@ -62,7 +62,7 @@ public class BaseFEELFunctionHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * This method check if the input parameters, set inside the given <code>CandidateMethod</code>,
      * could match the given <code>parameterTypes</code>, eventually <b>coerced</b>.
      * In case of match with coercion, a new <code>Object[]</code> with coerced values is returned.
@@ -101,7 +101,7 @@ public class BaseFEELFunctionHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * This method insert <code>context</code> reference inside the given parameters, if the given
      * <code>Method</code> signature include it.
      * Depending on the <code>isNamedParams</code>, the reference could be the given <code>EvaluationContext</code>
@@ -138,7 +138,7 @@ public class BaseFEELFunctionHelper {
         return actualParams;
     }
 
-    /**
+    /*
      * Method to retrieve the actual parameters from the given <code>NamedParameter[]</code>
      * It returns <code>null</code> if the actual parameters does not match with the <code>Method</code> ones
      * @param m
@@ -166,7 +166,7 @@ public class BaseFEELFunctionHelper {
         return actualParams;
     }
 
-    /**
+    /*
      * Method to populate the given <code>actualParams</code> or <code>variableParams</code> with values extracted
      * from <code>NamedParameter</code>
      * @param np
@@ -192,7 +192,7 @@ public class BaseFEELFunctionHelper {
         }
     }
 
-    /**
+    /*
      * Method to populate the given <code>variableParams</code> with values extracted from <code>NamedParameter</code>
      * @param np
      * @param variableParamPrefix
@@ -221,7 +221,7 @@ public class BaseFEELFunctionHelper {
         return true;
     }
 
-    /**
+    /*
      * Retrieves the names of the parameters from the given <code>Method</code>,
      * from the ones annotated with <code>ParameterName</code>
      * @param m
@@ -246,7 +246,7 @@ public class BaseFEELFunctionHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * Method invoked by <code>CustomFunction</code>.
      * It refactors the input parameters to match the order defined in the <code>CustomFunction</code>,
      * returning the actual value of the given <code>params</code>
@@ -272,7 +272,7 @@ public class BaseFEELFunctionHelper {
         }
     }
 
-    /**
+    /*
      * Adjust CandidateMethod considering var args signature.
      * It converts a series of object to an array, if the last parameter type is an array.
      * It is needed to differentiate function(list) from function(n0...nx), e.g.
@@ -296,7 +296,7 @@ public class BaseFEELFunctionHelper {
         }
     }
 
-    /**
+    /*
      *  This method apply the <code>NumberEvalHelper.coerceNumber</code> to the given result or,
      *  if it is an array, recursively to all its elements
      * @param result

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ public enum BooleanFunctions {
     IS_NOT_IN("isNotIn"),
     IF("if");
 
-    /**
+    /*
      * <code>OPERATOR</code>s that operates <b>ONLY</b >with <code>Number</code>s
      */
     static final List<BooleanFunctions> BOOLEAN_FUNCTIONS_VALIDATION = Arrays.asList(

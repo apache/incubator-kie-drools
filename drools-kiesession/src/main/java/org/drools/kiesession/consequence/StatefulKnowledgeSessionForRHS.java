@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -90,7 +90,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-/**
+/*
  * Wrapper of ReteEvaluator so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
 public class StatefulKnowledgeSessionForRHS
@@ -107,7 +107,7 @@ public class StatefulKnowledgeSessionForRHS
         this.delegate = reteEvaluator;
     }
 
-    /**
+    /*
      * This should be used just by deserialization. Please avoid using this empty constructor in your code.
      */
     public StatefulKnowledgeSessionForRHS() {

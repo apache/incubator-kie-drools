@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,13 +20,13 @@ package org.kie.api.runtime.process;
 
 import java.util.Collection;
 
-/**
+/*
  * A node instance container is a container that can contain
  * (zero or more) node instances.
  */
 public interface NodeInstanceContainer {
 
-    /**
+    /*
      * Returns all node instances that are currently active
      * within this container.
      *
@@ -34,7 +34,7 @@ public interface NodeInstanceContainer {
      */
     Collection<NodeInstance> getNodeInstances();
 
-    /**
+    /*
      * Returns all node instances that are currently active
      * within this container and are serializable
      *
@@ -44,7 +44,7 @@ public interface NodeInstanceContainer {
         return getNodeInstances(); // defaulting to getNodeInstances to avoid breaking
     }
 
-    /**
+    /*
      * Returns the node instance with the given id, or <code>null</code>
      * if the node instance cannot be found.
      *

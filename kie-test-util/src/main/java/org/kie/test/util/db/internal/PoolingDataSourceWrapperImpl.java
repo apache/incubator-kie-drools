@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import com.arjuna.ats.jta.common.jtaPropertyManager;
 import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
 import org.kie.test.util.db.PoolingDataSourceWrapper;
 
-/**
+/*
  * Wrapper for actual Pooling Data Source provided by tomcat DBCP library. This class offers data source with
  * XA transactions and connection pooling capabilities.
  */
@@ -50,7 +50,7 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
     private BasicManagedDataSource managedDataSource;
     private DatabaseProvider databaseProvider;
 
-    /**
+    /*
      * This constructor creates a PoolingDataSource using internally {@link BasicManagedDataSource} with its default
      * pooling parameters.
      * @param uniqueName Data Source unique name. Serves for registration to JNDI.
@@ -63,7 +63,7 @@ public final class PoolingDataSourceWrapperImpl implements PoolingDataSourceWrap
         this(uniqueName, dsClassName, driverProperties, new Properties());
     }
 
-    /**
+    /*
      * This constructor creates a PoolingDataSource using internally {@link BasicManagedDataSource}.
      * @param uniqueName Data Source unique name. Serves for registration to JNDI.
      * @param dsClassName Name of a class implementing {@link XADataSource} available in a JDBC driver on a classpath.

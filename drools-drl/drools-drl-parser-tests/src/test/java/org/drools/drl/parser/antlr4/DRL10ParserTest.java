@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import static org.drools.drl.parser.antlr4.DRL10ParserHelper.computeTokenIndex;
 import static org.drools.drl.parser.antlr4.DRL10ParserHelper.createDrlParser;
 import static org.drools.drl.parser.antlr4.DRL10ParserHelper.parse;
 
-/**
+/*
  * This test class is specific to new antlr4 parser.
  */
 class DRL10ParserTest {

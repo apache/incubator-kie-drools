@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.beliefs.bayes.GraphTest.addNode;
 import static org.drools.beliefs.bayes.GraphTest.bitSet;
 
-/**
+/*
  * This class tests that the iteration order for collect and distribute evidence is correct.
  * It tests from 4 different positions on the same network.  First individually for collect and then distribute, and then through globalUpdate request
  * Then it calls the globalUpdate that recurses the network and calls globalUpdate for each clique

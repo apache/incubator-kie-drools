@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ abstract public class TestBaseOld {
         return kbase.newKieSession();
     }
 
-    /**
+    /*
      * Returns true if map contains redundancy where ruleName1 is redundant to
      * ruleName2.
      * 
@@ -87,7 +87,7 @@ abstract public class TestBaseOld {
         return false;
     }
 
-    /**
+    /*
      * Returns true if map contains redundancy where cause1 is redundant to
      * cause2.
      * 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,7 +57,7 @@ import org.drools.model.codegen.execmodel.processors.PojoStoragePhase;
 import org.drools.model.codegen.execmodel.processors.SourceCodeGenerationPhase;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
-/**
+/*
  * An alternative compilation flow that generates code starting
  * from a collection of {@link CompositePackageDescr}s,
  * skipping the {@link org.kie.internal.builder.KnowledgeBuilder} entirely.

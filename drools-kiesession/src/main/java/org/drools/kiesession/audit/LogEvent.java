@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * An event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  */
@@ -73,7 +73,7 @@ public class LogEvent { // implements Externalizable { This breaks XStream seria
     public LogEvent() {
     }
 
-    /**
+    /*
      * Creates a new log event.
      * 
      * @param type The type of the log event.
@@ -90,7 +90,7 @@ public class LogEvent { // implements Externalizable { This breaks XStream seria
         out.writeInt(type);
     }
     
-    /**
+    /*
      * Returns the type of the log event as defined in this class.
      * 
      * @return The type of the log event.

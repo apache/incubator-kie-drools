@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.template.model;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
+/*
  * Represents a rule.
  */
 public class Rule extends AttributedDRLElement
@@ -37,7 +37,7 @@ public class Rule extends AttributedDRLElement
     private List<Consequence> _rhs;
     private int               _spreadsheetRow;
 
-    /**
+    /*
      * Create a new rule. Note that the rule name should be post-fixed with the row number,
      * as one way of providing tracability for errors back to the originating spreadsheet.
      *
@@ -132,7 +132,7 @@ public class Rule extends AttributedDRLElement
     }
 
 
-    /**
+    /*
      * @return The row in the spreadsheet this represents.
      *         This can be handy when mapping a line error from Parser back to the rule row.
      *         Will need to have a map of ranges of line numbers that each rule covers.

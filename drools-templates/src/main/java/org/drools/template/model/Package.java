@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.template.model;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
+/*
  * This is the top of the parse tree. Represents a package of rules once it has
  * been parsed from the spreadsheet. Also is the launching point for dumping out
  * the DRL.

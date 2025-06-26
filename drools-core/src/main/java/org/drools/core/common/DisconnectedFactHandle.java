@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -69,7 +69,7 @@ public class DisconnectedFactHandle
     @XmlSchemaType(name="long")
     private long   recency;
 
-    /**
+    /*
      *  This could be a {@link DroolsQueryImpl} object or other almost-impossible-to-serialize class
      */
     @XmlElement

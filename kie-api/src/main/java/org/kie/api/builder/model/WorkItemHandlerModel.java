@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,17 +18,17 @@
  */
 package org.kie.api.builder.model;
 
-/**
+/*
  * WorkItemHandlerModel is a model allowing to programmatically define a WorkItemHandler and wire it to a KieSession
  */
 public interface WorkItemHandlerModel {
 
-    /**
+    /*
      * @return the name of the work item that the handler is for
      */
     String getName();
 
-    /**
+    /*
      * Returns the type of this WorkItemHandlerModel
      * (i.e. the name of the class implementing the WorkItemHandler)
      */

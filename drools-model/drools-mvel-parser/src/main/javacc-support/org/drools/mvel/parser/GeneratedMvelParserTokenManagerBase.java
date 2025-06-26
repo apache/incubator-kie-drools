@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,11 +29,11 @@ import com.github.javaparser.JavaToken;
 
 import static com.github.javaparser.GeneratedJavaParserConstants.*;
 
-/**
+/*
  * Base class for {@link com.github.javaparser.GeneratedJavaParserTokenManager}
  */
 abstract class GeneratedMvelParserTokenManagerBase {
-    /**
+    /*
      * Create a TokenRange that spans exactly one token
      */
     private static TokenRange tokenRange(Token token) {
@@ -41,7 +41,7 @@ abstract class GeneratedMvelParserTokenManagerBase {
         return new TokenRange(javaToken, javaToken);
     }
 
-    /**
+    /*
      * Since comments are completely captured in a single token, including their delimiters, deconstruct them here so we
      * can turn them into nodes later on.
      */

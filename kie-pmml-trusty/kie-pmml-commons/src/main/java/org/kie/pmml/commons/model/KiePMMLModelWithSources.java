@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
-/**
+/*
  * Interface used to identify a given <code>HasSourcesMap</code> as <b>container</b> for KiePMMLModel' sources
  */
 public class KiePMMLModelWithSources extends KiePMMLModel implements HasSourcesMap {

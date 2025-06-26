@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.core.rule.consequence;
 import org.drools.core.WorkingMemory;
 
 
-/**
+/*
  * Care should be taken when implementing this class. Swallowing of consequence can be dangerous
  * if the exception occured during a WorkingMemory action, thus leaving the integrity of the
  * WorkingMemory invalid.

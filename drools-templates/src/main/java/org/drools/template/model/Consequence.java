@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.template.model;
 
-/**
+/*
  * This represents a RHS fragement. A rule may have many of these, or just one.
  * They are all mushed together.
  */
@@ -28,7 +28,7 @@ public class Consequence extends DRLElement
 
     private String _snippet;
 
-    /**
+    /*
      * @param snippet The snippet to set.
      */
     public void setSnippet(final String snippet) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -63,7 +63,7 @@ public class DMNInvocationEvaluator
     private final BiFunction<DMNContext, String, FEELFunction> functionLocator;
     private final FEEL feel;
 
-    /**
+    /*
      * @param functionLocator function to be used to resolve the FEELFunction to be invoked.
      * @param feel in case functionLocator is not able to resolve the desired function, it will be used for checking the resolution against the configured/built-in FEEL functions.
      */

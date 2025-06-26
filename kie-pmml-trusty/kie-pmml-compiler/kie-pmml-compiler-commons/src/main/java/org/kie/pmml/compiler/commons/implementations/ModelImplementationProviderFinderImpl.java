@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Default <code>ModelImplementationProviderFinder</code> using Java SPI
  */
 public class ModelImplementationProviderFinderImpl implements ModelImplementationProviderFinder {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -87,7 +87,7 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariable
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateListInListGetter;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
 
-/**
+/*
  * Class to provide shared, helper methods to be invoked by model-specific
  * <b>factories</b> (e.g. KiePMMLTreeModelFactory, KiePMMLScorecardModelFactory, KiePMMLRegressionModelFactory)
  */
@@ -105,7 +105,7 @@ public class KiePMMLModelFactoryUtils {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Set the <b>name</b> parameter on <b>super</b> invocation
      * @param generatedClassName
      * @param constructorDeclaration
@@ -126,7 +126,7 @@ public class KiePMMLModelFactoryUtils {
                                                                                                               name));
     }
 
-    /**
+    /*
      * Set the <b>name</b> parameter on <b>super</b> invocation
      * @param generatedClassName
      * @param constructorDeclaration
@@ -144,7 +144,7 @@ public class KiePMMLModelFactoryUtils {
                                                                                                               name));
     }
 
-    /**
+    /*
      * Set the <b>name</b> parameter on <b>super</b> invocation and populate the <b>miningFields/outputFields</b>
      * @param generatedClassName
      * @param constructorDeclaration
@@ -171,7 +171,7 @@ public class KiePMMLModelFactoryUtils {
         addListPopulationByMethodCallExpr(kiePMMLTargetFieldsObjectCreations, body, "kiePMMLTargets");
     }
 
-    /**
+    /*
      * Add the <code>getCreatedKiePMMLMiningFields</code> method to the given <code>ClassOrInterfaceDeclaration</code>
      * @param modelTemplate
      * @param miningFields
@@ -189,7 +189,7 @@ public class KiePMMLModelFactoryUtils {
         commonPopulateGetCreatedKiePMMLMiningFieldsMethod(methodDeclaration, miningFields, fields);
     }
 
-    /**
+    /*
      * Populate the <code>getCreatedKiePMMLMiningFields</code> method
      * @param modelTemplate
      * @param miningFields
@@ -201,7 +201,7 @@ public class KiePMMLModelFactoryUtils {
         populateListInListGetter(miningFieldsObjectCreations, methodDeclaration, TO_RETURN);
     }
 
-    /**
+    /*
      * Populate the <code>getCreatedKiePMMLMiningFields</code> method
      * @param modelTemplate
      * @param outputFields
@@ -213,7 +213,7 @@ public class KiePMMLModelFactoryUtils {
         populateListInListGetter(outputFieldsObjectCreations, methodDeclaration, TO_RETURN);
     }
 
-    /**
+    /*
      * Populate the <code>getCreatedKiePMMLMiningFields</code> method
      * @param modelTemplate
      * @param miningFields
@@ -265,7 +265,7 @@ public class KiePMMLModelFactoryUtils {
         }
     }
 
-    /**
+    /*
      * Add <b>common</b> and <b>local</b> transformations management inside the given
      * <code>ClassOrInterfaceDeclaration</code>
      * @param toPopulate
@@ -283,7 +283,7 @@ public class KiePMMLModelFactoryUtils {
         }
     }
 
-    /**
+    /*
      * Add <b>common</b> and <b>local</b> transformations management inside the given
      * <code>ClassOrInterfaceDeclaration</code>
      * @param toPopulate
@@ -321,7 +321,7 @@ public class KiePMMLModelFactoryUtils {
                                              createLocalTransformations);
     }
 
-    /**
+    /*
      * Initialize the given <code>ClassOrInterfaceDeclaration</code> with all the <b>common</b> code needed to
      * generate a <code>KiePMMLModel</code>
      * @param compilationDTO
@@ -385,7 +385,7 @@ public class KiePMMLModelFactoryUtils {
         }
     }
 
-    /**
+    /*
      * Populate the given <code>ClassOrInterfaceDeclaration</code>' <b>staticGetter</b> with the <b>common</b>
      * parameters needed to
      * instantiate a <code>KiePMMLModel</code>
@@ -444,7 +444,7 @@ public class KiePMMLModelFactoryUtils {
         populateGetCreatedLocalTransformationsMethod(modelTemplate, compilationDTO.getLocalTransformations());
     }
 
-    /**
+    /*
      * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;MiningField&gt;</code>
      * @param miningFields
      * @return
@@ -532,7 +532,7 @@ public class KiePMMLModelFactoryUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;OutputField&gt;</code>
      * @param outputFields
      * @return
@@ -570,7 +570,7 @@ public class KiePMMLModelFactoryUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;KiePMMLTarget&gt;</code>
      * @param targetFields
      * @return
@@ -581,7 +581,7 @@ public class KiePMMLModelFactoryUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Populating the <b>transformationDictionary</b> and <b>localTransformations</b> variables inside the constructor
      * @param constructorDeclaration
      * @param createTransformationDictionary
@@ -602,7 +602,7 @@ public class KiePMMLModelFactoryUtils {
                                  createLocalTransformationsInitializer);
     }
 
-    /**
+    /*
      * Populate the <code>getCreatedKiePMMLMiningFields</code> method
      * @param methodDeclaration
      * @param miningFields

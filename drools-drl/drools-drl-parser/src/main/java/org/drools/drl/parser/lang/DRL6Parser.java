@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -169,7 +169,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         } while (input.LA(1) != DRL6Lexer.EOF && !helper.validateStatement(1));
     }
 
-    /**
+    /*
      * Parses a package statement and returns the name of the package
      * or null if none is defined.
      *
@@ -220,7 +220,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return pkgName;
     }
 
-    /**
+    /*
      * unitStatement := UNIT qualifiedIdentifier SEMICOLON?
      */
     public UnitDescr unitStatement( PackageDescrBuilder pkg ) throws RecognitionException {
@@ -261,7 +261,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * statement := importStatement
      *           |  globalStatement
      *           |  declare
@@ -317,7 +317,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         IMPORT STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * importStatement := IMPORT ((FUNCTION|STATIC)? qualifiedIdentifier ((DOT STAR)?
      *                           |(ACC|ACCUMULATE) qualifiedIdentifier ID)
      *
@@ -443,7 +443,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         GLOBAL STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * globalStatement := GLOBAL type ID
      *
      * @return
@@ -499,7 +499,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         DECLARE STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * declare := DECLARE
      *               | (ENTRY-POINT) => entryPointDeclaration
      *               | (WINDOW) => windowDeclaration
@@ -566,7 +566,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return declaration;
     }
 
-    /**
+    /*
      * entryPointDeclaration := ENTRY-POINT stringId annotation* END
      *
      * @return
@@ -634,7 +634,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return (declare != null) ? declare.getDescr() : null;
     }
 
-    /**
+    /*
      * windowDeclaration := WINDOW ID annotation* lhsPatternBind END
      *
      * @return
@@ -779,7 +779,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return (declare != null) ? declare.getDescr() : null;
     }
 
-    /**
+    /*
      * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
      *                         annotation*
      *                         field*
@@ -873,7 +873,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return (declare != null) ? declare.getDescr() : null;
     }
 
-    /**
+    /*
      * enumerative := ID ( LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
      */
     private void enumerative(EnumDeclarationDescrBuilder declare) {
@@ -950,7 +950,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
      */
     private void field(AbstractClassTypeDeclarationBuilder declare) {
@@ -1027,7 +1027,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         FUNCTION STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * function := FUNCTION type? ID parameters(typed) chunk_{_}
      *
      * @return
@@ -1096,7 +1096,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return (function != null) ? function.getDescr() : null;
     }
 
-    /**
+    /*
      * parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
      * @param statement
      * @param requiresType
@@ -1143,7 +1143,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             return;
     }
 
-    /**
+    /*
      * parameter := ({requiresType}?=>type)? ID (LEFT_SQUARE RIGHT_SQUARE)*
      * @param statement
      * @param requiresType
@@ -1196,7 +1196,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         QUERY STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * query := QUERY stringId parameters? annotation* lhsExpression END
      *
      * @return
@@ -1309,7 +1309,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         RULE STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
      *
      * @return
@@ -1404,7 +1404,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return (rule != null) ? rule.getDescr() : null;
     }
 
-    /**
+    /*
      * stringId := ( ID | STRING )
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -1434,7 +1434,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * attributes := (ATTRIBUTES COLON?)? [ attribute ( COMMA? attribute )* ]
      * @param rule
      * @throws org.antlr.runtime.RecognitionException
@@ -1482,7 +1482,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * attribute :=
      *       salience
      *   |   enabled
@@ -1619,7 +1619,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute;
     }
 
-    /**
+    /*
      * salience := SALIENCE conditionalExpression
      * @throws org.antlr.runtime.RecognitionException
      */
@@ -1685,7 +1685,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * enabled := ENABLED conditionalExpression
      * @throws org.antlr.runtime.RecognitionException
      */
@@ -1751,7 +1751,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * booleanAttribute := attributeKey (BOOLEAN)?
      * @param key
      * @throws org.antlr.runtime.RecognitionException
@@ -1813,7 +1813,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * stringAttribute := attributeKey STRING
      * @param key
      * @throws org.antlr.runtime.RecognitionException
@@ -1871,7 +1871,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * stringListAttribute := attributeKey STRING (COMMA STRING)*
      * @param key
      * @throws org.antlr.runtime.RecognitionException
@@ -1952,7 +1952,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * intOrChunkAttribute := attributeKey ( DECIMAL | chunk_(_) )
      * @param key
      * @throws org.antlr.runtime.RecognitionException
@@ -2047,7 +2047,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return attribute != null ? attribute.getDescr() : null;
     }
 
-    /**
+    /*
      * lhs := WHEN COLON? lhsExpression
      * @param rule
      * @throws org.antlr.runtime.RecognitionException
@@ -2075,7 +2075,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
     }
 
-    /**
+    /*
      * lhsExpression := lhsOr*
      *
      * @param lhs
@@ -2114,7 +2114,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * lhsOr := LEFT_PAREN OR lhsAnd+ RIGHT_PAREN
      *        | lhsAnd (OR lhsAnd)*
      *
@@ -2262,7 +2262,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * lhsAnd := LEFT_PAREN AND lhsUnary+ RIGHT_PAREN
      *         | lhsUnary (AND lhsUnary)*
      *
@@ -2406,7 +2406,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * lhsUnary :=
      *           ( lhsExists namedConsequence?
      *           | lhsNot namedConsequence?
@@ -2477,7 +2477,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * consequenceInvocation := conditionalBranch | namedConsequence
      *
      * @param ce
@@ -2493,7 +2493,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * conditionalBranch := IF LEFT_PAREN conditionalExpression RIGHT_PAREN
      *                      ( namedConsequence | breakingNamedConsequence )
      *                      ( ELSE ( namedConsequence | breakingNamedConsequence | conditionalBranch ) )?
@@ -2558,7 +2558,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return conditionalBranch.getDescr();
     }
 
-    /**
+    /*
      * namedConsequence := DO LEFT_SQUARE ID RIGHT_SQUARE BREAK?
      */
     private BaseDescr namedConsequence(CEDescrBuilder<?, ?> ce, NamedConsequenceDescrBuilder<?> namedConsequence) throws RecognitionException {
@@ -2609,7 +2609,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return namedConsequence.getDescr();
     }
 
-    /**
+    /*
      * breakingNamedConsequence := BREAK LEFT_SQUARE ID RIGHT_SQUARE
      */
     private BaseDescr breakingNamedConsequence(CEDescrBuilder<?, ?> ce, NamedConsequenceDescrBuilder<?> namedConsequence) throws RecognitionException {
@@ -2662,7 +2662,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return namedConsequence.getDescr();
     }
 
-    /**
+    /*
      * lhsExists := EXISTS
      *           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
      *           | LEFT_PAREN lhsOr RIGHT_PAREN
@@ -2741,7 +2741,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return exists != null ? exists.getDescr() : null;
     }
 
-    /**
+    /*
      * lhsNot := NOT
      *           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
      *           | LEFT_PAREN lhsOr RIGHT_PAREN
@@ -2824,7 +2824,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return not != null ? not.getDescr() : null;
     }
 
-    /**
+    /*
      * lhsForall := FORALL LEFT_PAREN lhsPatternBind+ RIGHT_PAREN
      *
      * @param ce
@@ -2885,7 +2885,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return forall != null ? forall.getDescr() : null;
     }
 
-    /**
+    /*
      * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN
      *
      * @param ce
@@ -2969,7 +2969,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return true;
     }
 
-    /**
+    /*
      * lhsParen := LEFT_PAREN lhsOr RIGHT_PAREN
      *
      * @param ce
@@ -3005,7 +3005,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return descr;
     }
 
-    /**
+    /*
      * lhsPatternBind := label?
      *                ( LEFT_PAREN lhsPattern (OR lhsPattern)* RIGHT_PAREN
      *                | lhsPattern )
@@ -3143,7 +3143,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * lhsAccumulate := (ACCUMULATE|ACC) LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
      *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
      *                      (SEMICOLON constraints)?
@@ -3307,7 +3307,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return result;
     }
 
-    /**
+    /*
      * lhsGroupBy := GROUPBY LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
      *                      groupByKeyBinding SEMICOLON
      *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
@@ -3488,7 +3488,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * lhsPattern := xpathPrimary (OVER patternFilter)? |
      *               ( QUESTION? qualifiedIdentifier
      *                 LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
@@ -3587,7 +3587,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * label := ID COLON
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -3612,7 +3612,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return label.getText();
     }
 
-    /**
+    /*
      * unif := ID UNIFY
      * @return
      * @throws org.antlr.runtime.RecognitionException
@@ -3653,7 +3653,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return success;
     }
 
-    /**
+    /*
      * positionalConstraints := constraint (COMMA constraint)* SEMICOLON
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
@@ -3690,7 +3690,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             return;
     }
 
-    /**
+    /*
      * constraints := constraint (COMMA constraint)*
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
@@ -3724,7 +3724,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * constraint := nestedConstraint | conditionalOrExpression
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
@@ -3796,7 +3796,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return getNestedConstraintPrefixLenght() > 0;
     }
 
-    /**
+    /*
      * nestedConstraint := ( ID ( DOT | HASH ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
@@ -3877,7 +3877,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return Location.LOCATION_UNKNOWN;
     }
 
-    /**
+    /*
      * patternFilter :=   OVER filterDef
      * DISALLOWED:        | ( PIPE filterDef )+
      *
@@ -3912,7 +3912,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         //        }
     }
 
-    /**
+    /*
      * filterDef := label ID LEFT_PAREN parameters RIGHT_PAREN
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
@@ -3952,7 +3952,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * patternSource := FROM
      *                ( fromAccumulate
      *                | fromCollect
@@ -4009,7 +4009,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * fromExpression := conditionalOrExpression
      *
      * @param pattern
@@ -4028,7 +4028,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * fromEntryPoint := ENTRY-POINT stringId
      *
      * @param pattern
@@ -4071,7 +4071,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * fromWindow := WINDOW ID
      *
      * @param pattern
@@ -4105,7 +4105,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * fromCollect := COLLECT LEFT_PAREN lhsPatternBind RIGHT_PAREN
      *
      * @param pattern
@@ -4156,7 +4156,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
      *                   ( INIT chunk_(_) COMMA ACTION chunk_(_) COMMA
      *                     ( REVERSE chunk_(_) COMMA)? RESULT chunk_(_)
@@ -4380,7 +4380,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * groupByKeyFunction := (label COLON)? lhsExpression
      * @param groupBy
      * @throws org.antlr.runtime.RecognitionException
@@ -4414,7 +4414,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * accumulateFunctionBinding := label accumulateFunction
      * @param accumulate
      * @throws org.antlr.runtime.RecognitionException
@@ -4433,7 +4433,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             label );
     }
 
-    /**
+    /*
      * accumulateFunction := label? ID parameters
      * @param accumulate
      * @throws org.antlr.runtime.RecognitionException
@@ -4461,7 +4461,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
      *
      * @return
@@ -4509,7 +4509,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return parameters;
     }
 
-    /**
+    /*
      * rhs := defaultConsequence namedConsequence* (~END)*
      * @param rule
      */
@@ -4520,7 +4520,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * defaultConsequence := THEN chunk
      * @param rule
      */
@@ -4554,7 +4554,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * namedConsequence := THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
      * @param rule
      */
@@ -4644,7 +4644,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     *                         ANNOTATION
     * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * annotation := fullAnnotation | AT ID chunk_(_)?
      */
     void annotation( AnnotatedDescrBuilder<?> adb ) {
@@ -4705,7 +4705,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
     }
 
-    /**
+    /*
      * Invokes the expression parser, trying to parse the annotation
      * as a full java-style annotation
      *
@@ -4733,7 +4733,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *                         UTILITY RULES
      * ------------------------------------------------------------------------------------------------ */
 
-    /**
+    /*
      * Matches a type name
      *
      * type := ID typeArguments? ( DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
@@ -4809,7 +4809,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return type;
     }
 
-    /**
+    /*
      * Matches type arguments
      *
      * typeArguments := LESS typeArgument (COMMA typeArgument)* GREATER
@@ -4863,7 +4863,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return typeArguments;
     }
 
-    /**
+    /*
      * Matches a type argument
      *
      * typeArguments := QUESTION (( EXTENDS | SUPER ) type )?
@@ -4930,7 +4930,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return typeArgument;
     }
 
-    /**
+    /*
      * Matches a qualified identifier
      *
      * qualifiedIdentifier := ID ( DOT ID )*
@@ -4976,7 +4976,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return qi;
     }
 
-    /**
+    /*
      * Matches a conditional expression
      *
      * @return
@@ -4997,7 +4997,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return null;
     }
 
-    /**
+    /*
      * Matches a conditional || expression
      *
      * @return
@@ -5018,7 +5018,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return null;
     }
 
-    /**
+    /*
      * Matches a chunk started by the leftDelimiter and ended by the rightDelimiter.
      * 
      * @param leftDelimiter
@@ -5081,7 +5081,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     /* ------------------------------------------------------------------------------------------------
       *                         GENERAL UTILITY METHODS
       * ------------------------------------------------------------------------------------------------ */
-    /** 
+    /* 
      *  Match current input symbol against ttype and optionally
      *  check the text of the token against text.  Attempt
      *  single token insertion or deletion error recovery.  If
@@ -5115,7 +5115,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         return matchedSymbol;
     }
 
-    /** Attempt to recover from a single missing or extra token.
+    /* Attempt to recover from a single missing or extra token.
     *
     *  EXTRA TOKEN
     *

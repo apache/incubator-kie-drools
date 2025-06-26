@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -71,7 +71,7 @@ public class GroupElement extends ConditionalElement
         out.writeObject( children );
     }
 
-    /**
+    /*
      * Adds a child to the current GroupElement.
      *
      * Restrictions are:
@@ -85,7 +85,7 @@ public class GroupElement extends ConditionalElement
         return this;
     }
 
-    /**
+    /*
      * Adds the given child as the (index)th child of the this GroupElement
      */
     public void addChild(final int index,
@@ -98,7 +98,7 @@ public class GroupElement extends ConditionalElement
         return this.children;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Map<String,Declaration> getInnerDeclarations() {
@@ -109,7 +109,7 @@ public class GroupElement extends ConditionalElement
         return this.type.getInnerDeclarations( this.children, consequenceName );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Map<String, Declaration> getOuterDeclarations() {
@@ -126,14 +126,14 @@ public class GroupElement extends ConditionalElement
         return this.type.getOuterDeclarations( this.children, consequenceName );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
         return this.type.resolveDeclaration( this.children, identifier );
     }
 
-    /**
+    /*
      * Optimize the group element subtree by removing redundancies
      * like an AND inside another AND, OR inside OR, single branches
      * AND/OR, etc.
@@ -281,7 +281,7 @@ public class GroupElement extends ConditionalElement
         return this.type.hashCode() + this.children.hashCode();
     }
 
-    /**
+    /*
      * Clones all Conditional Elements but references the non ConditionalElement children
      */
     public GroupElement clone() {
@@ -359,7 +359,7 @@ public class GroupElement extends ConditionalElement
     }    
     
 
-    /**
+    /*
      * A public enum for CE types
      */
     public enum Type {
@@ -391,7 +391,7 @@ public class GroupElement extends ConditionalElement
             this.scopeDelimiter = scopeDelimiter;
         }
 
-        /**
+        /*
          * Returns a map of declarations that are
          * visible inside of an element of this type
          */
@@ -399,7 +399,7 @@ public class GroupElement extends ConditionalElement
             return getInnerDeclarations(children, RuleImpl.DEFAULT_CONSEQUENCE_NAME);
         }
 
-        /**
+        /*
          * Returns a map of declarations that are
          * visible inside of an element of this type
          * for the consequence with the given name
@@ -408,7 +408,7 @@ public class GroupElement extends ConditionalElement
             return getDeclarations(children, ScopeDelimiter.NEVER, consequenceName);
         }
 
-        /**
+        /*
          * Returns a map of declarations that are
          * visible outside of an element of this type
          */
@@ -480,7 +480,7 @@ public class GroupElement extends ConditionalElement
             return false;
         }
 
-        /**
+        /*
          * Returns true in case this RuleConditionElement delimits
          * a pattern visibility scope.
          *

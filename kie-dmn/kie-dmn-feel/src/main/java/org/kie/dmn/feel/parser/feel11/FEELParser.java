@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -82,7 +82,7 @@ public class FEELParser {
         return parser;
     }
     
-    /**
+    /*
      * Either namePart is a string of digits, or it must be a valid name itself 
      */
     public static boolean isVariableNamePartValid( String namePart, Scope scope ) {

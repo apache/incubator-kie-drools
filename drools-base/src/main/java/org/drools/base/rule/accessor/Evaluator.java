@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,26 +26,26 @@ import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Operator;
 
-/**
+/*
  * A public interface to be implemented by all evaluators
  */
 public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evaluator {
 
-    /**
+    /*
      * Returns the type of the values this evaluator operates upon.
      * 
      * @return
      */
     ValueType getValueType();
 
-    /**
+    /*
      * Returns the operator representation object for this evaluator
      * 
      * @return
      */
     Operator getOperator();
     
-    /**
+    /*
      * Returns the value type this evaluator will coerce
      * operands to, during evaluation. This is useful for
      * operators like "memberOf", that always convert to
@@ -56,7 +56,7 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      */
     ValueType getCoercedValueType();
     
-    /**
+    /*
      * Evaluates the expression using the provided parameters.
      * 
      * This method is used when evaluating alpha-constraints,
@@ -86,7 +86,7 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
                             FactHandle factHandle,
                             FieldValue value);
 
-    /**
+    /*
      * Evaluates the expression using the provided parameters.
      * 
      * This method is used for internal indexing and hashing, 
@@ -126,7 +126,7 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
                             ReadAccessor rightExtractor,
                             FactHandle rightOperandFact);
 
-    /**
+    /*
      * Returns true if this evaluator implements a temporal evaluation,
      * i.e., a time sensitive evaluation whose properties of matching
      * only events within an specific time interval can be used for
@@ -136,7 +136,7 @@ public interface Evaluator extends Serializable, org.kie.api.runtime.rule.Evalua
      */
     boolean isTemporal();
 
-    /**
+    /*
      * In case this is a temporal evaluator, returns the interval 
      * in which this evaluator may match the target fact
      * 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime;
 
-/**
+/*
  * Filters objects by class, only accepting objects of the class specified in the constructor
  */
 public class ClassObjectFilter
@@ -26,7 +26,7 @@ public class ClassObjectFilter
     ObjectFilter {
     private Class<?> clazz;
 
-    /**
+    /*
      * The Allowed Class type
      * @param clazz
      */
@@ -34,7 +34,7 @@ public class ClassObjectFilter
         this.clazz = clazz;
     }
 
-    /**
+    /*
      * @return true if the Iterator accepts the given object according to its class.
      */
     public boolean accept(Object object) {

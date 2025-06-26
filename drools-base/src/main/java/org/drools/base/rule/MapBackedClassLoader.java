@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -94,7 +94,7 @@ public class MapBackedClassLoader extends ClassLoader {
         return clazz;
     }
 
-    /**
+    /*
      * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass
      * over method calls to parent.loadClass(name, false); and c = findBootstrapClass0(name); which the default implementation
      * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a

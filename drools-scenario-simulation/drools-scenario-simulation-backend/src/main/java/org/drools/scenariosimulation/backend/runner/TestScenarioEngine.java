@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-/**
+/*
  * It implements a TestEngine that discovers and executes Test Scenario files that live in the final
  * user project. A Java Class in the src/test/java directory with the {@link TestScenarioActivator} annotation
  * must be present to enable the scesim tests execution.
@@ -208,7 +208,7 @@ public class TestScenarioEngine implements TestEngine {
         }
     }
 
-    /**
+    /*
      * This is required to differentiate tests FAILURES with test ERRORS. In case of a Test failure, an
      * AssertionError should be thrown, in case of a Test Error, an Exception should be thrown.
      */

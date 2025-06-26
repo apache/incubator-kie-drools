@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.ruleunits.api.conf;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-/**
+/*
  * Configuration for a RuleUnit. Used in RuleUnit code generation.
  */
 public class RuleUnitConfig {
@@ -68,7 +68,7 @@ public class RuleUnitConfig {
         return sessionPool.isPresent() ? sessionPool : DEFAULT.getSessionPool();
     }
 
-    /**
+    /*
      * return the merged config with the given. Given config keys win over this
      */
     public RuleUnitConfig merged(RuleUnitConfig overrides) {

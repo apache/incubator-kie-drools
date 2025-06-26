@@ -146,7 +146,7 @@ public class PMMLRuntimeContextImpl extends EfestoLocalRuntimeContextImpl<PMMLLi
         commonTransformationMap.put(fieldName, commonTranformation);
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable map</b> of <code>missingValueReplacedMap</code>
      *
      * @return
@@ -156,7 +156,7 @@ public class PMMLRuntimeContextImpl extends EfestoLocalRuntimeContextImpl<PMMLLi
         return Collections.unmodifiableMap(missingValueReplacedMap);
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable map</b> of <code>commonTransformationMap</code>
      *
      * @return
@@ -166,7 +166,7 @@ public class PMMLRuntimeContextImpl extends EfestoLocalRuntimeContextImpl<PMMLLi
         return Collections.unmodifiableMap(commonTransformationMap);
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable map</b> of <code>localTransformationMap</code>
      *
      * @return
@@ -224,7 +224,7 @@ public class PMMLRuntimeContextImpl extends EfestoLocalRuntimeContextImpl<PMMLLi
         this.affinity = affinity;
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable map</b> of probabilities, or an empty one
      *
      * @return

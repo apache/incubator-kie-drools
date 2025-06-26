@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -159,7 +159,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return vals;
     }
 
-    /**
+    /*
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
@@ -167,7 +167,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return gcs( key, true );
     }
 
-    /**
+    /*
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
@@ -175,7 +175,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return gcs( key, false );
     }
 
-    /**
+    /*
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
@@ -249,7 +249,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return border;
     }
 
-    /**
+    /*
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */

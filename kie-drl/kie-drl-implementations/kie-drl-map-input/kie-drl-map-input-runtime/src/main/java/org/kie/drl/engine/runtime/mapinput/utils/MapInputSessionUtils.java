@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import static org.kie.efesto.common.api.constants.Constants.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.efesto.common.api.constants.Constants.PACKAGE_CLASS_TEMPLATE;
 
-/**
+/*
  * Class used to isolate all the <code>KieSession</code> instantiation/usage details
  */
 public class MapInputSessionUtils {
@@ -52,7 +52,7 @@ public class MapInputSessionUtils {
         return new Builder(kieSession, darMapInputDTO);
     }
 
-    /**
+    /*
      * Invoke <code>KieSession.fireAllRules()</code>
      */
     public void fireAllRules() {
@@ -60,7 +60,7 @@ public class MapInputSessionUtils {
         kieSession.dispose();
     }
 
-    /**
+    /*
      * Insert an <code>Object</code> to the underlying <code>KieSession</code>.
      *
      * @param toInsert   the <code>Object</code> to insert
@@ -71,7 +71,7 @@ public class MapInputSessionUtils {
         kieSession.setGlobal(globalName, toInsert);
     }
 
-    /**
+    /*
      * Add <code>Object</code>s to the underlying <code>KieSession</code>.
      * Such <code>Object</code>s are retrieved/instantiated from the given <code>Map</code>s and the content of the current kieSession' <code>KieBase</code>
      *
@@ -108,7 +108,7 @@ public class MapInputSessionUtils {
             this.toBuild = new MapInputSessionUtils(kieSession, darMapInputDTO);
         }
 
-        /**
+        /*
          * Add an <code>AgendaEventListener</code> to the underlying <code>KieSession</code>
          *
          * @param agendaEventListener
@@ -119,7 +119,7 @@ public class MapInputSessionUtils {
             return this;
         }
 
-        /**
+        /*
          * Insert <code>Map&lt;String, Object&gt;</code> <b>outputFieldsMap</b> to the underlying <code>KieSession</code>.
          *
          * @param outputFieldsMap

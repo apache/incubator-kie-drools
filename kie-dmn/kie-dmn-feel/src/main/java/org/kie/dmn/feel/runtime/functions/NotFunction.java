@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-/**
+/*
  * The not() function is a special case because
  * it doubles both as a function and as a unary
  * test.

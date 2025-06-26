@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.kie.api.conf;
 
 
-/**
+/*
  * An Enum for the option to allow use of prototypes.
  *
  * drools.equalityBehavior = &lt;disabled|allowed&gt;
@@ -31,14 +31,14 @@ public enum PrototypesOption implements SingleValueRuleBaseOption {
     DISABLED,
     ALLOWED;
 
-    /**
+    /*
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.prototypes";
 
     public static final OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -84,7 +84,7 @@ public abstract class AbstractKiePMMLFactoryTest {
         return String.format(PACKAGE_CLASS_TEMPLATE, segmentModelPackageName, simpleClassName);
     }
 
-    /**
+    /*
      * Recursively populate <code>Segment</code>s with auto generated id
      * if missing in original model
      */

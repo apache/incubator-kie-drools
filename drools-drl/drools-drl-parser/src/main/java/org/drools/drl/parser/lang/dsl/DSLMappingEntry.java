@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
+/*
  * A single entry in a DSL mapping file
  */
 public interface DSLMappingEntry {
@@ -34,21 +34,21 @@ public interface DSLMappingEntry {
 
     public static final MetaData EMPTY_METADATA = new DefaultDSLEntryMetaData( "" );
 
-    /**
+    /*
      * Returns the section this mapping entry refers to
      * 
      * @return
      */
     public DSLMappingEntry.Section getSection();
 
-    /**
+    /*
      * Returns the meta data info about this mapping entry
      * 
      * @return
      */
     public DSLMappingEntry.MetaData getMetaData();
 
-    /**
+    /*
      * Returns the key of this mapping, i.e., the source
      * that needs to be translated
      * 
@@ -56,26 +56,26 @@ public interface DSLMappingEntry {
      */
     public String getMappingKey();
 
-    /**
+    /*
      * Returns the result of the translation
      * 
      * @return
      */
     public String getMappingValue();
 
-    /**
+    /*
      * Returns the compiled pattern based on the given MappingKey
      * @return the keyPattern
      */
     public Pattern getKeyPattern();
 
-    /**
+    /*
      * Returns the transformed mapping value using place holders for variables 
      * @return the valuePattern
      */
     public String getValuePattern();
 
-    /**
+    /*
      * Returns the list of variables found in the given pattern key 
      * in the same order they were found
      * 
@@ -83,33 +83,33 @@ public interface DSLMappingEntry {
      */
     public Map<String, Integer> getVariables();
 
-    /**
+    /*
      * @param key the key to set
      */
     public void setMappingKey(String key);
 
-    /**
+    /*
      * @param section the section to set
      */
     public void setSection(Section section);
 
-    /**
+    /*
      * @param value the value to set
      */
     public void setMappingValue(String value);
 
-    /**
+    /*
      * @param metadata the metadata to set
      */
     public void setMetaData(MetaData metadata);
 
-    /**
+    /*
      * Returns a list of errors found in this mapping
      * @return
      */
     public List getErrors();
 
-    /**
+    /*
      * An enum for the sections
      */
     public enum Section {
@@ -129,7 +129,7 @@ public interface DSLMappingEntry {
         }
     }
 
-    /**
+    /*
      * An inner interface to represent any metadata
      * associated with this entry. It is obviously
      * implementation dependent.

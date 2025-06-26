@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.File;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the dump directory configuration. I.e., for the directory
  * where Drools will dump generated code for debugging purposes. If this
  * option is not set, drools will generate and compile all code in memory.
@@ -31,19 +31,19 @@ public class DumpDirOption implements SingleValueKieBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the drools dump directory configuration
      */
     public static final String PROPERTY_NAME = "drools.dump.dir";
 
     public static OptionKey<DumpDirOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * directory reference
      */
     private final File dir;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param dir directory to set
      */
@@ -51,7 +51,7 @@ public class DumpDirOption implements SingleValueKieBuilderOption {
         this.dir = dir;
     }
 
-    /**
+    /*
      * This is a factory method for this DumpDirectoryOption configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -64,14 +64,14 @@ public class DumpDirOption implements SingleValueKieBuilderOption {
         return new DumpDirOption( dir );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the directory to which drools should dump generated files
      *
      * @return

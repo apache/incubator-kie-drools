@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
-/**
+/*
  * @see DMNType
  */
 public abstract class BaseDMNTypeImpl
@@ -231,7 +231,7 @@ public abstract class BaseDMNTypeImpl
                 (assignableTypeConstraint && valueMatchesInUnaryTests(typeConstraint, toCheck));
     }
 
-    /**
+    /*
      * This method relies mostly on <code>baseType</code>
      * Different implementations may provide/extend the logic
      * @param o
@@ -239,7 +239,7 @@ public abstract class BaseDMNTypeImpl
      */
     protected abstract boolean internalAllowedValueIsAssignableValue(Object o);
 
-    /**
+    /*
      * This method relies mostly on <code>feelType</code>
      * Different implementations may provide/extend the logic, mostly depending on <code>isCollection</code> and, eventually, if a <code>MapBackedType</code> is provided
      * @param o

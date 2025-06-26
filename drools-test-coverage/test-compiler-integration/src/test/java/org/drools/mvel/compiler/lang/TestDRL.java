@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -1651,7 +1651,7 @@ public class TestDRL {
 //    // Invoke target parser.rule
 //    public Object execParser(String testRuleName, String testInput, boolean isFile) throws Exception {
 //        CharStream input;
-//        /** Set up ANTLR input stream based on input source, file or String */
+//        /* Set up ANTLR input stream based on input source, file or String */
 //        if ( isFile==true ) {
 //            input = new ANTLRFileStream(testInput);
 //        }
@@ -1662,10 +1662,10 @@ public class TestDRL {
 //            DRLLexer lexer = new DRLLexer(input);
 //            CommonTokenStream tokens = new CommonTokenStream(lexer);
 //            DRLParser parser = new DRLParser(tokens);
-//            /** Use Reflection to get rule method from parser */
+//            /* Use Reflection to get rule method from parser */
 //            Method ruleName = Class.forName("org.kie.lang.DRLParser").getMethod(testRuleName);
 //
-//            /** Start of I/O Redirecting */
+//            /* Start of I/O Redirecting */
 //            PipedInputStream pipedIn = new PipedInputStream();
 //            PipedOutputStream pipedOut = new PipedOutputStream();
 //            PipedInputStream pipedErrIn = new PipedInputStream();
@@ -1684,14 +1684,14 @@ public class TestDRL {
 //            PrintStream ps2 = new PrintStream(pipedErrOut);
 //            System.setOut(ps);
 //            System.setErr(ps2);
-//            /** End of redirecting */
+//            /* End of redirecting */
 //
-//            /** Invoke grammar rule, and store if there is a return value */
+//            /* Invoke grammar rule, and store if there is a return value */
 //            Object ruleReturn = ruleName.invoke(parser);
 //            String astString = null;
-//            /** If rule has return value, determine if it's an AST */
+//            /* If rule has return value, determine if it's an AST */
 //            if ( ruleReturn!=null ) {
-//                /** If return object is instanceof AST, get the toStringTree */
+//                /* If return object is instanceof AST, get the toStringTree */
 //                if ( ruleReturn.toString().indexOf(testRuleName+"_return")>0 ) {
 //                    try { // NullPointerException may happen here...
 //                        Class _return = Class.forName("org.kie.lang.DRLParser"+"$"+testRuleName+"_return");

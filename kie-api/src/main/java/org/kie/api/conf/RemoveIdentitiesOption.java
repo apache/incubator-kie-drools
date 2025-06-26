@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.kie.api.conf;
 
 
-/**
+/*
  * An Enum for Remove Identities option.
  *
  * drools.removeIdentities = &lt;true|false&gt;
@@ -31,7 +31,7 @@ public enum RemoveIdentitiesOption implements SingleValueRuleBaseOption {
     YES(true),
     NO(false);
 
-    /**
+    /*
      * The property name for the remove identities option
      */
     public static final String PROPERTY_NAME = "drools.removeIdentities";
@@ -44,7 +44,7 @@ public enum RemoveIdentitiesOption implements SingleValueRuleBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

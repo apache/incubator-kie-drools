@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.builder.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.internal.builder.ResultSeverity;
 
-/**
+/*
  *
  */
 public class KBuilderSeverityOption

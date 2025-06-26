@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public class Gap extends MissingRange
         return super.compareTo( another );
     }
 
-    /**
+    /*
      * 
      * @param field
      *            Field from where the value is missing.

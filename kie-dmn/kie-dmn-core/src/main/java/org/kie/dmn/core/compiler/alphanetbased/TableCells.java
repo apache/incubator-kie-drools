@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.parseJavaClassTemplateFromResources;
 
-/**
+/*
     Definition of the decision table after the first round of parsing
     Produced by TableCellParser
     Will generate code to evaluate Decision Table using a Compiled Alpha Network (ANC)

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
-/**
+/*
  * Test to verify that BRMS-580 is fixed. NPE when trying to update fact with
  * rules with different saliences.
  */

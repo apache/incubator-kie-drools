@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ import org.mvel2.asm.Type;
 
 import static org.drools.util.StringUtils.lcFirstForBean;
 
-/**
+/*
  * Visit a POJO user class, and extract the property getter methods that are public, in the 
  * order in which they are declared actually in the class itself (not using introspection).
  *
@@ -71,7 +71,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
     private final Class<?> classUnderInspection;
     private Map<String, Collection<KnowledgeBuilderResult>> results = null;
 
-    /**
+    /*
      * @param classUnderInspection The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
@@ -99,7 +99,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         }
     }
 
-    /** Walk up the inheritance hierarchy recursively, reading in fields */
+    /* Walk up the inheritance hierarchy recursively, reading in fields */
     private void processClassWithByteCode( final Class< ? > clazz,
                                            final InputStream stream,
                                            final boolean includeFinalMethods ) throws IOException {
@@ -188,14 +188,14 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         }
     }
 
-    /**
+    /*
      * Convert it to a form so we can load the bytes from the classpath.
      */
     private String getResourcePath( final Class< ? > clazz ) {
         return "/" + clazz.getCanonicalName() + ".class";
     }
 
-    /**
+    /*
      * Return a mapping of the field "names" (ie bean property name convention)
      * to the numerical index by which they can be accessed.
      */
@@ -203,7 +203,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         return this.fieldNames;
     }
 
-    /**
+    /*
      * sotty:
      * Checks whether a returned field is actually a getter or not
      *
@@ -214,14 +214,14 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         return nonGetters.contains( name );
     }
 
-    /**
+    /*
      * @return A mapping of field types (unboxed).
      */
     public Map<String, Field> getFieldTypesField() {
         return this.fieldTypesField;
     }
 
-    /**
+    /*
      * @return A mapping of field types (unboxed).
      */
     public Map<String, Class< ? >> getFieldTypes() {
@@ -232,14 +232,14 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         return this.fieldTypes.get(name);
     }
 
-    /**
+    /*
      * @return A mapping of methods for the getters. 
      */
     public Map<String, Method> getGetterMethods() {
         return this.getterMethods;
     }
 
-    /**
+    /*
      * @return A mapping of methods for the getters. 
      */
     public Map<String, Method> getSetterMethods() {
@@ -373,7 +373,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         return results;
     }
 
-    /**
+    /*
      * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
      */
     static class ClassFieldVisitor
@@ -475,7 +475,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
     }
 
-    /**
+    /*
      * This is required for POJOs that have annotations. 
      * It may also come in handy if we want to allow custom annotations for marking field numbers etc.
      */

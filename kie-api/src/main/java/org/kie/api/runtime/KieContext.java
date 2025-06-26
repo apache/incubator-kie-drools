@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ public interface KieContext {
         return getKieRuntime().getKieBase();
     }
 
-    /**
+    /*
      * Added for backwards compatibility.
      * Will be removed in the future.
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
 import static org.drools.decisiontable.parser.RuleSheetParserUtil.rc2name;
 
-/**
+/*
  *
  * Test an excel file.
  * 
@@ -40,7 +40,7 @@ public class RuleWorksheetParse2Test {
     private RuleSheetListener listener;
     private int row;
 
-    /**
+    /*
      * Duplications of several columns are not permitted: NO-LOOP/U.
      */
     @Test
@@ -51,7 +51,7 @@ public class RuleWorksheetParse2Test {
         assertThatException().isThrownBy(() -> makeRow(11, "C", "C", "A", "U", "U")).withMessageContaining(rc2name(11, 5));
     }
 
-    /**
+    /*
      * Duplications of several columns are not permitted : PRIORITY/P.
      */
     @Test
@@ -62,7 +62,7 @@ public class RuleWorksheetParse2Test {
         assertThatException().isThrownBy(() -> makeRow(11, "C", "C", "A", "PRIORITY", "P")).withMessageContaining(rc2name(11, 5));
     }
 
-    /**
+    /*
      * Column headers must be valid.
      */
     @Test
@@ -73,7 +73,7 @@ public class RuleWorksheetParse2Test {
         assertThatException().isThrownBy(() -> makeRow(11, "Condition", "CONDITION", "A", "SMURF", "P")).withMessageContaining(rc2name(11, 4));
     }
 
-    /**
+    /*
      * Must have a type for pattern below a condition, not a snippet.
      */
     @Test
@@ -86,7 +86,7 @@ public class RuleWorksheetParse2Test {
             .withMessageContaining(rc2name(12, 1));
     }
 
-    /**
+    /*
      * Spurious code snippet.
      */
     @Test
@@ -99,7 +99,7 @@ public class RuleWorksheetParse2Test {
         .withMessageContaining(rc2name(13, 4));
     }
 
-    /**
+    /*
      * Incorrect priority - not numeric
      */
     @Test
@@ -113,7 +113,7 @@ public class RuleWorksheetParse2Test {
         assertThatException().isThrownBy(() -> makeRow(15, "1",              "show()",   "12E")).withMessageContaining(rc2name(15, 3));   
     }
 
-    /**
+    /*
      * Must not have snippet for attribute
      */
     @Test
@@ -126,7 +126,7 @@ public class RuleWorksheetParse2Test {
         assertThatException().isThrownBy(() -> makeRow(13, "attr == $param", "x",       "XXX")).withMessageContaining(rc2name(13, 3)); 
     }
 
-    /**
+    /*
      * Check correct rendering of string-valued attribute
      */
     @Test
@@ -147,7 +147,7 @@ public class RuleWorksheetParse2Test {
         assertThat(drl).contains("agenda-group \"foo bar\"", "agenda-group \"10\\\" group\"");
     }
 
-    /**
+    /*
      * Duplicate package level attribute
      */
     @Test
@@ -166,7 +166,7 @@ public class RuleWorksheetParse2Test {
 
     }
 
-    /**
+    /*
      * Check correct rendering of package level attributes
      */
     @Test
@@ -188,7 +188,7 @@ public class RuleWorksheetParse2Test {
         assertThat(drl).contains("no-loop true", "agenda-group \"agroup\"");
     }
 
-    /**
+    /*
      * Must have a code snippet in an action.
      */
     @Test

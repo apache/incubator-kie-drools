@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.dmn.feel.marshaller;
 
 import org.kie.dmn.feel.lang.Type;
 
-/**
+/*
  * A generic marshaller interface for FEEL values
  */
 public interface FEELMarshaller<T> {
 
-    /**
+    /*
      * Marshalls the given FEEL value into an object of type T
      *
      * @param value the FEEL value to be marshalled
@@ -34,7 +34,7 @@ public interface FEELMarshaller<T> {
      */
     T marshall( Object value );
 
-    /**
+    /*
      * Unmarshals the marshalled T value into a FEEL object
      *
      * @param value the marshalled value to unmarshall

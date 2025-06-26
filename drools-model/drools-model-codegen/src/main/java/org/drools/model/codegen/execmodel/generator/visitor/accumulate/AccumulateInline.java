@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -109,7 +109,7 @@ public class AccumulateInline {
         singleAccumulateType = null;
     }
 
-    /**
+    /*
      * By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding in the accumulate code/expressions.
      */
     void visitAccInlineCustomCode(MethodCallExpr accumulateDSL, Set<String> externalDeclarations, String identifier) {

@@ -59,7 +59,7 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.O
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
 
-/**
+/*
  * KIE representation of PMML model that use <b>drool</b> for implementation
  */
 public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrools {
@@ -71,7 +71,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
 
     protected String kModulePackageName;
 
-    /**
+    /*
      * Map between the original field name and the generated type.
      */
     protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();

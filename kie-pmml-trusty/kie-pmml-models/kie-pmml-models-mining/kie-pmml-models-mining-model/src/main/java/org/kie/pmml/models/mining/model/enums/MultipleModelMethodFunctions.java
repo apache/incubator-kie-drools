@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -193,7 +193,7 @@ public class MultipleModelMethodFunctions {
         return toReturn;
     };
 
-    /**
+    /*
      * Returns a <code>List&lt;Object&gt;</code> representing the values inside the original <code>Collection&lt;
      * KiePMMLNameValue&gt;</code>
      * <p>
@@ -208,7 +208,7 @@ public class MultipleModelMethodFunctions {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns a <code>List&lt;KiePMMLValueWeight&gt;</code> representing the values inside the original
      * <code>List&lt;KiePMMLNameValue&gt;</code>
      * {@link KiePMMLNameValue#getValue()}
@@ -230,7 +230,7 @@ public class MultipleModelMethodFunctions {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns a <code>DoubleStream</code> representing the values inside the original <code>List&lt;
      * KiePMMLNameValue&gt;</code>
      * <p>

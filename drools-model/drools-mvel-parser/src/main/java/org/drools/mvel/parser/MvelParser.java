@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import static org.drools.mvel.parser.Providers.UTF8;
 import static org.drools.mvel.parser.Providers.provider;
 import static org.drools.mvel.parser.Providers.resourceProvider;
 
-/**
+/*
  * Parse Java source code and creates Abstract Syntax Trees.
  *
  * @author Júlio Vilmar Gesser
@@ -61,7 +61,7 @@ public final class MvelParser {
     private GeneratedMvelParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
 
-    /**
+    /*
      * Instantiate the parser with default configuration. Note that parsing can also be done with the static methods on
      * this class.
      * Creating an instance will reduce setup time between parsing files.
@@ -70,7 +70,7 @@ public final class MvelParser {
         this(new ParserConfiguration());
     }
 
-    /**
+    /*
      * Instantiate the parser. Note that parsing can also be done with the static methods on this class.
      * Creating an instance will reduce setup time between parsing files.
      */
@@ -84,7 +84,7 @@ public final class MvelParser {
         this.optionalSemicolon = optionalSemicolon;
     }
 
-    /**
+    /*
      * Get the configuration for the static parse... methods.
      * This is a STATIC field, so modifying it will directly change how all static parse... methods work!
      */
@@ -92,7 +92,7 @@ public final class MvelParser {
         return staticConfiguration;
     }
 
-    /**
+    /*
      * Set the configuration for the static parse... methods.
      * This is a STATIC field, so modifying it will directly change how all static parse... methods work!
      */
@@ -100,7 +100,7 @@ public final class MvelParser {
         MvelParser.staticConfiguration = staticConfiguration;
     }
 
-    /**
+    /*
      * Get the non-static configuration for this parser.
      *
      * @return The non-static configuration for this parser.
@@ -121,7 +121,7 @@ public final class MvelParser {
         return astParser;
     }
 
-    /**
+    /*
      * Parses source code.
      * It takes the source code from a Provider.
      * The start indicates what can be found in the source code (compilation unit, block, import...)
@@ -159,7 +159,7 @@ public final class MvelParser {
         }
     }
 
-    /**
+    /*
      * Parses the Java code contained in the {@link InputStream} and returns a
      * {@link Expression} that represents it.
      *
@@ -172,7 +172,7 @@ public final class MvelParser {
         return simplifiedParse(EXPRESSION, provider(in, encoding));
     }
 
-    /**
+    /*
      * Parses the Java code contained in the {@link InputStream} and returns a
      * {@link Expression} that represents it.<br>
      * Note: Uses UTF-8 encoding
@@ -185,7 +185,7 @@ public final class MvelParser {
         return parse(in, UTF8);
     }
 
-    /**
+    /*
      * Parses the Java code contained in a resource and returns a
      * {@link Expression} that represents it.<br>
      * Note: Uses UTF-8 encoding
@@ -200,7 +200,7 @@ public final class MvelParser {
         return simplifiedParse(EXPRESSION, resourceProvider(path));
     }
 
-    /**
+    /*
      * Parses the Java code contained in a resource and returns a
      * {@link Expression} that represents it.<br>
      *
@@ -215,7 +215,7 @@ public final class MvelParser {
         return simplifiedParse(EXPRESSION, resourceProvider(path, encoding));
     }
 
-    /**
+    /*
      * Parses the Java code contained in a resource and returns a
      * {@link Expression} that represents it.<br>
      *
@@ -230,7 +230,7 @@ public final class MvelParser {
         return simplifiedParse(EXPRESSION, resourceProvider(classLoader, path, encoding));
     }
 
-    /**
+    /*
      * Parses Java code from a Reader and returns a
      * {@link Expression} that represents it.<br>
      *
@@ -242,7 +242,7 @@ public final class MvelParser {
         return simplifiedParse(EXPRESSION, provider(reader));
     }
 
-    /**
+    /*
      * Parses the Java code contained in code and returns a
      * {@link Expression} that represents it.
      *
@@ -263,7 +263,7 @@ public final class MvelParser {
         throw new ParseProblemException(result.getProblems());
     }
 
-    /**
+    /*
      * Parses the Java block contained in a {@link String} and returns a
      * {@link BlockStmt} that represents it.
      *
@@ -275,7 +275,7 @@ public final class MvelParser {
         return simplifiedParse(BLOCK, Providers.provider(blockStatement));
     }
 
-    /**
+    /*
      * Parses the Java expression contained in a {@link String} and returns a
      * {@link Expression} that represents it.
      *
@@ -288,7 +288,7 @@ public final class MvelParser {
         return (T) simplifiedParse(EXPRESSION, provider(expression));
     }
 
-    /**
+    /*
      * Parses a Java class or interface type name and returns a {@link ClassOrInterfaceType} that represents it.
      *
      * @param type the type name like a.b.c.X or Y
@@ -299,7 +299,7 @@ public final class MvelParser {
         return simplifiedParse(CLASS_OR_INTERFACE_TYPE, provider(type));
     }
 
-    /**
+    /*
      * Parses a Java type name and returns a {@link Type} that represents it.
      *
      * @param type the type name like a.b.c.X, Y, or int
@@ -310,7 +310,7 @@ public final class MvelParser {
         return simplifiedParse(TYPE, provider(type));
     }
 
-    /**
+    /*
      * Parses the this(...) and super(...) statements that may occur at the start of a constructor.
      *
      * @param statement a statement like super("hello");
@@ -321,7 +321,7 @@ public final class MvelParser {
         return simplifiedParse(EXPLICIT_CONSTRUCTOR_INVOCATION_STMT, provider(statement));
     }
 
-    /**
+    /*
      * Parses a qualified name (one that can have "."s in it) and returns it as a Name.
      *
      * @param qualifiedName a name like "com.laamella.parameter_source"
@@ -332,7 +332,7 @@ public final class MvelParser {
         return simplifiedParse(NAME, provider(qualifiedName));
     }
 
-    /**
+    /*
      * Parses a simple name (one that can NOT have "."s in it) and returns it as a SimpleName.
      *
      * @param name a name like "parameter_source"

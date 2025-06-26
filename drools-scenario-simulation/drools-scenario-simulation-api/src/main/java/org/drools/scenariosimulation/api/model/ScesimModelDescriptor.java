@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
+/*
  * <code>ScesimModelDescriptor</code> describes the template of a concrete <code>AbstractScesimModel</code>
  */
 public class ScesimModelDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 
-    /**
+    /*
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * @return
      */
@@ -97,7 +97,7 @@ public class ScesimModelDescriptor {
                 Objects.equals(e.getFactIdentifier(), factIdentifier)).findFirst();
     }
 
-    /**
+    /*
      * This method clone the given <code>FactMapping</code> and insert the cloned instance at the specified index
      * @param index
      * @param toClone

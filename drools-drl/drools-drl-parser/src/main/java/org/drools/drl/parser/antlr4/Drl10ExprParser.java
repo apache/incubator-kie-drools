@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-/**
+/*
  * This is a helper class that provides helper methods to parse expressions
  * using both the DRLExpressions parser and the DRLExprTree parser.
  */
@@ -46,7 +46,7 @@ public class Drl10ExprParser implements DrlExprParser {
         this.languageLevel = languageLevel;
     }
 
-    /** Parse an expression from text */
+    /* Parse an expression from text */
     public ConstraintConnectiveDescr parse(final String text) {
         ConstraintConnectiveDescr constraint = null;
         DRL10Lexer lexer = new DRL10Lexer(CharStreams.fromString(text));
@@ -74,14 +74,14 @@ public class Drl10ExprParser implements DrlExprParser {
         return helper != null ? helper.getLeftMostExpr() : null;
     }
 
-    /**
+    /*
      * @return true if there were parser errors.
      */
     public boolean hasErrors() {
         return helper != null && helper.hasErrors();
     }
 
-    /**
+    /*
      * @return a list of errors found while parsing.
      */
     @SuppressWarnings("unchecked")

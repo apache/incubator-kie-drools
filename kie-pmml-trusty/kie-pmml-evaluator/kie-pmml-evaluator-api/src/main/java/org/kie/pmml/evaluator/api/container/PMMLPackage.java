@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-/**
+/*
  *
  */
 public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {

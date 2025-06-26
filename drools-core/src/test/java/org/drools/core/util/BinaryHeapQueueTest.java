@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-/**
+/*
  * Thes test class uses auxiliary test classes in org.kie.util:
  * Group and Item as a mock-up for the corresponding Agenda classes.
  * 
@@ -131,10 +131,10 @@ public class BinaryHeapQueueTest {
 
         private String            name;
 
-        /** Items in the agenda. */
+        /* Items in the agenda. */
         private Queue<Item>      queue;
 
-        /**
+        /*
          * Construct an <code>AgendaGroup</code> with the given name.
          *
          * The <AgendaGroup> name.
@@ -170,7 +170,7 @@ public class BinaryHeapQueueTest {
             return (Item) this.queue.dequeue();
         }
 
-        /**
+        /*
          * Iterates a PriorityQueue removing empty entries until it finds a populated entry and return true,
          * otherwise it returns false;
          *

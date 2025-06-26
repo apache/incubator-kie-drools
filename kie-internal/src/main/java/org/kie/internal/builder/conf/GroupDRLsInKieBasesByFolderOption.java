@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.builder.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * By default all the Drools artifacts under the resources folder, at any level, are included into the KieBase.
  * The package attribute of the kmodule.xml allows to limit the artifacts that will be compiled in this KieBase
  * to only the ones belonging to the list of packages. However older versions of Drools actually checked the folder
@@ -36,7 +36,7 @@ public enum GroupDRLsInKieBasesByFolderOption implements SingleValueRuleBuilderO
     ENABLED(true),
     DISABLED(false);
 
-    /**
+    /*
      * The property name for the enabling/disabling trim of cells values
      */
     public static final String PROPERTY_NAME = "drools.groupDRLsInKieBasesByFolder";

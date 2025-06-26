@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.traits.core.base.TraitUtils.supersetOrEqualset;
 
-/**
+/*
  * <p>The implementation of the 'str' evaluator definition.</p>
  *
  * <p>The <b><code>str</code></b> compares two string values.</p> 
@@ -79,7 +79,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
     private Evaluator[] evaluator;
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, Operator operator) {
@@ -87,7 +87,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 .isNegated(), null);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, Operator operator,
@@ -96,7 +96,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 .isNegated(), parameterText);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, String operatorId,
@@ -105,7 +105,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 Target.FACT, Target.FACT);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, String operatorId,
@@ -116,35 +116,35 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         return evaluator;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Target getTarget() {
         return Target.FACT;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public boolean supportsType(ValueType type) {
         return (type.equals( ValueType.TRAIT_TYPE ) );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public void readExternal(ObjectInput in) throws IOException,
@@ -152,7 +152,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         evaluator = (Evaluator[]) in.readObject();
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -174,7 +174,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             super( type, isNegated ? NOT_ISA : ISA );
         }
 
-        /**
+        /*
          * @inheridDoc
          */
         public boolean evaluate(ValueResolver valueResolver,

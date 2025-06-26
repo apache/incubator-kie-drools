@@ -42,7 +42,7 @@ import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 
-/**
+/*
  * This class is meant as sort-of <b>decorator</b> over <code>OffsetTime</code>, that is a final class.
  * It is used to provide both time and zoneid information, replacing the <code>Parsed</code> instance that would be
  * returned otherwise by

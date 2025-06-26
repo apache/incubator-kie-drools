@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,12 +28,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
+/*
  * Utility that provide classPath scan to retrieve resources
  */
 public class ResourceHelper {
 
-    /**
+    /*
      * Scan into classpath folders to find resources with the required extension
      * @param extension to find
      * @return stream of matching resources
@@ -45,7 +45,7 @@ public class ResourceHelper {
                 .collect(Collectors.toSet());
     }
 
-    /**
+    /*
      * Scan into classpath folders to find resources with the required extension
      * @param extension to find
      * @return stream of matching resources
@@ -57,7 +57,7 @@ public class ResourceHelper {
                 .collect(Collectors.toSet());
     }
 
-    /**
+    /*
      * Scan folder to find resources that match with pattern
      * @param directory where to start the search
      * @param pattern to find
@@ -86,7 +86,7 @@ public class ResourceHelper {
                 .collect(Collectors.toSet());
     }
 
-    /**
+    /*
      * Scan folder to find resources that match with pattern
      * @param directory where to start the search
      * @param pattern to find
@@ -121,7 +121,7 @@ public class ResourceHelper {
         return System.getProperty("java.class.path", ".").split(System.getProperty("path.separator"));
     }
 
-    /**
+    /*
      * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
      * @param path to folder or jar
      * @param pattern to find
@@ -135,7 +135,7 @@ public class ResourceHelper {
         return getFileResourcesFromDirectory(file, pattern);
     }
 
-    /**
+    /*
      * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
      * @param path to folder or jar
      * @param pattern to find

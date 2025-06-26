@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -195,7 +195,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         this.equalityKeyMap.remove( key );
     }
 
-    /**
+    /*
      * Adds a justification for the FactHandle to the justifiedMap.
      */
     @Override
@@ -248,7 +248,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         return defaultBeliefSystem;
     }
 
-    /**
+    /*
      * TMS will be automatically enabled when the first logical insert happens.
      *
      * We will take all the already asserted objects of the same type and initialize

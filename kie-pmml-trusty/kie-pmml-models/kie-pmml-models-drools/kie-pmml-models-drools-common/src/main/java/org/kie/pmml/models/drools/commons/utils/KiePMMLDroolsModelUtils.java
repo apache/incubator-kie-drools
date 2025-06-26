@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.models.drools.commons.utils;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
 
-/**
+/*
  * Static utility methods for <code>KiePMMLDroolsModel</code>s
  */
 public class KiePMMLDroolsModelUtils {
@@ -29,7 +29,7 @@ public class KiePMMLDroolsModelUtils {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Return an <code>Object</code> correctly formatted to be put in drl (e.g. if the <b>targetType</b>
      * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue.
      * <p>

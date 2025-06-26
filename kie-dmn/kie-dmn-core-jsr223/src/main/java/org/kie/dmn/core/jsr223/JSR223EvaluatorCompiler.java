@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -100,7 +100,7 @@ public class JSR223EvaluatorCompiler extends DMNEvaluatorCompiler {
         return new JSR223DTExpressionEvaluator(node, dt, ins, rules);
     }
     
-    /**
+    /*
      * internal ONLY implementation
      */
     private JSR223ScriptEngineEvaluator compileUnaryTests(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, UnaryTests expression) {

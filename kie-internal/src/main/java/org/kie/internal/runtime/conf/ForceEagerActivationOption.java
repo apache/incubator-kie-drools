@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.conf.SingleValueRuleRuntimeOption;
 
-/**
+/*
  * Option to force evaluation and then activation of rules annotated with @Eager.
  */
 public class ForceEagerActivationOption implements SingleValueRuleRuntimeOption {

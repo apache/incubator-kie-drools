@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -342,7 +342,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         tuple.clear();
     }
 
-    /**
+    /*
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
      * a get and then a create if the value is null.
      */

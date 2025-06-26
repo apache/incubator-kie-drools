@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -121,7 +121,7 @@ public class CronTrigger
         this.startTime = cl.getTime();
     }
 
-    /**
+    /*
      * <p>
      * Get the time at which the <code>CronTrigger</code> should quit
      * repeating - even if repeastCount isn't yet satisfied.
@@ -140,7 +140,7 @@ public class CronTrigger
         this.endTime = endTime;
     }
 
-    /**
+    /*
      * <p>
      * Returns the next time at which the <code>Trigger</code> is scheduled to fire. If
      * the trigger will not fire again, <code>null</code> will be returned.  Note that
@@ -158,7 +158,7 @@ public class CronTrigger
         return this.nextFireTime;
     }
 
-    /**
+    /*
      * <p>
      * Returns the previous time at which the <code>CronTrigger</code> 
      * fired. If the trigger has not yet fired, <code>null</code> will be
@@ -168,7 +168,7 @@ public class CronTrigger
         return this.previousFireTime;
     }
 
-    /**
+    /*
      * <p>
      * Sets the next time at which the <code>CronTrigger</code> will fire.
      * <b>This method should not be invoked by client code.</b>
@@ -178,7 +178,7 @@ public class CronTrigger
         this.nextFireTime = nextFireTime;
     }
 
-    /**
+    /*
      * <p>
      * Set the previous time at which the <code>CronTrigger</code> fired.
      * </p>
@@ -191,7 +191,7 @@ public class CronTrigger
         this.previousFireTime = previousFireTime;
     }
 
-    /**
+    /*
      * <p>
      * Returns the time zone for which the <code>cronExpression</code> of
      * this <code>CronTrigger</code> will be resolved.
@@ -208,7 +208,7 @@ public class CronTrigger
         return this.timeZone;
     }
 
-    /**
+    /*
      * <p>
      * Sets the time zone for which the <code>cronExpression</code> of this
      * <code>CronTrigger</code> will be resolved.
@@ -307,7 +307,7 @@ public class CronTrigger
         return date;
     }
 
-    /**
+    /*
      * <p>
      * Returns the next time at which the <code>CronTrigger</code> will fire,
      * after the given time. If the trigger will not fire after the given time,

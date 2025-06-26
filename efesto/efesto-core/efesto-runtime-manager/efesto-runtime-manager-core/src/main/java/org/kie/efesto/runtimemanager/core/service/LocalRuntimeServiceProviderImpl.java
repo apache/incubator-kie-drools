@@ -25,7 +25,7 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeServiceProvider;
 
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getLocalDiscoveredKieRuntimeServices;
 
-/**
+/*
  * This is the default, JVM-local, implementation of the communication layer abstraction API, to be invoked internally by the framework.
  */
 public class LocalRuntimeServiceProviderImpl implements RuntimeServiceProvider {

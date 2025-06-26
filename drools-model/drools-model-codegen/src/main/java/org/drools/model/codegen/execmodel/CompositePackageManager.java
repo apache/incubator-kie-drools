@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
-/**
+/*
  * A container for CompositePackageDescrs used in {@link ModelBuilderImpl}
  */
 public class CompositePackageManager {

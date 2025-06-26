@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,19 +31,19 @@ import org.kie.dmn.model.api.Definitions;
 public interface DMNValidator {
 
     enum Validation {
-        /** Perform DMN XSD schema validation */
+        /* Perform DMN XSD schema validation */
         VALIDATE_SCHEMA,
-        /** Perform static analysis validation */
+        /* Perform static analysis validation */
         VALIDATE_MODEL,
-        /** Perform standard compilation of the DMN model, reporting any error and other messages as part of validation */
+        /* Perform standard compilation of the DMN model, reporting any error and other messages as part of validation */
         VALIDATE_COMPILATION,
-        /** Perform static Decision Table Analysis on all the decision tables */
+        /* Perform static Decision Table Analysis on all the decision tables */
         ANALYZE_DECISION_TABLE,
-        /** Experimental flag: compute MC/DC Analysis on decision tables, as part of Decision Table Analysis */
+        /* Experimental flag: compute MC/DC Analysis on decision tables, as part of Decision Table Analysis */
         COMPUTE_DECISION_TABLE_MCDC
     }
 
-    /**
+    /*
      * Validate the model and return the results. This
      * is the same as invoking method
      * @{link #validate( Definitions dmnModel, Validation... options ) }
@@ -56,7 +56,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate( Definitions dmnModel );
 
-    /**
+    /*
      * Validate the model and return the results. The options field
      * defines which validations to apply. E.g.:
      *
@@ -74,7 +74,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate( Definitions dmnModel, Validation... options );
 
-    /**
+    /*
      * Validate the model and return the results. This
      * is the same as invoking method
      * @{link #validate( File xmlFile, Validation... options )}
@@ -89,7 +89,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate( File xmlFile );
 
-    /**
+    /*
      * Validate the model and return the results. The options field
      * defines which validations to apply. E.g.:
      *
@@ -105,7 +105,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate( File xmlFile, Validation... options );
 
-    /**
+    /*
      * Validate the model and return the results. This
      * is the same as invoking method
      * @{link #validate( Reader reader, Validation... options )}
@@ -120,7 +120,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate( Reader reader );
 
-    /**
+    /*
      * Validate the model and return the results. The options field
      * defines which validations to apply. E.g.:
      *
@@ -137,7 +137,7 @@ public interface DMNValidator {
     List<DMNMessage> validate( Reader reader, Validation... options );
 
 
-    /**
+    /*
      * Validate the model and return the results. This
      * is the same as invoking method
      * {@link #validate(Resource, Validation...)}
@@ -150,7 +150,7 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate(Resource resource);
 
-    /**
+    /*
      * Validate the model and return the results. The options field
      * defines which validations to apply. E.g.:
      *
@@ -164,14 +164,14 @@ public interface DMNValidator {
      */
     List<DMNMessage> validate(Resource resource, Validation... options);
     
-    /**
+    /*
      * Release all resources associated with this DMNValidator.
      */
     void dispose();
 
     public static interface ValidatorBuilder {
 
-        /**
+        /*
          * A DMN Import Reader resolver, when using the Validator to {@link DMNValidator.Validation#VALIDATE_COMPILATION}
          * and the compilation requires to resolve non-DMN models by means of the Import's locationURI.
          * 
@@ -179,14 +179,14 @@ public interface DMNValidator {
          */
         public ValidatorBuilder usingImports(ValidatorImportReaderResolver r);
 
-        /**
+        /*
          * A custom schema setup to be used for {@link DMNValidator.Validation#VALIDATE_SCHEMA}.
          * 
          * @return a reference to this, so the API can be used fluently
          */
         public ValidatorBuilder usingSchema(Schema r);
 
-        /**
+        /*
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)
@@ -200,7 +200,7 @@ public interface DMNValidator {
          */
         List<DMNMessage> theseModels(File... files);
 
-        /**
+        /*
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)
@@ -214,7 +214,7 @@ public interface DMNValidator {
          */
         List<DMNMessage> theseModels(Reader... readers);
 
-        /**
+        /*
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)
@@ -226,7 +226,7 @@ public interface DMNValidator {
          */
         List<DMNMessage> theseModels(Resource... resources);
         
-        /**
+        /*
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)
@@ -241,14 +241,14 @@ public interface DMNValidator {
         @FunctionalInterface
         public static interface ValidatorImportReaderResolver {
 
-            /**
+            /*
              * @see DMNValidator.ValidatorBuilder#usingImports(ValidatorImportReaderResolver)
              */
             Reader newReader(String modelNamespace, String modelName, String locationURI);
         }
     }
 
-    /**
+    /*
      * Fluent interface to validate several models using the specified options.
      * This API is specifically designed to validate Models which DMN-Import other DMN Models.
      * The options field defines which validations to apply. E.g.:

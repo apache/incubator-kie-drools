@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.scenariosimulation.api.model;
 
 import static java.util.stream.Collectors.toList;
 
-/**
+/*
  * BackgroundData contains values to use inside simulation
  */
 public class BackgroundData extends AbstractScesimData {

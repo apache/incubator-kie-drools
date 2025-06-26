@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.runtime.KieSession;
 
 public class GolfingExample {
 
-    /**
+    /*
      * @param args
      */
     public static void main(final String[] args) {
@@ -74,21 +74,21 @@ public class GolfingExample {
             this.position = position;
         }
 
-        /**
+        /*
          * @return the color
          */
         public String getColor() {
             return this.color;
         }
 
-        /**
+        /*
          * @return the name
          */
         public String getName() {
             return this.name;
         }
 
-        /**
+        /*
          * @return the name
          */
         public int getPosition() {

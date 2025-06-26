@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 
-/**
+/*
  * Extension to default <code>MarshallerWriteContext</code> that allows to pass additional
  * information to marshaller strategies, such as process instance id, task it, state
  */

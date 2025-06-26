@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public class ParserTestUtils {
         // It is a utility class, so it should not be instantiated.
     }
 
-    /**
+    /*
      * Returns a DrlParser which encapsulates an old or new parser depending on system property
      */
     public static DrlParser getParser() {
@@ -55,7 +55,7 @@ public class ParserTestUtils {
         }
     }
 
-    /**
+    /*
      * Returns a DrlExprParser which encapsulates an old or new parser depending on system property
      */
     public static DrlExprParser getExprParser() {

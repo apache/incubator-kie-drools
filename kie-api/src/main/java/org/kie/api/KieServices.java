@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
 
-/**
+/*
  * <p>
  * The KieServices is a thread-safe singleton acting as a hub giving access to the other
  * Services provided by Kie. As general rule a getX() method just returns a reference to another
@@ -52,49 +52,49 @@ import org.kie.api.runtime.KieSessionConfiguration;
  */
 public interface KieServices extends KieService {
 
-    /**
+    /*
      * Returns the KieResources, a factory that provides Resource implementations for the desired IO resource
      * @return resources
      */
     KieResources getResources();
 
-    /**
+    /*
      * Returns the KieRepository, a singleton acting as a repository for all the available KieModules
      * @return repository
      */
     KieRepository getRepository();
 
-    /**
+    /*
      * Returns the KieCommands, a factory for Commands
      * @return commands
      */
     KieCommands getCommands();
 
-    /**
+    /*
      * Returns the KieMarshallers service
      * @return marshallers
      */
     KieMarshallers getMarshallers();
 
-    /**
+    /*
      * Returns KieLoggers, a factory for KieRuntimeLogger
      * @return loggers
      */
     KieLoggers getLoggers();
 
-    /**
+    /*
      * Returns KieStoreServices
      * @return store services
      */
     KieStoreServices getStoreServices();
 
-    /**
+    /*
      * Returns KieContainer for the classpath, this a global singleton.
      * @return kie classpath container
      */
     KieContainer getKieClasspathContainer();
 
-    /**
+    /*
      * Returns KieContainer for the classpath using the given classLoader,
      * this a global singleton.
      * @param classLoader classLoader
@@ -104,7 +104,7 @@ public interface KieServices extends KieService {
      */
     KieContainer getKieClasspathContainer(ClassLoader classLoader);
 
-    /**
+    /*
      * Returns KieContainer for the classpath enforcing the given containerId,
      * this a global singleton.
      * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
@@ -117,7 +117,7 @@ public interface KieServices extends KieService {
      */
     KieContainer getKieClasspathContainer(String containerId);
 
-    /**
+    /*
      * Returns KieContainer for the classpath enforcing the given containerId and using the given classLoader,
      * this a global singleton.
      * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
@@ -130,13 +130,13 @@ public interface KieServices extends KieService {
      */
     KieContainer getKieClasspathContainer(String containerId, ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a new KieContainer for the classpath, regardless if there's already an existing one
      * @return new kie classpath container
      */
     KieContainer newKieClasspathContainer();
 
-    /**
+    /*
      * Creates a new KieContainer for the classpath using the given classLoader,
      * regardless if there's already an existing one
      * @param classLoader classLoader
@@ -144,7 +144,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieClasspathContainer(ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a new KieContainer for the classpath,
      * regardless if there's already an existing one,
      * enforcing the given containerId.
@@ -157,7 +157,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieClasspathContainer(String containerId);
 
-    /**
+    /*
      * Creates a new KieContainer for the classpath using the given classLoader,
      * regardless if there's already an existing one,
      * enforcing the given containerId.
@@ -170,7 +170,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a new KieContainer for the classpath using the given classLoader,
      * regardless if there's already an existing one,
      * enforcing the given containerId.
@@ -187,14 +187,14 @@ public interface KieServices extends KieService {
         throw new UnsupportedOperationException("new container with release id is not supported");
     }
 
-    /**
+    /*
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * @param releaseId releaseId
      * @return new kie container
      */
     KieContainer newKieContainer(ReleaseId releaseId);
 
-    /**
+    /*
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * and enforcing the given containerId.
      * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
@@ -207,7 +207,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieContainer(String containerId, ReleaseId releaseId);
 
-    /**
+    /*
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * and using the given class loader
      * @param releaseId releaseId
@@ -216,7 +216,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId,
      * using the given class loader
      * and enforcing the given containerId.
@@ -230,7 +230,7 @@ public interface KieServices extends KieService {
      */
     KieContainer newKieContainer(String containerId, ReleaseId releaseId, ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a maven based KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer
      * @param kieContainer kieContainer
@@ -238,7 +238,7 @@ public interface KieServices extends KieService {
      */
     KieScanner newKieScanner(KieContainer kieContainer);
 
-    /**
+    /*
      * Creates a file system based KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer
      * @param kieContainer kieContainer
@@ -247,27 +247,27 @@ public interface KieServices extends KieService {
      */
     KieScanner newKieScanner(KieContainer kieContainer, String repositoryFolder);
 
-    /**
+    /*
      * Creates a new KieBuilder to build the KieModule contained in the given folder
      * @param rootFolder rootFolder
      * @return new kie builder
      */
     KieBuilder newKieBuilder(File rootFolder);
 
-    /**
+    /*
      * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
      * @return new kie builder
      */
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem);
 
-    /**
+    /*
      * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
      * and using the given class loader
      * @return new kie builder
      */
     KieBuilder newKieBuilder(KieFileSystem kieFileSystem, ClassLoader classLoader);
 
-    /**
+    /*
      * Creates a new ReleaseId with the given groupId, artifactId and version
      * @param groupId groupId
      * @param artifactId artifactId
@@ -276,25 +276,25 @@ public interface KieServices extends KieService {
      */
     ReleaseId newReleaseId(String groupId, String artifactId, String version);
 
-    /**
+    /*
      * Creates a new KieFileSystem used to programmatically define the resources composing a KieModule
      * @return new kie file system
      */
     KieFileSystem newKieFileSystem( );
 
-    /**
+    /*
      * Creates a new KieModuleModel to programmatically define a KieModule
      * @return new kie module model
      */
     KieModuleModel newKieModuleModel();
 
-    /**
+    /*
      * Create a KieBaseConfiguration on which properties can be set.
      * @return new kiebase configuration
      */
     KieBaseConfiguration newKieBaseConfiguration();
 
-    /**
+    /*
      * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file.
      * @param properties properties
@@ -302,7 +302,7 @@ public interface KieServices extends KieService {
      */
     KieBaseConfiguration newKieBaseConfiguration(Properties properties);
 
-    /**
+    /*
      * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
      * @param properties properties
@@ -314,20 +314,20 @@ public interface KieServices extends KieService {
      */
     KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader);
 
-    /**
+    /*
      * Create a KieSessionConfiguration on which properties can be set.
      * @return new kiesession configuration
      */
     KieSessionConfiguration newKieSessionConfiguration();
 
-    /**
+    /*
      * Create a KieSessionConfiguration on which properties can be set.
      * @param properties properties
      * @return new kiesession configuration
      */
     KieSessionConfiguration newKieSessionConfiguration(Properties properties);
 
-    /**
+    /*
      * Create a KieSessionConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
      * @param properties properties
@@ -336,7 +336,7 @@ public interface KieServices extends KieService {
      */
     KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader);
 
-    /**
+    /*
      * Instantiate and return an Environment
      *
      * @return
@@ -344,14 +344,14 @@ public interface KieServices extends KieService {
      */
     Environment newEnvironment();
 
-    /**
+    /*
      * Returns a reference to the KieServices singleton
      */
     static KieServices get() {
         return Factory.get();
     }
 
-    /**
+    /*
      * A Factory for this KieServices
      */
     class Factory {
@@ -360,7 +360,7 @@ public interface KieServices extends KieService {
             private static KieServices INSTANCE = KieService.load(KieServices.class);
         }
 
-        /**
+        /*
          * Returns a reference to the KieServices singleton
          */
         public static KieServices get() {

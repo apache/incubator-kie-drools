@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import org.drools.template.model.SnippetBuilder;
 import org.drools.template.parser.DecisionTableParseException;
 
-/**
+/*
  * This utility will build up a list of constraints for a column.
  * For instance, the column has been spanned across multiple cells, and the cells below
  * contain the constraints.
@@ -83,7 +83,7 @@ public class LhsBuilder implements SourceBuilder {
     private static final Pattern patEval = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
     private static final Pattern patOopath = Pattern.compile( ".*\\:\\s*/.*" );
 
-    /**
+    /*
      * @param colDefinition
      *         The initial column definition that is shared via merged cells.
      */
@@ -241,7 +241,7 @@ public class LhsBuilder implements SourceBuilder {
         this.values.add( result );
     }
 
-    /**
+    /*
      * If the type of the column is either FieldType.SINGLE_FIELD or FieldType.OPERATOR_FIELD we have
      * added quotation-marks around the template parameter. Consequentially if a cell value included the
      * quotation-marks (i.e. for an empty-string or white-space) we need to remove the additional
@@ -284,7 +284,7 @@ public class LhsBuilder implements SourceBuilder {
         }
     }
 
-    /**
+    /*
      * Returns true if this is building up multiple constraints as in:
      * Foo(a ==b, c == d) etc...
      * If not, then it it really just like the "classic" style DTs.
@@ -293,7 +293,7 @@ public class LhsBuilder implements SourceBuilder {
         return multiple;
     }
 
-    /**
+    /*
      * Check whether the column definition is a 'forall' construct. In these
      * situations we do not attempt to strip quotation marks from field values.
      * @return true if the column definition is 'forall'
@@ -302,7 +302,7 @@ public class LhsBuilder implements SourceBuilder {
         return forAll;
     }
 
-    /**
+    /*
      * Work out the type of "field" that is being specified,
      * as in :
      * age

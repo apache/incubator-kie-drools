@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.lang.DroolsParaphraseTypes;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-/**
+/*
  * Helper class that generates DroolsParserException with user friendly error
  * messages.
  *
@@ -53,7 +53,7 @@ public class DroolsParserExceptionFactory {
 
     private final LanguageLevelOption languageLevel;
 
-    /**
+    /*
      * DroolsParserErrorMessages constructor.
      *
      * @param tokenNames
@@ -67,7 +67,7 @@ public class DroolsParserExceptionFactory {
         this.languageLevel = languageLevel;
     }
 
-    /**
+    /*
      * This method creates a DroolsParserException for trailing semicolon
      * exception, full of information.
      *
@@ -97,7 +97,7 @@ public class DroolsParserExceptionFactory {
                                           null );
     }
 
-    /**
+    /*
      * This method creates a DroolsParserException full of information.
      *
      * @param offendingSymbol
@@ -122,7 +122,7 @@ public class DroolsParserExceptionFactory {
         return -1;
     }
 
-    /**
+    /*
      * Determines the error code based on a specific subtype of RecognitionException.
      */
     private String determineErrorCode( RecognitionException e ) {
@@ -156,7 +156,7 @@ public class DroolsParserExceptionFactory {
 
     }
 
-    /**
+    /*
      * This will take Paraphrases stack, and create a sensible location
      */
     private String formatParserLocation() {
@@ -180,7 +180,7 @@ public class DroolsParserExceptionFactory {
         return sb.toString();
     }
 
-    /**
+    /*
      * Returns a string based on Paraphrase Type
      *
      * @param type
@@ -218,7 +218,7 @@ public class DroolsParserExceptionFactory {
         }
     }
 
-    /**
+    /*
      * Helper method that creates a user friendly token definition
      *
      * @param token

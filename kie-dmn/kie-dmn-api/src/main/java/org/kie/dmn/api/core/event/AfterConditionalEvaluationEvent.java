@@ -20,7 +20,7 @@ package org.kie.dmn.api.core.event;
 
 import org.kie.dmn.api.core.EvaluatorResult;
 
-/**
+/*
  * Event fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
  * @see AfterEvaluateConditionalEvent
  */
@@ -28,7 +28,7 @@ public interface AfterConditionalEvaluationEvent {
 
     String getNodeName();
 
-    /**
+    /*
      * The decision that this node relates to
      * @return
      */

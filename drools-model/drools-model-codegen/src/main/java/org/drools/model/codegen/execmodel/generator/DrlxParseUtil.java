@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -711,7 +711,7 @@ public class DrlxParseUtil {
                 expr instanceof BooleanLiteralExpr || expr instanceof LongLiteralExpr;
     }
 
-    /**
+    /*
      * Mutates expression
      * such that, if it contains a <pre>nameRef</pre>, it is replaced and forcibly casted with <pre>(type) nameRef</pre>.
      *
@@ -729,7 +729,7 @@ public class DrlxParseUtil {
         }
     }
 
-    /**
+    /*
      * Mutates expression
      * such that, if it contains a NameExpr for any of the <code>names</code>,
      * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.

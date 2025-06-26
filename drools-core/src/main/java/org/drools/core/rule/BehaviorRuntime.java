@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,23 +24,23 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * An interface for all behavior implementations
  */
 public interface BehaviorRuntime extends Behavior, RuleComponent, Cloneable {
 
-    /**
+    /*
      * Returns the type of the behavior
      */
     BehaviorType getType();
 
-    /**
+    /*
      * Creates the context object associated with this behavior.
      * The object is given as a parameter in all behavior call backs.
      */
     BehaviorContext createContext();
 
-    /**
+    /*
      * Makes the behavior aware of the new fact entering behavior's scope
      * 
      * @param context The behavior context object
@@ -56,7 +56,7 @@ public interface BehaviorRuntime extends Behavior, RuleComponent, Cloneable {
                        PropagationContext pctx,
                        ReteEvaluator reteEvaluator);
 
-    /**
+    /*
      * Removes a right tuple from the behavior's scope
      * 
      * @param context The behavior context object
@@ -68,14 +68,14 @@ public interface BehaviorRuntime extends Behavior, RuleComponent, Cloneable {
                      PropagationContext pctx,
                      ReteEvaluator reteEvaluator);
 
-    /**
+    /*
      * A callback method that allows behaviors to expire facts
      */
     void expireFacts(Object context,
                      PropagationContext pctx,
                      ReteEvaluator reteEvaluator);
 
-    /**
+    /*
      * Some behaviors might change the expiration offset for the 
      * associated fact type. Example: time sliding windows. 
      * 

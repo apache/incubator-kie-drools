@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,13 +24,13 @@ import org.kie.api.event.kiebase.KieBaseEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 
-/**
+/*
  * The EventManager class is implemented by classes wishing to add,remove and get the various Drools EventListeners.
  */
 public interface WorkingMemoryEventManager
     extends
     KieBaseEventManager {
-    /**
+    /*
      * Add an event listener.
      * 
      * @param listener
@@ -38,7 +38,7 @@ public interface WorkingMemoryEventManager
      */
     public void addEventListener(RuleRuntimeEventListener listener);
 
-    /**
+    /*
      * Remove an event listener.
      * 
      * @param listener
@@ -46,14 +46,14 @@ public interface WorkingMemoryEventManager
      */
     public void removeEventListener(RuleRuntimeEventListener listener);
 
-    /**
+    /*
      * Returns all event listeners.
      * 
      * @return listeners The listeners.
      */
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners();
 
-    /**
+    /*
      * Add an event listener.
      * 
      * @param listener
@@ -61,7 +61,7 @@ public interface WorkingMemoryEventManager
      */
     public void addEventListener(AgendaEventListener listener);
 
-    /**
+    /*
      * Remove an event listener.
      * 
      * @param listener
@@ -69,7 +69,7 @@ public interface WorkingMemoryEventManager
      */
     public void removeEventListener(AgendaEventListener listener);
 
-    /**
+    /*
      * Returns all event listeners.
      * 
      * @return listeners The listeners.

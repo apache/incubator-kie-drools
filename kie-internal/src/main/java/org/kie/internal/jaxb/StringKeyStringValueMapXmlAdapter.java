@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
+/*
  * This is a {@link XmlAdapter} for mapping Map&lt;String, String&gt; instances
  * to classes/instances that <b>both</b> JAXB/XML and JSON can deal with.
  * <p>

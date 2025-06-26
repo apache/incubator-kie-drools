@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
 
-/**
+/*
  * Dumps a PackageDescr into a DRL String
  */
 public class DrlDumper  {
@@ -51,7 +51,7 @@ public class DrlDumper  {
                                           TemplateCompiler.compileTemplate( DrlDumper.class.getResourceAsStream( "drl.mvel" ),
                                                                             (Map<String, Class< ? extends Node>>) null ) );
 
-        /**
+        /*
          * Process these templates
          */
         TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "drl" ),

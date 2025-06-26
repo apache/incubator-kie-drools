@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * <code>EfestoOutputDrl</code> specific for local kiesession usage.
  * Its only scope it is to return a <code>KieSession</code> instance.
  * <p>

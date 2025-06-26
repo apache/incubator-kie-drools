@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import static org.kie.dmn.core.util.DMNRuntimeUtil.formatMessages;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-/**
+/*
  * at the time of first creation of these tests are to be considered provisional in support of the next publication
  */
 public class DMN14specificTest extends BaseVariantTest {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -72,7 +72,7 @@ public enum DATA_TYPE implements Named {
         return mappedClass;
     }
 
-    /**
+    /*
      * This method convert a <b>raw</b> object value to the correct type as defined
      * in the original <code>DataDictionary</code>.
      * Needed for example when an <b>unmarshalled</b> <code>Predicate</code> expose a field' value as <code>String</code>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.commons.model;
 
 import java.util.List;
 
-/**
+/*
  * Interface used to define if a given <code>KiePMMLModel</code> contains nested <b>KiePMMLModel</b>s
  */
 public interface HasNestedModels {

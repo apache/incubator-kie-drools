@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ public class UnaryTestInterpretedExecutableExpression implements CompiledFEELExp
         return (List<UnaryTest>) expr.apply(evaluationContext);
     }
 
-    /**
+    /*
      * Internals helper methods.
      */
     public ASTNode getASTNode() {

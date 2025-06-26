@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * An implementation for the KnowledgeBaseMBean
  */
 public class KnowledgeBaseMonitoring
@@ -122,7 +122,7 @@ public class KnowledgeBaseMonitoring
         initOpenMBeanInfo();
     }
 
-    /**
+    /*
      *  Initialize the open mbean metadata
      */
     private void initOpenMBeanInfo() {

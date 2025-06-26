@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dm
     protected double width;
     protected double height;
 
-    /**
+    /*
      * Gets the value of the width property.
      * 
      */
@@ -33,7 +33,7 @@ public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dm
         return width;
     }
 
-    /**
+    /*
      * Sets the value of the width property.
      * 
      */
@@ -41,7 +41,7 @@ public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dm
         this.width = value;
     }
 
-    /**
+    /*
      * Gets the value of the height property.
      * 
      */
@@ -49,7 +49,7 @@ public class Dimension extends KieDMNModelInstrumentedBase implements org.kie.dm
         return height;
     }
 
-    /**
+    /*
      * Sets the value of the height property.
      * 
      */

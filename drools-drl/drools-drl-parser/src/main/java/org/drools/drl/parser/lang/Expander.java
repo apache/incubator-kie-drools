@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.drl.parser.lang.dsl.DSLMapping;
 
-/**
+/*
  * Expanders are extension points for expanding 
  * expressions in DRL at parse time.
  * This is just-in-time translation, or macro expansion, or
@@ -43,7 +43,7 @@ import org.drools.drl.parser.lang.dsl.DSLMapping;
  */
 public interface Expander {
 
-    /**
+    /*
      * Expands (process) the expression Just-In-Time for the parser.
      * If the source is not meant to be expanded, or if no
      * appropriate match was found for expansion, it will echo back 
@@ -54,7 +54,7 @@ public interface Expander {
      */
     public String expand(Reader drl) throws IOException;
 
-    /**
+    /*
      * Expands (process) the expression Just-In-Time for the parser.
      * If the source is not meant to be expanded, or if no
      * appropriate match was found for expansion, it will echo back 
@@ -65,19 +65,19 @@ public interface Expander {
      */
     public String expand(String source);
 
-    /**
+    /*
      * Add the new mapping to this expander.
      * @param mapping
      */
     public void addDSLMapping(DSLMapping mapping);
 
-    /**
+    /*
      * Returns the list of errors from the last expansion made
      * @return A list of <code>ExpanderException</code>
      */
     public List<ExpanderException> getErrors();
 
-    /**
+    /*
      * Returns true in case the last expansion had any errors
      * @return
      */

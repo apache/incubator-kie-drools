@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -89,7 +89,7 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
         }
     }
 
-    /**
+    /*
      * This will attempt to read the System property to work out what default to set.
      * This should only be done once when the class is loaded. After that point, you will have
      * to programmatically override it.

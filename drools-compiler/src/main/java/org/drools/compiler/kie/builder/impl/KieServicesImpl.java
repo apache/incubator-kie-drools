@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -77,7 +77,7 @@ public class KieServicesImpl implements InternalKieServices {
         return KieRepositoryImpl.INSTANCE;
     }
 
-    /**
+    /*
      * Returns KieContainer for the classpath
      */
     public KieContainer getKieClasspathContainer() {
@@ -163,7 +163,7 @@ public class KieServicesImpl implements InternalKieServices {
         }  
     }
     
-    /**
+    /*
      * Voids the internal map of containerId (s) used for handling reference and unique checks. This method is intended for use in unit test only.
      */
     public void nullAllContainerIds() {

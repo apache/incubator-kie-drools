@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-/**
+/*
  * <p>
  * Long term out of the box persistence of runtime state with JPA is possible with Drools and jBPM.
  * You will need to configure a JPA entity manager (e.g. using hibernate) and have a JTA transaction
@@ -125,7 +125,7 @@ public class JPAKnowledgeService {
                 environment);
     }
 
-    /**
+    /*
      * Deprecated use {@link #loadStatefulKnowledgeSession(Long, KieBase, KieSessionConfiguration, Environment)} instead
      */
     @Deprecated

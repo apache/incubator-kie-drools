@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
     protected double width;
     protected double height;
 
-    /**
+    /*
      * Gets the value of the x property.
      * 
      */
@@ -35,7 +35,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         return x;
     }
 
-    /**
+    /*
      * Sets the value of the x property.
      * 
      */
@@ -43,7 +43,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         this.x = value;
     }
 
-    /**
+    /*
      * Gets the value of the y property.
      * 
      */
@@ -51,7 +51,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         return y;
     }
 
-    /**
+    /*
      * Sets the value of the y property.
      * 
      */
@@ -59,7 +59,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         this.y = value;
     }
 
-    /**
+    /*
      * Gets the value of the width property.
      * 
      */
@@ -67,7 +67,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         return width;
     }
 
-    /**
+    /*
      * Sets the value of the width property.
      * 
      */
@@ -75,7 +75,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         this.width = value;
     }
 
-    /**
+    /*
      * Gets the value of the height property.
      * 
      */
@@ -83,7 +83,7 @@ public class Bounds extends KieDMNModelInstrumentedBase implements org.kie.dmn.m
         return height;
     }
 
-    /**
+    /*
      * Sets the value of the height property.
      * 
      */

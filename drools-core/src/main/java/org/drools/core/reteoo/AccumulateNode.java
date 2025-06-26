@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import org.drools.core.util.index.TupleList;
 import org.drools.core.util.index.TupleListWithContext;
 import org.drools.util.bitmask.BitMask;
 
-/**
+/*
  * AccumulateNode
  * A beta node capable of doing accumulate logic.
  *
@@ -180,7 +180,7 @@ public class AccumulateNode extends BetaNode {
                Arrays.equals( this.resultConstraints, other.resultConstraints );
     }
 
-    /**
+    /*
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
@@ -370,7 +370,7 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    /**
+    /*
      *  @inheritDoc
      *
      *  If an object is retract, call modify tuple for each

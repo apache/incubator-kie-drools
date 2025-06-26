@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.tms.beliefsystem.BeliefSet;
 
-/**
+/*
  * Upon instantiation the EqualityKey caches the first Object's hashCode
  * this can never change. The EqualityKey has an internal datastructure
  * which references all the handles which are equal. It also records

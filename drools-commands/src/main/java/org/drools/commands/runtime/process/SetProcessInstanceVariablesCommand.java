@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.kie.internal.command.RegistryContext;
 public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Void>,
                                                            ProcessInstanceIdCommand {
 
-    /**
+    /*
      * Generated serial version UID
      */
     private static final long serialVersionUID = 7802415761845739379L;

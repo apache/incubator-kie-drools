@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.template.model;
 
-/**
+/*
  * This class represents a single LHS item (which will be the same as a line in
  * traditional DRL).
  */
@@ -28,7 +28,7 @@ public class Condition extends DRLElement
 
     public String _snippet;
 
-    /**
+    /*
      * @param snippet The snippet to set.
      */
     public void setSnippet(final String snippet) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 
-/**
+/*
  * Declares a class to be dynamically created
  */
 public class ClassDefinition
@@ -117,35 +117,35 @@ public class ClassDefinition
         out.writeObject( this.metaData );
     }
 
-    /**
+    /*
      * @return Returns the name.
      */
     public final String getClassName() {
         return this.className;
     }
 
-    /**
+    /*
      * @param className The name to set.
      */
     public final void setClassName(final String className) {
         this.className = className;
     }
 
-    /**
+    /*
      * @return Returns the className.
      */
     public final Class< ? > getDefinedClass() {
         return definedClass;
     }
 
-    /**
+    /*
      * @param definedClass The class to set.
      */
     public void setDefinedClass(final Class< ? > definedClass) {
         this.definedClass = definedClass;
     }
 
-    /**
+    /*
      * Adds a field definition to this class
      * @param attr
      */
@@ -154,14 +154,14 @@ public class ClassDefinition
                          attr );
     }
 
-    /**
+    /*
      * @return Returns an unmodifiable collection of field definitions
      */
     public final Collection<FieldDefinition> getFieldsDefinitions() {
         return Collections.unmodifiableCollection( this.fields.values() );
     }
 
-    /**
+    /*
      * Returns the field definition object for the given field name
      *
      * @param fieldName
@@ -181,7 +181,7 @@ public class ClassDefinition
         return null;
     }
 
-    /**
+    /*
      * Returns the field at position index, as defined by the builder using the @position annotation
      * @param index
      * @return    the index-th field
@@ -198,14 +198,14 @@ public class ClassDefinition
     }
 
 
-    /**
+    /*
      * @return Returns the interfaces.
      */
     public final String[] getInterfaces() {
         return interfaces;
     }
 
-    /**
+    /*
      * @param interfaces The interfaces to set.
      */
     public final void setInterfaces(String[] interfaces) {
@@ -223,14 +223,14 @@ public class ClassDefinition
         }
     }
 
-    /**
+    /*
      * @return Returns the superClass.
      */
     public final String getSuperClass() {
         return superClass;
     }
 
-    /**
+    /*
      * @param superClass The superClass to set.
      */
     public final void setSuperClass(final String superClass) {

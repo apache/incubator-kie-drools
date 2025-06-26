@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -261,126 +261,126 @@ public class ClassFieldAccessorTest {
         private long    longAttr;
         private short   shortAttr;
 
-        /**
+        /*
          * @return Returns the intAttr.
          */
         public int getIntAttr() {
             return intAttr;
         }
 
-        /**
+        /*
          * @param intAttr The intAttr to set.
          */
         public void setIntAttr(int intAttr) {
             this.intAttr = intAttr;
         }
 
-        /**
+        /*
          * @return Returns the strAttr.
          */
         public String getStrAttr() {
             return strAttr;
         }
 
-        /**
+        /*
          * @param strAttr The strAttr to set.
          */
         public void setStrAttr(String strAttr) {
             this.strAttr = strAttr;
         }
 
-        /**
+        /*
          * @return Returns the booleanAttr.
          */
         public boolean isBooleanAttr() {
             return booleanAttr;
         }
 
-        /**
+        /*
          * @param booleanAttr The booleanAttr to set.
          */
         public void setBooleanAttr(boolean booleanAttr) {
             this.booleanAttr = booleanAttr;
         }
 
-        /**
+        /*
          * @return Returns the byteAttr.
          */
         public byte getByteAttr() {
             return byteAttr;
         }
 
-        /**
+        /*
          * @param byteAttr The byteAttr to set.
          */
         public void setByteAttr(byte byteAttr) {
             this.byteAttr = byteAttr;
         }
 
-        /**
+        /*
          * @return Returns the charAttr.
          */
         public char getCharAttr() {
             return charAttr;
         }
 
-        /**
+        /*
          * @param charAttr The charAttr to set.
          */
         public void setCharAttr(char charAttr) {
             this.charAttr = charAttr;
         }
 
-        /**
+        /*
          * @return Returns the doubleAttr.
          */
         public double getDoubleAttr() {
             return doubleAttr;
         }
 
-        /**
+        /*
          * @param doubleAttr The doubleAttr to set.
          */
         public void setDoubleAttr(double doubleAttr) {
             this.doubleAttr = doubleAttr;
         }
 
-        /**
+        /*
          * @return Returns the floatAttr.
          */
         public float getFloatAttr() {
             return floatAttr;
         }
 
-        /**
+        /*
          * @param floatAttr The floatAttr to set.
          */
         public void setFloatAttr(float floatAttr) {
             this.floatAttr = floatAttr;
         }
 
-        /**
+        /*
          * @return Returns the longAttr.
          */
         public long getLongAttr() {
             return longAttr;
         }
 
-        /**
+        /*
          * @param longAttr The longAttr to set.
          */
         public void setLongAttr(long longAttr) {
             this.longAttr = longAttr;
         }
 
-        /**
+        /*
          * @return Returns the shortAttr.
          */
         public short getShortAttr() {
             return shortAttr;
         }
 
-        /**
+        /*
          * @param shortAttr The shortAttr to set.
          */
         public void setShortAttr(short shortAttr) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.drl.ast.dsl.BehaviorDescrBuilder;
 import org.drools.drl.ast.dsl.PatternDescrBuilder;
 import org.drools.drl.ast.descr.BehaviorDescr;
 
-/**
+/*
  * A descr builder implementation for pattern behaviors
  */
 public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder< ? >> extends BaseDescrBuilderImpl<P, BehaviorDescr>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api;
 
 import org.kie.api.conf.KieBaseOptionsConfiguration;
 
-/**
+/*
  *<p>
  * A class to store KieBase related configuration. It must be used at KieBase instantiation time
  * or not used at all.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.serialization.protobuf.marshalling;
 
 import org.kie.api.internal.utils.KieService;
 
-/**
+/*
  * ProcessRuntimeFactoryService is used by the AbstractWorkingMemory to "provide" it's concrete implementation.
  */
 public interface ProcessMarshallerFactoryService extends KieService {

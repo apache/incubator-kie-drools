@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,21 +27,21 @@ import org.kie.api.runtime.rule.AgendaFilter;
 
 public interface InternalAgenda extends Agenda, ActivationsManager {
 
-    /**
+    /*
      * Returns the WorkignMemory for this Agenda
      * @return
      *      The WorkingMemory
      */
     InternalWorkingMemory getWorkingMemory();
 
-    /**
+    /*
      * Sets the Agenda's focus to the specified AgendaGroup
      *
      * @return true if the AgendaGroup is changed
      */
     boolean setFocus(String name);
 
-    /**
+    /*
      * Activates the <code>RuleFlowGroup</code> with the given name.
      * All activations in the given <code>RuleFlowGroup</code> are added to the agenda.
      * As long as the <code>RuleFlowGroup</code> remains active,
@@ -49,7 +49,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
      */
     void activateRuleFlowGroup(String name);
 
-    /**
+    /*
      * Activates the <code>RuleFlowGroup</code> with the given name.
      * All activations in the given <code>RuleFlowGroup</code> are added to the agenda.
      * As long as the <code>RuleFlowGroup</code> remains active,
@@ -59,18 +59,18 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
      */
     void activateRuleFlowGroup(String name, String processInstanceId, String nodeInstanceId);
 
-    /**
+    /*
      * Clears all Activations from the Agenda
      */
     void clearAndCancel();
 
-    /**
+    /*
      * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
      * the Xor Group.
      */
     void clearAndCancelAgendaGroup(String name);
 
-    /**
+    /*
      * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
      */
@@ -78,7 +78,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     void clearAndCancelRuleFlowGroup(final String name);
 
-    /**
+    /*
      * Returns the name of the agenda group that currently
      * has the focus
      */
@@ -86,7 +86,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     boolean isDeclarativeAgenda();
 
-    /**
+    /*
      * Fires all activations currently in agenda that match the given agendaFilter
      * until the fireLimit is reached or no more activations exist.
      *
@@ -100,20 +100,20 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
     int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit);
 
-    /**
+    /*
      * Stop agenda from firing any other rule. It will finish the current rule
      * execution though.
      */
     void halt();
 
-    /**
+    /*
      * Keeps firing activations until a halt is called. If in a given moment, there is
      * no activation to fire, it will wait for an activation to be added to an active
      * agenda group or rule flow group.
      */
     void fireUntilHalt();
 
-    /**
+    /*
      * Keeps firing activations until a halt is called. If in a given moment, there is
      * no activation to fire, it will wait for an activation to be added to an active
      * agenda group or rule flow group.
@@ -128,7 +128,7 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     void reset();
 
-    /**
+    /*
      * Sets a filter that prevents activations from being added to
      * the agenda.
      */

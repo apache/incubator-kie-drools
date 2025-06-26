@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.api.io.ResourceType;
 
 import static org.drools.util.ClassUtils.findParentClassLoader;
 
-/**
+/*
  * Borrowed gratuitously from Spring under ASL2.0.
  *
  *+
@@ -134,7 +134,7 @@ public class ClassPathResource extends BaseResource implements InternalResource,
         this.encoding = (String) in.readObject();
     }
 
-    /**
+    /*
      * This implementation opens an InputStream for the given class path resource.
      * @see java.lang.ClassLoader#getResourceAsStream(String)
      * @see java.lang.Class#getResourceAsStream(String)
@@ -143,7 +143,7 @@ public class ClassPathResource extends BaseResource implements InternalResource,
         return bytes != null ? new ByteArrayInputStream( this.bytes ) : this.getURL().openStream();
     }
 
-    /**
+    /*
      * This implementation returns a URL for the underlying class path resource.
      * @see java.lang.ClassLoader#getResource(String)
      * @see java.lang.Class#getResource(String)

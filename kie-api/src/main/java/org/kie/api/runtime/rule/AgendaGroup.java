@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.api.runtime.rule;
 
 public interface AgendaGroup {
 
-    /**
+    /*
      * Static reference to determine the default <code>AgendaGroup</code> name.
      */
     String MAIN = "MAIN";
 
-    /**
+    /*
      * @return
      *      The AgendaGroup name
      */

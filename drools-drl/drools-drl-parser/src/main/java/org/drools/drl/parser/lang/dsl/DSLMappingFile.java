@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
+/*
  * A helper class that handles a DSL Mapping file
  */
 public abstract class DSLMappingFile {
@@ -40,7 +40,7 @@ public abstract class DSLMappingFile {
         this.errors = Collections.emptyList();
     }
 
-    /**
+    /*
      * Returns the DSL mapping loaded from this file
      * @return
      */
@@ -48,7 +48,7 @@ public abstract class DSLMappingFile {
         return this.mapping;
     }
 
-    /**
+    /*
      * Sets the 
      * @param mapping
      */
@@ -56,7 +56,7 @@ public abstract class DSLMappingFile {
         this.mapping = mapping;
     }
 
-    /**
+    /*
      * Returns the list of parsing errors
      * @return
      */
@@ -68,7 +68,7 @@ public abstract class DSLMappingFile {
         this.errors = errors;
     }
 
-    /**
+    /*
      * Parses the file. Throws IOException in case there is any problem
      * reading the file;
      * 
@@ -77,7 +77,7 @@ public abstract class DSLMappingFile {
      */
     public abstract boolean parseAndLoad(final Reader dsl) throws IOException;
 
-    /**
+    /*
      * Saves current mapping into a DSL mapping file
      * @param out
      * @throws IOException
@@ -89,7 +89,7 @@ public abstract class DSLMappingFile {
         }
     }
 
-    /**
+    /*
      * Saves the given mapping into a DSL mapping file
      * 
      * @param out
@@ -104,7 +104,7 @@ public abstract class DSLMappingFile {
         }
     }
 
-    /**
+    /*
      * Method to return the current mapping as a String object
      * @return
      */

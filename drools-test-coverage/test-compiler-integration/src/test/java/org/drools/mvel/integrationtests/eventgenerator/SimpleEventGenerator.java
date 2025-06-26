@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -59,7 +59,7 @@ public class SimpleEventGenerator {
         this.nextEventSource = new LinkedList<>();
     }
 
-    /**
+    /*
      * @return the endInfinite
      */
     public boolean isEndInfinite() {
@@ -196,28 +196,28 @@ class EventOccurrence{
         }
     }
 
-    /**
+    /*
      * @return the infinite
      */
     private boolean isInfinite() {
         return infinite;
     }
 
-    /**
+    /*
      * @return the eventSenderId
      */
     public String getEventSenderId() {
         return eventSenderId;
     }
 
-    /**
+    /*
      * @return the time
      */
     public long getNextOccurrenceTime() {
         return this.event.getEndTime();
     }
 
-    /**
+    /*
      * @return the event
      */
     public Event getEvent() {

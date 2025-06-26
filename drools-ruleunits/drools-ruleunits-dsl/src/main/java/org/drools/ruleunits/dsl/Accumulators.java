@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 
 import static org.drools.model.functions.Function1.identity;
 
-/**
+/*
  * A set of convenient factory methods to create the accumulators used in the rule unit Java DSL.
  */
 public class Accumulators {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ public class DateTimeEvalHelper {
         return String.format("%02d:%02d:%02d@%s", hour, minute, second, query.getId());
     }
 
-    /**
+    /*
      * DMNv1.2 10.3.2.3.6 date-time, valuedt(date and time), for use in this {@link BooleanEvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
      * DMNv1.3 also used for equality DMN13-35
      */
@@ -67,7 +67,7 @@ public class DateTimeEvalHelper {
         }
     }
 
-    /**
+    /*
      * DMNv1.2 10.3.2.3.4 time, valuet(time), for use in this {@link BooleanEvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
      * DMNv1.3 also used for equality DMN13-35
      */

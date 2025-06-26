@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 
-/**
+/*
  * An abstract adapter class for receiving network node events from the {@link org.kie.reteoo.compiled.ObjectTypeNodeParser}.
  * The methods in this class are empty. This class exists as convenience for creating handler objects.
  * <P>

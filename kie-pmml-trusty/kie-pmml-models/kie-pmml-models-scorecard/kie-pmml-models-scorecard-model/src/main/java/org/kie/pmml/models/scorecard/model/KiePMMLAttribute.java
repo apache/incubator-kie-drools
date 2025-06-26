@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-4-1/Scorecard.html#xsdElement_Attribute>Attribute</a>
  */
 public class KiePMMLAttribute extends AbstractKiePMMLComponent {

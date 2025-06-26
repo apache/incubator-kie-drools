@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-3/MultipleModels.html>MiningModel</a>
  */
 public class KiePMMLMiningModelWithSources extends KiePMMLModelWithSources implements HasNestedModels {

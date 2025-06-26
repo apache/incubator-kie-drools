@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.kie.api.conf;
 
 
-/**
+/*
  * An Enum for EqualityBehavior option.
  *
  * drools.equalityBehavior = &lt;identity|equality&gt;
@@ -31,14 +31,14 @@ public enum EqualityBehaviorOption implements SingleValueRuleBaseOption {
     IDENTITY,
     EQUALITY;
 
-    /**
+    /*
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.equalityBehavior";
 
     public static final OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldType;
 
-/**
+/*
  * Class used to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
  */
 public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
@@ -47,7 +47,7 @@ public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
      * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      *

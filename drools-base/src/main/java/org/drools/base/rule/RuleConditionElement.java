@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ public interface RuleConditionElement
     Externalizable,
     Cloneable {
 
-    /**
+    /*
      * Returns a Map of declarations that are
      * visible inside this conditional element
      * 
@@ -36,7 +36,7 @@ public interface RuleConditionElement
      */
     Map<String,Declaration> getInnerDeclarations();
 
-    /**
+    /*
      * Returns a Map of declarations that are visible
      * outside this conditional element. 
      * 
@@ -44,7 +44,7 @@ public interface RuleConditionElement
      */
     Map<String,Declaration> getOuterDeclarations();
 
-    /**
+    /*
      * Resolves the given identifier in the current scope and
      * returns the Declaration object for the declaration.
      * Returns null if identifier can not be resolved.
@@ -54,20 +54,20 @@ public interface RuleConditionElement
      */
     Declaration resolveDeclaration(String identifier);
 
-    /**
+    /*
      * Returns a clone from itself
      * @return
      */
     RuleConditionElement clone();
     
-    /**
+    /*
      * Returs a list of RuleConditionElement's that are nested
      * inside the current element
      * @return
      */
     List<? extends RuleConditionElement> getNestedElements();
     
-    /**
+    /*
      * Returns true in case this RuleConditionElement delimits
      * a pattern visibility scope.
      * 

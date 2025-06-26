@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.util.IoUtils;
 
 import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
-/**
+/*
  * This will generate a jar from a meta model.
  */
 public class Jenerator {

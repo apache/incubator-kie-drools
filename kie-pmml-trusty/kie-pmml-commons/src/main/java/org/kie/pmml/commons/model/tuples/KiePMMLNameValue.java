@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.commons.model.tuples;
 
 import java.util.Objects;
 
-/**
+/*
  * Class to represent a <b>name/value (object)</b> tuple
  */
 public class KiePMMLNameValue {

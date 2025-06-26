@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ public interface StorageManagerFactory extends KieService {
         return StorageManagerFactory.Holder.INSTANCE;
     }
 
-    /**
+    /*
      * Use this method first to specify reliabilityPersistanceLayer when you have dependencies covering multiple persistence layers (e.g. infinispan and h2mvstore)
      * Once a factory is instantiated, get() is enough to get the same instance.
      */

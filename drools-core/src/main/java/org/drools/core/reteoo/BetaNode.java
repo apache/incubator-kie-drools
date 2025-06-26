@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -115,7 +115,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     }
 
-    /**
+    /*
      * Constructs a <code>BetaNode</code> using the specified <code>BetaNodeBinder</code>.
      *
      * @param leftInput
@@ -572,7 +572,7 @@ public abstract class BetaNode extends LeftTupleSource
                this.rightInput.getId() == other.rightInput.getId();
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -581,7 +581,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -590,7 +590,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -599,7 +599,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
@@ -608,7 +608,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next ObjectSinkNode
@@ -617,7 +617,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.nextObjectSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next ObjectSinkNode
@@ -626,7 +626,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.nextObjectSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous ObjectSinkNode
@@ -635,7 +635,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.previousObjectSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous ObjectSinkNode
@@ -685,7 +685,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.rightInputOtnId = rightInputOtnId;
     }
 
-    /**
+    /*
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
      */
@@ -701,7 +701,7 @@ public abstract class BetaNode extends LeftTupleSource
             this.detachedTuples = detachedTuples;
         }
 
-        /**
+        /*
          * Do not use this constructor. It should be used just by deserialization.
          */
         public RightTupleSinkAdapter() {

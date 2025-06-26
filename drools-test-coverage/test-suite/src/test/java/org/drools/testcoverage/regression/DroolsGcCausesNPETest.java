@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-/**
+/*
  * Reproducer for BZ 1181584, by Mike Wilson.
  */
 public class DroolsGcCausesNPETest {
@@ -98,7 +98,7 @@ public class DroolsGcCausesNPETest {
         eventFactType = session.getKieBase().getFactType(this.getClass().getPackage().getName(), "Event");
     }
 
-    /**
+    /*
      * The original test method reproducing NPE during event GC.
      * BZ 1181584
      */
@@ -118,7 +118,7 @@ public class DroolsGcCausesNPETest {
         }
     }
 
-    /**
+    /*
      * Deterministic variant of the previous test method that reliably illustrates BZ 1274696.
      */
     @Test

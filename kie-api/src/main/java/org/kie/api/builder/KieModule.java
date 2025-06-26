@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.builder;
 
-/**
+/*
  * A KieModule is a container of all the resources necessary to define a set of KieBases like
  * a pom.xml defining its ReleaseId, a kmodule.xml file declaring the KieBases names and configurations
  * together with all the KieSession that can be created from them and all the other files
@@ -26,7 +26,7 @@ package org.kie.api.builder;
  */
 public interface KieModule {
 
-    /**
+    /*
      * Returns the ReleaseId identifying this KieModule
      */
     ReleaseId getReleaseId();

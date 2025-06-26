@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.runtime;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 
-/**
+/*
  * StatefulKnowledgeSession is the most common way to interact with the engine. A StatefulKnowledgeSession
  * allows the application to establish an iterative conversation with the engine, where the state of the
  * session is kept across invocations.  The reasoning process may be triggered multiple times for the

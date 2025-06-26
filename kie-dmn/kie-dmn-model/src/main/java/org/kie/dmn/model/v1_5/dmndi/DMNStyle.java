@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
     protected AlignmentKind labelHorizontalAlignement;
     protected AlignmentKind labelVerticalAlignment;
 
-    /**
+    /*
      * Gets the value of the fillColor property.
      * 
      * @return
@@ -46,7 +46,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fillColor;
     }
 
-    /**
+    /*
      * Sets the value of the fillColor property.
      * 
      * @param value
@@ -58,7 +58,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fillColor = value;
     }
 
-    /**
+    /*
      * Gets the value of the strokeColor property.
      * 
      * @return
@@ -70,7 +70,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return strokeColor;
     }
 
-    /**
+    /*
      * Sets the value of the strokeColor property.
      * 
      * @param value
@@ -82,7 +82,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.strokeColor = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontColor property.
      * 
      * @return
@@ -94,7 +94,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontColor;
     }
 
-    /**
+    /*
      * Sets the value of the fontColor property.
      * 
      * @param value
@@ -106,7 +106,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontColor = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontFamily property.
      * 
      * @return
@@ -118,7 +118,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontFamily;
     }
 
-    /**
+    /*
      * Sets the value of the fontFamily property.
      * 
      * @param value
@@ -130,7 +130,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontFamily = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontSize property.
      * 
      * @return
@@ -142,7 +142,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontSize;
     }
 
-    /**
+    /*
      * Sets the value of the fontSize property.
      * 
      * @param value
@@ -154,7 +154,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontSize = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontItalic property.
      * 
      * @return
@@ -166,7 +166,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontItalic;
     }
 
-    /**
+    /*
      * Sets the value of the fontItalic property.
      * 
      * @param value
@@ -178,7 +178,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontItalic = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontBold property.
      * 
      * @return
@@ -190,7 +190,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontBold;
     }
 
-    /**
+    /*
      * Sets the value of the fontBold property.
      * 
      * @param value
@@ -202,7 +202,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontBold = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontUnderline property.
      * 
      * @return
@@ -214,7 +214,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontUnderline;
     }
 
-    /**
+    /*
      * Sets the value of the fontUnderline property.
      * 
      * @param value
@@ -226,7 +226,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontUnderline = value;
     }
 
-    /**
+    /*
      * Gets the value of the fontStrikeThrough property.
      * 
      * @return
@@ -238,7 +238,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return fontStrikeThrough;
     }
 
-    /**
+    /*
      * Sets the value of the fontStrikeThrough property.
      * 
      * @param value
@@ -250,7 +250,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.fontStrikeThrough = value;
     }
 
-    /**
+    /*
      * Gets the value of the labelHorizontalAlignement property.
      * 
      * @return
@@ -262,7 +262,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return labelHorizontalAlignement;
     }
 
-    /**
+    /*
      * Sets the value of the labelHorizontalAlignement property.
      * 
      * @param value
@@ -274,7 +274,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         this.labelHorizontalAlignement = value;
     }
 
-    /**
+    /*
      * Gets the value of the labelVerticalAlignment property.
      * 
      * @return
@@ -286,7 +286,7 @@ public class DMNStyle extends Style implements org.kie.dmn.model.api.dmndi.DMNSt
         return labelVerticalAlignment;
     }
 
-    /**
+    /*
      * Sets the value of the labelVerticalAlignment property.
      * 
      * @param value

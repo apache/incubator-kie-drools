@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.BaseFEELTest;
 
-/**
+/*
  * Some examples (/tests) from the DMN spec were omitted in the ADOC due to policy about specific keywords
  * Those tests are placed here to make sure all the examples from the DMN spec are integrated and running as expected.
  */

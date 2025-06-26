@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the <code>starts</code> evaluator definition.</p>
  * 
  * <p>The <b><code>starts</code></b> evaluator correlates two events and matches when the current event's 
@@ -95,7 +95,7 @@ public class StartsEvaluatorDefinition
         out.writeObject( cache );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -106,7 +106,7 @@ public class StartsEvaluatorDefinition
                                   null );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -118,7 +118,7 @@ public class StartsEvaluatorDefinition
                                   parameterText );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -134,7 +134,7 @@ public class StartsEvaluatorDefinition
         
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -160,28 +160,28 @@ public class StartsEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.HANDLE;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType(ValueType type) {
@@ -190,7 +190,7 @@ public class StartsEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'starts' evaluator itself
      */
     public static class StartsEvaluator extends BaseEvaluator {
@@ -315,7 +315,7 @@ public class StartsEvaluatorDefinition
             return startDev == other.startDev;
         }
 
-        /**
+        /*
          * This methods sets the parameters appropriately.
          *
          * @param parameters

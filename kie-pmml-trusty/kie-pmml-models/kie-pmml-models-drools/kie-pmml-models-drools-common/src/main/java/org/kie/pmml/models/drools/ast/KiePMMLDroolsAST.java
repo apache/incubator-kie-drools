@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.models.drools.ast;
 
 import java.util.List;
 
-/**
+/*
  * Data-class used to store information needed to generate a whole <b>Drools descr</b>
  */
 public class KiePMMLDroolsAST {

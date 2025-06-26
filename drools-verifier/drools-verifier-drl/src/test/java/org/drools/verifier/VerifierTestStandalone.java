@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * This is a sample file to launch a rule package from a rule source file.
  */
 class VerifierTestStandalone {

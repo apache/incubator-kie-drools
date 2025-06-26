@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.dmn.model.api.UnaryTests;
 
 public class TItemDefinition extends TNamedElement implements ItemDefinition {
 
-    /**
+    /*
      * align to internal model
      */
     protected QName typeRef;

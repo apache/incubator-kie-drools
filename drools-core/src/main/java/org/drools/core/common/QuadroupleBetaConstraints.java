@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -145,7 +145,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
         return constraints[0].hashCode() ^ constraints[1].hashCode() ^ constraints[2].hashCode() ^ constraints[3].hashCode();
     }
 
-    /**
+    /*
      * Determine if another object is equal to this.
      *
      * @param object

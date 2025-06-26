@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.dmg.pmml.Constant;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLConstant</code> code-generators
  * out of <code>Constant</code>s
  */

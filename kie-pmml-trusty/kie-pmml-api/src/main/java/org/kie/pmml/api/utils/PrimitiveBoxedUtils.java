@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-/**
+/*
  * Utility class to map a <b>primitive</b> with its <b>boxed</b> equivalent.
  * Needed to avoid reflection at runtime.
  */
@@ -47,7 +47,7 @@ public class PrimitiveBoxedUtils {
         return KIE_PMML_PRIMITIVE_BOXEDS.stream().filter(pBoxed -> c.equals(pBoxed.getPrimitive()) || c.equals(pBoxed.getBoxed())).findFirst();
     }
 
-    /**
+    /*
      * Returns <code>true</code> if one of the given <code>Class&lt;?&gt;</code> is a <b>primitive</b>
      * or <b>boxed</b> of a <code>KiePMMLPrimitiveBoxed</code> <b>and</b> the other <code>Class&lt;?&gt;</code> is the
      * <b>boxed/unboxed</b> counterpart of the same <code>KiePMMLPrimitiveBoxed</code> <b>OR</b> the same one.
@@ -80,7 +80,7 @@ public class PrimitiveBoxedUtils {
             return boxed;
         }
 
-        /**
+        /*
          * Returns <code>true</code> if the given <code>Class&lt;?&gt;</code> is the <b>primitive</b>
          * or the <b>boxed</b> one of the current <code>KiePMMLPrimitiveBoxed</code>
          * @param c

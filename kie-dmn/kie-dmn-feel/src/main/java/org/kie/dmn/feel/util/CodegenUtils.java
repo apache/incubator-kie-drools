@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -70,7 +70,7 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.COMPARABLEPERI
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.COMPARABLEPERIOD_N;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TIMEFUNCTION_N;
 
-/**
+/*
  * Class meant to provide commons utility methods for codegen.
  * This class should not have any reference to dmn-specific classes/methods.
  */

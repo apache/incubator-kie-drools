@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 
-/**
+/*
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
  * <code>ActivationQueue</code>s. The <code>AgendaGroup</code> also maintains a <code>Map</code> of <code>ActivationQueues</code>
  * for requested salience values.
@@ -48,7 +48,7 @@ public class AgendaGroupQueueImpl
 
     private static final RuleAgendaItem VISITED_AGENDA_GROUP = new RuleAgendaItem();
     private final    String             name;
-    /**
+    /*
      * Items in the agenda.
      */
     private          Queue<RuleAgendaItem> priorityQueue;

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 
 
-/**
+/*
  *
  */
 public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderResultImpl {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
-/**
+/*
  * Object model that defines how and of what type the object instance should be created.<br>
  * The how is actually delegated to resolved implementation <code>ObjectModelResolver</code>
  * that default to Java Reflection based resolver but might utilize others (such as MVEL, Spring, CDI, etc).

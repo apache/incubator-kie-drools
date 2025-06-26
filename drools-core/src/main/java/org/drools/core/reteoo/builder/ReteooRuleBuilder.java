@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -99,7 +99,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new AsyncReceiveBuilder() );
     }
 
-    /**
+    /*
      * Creates the corresponting Rete network for the given <code>Rule</code> and adds it to
      * the given rule base.
      * 
@@ -243,7 +243,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         terminalNode.visitLeftTupleNodes(n -> n.addAssociatedTerminal(terminalNode));
     }
 
-    /**
+    /*
      * Adds a query pattern to the given subrule
      */
     private void addInitialFactPattern( final GroupElement subrule ) {

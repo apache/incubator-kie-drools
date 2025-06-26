@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ public class WaltzUtil {
         return val / MOD_NUM;
     }
 
-    /***************************************************************************
+    /**************************************************************************
      * This function is passed two points and calculates the angle between the
      * line defined by these points and the x-axis.
      **************************************************************************/
@@ -69,7 +69,7 @@ public class WaltzUtil {
         return ret;
     }
 
-    /***************************************************************************
+    /**************************************************************************
      * This procedure is passed the basepoint of the intersection of two lines
      * as well as the other two endpoints of the lines and calculates the angle
      * inscribed by these three points.

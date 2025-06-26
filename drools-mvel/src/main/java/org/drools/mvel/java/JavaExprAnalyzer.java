@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
 
-/**
+/*
  * Expression analyzer.
  */
 public class JavaExprAnalyzer {
@@ -44,7 +44,7 @@ public class JavaExprAnalyzer {
     // Constructors
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Construct.
      */
     public JavaExprAnalyzer() {
@@ -55,7 +55,7 @@ public class JavaExprAnalyzer {
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Analyze an expression.
      * 
      * @param expr
@@ -103,7 +103,7 @@ public class JavaExprAnalyzer {
         return new JavaParser( tokenStream );
     }
 
-    /**
+    /*
      * Analyze an expression.
      * 
      * @param availableIdentifiers

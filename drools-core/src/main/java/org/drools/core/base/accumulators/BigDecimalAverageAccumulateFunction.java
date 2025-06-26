@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
+/*
  * An implementation of an accumulator capable of calculating average values
  */
 public class BigDecimalAverageAccumulateFunction extends AbstractAccumulateFunction<BigDecimalAverageAccumulateFunction.AverageData> {
@@ -107,7 +107,7 @@ public class BigDecimalAverageAccumulateFunction extends AbstractAccumulateFunct
         return true;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {

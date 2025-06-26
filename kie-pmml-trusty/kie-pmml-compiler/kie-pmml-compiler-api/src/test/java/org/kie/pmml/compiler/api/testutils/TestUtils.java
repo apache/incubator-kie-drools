@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.util.FileUtils;
 
 public class TestUtils {
 
-    /**
+    /*
      * Load a <code>PMML</code> from the given <b>file</b>
      * @param fileName
      * @return
@@ -37,7 +37,7 @@ public class TestUtils {
         return loadFromInputStream(FileUtils.getFileInputStream(fileName));
     }
 
-    /**
+    /*
      * Load a <code>PMML</code> from the given <b>xml source</b>
      * @param xmlSource
      * @return
@@ -46,7 +46,7 @@ public class TestUtils {
         return loadFromInputStream(new ByteArrayInputStream(xmlSource.getBytes()));
     }
 
-    /**
+    /*
      * Load a <code>PMML</code> from the given <code>InputStream</code>
      * @param is
      * @return

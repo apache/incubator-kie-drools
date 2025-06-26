@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,14 +40,14 @@ public interface JavaBlockDescr {
 
     public void setInputs(Map<String, Class< ? >> variables);
 
-    /**
+    /*
      * Returns the list of in-code, declared variables that are available
      * in the scope of this block
      * @return
      */
     public List<JavaLocalDeclarationDescr> getInScopeLocalVars();
 
-    /**
+    /*
      * Sets the list of in-code, declared variables that are available
      * in the scope of this block
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ public class NullBoundImplTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(NullBoundImplTest.class);
 
-    /**
+    /*
      * assert the requirement over NullBoundImpl.NULL to always throw exception if attempting to use it.
      */
     @Test

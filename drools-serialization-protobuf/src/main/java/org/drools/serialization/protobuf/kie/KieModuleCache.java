@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ public final class KieModuleCache {
           ExtendableMessageOrBuilder<Header> {
 
     // optional .org.drools.compiler.kie.builder.impl.Version version = 1;
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -39,7 +39,7 @@ public final class KieModuleCache {
      * </pre>
      */
     boolean hasVersion();
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -47,7 +47,7 @@ public final class KieModuleCache {
      * </pre>
      */
     KieModuleCache.Version getVersion();
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -57,7 +57,7 @@ public final class KieModuleCache {
     KieModuleCache.VersionOrBuilder getVersionOrBuilder();
 
     // optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -65,7 +65,7 @@ public final class KieModuleCache {
      * </pre>
      */
     boolean hasSignature();
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -73,7 +73,7 @@ public final class KieModuleCache {
      * </pre>
      */
     KieModuleCache.Signature getSignature();
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -83,7 +83,7 @@ public final class KieModuleCache {
     KieModuleCache.SignatureOrBuilder getSignatureOrBuilder();
 
     // optional bytes payload = 10;
-    /**
+    /*
      * <code>optional bytes payload = 10;</code>
      *
      * <pre>
@@ -91,7 +91,7 @@ public final class KieModuleCache {
      * </pre>
      */
     boolean hasPayload();
-    /**
+    /*
      * <code>optional bytes payload = 10;</code>
      *
      * <pre>
@@ -100,7 +100,7 @@ public final class KieModuleCache {
      */
     com.google.protobuf.ByteString getPayload();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.Header}
    */
   public static final class Header extends
@@ -225,7 +225,7 @@ public final class KieModuleCache {
     // optional .org.drools.compiler.kie.builder.impl.Version version = 1;
     public static final int VERSION_FIELD_NUMBER = 1;
     private KieModuleCache.Version version_;
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -235,7 +235,7 @@ public final class KieModuleCache {
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -245,7 +245,7 @@ public final class KieModuleCache {
     public KieModuleCache.Version getVersion() {
       return version_;
     }
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
      *
      * <pre>
@@ -259,7 +259,7 @@ public final class KieModuleCache {
     // optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;
     public static final int SIGNATURE_FIELD_NUMBER = 4;
     private KieModuleCache.Signature signature_;
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -269,7 +269,7 @@ public final class KieModuleCache {
     public boolean hasSignature() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -279,7 +279,7 @@ public final class KieModuleCache {
     public KieModuleCache.Signature getSignature() {
       return signature_;
     }
-    /**
+    /*
      * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
      *
      * <pre>
@@ -293,7 +293,7 @@ public final class KieModuleCache {
     // optional bytes payload = 10;
     public static final int PAYLOAD_FIELD_NUMBER = 10;
     private com.google.protobuf.ByteString payload_;
-    /**
+    /*
      * <code>optional bytes payload = 10;</code>
      *
      * <pre>
@@ -303,7 +303,7 @@ public final class KieModuleCache {
     public boolean hasPayload() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    /**
+    /*
      * <code>optional bytes payload = 10;</code>
      *
      * <pre>
@@ -448,7 +448,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.Header}
      */
     public static final class Builder extends
@@ -611,7 +611,7 @@ public final class KieModuleCache {
       private KieModuleCache.Version version_ = KieModuleCache.Version.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           KieModuleCache.Version, KieModuleCache.Version.Builder, KieModuleCache.VersionOrBuilder> versionBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -621,7 +621,7 @@ public final class KieModuleCache {
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -635,7 +635,7 @@ public final class KieModuleCache {
           return versionBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -655,7 +655,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -673,7 +673,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -696,7 +696,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -713,7 +713,7 @@ public final class KieModuleCache {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -725,7 +725,7 @@ public final class KieModuleCache {
         onChanged();
         return getVersionFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -739,7 +739,7 @@ public final class KieModuleCache {
           return version_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Version version = 1;</code>
        *
        * <pre>
@@ -763,7 +763,7 @@ public final class KieModuleCache {
       private KieModuleCache.Signature signature_ = KieModuleCache.Signature.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           KieModuleCache.Signature, KieModuleCache.Signature.Builder, KieModuleCache.SignatureOrBuilder> signatureBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -773,7 +773,7 @@ public final class KieModuleCache {
       public boolean hasSignature() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -787,7 +787,7 @@ public final class KieModuleCache {
           return signatureBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -807,7 +807,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -825,7 +825,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -848,7 +848,7 @@ public final class KieModuleCache {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -865,7 +865,7 @@ public final class KieModuleCache {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -877,7 +877,7 @@ public final class KieModuleCache {
         onChanged();
         return getSignatureFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -891,7 +891,7 @@ public final class KieModuleCache {
           return signature_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.compiler.kie.builder.impl.Signature signature = 4;</code>
        *
        * <pre>
@@ -913,7 +913,7 @@ public final class KieModuleCache {
 
       // optional bytes payload = 10;
       private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes payload = 10;</code>
        *
        * <pre>
@@ -923,7 +923,7 @@ public final class KieModuleCache {
       public boolean hasPayload() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      /**
+      /*
        * <code>optional bytes payload = 10;</code>
        *
        * <pre>
@@ -933,7 +933,7 @@ public final class KieModuleCache {
       public com.google.protobuf.ByteString getPayload() {
         return payload_;
       }
-      /**
+      /*
        * <code>optional bytes payload = 10;</code>
        *
        * <pre>
@@ -949,7 +949,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes payload = 10;</code>
        *
        * <pre>
@@ -978,36 +978,36 @@ public final class KieModuleCache {
       extends com.google.protobuf.MessageOrBuilder {
 
     // optional int32 version_major = 1;
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      */
     boolean hasVersionMajor();
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      */
     int getVersionMajor();
 
     // optional int32 version_minor = 2;
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      */
     boolean hasVersionMinor();
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      */
     int getVersionMinor();
 
     // optional int32 version_revision = 3;
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      */
     boolean hasVersionRevision();
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      */
     int getVersionRevision();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.Version}
    */
   public static final class Version extends
@@ -1116,13 +1116,13 @@ public final class KieModuleCache {
     // optional int32 version_major = 1;
     public static final int VERSION_MAJOR_FIELD_NUMBER = 1;
     private int versionMajor_;
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      */
     public boolean hasVersionMajor() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      */
     public int getVersionMajor() {
@@ -1132,13 +1132,13 @@ public final class KieModuleCache {
     // optional int32 version_minor = 2;
     public static final int VERSION_MINOR_FIELD_NUMBER = 2;
     private int versionMinor_;
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      */
     public boolean hasVersionMinor() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      */
     public int getVersionMinor() {
@@ -1148,13 +1148,13 @@ public final class KieModuleCache {
     // optional int32 version_revision = 3;
     public static final int VERSION_REVISION_FIELD_NUMBER = 3;
     private int versionRevision_;
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      */
     public boolean hasVersionRevision() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      */
     public int getVersionRevision() {
@@ -1286,7 +1286,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.Version}
      */
     public static final class Builder extends
@@ -1424,19 +1424,19 @@ public final class KieModuleCache {
 
       // optional int32 version_major = 1;
       private int versionMajor_ ;
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        */
       public boolean hasVersionMajor() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        */
       public int getVersionMajor() {
         return versionMajor_;
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        */
       public Builder setVersionMajor(int value) {
@@ -1445,7 +1445,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        */
       public Builder clearVersionMajor() {
@@ -1457,19 +1457,19 @@ public final class KieModuleCache {
 
       // optional int32 version_minor = 2;
       private int versionMinor_ ;
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        */
       public boolean hasVersionMinor() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        */
       public int getVersionMinor() {
         return versionMinor_;
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        */
       public Builder setVersionMinor(int value) {
@@ -1478,7 +1478,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        */
       public Builder clearVersionMinor() {
@@ -1490,19 +1490,19 @@ public final class KieModuleCache {
 
       // optional int32 version_revision = 3;
       private int versionRevision_ ;
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        */
       public boolean hasVersionRevision() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        */
       public int getVersionRevision() {
         return versionRevision_;
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        */
       public Builder setVersionRevision(int value) {
@@ -1511,7 +1511,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        */
       public Builder clearVersionRevision() {
@@ -1536,31 +1536,31 @@ public final class KieModuleCache {
       extends com.google.protobuf.MessageOrBuilder {
 
     // optional string key_alias = 1;
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     boolean hasKeyAlias();
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     java.lang.String getKeyAlias();
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     com.google.protobuf.ByteString
         getKeyAliasBytes();
 
     // optional bytes signature = 2;
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      */
     boolean hasSignature();
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      */
     com.google.protobuf.ByteString getSignature();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.Signature}
    */
   public static final class Signature extends
@@ -1664,13 +1664,13 @@ public final class KieModuleCache {
     // optional string key_alias = 1;
     public static final int KEY_ALIAS_FIELD_NUMBER = 1;
     private java.lang.Object keyAlias_;
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     public boolean hasKeyAlias() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     public java.lang.String getKeyAlias() {
@@ -1687,7 +1687,7 @@ public final class KieModuleCache {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      */
     public com.google.protobuf.ByteString
@@ -1707,13 +1707,13 @@ public final class KieModuleCache {
     // optional bytes signature = 2;
     public static final int SIGNATURE_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString signature_;
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      */
     public boolean hasSignature() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      */
     public com.google.protobuf.ByteString getSignature() {
@@ -1837,7 +1837,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.Signature}
      */
     public static final class Builder extends
@@ -1968,13 +1968,13 @@ public final class KieModuleCache {
 
       // optional string key_alias = 1;
       private java.lang.Object keyAlias_ = "";
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public boolean hasKeyAlias() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public java.lang.String getKeyAlias() {
@@ -1988,7 +1988,7 @@ public final class KieModuleCache {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public com.google.protobuf.ByteString
@@ -2004,7 +2004,7 @@ public final class KieModuleCache {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public Builder setKeyAlias(
@@ -2017,7 +2017,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public Builder clearKeyAlias() {
@@ -2026,7 +2026,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        */
       public Builder setKeyAliasBytes(
@@ -2042,19 +2042,19 @@ public final class KieModuleCache {
 
       // optional bytes signature = 2;
       private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        */
       public boolean hasSignature() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        */
       public com.google.protobuf.ByteString getSignature() {
         return signature_;
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        */
       public Builder setSignature(com.google.protobuf.ByteString value) {
@@ -2066,7 +2066,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        */
       public Builder clearSignature() {
@@ -2091,31 +2091,31 @@ public final class KieModuleCache {
       extends com.google.protobuf.MessageOrBuilder {
 
     // repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     java.util.List<KieModuleCache.CompilationData>
         getCompilationDataList();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     KieModuleCache.CompilationData getCompilationData( int index);
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     int getCompilationDataCount();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     java.util.List<? extends KieModuleCache.CompilationDataOrBuilder>
         getCompilationDataOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     KieModuleCache.CompilationDataOrBuilder getCompilationDataOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.KModuleCache}
    */
   public static final class KModuleCache extends
@@ -2219,32 +2219,32 @@ public final class KieModuleCache {
     // repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;
     public static final int COMPILATION_DATA_FIELD_NUMBER = 1;
     private java.util.List<KieModuleCache.CompilationData> compilationData_;
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     public java.util.List<KieModuleCache.CompilationData> getCompilationDataList() {
       return compilationData_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     public java.util.List<? extends KieModuleCache.CompilationDataOrBuilder>
         getCompilationDataOrBuilderList() {
       return compilationData_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     public int getCompilationDataCount() {
       return compilationData_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     public KieModuleCache.CompilationData getCompilationData( int index) {
       return compilationData_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
      */
     public KieModuleCache.CompilationDataOrBuilder getCompilationDataOrBuilder(
@@ -2361,7 +2361,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.KModuleCache}
      */
     public static final class Builder extends
@@ -2523,7 +2523,7 @@ public final class KieModuleCache {
       private com.google.protobuf.RepeatedFieldBuilder<
           KieModuleCache.CompilationData, KieModuleCache.CompilationData.Builder, KieModuleCache.CompilationDataOrBuilder> compilationDataBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public java.util.List<KieModuleCache.CompilationData> getCompilationDataList() {
@@ -2533,7 +2533,7 @@ public final class KieModuleCache {
           return compilationDataBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public int getCompilationDataCount() {
@@ -2543,7 +2543,7 @@ public final class KieModuleCache {
           return compilationDataBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public KieModuleCache.CompilationData getCompilationData( int index) {
@@ -2553,7 +2553,7 @@ public final class KieModuleCache {
           return compilationDataBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder setCompilationData(
@@ -2570,7 +2570,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder setCompilationData(
@@ -2584,7 +2584,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder addCompilationData( KieModuleCache.CompilationData value) {
@@ -2600,7 +2600,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder addCompilationData(
@@ -2617,7 +2617,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder addCompilationData(
@@ -2631,7 +2631,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder addCompilationData(
@@ -2645,7 +2645,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder addAllCompilationData(
@@ -2659,7 +2659,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder clearCompilationData() {
@@ -2672,7 +2672,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public Builder removeCompilationData(int index) {
@@ -2685,14 +2685,14 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public KieModuleCache.CompilationData.Builder getCompilationDataBuilder(
           int index) {
         return getCompilationDataFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public KieModuleCache.CompilationDataOrBuilder getCompilationDataOrBuilder(
@@ -2702,7 +2702,7 @@ public final class KieModuleCache {
           return compilationDataBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public java.util.List<? extends KieModuleCache.CompilationDataOrBuilder>
@@ -2713,14 +2713,14 @@ public final class KieModuleCache {
           return java.util.Collections.unmodifiableList(compilationData_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public KieModuleCache.CompilationData.Builder addCompilationDataBuilder() {
         return getCompilationDataFieldBuilder().addBuilder(
             KieModuleCache.CompilationData.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public KieModuleCache.CompilationData.Builder addCompilationDataBuilder(
@@ -2728,7 +2728,7 @@ public final class KieModuleCache {
         return getCompilationDataFieldBuilder().addBuilder(
             index, KieModuleCache.CompilationData.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompilationData compilation_data = 1;</code>
        */
       public java.util.List<KieModuleCache.CompilationData.Builder>
@@ -2764,46 +2764,46 @@ public final class KieModuleCache {
       extends com.google.protobuf.MessageOrBuilder {
 
     // optional string dialect = 1;
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     boolean hasDialect();
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     java.lang.String getDialect();
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     com.google.protobuf.ByteString
         getDialectBytes();
 
     // repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     java.util.List<KieModuleCache.CompDataEntry>
         getEntryList();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     KieModuleCache.CompDataEntry getEntry( int index);
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     int getEntryCount();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     java.util.List<? extends KieModuleCache.CompDataEntryOrBuilder>
         getEntryOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     KieModuleCache.CompDataEntryOrBuilder getEntryOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.CompilationData}
    */
   public static final class CompilationData extends
@@ -2913,13 +2913,13 @@ public final class KieModuleCache {
     // optional string dialect = 1;
     public static final int DIALECT_FIELD_NUMBER = 1;
     private java.lang.Object dialect_;
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     public boolean hasDialect() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     public java.lang.String getDialect() {
@@ -2936,7 +2936,7 @@ public final class KieModuleCache {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string dialect = 1;</code>
      */
     public com.google.protobuf.ByteString
@@ -2956,32 +2956,32 @@ public final class KieModuleCache {
     // repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;
     public static final int ENTRY_FIELD_NUMBER = 2;
     private java.util.List<KieModuleCache.CompDataEntry> entry_;
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     public java.util.List<KieModuleCache.CompDataEntry> getEntryList() {
       return entry_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     public java.util.List<? extends KieModuleCache.CompDataEntryOrBuilder>
         getEntryOrBuilderList() {
       return entry_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     public int getEntryCount() {
       return entry_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     public KieModuleCache.CompDataEntry getEntry( int index) {
       return entry_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
      */
     public KieModuleCache.CompDataEntryOrBuilder getEntryOrBuilder(
@@ -3106,7 +3106,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.CompilationData}
      */
     public static final class Builder extends
@@ -3270,13 +3270,13 @@ public final class KieModuleCache {
 
       // optional string dialect = 1;
       private java.lang.Object dialect_ = "";
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public boolean hasDialect() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public java.lang.String getDialect() {
@@ -3290,7 +3290,7 @@ public final class KieModuleCache {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public com.google.protobuf.ByteString
@@ -3306,7 +3306,7 @@ public final class KieModuleCache {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public Builder setDialect(
@@ -3319,7 +3319,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public Builder clearDialect() {
@@ -3328,7 +3328,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string dialect = 1;</code>
        */
       public Builder setDialectBytes(
@@ -3355,7 +3355,7 @@ public final class KieModuleCache {
       private com.google.protobuf.RepeatedFieldBuilder<
           KieModuleCache.CompDataEntry, KieModuleCache.CompDataEntry.Builder, KieModuleCache.CompDataEntryOrBuilder> entryBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public java.util.List<KieModuleCache.CompDataEntry> getEntryList() {
@@ -3365,7 +3365,7 @@ public final class KieModuleCache {
           return entryBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public int getEntryCount() {
@@ -3375,7 +3375,7 @@ public final class KieModuleCache {
           return entryBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public KieModuleCache.CompDataEntry getEntry( int index) {
@@ -3385,7 +3385,7 @@ public final class KieModuleCache {
           return entryBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder setEntry(
@@ -3402,7 +3402,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder setEntry(
@@ -3416,7 +3416,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder addEntry( KieModuleCache.CompDataEntry value) {
@@ -3432,7 +3432,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder addEntry(
@@ -3449,7 +3449,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder addEntry(
@@ -3463,7 +3463,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder addEntry(
@@ -3477,7 +3477,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder addAllEntry(
@@ -3491,7 +3491,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder clearEntry() {
@@ -3504,7 +3504,7 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public Builder removeEntry(int index) {
@@ -3517,14 +3517,14 @@ public final class KieModuleCache {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public KieModuleCache.CompDataEntry.Builder getEntryBuilder(
           int index) {
         return getEntryFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public KieModuleCache.CompDataEntryOrBuilder getEntryOrBuilder(
@@ -3534,7 +3534,7 @@ public final class KieModuleCache {
           return entryBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public java.util.List<? extends KieModuleCache.CompDataEntryOrBuilder>
@@ -3545,14 +3545,14 @@ public final class KieModuleCache {
           return java.util.Collections.unmodifiableList(entry_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public KieModuleCache.CompDataEntry.Builder addEntryBuilder() {
         return getEntryFieldBuilder().addBuilder(
             KieModuleCache.CompDataEntry.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public KieModuleCache.CompDataEntry.Builder addEntryBuilder(
@@ -3560,7 +3560,7 @@ public final class KieModuleCache {
         return getEntryFieldBuilder().addBuilder(
             index, KieModuleCache.CompDataEntry.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.compiler.kie.builder.impl.CompDataEntry entry = 2;</code>
        */
       public java.util.List<KieModuleCache.CompDataEntry.Builder>
@@ -3596,31 +3596,31 @@ public final class KieModuleCache {
       extends com.google.protobuf.MessageOrBuilder {
 
     // optional string id = 1;
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     boolean hasId();
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     java.lang.String getId();
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     com.google.protobuf.ByteString
         getIdBytes();
 
     // optional bytes data = 2;
-    /**
+    /*
      * <code>optional bytes data = 2;</code>
      */
     boolean hasData();
-    /**
+    /*
      * <code>optional bytes data = 2;</code>
      */
     com.google.protobuf.ByteString getData();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.compiler.kie.builder.impl.CompDataEntry}
    */
   public static final class CompDataEntry extends
@@ -3724,13 +3724,13 @@ public final class KieModuleCache {
     // optional string id = 1;
     public static final int ID_FIELD_NUMBER = 1;
     private java.lang.Object id_;
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     public java.lang.String getId() {
@@ -3747,7 +3747,7 @@ public final class KieModuleCache {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string id = 1;</code>
      */
     public com.google.protobuf.ByteString
@@ -3767,13 +3767,13 @@ public final class KieModuleCache {
     // optional bytes data = 2;
     public static final int DATA_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString data_;
-    /**
+    /*
      * <code>optional bytes data = 2;</code>
      */
     public boolean hasData() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    /**
+    /*
      * <code>optional bytes data = 2;</code>
      */
     public com.google.protobuf.ByteString getData() {
@@ -3897,7 +3897,7 @@ public final class KieModuleCache {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.compiler.kie.builder.impl.CompDataEntry}
      */
     public static final class Builder extends
@@ -4028,13 +4028,13 @@ public final class KieModuleCache {
 
       // optional string id = 1;
       private java.lang.Object id_ = "";
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public java.lang.String getId() {
@@ -4048,7 +4048,7 @@ public final class KieModuleCache {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public com.google.protobuf.ByteString
@@ -4064,7 +4064,7 @@ public final class KieModuleCache {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public Builder setId(
@@ -4077,7 +4077,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public Builder clearId() {
@@ -4086,7 +4086,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string id = 1;</code>
        */
       public Builder setIdBytes(
@@ -4102,19 +4102,19 @@ public final class KieModuleCache {
 
       // optional bytes data = 2;
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes data = 2;</code>
        */
       public boolean hasData() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      /**
+      /*
        * <code>optional bytes data = 2;</code>
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
-      /**
+      /*
        * <code>optional bytes data = 2;</code>
        */
       public Builder setData(com.google.protobuf.ByteString value) {
@@ -4126,7 +4126,7 @@ public final class KieModuleCache {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes data = 2;</code>
        */
       public Builder clearData() {

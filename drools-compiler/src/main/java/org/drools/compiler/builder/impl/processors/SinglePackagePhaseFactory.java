@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.builder.impl.processors;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 
-/**
+/*
  * Instantiates a {@link CompilationPhase} that operates on
  * a single pair of {@link PackageRegistry} and {@link CompositePackageDescr}
  */

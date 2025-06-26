@@ -98,7 +98,7 @@ public class DMNModelImpl
     private DMNMessageManager messages;
 
     private DMNTypeRegistry types;
-    /**
+    /*
      * a compile-time preference to indicate if type-check should be performed during runtime evaluation.
      */
     private boolean runtimeTypeCheck = false;
@@ -170,7 +170,7 @@ public class DMNModelImpl
         this.definitions = definitions;
     }
 
-    /**
+    /*
      * Given a DMNNode, compute the proper name of the node, considering DMN-Imports.
      * For DMNNode in this current model, name is simply the name of the model.
      * For imported DMNNodes, this is the name with the prefix of the direct-dependency of the import `name`.
@@ -402,7 +402,7 @@ public class DMNModelImpl
         return resource;
     }
     
-    /**
+    /*
      * @return a compile-time preference to indicate if type-check should be performed during runtime evaluation.
      */
     public boolean isRuntimeTypeCheck() {
@@ -539,7 +539,7 @@ public class DMNModelImpl
             return result;
         }
 
-        /**
+        /*
          * For any given namespace, will return the list of available aliases (also transitive ones).
          */
         public Map<String, Collection<List<String>>> getImportChainAliases() {
@@ -565,7 +565,7 @@ public class DMNModelImpl
             return result;
         }
 
-        /**
+        /*
          * return the list of child models not including transitive ones.
          */
         public List<DMNModel> getImportChainDirectChildModels() {

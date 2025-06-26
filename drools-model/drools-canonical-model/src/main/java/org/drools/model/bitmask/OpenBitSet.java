@@ -7,7 +7,7 @@ import java.util.Collections;
 import org.drools.model.BitMask;
 
 
-/** An "open" BitSet implementation that allows direct access to the array of words
+/* An "open" BitSet implementation that allows direct access to the array of words
  * storing the bits.
  * <p/>
  * Unlike java.util.bitset, the fact that bits are packed into an array of longs
@@ -68,7 +68,7 @@ public class OpenBitSet implements BitMask {
 
     private Class<?> patternClass;
 
-    /** Constructs an OpenBitSet large enough to hold <code>numBits</code>.
+    /* Constructs an OpenBitSet large enough to hold <code>numBits</code>.
      */
     public OpenBitSet(long numBits) {
         this.numBits = numBits;
@@ -80,7 +80,7 @@ public class OpenBitSet implements BitMask {
         this(64);
     }
 
-    /** Constructs an OpenBitSet from an existing long[].
+    /* Constructs an OpenBitSet from an existing long[].
      * <br/>
      * The first 64 bits are in long[0],
      * with bit index 0 at the least significant bit, and bit index 63 at the most significant.
@@ -99,10 +99,10 @@ public class OpenBitSet implements BitMask {
         this.numBits = wlen * 64;
     }
 
-    /** Returns the current capacity in bits (1 greater than the index of the last bit) */
+    /* Returns the current capacity in bits (1 greater than the index of the last bit) */
     public long capacity() { return bits.length << 6; }
 
-    /**
+    /*
      * Returns the current capacity of this set.  Included for
      * compatibility.  This is *not* equal to {@link #cardinality}
      */
@@ -114,24 +114,24 @@ public class OpenBitSet implements BitMask {
         return bits.length << 6;
     }
 
-    /** Returns true if there are no set bits */
+    /* Returns true if there are no set bits */
     public boolean isEmpty() { return cardinality()==0; }
 
-    /** Expert: returns the long[] storing the bits */
+    /* Expert: returns the long[] storing the bits */
     public long[] getBits() { return bits; }
 
-    /** Expert: sets a new long[] to use as the bit storage */
+    /* Expert: sets a new long[] to use as the bit storage */
     public void setBits(long[] bits) { this.bits = bits; }
 
-    /** Expert: gets the number of longs in the array that are in use */
+    /* Expert: gets the number of longs in the array that are in use */
     public int getNumWords() { return wlen; }
 
-    /** Expert: sets the number of longs in the array that are in use */
+    /* Expert: sets the number of longs in the array that are in use */
     public void setNumWords(int nWords) { this.wlen=nWords; }
 
 
 
-    /** Returns true or false for the specified bit index. */
+    /* Returns true or false for the specified bit index. */
     public boolean get(int index) {
         int i = index >> 6;               // div 64
         // signed shift will keep a negative index and force an
@@ -144,7 +144,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Returns true or false for the specified bit index.
+    /* Returns true or false for the specified bit index.
      * The index should be less than the OpenBitSet size
      */
     public boolean fastGet(int index) {
@@ -159,7 +159,7 @@ public class OpenBitSet implements BitMask {
 
 
 
-    /** Returns true or false for the specified bit index
+    /* Returns true or false for the specified bit index
      */
     public boolean get(long index) {
         int i = (int)(index >> 6);             // div 64
@@ -169,7 +169,7 @@ public class OpenBitSet implements BitMask {
         return (bits[i] & bitmask) != 0;
     }
 
-    /** Returns true or false for the specified bit index.
+    /* Returns true or false for the specified bit index.
      * The index should be less than the OpenBitSet size.
      */
     public boolean fastGet(long index) {
@@ -193,7 +193,7 @@ public class OpenBitSet implements BitMask {
   */
 
 
-    /** returns 1 if the bit is set, 0 if not.
+    /* returns 1 if the bit is set, 0 if not.
      * The index should be less than the OpenBitSet size
      */
     public int getBit(int index) {
@@ -213,7 +213,7 @@ public class OpenBitSet implements BitMask {
   }
   */
 
-    /** sets a bit, expanding the set size if necessary */
+    /* sets a bit, expanding the set size if necessary */
     public void set(long index) {
         int wordNum = expandingWordNum(index);
         int bit = (int)index & 0x3f;
@@ -222,7 +222,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Sets the bit at the specified index.
+    /* Sets the bit at the specified index.
      * The index should be less than the OpenBitSet size.
      */
     public void fastSet(int index) {
@@ -233,7 +233,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] |= bitmask;
     }
 
-    /** Sets the bit at the specified index.
+    /* Sets the bit at the specified index.
      * The index should be less than the OpenBitSet size.
      */
     public void fastSet(long index) {
@@ -244,7 +244,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] |= bitmask;
     }
 
-    /** Sets a range of bits, expanding the set size if necessary
+    /* Sets a range of bits, expanding the set size if necessary
      *
      * @param startIndex lower index
      * @param endIndex one-past the last bit to set
@@ -284,7 +284,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** clears a bit.
+    /* clears a bit.
      * The index should be less than the OpenBitSet size.
      */
     public void fastClear(int index) {
@@ -302,7 +302,7 @@ public class OpenBitSet implements BitMask {
         // bits[word] &= Long.rotateLeft(0xfffffffe,bit);
     }
 
-    /** clears a bit.
+    /* clears a bit.
      * The index should be less than the OpenBitSet size.
      */
     public void fastClear(long index) {
@@ -313,7 +313,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] &= ~bitmask;
     }
 
-    /** clears a bit, allowing access beyond the current set size without changing the size.*/
+    /* clears a bit, allowing access beyond the current set size without changing the size.*/
     public void clear(long index) {
         int wordNum = (int)(index >> 6); // div 64
         if (wordNum>=wlen) return;
@@ -322,7 +322,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] &= ~bitmask;
     }
 
-    /** Clears a range of bits.  Clearing past the end does not change the size of the set.
+    /* Clears a range of bits.  Clearing past the end does not change the size of the set.
      *
      * @param startIndex lower index
      * @param endIndex one-past the last bit to clear
@@ -359,7 +359,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Clears a range of bits.  Clearing past the end does not change the size of the set.
+    /* Clears a range of bits.  Clearing past the end does not change the size of the set.
      *
      * @param startIndex lower index
      * @param endIndex one-past the last bit to clear
@@ -397,7 +397,7 @@ public class OpenBitSet implements BitMask {
 
 
 
-    /** Sets a bit and returns the previous value.
+    /* Sets a bit and returns the previous value.
      * The index should be less than the OpenBitSet size.
      */
     public boolean getAndSet(int index) {
@@ -410,7 +410,7 @@ public class OpenBitSet implements BitMask {
         return val;
     }
 
-    /** Sets a bit and returns the previous value.
+    /* Sets a bit and returns the previous value.
      * The index should be less than the OpenBitSet size.
      */
     public boolean getAndSet(long index) {
@@ -423,7 +423,7 @@ public class OpenBitSet implements BitMask {
         return val;
     }
 
-    /** flips a bit.
+    /* flips a bit.
      * The index should be less than the OpenBitSet size.
      */
     public void fastFlip(int index) {
@@ -434,7 +434,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] ^= bitmask;
     }
 
-    /** flips a bit.
+    /* flips a bit.
      * The index should be less than the OpenBitSet size.
      */
     public void fastFlip(long index) {
@@ -445,7 +445,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] ^= bitmask;
     }
 
-    /** flips a bit, expanding the set size if necessary */
+    /* flips a bit, expanding the set size if necessary */
     public void flip(long index) {
         int wordNum = expandingWordNum(index);
         int bit = (int)index & 0x3f;       // mod 64
@@ -453,7 +453,7 @@ public class OpenBitSet implements BitMask {
         bits[wordNum] ^= bitmask;
     }
 
-    /** flips a bit and returns the resulting bit value.
+    /* flips a bit and returns the resulting bit value.
      * The index should be less than the OpenBitSet size.
      */
     public boolean flipAndGet(int index) {
@@ -465,7 +465,7 @@ public class OpenBitSet implements BitMask {
         return (bits[wordNum] & bitmask) != 0;
     }
 
-    /** flips a bit and returns the resulting bit value.
+    /* flips a bit and returns the resulting bit value.
      * The index should be less than the OpenBitSet size.
      */
     public boolean flipAndGet(long index) {
@@ -477,7 +477,7 @@ public class OpenBitSet implements BitMask {
         return (bits[wordNum] & bitmask) != 0;
     }
 
-    /** Flips a range of bits, expanding the set size if necessary
+    /* Flips a range of bits, expanding the set size if necessary
      *
      * @param startIndex lower index
      * @param endIndex one-past the last bit to flip
@@ -490,7 +490,7 @@ public class OpenBitSet implements BitMask {
         // word to be changed.
         int endWord   = expandingWordNum(endIndex-1);
 
-        /*** Grrr, java shifting wraps around so -1L>>>64 == -1
+        /** Grrr, java shifting wraps around so -1L>>>64 == -1
          * for that reason, make sure not to use endmask if the bits to flip will
          * be zero in the last word (redefine endWord to be the last changed...)
          long startmask = -1L << (startIndex & 0x3f);     // example: 11111...111000
@@ -538,19 +538,19 @@ public class OpenBitSet implements BitMask {
   */
 
 
-    /** @return the number of set bits */
+    /* @return the number of set bits */
     public long cardinality() {
         return BitUtil.pop_array( bits, 0, wlen );
     }
 
-    /** Returns the popcount or cardinality of the intersection of the two sets.
+    /* Returns the popcount or cardinality of the intersection of the two sets.
      * Neither set is modified.
      */
     public static long intersectionCount(OpenBitSet a, OpenBitSet b) {
         return BitUtil.pop_intersect( a.bits, b.bits, 0, Math.min( a.wlen, b.wlen ) );
     }
 
-    /** Returns the popcount or cardinality of the union of the two sets.
+    /* Returns the popcount or cardinality of the union of the two sets.
      * Neither set is modified.
      */
     public static long unionCount(OpenBitSet a, OpenBitSet b) {
@@ -563,7 +563,7 @@ public class OpenBitSet implements BitMask {
         return tot;
     }
 
-    /** Returns the popcount or cardinality of "a and not b"
+    /* Returns the popcount or cardinality of "a and not b"
      * or "intersection(a, not(b))".
      * Neither set is modified.
      */
@@ -575,7 +575,7 @@ public class OpenBitSet implements BitMask {
         return tot;
     }
 
-    /** Returns the popcount or cardinality of the exclusive-or of the two sets.
+    /* Returns the popcount or cardinality of the exclusive-or of the two sets.
      * Neither set is modified.
      */
     public static long xorCount(OpenBitSet a, OpenBitSet b) {
@@ -589,7 +589,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Returns the index of the first set bit starting at the index specified.
+    /* Returns the index of the first set bit starting at the index specified.
      *  -1 is returned if there are no more set bits.
      */
     public int nextSetBit(int index) {
@@ -610,7 +610,7 @@ public class OpenBitSet implements BitMask {
         return -1;
     }
 
-    /** Returns the index of the first set bit starting at the index specified.
+    /* Returns the index of the first set bit starting at the index specified.
      *  -1 is returned if there are no more set bits.
      */
     public long nextSetBit(long index) {
@@ -632,7 +632,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Returns the index of the first set bit starting downwards at
+    /* Returns the index of the first set bit starting downwards at
      *  the index specified.
      *  -1 is returned if there are no more set bits.
      */
@@ -665,7 +665,7 @@ public class OpenBitSet implements BitMask {
         return -1;
     }
 
-    /** Returns the index of the first set bit starting downwards at
+    /* Returns the index of the first set bit starting downwards at
      *  the index specified.
      *  -1 is returned if there are no more set bits.
      */
@@ -709,7 +709,7 @@ public class OpenBitSet implements BitMask {
         }
     }
 
-    /** this = this AND other */
+    /* this = this AND other */
     public void intersect(OpenBitSet other) {
         int newLen= Math.min(this.wlen,other.wlen);
         long[] thisArr = this.bits;
@@ -726,7 +726,7 @@ public class OpenBitSet implements BitMask {
         this.wlen = newLen;
     }
 
-    /** this = this OR other */
+    /* this = this OR other */
     public void union(OpenBitSet other) {
         int newLen = Math.max(wlen,other.wlen);
         ensureCapacityWords(newLen);
@@ -745,7 +745,7 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Remove all elements set in other. this = this AND_NOT other */
+    /* Remove all elements set in other. this = this AND_NOT other */
     public void remove(OpenBitSet other) {
         int idx = Math.min(wlen,other.wlen);
         long[] thisArr = this.bits;
@@ -755,7 +755,7 @@ public class OpenBitSet implements BitMask {
         }
     }
 
-    /** this = this XOR other */
+    /* this = this XOR other */
     public void xor(OpenBitSet other) {
         int newLen = Math.max(wlen,other.wlen);
         ensureCapacityWords(newLen);
@@ -776,22 +776,22 @@ public class OpenBitSet implements BitMask {
 
     // some BitSet compatability methods
 
-    //** see {@link intersects} */
+    //* see {@link intersects} */
     public void and(OpenBitSet other) {
         intersect(other);
     }
 
-    //** see {@link union} */
+    //* see {@link union} */
     public void or(OpenBitSet other) {
         union(other);
     }
 
-    //** see {@link andNot} */
+    //* see {@link andNot} */
     public void andNot(OpenBitSet other) {
         remove(other);
     }
 
-    /** returns true if the sets have any elements in common */
+    /* returns true if the sets have any elements in common */
     public boolean intersects(OpenBitSet other) {
         int pos = Math.min(this.wlen, other.wlen);
         long[] thisArr = this.bits;
@@ -804,7 +804,7 @@ public class OpenBitSet implements BitMask {
 
 
 
-    /** Expand the long[] with the size given as a number of words (64 bit longs).
+    /* Expand the long[] with the size given as a number of words (64 bit longs).
      * getNumWords() is unchanged by this call.
      */
     public void ensureCapacityWords(int numWords) {
@@ -829,7 +829,7 @@ public class OpenBitSet implements BitMask {
     public static final boolean JRE_IS_MINIMUM_JAVA7;
     public static final boolean JRE_IS_MINIMUM_JAVA8;
 
-    /** True iff running on a 64bit JVM */
+    /* True iff running on a 64bit JVM */
     public static final boolean JRE_IS_64BIT;
 
     static {
@@ -880,7 +880,7 @@ public class OpenBitSet implements BitMask {
         }
     }
 
-    /** Returns an array size >= minTargetSize, generally
+    /* Returns an array size >= minTargetSize, generally
      *  over-allocating exponentially to achieve amortized
      *  linear-time cost as the array grows.
      *
@@ -968,14 +968,14 @@ public class OpenBitSet implements BitMask {
     }
 
 
-    /** Ensure that the long[] is big enough to hold numBits, expanding it if necessary.
+    /* Ensure that the long[] is big enough to hold numBits, expanding it if necessary.
      * getNumWords() is unchanged by this call.
      */
     public void ensureCapacity(long numBits) {
         ensureCapacityWords(bits2words(numBits));
     }
 
-    /** Lowers numWords, the number of words in use,
+    /* Lowers numWords, the number of words in use,
      * by checking for trailing zero words.
      */
     public void trimTrailingZeros() {
@@ -984,13 +984,13 @@ public class OpenBitSet implements BitMask {
         wlen = idx+1;
     }
 
-    /** returns the number of 64 bit words it would take to hold numBits */
+    /* returns the number of 64 bit words it would take to hold numBits */
     public static int bits2words(long numBits) {
         return (int)(((numBits-1)>>>6)+1);
     }
 
 
-    /** returns true if both sets have the same bits set */
+    /* returns true if both sets have the same bits set */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -1057,7 +1057,7 @@ public class OpenBitSet implements BitMask {
         // packed inside a 32 bit integer (8 4 bit numbers).  That
         // should be faster than accessing an array for each index, and
         // the total array size is kept smaller (256*sizeof(int))=1K
-        /***** the python code that generated bitlist
+        /**** the python code that generated bitlist
          def bits2int(val):
          arr=0
          for shift in range(8,0,-1):
@@ -1103,12 +1103,12 @@ public class OpenBitSet implements BitMask {
 
         private BitUtil() {} // no instance
 
-        /** Return the number of bits sets in b. */
+        /* Return the number of bits sets in b. */
         public static int bitCount(byte b) {
             return BYTE_COUNTS[b & 0xFF];
         }
 
-        /** Return the list of bits which are set in b encoded as followed:
+        /* Return the list of bits which are set in b encoded as followed:
          * <code>(i >>> (4 * n)) & 0x0F</code> is the offset of the n-th set bit of
          * the given byte plus one, or 0 if there are n or less bits set in the given
          * byte. For example <code>bitList(12)</code> returns 0x43:<ul>
@@ -1124,7 +1124,7 @@ public class OpenBitSet implements BitMask {
         // turns out that it is faster to use the Long.bitCount method (which is an
         // intrinsic since Java 6u18) in a naive loop, see LUCENE-2221
 
-        /** Returns the number of set bits in an array of longs. */
+        /* Returns the number of set bits in an array of longs. */
         public static long pop_array(long[] arr, int wordOffset, int numWords) {
             long popCount = 0;
             for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i) {
@@ -1133,7 +1133,7 @@ public class OpenBitSet implements BitMask {
             return popCount;
         }
 
-        /** Returns the popcount or cardinality of the two sets after an intersection.
+        /* Returns the popcount or cardinality of the two sets after an intersection.
          *  Neither array is modified. */
         public static long pop_intersect(long[] arr1, long[] arr2, int wordOffset, int numWords) {
             long popCount = 0;
@@ -1143,7 +1143,7 @@ public class OpenBitSet implements BitMask {
             return popCount;
         }
 
-        /** Returns the popcount or cardinality of the union of two sets.
+        /* Returns the popcount or cardinality of the union of two sets.
          *  Neither array is modified. */
         public static long pop_union(long[] arr1, long[] arr2, int wordOffset, int numWords) {
             long popCount = 0;
@@ -1153,7 +1153,7 @@ public class OpenBitSet implements BitMask {
             return popCount;
         }
 
-        /** Returns the popcount or cardinality of A & ~B.
+        /* Returns the popcount or cardinality of A & ~B.
          *  Neither array is modified. */
         public static long pop_andnot(long[] arr1, long[] arr2, int wordOffset, int numWords) {
             long popCount = 0;
@@ -1163,7 +1163,7 @@ public class OpenBitSet implements BitMask {
             return popCount;
         }
 
-        /** Returns the popcount or cardinality of A ^ B
+        /* Returns the popcount or cardinality of A ^ B
          * Neither array is modified. */
         public static long pop_xor(long[] arr1, long[] arr2, int wordOffset, int numWords) {
             long popCount = 0;
@@ -1173,7 +1173,7 @@ public class OpenBitSet implements BitMask {
             return popCount;
         }
 
-        /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
+        /* returns the next highest power of two, or the current value if it's already a power of two or zero*/
         public static int nextHighestPowerOfTwo(int v) {
             v--;
             v |= v >> 1;
@@ -1185,7 +1185,7 @@ public class OpenBitSet implements BitMask {
             return v;
         }
 
-        /** returns the next highest power of two, or the current value if it's already a power of two or zero*/
+        /* returns the next highest power of two, or the current value if it's already a power of two or zero*/
         public static long nextHighestPowerOfTwo(long v) {
             v--;
             v |= v >> 1;

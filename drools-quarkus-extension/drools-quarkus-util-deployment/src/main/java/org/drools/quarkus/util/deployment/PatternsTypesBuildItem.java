@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Set;
 
 import io.quarkus.builder.item.SimpleBuildItem;
 
-/**
+/*
  * Collect Pattern types by package.
  * 
  * (a Pattern type is generally one referring to a Phreak OTN class)

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.kie.api.runtime.process.WorkItemHandler;
 
-/**
+/*
  * A work item manager is responsible for finding the right
  * work item handler when a work item should be executed and
  * should be notified when this work item has been completed
@@ -30,7 +30,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
  */
 public interface WorkItemManagerFluent<T,P,U> {
 
-    /**
+    /*
      * Notifies the work item manager that the work item with the given
      * id has been completed. Results related to the execution of this
      * work item can be passed.
@@ -40,7 +40,7 @@ public interface WorkItemManagerFluent<T,P,U> {
      */
     T completeWorkItem(long id, Map<String, Object> results);
 
-    /**
+    /*
      * Notifies the work item manager that the work item with the given
      * id could not be executed and should be aborted.
      *
@@ -48,7 +48,7 @@ public interface WorkItemManagerFluent<T,P,U> {
      */
     T abortWorkItem(long id);
 
-    /**
+    /*
      * Register the given handler for all work items of the given
      * type of work
      *

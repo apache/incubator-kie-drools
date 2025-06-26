@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.kie.api.prototype.Prototype;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.definition.KnowledgeDefinition;
 
-/**
+/*
  * The type declaration class stores all type's metadata
  * declared in source files.
  */
@@ -73,14 +73,14 @@ public class TypeDeclaration
     }
 
     public enum Nature {
-        /**
+        /*
          * A DECLARATION is a Type Declaration that does not contain any
          * field definition and that is just used to add meta-data to an
          * DEFINITION.
          * A DEFINITION of an exiting DEFINITION is also considered a DECLARATION
          */
         DECLARATION,
-        /**
+        /*
          * A DEFINITION is:
          *  1.- Type Declaration containing field definitions.
          *  2.- A DECLARATION with no previous DEFINITION
@@ -217,21 +217,21 @@ public class TypeDeclaration
         return this.setMask;
     }
 
-    /**
+    /*
      * @return the type
      */
     public String getTypeName() {
         return typeName;
     }
 
-    /**
+    /*
      * @return the category
      */
     public Role.Type getRole() {
         return role;
     }
 
-    /**
+    /*
      * @param role the category to set
      */
     public void setRole(Role.Type role) {
@@ -239,14 +239,14 @@ public class TypeDeclaration
         this.role = role;
     }
 
-    /**
+    /*
      * @return the format
      */
     public Format getFormat() {
         return format;
     }
 
-    /**
+    /*
      * @param format the format to set
      */
     public void setFormat(Format format) {
@@ -254,14 +254,14 @@ public class TypeDeclaration
         this.format = format;
     }
 
-    /**
+    /*
      * @return the kind
      */
     public Kind getKind() {
         return kind;
     }
 
-    /**
+    /*
      * @param kind the kind to set
      */
     public void setKind(Kind kind) {
@@ -278,28 +278,28 @@ public class TypeDeclaration
         this.nature = nature;
     }
 
-    /**
+    /*
      * @return the timestampAttribute
      */
     public String getTimestampAttribute() {
         return timestampAttribute;
     }
 
-    /**
+    /*
      * @param timestampAttribute the timestampAttribute to set
      */
     public void setTimestampAttribute(String timestampAttribute) {
         this.timestampAttribute = timestampAttribute;
     }
 
-    /**
+    /*
      * @return the durationAttribute
      */
     public String getDurationAttribute() {
         return durationAttribute;
     }
 
-    /**
+    /*
      * @param durationAttribute the durationAttribute to set
      */
     public void setDurationAttribute(String durationAttribute) {
@@ -314,14 +314,14 @@ public class TypeDeclaration
         this.valid = valid;
     }
 
-    /**
+    /*
      * @return the typeClass
      */
     public Class< ? > getTypeClass() {
         return typeClass;
     }
 
-    /**
+    /*
      * @param typeClass the typeClass to set
      */
     public void setTypeClass(Class< ? > typeClass) {
@@ -346,7 +346,7 @@ public class TypeDeclaration
         return prototype;
     }
 
-    /**
+    /*
      * Returns true if the given parameter matches this type declaration
      */
     public boolean matches(Object clazz) {
@@ -355,7 +355,7 @@ public class TypeDeclaration
                this.typeClass.isAssignableFrom( (Class< ? >) clazz );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override
@@ -366,7 +366,7 @@ public class TypeDeclaration
         return result;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override
@@ -399,14 +399,14 @@ public class TypeDeclaration
         this.durationExtractor = durationExtractor;
     }
 
-    /**
+    /*
      * @return the typeClassDef
      */
     public ClassDefinition getTypeClassDef() {
         return typeClassDef;
     }
 
-    /**
+    /*
      * @param typeClassDef the typeClassDef to set
      */
     public void setTypeClassDef(ClassDefinition typeClassDef) {

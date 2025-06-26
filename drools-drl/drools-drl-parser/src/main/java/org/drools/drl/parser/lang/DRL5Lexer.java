@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -104,7 +104,7 @@ public class DRL5Lexer extends AbstractDRLLexer {
 	    private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
 	    private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null, LanguageLevelOption.DRL5);
 
-	    /** The standard method called to automatically emit a token at the
+	    /* The standard method called to automatically emit a token at the
 	     *  outermost lexical rule.  The token object should point into the
 	     *  char buffer start..stop.  If there is a text override in 'text',
 	     *  use that to set the token's text.  Override this method to emit
@@ -123,12 +123,12 @@ public class DRL5Lexer extends AbstractDRLLexer {
 	        errors.add(errorMessageFactory.createDroolsException(ex));
 	    }
 
-	    /** return the raw DroolsParserException errors */
+	    /* return the raw DroolsParserException errors */
 	    public List<DroolsParserException> getErrors() {
 	        return errors;
 	    }
 
-	    /** Overrided this method to not output mesages */
+	    /* Overrided this method to not output mesages */
 	    public void emitErrorMessage(String msg) {
 	    }
 	    

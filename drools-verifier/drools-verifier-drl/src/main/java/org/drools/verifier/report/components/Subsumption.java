@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.drools.verifier.data.VerifierComponent;
 
-/**
+/*
  * Object type that indicates a subsumption between two objects.
  * 
  * Subsumption happens when all possible the values for component A,

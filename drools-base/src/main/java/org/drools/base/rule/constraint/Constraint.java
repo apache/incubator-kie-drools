@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ public interface Constraint
     Externalizable,
     Cloneable {
 
-    /**
+    /*
      * Returns all the declarations required by the given
      * constraint implementation.
      *
@@ -49,7 +49,7 @@ public interface Constraint
      */
     Declaration[] getRequiredDeclarations();
 
-    /**
+    /*
      * When a rule contains multiple logical branches, i.e., makes 
      * use of 'OR' CE, it is required to clone patterns and declarations
      * for each logical branch. Since this is done at ReteOO build
@@ -63,27 +63,27 @@ public interface Constraint
     void replaceDeclaration(Declaration oldDecl,
                             Declaration newDecl);
 
-    /**
+    /*
      * Clones the constraint
      * @return
      */
     Constraint clone();
 
-    /**
+    /*
      * Returns the type of the constraint, either ALPHA, BETA or UNKNOWN
      *
      * @return
      */
     ConstraintType getType();
     
-    /**
+    /*
      * Returns true in case this constraint is a temporal constraint
      * 
      * @return
      */
     boolean isTemporal();
 
-    /**
+    /*
      * Returns property reactivity BitMask of this constraint.
      *
      * @param pattern which this constraint belongs to. if pattern is empty, bind variables are considered to be declared in the same pattern. It should be fine for alpha constraints
@@ -108,7 +108,7 @@ public interface Constraint
     }
     default void addPackageNames(Collection<String> otherPkgs) { }
 
-    /**
+    /*
      * An enum for Constraint Types
      */
     public static enum ConstraintType {

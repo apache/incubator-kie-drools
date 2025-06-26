@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.dmn.feel.runtime.functions.TimeFunction;
 
 import static org.kie.dmn.feel.lang.types.BuiltInType.justNull;
 
-/**
+/*
  * An implementation of the FEEL marshaller interface
  * that converts FEEL objects into it's string representation
  * and vice versa
@@ -42,7 +42,7 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
 
     private FEELStringMarshaller() {}
 
-    /**
+    /*
      * Marshalls the give FEEL value into a String. The result is similar to
      * calling the string() function in a FEEL expression, with the difference
      * that a null value is returned as the "null" string instead of the null
@@ -60,7 +60,7 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
         return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata( justNull(), Function.identity());
     }
 
-    /**
+    /*
      * Unmarshalls the given string into a FEEL value.
      *
      * IMPORTANT: please note that it is only possible to unmarshall simple

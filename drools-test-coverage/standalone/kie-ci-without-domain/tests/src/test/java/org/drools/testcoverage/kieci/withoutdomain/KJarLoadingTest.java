@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests loading a KJAR with non-trivial pom.xml (dependencies, parent pom, ...).
  *
  * Tests must NOT have access to domain classes in test-domain module (BZ 1305798).

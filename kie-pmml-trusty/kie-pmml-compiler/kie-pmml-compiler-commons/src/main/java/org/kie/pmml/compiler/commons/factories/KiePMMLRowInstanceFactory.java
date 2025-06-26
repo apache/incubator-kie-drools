@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getRowDataMap;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLRow</code> instance
  * out of <code>Row</code>s
  */

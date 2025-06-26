@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -187,7 +187,7 @@ public class BuildtimeSegmentUtilities {
         return conditionalBranch;
     }
 
-    /**
+    /*
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
     public static SegmentPrototype createSegmentMemory(LeftTupleNode segmentRoot, LeftTupleNode segmentTip, int recordBefore, TerminalNode removingTn, InternalRuleBase rbase) {
@@ -396,7 +396,7 @@ public class BuildtimeSegmentUtilities {
                 NodeTypeEnums.AccumulateNode != betaNode.getType() && !betaNode.isRightInputPassive());
     }
 
-    /**
+    /*
      * Returns whether the node is the root of a segment.
      * Lians are always the root of a segment.
      *
@@ -409,7 +409,7 @@ public class BuildtimeSegmentUtilities {
         return NodeTypeEnums.isLeftInputAdapterNode(node) || isTipNode( node.getLeftTupleSource(), ignoreTn );
     }
 
-    /**
+    /*
      * Returns whether the node is the tip of a segment.
      * EndNodes (rtn and rian) are always the tip of a segment.
      *

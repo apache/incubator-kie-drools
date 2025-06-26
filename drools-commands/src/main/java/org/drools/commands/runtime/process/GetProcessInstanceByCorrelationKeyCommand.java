@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.internal.process.CorrelationKey;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceByCorrelationKeyCommand implements ExecutableCommand<ProcessInstance>, CorrelationKeyCommand {
 
-    /** Generated serial version UID */
+    /* Generated serial version UID */
     private static final long serialVersionUID = -211522165088235065L;
     
     @XmlElement(name = "correlation-key", required = true)

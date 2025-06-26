@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.util.StringUtils.getPkgUUID;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
-/**
+/*
  * Abstract <code>ModelImplementationProvider</code> for <b>KiePMMLDroolsModel</b>s
  */
 public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroolsModel> implements ModelImplementationProvider<T, E> {
@@ -88,7 +88,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         return getBaseDescr(kiePMMLDroolsAST, packageName);
     }
 
-    /**
+    /*
      * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
      * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param model
@@ -101,14 +101,14 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                          final List<KiePMMLDroolsType> types);
 
-    /**
+    /*
      * @param compilationDTO
      * @return
      * @throws IOException
      */
     public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DroolsCompilationDTO<T> compilationDTO) throws IOException;
 
-    /**
+    /*
      * @param fields       Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
      *                     DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param model

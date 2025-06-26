@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.acme.insurance;
 
-/**
+/*
  * This represents a policy that a driver is applying for. 
  * 
  * Obviously in the real world, there are actuaries to mess things up, but lets just pretend there is

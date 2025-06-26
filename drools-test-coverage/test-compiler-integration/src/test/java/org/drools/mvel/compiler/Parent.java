@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ public class Parent extends GrandParent {
         super( name );
     }
 
-    /**
+    /*
      * @return the parent
      */
     public GrandParent getGrandParent() {
         return grandParent;
     }
 
-    /**
+    /*
      * @param parent the parent to set
      */
     public void setGrandParent(GrandParent parent) {

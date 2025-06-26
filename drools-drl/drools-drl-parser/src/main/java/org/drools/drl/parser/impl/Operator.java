@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -90,7 +90,7 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
 
     private static final long                  serialVersionUID = 510l;
 
-    /**
+    /*
      * Creates a new Operator instance for the given parameters,
      * adds it to the registry and return it
      *
@@ -109,7 +109,7 @@ public class Operator implements Externalizable, org.kie.api.runtime.rule.Operat
         return CACHE.values();
     }
 
-    /**
+    /*
      * Returns the operator instance for the given parameters
      *
      * @param operatorId the identification symbol of the operator

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.verifier.core.checks.base;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 
-/**
+/*
  * A check that compares a row to another.
  */
 public abstract class PairCheck

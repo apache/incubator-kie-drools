@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.io.Resource;
 
 import static org.drools.drl.parser.antlr4.DescrHelper.populateCommonProperties;
 
-/**
+/*
  * Factory class for Descr instantiation.
  */
 public class BaseDescrFactory {
@@ -45,7 +45,7 @@ public class BaseDescrFactory {
             this.toReturn = toBuild;
         }
 
-        /**
+        /*
          * Initializes a BaseDescr instance with common properties from the given context.
          * DRLVisitor implementations should always use this method to initialize BaseDescr instances.
          */

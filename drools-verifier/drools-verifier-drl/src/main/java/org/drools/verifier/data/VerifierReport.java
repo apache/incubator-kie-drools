@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public interface VerifierReport {
 
     public void add(VerifierMessageBase note);
 
-    /**
+    /*
      * Return all the items that have given severity value.
      * 
      * @param severity

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -148,7 +148,7 @@ public class UnaryTestNode
         };
     }
 
-    /**
+    /*
      * For a Unary Test an = (equal) semantic depends on the RIGHT value.
      * If the RIGHT is NOT a list, then standard equals semantic applies
      * If the RIGHT is a LIST, then the semantic is "right contains left"

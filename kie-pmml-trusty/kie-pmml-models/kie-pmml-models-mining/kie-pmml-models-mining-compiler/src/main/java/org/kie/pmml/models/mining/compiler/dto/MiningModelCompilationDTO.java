@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
     private final String segmentationCanonicalClassName;
     private final Segmentation segmentation;
 
-    /**
+    /*
      * Private constructor that use given <code>CommonCompilationDTO</code>
      *
      * @param source
@@ -57,7 +57,7 @@ public class MiningModelCompilationDTO extends AbstractSpecificCompilationDTO<Mi
         this.segmentation = source.getModel().getSegmentation();
     }
 
-    /**
+    /*
      * Builder that use given <code>CommonCompilationDTO</code>
      *
      * @param source

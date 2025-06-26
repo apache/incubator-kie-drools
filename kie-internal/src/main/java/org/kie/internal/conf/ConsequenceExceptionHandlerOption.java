@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,33 +22,33 @@ import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 
-/**
+/*
  * A class for the consequence exception handler configuration configuration.
  */
 public class ConsequenceExceptionHandlerOption implements SingleValueRuleBaseOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for consequence exception handler configuration
      */
     public static final String PROPERTY_NAME = "drools.consequenceExceptionHandler";
 
     public static OptionKey<ConsequenceExceptionHandlerOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * the consequence exception handler class instance
      */
     private final Class<? extends ConsequenceExceptionHandler> handler;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      */
     private ConsequenceExceptionHandlerOption( final Class<? extends ConsequenceExceptionHandler> handler ) {
         this.handler = handler;
     }
 
-    /**
+    /*
      * This is a factory method for this ConsequenceExceptionHandler configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -61,14 +61,14 @@ public class ConsequenceExceptionHandlerOption implements SingleValueRuleBaseOpt
         return new ConsequenceExceptionHandlerOption( handler );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the consequence exception handler instance
      * @return
      */

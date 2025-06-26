@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 
-/**
+/*
  * coerce singleton output decision service as a value instead of a context of single entry.
  */
 public class CoerceDecisionServiceSingletonOutputOption implements DMNOption {
@@ -29,7 +29,7 @@ public class CoerceDecisionServiceSingletonOutputOption implements DMNOption {
 
     public static final String PROPERTY_NAME = DMNAssemblerService.ORG_KIE_DMN_PREFIX + ".decisionservice.coercesingleton";
 
-    /**
+    /*
      * The default value for this option
      */
     public static final boolean DEFAULT_VALUE = true;

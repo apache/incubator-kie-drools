@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -93,7 +93,7 @@ public class KieBaseBuilder {
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 
-    /**
+    /*
      * Creates a KieBase instance from rules models.
      *
      * @param models A collection of rules models, which is filtered based on the required KieBase model.

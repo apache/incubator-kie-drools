@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.test.domain.Person;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.test.ReliabilityTest.BASIC_RULE;
 
-/**
+/*
  * This test class is to keep tests for FullStrategy, which is suspended at the moment
  */
 @Disabled("FullStrategy is suspended at the moment")

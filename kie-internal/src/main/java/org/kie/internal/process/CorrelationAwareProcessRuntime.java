@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,14 @@ import java.util.Map;
 
 import org.kie.api.runtime.process.ProcessInstance;
 
-/**
+/*
  * Classes that implement this interface will provide additional capabilities
  * based on correlation. Most important to allow users to define custom
  * correlation keys as an alternative to considered internal process instance id.
  */
 public interface CorrelationAwareProcessRuntime {
 
-    /**
+    /*
      * Start a new process instance.  The process (definition) that should
      * be used is referenced by the given process id.  Parameters can be passed
      * to the process instance (as name-value pairs), and these will be set
@@ -43,7 +43,7 @@ public interface CorrelationAwareProcessRuntime {
     ProcessInstance startProcess(String processId, CorrelationKey correlationKey,
                                  Map<String, Object> parameters);
 
-    /**
+    /*
      * Creates a new process instance (but does not yet start it).  The process
      * (definition) that should be used is referenced by the given process id.
      * Parameters can be passed to the process instance (as name-value pairs),
@@ -59,7 +59,7 @@ public interface CorrelationAwareProcessRuntime {
     ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey,
                                           Map<String, Object> parameters);
 
-    /**
+    /*
      * Starts a process with the values supplied from the current nodes
      * 
      * @param processId The process's identifier
@@ -73,7 +73,7 @@ public interface CorrelationAwareProcessRuntime {
      */
     ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds);
 
-    /**
+    /*
      * Returns the process instance with the given correlationKey.  Note that only active process instances
      * will be returned.  If a process instance has been completed already, this method will return
      * <code>null</code>.

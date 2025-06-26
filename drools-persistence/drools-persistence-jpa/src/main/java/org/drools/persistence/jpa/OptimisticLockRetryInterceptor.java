@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * ExecutableInterceptor that is capable of retrying command execution. It is intended to retry only if right exception
  * has been thrown. By default it will look for <code>org.hibernate.StaleObjectStateException</code> and only
  * then attempt to retry.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.api.feel.runtime.events;
 
-/**
+/*
  * An interface for FEEL related events
  */
 public interface FEELEvent {
@@ -27,21 +27,21 @@ public interface FEELEvent {
         TRACE, INFO, WARN, ERROR;
     }
 
-    /**
+    /*
      * Returns the severity of the event
      *
      * @return
      */
     Severity getSeverity();
 
-    /**
+    /*
      * Returns a human readable message about the event
      *
      * @return
      */
     String getMessage();
 
-    /**
+    /*
      * In case the event relates to an exception, returns
      * the caught Throwable
      *
@@ -49,7 +49,7 @@ public interface FEELEvent {
      */
     Throwable getSourceException();
 
-    /**
+    /*
      * In case the event refers to the source code, returns
      * the line in the source code where the event was generated
      * or -1 if it does not refer to a source code line.
@@ -61,7 +61,7 @@ public interface FEELEvent {
      */
     int getLine();
 
-    /**
+    /*
      * In case the event refers to the source code, returns
      * the character in the line of the the source code where
      * the event was generated or -1 if it does not refer to a
@@ -74,7 +74,7 @@ public interface FEELEvent {
      */
     int getColumn();
 
-    /**
+    /*
      * In case the event refers to a symbol in the source code,
      * this method returns the offending symbol, as an ANTLR
      * CommonToken instance. Otherwise, it returns null.

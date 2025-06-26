@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
-/**
+/*
  * An event class to report a hit policy violation on a decision table
  */
 public class HitPolicyViolationEvent

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests handling a variable binding in LHS with OR (BZ 1136424).
  */
 public class DeclarationWithOrTest {
@@ -54,7 +54,7 @@ public class DeclarationWithOrTest {
         return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    /**
+    /*
      * Verifies that the rule with binding and OR in LHS compiles and works as expected.
      */
     @ParameterizedTest(name = "KieBase type={0}")

@@ -189,7 +189,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return null;
     }
 
-    /**
+    /*
      * This method compiles a given DMN Definitions object into a DMNModel, processing imports, item definitions and DRG elements as part of the compilation process.
      * @param dmndefs : The Definitions object containing the DMN model definition to be compiled.
      * @param dmnModels A collection of existing DMN models that may be used during the compilation process.
@@ -212,7 +212,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return model;
     }
 
-    /**
+    /*
      * This method will Configures and creates a DMNCompilerContext for the DMN compiler, setting up the FEEL helper and relative resolver.
      * @param feeldialect : It used by the DMN compiler for parsing and evaluating FEEL expressions.
      * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
@@ -227,7 +227,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return ctx;
     }
 
-    /**
+    /*
      * This method is used to iterates over the imports defined in a DMN Definitions object and processes each import based on its type.
      * After processing all imports, it merges models by calling processMergedModel method for each merged model.
      * @param dmndefs : The Definitions object that contains the imports to be processed.
@@ -509,7 +509,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    /**
+    /*
      * For the purpose of Compilation, in the DMNModel the DRGElements are stored with their full ID, so an ElementReference might reference in two forms:
      *  - #id (a local to the model ID)
      *  - namespace#id (an imported DRGElement ID)
@@ -526,7 +526,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    /**
+    /*
      * Recursively navigate the given <code>DMNModelInstrumentedBase</code> until it gets to the root <code>Definitions</code> element.
      * it throws a <code>RuntimeException</code> if such element could not be found.
      *
@@ -544,7 +544,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    /**
+    /*
      * @param topLevel null if it is a top level ItemDefinition
      */
     private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, DMNType topLevel) {
@@ -699,7 +699,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return !(itemDef instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) && !(itemDef instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) && itemDef.getFunctionItem() != null;
     }
 
-    /**
+    /*
      * Resolve the QName typeRef accordingly to definition of builtin (FEEL) types, local model ItemDef or imported definitions.
      * If the typeRef cannot be resolved, (FEEL) UNKNOWN is returned and an error logged using standard DMN message logging. 
      */
@@ -758,7 +758,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
     
-    /**
+    /*
      * Internal utilities for new Model exposing typeRef as a String and no longer a XML QName
      */
     DMNType resolveTypeRefUsingString(DMNModelImpl dmnModel, NamedElement model, DMNModelInstrumentedBase localElement, String typeRef) {

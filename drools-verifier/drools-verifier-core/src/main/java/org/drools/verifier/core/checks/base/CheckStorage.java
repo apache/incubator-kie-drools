@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Set;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.maps.MultiSet;
 
-/**
+/*
  * Stores the Checks. When a rule is added or removed, makes sure that all the necessary relations are added or removed.
  */
 public class CheckStorage {

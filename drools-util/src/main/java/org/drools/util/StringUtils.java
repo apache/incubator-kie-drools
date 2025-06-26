@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Character.isWhitespace;
 
-/**
+/*
  * Ripped form commons StringUtil, unless specified:
  * 
  * <p>Operations on {@link java.lang.String} that are
@@ -119,7 +119,7 @@ import static java.lang.Character.isWhitespace;
  */
 public class StringUtils {
 
-    /**
+    /*
      * An empty immutable <code>String</code> array.
      */
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -140,24 +140,24 @@ public class StringUtils {
     // String.concat about twice as fast as StringBuilder.append
     // (not sure who tested this)
 
-    /**
+    /*
      * The empty String <code>""</code>.
      * @since 2.0
      */
     public static final String   EMPTY              = "";
 
-    /**
+    /*
      * Represents a failed index search.
      * @since 2.1
      */
     public static final int      INDEX_NOT_FOUND    = -1;
 
-    /**
+    /*
      * <p>The maximum size to which the padding constant(s) can expand.</p>
      */
     private static final int     PAD_LIMIT          = 8192;
 
-    /**
+    /*
      * <p><code>StringUtils</code> instances should NOT be constructed in
      * standard programming. Instead, the class should be used as
      * <code>StringUtils.trim(" foo ");</code>.</p>
@@ -183,7 +183,7 @@ public class StringUtils {
 
     // Empty checks
     //-----------------------------------------------------------------------
-    /**
+    /*
      * <p>Checks if a String is empty ("") or null.</p>
      *
      * <pre>
@@ -217,7 +217,7 @@ public class StringUtils {
 
     // Padding
     //-----------------------------------------------------------------------
-    /**
+    /*
      * <p>Repeat a String <code>repeat</code> times to form a
      * new String.</p>
      *
@@ -281,7 +281,7 @@ public class StringUtils {
         }
     }
 
-    /**
+    /*
      * <p>Splits the provided text into an array, separators specified, 
      * preserving all tokens, including empty tokens created by adjacent
      * separators. This is an alternative to using StringTokenizer.</p>
@@ -322,7 +322,7 @@ public class StringUtils {
                             true );
     }
 
-    /**
+    /*
      * Performs the logic for the <code>split</code> and 
      * <code>splitPreserveAllTokens</code> methods that return a maximum array 
      * length.
@@ -431,7 +431,7 @@ public class StringUtils {
         return list.toArray( new String[list.size()] );
     }
 
-    /**
+    /*
      * <p>Returns padding using the specified delimiter repeated
      * to a given length.</p>
      *
@@ -483,7 +483,7 @@ public class StringUtils {
         }
     }
     
-    /**
+    /*
      * <p>Unescapes any Java literals found in the <code>String</code>.
      * For example, it will turn a sequence of <code>'\'</code> and
      * <code>'n'</code> into a newline character, unless the <code>'\'</code>
@@ -506,7 +506,7 @@ public class StringUtils {
         }
     }
 
-    /**
+    /*
      * <p>Unescapes any Java literals found in the <code>String</code> to a
      * <code>Writer</code>.</p>
      *
@@ -616,7 +616,7 @@ public class StringUtils {
     private static final char EXTENSION_SEPARATOR = '.';
 
     
-    /**
+    /*
      * Normalize the path by suppressing sequences like "path/.." and
      * inner simple dots.
      * <p>The result is convenient for path comparison. For other uses,
@@ -680,7 +680,7 @@ public class StringUtils {
         return prefix + collectionToDelimitedString(pathElements, FOLDER_SEPARATOR);
     }
 
-    /**
+    /*
      * Convenience method to return a Collection as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
      * @param coll the Collection to display
@@ -706,7 +706,7 @@ public class StringUtils {
         return sb.toString();
     }
     
-    /**
+    /*
      * Convenience method to return a Collection as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
      * @param coll the Collection to display
@@ -720,7 +720,7 @@ public class StringUtils {
     }
     
     
-    /**
+    /*
      * Replace all occurences of a substring within a string with
      * another string.
      * @param inString String to examine
@@ -791,7 +791,7 @@ public class StringUtils {
         return sb.toString();
     }    
     
-    /**
+    /*
      * Take a String which is a delimited list and convert it to a String array.
      * <p>A single delimiter can consists of more than one character: It will still
      * be considered as single delimiter string, rather than as bunch of potential
@@ -807,7 +807,7 @@ public class StringUtils {
         return delimitedListToStringArray(str, delimiter, null);
     }
 
-    /**
+    /*
      * Take a String which is a delimited list and convert it to a String array.
      * <p>A single delimiter can consists of more than one character: It will still
      * be considered as single delimiter string, rather than as bunch of potential
@@ -849,7 +849,7 @@ public class StringUtils {
         return toStringArray(result);
     }
     
-    /**
+    /*
      * Copy the given Collection into a String array.
      * The Collection must contain String elements only.
      * @param collection the Collection to copy
@@ -865,7 +865,7 @@ public class StringUtils {
         return (String[]) collection.toArray(new String[collection.size()]);
     }
     
-    /**
+    /*
      * Delete any character in a given String.
      * @param inString the original String
      * @param charsToDelete a set of characters to delete.
@@ -918,7 +918,7 @@ public class StringUtils {
         return sb.toString();
     }
 
-    /**
+    /*
      * Retrieve a consistently reproducible package unique identifier. It uses both <b>gav</b> and <b>packageName</b>
      *
      * @param gav
@@ -964,7 +964,7 @@ public class StringUtils {
         return builder.toString();
     }
 
-    /**
+    /*
      * Method that tries to extract <b>identifiers</b> from a Srting.
      * First, it tries to identify "quoted" part, that should be ignored.
      * Then, it tries to extract a String that is valid as java identifier.
@@ -1105,7 +1105,7 @@ public class StringUtils {
         return false;
     }
     
-    /**
+    /*
      * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
      * The two inputs MUST BE valid DRL/Java syntax (this validation is NOT performed by this method, this method assumes they are).
      * Null check: if either of the input is null, this method will return true IFF both are null.

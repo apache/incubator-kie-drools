@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,27 +18,27 @@
  */
 package org.kie.api.definition.process;
 
-/**
+/*
  * A NodeContainer contains a set of Nodes
  * There are different types of NodeContainers and NodeContainers may be nested.
  */
 public interface NodeContainer {
 
-    /**
+    /*
      * The Nodes of this NodeContainer.
      *
      * @return the nodes
      */
     Node[] getNodes();
 
-    /**
+    /*
      * The node in this NodeContainer with the given id.
      *
      * @return the node with the given id
      */
     Node getNode(WorkflowElementIdentifier id);
 
-    /** 
+    /* 
      * the node in this NodeContainer with the give unique id
      * @param nodeId
      * @return

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.dmg.pmml.Interval;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLInterval</code> instance
  * <p>
  * out of <code>Interval</code>s

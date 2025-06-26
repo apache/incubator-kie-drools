@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 import org.drools.core.time.Job;
 
-/**
+/*
  * A default implementation for the JobHandle interface
  */
 public class DefaultJobHandle extends AbstractJobHandle<DefaultJobHandle> implements Serializable {

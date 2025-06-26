@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * An option to define if the KieSession should directly firing consequences bypassing the agenda.
  * By default this option is disabled. Enabling this will bring a performance improvement at the cost
  * of being no longer able to use salience, no-loop and other features that affect rules' precedence.
@@ -36,7 +36,7 @@ public enum DirectFiringOption implements SingleValueRuleRuntimeOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the direct firing configuration
      */
     public static final String PROPERTY_NAME = "drools.directFiring";
@@ -45,7 +45,7 @@ public enum DirectFiringOption implements SingleValueRuleRuntimeOption {
 
     private final boolean directFiring;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param directFiring
      */
@@ -53,7 +53,7 @@ public enum DirectFiringOption implements SingleValueRuleRuntimeOption {
         this.directFiring = directFiring;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

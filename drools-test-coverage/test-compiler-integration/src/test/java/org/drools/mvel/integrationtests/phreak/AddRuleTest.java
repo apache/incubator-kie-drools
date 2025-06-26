@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -374,7 +374,7 @@ public class AddRuleTest {
         assertThat(endNode0.getPathMemSpec().smemCount()).isEqualTo(4);
     }
 
-    /**
+    /*
      * This tests that masks and segments are not set, when outside of the subnetwork for a given path.
      */
     @ParameterizedTest(name = "KieBase type={0}")

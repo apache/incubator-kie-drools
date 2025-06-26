@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Created by IntelliJ IDEA. User: Ming Jin Date: Mar 19, 2008 Time: 11:11:45 AM To change this template use File |
  * Settings | File Templates.
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.conf;
 
-/**
+/*
  * <p>
  * An enum to enable beta node range index option.
  * </p>
@@ -35,7 +35,7 @@ public enum BetaRangeIndexOption implements SingleValueRuleBaseOption {
     ENABLED(true),
     DISABLED(false);
 
-    /**
+    /*
      * The property name for beta node range index option
      */
     public static final String PROPERTY_NAME = "drools.betaNodeRangeIndexEnabled";
@@ -48,7 +48,7 @@ public enum BetaRangeIndexOption implements SingleValueRuleBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

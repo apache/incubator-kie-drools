@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.memorycompiler.resources;
 
 import org.drools.util.PortablePath;
 
-/**
+/*
  * A Store is where the compilers are storing the results
  */
 public interface ResourceStore {

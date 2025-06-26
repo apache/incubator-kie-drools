@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DecisionTableParseException;
 
-/**
+/*
  *
  * Parking lot for utility methods that don't belong anywhere else.
  */
@@ -46,7 +46,7 @@ public class RuleSheetParserUtil {
         throw new IllegalArgumentException( "Invalid rule table header cell. Should be in the format of 'RuleTable YourRuleName'. " + "It was: \n [" + ruleRow + "] \n" );
     }
 
-    /**
+    /*
      * Create a list of Import model objects from cell contents.
      * @param importCells The cells containing text for all the classes to import.
      * @return A list of Import classes, which can be added to the ruleset.
@@ -68,7 +68,7 @@ public class RuleSheetParserUtil {
         return importList;
     }
 
-    /**
+    /*
      * Create a list of Global model objects from cell contents.
      * @param variableCella The cells containing text for all the global variables to set.
      * @return A list of Variable classes, which can be added to the ruleset.
@@ -96,7 +96,7 @@ public class RuleSheetParserUtil {
         return variableList;
     }
 
-    /**
+    /*
      * @return true is the String could possibly mean true. False otherwise !
      */
     public static boolean isStringMeaningTrue(String property) {
@@ -118,7 +118,7 @@ public class RuleSheetParserUtil {
         }
     }
 
-    /**
+    /*
      * Convert spreadsheet row, column numbers to a cell name.
      * @param row  row number
      * @param col  the column number. Start with zero.

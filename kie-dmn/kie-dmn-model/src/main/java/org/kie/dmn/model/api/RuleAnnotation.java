@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.model.api;
 
 public interface RuleAnnotation extends DMNModelInstrumentedBase {
 
-    /**
+    /*
      * Gets the value of the text property.
      * 
      * @return
@@ -30,7 +30,7 @@ public interface RuleAnnotation extends DMNModelInstrumentedBase {
      */
     String getText();
 
-    /**
+    /*
      * Sets the value of the text property.
      * 
      * @param value

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,15 +20,15 @@ package org.drools.base.rule;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 
-/**
+/*
  * Indicates an error regarding the semantic validity of a rule.
  */
 public class InvalidRuleException extends RuleConstructionException {
     private static final long serialVersionUID = 510l;
-    /** The invalid rule. */
+    /* The invalid rule. */
     private RuleImpl rule;
 
-    /**
+    /*
      * @see java.lang.Exception#Exception()
      * 
      * @param rule
@@ -39,7 +39,7 @@ public class InvalidRuleException extends RuleConstructionException {
         this.rule = rule;
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message)
      * 
      * @param message
@@ -51,7 +51,7 @@ public class InvalidRuleException extends RuleConstructionException {
         this.rule = rule;
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      * 
      * @param message
@@ -65,7 +65,7 @@ public class InvalidRuleException extends RuleConstructionException {
         this.rule = rule;
     }
 
-    /**
+    /*
      * Retrieve the invalid <code>Rule</code>.
      * 
      * @return The invalid <code>Rule</code>.

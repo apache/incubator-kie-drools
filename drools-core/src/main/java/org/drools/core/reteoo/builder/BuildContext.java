@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ import org.drools.core.time.TemporalDependencyMatrix;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
-/**
+/*
  * A build context for Reteoo Builder
  */
 public class BuildContext implements RuleBuildContext {
@@ -88,15 +88,15 @@ public class BuildContext implements RuleBuildContext {
 
     private final List<PathEndNode>          pathEndNodes = new ArrayList<>();
 
-    /**
+    /*
      * Stores the list of nodes being added that require partitionIds
      */
     private List<BaseNode> nodes = new ArrayList<>();
-    /**
+    /*
      * Stores the id of the partition this rule will be added to
      */
     private RuleBasePartitionId              partitionId;
-    /**
+    /*
      * the calculate temporal distance matrix
      */
     private TemporalDependencyMatrix         temporal;
@@ -145,14 +145,14 @@ public class BuildContext implements RuleBuildContext {
         }
     }
 
-    /**
+    /*
      * @return the objectSource
      */
     public ObjectSource getObjectSource() {
         return this.objectSource;
     }
 
-    /**
+    /*
      * @param objectSource the objectSource to set
      */
     public void setObjectSource(final ObjectSource objectSource) {
@@ -170,28 +170,28 @@ public class BuildContext implements RuleBuildContext {
         this.patterns.add( pattern );
     }
 
-    /**
+    /*
      * @return the tupleSource
      */
     public LeftTupleSource getTupleSource() {
         return this.tupleSource;
     }
 
-    /**
+    /*
      * @param tupleSource the tupleSource to set
      */
     public void setTupleSource(final LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
     }
 
-    /**
+    /*
      * Returns context rulebase
      */
     public InternalRuleBase getRuleBase() {
         return this.ruleBase;
     }
 
-    /**
+    /*
      * Return the array of working memories associated with the given
      * rulebase.
      */
@@ -199,7 +199,7 @@ public class BuildContext implements RuleBuildContext {
         return workingMemories;
     }
 
-    /**
+    /*
      * Returns an Id for the next node
      */
     public int getNextNodeId() {
@@ -210,14 +210,14 @@ public class BuildContext implements RuleBuildContext {
         return ruleBase.getReteooBuilder().getMemoryIdsGenerator().getNextId();
     }
 
-    /**
+    /*
      * Method used to undo previous id assignment
      */
     public void releaseId(NetworkNode node) {
         ruleBase.getReteooBuilder().releaseId(node);
     }
 
-    /**
+    /*
      * Adds the rce to the build stack
      */
     public void push(final RuleConditionElement rce) {
@@ -227,14 +227,14 @@ public class BuildContext implements RuleBuildContext {
         this.buildstack.addLast(rce);
     }
 
-    /**
+    /*
      * Removes the top stack element
      */
     public RuleConditionElement pop() {
         return this.buildstack.removeLast();
     }
 
-    /**
+    /*
      * Returns the top stack element without removing it
      */
     public RuleConditionElement peek() {
@@ -289,21 +289,21 @@ public class BuildContext implements RuleBuildContext {
         return query;
     }
 
-    /**
+    /*
      * @return the currentEntryPoint
      */
     public EntryPointId getCurrentEntryPoint() {
         return currentEntryPoint;
     }
 
-    /**
+    /*
      * @param currentEntryPoint the currentEntryPoint to set
      */
     public void setCurrentEntryPoint(EntryPointId currentEntryPoint) {
         this.currentEntryPoint = currentEntryPoint;
     }
 
-    /**
+    /*
      * @return the nodes
      */
     public List<BaseNode> getNodes() {
@@ -314,21 +314,21 @@ public class BuildContext implements RuleBuildContext {
         return nodes.get(nodes.size()-1);
     }
 
-    /**
+    /*
      * @param nodes the nodes to set
      */
     public void setNodes(List<BaseNode> nodes) {
         this.nodes = nodes;
     }
 
-    /**
+    /*
      * @return the partitionId
      */
     public RuleBasePartitionId getPartitionId() {
         return partitionId;
     }
 
-    /**
+    /*
      * @param partitionId the partitionId to set
      */
     public void setPartitionId(RuleBasePartitionId partitionId) {
@@ -367,7 +367,7 @@ public class BuildContext implements RuleBuildContext {
         this.subRule = subRule;
     }
 
-    /**
+    /*
      * Removes the top element from the rule component stack.
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule
@@ -377,7 +377,7 @@ public class BuildContext implements RuleBuildContext {
         return this.ruleComponent.pop();
     }
 
-    /**
+    /*
      * Peeks at the top element from the rule component stack.
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule
@@ -387,7 +387,7 @@ public class BuildContext implements RuleBuildContext {
         return this.ruleComponent.isEmpty() ? null : this.ruleComponent.peek();
     }
 
-    /**
+    /*
      * Adds the ruleComponent to the top of the rule component stack.
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule

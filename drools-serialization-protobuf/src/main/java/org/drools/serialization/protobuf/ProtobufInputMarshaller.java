@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -91,7 +91,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * An input marshaller that uses protobuf. 
  * 
  */
@@ -108,7 +108,7 @@ public class ProtobufInputMarshaller {
         }
     }
 
-    /**
+    /*
      * Stream the data into an existing session
      * 
      * @param session

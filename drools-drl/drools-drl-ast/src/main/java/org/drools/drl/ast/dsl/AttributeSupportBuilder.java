@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.AttributeDescr;
 
-/**
+/*
  * An interface for all builders of statements that support attributes
  */
 public interface AttributeSupportBuilder<P extends DescrBuilder< ? , ? >> {
 
-    /**
+    /*
      * Adds a new attribute to the statement
      * 
      * @param name the attribute name
@@ -33,7 +33,7 @@ public interface AttributeSupportBuilder<P extends DescrBuilder< ? , ? >> {
      */
     public AttributeDescrBuilder<P> attribute( String name );
 
-    /**
+    /*
      * Adds a new attribute with the given name and value
      * 
      * @param name the name of the attribute to be added
@@ -43,7 +43,7 @@ public interface AttributeSupportBuilder<P extends DescrBuilder< ? , ? >> {
     public P attribute( String name,
                         String value );
 
-    /**
+    /*
      * Adds a new attribute with the given name and value
      * 
      * @param name the name of the attribute to be added

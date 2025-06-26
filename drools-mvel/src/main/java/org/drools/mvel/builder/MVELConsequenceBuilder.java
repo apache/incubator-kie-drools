@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -325,7 +325,7 @@ public class MVELConsequenceBuilder
         return macroProcessor.parse( delimitExpressions( consequence ) );
     }
 
-    /**
+    /*
      * Allows newlines to demarcate expressions, as per MVEL command line.
      * If expression spans multiple lines (ie inside an unbalanced bracket) then
      * it is left alone.

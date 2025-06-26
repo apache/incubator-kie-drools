@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
 
-/**
+/*
  * A class capable of building window source references
  */
 public class WindowReferenceBuilder

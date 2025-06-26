@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.nio.file.Path;
 
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
-/**
+/*
  * Factory for providers of source code for JavaParser. Providers that have no parameter for encoding but need it will
  * use UTF-8.
  */
@@ -81,7 +81,7 @@ public final class Providers {
     }
 
 
-    /**
+    /*
      * Provide a Provider from the resource found in class loader with the provided encoding.<br/> As resource is
      * accessed through a class loader, a leading "/" is not allowed in pathToResource
      */
@@ -93,7 +93,7 @@ public final class Providers {
         return provider(resourceAsStream, encoding);
     }
 
-    /**
+    /*
      * Provide a Provider from the resource found in the current class loader with the provided encoding.<br/> As
      * resource is accessed through a class loader, a leading "/" is not allowed in pathToResource
      */
@@ -102,7 +102,7 @@ public final class Providers {
         return resourceProvider(classLoader, pathToResource, encoding);
     }
 
-    /**
+    /*
      * Provide a Provider from the resource found in the current class loader with UTF-8 encoding.<br/> As resource is
      * accessed through a class loader, a leading "/" is not allowed in pathToResource
      */

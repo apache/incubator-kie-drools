@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.test.domain.Person;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Example class to demonstrate how to use RemoteCacheManager.
  * <p>
  * Test with an Infinispan server running on localhost:11222

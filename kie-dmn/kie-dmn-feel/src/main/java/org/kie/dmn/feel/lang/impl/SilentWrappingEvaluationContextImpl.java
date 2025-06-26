@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 
-/**
+/*
  * This EvaluationContext should only be used to "try" evaluations
  */
 public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
 
     private EvaluationContext wrapped;
 
-    /**
+    /*
      * This EvaluationContext should only be used to "try" evaluations
      */
     public SilentWrappingEvaluationContextImpl(EvaluationContext wrapped) {

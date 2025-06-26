@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.accessor.DeclarationScopeResolver;
 import org.drools.base.rule.constraint.Constraint;
 
-/**
+/*
  * LogicTransformation is reponsible for removing redundant nodes and move Or
  * nodes upwards.
  *
@@ -52,7 +52,7 @@ public class LogicTransformer {
         initialize();
     }
 
-    /**
+    /*
      * sets up the parent->child transformations map
      */
     private void initialize() {
@@ -138,7 +138,7 @@ public class LogicTransformer {
         return ands;
     }
 
-    /**
+    /*
      * During the logic transformation, we eventually clone CEs, 
      * specially patterns and corresponding declarations. So now
      * we need to fix any references to cloned declarations.
@@ -154,7 +154,7 @@ public class LogicTransformer {
         contextList.pop();
     }
 
-    /**
+    /*
      * recurse through the rule condition elements updating the declaration objecs
      */
     private void processElement(final DeclarationScopeResolver resolver,
@@ -338,7 +338,7 @@ public class LogicTransformer {
         return hasNamedConsequenceAndIsStream[0];
     }
 
-    /**
+    /*
      * Traverses a Tree, during the process it transforms Or nodes moving the
      * upwards and it removes duplicate logic statement, this does not include
      * Not nodes.
@@ -388,7 +388,7 @@ public class LogicTransformer {
         void transform(GroupElement element) throws InvalidPatternException;
     }
 
-    /**
+    /*
      * Takes any And that has an Or as a child and rewrites it to move the Or
      * upwards
      * 
@@ -478,7 +478,7 @@ public class LogicTransformer {
         }
     }
 
-    /**
+    /*
      * (Exist (OR (A B)
      *
      * <pre>
@@ -527,7 +527,7 @@ public class LogicTransformer {
         }
     }
 
-    /**
+    /*
      * (Not (OR (A B) )
      *
      * <pre>

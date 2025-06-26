@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/*
  * An object of this class solves Sudoku problems.
  */
 public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
@@ -54,7 +54,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     private Stepping stepping;
     private boolean unsolvable = false;
     
-    /**
+    /*
      * Constructor.
      */
     public Sudoku(KieContainer kc) {
@@ -71,7 +71,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         return cells[iRow][iCol].valueAsString();
     }
     
-    /**
+    /*
      * Nice printout of the grid.
      */
     public void dumpGrid() {
@@ -106,7 +106,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         System.out.println(dumpGridSb);
     }
     
-    /**
+    /*
      * Checks that everything is still according to the sudoku rules.
      */
     public void consistencyCheck() {

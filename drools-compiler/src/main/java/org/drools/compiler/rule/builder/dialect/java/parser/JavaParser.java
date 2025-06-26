@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/** A Java 1.5 grammar for ANTLR v3 derived from the spec
+/* A Java 1.5 grammar for ANTLR v3 derived from the spec
  *
  *  This is a very close representation of the spec; the changes
  *  are comestic (remove left recursion) and also fixes (the spec
@@ -355,12 +355,12 @@ public class JavaParser extends Parser {
 	        errors.add( ex );
 	    }
 
-	         /** return the raw RecognitionException errors */
+	         /* return the raw RecognitionException errors */
 	         public List getErrors() {
 	             return errors;
 	         }
 
-	         /** Return a list of pretty strings summarising the errors */
+	         /* Return a list of pretty strings summarising the errors */
 	         public List getErrorMessages() {
 	             List messages = new ArrayList();
 	         for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
@@ -369,12 +369,12 @@ public class JavaParser extends Parser {
 	                  return messages;
 	         }
 
-	         /** return true if any parser errors were accumulated */
+	         /* return true if any parser errors were accumulated */
 	         public boolean hasErrors() {
 	          return ! errors.isEmpty();
 	         }
 
-	         /** This will take a RecognitionException, and create a sensible error message out of it */
+	         /* This will take a RecognitionException, and create a sensible error message out of it */
 	         public String createErrorMessage(RecognitionException e)
 	        {
 	        StringBuilder message = new StringBuilder();

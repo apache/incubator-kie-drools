@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -211,7 +211,7 @@ public class JunctionTreeBuilder {
         return adjacencyMatrix;
     }
 
-    /**
+    /*
      * Clones the provided array
      *
      * @param src
@@ -321,7 +321,7 @@ public class JunctionTreeBuilder {
     }
 
 
-    /**
+    /*
      * Given the set of cliques, mapped via ID in a Bitset, for a given bayes node,
      * Find the best clique. Where best clique is one that contains all it's parents
      * with the smallest number of nodes in that clique. When there are no parents
@@ -368,7 +368,7 @@ public class JunctionTreeBuilder {
 
     }
 
-    /**
+    /*
      * Maps each Bayes node to cliques it's in.
      * It uses a BitSet to map the ID of the cliques
      * @param nodeToCliques

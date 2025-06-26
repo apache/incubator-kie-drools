@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -316,7 +316,7 @@ public class KieRepositoryImpl
 
     private static final Object PRESENT = new Object();
 
-    /**
+    /*
      * The methods in this class are all synchronized because
      * 1. performance is not particularly important here
      * 2. I wrote performant concurrent code and then realized it was not easily maintainable
@@ -412,7 +412,7 @@ public class KieRepositoryImpl
             }
         }
 
-        /**
+        /*
          * Returns a map that fulfills 2 purposes: <ol>
          * <li>It is a {@link NavigableMap} and thus can be used in the {@link KieModuleRepo#load(InternalKieScanner, ReleaseId, VersionRange)} method</li>
          * <li>It is a LRU cache, and thus will not grow without limit.

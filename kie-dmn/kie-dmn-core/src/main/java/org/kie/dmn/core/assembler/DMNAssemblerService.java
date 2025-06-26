@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -278,7 +278,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         return config;
     }
 
-    /**
+    /*
      * Returns a DMNCompilerConfiguration with the specified properties set, and applying the explicited dmnProfiles.
      * @param classLoader 
      * @param chainedProperties applies properties --it does not do any classloading nor profile loading based on these properites, just passes the values. 

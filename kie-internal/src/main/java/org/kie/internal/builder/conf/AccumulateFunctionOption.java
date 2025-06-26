@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,31 +21,31 @@ package org.kie.internal.builder.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-/**
+/*
  * A class for the accumulate function configuration.
  */
 public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The prefix for the property name for accumulate functions
      */
     public static final String PROPERTY_NAME = "drools.accumulate.function.";
 
     public static OptionKey<AccumulateFunctionOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * accumulate function name
      */
     private final String name;
 
-    /**
+    /*
      * the accumulate function instance
      */
     private final AccumulateFunction function;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param name
      */
@@ -54,7 +54,7 @@ public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
         this.function = function;
     }
 
-    /**
+    /*
      * This is a factory method for this AccumulateFunction configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -67,14 +67,14 @@ public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
         return new AccumulateFunctionOption( name, function );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the name of the function configured
      *
      * @return
@@ -83,7 +83,7 @@ public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
         return name;
     }
 
-    /**
+    /*
      * Returns the accumulate function instance
      * @return
      */

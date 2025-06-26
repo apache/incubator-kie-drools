@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.kie.internal.ruleunit.RuleUnitDescription;
 import static org.drools.util.ClassUtils.rawType;
 import static org.kie.internal.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
-/**
+/*
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
@@ -226,7 +226,7 @@ public class DeclarationScopeResolver {
         return getDeclarations(rule, RuleImpl.DEFAULT_CONSEQUENCE_NAME);
     }
 
-    /**
+    /*
      * Return all declarations scoped to the current
      * RuleConditionElement in the build stack
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -78,7 +78,7 @@ public final class HalfBinaryExpr extends Expression {
         this(null, right, operator);
     }
 
-    /**This constructor is used by the parser and is considered private.*/
+    /*This constructor is used by the parser and is considered private.*/
     public HalfBinaryExpr(TokenRange tokenRange, Expression right, Operator operator) {
         super(tokenRange);
         setRight(right);

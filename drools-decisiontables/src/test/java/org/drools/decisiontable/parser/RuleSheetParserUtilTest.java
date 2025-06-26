@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import static org.drools.decisiontable.parser.RuleSheetParserUtil.getVariableLis
 import static org.drools.decisiontable.parser.RuleSheetParserUtil.isStringMeaningTrue;
 import static org.drools.decisiontable.parser.RuleSheetParserUtil.rc2name;
 
-/**
+/*
  *
  * Nuff said...
  */
@@ -49,7 +49,7 @@ public class RuleSheetParserUtilTest {
         assertThat(result).isEqualTo("This is my rule name");
     }
 
-    /**
+    /*
      * This is here as the old way was to do this.
      */
     @Disabled

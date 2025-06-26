@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -72,7 +72,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         this(null, scope, typeArguments, name);
     }
 
-    /**
+    /*
      * This constructor is used by the parser and is considered private.
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
@@ -114,7 +114,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return this;
     }
 
-    /**
+    /*
      * Use {@link #getName} instead.
      */
     @Deprecated
@@ -127,7 +127,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return scope;
     }
 
-    /**
+    /*
      * Use {@link #setName} with new SimpleName(field) instead.
      */
     @Deprecated
@@ -136,7 +136,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return this;
     }
 
-    /**
+    /*
      * Use {@link #setName} instead.
      */
     @Deprecated
@@ -144,7 +144,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return setName(inner);
     }
 
-    /**
+    /*
      * Sets the scope
      *
      * @param scope the scope, can not be null
@@ -170,7 +170,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return Optional.ofNullable(typeArguments);
     }
 
-    /**
+    /*
      * Sets the type arguments
      *
      * @param typeArguments the type arguments, can be null
@@ -250,7 +250,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return true;
     }
 
-    /**
+    /*
      * Attempts to resolve the declaration corresponding to the accessed field. If successful, a
      * {@link ResolvedValueDeclaration} representing the declaration of the value accessed by this
      * {@code NullSafeFieldAccessExpr} is returned. Otherwise, an {@link UnsolvedSymbolException} is thrown.
@@ -269,7 +269,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     }
     
 
-    /**
+    /*
      * Indicate if this NullSafeFieldAccessExpr is an element directly contained in a larger NullSafeFieldAccessExpr.
      */
     public boolean isInternal() {
@@ -277,7 +277,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
         return parentNode.isPresent() && parentNode.get() instanceof NullSafeFieldAccessExpr;
     }
 
-    /**
+    /*
      * Indicate if this NullSafeFieldAccessExpr is top level, i.e., it is not directly contained in a larger NullSafeFieldAccessExpr.
      */
     public boolean isTopLevel() {

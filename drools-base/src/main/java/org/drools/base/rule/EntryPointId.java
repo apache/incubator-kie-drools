@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * This class defines a Rete "Entry Point".
  * An entry point is used as a source of facts that
  * are scoped to a separate alpha network. The alpha
@@ -47,7 +47,7 @@ public class EntryPointId extends ConditionalElement
     public EntryPointId() {
 
     }
-    /**
+    /*
      * Constructor.
      *
      * @param entryPointId the ID for this entry point
@@ -64,7 +64,7 @@ public class EntryPointId extends ConditionalElement
         out.writeObject(entryPointId);
     }
 
-    /**
+    /*
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      */
@@ -73,7 +73,7 @@ public class EntryPointId extends ConditionalElement
         return this;
     }
 
-    /**
+    /*
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      */
@@ -81,7 +81,7 @@ public class EntryPointId extends ConditionalElement
         return Collections.EMPTY_MAP;
     }
 
-    /**
+    /*
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
      */
@@ -89,7 +89,7 @@ public class EntryPointId extends ConditionalElement
         return Collections.EMPTY_LIST;
     }
 
-    /**
+    /*
      * It is not possible to declare and export any variables,
      * so always return an empty map
      */
@@ -97,14 +97,14 @@ public class EntryPointId extends ConditionalElement
         return Collections.EMPTY_MAP;
     }
 
-    /**
+    /*
      * Not possible to resolve any declaration, so always return null.
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getEntryPointId() {

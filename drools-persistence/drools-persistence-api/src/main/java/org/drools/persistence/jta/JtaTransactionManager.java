@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public class JtaTransactionManager
 
     public static final String[]         FALLBACK_TRANSACTION_MANAGER_NAMES                = new String[]{"java:comp/TransactionManager", "java:appserver/TransactionManager", "java:pm/TransactionManager", "java:/TransactionManager", System.getProperty("jbpm.tm.jndi.lookup")};
 
-    /**
+    /*
      * Standard Java EE 5 JNDI location for the JTA TransactionSynchronizationRegistry.
      * Autodetected when available.
      */

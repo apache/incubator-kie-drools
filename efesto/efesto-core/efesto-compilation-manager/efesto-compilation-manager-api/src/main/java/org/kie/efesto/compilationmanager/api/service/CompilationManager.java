@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
 public interface CompilationManager {
 
-    /**
+    /*
      * Process the given <code>EfestoResource</code>.
      * <code>EfestoCompilationContext</code> will be populated with generated classes
      *

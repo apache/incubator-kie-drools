@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -168,28 +168,28 @@ public class PatternDescr extends AnnotatedBaseDescr
         return "[Pattern: id=" + this.identifier + "; objectType=" + this.objectType + "]";
     }
 
-    /**
+    /*
      * @return the leftParentCharacter
      */
     public int getLeftParentCharacter() {
         return this.leftParentCharacter;
     }
 
-    /**
+    /*
      * @param leftParentCharacter the leftParentCharacter to set
      */
     public void setLeftParentCharacter( final int leftParentCharacter ) {
         this.leftParentCharacter = leftParentCharacter;
     }
 
-    /**
+    /*
      * @return the rightParentCharacter
      */
     public int getRightParentCharacter() {
         return this.rightParentCharacter;
     }
 
-    /**
+    /*
      * @param rightParentCharacter the rightParentCharacter to set
      */
     public void setRightParentCharacter( final int rightParentCharacter ) {
@@ -210,7 +210,7 @@ public class PatternDescr extends AnnotatedBaseDescr
         ((BaseDescr) this.constraint).setResource(resource);
     };
 
-    /**
+    /*
      * @return the behaviors
      */
     public List<BehaviorDescr> getBehaviors() {
@@ -220,7 +220,7 @@ public class PatternDescr extends AnnotatedBaseDescr
         return behaviors;
     }
 
-    /**
+    /*
      * @param behaviors the behaviors to set
      */
     public void setBehaviors( List<BehaviorDescr> behaviors ) {
@@ -234,14 +234,14 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.behaviors.add( behavior );
     }
 
-    /**
+    /*
      * @return the unification
      */
     public boolean isUnification() {
         return unification;
     }
 
-    /**
+    /*
      * @param unification the unification to set
      */
     public void setUnification( boolean unification ) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.api.io.ResourceType;
 
 public interface Verifier {
 
-    /**
+    /*
      * Add resource that is verified.
      * 
      * @param descr
@@ -40,14 +40,14 @@ public interface Verifier {
     public void addResourcesToVerify(Resource resource,
             ResourceType type, ResourceConfiguration config);
 
-    /**
+    /*
      * Give model info optionally as a jar. This way verifier doesn't have to figure out the field types.
      */
     public void addObjectModel(JarInputStream jar);
 
     public void flushKnowledgeSession();
 
-    /**
+    /*
      * 
      * This will run the verifier.
      * 

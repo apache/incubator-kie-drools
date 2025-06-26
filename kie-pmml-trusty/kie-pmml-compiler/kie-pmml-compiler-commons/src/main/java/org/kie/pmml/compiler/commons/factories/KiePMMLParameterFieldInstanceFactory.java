@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLParameterField</code> instance
  * out of <code>ParameterField</code>s
  */

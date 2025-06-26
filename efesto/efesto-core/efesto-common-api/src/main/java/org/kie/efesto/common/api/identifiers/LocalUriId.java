@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.efesto.common.api.identifiers;
 
 import java.util.Objects;
 
-/**
+/*
  * An abstract class for a {@link LocalId} that is represented as a Path.
  * <p>
  * Components should extend this class to get a default base implementation of their

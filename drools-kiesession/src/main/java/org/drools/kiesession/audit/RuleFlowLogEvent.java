@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 
 import org.kie.api.runtime.process.ProcessInstance;
 
-/**
+/*
  * A ruleflow event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the process name and id.
@@ -40,7 +40,7 @@ public class RuleFlowLogEvent extends LogEvent {
         this(type, processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId());
     }
 
-    /**
+    /*
      * Create a new ruleflow log event.
      * 
      * @param type The type of event.  This can only be RULEFLOW_CREATED,

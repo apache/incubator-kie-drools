@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.util.LinkedList;
 
-/**
+/*
  * Upon instantiation the EqualityKey caches the first Object's hashCode
  * this can never change. The EqualityKey has an internal datastructure
  * which references all the handles which are equal. It also records
@@ -36,10 +36,10 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle>
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 
-    /** This is cached in the constructor from the first added Object */
+    /* This is cached in the constructor from the first added Object */
     private int          hashCode;
 
-    /** Tracks whether this Fact is Stated or Justified */
+    /* Tracks whether this Fact is Stated or Justified */
     private int          status;
     
     public EqualityKey() {
@@ -86,14 +86,14 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle>
         remove( ( DefaultFactHandle ) handle );
     }
 
-    /**
+    /*
      * @return the status
      */
     public int getStatus() {
         return this.status;
     }  
 
-    /**
+    /*
      * @param status the status to set
      */
     public void setStatus(final int status) {
@@ -113,7 +113,7 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle>
         return "[FactStatus status=" + str + "]";
     }
 
-    /**
+    /*
      * Returns the cached hashCode
      * @see java.lang.Object#hashCode()
      */
@@ -121,7 +121,7 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle>
         return this.hashCode;
     }
 
-    /**
+    /*
      * Equality for the EqualityKey means two things. It returns
      * true if the object is also an EqualityKey the of the same
      * the same identity as this. It also returns true if the object

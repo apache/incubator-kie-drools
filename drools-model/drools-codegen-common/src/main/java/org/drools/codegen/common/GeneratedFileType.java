@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.codegen.common;
 
 import java.util.Objects;
 
-/**
+/*
  * Interface to represent a type of GeneratedFile and specify how the type should be handled. It allows the definition of custom
  * types using one of the factory method {@link GeneratedFileType#of(String, Category, boolean)}.
  * It also provides default reusable instances for generic types {@link Category#SOURCE}, {@link Category#INTERNAL_RESOURCE}
@@ -50,25 +50,25 @@ public interface GeneratedFileType {
 
     enum Category {
 
-        /**
+        /*
          * Represent a Java source file
          */
         SOURCE,
-        /**
+        /*
          * Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
          * This means to add it to target/classes both for Quarkus or using kogito-maven-plugin (SB). For additional
          * information see {@link org.drools.codegen.common.GeneratedFileWriter#write(GeneratedFile)}
          * For Quarkus it will be subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem too
          */
         INTERNAL_RESOURCE,
-        /**
+        /*
          * a resource file to be published as a static file to a web server. It will be automatically placed under META-INF/resources/
          * so you don't need to prefix its path with "META-INF/resources/"
          * For Quarkus it will be subject of GeneratedResourceBuildItem, NativeImageResourceBuildItem and AdditionalStaticResourceBuildItem
          * so it could be served without Servlet dependency
          */
         STATIC_HTTP_RESOURCE,
-        /**
+        /*
          * Represent a class file (Java compiled file)
          */
         COMPILED_CLASS;

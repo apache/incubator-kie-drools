@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
+/*
  * User-friendly representation of a <b>TargetValue</b>
  */
 public class TargetValue implements Serializable {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -134,7 +134,7 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
         return reader;
     }
 
-    /**
+    /*
      * Handles the write serialization of the Package. Patterns in Rules may
      * reference generated data which cannot be serialized by default methods.
      * The Package uses PackageCompilationData to hold a reference to the
@@ -182,7 +182,7 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
         }
     }
 
-    /**
+    /*
      * Handles the read serialization of the Package. Patterns in Rules may
      * reference generated data which cannot be serialized by default methods.
      * The Package uses PackageCompilationData to hold a reference to the

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.ImportDescr;
 
-/**
+/*
  * An interface for the import builder
  */
 public interface ImportDescrBuilder
     extends
     DescrBuilder<PackageDescrBuilder, ImportDescr> {
 
-    /**
+    /*
      * Sets the import target
      * 
      * @param target the class or package being imported

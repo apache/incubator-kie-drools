@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import java.util.Map;
 import static org.drools.mvel.accessors.ClassFieldAccessorStore.getClassFieldInspector;
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
-/**
+/*
  * This generates subclasses of BaseClassFieldExtractor to provide field extractors.
  * This should not be used directly, but via ClassFieldExtractor (which ensures that it is 
  * all nicely serializable).
@@ -219,7 +219,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         return cw.toByteArray();
     }
 
-    /**
+    /*
      * Builds the class header
      */
     protected static ClassWriter buildClassHeader(Class< ? > superClass, String className) {
@@ -237,7 +237,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         return cw;
     }
 
-    /**
+    /*
      * Creates a constructor for the field extractor receiving
      * the index, field type and value type
      */
@@ -303,7 +303,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
 
     }
 
-    /**
+    /*
      * Creates the proxy reader method for the given method
      */
     protected static void buildGetMethod(final Class< ? > originalClass,
@@ -374,7 +374,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         mv.visitEnd();
     }
 
-    /**
+    /*
      * Creates the set method for the given field definition
      */
     protected static void buildSetMethod(final Class< ? > originalClass,
@@ -510,7 +510,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         return ret;
     }
 
-    /**
+    /*
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
      */
@@ -550,7 +550,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
         return ret;
     }
 
-    /**
+    /*
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
      */

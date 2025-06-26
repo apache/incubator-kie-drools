@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 
 import static org.assertj.core.api.Assertions.*;
 
-/**
+/*
  * Test basic OOPath expressions used in Decision tables (*.xls, *.xlsx, *.csv)
  * in both RuleTable and Queries as well.
  */

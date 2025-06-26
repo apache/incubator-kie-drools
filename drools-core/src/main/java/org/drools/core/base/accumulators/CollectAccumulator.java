@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * An accumulator to execute "collect" CEs
  */
 public class CollectAccumulator implements Accumulator, Externalizable {

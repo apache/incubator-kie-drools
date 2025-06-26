@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,11 +39,11 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
-    /**
+    /*
      * The salience
      */
     private           int                                            salience;
-    /**
+    /*
      * The activation number
      */
     private           long                                           activationNumber;
@@ -153,7 +153,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
         }
     }
 
-    /**
+    /*
      * Retrieve the rule.
      *
      * @return The rule.
@@ -166,7 +166,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
         return consequence;
     }
 
-    /**
+    /*
      * Retrieve the tuple.
      *
      * @return The tuple.

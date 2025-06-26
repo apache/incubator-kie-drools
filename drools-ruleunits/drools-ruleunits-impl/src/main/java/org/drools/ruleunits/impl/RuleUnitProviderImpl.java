@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -186,7 +186,7 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         return unitValues != null && unitValues.stream().anyMatch(valueArray -> valueArray.length > 0 && valueArray[0] != null && valueArray[0].trim().equals(unitName));
     }
 
-    /**
+    /*
      * Collects rule unit resources under a specific package directory in a jar file.
      * This method is protected, so that it can be enhanced when there is a framework specific issue
      * @param ks

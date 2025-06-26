@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.drools.core.util.DoubleLinkedEntry;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>
  * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
@@ -50,7 +50,7 @@ public interface Tuple<T extends TupleImpl> extends BaseTuple, Serializable, Dou
 
     InternalFactHandle getOriginalFactHandle();
 
-    /**
+    /*
      * Returns the ReteTuple that contains the "elements"
      * first elements in this tuple.
      * <p/>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         return de instanceof DecisionService;
     }
 
-    /** backport of DMN v1.1
+    /* backport of DMN v1.1
      * 
      */
     public void compileNode(DecisionService ds, DMNCompilerImpl compiler, DMNModelImpl model) {
@@ -98,7 +98,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         return node instanceof DecisionServiceNodeImpl;
     }
 
-    /**
+    /*
      * DMN v1.2 specification, chapter "10.4 Execution Semantics of Decision Services"
      * The qualified name of an element named E that is defined in the same decision model as S is simply E.
      * Otherwise, the qualified name is I.E, where I is the name of the import element that refers to the model where E is defined.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.pmml.models.regression.model.tuples;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
+/*
  * Class to represent a <b>table source/table category</b> tuple
  */
 public class KiePMMLTableSourceCategory implements Serializable {

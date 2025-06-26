@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * An object event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the fact id and a String represention of the object
@@ -33,7 +33,7 @@ public class ObjectLogEvent extends LogEvent {
     private long   factId;
     private String objectToString;
 
-    /**
+    /*
      * Create a new activation log event.
      * 
      * @param type The type of event.  This can only be LogEvent.OBJECT_ASSERTED,
@@ -61,7 +61,7 @@ public class ObjectLogEvent extends LogEvent {
         out.writeObject(objectToString);
     }
 
-    /**
+    /*
      * Returns the fact id of the object this event is about.
      * 
      * @return the id of the fact
@@ -70,7 +70,7 @@ public class ObjectLogEvent extends LogEvent {
         return this.factId;
     }
 
-    /**
+    /*
      * Returns a toString of the fact this event is about at the
      * time the event was created.
      * 

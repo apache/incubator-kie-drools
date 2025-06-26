@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.GlobalDescr;
 
-/**
+/*
  *  A descriptor builder for Globals
  */
 public interface GlobalDescrBuilder
     extends
     DescrBuilder<PackageDescrBuilder, GlobalDescr> {
 
-    /**
+    /*
      * Sets the type of the global. E.g.: java.util.List
      * 
      * @param type
@@ -36,7 +36,7 @@ public interface GlobalDescrBuilder
      */
     public GlobalDescrBuilder type( String type );
 
-    /**
+    /*
      * Sets the identifier for the global. E.g.: list
      * 
      * @param identifier

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         out.writeBoolean( terminal );
     }
 
-    /**
+    /*
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      *
@@ -65,7 +65,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         return this;
     }
 
-    /**
+    /*
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      *
@@ -75,7 +75,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
      *
@@ -85,7 +85,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         return Collections.emptyList();
     }
 
-    /**
+    /*
      * It is not possible to declare and export any variables,
      * so always return an empty map
      *
@@ -95,7 +95,7 @@ public class NamedConsequence extends ConditionalElement implements NamedConsequ
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * Not possible to resolve any declaration, so always return null.
      *
      * @see RuleConditionElement#resolveDeclaration(java.lang.String)

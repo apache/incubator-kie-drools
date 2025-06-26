@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,14 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.Token;
 
-/**
+/*
  * An extension of the CommonToken class that keeps the char offset information
  */
 public class DroolsToken extends CommonToken {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * editor type
      *
      * @see DroolsEditorType
@@ -49,7 +49,7 @@ public class DroolsToken extends CommonToken {
         super(type, text);
     }
 
-    /**
+    /*
      * Constructor that preserves the char offset
      *
      * @param oldToken
@@ -64,7 +64,7 @@ public class DroolsToken extends CommonToken {
         }
     }
 
-    /**
+    /*
      * getter of editor type
      *
      * @return editor type
@@ -74,7 +74,7 @@ public class DroolsToken extends CommonToken {
         return editorType;
     }
 
-    /**
+    /*
      * setter of editor type
      *
      * @param editorElementType

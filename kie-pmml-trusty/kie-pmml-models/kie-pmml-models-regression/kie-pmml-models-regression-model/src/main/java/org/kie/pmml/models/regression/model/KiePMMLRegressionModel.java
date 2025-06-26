@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.model.IsInterpreted;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html>Regression</a>
  */
 public class KiePMMLRegressionModel extends KiePMMLModel implements IsInterpreted {

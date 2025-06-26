@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import org.kie.api.io.Resource;
 
-/**
+/*
  * This is the super type for all pattern AST nodes.
  */
 public class BaseDescr
@@ -125,28 +125,28 @@ public class BaseDescr
         return this.endColumn;
     }
 
-    /**
+    /*
      * @return the endCharacter
      */
     public int getEndCharacter() {
         return this.endCharacter;
     }
 
-    /**
+    /*
      * @param endCharacter the endCharacter to set
      */
     public void setEndCharacter( final int endCharacter ) {
         this.endCharacter = endCharacter;
     }
 
-    /**
+    /*
      * @return the startCharacter
      */
     public int getStartCharacter() {
         return this.startCharacter;
     }
 
-    /**
+    /*
      * @param startCharacter the startCharacter to set
      */
     public void setStartCharacter( final int startCharacter ) {

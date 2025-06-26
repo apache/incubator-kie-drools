@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
+/*
  * <p>An implementation of an accumulator capable of collecting sets of values.
  * This is similar to the "collect" CE, but allows us to collect any value, not
  * only facts.</p>
@@ -136,7 +136,7 @@ public class CollectSetAccumulateFunction extends AbstractAccumulateFunction<Col
         return true;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {

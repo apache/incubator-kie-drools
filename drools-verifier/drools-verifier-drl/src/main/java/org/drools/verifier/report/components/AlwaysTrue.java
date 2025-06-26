@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.verifier.report.components;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
+/*
  * Pattern, rule or similar that is always satisfied.
  */
 public class AlwaysTrue
@@ -37,7 +37,7 @@ public class AlwaysTrue
 
     private final Collection<Cause> causes;
 
-    /**
+    /*
      * 
      * @param cause
      *            Component that is always satisfied.

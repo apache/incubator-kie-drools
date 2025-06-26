@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import org.apache.commons.math3.util.Precision;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-/**
+/*
  * Class meant to provide helper methods to <b>convert</b> a given object to another one of a requested type
  */
 public class ConverterTypeUtil {
@@ -51,7 +51,7 @@ public class ConverterTypeUtil {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Convert the given <code>Object</code> to expected <code>Class</code>.
      * It throws <code>KiePMMLInternalException</code> if conversion has failed
      * @param expectedClass

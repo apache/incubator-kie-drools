@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
 
-/**
+/*
  * KieCommands is a factory for Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
  * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
  */

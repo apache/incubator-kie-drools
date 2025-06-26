@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.builder.helper;
 
-/**
+/*
  * This class provides users with the ability to programmatically create
  * kjars and deploy them to the available maven repositories. 
  * </p>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
-/**
+/*
  * An internal interface for objects that also support
  * managing message lists
  */
@@ -34,7 +34,7 @@ public interface DMNMessageManager extends DMNMessageContainer {
 
     void addAll(List<? extends DMNMessage> messages);
 
-    /**
+    /*
      * Internal utility method.
      */
     void addAllUnfiltered(List<? extends DMNMessage> messages);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.Reader;
 import org.kie.api.definition.KieDescr;
 import org.kie.api.internal.utils.KieService;
 
-/**
+/*
  * KieResources is a factory that provides Resource implementations for the desired IO resource
  */
 public interface KieResources extends KieService {

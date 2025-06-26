@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,35 +26,35 @@ public class DroolsParserException extends Exception {
     private int column;
     private int offset;
 
-    /**
+    /*
      * @see java.lang.Exception#Exception()
      */
     public DroolsParserException() {
         super();
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message)
      */
     public DroolsParserException(final String message) {
         super(message);
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     public DroolsParserException(final String message, final Throwable cause) {
         super(message);
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(Throwable cause)
      */
     public DroolsParserException(final Throwable cause) {
         super(cause);
     }
 
-    /**
+    /*
      * DroolsParserException constructor.
      *
      * @param errorCode
@@ -86,28 +86,28 @@ public class DroolsParserException extends Exception {
         return "[" + errorCode + "] " + super.getMessage();
     }
 
-    /**
+    /*
      * getter for error code
      */
     public String getErrorCode() {
         return errorCode;
     }
 
-    /**
+    /*
      * getter for line number
      */
     public int getLineNumber() {
         return lineNumber;
     }
 
-    /**
+    /*
      * getter for column position
      */
     public int getColumn() {
         return column;
     }
 
-    /**
+    /*
      * getter for char offset
      */
     public int getOffset() {

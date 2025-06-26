@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
+/*
  * Indicates the possible end-result of a model evaluation
  */
 public enum ResultCode implements Named {

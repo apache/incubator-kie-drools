@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 
-/**
+/*
  *  A descriptor builder for declared types
  */
 public interface TypeDeclarationDescrBuilder
@@ -29,7 +29,7 @@ public interface TypeDeclarationDescrBuilder
     AbstractClassTypeDeclarationBuilder<TypeDeclarationDescr> {
 
 
-    /**
+    /*
      * Defines the type name
      *
      * @param type the type name
@@ -38,7 +38,7 @@ public interface TypeDeclarationDescrBuilder
      */
     public TypeDeclarationDescrBuilder name( String type );
 
-    /**
+    /*
      * Defines the super type of this type. For POJOs, this is the
      * super class it will extend
      * 

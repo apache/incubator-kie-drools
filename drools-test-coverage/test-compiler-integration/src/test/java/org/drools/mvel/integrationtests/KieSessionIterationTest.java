@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests iteration through the list of KieSessions of a KieBase.
  */
 public class KieSessionIterationTest {
@@ -58,7 +58,7 @@ public class KieSessionIterationTest {
         }
     }
 
-    /**
+    /*
      * Tests that disposing KieSessions does not throw ConcurrentModificationException when iterating through the list of KieBase's KieSessions
      * (related to BZ 1326329).
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the 'str' evaluator definition.</p>
  * 
  * <p>The <b><code>str</code></b> compares two string values.</p> 
@@ -59,7 +59,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
     private Evaluator[] evaluator;
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, Operator operator) {
@@ -67,7 +67,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                 .isNegated(), null);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, Operator operator,
@@ -76,7 +76,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                 .isNegated(), parameterText);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, String operatorId,
@@ -85,7 +85,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                 Target.FACT, Target.FACT);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type, String operatorId,
@@ -96,35 +96,35 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         return evaluator;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Target getTarget() {
         return Target.FACT;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public boolean supportsType(ValueType type) {
         return true;
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public void readExternal(ObjectInput in) throws IOException,
@@ -132,7 +132,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
         evaluator = (Evaluator[]) in.readObject();
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -156,7 +156,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
             super(type, isNegated ? NOT_STR_COMPARE : STR_COMPARE);
         }
 
-        /**
+        /*
          * @inheridDoc
          */
         public boolean evaluate(final ValueResolver valueResolver,

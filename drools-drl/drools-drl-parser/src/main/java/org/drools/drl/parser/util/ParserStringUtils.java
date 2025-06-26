@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.drl.parser.util;
 
-/**
+/*
  * String utilities used by DRL Parser. Not dependent on ANTLR version.
  */
 public class ParserStringUtils {
@@ -27,7 +27,7 @@ public class ParserStringUtils {
         // Private constructor to prevent instantiation.
     }
 
-    /**
+    /*
      * Strip string delimiters (e.g. "foo" -> foo)
      */
     public static String safeStripStringDelimiters(String value) {
@@ -55,7 +55,7 @@ public class ParserStringUtils {
         return value;
     }
 
-    /**
+    /*
      * Append a prefix to a grouped constraint.
      * Even if the constraint contains || and/or &&, append the prefix to each element.
      */

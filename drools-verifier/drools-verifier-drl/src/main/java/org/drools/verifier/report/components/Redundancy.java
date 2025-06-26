@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.drools.verifier.data.VerifierComponent;
 
-/**
+/*
  * Object type that indicates a redundancy between two objects.
  * 
  * Redundancy happens when all the possible values satisfy both objects.

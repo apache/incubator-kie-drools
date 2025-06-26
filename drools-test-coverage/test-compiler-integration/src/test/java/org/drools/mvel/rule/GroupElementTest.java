@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -206,7 +206,7 @@ public class GroupElementTest {
         assertThat(and1.getChildren().get(0)).isSameAs(pattern);
     }
 
-    /**
+    /*
      * This test tests deep nested structures, and shall transform this:
      * 
      *    AND2
@@ -277,7 +277,7 @@ public class GroupElementTest {
 
     }
 
-    /**
+    /*
      * This test tests deep nested structures, and shall transform this:
      * 
      *      AND2

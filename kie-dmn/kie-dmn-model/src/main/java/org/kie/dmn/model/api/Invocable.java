@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,12 +18,12 @@
  */
 package org.kie.dmn.model.api;
 
-/**
+/*
  * @since DMN v1.2
  */
 public interface Invocable extends DRGElement {
 
-    /**
+    /*
      * Gets the value of the variable property.
      * 
      * @return
@@ -33,7 +33,7 @@ public interface Invocable extends DRGElement {
      */
     InformationItem getVariable();
 
-    /**
+    /*
      * Sets the value of the variable property.
      * 
      * @param value

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 
-/**
+/*
  * 
  * There are options to use various flavours of runtime compilers.
  * Apache JCI is used as the interface to all the runtime compilers.
@@ -117,7 +117,7 @@ public class JavaConfiguration {
         return this.languageLevel;
     }
 
-    /**
+    /*
      * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
      * @param languageLevel
      */
@@ -128,7 +128,7 @@ public class JavaConfiguration {
         this.languageLevel = languageLevel;
     }
 
-    /** 
+    /* 
      * Set the compiler to be used when building the rules semantic code blocks.
      * This overrides the default, and even what was set as a system property. 
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -65,14 +65,14 @@ public class JavaBackedType implements CompositeType {
         this.wrapped = class1;
     }
 
-    /**
+    /*
      * If method m is annotated with FEELProperty, will return FEELProperty.value, otherwise empty.
      */
     private static Optional<String> methodToCustomProperty(Method m) {
         return Optional.ofNullable(m.getAnnotation(FEELProperty.class)).map(a->a.value());
     }
     
-    /**
+    /*
      * If clazz can be represented as a JavaBackedType, returns a JavaBackedType for representing clazz.
      * If clazz can not be represented as a JavaBackedType, returns BuiltInType.UNKNOWN.
      * This method performs memoization when necessary.
@@ -83,7 +83,7 @@ public class JavaBackedType implements CompositeType {
         return Optional.ofNullable( (Type) cache.computeIfAbsent( clazz, JavaBackedType::createIfAnnotated ) ).orElse( BuiltInType.UNKNOWN );
     }
     
-    /**
+    /*
      * For internal use, returns a new JavaBackedType if clazz can be represented as such, returns null otherwise.
      */
     private static JavaBackedType createIfAnnotated(Class<?> clazz) {

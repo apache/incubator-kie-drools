@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 
-/**
+/*
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
  */

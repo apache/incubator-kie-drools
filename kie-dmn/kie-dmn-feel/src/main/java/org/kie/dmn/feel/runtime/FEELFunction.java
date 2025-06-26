@@ -24,24 +24,24 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 
-/**
+/*
  * An interface for all FEEL functions, custom or built-in
  */
 public interface FEELFunction {
 
-    /**
+    /*
      * Returns the name of the function
      * @return
      */
     String getName();
 
-    /**
+    /*
      * Returns the Symbol of the function
      * @return
      */
     Symbol getSymbol();
 
-    /**
+    /*
      * Returns the parameter for each supported signature.
      *
      * @return a List of Lists of Strings with the parameters. For
@@ -61,7 +61,7 @@ public interface FEELFunction {
      */
     List<List<Param>> getParameters();
 
-    /**
+    /*
      * Invokes the function reflectively based on the parameters
      *
      * @param ctx
@@ -70,7 +70,7 @@ public interface FEELFunction {
      */
     Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
-    /**
+    /*
      * The default value to return instead of <code>null</code>, to be used with the B-FEEL (and other different dialects) syntax
      * @return
      */
@@ -79,7 +79,7 @@ public interface FEELFunction {
         return null;
     }
 
-    /**
+    /*
      * The list to use as input, instead of the original one; to be used with the B-FEEL syntax
      * @return
      */

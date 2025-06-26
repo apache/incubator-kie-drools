@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.core.common;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.kie.api.runtime.rule.AgendaFilter;
 
-/**
+/*
  * A filter interface for agenda activations
  */
 public interface ActivationsFilter extends AgendaFilter {

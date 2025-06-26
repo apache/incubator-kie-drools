@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -302,7 +302,7 @@ public class PackageDescr extends BaseDescr
         removeObjectsGeneratedFromResource(resource, enumDeclarations);
     }
 
-    /**
+    /*
      * Get the <b>pkgUUID</b> to be used inside <code>PackageModel</code>
      * If <b>empty</b>, a default generated one will be used
      * @return
@@ -311,7 +311,7 @@ public class PackageDescr extends BaseDescr
         return Optional.ofNullable(preferredPkgUUID);
     }
 
-    /**
+    /*
      * Set the <b>pkgUUID</b> to be used inside <code>PackageModel</code>
      *
      * @param preferredPkgUUID

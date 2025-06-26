@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ public interface TupleSets {
 
     void resetAll();
 
-    /**
+    /*
      * clear also ensures all contained LeftTuples are cleared
      * reset does not touch any contained tuples
      */

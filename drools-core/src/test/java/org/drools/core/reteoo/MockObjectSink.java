@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,7 +80,7 @@ public class MockObjectSink extends ObjectSource
         return this.updated;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next ObjectSinkNode
@@ -89,7 +89,7 @@ public class MockObjectSink extends ObjectSource
         return this.nextObjectSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node 
      * @param next
      *      The next ObjectSinkNode
@@ -98,7 +98,7 @@ public class MockObjectSink extends ObjectSource
         this.nextObjectSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous ObjectSinkNode
@@ -107,7 +107,7 @@ public class MockObjectSink extends ObjectSource
         return this.previousObjectSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node 
      * @param previous
      *      The previous ObjectSinkNode

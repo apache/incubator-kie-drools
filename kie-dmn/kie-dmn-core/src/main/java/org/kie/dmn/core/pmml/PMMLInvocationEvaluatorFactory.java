@@ -71,7 +71,7 @@ public class PMMLInvocationEvaluatorFactory {
         return new DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlModelLocalUriID, pmmlModelName);
     }
 
-    /**
+    /*
      * Retrieve the required <code>DMNjPMMLInvocationEvaluator</code>. It may return <code>null</code>
      * if <code>org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator</code> is not in the classpath
      *
@@ -102,7 +102,7 @@ public class PMMLInvocationEvaluatorFactory {
         return null;
     }
 
-    /**
+    /*
      * Retrieve the required <code>DMNKiePMMLTrustyInvocationEvaluator</code>. It may return <code>null</code>
      * if <code>org.drools:kie-pmml-trusty</code> is not in the classpath
      *

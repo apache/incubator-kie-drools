@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
 
     private static final long    serialVersionUID = 510l;
 
-    /** The identifier for the variable. */
+    /* The identifier for the variable. */
     private String               identifier;
 
     private String               bindingName;
@@ -60,7 +60,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this( null, null, null );
     }
 
-    /**
+    /*
      * Construct.
      *
      * @param identifier
@@ -72,7 +72,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this( identifier, null, pattern, false );
     }
 
-    /**
+    /*
      * Construct.
      *
      * @param identifier
@@ -86,7 +86,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this( identifier, extractor, pattern, false );
     }
 
-    /**
+    /*
      *
      * @param identifier
      *            The name of the variable.
@@ -135,7 +135,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         out.writeInt(xPathOffset);
     }
 
-    /**
+    /*
      * Retrieve the variable's identifier.
      *
      * @return The variable's identifier.
@@ -152,7 +152,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this.bindingName = bindingName;
     }
 
-    /**
+    /*
      * Retrieve the <code>ValueType</code>.
      *
      * @return The ValueType.
@@ -162,7 +162,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         return this.readAccessor.getValueType();
     }
 
-    /**
+    /*
      * Returns the index of the pattern
      *
      * @return the pattern
@@ -195,7 +195,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         return xPathOffset >= 1;
     }
 
-    /**
+    /*
      * Returns true if this declaration is a pattern declaration
      */
     public boolean isPatternDeclaration() {
@@ -206,7 +206,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this.readAccessor = readAccessor;
     }
 
-    /**
+    /*
      * Returns the Extractor expression
      */
     public ReadAccessor getExtractor() {

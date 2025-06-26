@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the language level configuration.
  */
 public enum LanguageLevelOption implements SingleValueRuleBuilderOption {
@@ -29,7 +29,7 @@ public enum LanguageLevelOption implements SingleValueRuleBuilderOption {
 
     private final boolean useJavaAnnotations;
 
-    /**
+    /*
      * The property name for the language level
      */
     public static final String PROPERTY_NAME = "drools.lang.level";
@@ -44,7 +44,7 @@ public enum LanguageLevelOption implements SingleValueRuleBuilderOption {
         return useJavaAnnotations;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

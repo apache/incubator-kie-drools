@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Default <code>ModelImplementationProvider</code> for <b>Scorecard</b>
  */
 public class ScorecardModelImplementationProvider implements ModelImplementationProvider<Scorecard,

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
+/*
  * Class used to provide JSON common utils
  */
 public class JsonUtils {
@@ -34,7 +34,7 @@ public class JsonUtils {
         // Not instantiable
     }
 
-    /**
+    /*
      * This method aim is to to evaluate if any possible String is a valid json or not.
      * Given a json in String format, it try to convert it in a <code>JsonNode</code>. In case of success, i.e.
      * the given string is a valid json, it put the <code>JsonNode</code> in a <code>Optional</code>. An empty

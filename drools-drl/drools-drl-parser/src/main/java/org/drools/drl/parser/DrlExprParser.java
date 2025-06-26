@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,23 +22,23 @@ import java.util.List;
 
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 
-/**
+/*
  * This is a helper class that provides helper methods to parse expressions
  * using both the DRLExpressions parser and the DRLExprTree parser.
  */
 public interface DrlExprParser {
 
-    /** Parse an expression from text */
+    /* Parse an expression from text */
     ConstraintConnectiveDescr parse( final String text );
 
     String getLeftMostExpr();
 
-    /**
+    /*
      * @return true if there were parser errors.
      */
     boolean hasErrors();
 
-    /**
+    /*
      * @return a list of errors found while parsing. 
      */
     @SuppressWarnings("unchecked")

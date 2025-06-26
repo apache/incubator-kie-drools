@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ public class KieMavenRepository extends MavenRepository {
         return new KieMavenRepository( new Aether( mavenProject ) );
     }
 
-    /**
+    /*
      * Deploys the kjar in the given kieModule on the remote repository defined in the
      * distributionManagement tag of the provided pom file. If the pom file doesn't define
      * a distributionManagement no deployment will be performed and a warning message will be logged.
@@ -71,7 +71,7 @@ public class KieMavenRepository extends MavenRepository {
         deployArtifact( repository, releaseId, kieModule, pomfile );
     }
 
-    /**
+    /*
      * Deploys the kjar in the given kieModule on a remote repository.
      *
      * @param repository The remote repository where the kjar will be deployed
@@ -88,7 +88,7 @@ public class KieMavenRepository extends MavenRepository {
     }
 
 
-    /**
+    /*
      * Installs the kjar in the given kieModule into the local repository.
      *
      * @param releaseId The releaseId with which the kjar will be installed

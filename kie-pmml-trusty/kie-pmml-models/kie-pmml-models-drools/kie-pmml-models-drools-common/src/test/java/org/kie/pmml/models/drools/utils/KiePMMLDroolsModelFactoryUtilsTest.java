@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -196,7 +196,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         return toReturn;
     }
 
-    /**
+    /*
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
      * and every element <b>name</b> is <code>method</code>
      * @param blockStmt
@@ -217,7 +217,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Verify the <b>scope' name</b> scope of the given <code>MethodCallExpr</code> is <code>scope</code>
      * and the <b>name</b> of the given <code>MethodCallExpr</code> is <code>method</code>
      * @param methodCallExpr

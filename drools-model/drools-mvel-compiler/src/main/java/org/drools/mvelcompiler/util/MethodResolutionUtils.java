@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ public final class MethodResolutionUtils {
         // It is forbidden to create instances of util classes.
     }
 
-    /**
+    /*
      *  [] is ambiguous in mvel - it can represent an empty list or an empty map.
      *    It cannot be distinguished on a language level, so this is a workaround:
      *    - When there [] written in a rule, mvel parser parses it as an empty list.
@@ -100,7 +100,7 @@ public final class MethodResolutionUtils {
         return constructor;
     }
 
-    /**
+    /*
      *  [] is ambiguous in mvel - it can represent an empty list or an empty map.
      *    It cannot be distinguished on a language level, so this is a workaround:
      *    - When there [] written in a rule, mvel parser parses it as an empty list.

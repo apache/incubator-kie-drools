@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,13 +26,13 @@ import org.drools.template.parser.TemplateDataListener;
 import java.io.InputStream;
 import java.util.Collection;
 
-/**
+/*
  * This class provides additional methods for invoking the template
  * compiler, taking the actual parameters from maps or objects.
  */
 public class ObjectDataCompiler extends DataProviderCompiler {
 
-    /**
+    /*
      * Compile templates, substituting from a collection of maps or objects
      * into the given template.
      *
@@ -45,7 +45,7 @@ public class ObjectDataCompiler extends DataProviderCompiler {
         return compile(objs, templateStream);
     }
 
-    /**
+    /*
      * Compile templates, substituting from a collection of maps or objects
      * into the given template.
      *

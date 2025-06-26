@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import static org.kie.drl.engine.mapinput.compilation.model.test.RulesED2A293F9C
 
 public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
 
-    /**
+    /*
      * Rule name: SmallDepositApprove
      */
     public static org.drools.model.Rule rule_SmallDepositApprove() {
@@ -62,7 +62,7 @@ public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
         return rule;
     }
 
-    /**
+    /*
      * Rule name: SmallDepositReject
      */
     public static org.drools.model.Rule rule_SmallDepositReject() {
@@ -99,7 +99,7 @@ public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
         return rule;
     }
 
-    /**
+    /*
      * Rule name: LargeDepositApprove
      */
     public static org.drools.model.Rule rule_LargeDepositApprove() {
@@ -132,7 +132,7 @@ public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
         return rule;
     }
 
-    /**
+    /*
      * Rule name: LargeDepositReject
      */
     public static org.drools.model.Rule rule_LargeDepositReject() {
@@ -165,7 +165,7 @@ public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
         return rule;
     }
 
-    /**
+    /*
      * Rule name: NotAdultApplication
      */
     public static org.drools.model.Rule rule_NotAdultApplication() {
@@ -188,7 +188,7 @@ public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {
         return rule;
     }
 
-    /**
+    /*
      * Rule name: CollectApprovedApplication
      */
     public static org.drools.model.Rule rule_CollectApprovedApplication() {

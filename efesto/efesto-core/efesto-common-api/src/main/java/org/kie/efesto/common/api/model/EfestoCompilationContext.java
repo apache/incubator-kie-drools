@@ -26,7 +26,7 @@ import org.kie.efesto.common.api.EfestoService;
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
 
-/**
+/*
  *
  * Wrap MemoryCompilerClassLoader and convey generated classes to be used by other CompilationManager or RuntimeManager
  *

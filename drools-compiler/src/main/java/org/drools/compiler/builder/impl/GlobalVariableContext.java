@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.builder.impl;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-/**
+/*
  * A build context that holds all the declared global variables
  * as a string -> type map.
  * 

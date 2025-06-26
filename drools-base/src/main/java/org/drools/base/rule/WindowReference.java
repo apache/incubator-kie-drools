@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * This class defines a reference to a declared window
  */
 public class WindowReference extends ConditionalElement
@@ -52,7 +52,7 @@ public class WindowReference extends ConditionalElement
         out.writeObject(name);
     }
 
-    /**
+    /*
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      */
@@ -61,7 +61,7 @@ public class WindowReference extends ConditionalElement
         return this;
     }
 
-    /**
+    /*
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      */
@@ -69,7 +69,7 @@ public class WindowReference extends ConditionalElement
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
      */
@@ -77,7 +77,7 @@ public class WindowReference extends ConditionalElement
         return Collections.emptyList();
     }
 
-    /**
+    /*
      * It is not possible to declare and export any variables,
      * so always return an empty map
      */
@@ -85,14 +85,14 @@ public class WindowReference extends ConditionalElement
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * Not possible to resolve any declaration, so always return null.
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getName() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -93,7 +93,7 @@ public class ResourceType implements Serializable {
         return resource;
     }
 
-    /** Drools Rule Language */
+    /* Drools Rule Language */
     public static final ResourceType DRL = addResourceTypeToRegistry("DRL",
                                                                      "Drools Rule Language",
                                                                      "src/main/resources",
@@ -105,99 +105,99 @@ public class ResourceType implements Serializable {
                                                                       "drlx");
 
 
-    /** Drools Rule Language - Guided Globals definitions - Workaround for double-dot file extensions for 6.0 */
+    /* Drools Rule Language - Guided Globals definitions - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType GDRL = addResourceTypeToRegistry("GDRL",
                                                                       "Drools Rule Language",
                                                                       "src/main/resources",
                                                                       "gdrl");
 
-    /** Drools Rule Language - Guided Rules (without DSL) - Workaround for double-dot file extensions for 6.0 */
+    /* Drools Rule Language - Guided Rules (without DSL) - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType RDRL = addResourceTypeToRegistry("RDRL",
                                                                       "Drools Rule Language",
                                                                       "src/main/resources",
                                                                       "rdrl");
 
-    /** Drools DSL */
+    /* Drools DSL */
     public static final ResourceType DSL = addResourceTypeToRegistry("DSL",
                                                                      "Drools DSL",
                                                                      "src/main/resources",
                                                                      "dsl");
 
-    /** Drools DSL Rule */
+    /* Drools DSL Rule */
     public static final ResourceType DSLR = addResourceTypeToRegistry("DSLR",
                                                                       "Drools DSL Rule",
                                                                       "src/main/resources",
                                                                       "dslr");
 
-    /** Drools Rule Language - Guided Rules (with DSL) - Workaround for double-dot file extensions for 6.0 */
+    /* Drools Rule Language - Guided Rules (with DSL) - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType RDSLR = addResourceTypeToRegistry("RDSLR",
                                                                        "Drools DSL Rule",
                                                                        "src/main/resources",
                                                                        "rdslr");
 
-    /** jBPM BPMN2 Language */
+    /* jBPM BPMN2 Language */
     public static final ResourceType BPMN2 = addResourceTypeToRegistry("BPMN2",
                                                                        "jBPM BPMN2 Language",
                                                                        "src/main/resources",
                                                                        "bpmn", "bpmn2", "bpmn-cm");
 
-    /** jBPM CMMN Language */
+    /* jBPM CMMN Language */
     public static final ResourceType CMMN = addResourceTypeToRegistry("CMMN",
                                                                        "jBPM CMMN Language",
                                                                        "src/main/resources",
                                                                        "cmmn");
 
-    /** Decision Table */
+    /* Decision Table */
     public static final ResourceType DTABLE = addResourceTypeToRegistry("DTABLE",
                                                                         "Decision Table",
                                                                         "src/main/resources",
                                                                         "drl.xls", "drl.xlsx", "drl.csv");
 
-    /** XSD */
+    /* XSD */
     public static final ResourceType XSD = addResourceTypeToRegistry("XSD",
                                                                      "XSD",
                                                                      "src/main/resources",
                                                                      "xsd");
 
-    /** PMML */
+    /* PMML */
     public static final ResourceType PMML = addResourceTypeToRegistry("PMML",
                                                                       false,
                                                                       "Predictive Model Markup Language",
                                                                       "src/main/resources",
                                                                       "pmml");
 
-    /** DESCR */
+    /* DESCR */
     public static final ResourceType DESCR = addResourceTypeToRegistry("DESCR",
                                                                        "Knowledge Descriptor",
                                                                        "src/main/resources",
                                                                        "descr");
 
-    /** JAVA */
+    /* JAVA */
     public static final ResourceType JAVA = addResourceTypeToRegistry("JAVA",
                                                                       "Java class",
                                                                       "src/main/java",
                                                                       "java");
 
-    /** PROPERTIES */
+    /* PROPERTIES */
     public static final ResourceType PROPERTIES = addResourceTypeToRegistry("PROPERTIES",
                                                                             "Properties file",
                                                                             "src/main/resources",
                                                                             "properties");
 
-    /** Score Card - Workaround for double-dot file extensions for 6.0 */
+    /* Score Card - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType SCARD = addResourceTypeToRegistry("SCARD",
                                                                        "Score Crd",
                                                                        "src/main/resources",
                                                                        "sxls");
 
 
-    /** Bayesian */
+    /* Bayesian */
     public static final ResourceType BAYES = addResourceTypeToRegistry("Bayes",
                                                                        "Bayesian Belief Network",
                                                                        "src/main/resources",
                                                                        "xmlbif", "bif");
 
-    /** Drools Rule Language - Guided Decision Trees - Workaround for double-dot file extensions for 6.0 */
+    /* Drools Rule Language - Guided Decision Trees - Workaround for double-dot file extensions for 6.0 */
     public static final ResourceType TDRL = addResourceTypeToRegistry("TDRL",
                                                                       "Drools Rule Language",
                                                                       "src/main/resources",
@@ -207,7 +207,7 @@ public class ResourceType implements Serializable {
                                                                           "Drools Rule Template",
                                                                           "src/main/resources",
                                                                           "drl.template");
-    /**
+    /*
      * @deprecated Since 8. Consider <code>drools-decisiontables</code> or third party templating features
      */
     @Deprecated
@@ -231,21 +231,21 @@ public class ResourceType implements Serializable {
                                                                         "src/main/resources",
                                                                         "solver");
 
-    /** Decision Model and Notation (DMN) model  */
+    /* Decision Model and Notation (DMN) model  */
     public static final ResourceType DMN = addResourceTypeToRegistry("DMN",
                                                                      false,
                                                                      "Decision Model and Notation",
                                                                      "src/main/resources",
                                                                      "dmn");
 
-    /** DMN FEEL expression language */
+    /* DMN FEEL expression language */
     public static final ResourceType FEEL = addResourceTypeToRegistry("FEEL",
                                                                       false,
                                                                      "Friendly Enough Expression Language",
                                                                      "src/main/resources",
                                                                      "feel");
 
-    /** NO-Operation ResourceType - used for example to dynamically disable a given AssemblerService */
+    /* NO-Operation ResourceType - used for example to dynamically disable a given AssemblerService */
     public static final ResourceType NOOP = addResourceTypeToRegistry("NOOP",
                                                                       false,
                                                                       "No-operation type",

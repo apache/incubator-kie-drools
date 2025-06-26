@@ -25,7 +25,7 @@ import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
-/**
+/*
  * The compilation-related interface to be implemented by engine-plugin.
  * It will be looked for with SPI, so each engine should declare that implementation inside
  * <code>src/main/resources/META-INF/services/org.kie.efesto.compilationmanager.api.service.KieCompilerService</code> file
@@ -36,7 +36,7 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
 
     boolean canManageResource(EfestoResource toProcess);
 
-    /**
+    /*
      * Produce one <code>E</code> from the given <code>T</code>
      * <p>
      * Implementation are also required to generate a "mapping" class, i.e. a class specific for the given
@@ -53,7 +53,7 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
         return false;
     }
 
-    /**
+    /*
      * Retrieve the source of a given model file. Used to retrieve source from remote model (e.g. pmml model deployed in different jvm and looked for by dmn)
      * @param fileName
      */
@@ -61,7 +61,7 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
         return null;
     }
 
-    /**
+    /*
      * Return the model type that the CompilerService handles
      *
      * @return model type

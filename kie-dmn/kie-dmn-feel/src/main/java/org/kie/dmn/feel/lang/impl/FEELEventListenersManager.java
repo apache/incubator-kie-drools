@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ public class FEELEventListenersManager {
 
     public FEELEventListenersManager() {}
     
-    /**
+    /*
      * Registers a new event listener into this FEEL instance.
      * The event listeners are notified about signitificative
      * events during compilation or evaluation of expressions.
@@ -47,7 +47,7 @@ public class FEELEventListenersManager {
         this.listeners.addAll( listeners );
     }
 
-    /**
+    /*
      * Removes a listener from the list of event listeners.
      *
      * @param listener the listener to remove
@@ -56,7 +56,7 @@ public class FEELEventListenersManager {
         this.listeners.remove( listener );
     }
 
-    /**
+    /*
      * Retrieves the set of registered event listeners
      *
      * @return the set of listeners

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,29 +23,29 @@ import java.util.Collection;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 
-/**
+/*
  * An interface for all timer service implementations used in a drools session.
  */
 public interface TimerService extends SchedulerService {
     
-    /**
+    /*
      * Returns the current time from the scheduler clock
      * 
      * @return the current timestamp
      */
     long getCurrentTime();
 
-    /**
+    /*
      * Reset this service
      */
     void reset();
 
-    /**
+    /*
      * Shuts the service down
      */
     void shutdown();
 
-    /**
+    /*
      * Returns the number of time units (usually ms) to
      * the next scheduled job
      * 
@@ -54,7 +54,7 @@ public interface TimerService extends SchedulerService {
      */
     long getTimeToNextJob();
     
-    /**
+    /*
      * This method may return null for some TimerService implementations that do not want the overhead of maintain this.
      * @return
      */

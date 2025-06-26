@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
+/*
  * This is an Internal Drools Class
  */
 public class CompositeClassLoader extends ClassLoader {
@@ -96,7 +96,7 @@ public class CompositeClassLoader extends ClassLoader {
         this.loader.get().reset();
     }
 
-    /**
+    /*
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
      */
@@ -112,7 +112,7 @@ public class CompositeClassLoader extends ClassLoader {
         return cls;
     }
 
-   /**
+   /*
     * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
     * and the parent ClassLoader if one is provided
     */
@@ -130,7 +130,7 @@ public class CompositeClassLoader extends ClassLoader {
        return cls;
    }
 
-    /**
+    /*
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
      */

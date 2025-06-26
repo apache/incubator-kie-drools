@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.io;
 import java.util.Properties;
 
 
-/**
+/*
  * This interface is a marker interface and should be implemented by any class
  * that will provide configurations to the {@link org.kie.api.builder.KieBuilder} - currently this is
  * only used by decision tables.

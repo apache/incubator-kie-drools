@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.persistence.api.TransactionManagerFactory;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 
-/**
+/*
  * Implementation of {@link org.drools.persistence.TransactionManager} that creates
  * {@link JtaTransactionManager} instances.
  * 
@@ -35,7 +35,7 @@ public class JtaTransactionManagerFactory extends TransactionManagerFactory {
         return new JtaTransactionManager(null, null, null);
     }
 
-    /**
+    /*
      * Creates a {@link JtaTransactionManager} instance using any of the {@link jakarta.transaction.UserTransaction},
      * {@link jakarta.transaction.TransactionSynchronizationRegistry}, and {@link jakarta.transaction.TransactionManager}
      * present in {@code env}.

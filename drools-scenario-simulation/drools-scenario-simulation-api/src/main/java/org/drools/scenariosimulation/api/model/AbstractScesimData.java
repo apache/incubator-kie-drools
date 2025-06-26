@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,17 +28,17 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-/**
+/*
  * Abstract class representing the values inside <code>AbstractScesimModel</code>, to be extended by concrete implementations
  */
 public abstract class AbstractScesimData {
 
-    /**
+    /*
      * List of values to be used to test this scenario
      */
     protected final List<FactMappingValue> factMappingValues = new ArrayList<>();
 
-    /**
+    /*
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * <p>
      * NOTE: list order could not be aligned to factMapping order.

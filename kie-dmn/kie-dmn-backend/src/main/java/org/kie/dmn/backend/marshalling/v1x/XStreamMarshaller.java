@@ -182,7 +182,7 @@ public class XStreamMarshaller implements DMNMarshaller {
         return toReturn;
     }
 
-    /**
+    /*
      *
      * @param dmnVersion
      * @param namespaceKind

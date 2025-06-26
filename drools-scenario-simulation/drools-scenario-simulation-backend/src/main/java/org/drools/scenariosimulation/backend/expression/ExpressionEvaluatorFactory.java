@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.scenariosimulation.backend.util.JsonUtils;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
 
-/**
+/*
  * Factory to obtain specific expression evaluator based on context. It works like a delegate that hides part of context
  * so it will be possible to distribute the factory and then obtain the specific expression evaluator instance only when
  * all the information are available
@@ -50,7 +50,7 @@ public class ExpressionEvaluatorFactory {
         this.type = type;
     }
 
-    /**
+    /*
      * Based on factMappingValue information it returns an instance of the specific expression evaluator required.
      * @param factMappingValue
      * @return
@@ -69,7 +69,7 @@ public class ExpressionEvaluatorFactory {
         }
     }
 
-    /**
+    /*
      * A rawValue is an MVEL expression if:
      * - NOT COLLECTIONS CASE: It's a <code>String</code> which starts with MVEL_ESCAPE_SYMBOL ('#')
      * - COLLECTION CASE: It's a JSON String node, which is used only when an expression is set

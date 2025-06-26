@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -107,7 +107,7 @@ public class PersistentSessionForallTest {
         }
     }
 
-    /**
+    /*
      * Tests marshalling of persistent KieSession with forall.
      */
     @ParameterizedTest(name="{0}")
@@ -173,7 +173,7 @@ public class PersistentSessionForallTest {
         }
     }
 
-    /**
+    /*
      * Listener tracking number of rules fired.
      */
     public static class TrackingAgendaEventListener extends DefaultAgendaEventListener {
@@ -190,7 +190,7 @@ public class PersistentSessionForallTest {
             }
         }
 
-        /**
+        /*
          * Return true if the rule was fired at least once
          *
          * @param rule - name of the rule
@@ -200,7 +200,7 @@ public class PersistentSessionForallTest {
             return rulesFired.containsKey(rule);
         }
 
-        /**
+        /*
          * Returns number saying how many times the rule was fired
          *
          * @param rule - name of the rule

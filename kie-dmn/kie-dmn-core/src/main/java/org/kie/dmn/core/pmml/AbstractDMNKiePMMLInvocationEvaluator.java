@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.RESULT_CODE;
 
-/**
+/*
  * Abstract <code>DMNKiePMMLInvocationEvaluator</code> to delegate actual <code>PMML4Result</code> retrieval to specific
  * kie-pmml implementation (legacy or new)
  */
@@ -89,7 +89,7 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
         }
     }
 
-    /**
+    /*
      * Returns the <code>PMML</code> results
      * @param eventManager
      * @param dmnr
@@ -97,7 +97,7 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
      */
     protected abstract Map<String, Object> getPMMLResult(DMNRuntimeEventManager eventManager, DMNResult dmnr);
 
-    /**
+    /*
      * Returns a <code>Map&lt;String, Object&gt;</code> of values identified by <b>Output</b> definition
      * @param resultVariables
      * @param dmnr
@@ -106,7 +106,7 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
     protected abstract Map<String, Object> getOutputFieldValues(Map<String, Object>
     resultVariables, DMNResult dmnr);
 
-    /**
+    /*
      * Returns a <code>Map&lt;String, Object&gt;</code> of predicted values identified by
      <b>MiningSchema/Targets</b> definitions
      * @param resultVariables

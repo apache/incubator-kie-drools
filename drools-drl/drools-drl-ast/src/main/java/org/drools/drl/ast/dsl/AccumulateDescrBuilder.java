@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,14 +21,14 @@ package org.drools.drl.ast.dsl;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 
-/**
+/*
  *  A descriptor builder for Accumulate
  */
 public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
     extends
     DescrBuilder<P, AccumulateDescr> {
     
-    /**
+    /*
      * Defines the source CE for the Accumulate CE. It is always
      * an AND descriptor that contains one or more Patterns and
      * other CEs. 
@@ -37,7 +37,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      */
     CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source();
 
-    /**
+    /*
      * For accumulate CEs that use accumulate functions, this call
      * instantiate one accumulate function call. Example:
      * 
@@ -62,7 +62,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      */
     AccumulateDescrBuilder<P> function( String name, String bind, boolean isUnification, String... parameters );
 
-    /**
+    /*
      * For accumulate CEs that use custom code blocks, this call
      * sets the content of the init code block. Please node that the
      * use of custom code blocks is discouraged, as they are usually
@@ -78,7 +78,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      */
     AccumulateDescrBuilder<P> init( String block );
 
-    /**
+    /*
      * For accumulate CEs that use custom code blocks, this call
      * sets the content of the action code block. Please node that the
      * use of custom code blocks is discouraged, as they are usually
@@ -94,7 +94,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      */
     AccumulateDescrBuilder<P> action( String block );
 
-    /**
+    /*
      * For accumulate CEs that use custom code blocks, this call
      * sets the content of the reverse code block. Please node that the
      * use of custom code blocks is discouraged, as they are usually
@@ -110,7 +110,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      */
     AccumulateDescrBuilder<P> reverse( String block );
     
-    /**
+    /*
      * For accumulate CEs that use custom code blocks, this call
      * sets the content of the result expression. Please node that the
      * use of custom code blocks is discouraged, as they are usually

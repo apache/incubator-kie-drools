@@ -40,7 +40,7 @@ import org.kie.api.runtime.KieContainer;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
 import static org.drools.util.ResourceHelper.getResourcesByExtension;
 
-/**
+/*
  * @deprecated This is the JUnit 4 implementation of Test Scenario, based on
  * {@link org.junit.runner.Runner} JUnit 4 API. Replaced by {@link TestScenarioActivator}
  * Please replace {@code @org.junit.runner.RunWith(ScenarioJunitActivator.class)} with

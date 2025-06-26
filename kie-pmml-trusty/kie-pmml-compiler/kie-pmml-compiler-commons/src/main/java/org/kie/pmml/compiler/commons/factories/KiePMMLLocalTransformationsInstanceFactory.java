@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLDerivedFieldInstanceFactory.getKiePMMLDerivedField;
 
-/**
+/*
  * Class meant to provide <i>helper</i> methods to retrieve <code>KiePMMLLocalTransformations</code> code-generators
  * out of <code>LocalTransformations</code>s
  */

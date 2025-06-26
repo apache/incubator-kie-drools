@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ public interface InternalFactHandle
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Returns true if this FactHandle represents
      * and Event or false if this FactHandle represents
      * a regular Fact

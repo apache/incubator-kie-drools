@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.drl.ast.descr;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * This is a super class for all restrictions that are based on
  * evaluators.
  */
@@ -33,13 +33,13 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
     private boolean           negated;
     private List<String>      parameters;
 
-    /**
+    /*
      * Creates a new EvaluatorBasedRestriction
      */
     public EvaluatorBasedRestrictionDescr() {
     }
 
-    /**
+    /*
      * Creates a new EvaluatorBasedRestriction
      * 
      * @param evaluator the evaluator ID to be used in this restriction
@@ -54,7 +54,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
               Collections.singletonList( parameterText ) );
     }
 
-    /**
+    /*
      * Creates a new EvaluatorBasedRestriction
      * 
      * @param evaluator the evaluator ID to be used in this restriction
@@ -69,7 +69,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
         this.parameters = parameters;
     }
 
-    /**
+    /*
      * Returns the evaluator ID for this restriction
      * @return
      */
@@ -77,7 +77,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
         return this.evaluator;
     }
 
-    /**
+    /*
      * Returns true if this evaluator is boolean negated.
      * Example: "contains" is boolean negated if you want to check the elements that are not contained ("not contains")
      * 
@@ -87,7 +87,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
         return negated;
     }
 
-    /**
+    /*
      * In case there is any parameter text, this method returns it. Returns null otherwise.
      * A parameter text is evaluator parameters like "after[1,10]". In the previous example,
      * the parameter text will be "1,10".
@@ -119,14 +119,14 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
         this.parameters = parameters;
     }
 
-    /**
+    /*
      * Sets the evaluator ID for this restriction
      */
     public void setEvaluator( String evaluator ) {
         this.evaluator = evaluator;
     }
 
-    /**
+    /*
      * Sets if this evaluator is negated.
      * Example: "contains" is boolean negated if you want to check the elements that are not contained ("not contains")
      * 

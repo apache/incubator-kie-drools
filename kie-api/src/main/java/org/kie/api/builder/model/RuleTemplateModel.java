@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.builder.model;
 
-/**
+/*
  * RuleTemplateModel is a model allowing to programmatically apply a Drools Rule Template to a Decision Table
  */
 public interface RuleTemplateModel {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -145,13 +145,13 @@ public class DecisionTableProviderImpl
         }
     }
 
-    /**
+    /*
      * Adapts a <code>Reader</code> as an <code>InputStream</code>. Adapted from
      * <CODE>StringInputStream</CODE>.
      */
     public static class ReaderInputStream extends InputStream {
 
-        /** Source Reader */
+        /* Source Reader */
         private Reader in;
 
         private String encoding = System.getProperty( "file.encoding" );
@@ -160,7 +160,7 @@ public class DecisionTableProviderImpl
 
         private int    begin;
 
-        /**
+        /*
          * Construct a <CODE>ReaderInputStream</CODE> for the specified
          * <CODE>Reader</CODE>.
          * 
@@ -171,7 +171,7 @@ public class DecisionTableProviderImpl
             in = reader;
         }
 
-        /**
+        /*
          * Construct a <CODE>ReaderInputStream</CODE> for the specified
          * <CODE>Reader</CODE>, with the specified encoding.
          * 
@@ -190,7 +190,7 @@ public class DecisionTableProviderImpl
             }
         }
 
-        /**
+        /*
          * Reads from the <CODE>Reader</CODE>, returning the same value.
          * 
          * @return the value of the next character in the <CODE>Reader</CODE>.
@@ -226,7 +226,7 @@ public class DecisionTableProviderImpl
             return result;
         }
 
-        /**
+        /*
          * Reads from the <code>Reader</code> into a byte array
          * 
          * @param b
@@ -278,7 +278,7 @@ public class DecisionTableProviderImpl
             return len;
         }
 
-        /**
+        /*
          * Marks the read limit of the StringReader.
          * 
          * @param limit
@@ -293,7 +293,7 @@ public class DecisionTableProviderImpl
             }
         }
 
-        /**
+        /*
          * @return the current number of bytes ready for reading
          * @exception IOException
          *                if an error occurs
@@ -312,14 +312,14 @@ public class DecisionTableProviderImpl
             }
         }
 
-        /**
+        /*
          * @return false - mark is not supported
          */
         public boolean markSupported() {
             return false; // would be imprecise
         }
 
-        /**
+        /*
          * Resets the StringReader.
          * 
          * @exception IOException
@@ -333,7 +333,7 @@ public class DecisionTableProviderImpl
             in.reset();
         }
 
-        /**
+        /*
          * Closes the Stringreader.
          * 
          * @exception IOException

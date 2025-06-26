@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
-/**
+/*
  * DTO meant to bring around all information needed for compilation, embedding/hiding helper methods
  */
 public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> {
@@ -57,7 +57,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final List<Field<?>> fields;
     private final TransformationDictionary transformationDictionary;
     private final T model;
-    /**
+    /*
      * Using <code>PMMLCompilationContext</code> to avoid coupling with drools
      */
     private final PMMLCompilationContext pmmlContext;
@@ -70,7 +70,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
     private final DataField targetDataField;
     private final OpType opType;
 
-    /**
+    /*
      * Private constructor that preserve given <b>packageName</b>
      * <code>CompilationDTO</code>
      * @param pmml
@@ -90,7 +90,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
                                                                                     model));
     }
 
-    /**
+    /*
      * Private constructor that preserve given <b>packageName</b> and <b>fields</b>
      * @param pmml
      * @param model
@@ -127,7 +127,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
         opType = targetDataField != null ? targetDataField.getOpType() : null;
     }
 
-    /**
+    /*
      * Private constructor that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
      * from <b>pmml</b> and <b>model</b>
      *
@@ -146,7 +146,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
                                                                                           model.getModelName())));
     }
 
-    /**
+    /*
      * Builder that create the <b>packageName</b> name from the given one and retrieve <b>fields</b>
      * from <b>pmml</b> and <b>model</b>
      *
@@ -168,7 +168,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
                                         fileName);
     }
 
-    /**
+    /*
      * Builder that preserve given <b>packageName</b> and <b>fields</b>
      * <code>CompilationDTO</code>
      *

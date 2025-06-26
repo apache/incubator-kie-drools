@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.conf;
 
-/**
+/*
  * <p>
  * An enum to enable Declarative Agenda option.
  * This is an experimental feature.
@@ -35,7 +35,7 @@ public enum DeclarativeAgendaOption implements SingleValueRuleBaseOption {
 
     ENABLED(true), DISABLED(false);
 
-    /**
+    /*
      * The property name for the L and R Unlinking option
      */
     public static final String PROPERTY_NAME = "drools.declarativeAgendaEnabled";
@@ -48,7 +48,7 @@ public enum DeclarativeAgendaOption implements SingleValueRuleBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
+/*
  * An object of this class acts as a DataProvider for rule templates.
  * It may be created with a collection of maps or objects. The template's
  * column names are used as keys or Bean-stype accessors to obtain the
@@ -39,7 +39,7 @@ public class ObjectDataProvider implements DataProvider {
     private Column[]    columns;
     private Iterator<?> iter;
 
-    /**
+    /*
      * Constructor from a template container
      *
      * @param tcont a template container

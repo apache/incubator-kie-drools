@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.compiler;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 
-/**
+/*
  * Each Dialect can have its own configuration. Implementations of this class are typically
  * loaded via reflection in PackageBuilderConfiguration during the call to buildDialectRegistry().
  * This Class api is subject to change.

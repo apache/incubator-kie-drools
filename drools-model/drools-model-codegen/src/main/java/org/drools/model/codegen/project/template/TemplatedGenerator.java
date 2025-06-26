@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
-/**
+/*
  * Utility class to handle multi platform template generation.
  * Template naming convention is the following:
  * templateName + context.name() + "Template.java"
@@ -115,7 +115,7 @@ public final class TemplatedGenerator {
         return compilationUnitOrThrow("Missing template");
     }
 
-    /**
+    /*
      * Returns the valid template path if exists or null
      * 
      * @return
@@ -134,7 +134,7 @@ public final class TemplatedGenerator {
         return null;
     }
 
-    /**
+    /*
      * Returns template path applying naming convention without verifying if exist
      * 
      * @return

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -151,7 +151,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
             }
         }
 
-        /**
+        /*
          * Represents a string in the version item list, usually a qualifier.
          */
         private static class StringItem implements Item {
@@ -168,7 +168,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 ALIASES.put("cr", "rc");
             }
 
-            /**
+            /*
              * A comparable value for the empty-string qualifier. This one is used to determine if a given qualifier makes
              * the version older than one without a qualifier, or more recent.
              */
@@ -202,7 +202,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 return (comparableQualifier(value).compareTo(RELEASE_VERSION_INDEX) == 0);
             }
 
-            /**
+            /*
              * Returns a comparable value for a qualifier.
              *
              * This method both takes into account the ordering of known qualifiers as well as lexical ordering for unknown
@@ -245,7 +245,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
             }
         }
 
-        /**
+        /*
          * Represents a version list item. This class is used both for the global item list and for sub-lists (which start
          * with '-(number)' in the version specification).
          */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,12 +18,12 @@
  */
 package org.kie.api;
 
-/**
+/*
  * Base class for other Configuration classes.
  */
 public interface PropertiesConfiguration {
 
-    /**
+    /*
      * Sets a property value
      *
      * @param name name
@@ -32,7 +32,7 @@ public interface PropertiesConfiguration {
     public boolean setProperty(String name,
                                String value);
 
-    /**
+    /*
      * Gets a property value
      *
      * @param name name

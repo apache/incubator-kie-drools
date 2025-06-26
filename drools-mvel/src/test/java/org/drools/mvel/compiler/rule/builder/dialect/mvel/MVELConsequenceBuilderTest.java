@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -235,7 +235,7 @@ public class MVELConsequenceBuilderTest {
         assertThat(cheddar.getPrice()).isEqualTo(10);
     }
 
-    /**
+    /*
      * Just like MVEL command line, we can allow expressions to span lines, with optional ";"
      * seperating expressions. If its needed a ";" can be thrown in, but if not, a new line is fine.
      *

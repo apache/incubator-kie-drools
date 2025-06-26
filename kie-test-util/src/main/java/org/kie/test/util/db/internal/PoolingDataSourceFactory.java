@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This class is used by {@link PoolingDataSourceWrapperImpl} to created an instance of tomcat-dbcp pooling data source.
  * For creating a {@link PoolingDataSourceWrapperImpl} instance, please refer to {@link org.kie.test.util.db.DataSourceFactory}.
  */

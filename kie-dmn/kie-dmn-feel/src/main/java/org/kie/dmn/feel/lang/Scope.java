@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,27 +26,27 @@ public interface Scope {
     String GLOBAL   = "<global>";
     String LOCAL    = "<local>";
 
-    /**
+    /*
      * Returns the scope name
      *
      * @return
      */
     String getName();
 
-    /**
+    /*
      * Returns the enclosing (parent) scope
      * @return
      */
     Scope getParentScope();
 
-    /**
+    /*
      * Adds an enclosed (child) scope
      *
      * @param scope
      */
     void addChildScope(Scope scope);
 
-    /**
+    /*
      * Gets a map of all children scopes.
      * The key of the map is the string name of the
      * children scope and the value is the scope itself.
@@ -55,7 +55,7 @@ public interface Scope {
      */
     Map<String, Scope> getChildScopes();
 
-    /**
+    /*
      * Defines a new symbol in this scope
      *
      * @param symbol
@@ -63,7 +63,7 @@ public interface Scope {
      */
     boolean define(Symbol symbol);
 
-    /**
+    /*
      * Searches and returns a symbol with the given
      * id if it exists. The search is recursive
      * up, so if a symbol is not found in the current
@@ -76,7 +76,7 @@ public interface Scope {
      */
     Symbol resolve(String id);
 
-    /**
+    /*
      * Searches and returns a symbol with the given
      * qualified name if it exists. The search is recursive
      * up, so if a symbol is not found in the current scope,
@@ -88,7 +88,7 @@ public interface Scope {
      */
     Symbol resolve(String[] qualifiedName);
 
-    /**
+    /*
      * This method is used during context-aware parsing
      * to find multi-token symbols iteratively. It is used
      * in conjunction with the #followUp method below.
@@ -97,7 +97,7 @@ public interface Scope {
      */
     void start(String token);
 
-    /**
+    /*
      * This method is used during context-aware parsing
      * to find multi-token symbols iteratively. It is used
      * in conjunction with the #start method above.
@@ -108,7 +108,7 @@ public interface Scope {
 
     Map<String, Symbol> getSymbols();
 
-    /**
+    /*
      * maybe null.
      */
     Type getType();

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.verifier.components;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/*
  * Instance of this class represents a possible combination of Constraints under
  * one Pattern. Each possibility returns true if all the Constraints in the
  * combination are true.

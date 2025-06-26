@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,19 +21,19 @@ package org.drools.verifier.core.util;
 import java.util.Collection;
 import java.util.Map;
 
-/**
+/*
  * Created by tonirikkola on 7.8.2018.
  */
 public class PortablePreconditions {
 
-    /**
+    /*
      * Should not be instantiated
      */
     protected PortablePreconditions() {
         throw new IllegalStateException("This class should be not instantiated!");
     }
 
-    /**
+    /*
      * Assert that this parameter is marked as valid by the condition passed as parameter.
      * @param name of parameter
      * @param condition itself
@@ -45,7 +45,7 @@ public class PortablePreconditions {
         }
     }
 
-    /**
+    /*
      * Assert that this parameter is not null, as also each item of the array is not null.
      * @param <T> parameter type
      * @param name of parameter
@@ -63,7 +63,7 @@ public class PortablePreconditions {
         }
     }
 
-    /**
+    /*
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
      * @param name of parameter
      * @param parameter itself
@@ -76,7 +76,7 @@ public class PortablePreconditions {
         return parameter;
     }
 
-    /**
+    /*
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
      * @param name of parameter
      * @param parameter itself
@@ -88,7 +88,7 @@ public class PortablePreconditions {
         }
     }
 
-    /**
+    /*
      * Assert that this parameter is not empty. It trims the parameter to see if have any valid data on that.
      * @param name of parameter
      * @param parameter itself
@@ -101,7 +101,7 @@ public class PortablePreconditions {
         return parameter;
     }
 
-    /**
+    /*
      * Assert that this parameter is not empty. It will test for null and also the size of this array.
      * @param <T> type of the array
      * @param name of parameter
@@ -115,7 +115,7 @@ public class PortablePreconditions {
         return parameter;
     }
 
-    /**
+    /*
      * Assert that this parameter is not null.
      * @param name of parameter
      * @param parameter itself
@@ -128,7 +128,7 @@ public class PortablePreconditions {
         return parameter;
     }
 
-    /**
+    /*
      * Assert that this parameter is null.
      * @param name of parameter
      * @param parameter itself

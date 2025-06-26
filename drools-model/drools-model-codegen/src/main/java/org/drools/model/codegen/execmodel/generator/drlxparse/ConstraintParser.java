@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -112,7 +112,7 @@ import static org.drools.model.codegen.execmodel.generator.expressiontyper.Flatt
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.mvel.parser.utils.AstUtils.isLogicalOperator;
 
-/**
+/*
  * Parses the MVEL String Constraint and compiles it to a Java Expression
  * There are two kinds of ConstraintParser
  *

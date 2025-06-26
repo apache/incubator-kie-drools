@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.api.runtime;
 
 import org.kie.api.command.Command;
 
-/**
+/*
  * A pool of session created from a KieContainer
  */
 public interface KieSessionsPool {
 
-    /**
+    /*
      * Obtain a {@link KieSession} from this pool using the default session configuration.
      * Calling {@link KieSession#dispose()} on this session when you are done will push it back into the pool.
      *
@@ -33,7 +33,7 @@ public interface KieSessionsPool {
      */
     KieSession newKieSession();
 
-    /**
+    /*
      * Obtain a {@link KieSession} from this pool using using the given session configuration.
      * Calling {@link KieSession#dispose()} on this session when you are done will push it back into the pool.
      *
@@ -41,7 +41,7 @@ public interface KieSessionsPool {
      */
     KieSession newKieSession(KieSessionConfiguration conf);
 
-    /**
+    /*
      * Obtain a {@link StatelessKieSession} from this pool using the default session configuration.
      * You do not need to call @{link #dispose()} on this.
      * Note that, what is pooled here is not {@link StatelessKieSession} but the {@link KieSession} that it internally
@@ -52,7 +52,7 @@ public interface KieSessionsPool {
      */
     StatelessKieSession newStatelessKieSession();
 
-    /**
+    /*
      * Obtain a {@link StatelessKieSession} from this pool using using the given session configuration.
      * You do not need to call @{link #dispose()} on this.
      * Note that, what is pooled here is not {@link StatelessKieSession} but the {@link KieSession} that it internally
@@ -63,7 +63,7 @@ public interface KieSessionsPool {
      */
     StatelessKieSession newStatelessKieSession( KieSessionConfiguration conf );
 
-    /**
+    /*
      * Shutdown this pool and clean up all the resources
      */
     void shutdown();

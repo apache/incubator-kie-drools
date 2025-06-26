@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.template.parser;
 
 import org.drools.template.model.Rule;
 
-/**
+/*
  * A column condition for a rule template to be generated.
  */
 interface TemplateColumn {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNModeFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNStddevFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNSumFunction;
 
-/**
+/*
  * additional functions not part of the spec version 1.x, or not incorporated in the spec yet.
  */
 public class KieExtendedDMNFunctions {

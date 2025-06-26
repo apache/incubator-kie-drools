@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.definition.type;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * FactType declarations are fact definitions (like classes) that
  * are managed alongside the rules.
  *
@@ -36,42 +36,42 @@ public interface FactType
     extends
     java.io.Externalizable {
 
-    /**
+    /*
      * Returns the name of the FactType.
      *
      * @return the name of the fact type.
      */
     public String getName();
 
-    /**
+    /*
      * Returns the unqualified name of the FactType.
      *
      * @return the name of the fact type.
      */
     public String getSimpleName();
 
-    /**
+    /*
      * Returns the package this FactType is defined in.
      *
      * @return the name of the fact type's package.
      */
     public String getPackageName();
 
-    /**
+    /*
      * Returns the name of the FactType's super type
      *
      * @return the name of the fact type's super type.
      */
     public String getSuperClass();
 
-    /**
+    /*
      * Returns the list of FactField in this FactType
      *
      * @return the list of the fields in this FactType
      */
     public List<FactField> getFields();
 
-    /**
+    /*
      * Returns the FactField identified by the given name.
      *
      * @param name the name of the FactField
@@ -80,21 +80,21 @@ public interface FactType
      */
     public FactField getField(String name);
 
-    /**
+    /*
      * Returns the Class&lt;?&gt; for this FactType. The class object can be used through reflection.
      *
      * @return the generated class for this FactType
      */
     public Class< ? > getFactClass();
 
-    /**
+    /*
      * Create a new fact based on the declared fact type.
      * This object will usually be a javabean.
      */
     public Object newInstance() throws InstantiationException,
                                IllegalAccessException;
 
-    /**
+    /*
      * Sets the value of the field on a fact.
      *
      * @param bean the object on which the field will be set.
@@ -105,7 +105,7 @@ public interface FactType
                     String field,
                     Object value);
 
-    /**
+    /*
      * Gets the value of the specified field on the dynamic fact.
      *
      * @param bean the fact to read the field value from.
@@ -116,7 +116,7 @@ public interface FactType
     public Object get(Object bean,
                       String field);
 
-    /**
+    /*
      * Get a map of the fields and their values for the bean.
      *
      * @param bean the bean to read the fields from.
@@ -125,7 +125,7 @@ public interface FactType
      */
     public Map<String, Object> getAsMap(Object bean);
 
-    /**
+    /*
      * Sets the values of the bean from a map.
      *
      * @param bean the fact to set the values of the fields on
@@ -134,7 +134,7 @@ public interface FactType
     public void setFromMap(Object bean,
                            Map<String, Object> values);
 
-    /**
+    /*
      * Returns the list of class-level annotations
      * used in this class definition
      *
@@ -143,7 +143,7 @@ public interface FactType
     public List<Annotation> getClassAnnotations();
 
 
-    /**
+    /*
      * Returns the annotations of this class definition as
      * key-value pairs.
      *

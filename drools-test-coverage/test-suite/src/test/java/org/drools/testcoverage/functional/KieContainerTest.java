@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.kie.maven.integration.MavenRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-/**
+/*
  * Tests correct behavior of KieContainer in specific cases, not covered by other tests.
  */
 public class KieContainerTest {
@@ -63,7 +63,7 @@ public class KieContainerTest {
         kieServices = KieServices.Factory.get();
     }
 
-    /**
+    /*
      * Tests not disposing a KieSession created from the same KieContainer with the same name.
      */
     @Test
@@ -112,7 +112,7 @@ public class KieContainerTest {
         assertThat(kieBase.getKiePackages()).isNotEmpty();
     }
 
-    /**
+    /*
      * Helper method creating simple KieModule with given ReleaseId.
      */
     private void createKieModule(final ReleaseId releaseId) {

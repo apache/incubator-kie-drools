@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 
-/**
+/*
  * The Rete-OO network.
  *
  * The Rete class is the root <code>Object</code>. All objects are asserted into
@@ -78,7 +78,7 @@ public class Rete extends ObjectSource implements ObjectSink {
         return NodeTypeEnums.ReteNode;
     }  
 
-    /**
+    /*
      * This is the entry point into the network for all asserted Facts. Iterates a cache
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
      * exist it first iteraes and builds the cache.
@@ -100,7 +100,7 @@ public class Rete extends ObjectSource implements ObjectSink {
         node.assertObject( factHandle, context, typeConf, reteEvaluator );
     }
 
-    /**
+    /*
      * Retract a fact object from this <code>RuleBase</code> and the specified
      * <code>WorkingMemory</code>.
      *
@@ -126,7 +126,7 @@ public class Rete extends ObjectSource implements ObjectSink {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>Objects</code> propagated from this <code>ObjectSource</code>.
      *

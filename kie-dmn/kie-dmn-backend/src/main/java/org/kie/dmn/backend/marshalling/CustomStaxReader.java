@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.io.xml.StaxReader;
 
 
 public class CustomStaxReader extends StaxReader {
-    /** 
+    /* 
      * ATTENTION this is intercepted during XStream StaxDriver creation as there is no proper API to inherit.
      * Do not mutate reference - mutating this reference would not sort any effect on the actual underlying StaxReader
      */

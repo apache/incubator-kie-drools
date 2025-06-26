@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.runtime;
 import org.kie.api.runtime.process.StatefulProcessSession;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 
-/**
+/*
  * KieSession is the most common way to interact with the engine. A KieSession
  * allows the application to establish an iterative conversation with the engine, where the state of the
  * session is kept across invocations. The reasoning process may be triggered multiple times for the
@@ -97,7 +97,7 @@ public interface KieSession
         KieRuntime,
         AutoCloseable {
 
-    /**
+    /*
      * Deprecated. use {@link #getIdentifier()} instead
      *
      * @return id of this session
@@ -107,7 +107,7 @@ public interface KieSession
 
     long getIdentifier();
 
-    /**
+    /*
      * Releases all the current session resources, setting up the session for garbage collection.
      * This method <b>must</b> always be called after finishing using the session, or the engine
      * will not free the memory used by the session.
@@ -115,7 +115,7 @@ public interface KieSession
      */
     void dispose();
 
-    /**
+    /*
      * Disposes the KieSession when used as AutoClosable. Wrapper method that calls {@link #dispose()}.
      * To see more details, please see documentation on the method {@link #dispose()}.
      */
@@ -124,7 +124,7 @@ public interface KieSession
         dispose();
     }
 
-    /**
+    /*
      * Destroys session permanently. In case of session state being persisted in data store
      * it will be removed from it otherwise it falls back to default dispose() method.
      * NOTE: Name and location of this method will most likely change before 6.0.Final
@@ -132,14 +132,14 @@ public interface KieSession
      */
     void destroy();
 
-    /**
+    /*
      * Submit an action that will be executed atomically on this session.
      * This is useful when using fireUntilHalt to avoid evaluations against
      * partially modified objects.
      */
     void submit(AtomicAction action);
 
-    /**
+    /*
      * Returns a runtime for the given interface. This method is used to retrieve runtime
      * extensions to the engine. It is used as the hook point for the custom pluggable
      * knowledge extensions like the bayes engine and the DMN engine.
@@ -153,7 +153,7 @@ public interface KieSession
      */
     <T> T getKieRuntime(Class<T> cls);
 
-    /**
+    /*
      * An action that will be executed atomically on this session.
      */
     interface AtomicAction {

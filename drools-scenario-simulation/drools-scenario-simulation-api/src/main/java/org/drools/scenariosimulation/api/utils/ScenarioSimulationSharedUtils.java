@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ public class ScenarioSimulationSharedUtils {
         // Utils Class
     }
 
-    /**
+    /*
      * Returns true if given string isCollection or isMap
      * @param className
      * @return
@@ -44,7 +44,7 @@ public class ScenarioSimulationSharedUtils {
         return isCollection(className) || isMap(className);
     }
 
-    /**
+    /*
      * Returns true if given string equals to canonical name of Collection or isList
      * @param className
      * @return
@@ -53,7 +53,7 @@ public class ScenarioSimulationSharedUtils {
         return Collection.class.getCanonicalName().equals(className) ||  isList(className);
     }
 
-    /**
+    /*
      * Returns true if given string equals to canonical name of List, ArrayList or LinkedList
      * @param className
      * @return
@@ -64,7 +64,7 @@ public class ScenarioSimulationSharedUtils {
                 LinkedList.class.getCanonicalName().equals(className);
     }
 
-    /**
+    /*
      * Returns true if given string equals to canonical name of Map or HashMap
      * @param className
      * @return
@@ -76,7 +76,7 @@ public class ScenarioSimulationSharedUtils {
                 TreeMap.class.getCanonicalName().equals(className);
     }
 
-    /**
+    /*
      * Returns true if given string equals to canonical name of <code>java.lang.Enum</code>
      * @param className
      * @return

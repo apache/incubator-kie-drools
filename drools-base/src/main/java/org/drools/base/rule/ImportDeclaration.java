@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * A class to represent an import declaration. 
  */
 public class ImportDeclaration implements Externalizable {
@@ -32,14 +32,14 @@ public class ImportDeclaration implements Externalizable {
 
     private String target;
 
-    /**
+    /*
      * Creates an empty import declaration
      */
     public ImportDeclaration() {
         this( null );
     }
 
-    /**
+    /*
      * Creates an import declaration for the given target.
      *
      * @param target
@@ -92,7 +92,7 @@ public class ImportDeclaration implements Externalizable {
         return true;
     }
 
-    /**
+    /*
      * Returns true if this ImportDeclaration correctly matches to
      * the given clazz
      *

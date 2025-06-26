@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,14 +18,14 @@
  */
 package org.drools.examples.sudoku;
 
-/**
+/*
  * Abstract class for "numbered" cell groups: rows and columns.
  */
 public abstract class CellFile extends CellGroup {
     
     private int number;
     
-    /**
+    /*
      * Constructor.
      * 
      * @param number thw row or column number.
@@ -35,7 +35,7 @@ public abstract class CellFile extends CellGroup {
         this.number = number;
     }
 
-    /**
+    /*
      * Retrieves the row or column number.
      * @return an int value
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 
-/**
+/*
  * <p>Java class for valueType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -119,7 +119,7 @@ public class ValueType {
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<>();
 
-    /**
+    /*
      * Gets the value of the value property.
      * 
      * @return
@@ -131,7 +131,7 @@ public class ValueType {
         return value;
     }
 
-    /**
+    /*
      * Sets the value of the value property.
      * 
      * @param value
@@ -143,7 +143,7 @@ public class ValueType {
         this.value = value;
     }
 
-    /**
+    /*
      * Gets the value of the component property.
      * 
      * <p>
@@ -172,7 +172,7 @@ public class ValueType {
         return this.component;
     }
 
-    /**
+    /*
      * Gets the value of the list property.
      * 
      * @return
@@ -184,7 +184,7 @@ public class ValueType {
         return list;
     }
 
-    /**
+    /*
      * Sets the value of the list property.
      * 
      * @param value
@@ -196,7 +196,7 @@ public class ValueType {
         this.list = value;
     }
 
-    /**
+    /*
      * Gets the value of the extensionElements property.
      * 
      * @return
@@ -208,7 +208,7 @@ public class ValueType {
         return extensionElements;
     }
 
-    /**
+    /*
      * Sets the value of the extensionElements property.
      * 
      * @param value
@@ -220,7 +220,7 @@ public class ValueType {
         this.extensionElements = value;
     }
 
-    /**
+    /*
      * Gets a map that contains attributes that aren't bound to any typed property on this class.
      * 
      * <p>
@@ -270,7 +270,7 @@ public class ValueType {
     }
 
 
-    /**
+    /*
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.
@@ -298,7 +298,7 @@ public class ValueType {
         @XmlSchemaType(name = "anySimpleType")
         protected String name;
 
-        /**
+        /*
          * Gets the value of the name property.
          * 
          * @return
@@ -310,7 +310,7 @@ public class ValueType {
             return name;
         }
 
-        /**
+        /*
          * Sets the value of the name property.
          * 
          * @param value
@@ -366,7 +366,7 @@ public class ValueType {
     }
 
 
-    /**
+    /*
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.
@@ -394,7 +394,7 @@ public class ValueType {
         @XmlAnyElement(lax = true)
         protected java.util.List<Object> any;
 
-        /**
+        /*
          * Gets the value of the any property.
          * 
          * <p>
@@ -443,7 +443,7 @@ public class ValueType {
     }
 
 
-    /**
+    /*
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.
@@ -470,7 +470,7 @@ public class ValueType {
 
         protected java.util.List<ValueType> item;
 
-        /**
+        /*
          * Gets the value of the item property.
          * 
          * <p>

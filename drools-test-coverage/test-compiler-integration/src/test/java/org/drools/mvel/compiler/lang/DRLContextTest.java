@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -209,7 +209,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** Inside of condition: start */
+    /* Inside of condition: start */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START1() {
@@ -398,7 +398,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
-    /** Inside of condition: Operator */
+    /* Inside of condition: Operator */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR1() {
@@ -550,7 +550,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
     }
 
-    /** Inside of condition: argument */
+    /* Inside of condition: argument */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT1() {
@@ -981,7 +981,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_START);
     }
 
-    /** EXISTS */
+    /* EXISTS */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS1() {
@@ -1111,7 +1111,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** NOT */
+    /* NOT */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_NOT1() {
@@ -1242,7 +1242,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** AND */
+    /* AND */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR1() {
@@ -1533,7 +1533,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** OR */
+    /* OR */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR21() {
@@ -1768,7 +1768,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS);
     }
 
-    /** EVAL */
+    /* EVAL */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_EVAL1() {
@@ -2002,7 +2002,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** MULTIPLE RESTRICTIONS */
+    /* MULTIPLE RESTRICTIONS */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR12() {
@@ -2258,7 +2258,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_END);
     }
 
-    /** FROM */
+    /* FROM */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION60() {
@@ -2380,7 +2380,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_BEGIN_OF_CONDITION);
     }
 
-    /** FROM ACCUMULATE */
+    /* FROM ACCUMULATE */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_FROM_ACCUMULATE1() {
@@ -2627,7 +2627,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
-    /** FROM COLLECT */
+    /* FROM COLLECT */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_FROM_COLLECT1() {
@@ -2733,7 +2733,7 @@ public class DRLContextTest {
                 .getContent())).isEqualTo(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
     }
 
-    /** NESTED FROM */
+    /* NESTED FROM */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION68() {
@@ -2824,7 +2824,7 @@ public class DRLContextTest {
                 .getEditorInterface().get(0).getContent())).isEqualTo(Location.LOCATION_LHS_FROM);
     }
 
-    /** FORALL */
+    /* FORALL */
     @Test
 	@Timeout(10*1000)
     public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION81() {
@@ -3273,7 +3273,7 @@ public class DRLContextTest {
         return lastToken;
     }
 
-    /**
+    /*
      * @return An instance of a RuleParser should you need one (most folks will
      *         not).
      */

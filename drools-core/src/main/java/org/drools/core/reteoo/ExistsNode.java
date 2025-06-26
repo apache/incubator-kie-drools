@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.builder.BuildContext;
 
-/**
+/*
  * <code>ExistsNode</code> extends <code>BetaNode</code> to perform tests for
  * the existence of a Fact plus one or more conditions. Where existence
  * is found the left ReteTuple is copied and propagated. Further to this it

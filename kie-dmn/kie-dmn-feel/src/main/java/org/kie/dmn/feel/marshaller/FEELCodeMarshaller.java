@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
 import static org.kie.dmn.feel.lang.types.BuiltInType.justNull;
 
-/**
+/*
  * An implementation of the FEEL marshaller interface
  * that converts FEEL objects into it's string representation
  * and vice versa
@@ -41,7 +41,7 @@ public class FEELCodeMarshaller
 
     private FEELCodeMarshaller() {}
 
-    /**
+    /*
      * Marshalls the given value into FEEL code that can be executed to
      * reconstruct the value. For instance, here are some examples of the marshalling process:
      *
@@ -62,7 +62,7 @@ public class FEELCodeMarshaller
         return KieExtendedDMNFunctions.getFunction(CodeFunction.class).invoke(value).cata(justNull(), Function.identity());
     }
 
-    /**
+    /*
      * Unmarshalls the string into a FEEL value by executing it.
      *
      * @param feelType this parameter is ignored by this marshaller and can be set to null

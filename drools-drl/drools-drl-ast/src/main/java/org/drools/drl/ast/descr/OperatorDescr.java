@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.descr;
 
 import java.util.List;
 
-/**
+/*
  * A descriptor to represent a relational operator
  */
 public class OperatorDescr extends BaseDescr {
@@ -102,14 +102,14 @@ public class OperatorDescr extends BaseDescr {
         this.parameters = parameters;
     }
 
-    /**
+    /*
      * @return the alias
      */
     public String getAlias() {
         return alias;
     }
 
-    /**
+    /*
      * @param alias the alias to set
      */
     public void setAlias( String alias ) {
@@ -121,7 +121,7 @@ public class OperatorDescr extends BaseDescr {
         return (this.negated ? "not " : "") + this.operator + (this.parameters != null ? parameters.toString() : "");
     }
 
-    /**
+    /*
      * This is an internal cache of the left string parameter that is set during the rewrite
      * into MVEL, allowing for further analysis of the parameter type. 
      * 
@@ -131,7 +131,7 @@ public class OperatorDescr extends BaseDescr {
         this.leftString = left;
     }
 
-    /**
+    /*
      * This is an internal cache of the right string parameter that is set during the rewrite
      * into MVEL, allowing for further analysis of the parameter type. 
      * 
@@ -141,7 +141,7 @@ public class OperatorDescr extends BaseDescr {
         this.rightString = right;
     }
 
-    /**
+    /*
      * This is an internal cache of the left string parameter that is set during the rewrite
      * into MVEL, allowing for further analysis of the parameter type. 
      * 
@@ -151,7 +151,7 @@ public class OperatorDescr extends BaseDescr {
         return leftString;
     }
 
-    /**
+    /*
      * This is an internal cache of the right string parameter that is set during the rewrite
      * into MVEL, allowing for further analysis of the parameter type.
      *  
@@ -161,28 +161,28 @@ public class OperatorDescr extends BaseDescr {
         return rightString;
     }
 
-    /**
+    /*
      * @return the leftIsHandle
      */
     public boolean isLeftIsHandle() {
         return leftIsHandle;
     }
 
-    /**
+    /*
      * @param leftIsHandle the leftIsHandle to set
      */
     public void setLeftIsHandle( boolean leftIsHandle ) {
         this.leftIsHandle = leftIsHandle;
     }
 
-    /**
+    /*
      * @return the rightIsHandle
      */
     public boolean isRightIsHandle() {
         return rightIsHandle;
     }
 
-    /**
+    /*
      * @param rightIsHandle the rightIsHandle to set
      */
     public void setRightIsHandle( boolean rightIsHandle ) {

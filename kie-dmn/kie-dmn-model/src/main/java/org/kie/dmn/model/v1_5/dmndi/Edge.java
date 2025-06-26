@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ public abstract class Edge extends DiagramElement implements org.kie.dmn.model.a
 
     protected List<org.kie.dmn.model.api.dmndi.Point> waypoint;
 
-    /**
+    /*
      * Gets the value of the waypoint property.
      * 
      * <p>

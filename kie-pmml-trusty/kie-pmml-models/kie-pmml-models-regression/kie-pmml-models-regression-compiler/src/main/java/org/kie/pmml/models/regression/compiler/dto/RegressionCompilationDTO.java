@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
     private final RegressionModel.NormalizationMethod defaultNormalizationMethod;
     private final RegressionModel.NormalizationMethod modelNormalizationMethod;
 
-    /**
+    /*
      * Private constructor that preserve given <b>regressionTables</b> and <b>defaultNormalizationMethod</b>
      *
      * @param source
@@ -55,7 +55,7 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
         modelNormalizationMethod = source.getModel().getNormalizationMethod();
     }
 
-    /**
+    /*
      * Private constructor that use <b>regressionTables</b> and <b>defaultNormalizationMethod</b> from the given
      * <b>source</b>
      *
@@ -65,7 +65,7 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
         this(source, source.getModel().getRegressionTables(), source.getModel().getNormalizationMethod());
     }
 
-    /**
+    /*
      * Builder that preserve given <b>regressionTables</b> and <b>defaultNormalizationMethod</b>
      * <p>
      * This is used by <code>KiePMMLRegressionTableRegressionFactory</code> when it
@@ -82,7 +82,7 @@ public class RegressionCompilationDTO extends AbstractSpecificCompilationDTO<Reg
         return new RegressionCompilationDTO(source, regressionTables, defaultNormalizationMethod);
     }
 
-    /**
+    /*
      * Builder that that use <b>regressionTables</b> and <b>defaultNormalizationMethod</b> from the given
      * <b>source</b>
      *

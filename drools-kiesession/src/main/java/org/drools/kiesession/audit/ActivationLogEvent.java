@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * An activation event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the activation id, the name of the rule and a String
@@ -49,7 +49,7 @@ public class ActivationLogEvent extends LogEvent {
     public ActivationLogEvent() {
     }
 
-    /**
+    /*
      * Create a new activation log event.
      * 
      * @param type The type of event.  This can only be ACTIVATION_CREATED, ACTIVATION_CANCELLED,
@@ -91,7 +91,7 @@ public class ActivationLogEvent extends LogEvent {
         out.writeObject(factHandleIds);
     }
 
-    /**
+    /*
      * Returns a unique id for the activation.
      * 
      * @return The id of the activation
@@ -100,7 +100,7 @@ public class ActivationLogEvent extends LogEvent {
         return this.activationId;
     }
 
-    /**
+    /*
      * Returns the name of the rule of the activation.
      * 
      * @return The name of the rule
@@ -109,7 +109,7 @@ public class ActivationLogEvent extends LogEvent {
         return this.rule;
     }
 
-    /**
+    /*
      * Returns a String representation of the declarations in the
      * activation.
      * 

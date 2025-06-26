@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 
-/**
+/*
  * Utility class to provide common methods for KiePMMLDroolsModel-specific <b>factories</b>
  */
 public class KiePMMLDroolsModelFactoryUtils {
@@ -58,7 +58,7 @@ public class KiePMMLDroolsModelFactoryUtils {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * @param droolsCompilationDTO
      * @param javaTemplate the name of the <b>file</b> to be used as template source
      * @param modelClassName the name of the class used in the provided template
@@ -87,7 +87,7 @@ public class KiePMMLDroolsModelFactoryUtils {
          return cloneCU;
     }
 
-    /**
+    /*
      * Define the <b>targetField</b>, the <b>miningFunction</b> and the <b>pmmlMODEL</b> inside the constructor
      * @param model
      * @param constructorDeclaration
@@ -114,7 +114,7 @@ public class KiePMMLDroolsModelFactoryUtils {
                                                     new StringLiteralExpr(kModulePackageName));
     }
 
-    /**
+    /*
      * Populate the <b>fieldTypeMap</b> <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code>
      * @param body
      * @param fieldTypeMap

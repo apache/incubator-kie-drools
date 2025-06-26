@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,10 +48,10 @@ import static org.drools.base.util.index.IndexUtil.isBigDecimalEqualityConstrain
 
 public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
-    //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
+    //    /* You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
     //    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
     //
-    //    /** The threshold for when hashing kicks in */
+    //    /* The threshold for when hashing kicks in */
     //    public static final int    THRESHOLD_TO_HASH              = Integer.parseInt( System.getProperty( HASH_THRESHOLD_SYSTEM_PROPERTY,
     //                                                                                                      "3" ) );
 
@@ -360,7 +360,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         fieldIndex.setHashed( false );
     }
 
-    /**
+    /*
      * Returns a FieldIndex which Keeps a count on how many times a particular field is used with an equality check
      * in the sinks.
      */
@@ -422,7 +422,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return null;
     }
 
-    /**
+    /*
      * Pick sinks from rangeIndexableSinks (which were stored until index threshold is exceeded) and put them into rangeIndex.
      */
     void rangeIndexSinks(final FieldIndex fieldIndex) {
@@ -485,7 +485,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return false;
     }
 
-    /**
+    /*
      * Returns a FieldIndex which Keeps a count on how many times a particular field is used with a range check
      * in the sinks.
      */
@@ -736,7 +736,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
     }
 
-    /**
+    /*
      * This is a Hook method for subclasses to override. Please keep it protected unless you know
      * what you are doing.
      */

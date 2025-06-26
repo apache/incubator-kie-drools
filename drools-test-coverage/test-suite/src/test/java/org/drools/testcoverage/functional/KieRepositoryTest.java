@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.api.builder.model.KieModuleModel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests correct behavior of KieRepository, such as adding/removing KieModules.
  */
 public class KieRepositoryTest {
@@ -50,7 +50,7 @@ public class KieRepositoryTest {
         kieServices = KieServices.Factory.get();
     }
 
-    /**
+    /*
      * Tests adding a KieModule with a non-SNAPSHOT ReleaseId to KieRepository.
      */
     @Test
@@ -60,7 +60,7 @@ public class KieRepositoryTest {
         this.testKieModuleAddition(releaseId);
     }
 
-    /**
+    /*
      * Tests adding a KieModule with a SNAPSHOT ReleaseId to KieRepository.
      */
     @Test
@@ -77,7 +77,7 @@ public class KieRepositoryTest {
         assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should be in KieRepository").isNotNull();
     }
 
-    /**
+    /*
      * Tests removing a KieModule with a non-SNAPSHOT ReleaseId from KieRepository.
      */
     @Test
@@ -87,7 +87,7 @@ public class KieRepositoryTest {
         this.testKieModuleRemoval(releaseId);
     }
 
-    /**
+    /*
      * Tests removing a KieModule with a SNAPSHOT ReleaseId from KieRepository.
      */
     @Test
@@ -108,7 +108,7 @@ public class KieRepositoryTest {
         assertThat(kieRepository.getKieModule(releaseId)).as("KieModule should NOT be in KieRepository").isNull();
     }
 
-    /**
+    /*
      * Helper method creating simple KieModule with given ReleaseId.
      */
     private void createKieModule(final ReleaseId releaseId) {

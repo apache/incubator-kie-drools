@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.util.IoUtils;
 
-/**
+/*
  * Csv implementation. This implementation removes empty "cells" at the end of
  * each line. Different CSV tools may or may not put heaps of empty cells in.
  * 

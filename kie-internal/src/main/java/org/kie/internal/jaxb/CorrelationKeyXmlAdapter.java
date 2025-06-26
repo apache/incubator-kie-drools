@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         return unmarshalCorrelationKey(key);
     }
 
-    /**
+    /*
      * This method has been made "static"ally available so that
      * non-JAXB code does not have to (unnecesarily) instantiate
      * an instance fo this class.
@@ -60,7 +60,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         return CorrelationKeyXmlAdapter.marshalCorrelationKey(key);
     }
 
-    /**
+    /*
      * This method has been made "static"ally available so that
      * non-JAXB code does not have to (unnecesarily) instantiate
      * an instance fo this class.

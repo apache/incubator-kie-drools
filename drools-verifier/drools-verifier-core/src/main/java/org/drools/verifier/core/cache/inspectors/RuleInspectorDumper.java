@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.drools.verifier.core.cache.inspectors.condition.ConditionsInspectorMu
 import org.drools.verifier.core.maps.InspectorList;
 import org.drools.verifier.core.relations.HumanReadable;
 
-/**
+/*
  * This class is for debugging purposes. It is way easier to just dump the inspector into a string than compare the
  * values in the super dev mode debugger.
  */

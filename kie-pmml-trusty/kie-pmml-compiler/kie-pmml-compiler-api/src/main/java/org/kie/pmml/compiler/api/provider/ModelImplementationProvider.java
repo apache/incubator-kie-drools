@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 import org.kie.pmml.compiler.api.dto.CompilationDTO;
 
-/**
+/*
  * API for actual PMML model implementations
  */
 public interface ModelImplementationProvider<T extends Model, E extends KiePMMLModel> {
@@ -39,7 +39,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
 
     Class<E> getKiePMMLModelClass();
 
-    /**
+    /*
      * Method to be called following a <b>kie-maven-plugin</b> invocation
      * @param compilationDTO
      * @return
@@ -60,7 +60,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
 
     Map<String, String> getSourcesMap(final CompilationDTO<T> compilationDTO);
 
-    /**
+    /*
      * Method provided only to have <b>drools</b> models working when invoked by a <code>MiningModel</code>
      * Default implementation provided for <b>not-drools</b> models.
      *

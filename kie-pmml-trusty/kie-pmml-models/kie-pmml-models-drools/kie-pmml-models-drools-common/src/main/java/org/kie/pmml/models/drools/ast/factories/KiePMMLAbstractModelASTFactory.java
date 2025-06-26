@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.pmml.models.drools.ast.factories;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Abstract class to be extended to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <b>model</b>
  */
 public abstract class KiePMMLAbstractModelASTFactory {

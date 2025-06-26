@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,13 +21,13 @@ package org.kie.api.definition.process;
 
 public interface WorkflowElement {
 
-    /**
+    /*
      * The id of the node.  This is unique within its NodeContainer.
      * @return the id of the node
      */
     WorkflowElementIdentifier getId();
 
-    /**
+    /*
      * the node id in the bpmn
      * @return
      */

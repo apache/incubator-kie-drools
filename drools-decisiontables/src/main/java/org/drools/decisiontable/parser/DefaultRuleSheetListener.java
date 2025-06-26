@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import static org.drools.decisiontable.parser.ActionType.Code;
 import static org.drools.template.model.Rule.MAX_ROWS;
 import static org.drools.util.StringUtils.replaceOutOfQuotes;
 
-/**
+/*
  * An object of this class is prepared to receive calls passing it the
  * contents of a spreadsheet containing one or more decision tables.
  * Each of these tables is then expanded into a set of similar rules,
@@ -122,14 +122,14 @@ implements RuleSheetListener {
     private final boolean trimCell;
     private String worksheetName = null;
 
-    /**
+    /*
      * Constructor.
      */
     public DefaultRuleSheetListener() {
         this( true, true );
     }
 
-    /**
+    /*
      * Constructor.
      * @param showPackage if true, the rule set name is passed to the resulting package
      */
@@ -159,7 +159,7 @@ implements RuleSheetListener {
         return buildRuleSet();
     }
 
-    /**
+    /*
      * Add a new rule to the current list of rules
      * @param newRule
      */
@@ -318,7 +318,7 @@ implements RuleSheetListener {
         // move along...
     }
 
-    /**
+    /*
      * This makes sure that the rules have all their components added.
      * As when there are merged/spanned cells, they may be left out.
      */
@@ -370,7 +370,7 @@ implements RuleSheetListener {
         }
     }
 
-    /**
+    /*
      * This gets called each time a "new" rule table is found.
      */
     private void initRuleTable(final int row,
@@ -411,7 +411,7 @@ implements RuleSheetListener {
 
     }
 
-    /**
+    /*
      * Called before rule table initialisation. Subclasses may
      * override this method to do additional processing.
      */
@@ -424,7 +424,7 @@ implements RuleSheetListener {
         return _currentRule;
     }
 
-    /**
+    /*
      * Called after rule table initialisation. Subclasses may
      * override this method to do additional processing.
      */
@@ -513,7 +513,7 @@ implements RuleSheetListener {
         return Objects.equals(RULE_TABLE_TAG, testVal) || testVal.startsWith(RULE_TABLE_TAG + " ");
     }
 
-    /**
+    /*
      * This is for handling a row where an object declaration may appear,
      * this is the row immediately above the snippets.
      * It may be blank, but there has to be a row here.

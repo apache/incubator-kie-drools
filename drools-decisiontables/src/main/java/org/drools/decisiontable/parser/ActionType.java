@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.drools.template.parser.DecisionTableParseException;
 
-/**
+/*
  * Simple holder class identifying a condition, action or attribute column, also
  * including the rule name and a comment (called "description").
  * Its objects are stored in a map in the main listener class, to track what type of values
@@ -57,7 +57,7 @@ public class ActionType {
         private String colShort;
         private int maxCount;
 
-        /**
+        /*
          * Constructor.
          * @param colHeader the column header
          * @param colShort a single letter, recognized as initial
@@ -103,7 +103,7 @@ public class ActionType {
     private Code code;
     private SourceBuilder sourceBuilder = null;
 
-    /**
+    /*
      * Constructor.
      * @param actionTypeCode code identifying the column
      */
@@ -119,7 +119,7 @@ public class ActionType {
         return tag2code;
     }
 
-    /**
+    /*
      * Retrieves the code.
      * @return an enum Code value
      */
@@ -127,7 +127,7 @@ public class ActionType {
         return this.code;
     }
 
-    /**
+    /*
      * This is only set for LHS or RHS building.
      */
     public void setSourceBuilder( SourceBuilder src ) {
@@ -138,7 +138,7 @@ public class ActionType {
         return this.sourceBuilder;
     }
 
-    /**
+    /*
      * Create a new action type that matches this cell, and add it to the map,
      * keyed on that column.
      */
@@ -173,7 +173,7 @@ public class ActionType {
         }
     }
 
-    /**
+    /*
      * This is where a code snippet template is added.
      */
     public void addTemplate( int row,
@@ -194,7 +194,7 @@ public class ActionType {
         addCellValue( row, column, content, _escapeQuotesFlag, false );
     }
 
-    /**
+    /*
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
      */

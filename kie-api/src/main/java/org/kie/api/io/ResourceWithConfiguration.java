@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 
-/**
+/*
  * Represent a tuple of a {@link Resource} with associated {@link ResourceConfiguration}, along with necessary kbuilder callbacks, to be used in in {@link KieAssemblerService}.
  */
 public interface ResourceWithConfiguration {
@@ -31,12 +31,12 @@ public interface ResourceWithConfiguration {
 
     ResourceConfiguration getResourceConfiguration();
 
-    /**
+    /*
      * callback executed on `kbuilder` as a parameter in {@link KieAssemblerService}, which will be executed before performing {@link KieAssemblerService#addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #getResource()}.
      */
     Consumer<Object> getBeforeAdd();
 
-    /**
+    /*
      * callback executed on `kbuilder` as a parameter in {@link KieAssemblerService}, which will be executed after performing {@link KieAssemblerService#addResourceAfterRules(Object, Resource, ResourceType, ResourceConfiguration)} for the given resource {@link #getResource()}.
      */
     Consumer<Object> getAfterAdd();

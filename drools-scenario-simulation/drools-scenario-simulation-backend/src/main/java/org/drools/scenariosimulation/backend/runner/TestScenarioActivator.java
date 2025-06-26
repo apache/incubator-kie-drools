@@ -24,7 +24,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/**
+/*
  * Annotation to be added in a Java Class under the test/java project directory
  * to enable the Test Scenario execution.
  */

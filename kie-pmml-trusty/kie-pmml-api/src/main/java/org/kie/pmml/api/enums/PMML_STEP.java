@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.pmml.api.enums;
 
-/**
+/*
  * Values common to all models, i.e. to overall execution
  * This should not contain any reference to a specific implementation, to keep modules decoupling
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ class ADocFEELExamplesTest {
 
     private final FEEL feel = FEELBuilder.builder().withProfiles(profiles).build();
 
-    /**
+    /*
      * Dev notes: the availability of the .adoc resource to this test and its refresh is governed by Maven.
      * You might want to execute this test from CLI if the IDE is not able handle the maven build refresh properly, for example as:
      * $ mvn test -Dtest=org.kie.dmn.feel.documentation.ADocFEELExamplesTest

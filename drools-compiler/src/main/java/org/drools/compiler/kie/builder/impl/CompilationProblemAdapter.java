@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.compiler.kie.builder.impl;
 
-/**
+/*
  * This class is intended to adapt the CompilationProblems produced by the in memory java compiler
  * to the one defined in kie-internal API
  */

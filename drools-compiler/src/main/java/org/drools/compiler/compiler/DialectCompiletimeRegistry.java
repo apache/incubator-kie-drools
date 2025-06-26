@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-/**
+/*
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered
  * dialects.
  * This Class api is subject to change.
@@ -36,7 +36,7 @@ public class DialectCompiletimeRegistry {
 
     private final Map<String, Dialect> map = new HashMap<>();
 
-    /**
+    /*
      * Add a DialectConfiguration to the registry
      * @param name
      * @param dialect
@@ -47,7 +47,7 @@ public class DialectCompiletimeRegistry {
                       dialect );
     }
 
-    /**
+    /*
      * Get a DialectConfiguration for a named dialect
      * @param name
      * @return
@@ -56,7 +56,7 @@ public class DialectCompiletimeRegistry {
         return this.map.get( name );
     }
 
-    /**
+    /*
      * Instruct all registered dialects to compile what ever they have attempted to build.
      */
     public void compileAll() {
@@ -65,7 +65,7 @@ public class DialectCompiletimeRegistry {
         }
     }
 
-    /**
+    /*
      * Return an Iterator of DialectConfigurations
      * @return
      */
@@ -73,7 +73,7 @@ public class DialectCompiletimeRegistry {
         return this.map.values().iterator();
     }
 
-    /**
+    /*
      * Add all registered Dialect results to the provided List.
      * @param list
      * @return
@@ -96,7 +96,7 @@ public class DialectCompiletimeRegistry {
         return list;
     }
 
-    /**
+    /*
      * Iterates all registered dialects, informing them of an import added to the PackageBuilder
      * @param importEntry
      */
@@ -106,7 +106,7 @@ public class DialectCompiletimeRegistry {
         }
     }
 
-    /**
+    /*
      * Iterates all registered dialects, informing them of a static imports added to the PackageBuilder
      * @param staticImportEntry
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -159,7 +159,7 @@ public class WorkingMemoryActionsSerializationTest {
 
     }
 
-    /**
+    /*
      * Checks that the rule names passed in are called the number of times passed in.
      */
     private void checkExecutions(final List<String> rules, final List<Integer> expected) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -84,7 +84,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(EagerPhreakBuilder.class);
 
-    /**
+    /*
      * This method is called after the rule nodes have been added to the network
      * For add tuples are processed after the segments and pmems have been adjusted
      */
@@ -125,7 +125,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
     }
 
-    /**
+    /*
      * This method is called before the rule nodes are removed from the network.
      * For remove tuples are processed before the segments and pmems have been adjusted
      *
@@ -1038,7 +1038,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    /**
+    /*
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
      * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chains, where an existing LeftTuple is staged
      * as delete. Or a new LeftTuple is created and staged as an insert.
@@ -1227,7 +1227,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    /**
+    /*
      * Create all missing peers
      */
     private static TupleImpl insertPeerLeftTuple(TupleImpl lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {

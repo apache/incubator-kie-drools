@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.base.rule;
 
-/**
+/*
  * This exception is thrown when an invalid package (ie one that has errors)
  * it attempted to be added to a RuleBase.
  * The package and builder should be interrogated to show the specific errors.

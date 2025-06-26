@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.mvel2.compiler.ExecutableStatement;
 
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
-/**
+/*
  * A class field extractor that uses MVEL engine to extract the actual value for a given
  * expression. We use MVEL to resolve nested accessor expressions.
  */
@@ -118,7 +118,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
         return evaluator.evaluate( object  );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override
@@ -131,7 +131,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
         return result;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override
@@ -149,7 +149,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
         return typesafe == other.typesafe;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     @Override

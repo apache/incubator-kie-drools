@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * A rulebase event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the rulebase.
  */
@@ -31,7 +31,7 @@ public class RuleBaseLogEvent extends LogEvent {
     private String packageName;
     private String ruleName;
 
-    /**
+    /*
      * Create a new activation log event.
      * 
      * @param type The type of event.  
@@ -58,7 +58,7 @@ public class RuleBaseLogEvent extends LogEvent {
         out.writeObject(ruleName);
     }
 
-    /**
+    /*
      * Returns the Package Name
      * 
      * @return The name of the package
@@ -67,7 +67,7 @@ public class RuleBaseLogEvent extends LogEvent {
         return this.packageName;
     }
 
-    /**
+    /*
      * Returns the name of the rule 
      * 
      * @return The name of the rule

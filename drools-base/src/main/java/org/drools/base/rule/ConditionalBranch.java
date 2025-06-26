@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
         out.writeObject(elseBranch);
     }
 
-    /**
+    /*
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
      */
@@ -64,7 +64,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
         return new ConditionalBranch(condition.clone(), consequence.clone(), (elseBranch == null ) ? null : elseBranch.clone());
     }
 
-    /**
+    /*
      * It is not possible to declare any new variables, so always
      * return an Empty Map
      */
@@ -72,7 +72,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * It is not possible to nest elements inside a conditional branch, so
      * always return an empty list.
      */
@@ -80,7 +80,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
         return Collections.emptyList();
     }
 
-    /**
+    /*
      * It is not possible to declare and export any variables,
      * so always return an empty map
      */
@@ -88,7 +88,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
         return Collections.emptyMap();
     }
 
-    /**
+    /*
      * Not possible to resolve any declaration, so always return null.
      */
     public Declaration resolveDeclaration(String identifier) {

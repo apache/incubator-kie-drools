@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -77,7 +77,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
     protected static final Class<?>[] ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
-    /** The arguments used when adding/removing a property change listener. */
+    /* The arguments used when adding/removing a property change listener. */
     protected final Object[] addRemovePropertyChangeListenerArgs = new Object[]{this};
 
     private ObjectStore objectStore;
@@ -158,7 +158,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         return handleFactory;
     }
 
-    /**
+    /*
      * @see org.drools.core.WorkingMemory
      */
     public FactHandle insert(final Object object) {

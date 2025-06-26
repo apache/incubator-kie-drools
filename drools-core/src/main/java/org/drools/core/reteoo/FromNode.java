@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -250,7 +250,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -259,7 +259,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -268,7 +268,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -277,7 +277,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode

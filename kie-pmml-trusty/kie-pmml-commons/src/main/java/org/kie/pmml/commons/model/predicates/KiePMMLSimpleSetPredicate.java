@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ public class KiePMMLSimpleSetPredicate extends KiePMMLPredicate {
         this.inNotIn = inNotIn;
     }
 
-    /**
+    /*
      * Builder to auto-generate the <b>id</b>
      * @return
      */

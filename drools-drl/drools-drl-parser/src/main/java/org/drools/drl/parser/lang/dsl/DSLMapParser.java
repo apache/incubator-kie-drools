@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -123,7 +123,7 @@ public class DSLMapParser extends Parser {
 	        return errors;
 	    }
 
-	    /** Override this method to not output mesages */
+	    /* Override this method to not output mesages */
 	    public void emitErrorMessage(String msg) {
 	    }
 

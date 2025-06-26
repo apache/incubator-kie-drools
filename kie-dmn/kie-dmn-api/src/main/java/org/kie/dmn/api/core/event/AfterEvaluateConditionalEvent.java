@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.api.core.event;
 
 import org.kie.dmn.api.core.EvaluatorResult;
 
-/**
+/*
  * Event fired after the if <b>if</b> conditional is evaluated
  *
  */

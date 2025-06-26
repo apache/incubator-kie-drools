@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public abstract class KiePMMLPredicate extends AbstractKiePMMLComponent {
         super(name, extensions);
     }
 
-    /**
+    /*
      * Returns the evaluation of the given <code>values</code> if the current <code>KiePMMLPredicate</code> or one of its
      * child is referred to inside the given <b>values</b>, otherwise <code>false</code>
      * @param values

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.List;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-/**
+/*
 8.3.3 Decision Rule metamodel
 
 The class DecisionRule is used to model the rules in a decision table (see 8.2 Notation).
@@ -61,7 +61,7 @@ public class DTDecisionRule implements Indexed {
         this.id = id;
     }
 
-    /**
+    /*
 The instances of UnaryTests that specify the input conditions
 that this DecisionRule must match for the corresponding (by
 index) inputExpression. 
@@ -73,7 +73,7 @@ index) inputExpression.
         return this.inputEntry;
     }
 
-    /**
+    /*
 A list of the instances of LiteralExpression that compose
 the output components of this DecisionRule. 
      * @return

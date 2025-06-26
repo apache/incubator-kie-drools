@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * AgendaEventListener to track fired rules. When rule is fired for the first
  * time it's added to fired rules and when the rule fires afterwards the counter
  * is incremented to make it possible to track how many times the rule was fired
@@ -50,7 +50,7 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener {
         rulesFiredOrder.add(rule);
     }
 
-    /**
+    /*
      * Return true if the rule was fired at least once
      * @param rule - name of the rule
      * @return true if the rule was fired
@@ -59,7 +59,7 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener {
         return rulesFired.containsKey(rule);
     }
 
-    /**
+    /*
      * Returns number saying how many times the rule was fired
      * @param rule - name ot the rule
      * @return number how many times rule was fired, 0 if rule wasn't fired
@@ -72,14 +72,14 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener {
         }
     }
 
-    /**
+    /*
      * @return how many rules were fired
      */
     public int rulesCount() {
         return rulesFired.size();
     }
 
-    /**
+    /*
      * Clears all the information
      */
     public void clear() {

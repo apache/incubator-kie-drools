@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ public class ScopesAgendaFilter
 
     private final Collection<String>       scopes;
 
-    /**
+    /*
      * 
      * @param acceptEmpty true accepts rules that do not have scope set.
      * @param scopes Valid scope values.

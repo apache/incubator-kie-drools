@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ class DMNDTAnalyserValueFromNodeVisitorTest {
 
     private final FEEL tFEEL = FEELBuilder.builder().build();
 
-    /**
+    /*
      * None of these are valid FEEL expression ootb and cannot be used to determine discrete value in the domain
      */
     @Test

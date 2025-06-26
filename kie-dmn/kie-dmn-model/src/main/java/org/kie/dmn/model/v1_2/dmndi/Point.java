@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
     protected double x;
     protected double y;
 
-    /**
+    /*
      * Gets the value of the x property.
      * 
      */
@@ -33,7 +33,7 @@ public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         return x;
     }
 
-    /**
+    /*
      * Sets the value of the x property.
      * 
      */
@@ -41,7 +41,7 @@ public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         this.x = value;
     }
 
-    /**
+    /*
      * Gets the value of the y property.
      * 
      */
@@ -49,7 +49,7 @@ public class Point extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         return y;
     }
 
-    /**
+    /*
      * Sets the value of the y property.
      * 
      */

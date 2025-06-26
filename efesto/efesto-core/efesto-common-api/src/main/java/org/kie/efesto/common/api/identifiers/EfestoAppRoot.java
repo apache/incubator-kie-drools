@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getEfestoComponentRootBySPI;
 
-/**
+/*
  * Efesto-specific root path of an application.
  * <p>
  * Its top-level children are <code>EfestoComponentRoot</code> instances, the efesto-specific subclass of

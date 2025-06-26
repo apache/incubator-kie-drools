@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -100,7 +100,7 @@ import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 import static org.drools.util.ClassUtils.classFromType;
 import static org.drools.util.ClassUtils.getAccessor;
 
-/**
+/*
  * This phase processes the right hand side of a Java Expression and creates a new AST
  * with the transformation rules applied i.e.
  *

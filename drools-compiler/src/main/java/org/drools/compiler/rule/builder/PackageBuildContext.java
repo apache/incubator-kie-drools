@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.parser.DroolsError;
 
-/**
+/*
  * A context for the current build
  */
 public class PackageBuildContext {
@@ -77,7 +77,7 @@ public class PackageBuildContext {
 
     }
 
-    /**
+    /*
      * Default constructor
      */
     public void initContext(final TypeDeclarationContext kBuilder,
@@ -118,7 +118,7 @@ public class PackageBuildContext {
         return dialect;
     }
 
-    /**
+    /*
      * Allows the change of the current dialect in the context
      */
     public void setDialect(Dialect dialect) {
@@ -133,7 +133,7 @@ public class PackageBuildContext {
         return this.dialectRegistry;
     }
 
-    /**
+    /*
      * Returns the list of errors found while building the current context
      * @return
      */
@@ -153,7 +153,7 @@ public class PackageBuildContext {
         this.warnings.add( warning );
     }
 
-    /**
+    /*
      * Returns the current package being built
      * @return
      */
@@ -161,7 +161,7 @@ public class PackageBuildContext {
         return this.pkg;
     }
 
-    /**
+    /*
      * Returns the Map<String invokerClassName, BaseDescr descr> of descriptor lookups
      * @return
      */
@@ -181,7 +181,7 @@ public class PackageBuildContext {
         invokerLookups.put(className, invokerLookup);
     }
 
-    /**
+    /*
      * Returns the Map<String invokerClassName, String invokerCode> of generated invokers
      * @return
      */
@@ -193,7 +193,7 @@ public class PackageBuildContext {
         this.invokers.put(invokerClassName, invoker);
     }
 
-    /**
+    /*
      * Returns the list of generated methods
      * @return
      */
@@ -205,7 +205,7 @@ public class PackageBuildContext {
         this.methods.add(method);
     }
 
-    /**
+    /*
      * Returns current counter value for generated method names
      * @return
      */

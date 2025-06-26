@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.ObjectFilter;
 
-/**
+/*
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>
  * <p>KIE 6 supports multiple entry-points into a single {@link org.kie.api.KieBase}: the
  * default, anonymous entry-point, as well as as many user declared entry points the application
@@ -50,12 +50,12 @@ import org.kie.api.runtime.ObjectFilter;
  */
 public interface EntryPoint {
 
-    /**
+    /*
      * @return the String Id of this entry point
      */
     String getEntryPointId();
 
-    /**
+    /*
      * Inserts a new fact into this entry point
      *
      * @param object
@@ -65,7 +65,7 @@ public interface EntryPoint {
      */
     FactHandle insert(Object object);
 
-    /**
+    /*
      * Retracts the fact for which the given FactHandle was assigned.
      *
      * @param handle the handle whose fact is to be retracted.
@@ -73,7 +73,7 @@ public interface EntryPoint {
      */
     void retract(FactHandle handle);
 
-    /**
+    /*
      * Retracts the fact for which the given FactHandle was assigned
      * regardless if it has been explicitly or logically inserted.
      *
@@ -81,7 +81,7 @@ public interface EntryPoint {
      */
     void delete(FactHandle handle);
 
-    /**
+    /*
      * Retracts the fact for which the given FactHandle was assigned.
      *
      * @param handle the handle whose fact is to be retracted.
@@ -91,7 +91,7 @@ public interface EntryPoint {
      */
     void delete(FactHandle handle, FactHandle.State fhState);
 
-    /**
+    /*
      * Updates the fact for which the given FactHandle was assigned with the new
      * fact set as the second parameter in this method.
      *
@@ -101,7 +101,7 @@ public interface EntryPoint {
     void update(FactHandle handle,
                 Object object);
 
-    /**
+    /*
      * Updates the fact for which the given FactHandle was assigned with the new
      * fact set as the second parameter in this method, also specifying the set of
      * properties that have been modified.
@@ -114,7 +114,7 @@ public interface EntryPoint {
                 Object object,
                 String... modifiedProperties);
 
-    /**
+    /*
      * Returns the fact handle associated with the given object. It is important to note that this
      * method behaves in accordance with the configured assert behaviour for this {@link org.kie.api.KieBase}
      * (either IDENTITY or EQUALITY).
@@ -129,12 +129,12 @@ public interface EntryPoint {
      */
     FactHandle getFactHandle(Object object);
 
-    /**
+    /*
      * @return the object associated with the given FactHandle.
      */
     Object getObject(FactHandle factHandle);
 
-    /**
+    /*
      * <p>This class is <i>not</i> a general-purpose <tt>Collection</tt>
      * implementation!  While this class implements the <tt>Collection</tt> interface, it
      * intentionally violates <tt>Collection</tt> general contract, which mandates the
@@ -148,13 +148,13 @@ public interface EntryPoint {
      */
     Collection<? extends Object> getObjects();
 
-    /**
+    /*
      * @param filter the filter to be applied to the returned collection of facts.
      * @return all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
      */
     Collection<? extends Object> getObjects(ObjectFilter filter);
 
-    /**
+    /*
      * Returns a Collection of objects in this entry-point that are instances of the given class.
      * @param clazz the class of objects to be retrieved
      * @return all facts from this entry-point that are instance of the given class.
@@ -163,7 +163,7 @@ public interface EntryPoint {
         return (Collection<T>) getObjects(new ClassObjectFilter(clazz));
     }
 
-    /**
+    /*
      * Returns the only object in this entry-point that is an instance of the given class.
      * @param clazz the class of object to be retrieved
      * @return the only object from this entry-point that is an instance of the given class.
@@ -182,19 +182,19 @@ public interface EntryPoint {
         return ts.iterator().next();
     }
 
-    /**
+    /*
      * @return all <code>FactHandle</code>s from the current session.
      */
     <T extends FactHandle> Collection< T > getFactHandles();
 
-    /**
+    /*
      * @param filter the filter to be applied to the returned collection of <code>FactHandle</code>s.
      * @return all <code>FactHandle</code>s from the current session for which the facts are accepted by
      * the given filter.
      */
     <T extends FactHandle> Collection< T > getFactHandles(ObjectFilter filter);
 
-    /**
+    /*
      * @return the total number of facts currently in this entry point
      */
     long getFactCount();

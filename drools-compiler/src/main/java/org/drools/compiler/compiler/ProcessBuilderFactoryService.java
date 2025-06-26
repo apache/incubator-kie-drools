@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.compiler.compiler;
 import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-/**
+/*
  * ProcessBuilderFactoryService is used by the PackageBuilder to "provide" it's concrete implementation.
  */
 public interface ProcessBuilderFactoryService extends KieService {

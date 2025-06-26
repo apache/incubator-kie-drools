@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import org.drools.core.util.DroolsStreamUtils;
 
-/**
+/*
  * Marshalling helper class to perform serialize/de-serialize a given object
  */
 public class SerializationHelper {

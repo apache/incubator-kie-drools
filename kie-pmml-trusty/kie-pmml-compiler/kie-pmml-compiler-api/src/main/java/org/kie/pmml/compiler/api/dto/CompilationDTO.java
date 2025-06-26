@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,14 +42,14 @@ import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.compiler.api.utils.ModelUtils;
 
-/**
+/*
  * Interface to be implemented by all concrete <b>compilation dtos</b>
  *
  * @param <T>
  */
 public interface CompilationDTO<T extends Model> extends Serializable {
 
-    /**
+    /*
      * The original <code>PMML</code>
      *
      * @return
@@ -70,7 +70,7 @@ public interface CompilationDTO<T extends Model> extends Serializable {
 
     Targets getTargets();
 
-    /**
+    /*
      * Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
      * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @return
@@ -81,13 +81,13 @@ public interface CompilationDTO<T extends Model> extends Serializable {
 
     OpType getOpType();
 
-    /**
+    /*
      * Returns the <b>model name</b> of the underlying <code>Model</code>
      * @return
      */
     String getModelName();
 
-    /**
+    /*
      * Returns the <b>name of the file</b> containing the <code>Model</code>, <b>without the suffix `.pmml`</b>
      * @return
      */
@@ -95,25 +95,25 @@ public interface CompilationDTO<T extends Model> extends Serializable {
 
     String getTargetFieldName();
 
-    /**
+    /*
      * The <b>sanitized</b> base package name
      * @return
      */
     String getPackageName();
 
-    /**
+    /*
      * Returns the <b>simple, sanitized</b> class name
      * @return
      */
     String getSimpleClassName();
 
-    /**
+    /*
      * Returns the <b>full, canonical, sanitized</b> class name
      * @return
      */
     String getPackageCanonicalClassName();
 
-    /**
+    /*
      * Compile the given sources and add them to given <code>Classloader</code> of the current instance.
      * Returns the <code>Class</code> with the current <b>canonicalClassName</b>
      * @param sourcesMap

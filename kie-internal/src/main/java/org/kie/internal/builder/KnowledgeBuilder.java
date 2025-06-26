@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * <p>
  * The KnowledgeBuilder is responsible for taking source files, such as a .drl file, a .bpmn2 file or an .xls file,
  * and turning them into a KnowledgePackage of rule and process definitions which a KnowledgeBase
@@ -101,7 +101,7 @@ public interface KnowledgeBuilder
     RuleBuilder,
     ProcessBuilder {
 
-    /**
+    /*
      * Add a resource of the given ResourceType, using the default resource configuration.
      *
      * @param resource the Resource to add
@@ -111,7 +111,7 @@ public interface KnowledgeBuilder
              ResourceType type);
 
 
-    /**
+    /*
      * Add a resource of the given ResourceType, using the provided ResourceConfiguration.
      * Resources can be created by calling any of the "newX" factory methods of
      * ResourceFactory. The kind of resource (DRL,  XDRL, DSL,... ) must be
@@ -125,7 +125,7 @@ public interface KnowledgeBuilder
              ResourceType type,
              ResourceConfiguration configuration);
 
-    /**
+    /*
      * Returns the built packages.
      *
      * If the KnowledgeBuilder has errors the Collection will be empty. The hasErrors()
@@ -137,25 +137,25 @@ public interface KnowledgeBuilder
      */
     Collection<KiePackage> getKnowledgePackages();
 
-    /**
+    /*
      * Creates a new KnowledgeBase from the knowledge packages that have been added to
      * this builder.  An exception is thrown if there are any errors.
      */
     KieBase newKieBase();
 
-    /**
+    /*
      * If errors occurred during the build process they are added here
      * @return
      */
     boolean hasErrors();
 
-    /**
+    /*
      * Return errors that occurred during the build process.
      * @return
      */
     KnowledgeBuilderErrors getErrors();
 
-    /**
+    /*
      * Return the knowledge builder results for the listed severities.
      *
      * @param severities
@@ -164,14 +164,14 @@ public interface KnowledgeBuilder
     KnowledgeBuilderResults getResults(ResultSeverity...severities );
 
 
-    /**
+    /*
      * Checks if the builder generated any results of the listed severities
      * @param severities
      * @return
      */
     boolean hasResults(ResultSeverity...severities );
 
-    /**
+    /*
      * Remove the last added Resource.
      * Can be useful in case this last addition generated some compilation problem.
      * If multiple Resources have been added in batch using a CompositeKnowledgeBuilder,
@@ -179,7 +179,7 @@ public interface KnowledgeBuilder
      */
     void undo();
 
-    /**
+    /*
      * Return a CompositeKnowledgeBuilder allowing to add multiple Resources
      * at the same time, without worrying about cross dependencies among them.
      * @return

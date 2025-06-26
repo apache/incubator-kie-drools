@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the 'after' evaluator definition.</p>
  * 
  * <p>The <b><code>after</code></b> evaluator correlates two events and matches when the temporal
@@ -95,7 +95,7 @@ public class AfterEvaluatorDefinition
         out.writeObject( cache );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator( ValueType type,
@@ -108,7 +108,7 @@ public class AfterEvaluatorDefinition
                                   Target.HANDLE );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator( ValueType type,
@@ -122,7 +122,7 @@ public class AfterEvaluatorDefinition
                                   Target.HANDLE );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator( final ValueType type,
@@ -138,7 +138,7 @@ public class AfterEvaluatorDefinition
 
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator( final ValueType type,
@@ -166,28 +166,28 @@ public class AfterEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.BOTH;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType( ValueType type ) {
@@ -196,7 +196,7 @@ public class AfterEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'after' evaluator itself
      */
     public static class AfterEvaluator extends PointInTimeEvaluator {

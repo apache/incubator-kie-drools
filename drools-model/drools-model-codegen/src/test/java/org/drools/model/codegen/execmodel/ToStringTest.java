@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import static org.drools.model.PatternDSL.rule;
 
 public class ToStringTest {
 
-    /**
+    /*
      * Users may depend on seeing {@link Rule#toString()} in log files giving useful information, in order to understand
      * the rules that are being created. The format is not required to be backwards compatible - this test merely checks
      * that it does not change unknowingly.

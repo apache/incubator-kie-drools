@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.kie.api.runtime.process.WorkItem;
 
 public interface PersistenceContext {
 
-    /**
+    /*
      * This method persists the entity. If pessimistic locking is being used, the method will also immediately lock the entity
      * and return a reference to the locked entity. 
      * @param sessionInfo The {@link SessionInfo} instance representing the state of the {@link KieSession}
@@ -47,7 +47,7 @@ public interface PersistenceContext {
 
     void remove(PersistentWorkItem workItem);
 
-    /**
+    /*
      * This method pessimistically locks the {@link WorkItemInfo} instance
      * @param sessionInfo The persistent representation of a {@link WorkItem}
      */

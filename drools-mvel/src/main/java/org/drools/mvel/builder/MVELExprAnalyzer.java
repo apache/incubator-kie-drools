@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.lang.DescrDumper.WM_ARGUMENT;
 
-/**
+/*
  * Expression analyzer.
  */
 public class MVELExprAnalyzer {
@@ -70,7 +70,7 @@ public class MVELExprAnalyzer {
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Analyze an expression.
      * 
      * @param expr
@@ -239,7 +239,7 @@ public class MVELExprAnalyzer {
         return ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
     }
 
-    /**
+    /*
      * Analyse an expression.
      * @throws RecognitionException
      *             If an error occurs in the parser.

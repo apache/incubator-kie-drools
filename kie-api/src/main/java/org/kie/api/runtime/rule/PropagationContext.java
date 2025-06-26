@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public interface PropagationContext {
 
     long getPropagationNumber();
 
-    /**
+    /*
      * The rule that caused the working memory action that created this PropagationContext.
      *
      * If this working memory action was done from java this is null.
@@ -48,12 +48,12 @@ public interface PropagationContext {
      */
     Rule getRule();
 
-    /**
+    /*
      * @return fact handle that was inserted, updated or retracted that created the PropagationContext
      */
     FactHandle getFactHandle();
 
-    /**
+    /*
      * The PropagationContextType, numbers may change between Drools versions. Or we may eventually switch this to an enum.
      * INSERTION     = 0;
      * DELETION    = 1;

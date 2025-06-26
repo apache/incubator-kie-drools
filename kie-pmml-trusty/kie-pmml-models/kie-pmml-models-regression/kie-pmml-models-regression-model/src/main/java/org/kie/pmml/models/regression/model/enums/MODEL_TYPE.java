@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html#xsdElement_RegressionModel>RegressionModel</a>
  */
 public enum MODEL_TYPE {

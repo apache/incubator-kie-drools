@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilder;
 
-/**
+/*
  * DroolsJaxbHelperProvider is used by the DroolsJaxbHelperFactory to "provide" it's concrete implementation.
  *
  * This class is not considered stable and may change, the user is protected from this change by using
@@ -39,7 +39,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
 public interface DroolsJaxbHelperProvider {
-    /**
+    /*
      * Generates pojos for a given XSD using XJC and adds them to the specified KnowlegeBase.
      *
      * @deprecated
@@ -63,7 +63,7 @@ public interface DroolsJaxbHelperProvider {
                                 Options xjcOpts,
                                 String systemId) throws IOException;
 
-    /**
+    /*
      * Creates a new JAXBContext, from which the Marshaller and Unmarshaller can be created, which are used by the Transformer
      * pipeline stage.
      *

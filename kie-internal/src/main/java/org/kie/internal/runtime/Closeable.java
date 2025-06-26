@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.internal.runtime;
 
-/**
+/*
  * Allows various components (e.g. work item handlers, event listeners) to be closed when
  * owning component (ksession) is being closed/disposed.
  * This interface marks an component that is lightweight and it's safe and wise (from performance
@@ -28,7 +28,7 @@ package org.kie.internal.runtime;
  */
 public interface Closeable {
 
-    /**
+    /*
      * Closes the underlying resources
      */
     void close();

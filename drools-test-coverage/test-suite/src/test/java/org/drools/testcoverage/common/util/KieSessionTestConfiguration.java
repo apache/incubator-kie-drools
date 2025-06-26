@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-/**
+/*
  * Represents various tested KieSession configurations.
  */
 public enum KieSessionTestConfiguration implements KieSessionModelProvider {

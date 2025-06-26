@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.util.bitmask.BitMask;
 
-/**
+/*
  * Receiver of propagated <code>ReteTuple</code>s from a
  * <code>TupleSource</code>.
  *

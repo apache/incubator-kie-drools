@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public abstract class BaseTimer extends ConditionalElement{
         return Collections.EMPTY_MAP;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {

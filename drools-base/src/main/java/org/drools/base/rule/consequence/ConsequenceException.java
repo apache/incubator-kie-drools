@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.base.rule.consequence;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 
-/**
+/*
  * Indicates an error during a <code>Consequence</code> invocation.
  * 
  * @see Consequence
@@ -34,7 +34,7 @@ public class ConsequenceException extends RuntimeException {
     // Constructors
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Construct.
      */
     public ConsequenceException() {
@@ -45,7 +45,7 @@ public class ConsequenceException extends RuntimeException {
         super( message );
     }
 
-    /**
+    /*
      * Construct with a root cause.
      * 
      * @param rootCause
@@ -59,7 +59,7 @@ public class ConsequenceException extends RuntimeException {
         this.rule = rule;
     }
 
-    /**
+    /*
      * Construct with a message. Keep this from old ConsequenceException for
      * backward compatability
      * 
@@ -70,7 +70,7 @@ public class ConsequenceException extends RuntimeException {
         this.rule = rule;
     }
 
-    /**
+    /*
      * Construct with a root cause. Keep this from old ConsequenceException for
      * backward compatability
      * 
@@ -91,7 +91,7 @@ public class ConsequenceException extends RuntimeException {
         this.info = info;
     }
 
-    /**
+    /*
      * Construct with a root cause.
      * 
      * @param rootCause
@@ -109,7 +109,7 @@ public class ConsequenceException extends RuntimeException {
         return this.rule;
     }
 
-    /**
+    /*
      * Set arbitrary extra information about the condition.
      * 
      * <p>

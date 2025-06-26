@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 
-/**
+/*
  * A default implementation for the DMN Runtime Event Listener
  * that can be subclassed by application implementations to
  * listen for specific events

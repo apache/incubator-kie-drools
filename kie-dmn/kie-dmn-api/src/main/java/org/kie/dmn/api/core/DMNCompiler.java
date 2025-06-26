@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ public interface DMNCompiler {
 
     DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels);
 
-    /**
+    /*
      * As {@link #compile(Definitions, Collection)}, but links {@link Resource} to the manually provided {@link Definitions} while compiling the {@link DMNModel}.
      */
     DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels);

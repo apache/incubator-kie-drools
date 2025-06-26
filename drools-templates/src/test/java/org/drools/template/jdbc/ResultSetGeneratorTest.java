@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,8 +39,8 @@ import org.kie.internal.io.ResourceFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-/**
- * /**
+/*
+ * /*
  * <p>A simple example of using the ResultSetGenerator.
  * The template used is "Cheese.drt" the same used by SimpleRuleTemplateExample.
  * Rather than use the spreadsheet ExampleCheese.xls, this example reads the data
@@ -97,7 +97,7 @@ public class ResultSetGeneratorTest {
 
     }
 
-     /**
+     /*
      * simple getter method looks up our template as a Resource
      *
      * @return the template as an InputStream
@@ -106,7 +106,7 @@ public class ResultSetGeneratorTest {
         return this.getClass().getResourceAsStream("/templates/Cheese.drt");
     }
 
-    /**
+    /*
      * An HSQL update wrapper from http://hsqldb.org/doc/guide/apb.html
      *
      * @param expression SQL expression

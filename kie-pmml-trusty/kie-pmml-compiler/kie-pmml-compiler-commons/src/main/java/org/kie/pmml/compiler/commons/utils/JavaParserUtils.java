@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class to provide shared, helper methods to be invoked by model-specific
  * <b>code-generation</b>
  */
@@ -72,7 +72,7 @@ public class JavaParserUtils {
         }
     }
 
-    /**
+    /*
      * @param className
      * @param packageName
      * @param javaTemplate the name of the <b>file</b> to be used as template source
@@ -95,7 +95,7 @@ public class JavaParserUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Return the fully qualified name of the generated class.
      * It throws <code>KiePMMLException</code> if the package name is missing
      *

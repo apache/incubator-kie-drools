@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,14 +30,14 @@ public abstract class AbstractClass {
         this.HTML = HTML;
     }
 
-    /**
+    /*
      * @return the uRI
      */
     public String getHTML() {
         return this.HTML;
     }
 
-    /**
+    /*
      * @param uri the uRI to set
      */
     public void setHTML(final String HTML) {

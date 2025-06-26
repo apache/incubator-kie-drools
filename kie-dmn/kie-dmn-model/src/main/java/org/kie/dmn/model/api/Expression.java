@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,13 +22,13 @@ import javax.xml.namespace.QName;
 
 public interface Expression extends DMNElement {
 
-    /**
+    /*
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      * DMN13-140/DMN13-168: this is optional attribute.
      */
     QName getTypeRef();
 
-    /**
+    /*
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      * DMN13-140/DMN13-168: this is optional attribute.
      */

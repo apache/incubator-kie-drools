@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFa
 import static org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils.getConstraintEntriesFromAndOrCompoundPredicate;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils.getConstraintEntriesFromXOrCompoundPredicate;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>CompoundPredicate</code>
  */
 public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
@@ -49,7 +49,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         return new KiePMMLCompoundPredicateASTFactory(predicateASTFactoryData);
     }
 
-    /**
+    /*
      * @param toAccumulate
      * @param statusToSet
      * @param reasonCodeAndValue
@@ -77,7 +77,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         }
     }
 
-    /**
+    /*
      * @param result
      * @param isFinalLeaf
      */
@@ -101,7 +101,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         }
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param toAccumulate
@@ -119,7 +119,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateAndOrXor(builder, predicateASTFactoryData.getRules(), reasonCodeAndValue, isLastCharacteristic);
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param result
@@ -133,7 +133,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         KiePMMLCompoundPredicateWithResultASTFactory.declareRuleFromCompoundPredicateAndOrXor(builder, predicateASTFactoryData.getRules(), result, isFinalLeaf);
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param statusToSet
@@ -169,7 +169,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         return toReturn;
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
      * Throws exception otherwise
      * @param agendaActivationGroup

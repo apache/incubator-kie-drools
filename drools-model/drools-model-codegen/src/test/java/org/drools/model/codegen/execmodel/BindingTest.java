@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -519,7 +519,7 @@ public class BindingTest extends BaseModelTest {
         }
     }
 
-    /**
+    /*
      * This test checks that a rule is not fired, when a binding is
      * enclosed in parentheses. This is intentional behaviour, agreed in discussions,
      * which may be revised in the future.

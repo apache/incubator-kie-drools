@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 public interface DMNDI extends DMNModelInstrumentedBase {
 
-    /**
+    /*
      * Gets the value of the dmnDiagram property.
      * 
      * <p>
@@ -48,7 +48,7 @@ public interface DMNDI extends DMNModelInstrumentedBase {
      */
     List<DMNDiagram> getDMNDiagram();
 
-    /**
+    /*
      * Gets the value of the dmnStyle property.
      * 
      * <p>
@@ -72,7 +72,7 @@ public interface DMNDI extends DMNModelInstrumentedBase {
      */
     List<DMNStyle> getDMNStyle();
 
-    /**
+    /*
      * Internal model: mutates the current DMNDI to resolve xml's IDREFs
      */
     void normalize();

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ public class EvalConditionNode extends LeftTupleSource
 
     private static final long serialVersionUID = 510l;
 
-    /** The semantic <code>Test</code>. */
+    /* The semantic <code>Test</code>. */
     protected EvalCondition     condition;
 
     protected boolean         tupleMemoryEnabled;
@@ -100,7 +100,7 @@ public class EvalConditionNode extends LeftTupleSource
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
+    /*
      * Retrieve the <code>Test</code> associated with this node.
      *
      * @return The <code>Test</code>.
@@ -109,7 +109,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.condition;
     }
     
-    /**
+    /*
      * Produce a debug string.
      *
      * @return The debug string.
@@ -144,7 +144,7 @@ public class EvalConditionNode extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -153,7 +153,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -162,7 +162,7 @@ public class EvalConditionNode extends LeftTupleSource
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -171,7 +171,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode

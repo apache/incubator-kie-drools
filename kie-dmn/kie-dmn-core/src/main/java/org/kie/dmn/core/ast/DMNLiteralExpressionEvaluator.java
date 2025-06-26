@@ -47,7 +47,7 @@ import org.kie.dmn.model.api.LiteralExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * An evaluator for DMN Literal Expressions
  */
 public class DMNLiteralExpressionEvaluator
@@ -133,7 +133,7 @@ public class DMNLiteralExpressionEvaluator
         return new EvaluatorResultImpl(val, resultType);
     }
 
-    /**
+    /*
      * If FEELDialect is "BFEEL" and returned object is != <code>null</code>, then result type is <b>success</b>, regardless of
      * given <code>Severity</code>.
      * Otherwise, if severity is <code>Severity.ERROR</code>, result type is <b>failure</b>

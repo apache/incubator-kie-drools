@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -132,7 +132,7 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         return new DMNIteratorEvaluator(exprName, node.getSource(), expression.getIteratorType(), expression.getVariable(), inEvaluator, returnEvaluator);
     }
 
-    /**
+    /*
      * extract the generic T from the DMN representation of FEEL:list<T>
      */
     private DMNType extractOrSynthesizeGeneric(DMNModelImpl model, BaseDMNTypeImpl elementType) {

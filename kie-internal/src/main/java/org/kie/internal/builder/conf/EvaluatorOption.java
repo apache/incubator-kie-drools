@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.internal.builder.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.runtime.rule.EvaluatorDefinition;
 
-/**
+/*
  * A class for the evaluators configuration.
  *
  * Drools supports custom evaluators. After implementing an evaluator
@@ -31,24 +31,24 @@ public class EvaluatorOption implements MultiValueRuleBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The prefix for the property name for evaluators
      */
     public static final String PROPERTY_NAME = "drools.evaluator.";
 
     public static OptionKey<EvaluatorOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * evaluator key
      */
     private final String key;
 
-    /**
+    /*
      * the evaluator instance
      */
     private final EvaluatorDefinition evaluator;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param key
      */
@@ -57,7 +57,7 @@ public class EvaluatorOption implements MultiValueRuleBuilderOption {
         this.evaluator = evaluator;
     }
 
-    /**
+    /*
      * This is a factory method for this EvaluatorOption configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -71,14 +71,14 @@ public class EvaluatorOption implements MultiValueRuleBuilderOption {
         return new EvaluatorOption( key, evaluator );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the name of the dialect configured as default
      *
      * @return
@@ -87,7 +87,7 @@ public class EvaluatorOption implements MultiValueRuleBuilderOption {
         return key;
     }
 
-    /**
+    /*
      * Returns the accumulate function instance
      * @return
      */

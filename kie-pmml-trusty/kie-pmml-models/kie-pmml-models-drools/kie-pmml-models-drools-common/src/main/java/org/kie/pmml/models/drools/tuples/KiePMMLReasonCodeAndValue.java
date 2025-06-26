@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-/**
+/*
  * Tuple representing the <b>Reason Code</b> and its computed <b>value</b> as used inside <b>Scorecard</b>
  *
  * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#rankinReasongCodes>Ranking Reason Codes</a>

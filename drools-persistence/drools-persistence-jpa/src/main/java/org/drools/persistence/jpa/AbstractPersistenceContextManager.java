@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
-/**
+/*
  * This class manages {@link JpaPersistenceContext} objects, and the underlying persistence context ({@link EntityManager}) 
  * instances for a persistent {@link KieSession} and other infrastructure classes that use persistence in KIE projects.
  * </p>

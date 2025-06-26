@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFields;
 
-/**
+/*
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
 public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel,

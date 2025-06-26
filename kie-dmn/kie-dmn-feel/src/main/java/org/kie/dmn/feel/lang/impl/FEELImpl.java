@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,7 @@ import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-/**
+/*
  * Language runtime entry point
  */
 public class FEELImpl
@@ -162,14 +162,14 @@ public class FEELImpl
         return e.apply(ctx.current());
     }
 
-    /**
+    /*
      * Creates a new EvaluationContext using this FEEL instance classloader, and the supplied parameters listeners and inputVariables
      */
     public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         return newEvaluationContext(this.classLoader, listeners, inputVariables);
     }
 
-    /**
+    /*
      * Creates a new EvaluationContext with the supplied classloader, and the supplied parameters listeners and inputVariables
      */
     public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {

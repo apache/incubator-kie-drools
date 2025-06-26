@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -751,7 +751,7 @@ public class PhreakAccumulateNode {
         // this is only implemented by GroupBy
     }
 
-    /**
+    /*
      * Removes a match between left and right tuple
      */
     private boolean removeMatch(final AccumulateNode accNode,

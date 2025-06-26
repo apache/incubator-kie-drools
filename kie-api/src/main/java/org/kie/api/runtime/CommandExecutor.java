@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime;
 
 import org.kie.api.command.Command;
 
-/**
+/*
  * <p>
  * Batch Executor allows for the scripting of a KieSession using Commands, both the KieSession and KieSession
  * implement this interface.
@@ -57,7 +57,7 @@ import org.kie.api.command.Command;
  * </p>
  */
 public interface CommandExecutor {
-    /**
+    /*
      * Execute the command and return a ExecutionResults for the results of the Command.
      *
      * @param command

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TimeZone;
 
-/**
+/*
  * Provides a parser and evaluator for unix-like cron expressions. Cron
  * expressions provide the ability to specify complex time combinations such as
  * &quot;At 8:00am every Monday through Friday&quot; or &quot;At 1:30am every
@@ -188,7 +188,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
 
     private TimeZone timeZone = null;
 
-    /**
+    /*
      * Constructs a new <CODE>CronExpression</CODE> based on the specified
      * parameter.
      * @param cronExpression String representation of the cron expression the
@@ -200,7 +200,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         super(cronExpression);
     }
 
-    /**
+    /*
      * Indicates whether the given date satisfies the cron expression. Note that
      * milliseconds are ignored, so two Dates falling on different milliseconds
      * of the same second will always have the same result here.
@@ -222,7 +222,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return ((timeAfter != null) && (timeAfter.equals(originalDate)));
     }
 
-    /**
+    /*
      * Returns the next date/time <I>after</I> the given date/time which
      * satisfies the cron expression.
      *
@@ -234,7 +234,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return getTimeAfter(date);
     }
 
-    /**
+    /*
      * Returns the next date/time <I>after</I> the given date/time which does
      * <I>not</I> satisfy the expression
      *
@@ -271,7 +271,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return new Date(lastDate.getTime() + 1000);
     }
 
-    /**
+    /*
      * Returns the time zone for which this <code>CronExpression</code>
      * will be resolved.
      */
@@ -283,7 +283,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return timeZone;
     }
 
-    /**
+    /*
      * Sets the time zone for which  this <code>CronExpression</code>
      * will be resolved.
      */
@@ -690,7 +690,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return cl.getTime();
     }
 
-    /**
+    /*
      * Advance the calendar to the particular hour paying particular attention
      * to daylight saving problems.
      *
@@ -704,7 +704,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         }
     }
 
-    /**
+    /*
      * NOT YET IMPLEMENTED: Returns the time before the given time
      * that the <code>CronExpression</code> matches.
      */
@@ -713,7 +713,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         return null;
     }
 
-    /**
+    /*
      * NOT YET IMPLEMENTED: Returns the final time that the
      * <code>CronExpression</code> will match.
      */

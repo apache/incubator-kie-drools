@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * package private Singleton repository to cache generated classes. Accessed by EfestoContext
  */
 enum GeneratedClassesRepository {

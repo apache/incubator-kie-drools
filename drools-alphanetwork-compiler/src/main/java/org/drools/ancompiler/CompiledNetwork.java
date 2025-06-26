@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 
-/**
+/*
  * This is the base type for all generated classes that that represent a "compiled" portion of the RETE network.
  * By compiled we mean IF statements, switch statements, etc. as opposed to nodes, propagators, etc.
  */
@@ -43,7 +43,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     protected ObjectTypeNode objectTypeNode;
     protected ObjectSinkPropagator originalSinkPropagator;
 
-    /**
+    /*
      * Returns the unique id that represents the node in the Rete network
      *
      * @return unique int value
@@ -52,7 +52,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         return objectTypeNode.getId();
     }
 
-    /**
+    /*
      * Returns the partition ID to which this node belongs to
      *
      * @return partition id
@@ -61,7 +61,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         return objectTypeNode.getPartitionId();
     }
 
-    /**
+    /*
      * The object implements the writeExternal method to save its contents
      * by calling the methods of DataOutput for its primitive values or
      * calling the writeObject method of ObjectOutput for objects, strings,
@@ -78,7 +78,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    /**
+    /*
      * The object implements the readExternal method to restore its
      * contents by calling the methods of DataInput for primitive
      * types and readObject for objects, strings and arrays.  The
@@ -93,7 +93,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
-    /**
+    /*
      * Sets the OTN for this network. Calling this method will set all variables in the generated subclasses
      * by walking the {@link org.kie.reteoo.ObjectTypeNode} using a {@link ObjectTypeNodeParser}.
      *
@@ -129,7 +129,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         return originalSinkPropagator;
     }
 
-    /**
+    /*
      * Generated subclasses need to implement this method to set member variables based on the specified
      * NetworkNode.
      *
@@ -137,7 +137,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
      */
     protected abstract void setNetworkNodeReference(NetworkNode networkNode);
 
-    /**
+    /*
      * Use to initialize the inlined expression so that the ANC can instantiate without depending on the Rete.
      * Should be used instead of #setNetworkNodeReference
      * See #isInlined
@@ -150,7 +150,7 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
         return new NodeReferenceSetter();
     }
 
-    /**
+    /*
      * Handler implementation to call {@link CompiledNetwork#setNetworkNodeReference} for each node
      * encountered in the network.
      */

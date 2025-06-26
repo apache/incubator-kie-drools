@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ import org.drools.mvel.expr.MVELCompileable;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
-/**
+/*
  * A builder for the java dialect accumulate version
  */
 public class MVELAccumulateBuilder

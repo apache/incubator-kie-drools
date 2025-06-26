@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.drools.util.bitmask.EmptyBitMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 
-/**
+/*
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
  *
  * <p>
@@ -52,7 +52,7 @@ public abstract class ObjectSource extends BaseNode {
 
 
 
-    /** The destination for <code>FactHandleImpl</code>. */
+    /* The destination for <code>FactHandleImpl</code>. */
     protected ObjectSinkPropagator sink;
 
     protected ObjectSource         source;
@@ -71,14 +71,14 @@ public abstract class ObjectSource extends BaseNode {
 
     }
 
-    /**
+    /*
      * Single parameter constructor that specifies the unique id of the node.
      */
     protected ObjectSource(int id, RuleBasePartitionId partitionId) {
         this( id, partitionId, null, 3, 3);
     }
 
-    /**
+    /*
      * Single parameter constructor that specifies the unique id of the node.
      */
     ObjectSource(final int id,
@@ -174,7 +174,7 @@ public abstract class ObjectSource extends BaseNode {
         }
     }
 
-    /**
+    /*
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>FactHandleImpl</code> propagated from this
      * <code>ObjectSource</code>.
@@ -187,7 +187,7 @@ public abstract class ObjectSource extends BaseNode {
         this.sink = this.sink.addObjectSink( objectSink, this.alphaNodeHashingThreshold, this.alphaNodeRangeIndexThreshold );
     }
 
-    /**
+    /*
      * Removes the <code>ObjectSink</code>
      *
      * @param objectSink

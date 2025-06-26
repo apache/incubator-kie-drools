@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.mvel.dataproviders;
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
-/** 
+/* 
  * Implements an {@link java.util.Iterator Iterator} over any array.
  * <p>
  * The array can be either an array of object or of primitives. If you know 
@@ -36,15 +36,15 @@ import java.util.NoSuchElementException;
  */
 public class ArrayIterator implements java.util.Iterator {
 
-    /** The array to iterate over */    
+    /* The array to iterate over */    
     protected Object array;
-    /** The end index to loop to */
+    /* The end index to loop to */
     protected int endIndex = 0;
-    /** The current iterator index */
+    /* The current iterator index */
     protected int index = 0;
     
    
-    /**
+    /*
      * Constructs an ArrayIterator that will iterate over the values in the
      * specified array.
      *
@@ -56,7 +56,7 @@ public class ArrayIterator implements java.util.Iterator {
         setArray(array);
     }
 
-    /**
+    /*
      * Checks whether the index is valid or not.
      * 
      * @param bound  the index to check
@@ -80,7 +80,7 @@ public class ArrayIterator implements java.util.Iterator {
 
     // Iterator interface
     //-----------------------------------------------------------------------
-    /**
+    /*
      * Returns true if there are more elements to return from the array.
      *
      * @return true if there is a next element to return
@@ -89,7 +89,7 @@ public class ArrayIterator implements java.util.Iterator {
         return (index < endIndex);
     }
 
-    /**
+    /*
      * Returns the next element in the array.
      *
      * @return the next element in the array
@@ -103,7 +103,7 @@ public class ArrayIterator implements java.util.Iterator {
         return Array.get(array, index++);
     }
 
-    /**
+    /*
      * Throws {@link UnsupportedOperationException}.
      *
      * @throws UnsupportedOperationException always
@@ -114,7 +114,7 @@ public class ArrayIterator implements java.util.Iterator {
 
     // Properties
     //-----------------------------------------------------------------------
-    /**
+    /*
      * Gets the array that this iterator is iterating over. 
      *
      * @return the array this iterator iterates over, or <code>null</code> if
@@ -125,7 +125,7 @@ public class ArrayIterator implements java.util.Iterator {
         return array;
     }
     
-    /**
+    /*
      * Sets the array that the ArrayIterator should iterate over.
      * <p>
      * If an array has previously been set (using the single-arg constructor

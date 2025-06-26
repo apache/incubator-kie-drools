@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ public class VerifierReportWriterFactory {
         return new HTMLReportWriter();
     }
 
-    /**
+    /*
      * Returns the verifier results as plain text.
      * 
      * @return Analysis results as plain text.
@@ -40,7 +40,7 @@ public class VerifierReportWriterFactory {
         return new PlainTextReportWriter();
     }
 
-    /**
+    /*
      * Returns the verifier results as XML.
      * 
      * @return Analysis results as XML

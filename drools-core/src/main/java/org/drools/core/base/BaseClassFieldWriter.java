@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.WriteAccessor;
 
-/**
+/*
  * This is the supertype for the ASM generated classes for writing values into fields.
  */
 abstract public class BaseClassFieldWriter implements WriteAccessor {
@@ -40,7 +40,7 @@ abstract public class BaseClassFieldWriter implements WriteAccessor {
     public BaseClassFieldWriter() {
     }
 
-    /**
+    /*
      * This constructor is not supposed to be used from outside the class hirarchy
      */
     protected BaseClassFieldWriter(final int index,
@@ -51,7 +51,7 @@ abstract public class BaseClassFieldWriter implements WriteAccessor {
         this.valueType = valueType;
     }
 
-    /**
+    /*
      * This is the constructor to be used
      */
     public BaseClassFieldWriter(final Class< ? > clazz,

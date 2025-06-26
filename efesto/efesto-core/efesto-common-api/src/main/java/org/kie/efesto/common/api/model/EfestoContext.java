@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,12 +24,12 @@ import java.util.Set;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.listener.EfestoListener;
 
-/**
+/*
  * The context of an execution
  */
 public interface EfestoContext<T extends EfestoListener> {
 
-    /**
+    /*
      * Add the given <code>EfestoListener</code> to the current <code>Context</code>
      * @param toAdd
      */
@@ -37,7 +37,7 @@ public interface EfestoContext<T extends EfestoListener> {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Remove the given <code>EfestoListener</code> from the current <code>Context</code>.
      * @param toRemove
      */
@@ -45,7 +45,7 @@ public interface EfestoContext<T extends EfestoListener> {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Returns an <b>unmodifiable set</b> of the <code>EfestoListener</code>s registered with the
      * current instance
      */
@@ -53,21 +53,21 @@ public interface EfestoContext<T extends EfestoListener> {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Get <code>getGeneratedResourcesMap</code>
      */
     default Map<String, GeneratedResources> getGeneratedResourcesMap() {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Add <code>GeneratedResources</code> with the key {@code model}
      */
     default void addGeneratedResources(String model, GeneratedResources generatedResources) {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /*
      * Get previously generated classes with the key {@code fri}
      * @param modelLocalUriId
      * @return generatedClasses
@@ -76,7 +76,7 @@ public interface EfestoContext<T extends EfestoListener> {
         return GeneratedClassesRepository.INSTANCE.getGeneratedClasses(modelLocalUriId);
     }
 
-    /**
+    /*
      * Add generated classes with the key {@code fri}
      * @param modelLocalUriId
      * @param generatedClasses
@@ -85,7 +85,7 @@ public interface EfestoContext<T extends EfestoListener> {
         GeneratedClassesRepository.INSTANCE.addGeneratedClasses(modelLocalUriId, generatedClasses);
     }
 
-    /**
+    /*
      * Returns {@code true} if this map contains a mapping for the {@code fri}
      * @param localUri
      * @return {@code true} if this map contains a mapping for the {@code fri}
@@ -94,7 +94,7 @@ public interface EfestoContext<T extends EfestoListener> {
         return GeneratedClassesRepository.INSTANCE.containsKey(localUri);
     }
 
-    /**
+    /*
      * @return {@code Set} of {@code LocalUri} key in this map
      */
     default Set<ModelLocalUriId> localUriIdKeySet() {

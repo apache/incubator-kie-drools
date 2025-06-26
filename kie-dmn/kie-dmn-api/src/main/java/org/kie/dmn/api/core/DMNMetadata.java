@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public interface DMNMetadata {
 
-    /**
+    /*
      * Sets or changes the value of an attribute
      *
      * @param name the attribute name
@@ -31,7 +31,7 @@ public interface DMNMetadata {
      */
     Object set(String name, Object value);
 
-    /**
+    /*
      * Returns an attribute associated with this meta data by name.
      *
      * @param name the attribute name
@@ -39,7 +39,7 @@ public interface DMNMetadata {
      */
     Object get(String name);
 
-    /**
+    /*
      * @return a read-only map of attributes.
      */
     Map<String, Object> asMap();

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.base.rule.consequence;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.accessor.Invoker;
 
-/**
+/*
  * Consequence to be fired upon successful match of a <code>Rule</code>.
  */
 public interface Consequence<T extends ConsequenceContext>
@@ -30,7 +30,7 @@ public interface Consequence<T extends ConsequenceContext>
     
     String getName();
     
-    /**
+    /*
      * Execute the consequence for the supplied matching <code>Tuple</code>.
      * 
      * @param knowledgeHelper

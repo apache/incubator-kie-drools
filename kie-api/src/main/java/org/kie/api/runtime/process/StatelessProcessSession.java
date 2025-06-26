@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime.process;
 
-/**
+/*
  * There are currently no process related methods that are used with the external StatelessKieSession class. So this
  * interface is just a marker at the moment, but may find more uses in the future as requirements are discovered.
  *

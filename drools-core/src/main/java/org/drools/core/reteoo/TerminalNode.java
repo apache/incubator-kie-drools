@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.BaseTerminalNode;
 
-/**
+/*
  * A markup interface for terminal nodes
  */
 public interface TerminalNode

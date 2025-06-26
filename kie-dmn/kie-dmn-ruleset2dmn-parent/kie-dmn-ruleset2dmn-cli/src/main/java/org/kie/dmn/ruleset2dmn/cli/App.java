@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,7 +80,7 @@ public class App implements Callable<Integer> {
         System.exit(exitCode);
     }
 
-    /**
+    /*
      * Init file content from STDIN if necessary.
      */
     private void initInputStream() throws FileNotFoundException {

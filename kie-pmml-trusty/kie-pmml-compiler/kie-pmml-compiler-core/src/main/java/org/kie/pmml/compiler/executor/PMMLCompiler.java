@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,13 +26,13 @@ import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-/**
+/*
  * Actual implementations are required to convert a <b>PMML</b> xml to
  * to a <code>List&lt;KiePMMLModel&gt;</code>
  */
 public interface PMMLCompiler {
 
-    /**
+    /*
      * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code> following a
      * <b>kie-maven-plugin</b> invocation
      * @param packageName the package into which put all the generated classes out of the given <code>InputStream</code>

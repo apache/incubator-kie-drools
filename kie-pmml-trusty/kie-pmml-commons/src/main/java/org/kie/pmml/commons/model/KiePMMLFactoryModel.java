@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 
-/**
+/*
  * This is the model used to store sources for <code>KiePMMLModelFactory</code> classes;
  * <code>KiePMMLModelFactory</code>, in turns, are used to retrieve <code>List&lt;KiePMMLModel&gt;</code>s
  * from kjar inside <code>PMMLAssemblerService</code>

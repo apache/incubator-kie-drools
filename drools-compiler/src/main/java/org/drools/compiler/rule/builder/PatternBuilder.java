@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -122,7 +122,7 @@ import static org.drools.util.StringUtils.doesFirstPropHaveListMapAccessor;
 import static org.drools.util.StringUtils.extractFirstIdentifier;
 import static org.drools.util.StringUtils.isIdentifier;
 
-/**
+/*
  * A builder for patterns
  */
 public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
@@ -151,7 +151,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
     }
 
-    /**
+    /*
      * Build a pattern for the given descriptor in the current
      * context and using the given utils object
      */
@@ -574,7 +574,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         return typeDeclaration.getAccessibleProperties();
     }
 
-    /**
+    /*
      * Process all constraints and bindings on this pattern
      */
     private void processConstraintsAndBinds( RuleBuildContext context,
@@ -1687,7 +1687,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
     }
 
-    /**
+    /*
      * Creates a declaration object for the field identified by the given identifier
      * on the give pattern object
      */

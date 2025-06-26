@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-/**
+/*
  * @deprecated Since DMNv1.2 it shall be possible to use the DMN standard's Import functionality
  * to import Business Knowledge Model (BKM) nodes and Decision Service in order to be invoked from another model
  */

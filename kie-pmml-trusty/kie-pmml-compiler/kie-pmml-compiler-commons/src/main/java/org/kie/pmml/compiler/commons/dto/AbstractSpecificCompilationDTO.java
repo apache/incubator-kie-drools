@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 import static org.kie.pmml.api.utils.SourceUtils.dumpSources;
 
-/**
+/*
  * Abstract class to be extended by all <b>model-specific</b> compilation dtos
  */
 public abstract class AbstractSpecificCompilationDTO<T extends Model> implements CompilationDTO<T> {
@@ -56,7 +56,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
     private KiePMMLTransformationDictionary kiePMMLTransformationDictionary = null;
     private KiePMMLLocalTransformations kiePMMLLocalTransformations = null;
 
-    /**
+    /*
      * Protected constructor that generate a <code>CommonCompilationDTO</code> preserving given <b>packageName</b>
      * and <b>fields</b>
      *
@@ -74,7 +74,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
         this(CommonCompilationDTO.fromPackageNameAndFields(pmml, model, pmmlContext, fileName, packageName, fields));
     }
 
-    /**
+    /*
      * Protected constructor that use given <code>CompilationDTO</code>
      *
      * @param source
@@ -204,7 +204,7 @@ public abstract class AbstractSpecificCompilationDTO<T extends Model> implements
         return source.getKieOutputFields();
     }
 
-    /**
+    /*
      * Add <code>Field</code>s to current instance, <b>eventually replacing them if already present</b>
      *
      * @param toAdd

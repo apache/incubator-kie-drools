@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.conf;
 
-/**
+/*
  * An Enum for Sequential option.
  *
  * drools.sequential = &lt;true|false&gt;
@@ -30,7 +30,7 @@ public enum SequentialOption implements SingleValueRuleBaseOption {
     YES(true),
     NO(false);
 
-    /**
+    /*
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.sequential";
@@ -43,7 +43,7 @@ public enum SequentialOption implements SingleValueRuleBaseOption {
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

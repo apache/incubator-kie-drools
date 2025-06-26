@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -65,7 +65,7 @@ public class NumberFunction
         }
     }
 
-    /**
+    /*
      * Invokes the function to convert an input object into a BigDecimal.
      * If the input is null or annot be converted to a BigDecimal , an error result is returned.
      * @param from : the input object to be converted into a BigDecimal.

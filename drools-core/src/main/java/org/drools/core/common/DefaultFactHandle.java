@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * Implementation of <code>FactHandle</code>.
  */
 @XmlRootElement(name = "fact-handle")
@@ -52,7 +52,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
                               InternalFactHandle {
 
     private static final long       serialVersionUID = 510l;
-    /** Handle id. */
+    /* Handle id. */
 
     static final String     FACT_FORMAT_VERSION = "0";
 
@@ -89,7 +89,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         this( id, object, id, null );
     }
 
-    /**
+    /*
      * Construct.
      *
      * @param id
@@ -143,7 +143,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         this.disconnected = true;
     }
 
-    /**
+    /*
      * @see Object
      */
     public boolean equals( final Object object ) {
@@ -209,14 +209,14 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         this.objectHashCode = hashCode;
     }
 
-    /**
+    /*
      * @see Object
      */
     public int hashCode() {
         return Long.hashCode(this.id);
     }
 
-    /**
+    /*
      * format_version:id:identity:hashcode:recency
      *
      * @see FactHandle
@@ -250,7 +250,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         populateFactHandleFromExternalForm( externalForm, this );
     }
 
-    /**
+    /*
      * @see Object
      */
     public String toString() {
@@ -295,21 +295,21 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         this.identityHashCode = 0;
     }
 
-    /**
+    /*
      * @return the key
      */
     public EqualityKey getEqualityKey() {
         return this.key;
     }
 
-    /**
+    /*
      * @param key the key to set
      */
     public void setEqualityKey( final EqualityKey key ) {
         this.key = key;
     }
 
-    /**
+    /*
      * Always returns false, since the DefaultFactHandle is
      * only used for regular Facts, and not for Events
      */

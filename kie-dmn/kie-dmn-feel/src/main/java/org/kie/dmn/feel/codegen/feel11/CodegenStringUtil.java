@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CodegenStringUtil {
 
-    /**
+    /*
      * Escape for identifier part (not beginning)
      *
      * Similar to drools-model's StringUtil

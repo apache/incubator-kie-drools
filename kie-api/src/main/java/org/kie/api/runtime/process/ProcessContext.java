@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.api.runtime.process;
 
 import org.kie.api.runtime.KieContext;
 
-/**
+/*
  * Represents the context when executing a process.
  */
 public interface ProcessContext extends KieContext {
 
-    /**
+    /*
      * Returns the process instance that is currently being
      * executed in this context.
      *
@@ -34,7 +34,7 @@ public interface ProcessContext extends KieContext {
      */
     ProcessInstance getProcessInstance();
 
-    /**
+    /*
      * Returns the node instance that is currently being
      * executed in this context, or <code>null</code> if no
      * node instance is currently being executed.
@@ -44,7 +44,7 @@ public interface ProcessContext extends KieContext {
      */
     NodeInstance getNodeInstance();
 
-    /**
+    /*
      * Returns the value of the variable with the given name.
      * Based on the current node instance, it will try to resolve
      * the given variable, taking nested variable scopes into
@@ -56,7 +56,7 @@ public interface ProcessContext extends KieContext {
      */
     Object getVariable(String variableName);
 
-    /**
+    /*
      * Sets the value of the variable with the given name.
      * Based on the current node instance, it will try to resolve
      * the given variable, taking nested variable scopes into

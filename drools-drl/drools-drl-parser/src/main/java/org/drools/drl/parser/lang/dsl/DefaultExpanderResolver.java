@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.drl.parser.lang.Expander;
 import org.drools.drl.parser.lang.ExpanderResolver;
 
-/**
+/*
  * The default expander resolver will provide instances of the DefaultExpander.
  * The DefaultExpander uses templates to provide DSL and pseudo
  * natural language support.
@@ -37,7 +37,7 @@ public class DefaultExpanderResolver
 
     private final Map expanders = new HashMap();
 
-    /**
+    /*
      * Create an empty resolver, which you will then
      * call addExpander multiple times, to map a specific expander
      * with a name that will be found in the drl after the expander keyword.
@@ -45,7 +45,7 @@ public class DefaultExpanderResolver
     public DefaultExpanderResolver() {
     }
 
-    /**
+    /*
      * This will load up a DSL from the reader specified.
      * This will make the expander available to any parser 
      * regardless of name.
@@ -66,7 +66,7 @@ public class DefaultExpanderResolver
         }
     }
 
-    /**
+    /*
      * Add an expander with the given name, which will be used
      * by looking for the "expander" keyword in the DRL.
      * 

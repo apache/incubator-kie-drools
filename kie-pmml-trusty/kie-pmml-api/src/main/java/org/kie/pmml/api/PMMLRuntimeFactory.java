@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 
 public interface PMMLRuntimeFactory {
 
-    /**
+    /*
      * Retrieve a <code>PMMLRuntime</code> bound to the given <code><File</code>
      * with an on-the-fly compilation.
      * @param pmmlFile
@@ -32,7 +32,7 @@ public interface PMMLRuntimeFactory {
      */
     PMMLRuntime getPMMLRuntimeFromFile(File pmmlFile);
 
-    /**
+    /*
      * Retrieve a <code>PMMLRuntime</code> bound to the given <b>pmmlFileName</b>
      * with an <i>on-the-fly</i> compilation.
      * Such file will be looked for in the classpath

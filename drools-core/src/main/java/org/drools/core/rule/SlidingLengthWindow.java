@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * A length window behavior implementation
  */
 public class SlidingLengthWindow
@@ -46,7 +46,7 @@ public class SlidingLengthWindow
         this( 0 );
     }
 
-    /**
+    /*
      * @param size
      */
     public SlidingLengthWindow(final int size) {
@@ -54,7 +54,7 @@ public class SlidingLengthWindow
         this.size = size;
     }
 
-    /**
+    /*
      * @inheritDoc
      *
      * @see Externalizable#readExternal(ObjectInput)
@@ -64,7 +64,7 @@ public class SlidingLengthWindow
         this.size = in.readInt();
     }
 
-    /**
+    /*
      * @inheritDoc
      *
      * @see Externalizable#writeExternal(ObjectOutput)
@@ -78,14 +78,14 @@ public class SlidingLengthWindow
         return BehaviorType.LENGTH_WINDOW;
     }
 
-    /**
+    /*
      * @return the size
      */
     public long getSize() {
         return size;
     }
 
-    /**
+    /*
      * @param size the size to set
      */
     public void setSize(final int size) {
@@ -96,7 +96,7 @@ public class SlidingLengthWindow
         return new SlidingLengthWindowContext( this.size );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean assertFact(final Object context,
@@ -138,7 +138,7 @@ public class SlidingLengthWindow
         // do nothing?
     }
 
-    /**
+    /*
      * Length windows don't change expiration offset, so
      * always return -1
      */
@@ -150,7 +150,7 @@ public class SlidingLengthWindow
         return "SlidingLengthWindow( size=" + size + " )";
     }
 
-    /**
+    /*
      * A Context object for length windows
      */
     public static class SlidingLengthWindowContext
@@ -165,7 +165,7 @@ public class SlidingLengthWindow
             this.handles = new DefaultEventHandle[size];
         }
 
-        /**
+        /*
          * Do not use this constructor! It should be used just by deserialization.
          */
         public SlidingLengthWindowContext() {

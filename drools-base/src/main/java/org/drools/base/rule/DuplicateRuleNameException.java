@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.base.rule;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 
-/**
+/*
  * Indicates an attempt to add a <code>Rule</code> to a <code>Package</code>
  * that already contains a <code>Rule</code> with the same name.
  * 
@@ -30,16 +30,16 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 public class DuplicateRuleNameException extends RuleConstructionException {
     private static final long serialVersionUID = 510l;
 
-    /** The rule-set. */
+    /* The rule-set. */
     private Package           pkg;
 
-    /** The member rule. */
+    /* The member rule. */
     private RuleImpl originalRule;
 
-    /** The conflicting rule. */
+    /* The conflicting rule. */
     private RuleImpl conflictingRule;
 
-    /**
+    /*
      * @see java.lang.Exception#Exception()
      * 
      * @param pkg
@@ -59,7 +59,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
         this.conflictingRule = conflictingRule;
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(Throwable cause)
      * 
      * @param pkg
@@ -81,7 +81,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
         this.conflictingRule = conflictingRule;
     }
 
-    /**
+    /*
      * Retrieve the <code>Package</code>.
      * 
      * @return The <code>Package</code>.
@@ -90,7 +90,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
         return this.pkg;
     }
 
-    /**
+    /*
      * Retrieve the original <code>Rule</code> in the <code>Package</code>.
      * 
      * @return The <code>Rule</code>.
@@ -99,7 +99,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
         return this.originalRule;
     }
 
-    /**
+    /*
      * Retrieve the new conflicting <code>Rule</code>.
      * 
      * @return The <code>Rule</code>.

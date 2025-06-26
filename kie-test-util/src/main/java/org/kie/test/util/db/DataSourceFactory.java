@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
 import org.kie.test.util.db.internal.DatabaseProvider;
 import org.kie.test.util.db.internal.PoolingDataSourceWrapperImpl;
 
-/**
+/*
  * Creates instances of {@link PoolingDataSourceWrapper} that can be used for testing purposes.
  */
 public final class DataSourceFactory {
@@ -33,7 +33,7 @@ public final class DataSourceFactory {
         throw new UnsupportedOperationException(DataSourceFactory.class.getSimpleName() + " should not be instantiated.");
     }
 
-    /**
+    /*
      * Creates a new instance of {@link PoolingDataSourceWrapper}.
      * @param datasourceName data source JNDI name
      * @param driverProperties properties that should be passed to JDBC driver
@@ -44,7 +44,7 @@ public final class DataSourceFactory {
         return setupPoolingDataSource(datasourceName, driverProperties, new Properties());
     }
 
-    /**
+    /*
      * Creates a new instance of {@link PoolingDataSourceWrapper}.
      * @param datasourceName data source JNDI name
      * @param driverProperties properties that should be passed to JDBC driver

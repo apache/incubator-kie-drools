@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,7 +56,7 @@ import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getDescri
 import static org.drools.compiler.builder.impl.classbuilder.BuildUtils.getSignature;
 import static org.drools.mvel.asm.ClassGenerator.createClassWriter;
 
-/**
+/*
  * A builder to dynamically build simple Javabean(TM) classes
  */
 public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Serializable {
@@ -72,7 +72,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    /**
+    /*
      * Dynamically builds, defines and loads a class based on the given class definition
      *
      * @param classDef the class definition object structure
@@ -484,7 +484,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    /**
+    /*
      * A traitable class is a special class with support for dynamic properties and types.
      *
      * This method builds the trait map, containing the references to the proxies
@@ -764,7 +764,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    /**
+    /*
      * A traitable class is a special class with support for dynamic properties and types.
      *
      * This method builds the property map, containing the key/values pairs to implement
@@ -812,7 +812,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
     }
 
-    /**
+    /*
      * A traitable class is a special class with support for dynamic properties and types.
      *
      * A traitable class in logical mode provides additional control over the values
@@ -857,7 +857,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
     }
 
-    /**
+    /*
      * Defines the class header for the given class definition
      */
     protected ClassWriter buildClassHeader(ClassLoader classLoader,
@@ -897,7 +897,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
 
-    /**
+    /*
      * Creates the field defined by the given FieldDefinition
      *
      * @param cw
@@ -919,7 +919,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
 
-    /**
+    /*
      * Creates a default constructor for the class
      *
      * @param cw
@@ -1061,7 +1061,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     }
 
 
-    /**
+    /*
      * Initializes the trait map and dynamic property map to empty values
      * @param mv
      * @param classDef
@@ -1111,7 +1111,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
     }
 
-    /**
+    /*
      * Creates a constructor that takes and assigns values to all
      * fields in the order they are declared.
      *
@@ -1238,7 +1238,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
 
-    /**
+    /*
      * Creates the set method for the given field definition
      *
      * @param cw
@@ -1306,7 +1306,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
     }
 
-    /**
+    /*
      * Creates the get method for the given field definition
      *
      * @param cw

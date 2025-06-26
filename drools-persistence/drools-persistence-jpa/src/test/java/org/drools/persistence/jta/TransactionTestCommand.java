@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTIT
 import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER_FACTORY;
 
 
-/**
+/*
  * Please make sure you understand foreign keys 
  * and how they work with regards to JPA before continuing further: 
  * - http://download.oracle.com/javaee/5/tutorial/doc/bnbqa.html#bnbqj
@@ -94,7 +94,7 @@ public class TransactionTestCommand implements ExecutableCommand<Void> {
             cleanKBase.addPackages(ksession.getKieBase().getKiePackages());
             StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( cleanKBase, null, initializeEnvironment() );
 
-            /**
+            /*
              *  Here's what's going on: 
              *  If the PersistableRunner (SSCS) & JtaTransactionManager (JTM) were _not_ aware of transactions,
              *  -> then inserting the mainObject _before_ having inserted the subObject

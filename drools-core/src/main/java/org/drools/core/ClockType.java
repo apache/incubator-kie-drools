@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.PseudoClockScheduler;
 
-/**
+/*
  * This enum represents all engine supported clocks
  */
 public enum ClockType {
@@ -33,7 +33,7 @@ public enum ClockType {
         }
     },
 
-    /**
+    /*
      * A Pseudo clock is a clock that is completely controlled by the
      * client application. It is usually used during simulations or tests
      */

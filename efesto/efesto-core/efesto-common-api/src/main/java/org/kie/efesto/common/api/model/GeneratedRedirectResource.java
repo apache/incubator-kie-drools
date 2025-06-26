@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,18 +22,18 @@ import java.util.Objects;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A <code>GeneratedResource</code> not meant to be directly executed, linking to another <code>GeneratedResource</code>
  */
 public final class GeneratedRedirectResource implements GeneratedResource {
 
     private static final long serialVersionUID = 1356917578380378083L;
-    /**
+    /*
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
     private final ModelLocalUriId modelLocalUriId;
 
-    /**
+    /*
      * the full reference identifier (e.g. "bar/resource/some_final_model")
      */
     private final String target;

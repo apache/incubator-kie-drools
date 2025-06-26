@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.template.model.SnippetBuilder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/*
  * The default column condition for a rule template to be generated. If the
  * conditon starts with "!" then the template will only be generated if the
  * column condition does not exist. If there is no condition string then the

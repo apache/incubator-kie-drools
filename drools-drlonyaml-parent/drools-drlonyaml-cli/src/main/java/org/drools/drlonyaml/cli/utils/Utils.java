@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ public class Utils {
         // only static utilities methods.
     }
     
-    /**
+    /*
      * Returns an InputStream reading the file content when provided as a parameter, otherwise from STDIN until `\\A` when null.
      */
     public static InputStream conventionInputStream(File inputFile) throws FileNotFoundException {
@@ -50,7 +50,7 @@ public class Utils {
         throw new IllegalStateException();
     }
     
-    /**
+    /*
      * Returns an Consumer which writes content to the file when provided as a parameter, otherwise consumer emits to STDOUT when null.
      */
     public static Consumer<String> conventionOutputConsumer(File archive) {

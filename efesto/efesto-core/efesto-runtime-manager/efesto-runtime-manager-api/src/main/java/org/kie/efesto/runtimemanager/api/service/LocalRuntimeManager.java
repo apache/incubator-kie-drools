@@ -24,12 +24,12 @@ import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
-/**
+/*
  * This is the type that run on local JVM
  */
 public interface LocalRuntimeManager {
 
-    /**
+    /*
      * Produce a <code>Collection&lt;EfestoOutput&gt;</code> from the given <code>EfestoInput</code>
      *
      * @param context

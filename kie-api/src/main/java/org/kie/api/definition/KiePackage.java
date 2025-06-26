@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,23 +26,23 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 
-/**
+/*
  * This provides a collection of knowledge definitions that can be given to a {@link org.kie.api.KieBase}.
  * The name is used to provide "namespace" separation of those definitions.
  */
 public interface KiePackage {
 
-    /**
+    /*
      * @return namespace for this package
      */
     String getName();
 
-    /**
+    /*
      * @return immutable collection of rule definitions for this package.
      */
     Collection<Rule> getRules();
 
-    /**
+    /*
      * Return the process definitions for this package.
      * The collection is immutable.
      *
@@ -50,7 +50,7 @@ public interface KiePackage {
      */
     Collection<Process> getProcesses();
 
-    /**
+    /*
      * Return the fact types declared in this package
      * The collection is immutable.
      *
@@ -58,7 +58,7 @@ public interface KiePackage {
      */
     Collection<FactType> getFactTypes();
 
-    /**
+    /*
      * Return the query definitions for this package.
      * The collection is immutable.
      *
@@ -66,7 +66,7 @@ public interface KiePackage {
      */
     Collection<Query> getQueries();
 
-    /**
+    /*
      * Return the names of the functions defined in this package.
      * The collection is immutable.
      *
@@ -74,7 +74,7 @@ public interface KiePackage {
      */
     Collection<String> getFunctionNames();
 
-    /**
+    /*
      * Return the names of the globals defined in this package.
      * The collection is immutable.
      *

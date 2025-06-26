@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import javax.management.openmbean.CompositeData;
 
 import org.kie.api.builder.ReleaseId;
 
-/**
+/*
  * A simple immutable pojo representing Maven GAV coordinates, with a JMX-compliant method in order to be exposed and used via JMX/Monitoring.
  */
 /*

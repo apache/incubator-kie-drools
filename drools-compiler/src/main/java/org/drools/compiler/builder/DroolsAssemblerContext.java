@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 
-/**
+/*
  * This interface solely exist to make work legacy package processing
  * classes such as {@link PackageBuildContext} and {@link RuleBuildContext}.
  * It should be regarded as an implementation detail, and it should be deprecated

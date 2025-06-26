@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static com.github.javaparser.utils.StringEscapeUtils.escapeJava;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
-/**
+/*
  * This phase transforms modify statements in valid Java code
  *
  * It's used both in the MVEL Compiler and also to preprocess Drools' Java consequences that

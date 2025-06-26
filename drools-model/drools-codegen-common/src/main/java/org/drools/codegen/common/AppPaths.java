@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -105,7 +105,7 @@ public class AppPaths {
         return fromProjectDir(projectDir, BT);
     }
 
-    /**
+    /*
      * Builder to be used only for tests, where <b>all</b> resources must be present in "src/test/resources" directory
      *
      * @param projectDir
@@ -115,7 +115,7 @@ public class AppPaths {
         return fromTestDir(projectDir, BT);
     }
 
-    /**
+    /*
      * Default-access method for testing purpose
      * @param projectDir
      * @param bt
@@ -125,7 +125,7 @@ public class AppPaths {
         return new AppPaths(Collections.singletonList(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, false);
     }
 
-    /**
+    /*
      * Default-access method for testing purpose
      * @param projectDir
      * @param bt
@@ -135,7 +135,7 @@ public class AppPaths {
         return new AppPaths(Collections.singletonList(projectDir), Collections.emptyList(), false, bt, TEST_DIR, true);
     }
 
-    /**
+    /*
      * @param projectPaths
      * @param classesPaths
      * @param isJar

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to generate <b>Types</b> (descr) out of a <b>List&lt;KiePMMLDroolsType&gt;</b>
  */
 public class KiePMMLDescrTypesFactory {
@@ -42,7 +42,7 @@ public class KiePMMLDescrTypesFactory {
         return new KiePMMLDescrTypesFactory(builder);
     }
 
-    /**
+    /*
      * Create types out of original <code>List&lt;KiePMMLDroolsType&gt;</code>s,
      * @param types
      */
@@ -51,7 +51,7 @@ public class KiePMMLDescrTypesFactory {
         types.forEach(this::declareType);
     }
 
-    /**
+    /*
      * Create type out of original <code>DataField</code>;
      * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param type

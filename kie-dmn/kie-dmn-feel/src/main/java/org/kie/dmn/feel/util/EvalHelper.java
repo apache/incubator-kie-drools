@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -216,7 +216,7 @@ public class EvalHelper {
         return PropertyValueResult.ofValue(result);
     }
 
-    /**
+    /*
      * {@link #getDefinedValue(Object, String)} method instead.
      * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null.
      *
@@ -225,7 +225,7 @@ public class EvalHelper {
         return getDefinedValue(current, property).getValueResult().getOrElse(null);
     }
 
-    /**
+    /*
      * FEEL annotated or else Java accessor.
      * @param clazz
      * @param field
@@ -251,7 +251,7 @@ public class EvalHelper {
         accessorCache.clear();
     }
 
-    /**
+    /*
      * JavaBean -spec compliant accessor.
      * @param clazz
      * @param field
@@ -274,7 +274,7 @@ public class EvalHelper {
         }
     }
 
-    /**
+    /*
      * Inverse of {@link #getAccessor(Class, String)}
      */
     public static Optional<String> propertyFromAccessor(Method accessor) {

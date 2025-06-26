@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.AcceptsReadAccessor;
 import org.drools.base.rule.accessor.ReadAccessor;
 
-/**
+/*
  * This is a wrapper for a ClassFieldExtractor that provides
  * default values and a simpler interface for non-used parameters
  * like the working memory, when the field extractor is used outside

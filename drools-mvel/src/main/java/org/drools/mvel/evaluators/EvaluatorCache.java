@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.base.base.ValueType;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
 
-/**
+/*
  * A simple helper class to store Evaluators for a given set of
  * value types and operators
  */

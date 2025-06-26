@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Map;
 import org.kie.drl.engine.runtime.model.EfestoOutputDrl;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * <code>EfestoOutputDrl</code> specific for map input usage.
  * Its scope it is to return a <code>Map</code> with the result of the evaluation.
  * To be used, for example, by PMML

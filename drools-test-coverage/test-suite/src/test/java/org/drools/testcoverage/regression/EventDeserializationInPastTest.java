@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.fail;
 
-/**
+/*
  * Reproducer for BZ 1205666, BZ 1205671 (DROOLS-749).
  */
 public class EventDeserializationInPastTest {

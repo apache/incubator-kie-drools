@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,21 +19,21 @@
 package org.kie.api.runtime.rule;
 
 
-/**
+/*
  This interface adds methods available to the {@link org.kie.api.runtime.KieSession} beyond what the WorkingMemory provides.
  *
  * @see org.kie.api.runtime.KieSession
  */
 public interface StatefulRuleSession {
 
-    /**
+    /*
      * Fire all Matches on the Agenda.
      * @return
      *     returns the number of rules fired
      */
     int fireAllRules();
 
-    /**
+    /*
      * Fire Matches on the Agenda up to the given maximum number of Matches, before returning
      * the control to the application.
      * In case the application wants to continue firing the rules later, from the point where it stopped,
@@ -46,7 +46,7 @@ public interface StatefulRuleSession {
      */
     int fireAllRules(int max);
 
-    /**
+    /*
      * Fire all Matches on the Agenda
      *
      * @param agendaFilter
@@ -56,7 +56,7 @@ public interface StatefulRuleSession {
      */
     int fireAllRules(AgendaFilter agendaFilter);
 
-    /**
+    /*
      * Fire all Matches on the Agenda
      *
      * @param agendaFilter
@@ -68,7 +68,7 @@ public interface StatefulRuleSession {
      */
     int fireAllRules(AgendaFilter agendaFilter, int max);
 
-    /**
+    /*
      * Keeps firing Matches until a halt is called. If in a given moment,
      * there is no Match to fire, it will wait for an Match to be
      * added to an active agenda group or rule flow group. This blocks the thread
@@ -79,7 +79,7 @@ public interface StatefulRuleSession {
      */
     public void fireUntilHalt();
 
-    /**
+    /*
      * Keeps firing Matches until a halt is called. If in a given moment,
      * there is no Match to fire, it will wait for an Match to be
      * added to an active agenda group or rule flow group. This blocks the thread

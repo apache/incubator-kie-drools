@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -339,7 +339,7 @@ public class OOPathReactiveTest {
         assertThat(ksession.getObjects().contains(diabetes)).isTrue();
     }
 
-    /**
+    /*
      * Same test as above but with serialization.
      */
     @ParameterizedTest(name = "KieBase type={0}")

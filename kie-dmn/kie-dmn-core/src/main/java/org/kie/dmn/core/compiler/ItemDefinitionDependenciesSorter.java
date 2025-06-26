@@ -35,7 +35,7 @@ public class ItemDefinitionDependenciesSorter {
         this.modelNamespace = modelNamespace;
     }
     
-    /**
+    /*
      * Return a new list of ItemDefinition sorted by dependencies (required dependencies comes first)
      */
     public List<ItemDefinition> sort(List<ItemDefinition> ins) {
@@ -54,7 +54,7 @@ public class ItemDefinitionDependenciesSorter {
         return dfv;
     }
         
-    /**
+    /*
      * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
      */
     private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv) {

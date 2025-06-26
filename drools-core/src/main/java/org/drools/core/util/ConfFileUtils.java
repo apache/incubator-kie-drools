@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.util.PortablePath;
 
 public class ConfFileUtils {
    
-    /**
+    /*
      * Return the URL for a given conf file
      * @param confName
      * @param classLoader
@@ -98,7 +98,7 @@ public class ConfFileUtils {
         return url;
     }
     
-    /**
+    /*
      * Return URL for given filename
      * 
      * @param fileName
@@ -138,7 +138,7 @@ public class ConfFileUtils {
         return builder.toString();
     }
     
-    /**
+    /*
      * Load a Properties file from a URL, return null if it fails
      * 
      * @param url

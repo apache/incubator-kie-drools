@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -68,21 +68,21 @@ public class DumperContext {
         return null;
     }
 
-    /**
+    /*
      * @return the aliases
      */
     public Map<String, OperatorDescr> getAliases() {
         return aliases;
     }
 
-    /**
+    /*
      * @param aliases the aliases to set
      */
     public void setAliases( Map<String, OperatorDescr> aliases ) {
         this.aliases = aliases;
     }
 
-    /**
+    /*
      * Creates a new alias for the operator, setting it in the descriptor
      * class, adding it to the internal Map and returning it as a String
      */
@@ -94,7 +94,7 @@ public class DumperContext {
         return alias;
     }
 
-    /**
+    /*
      * Adds a binding to the list of bindings on this context
      */
     public void addBinding( BindingDescr bind ) {

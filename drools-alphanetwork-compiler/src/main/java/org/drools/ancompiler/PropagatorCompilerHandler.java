@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -78,7 +78,7 @@ import static org.drools.util.StringUtils.md5Hash;
 // As AssertCompiler and ModifyCompiler classes are quite similar except for the method they propagate in the Rete (assert vs modify) they share a common class
 public abstract class PropagatorCompilerHandler extends AbstractCompilerHandler {
 
-    /**
+    /*
      * This states if there is at least 1 set of hashed alpha nodes in the network
      */
     protected final boolean alphaNetContainsHashedField;

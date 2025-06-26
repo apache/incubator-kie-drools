@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
     protected org.kie.dmn.model.api.dmndi.Style.Extension extension;
     protected String id;
 
-    /**
+    /*
      * Gets the value of the extension property.
      * 
      * @return
@@ -42,7 +42,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
         return extension;
     }
 
-    /**
+    /*
      * Sets the value of the extension property.
      * 
      * @param value
@@ -54,7 +54,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
         this.extension = value;
     }
 
-    /**
+    /*
      * Gets the value of the id property.
      * 
      * @return
@@ -66,7 +66,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
         return id;
     }
 
-    /**
+    /*
      * Sets the value of the id property.
      * 
      * @param value
@@ -83,7 +83,7 @@ public abstract class Style extends KieDMNModelInstrumentedBase implements org.k
 
         protected List<Object> any;
 
-        /**
+        /*
          * Gets the value of the any property.
          * 
          * <p>

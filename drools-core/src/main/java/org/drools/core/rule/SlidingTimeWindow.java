@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -63,7 +63,7 @@ public class SlidingTimeWindow
         this.size = size;
     }
 
-    /**
+    /*
      * @inheritDoc
      *
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
@@ -75,7 +75,7 @@ public class SlidingTimeWindow
         this.nodeId = in.readInt();
     }
 
-    /**
+    /*
      * @inheritDoc
      *
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
@@ -95,14 +95,14 @@ public class SlidingTimeWindow
         this.nodeId = windowNode.getId();
     }
 
-    /**
+    /*
      * @return the size
      */
     public long getSize() {
         return size;
     }
 
-    /**
+    /*
      * @param size the size to set
      */
     public void setSize(final long size) {
@@ -311,7 +311,7 @@ public class SlidingTimeWindow
             this.behaviorContext = behaviorContext;
         }
 
-        /**
+        /*
          * Do not use this constructor! It should be used just by deserialization.
          */
         public BehaviorJobContext() {

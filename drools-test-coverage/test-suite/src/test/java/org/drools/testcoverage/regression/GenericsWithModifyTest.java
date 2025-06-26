@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-/**
+/*
  * Tests generics in RHS with modify - BZ 1142886.
  */
 public class GenericsWithModifyTest {
@@ -60,7 +60,7 @@ public class GenericsWithModifyTest {
         }
     }
 
-    /**
+    /*
      * Tests generics on rule's RHS with modify.
      */
     @ParameterizedTest(name = "KieBase type={0}")

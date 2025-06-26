@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public class KiePMMLScorecardModel extends KiePMMLModel {
 
     private static final long serialVersionUID = 1798360806171346217L;
 
-    /**
+    /*
      * The first <code>Map</code> is the input data, the second <code>Map</code> is the <b>outputfieldsmap</b>
      */
     protected final KiePMMLCharacteristics characteristics;

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 
-/**
+/*
  * DROOLS-3238
  * This base test class purpose is to test DMN model in KJAR containing Drools Model file.<br/>
  * Specifically, as long as the base method {@link #wrapWithDroolsModelResource(KieServices, ReleaseId, Resource...)} is used, this will enable testing a DMN resource

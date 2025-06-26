@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 
-/**
+/*
  * Wraps a {@link TypeDeclarationBuilder} and an {@link InternalKnowledgeBase}
  * and deals with updating both.
  */

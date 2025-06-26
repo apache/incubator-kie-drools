@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -135,7 +135,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 
-/**
+/*
  * Run all the tests with the ReteOO engine implementation
  */
 public class Misc2Test {
@@ -8796,7 +8796,7 @@ public class Misc2Test {
         assertThat(list.get(0)).isEqualTo("42000");
     }
     
-    /**
+    /*
      * This test deliberately creates a deadlock, failing the test with a timeout.
      * Helpful to test thread dump when a timeout occur on the JUnit listener.
      * @throws Exception

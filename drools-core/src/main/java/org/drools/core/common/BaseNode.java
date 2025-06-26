@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.kie.api.definition.rule.Rule;
 import org.drools.base.reteoo.NodeTypeEnums;
 
-/**
+/*
  * The base class for all Rete nodes.
  */
 public abstract class BaseNode
@@ -63,7 +63,7 @@ public abstract class BaseNode
 
     }
 
-    /**
+    /*
      * All nodes have a unique id, set in the constructor.
      *
      * @param id
@@ -110,7 +110,7 @@ public abstract class BaseNode
         this.streamMode = streamMode;
     }
 
-    /**
+    /*
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     public void attach(BuildContext context) {
@@ -124,7 +124,7 @@ public abstract class BaseNode
     }
 
 
-    /**
+    /*
      * A method that is called for all nodes whose network below them
      * changed, after the change is complete, providing them with an opportunity
      * for state update
@@ -140,13 +140,13 @@ public abstract class BaseNode
         return removed;
     }
 
-    /**
+    /*
      * Removes the node from the network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     protected abstract boolean doRemove(RuleRemovalContext context,
                                         ReteooBuilder builder);
 
-    /**
+    /*
      * Returns true in case the current node is in use (is referenced by any other node)
      */
     public abstract boolean isInUse();
@@ -157,21 +157,21 @@ public abstract class BaseNode
         return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
     }
 
-    /**
+    /*
      * Returns the partition ID for which this node belongs to
      */
     public RuleBasePartitionId getPartitionId() {
         return this.partitionId;
     }
 
-    /**
+    /*
      * Sets the partition this node belongs to
      */
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         this.partitionId = partitionId;
     }
 
-    /**
+    /*
      * Associates this node with the give rule
      */
     public void addAssociation( Rule rule ) {
@@ -182,7 +182,7 @@ public abstract class BaseNode
         addAssociation( rule );
     }
 
-    /**
+    /*
      * Removes the association to the given rule from the
      * associations map.
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,25 +21,25 @@ package org.kie.api.builder;
 import org.kie.api.io.Resource;
 
 
-/**
+/*
  * KieRepository is a singleton acting as a repository for all the available KieModules
  * regardless if they are stored in the maven repository or programmatically built by the user
  */
 public interface KieRepository {
 
-    /**
+    /*
      * Returns the default ReleaseId used to identify a KieModule in this KieRepository
      * if the user didn't explicitly provide one
      * @return The default ReleaseId
      */
     ReleaseId getDefaultReleaseId();
 
-    /**
+    /*
      * Adds a new KieModule to this KieRepository
      */
     void addKieModule(KieModule kModule);
 
-    /**
+    /*
      * Creates a new KieModule using the provided resource and dependencies
      * and automatically adds it to this KieRepository
      * @param resource
@@ -48,7 +48,7 @@ public interface KieRepository {
      */
     KieModule addKieModule(Resource resource, Resource... dependencies);
 
-    /**
+    /*
      * Retrieve a KieModule with the given ReleaseId in this KieRepository.
      * It is possible to use maven's conventions and version ranges like in
      * <pre>
@@ -63,7 +63,7 @@ public interface KieRepository {
      */
     KieModule getKieModule(ReleaseId releaseId);
 
-    /**
+    /*
      * Remove a no longer useful KieModule, identified by the given ReleaseId, from this KieRepository
      * @param releaseId The releaseId identifying the KieModule to be removed
      * @return The removed KieModule or null if such KieModule didn't exist

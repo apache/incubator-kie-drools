@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -99,7 +99,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
 
     public static class MCDCListener implements DMNRuntimeEventListener {
 
-        /** The listener reports the ID accordingly to the DMN Specification, that is 1-based. */
+        /* The listener reports the ID accordingly to the DMN Specification, that is 1-based. */
         public final List<Integer> selectedRule = new ArrayList<>();
 
         @Override

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLExpressionInstanceF
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionInstanceFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLParameterFieldInstanceFactory.getKiePMMLParameterFields;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLDefineFunction</code> instance
  * out of <code>DefineFunction</code>s
  */

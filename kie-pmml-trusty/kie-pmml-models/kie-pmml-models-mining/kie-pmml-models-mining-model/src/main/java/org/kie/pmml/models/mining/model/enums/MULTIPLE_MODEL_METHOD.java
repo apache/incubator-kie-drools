@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import static org.kie.pmml.models.mining.model.enums.MultipleModelMethodFunction
 import static org.kie.pmml.models.mining.model.enums.MultipleModelMethodFunctions.WEIGHTED_MEDIAN_RESULT;
 import static org.kie.pmml.models.mining.model.enums.MultipleModelMethodFunctions.WEIGHTED_SUM_RESULT;
 
-/**
+/*
  * @see <a href=http://dmg.org/pmml/v4-4/MultipleModels.html#xsdType_MULTIPLE-MODEL-METHOD>MULTIPLE-MODEL-METHOD</a>
  */
 public enum MULTIPLE_MODEL_METHOD {
@@ -100,7 +100,7 @@ public enum MULTIPLE_MODEL_METHOD {
                 inputData -> null);
 
     private final String name;
-    /**
+    /*
      * The function mapped to the given method used to evaluate a "prediction"
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation.
@@ -109,7 +109,7 @@ public enum MULTIPLE_MODEL_METHOD {
      */
     private final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> predictionFunction;
 
-    /**
+    /*
      * The function mapped to the given method used to evaluate a "classification"
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation.
@@ -118,7 +118,7 @@ public enum MULTIPLE_MODEL_METHOD {
      */
     private final Function<LinkedHashMap<String, KiePMMLNameValue>, Object> classificationFunction;
 
-    /**
+    /*
      * The function mapped to the given method used to evaluate the probabilities of a "classification"
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> are the probabilities of the model
      * evaluation.
@@ -144,7 +144,7 @@ public enum MULTIPLE_MODEL_METHOD {
         return name;
     }
 
-    /**
+    /*
      * Return the prediction of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation
@@ -157,7 +157,7 @@ public enum MULTIPLE_MODEL_METHOD {
         return predictionFunction.apply(inputData);
     }
 
-    /**
+    /*
      * Return the classification of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> is the result of the model
      * evaluation
@@ -170,7 +170,7 @@ public enum MULTIPLE_MODEL_METHOD {
         return classificationFunction.apply(inputData);
     }
 
-    /**
+    /*
      * Return the probabilities of the input data
      * The <b>key</b> of the map is the name of the (inner) model, the <b>value</b> are the probabilities of the model
      * evaluation

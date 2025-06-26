@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,11 +27,11 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;
 
-/**
+/*
  * Factory Interface to return new <code>FactHandle</code>s
  */
 public interface FactHandleFactory {
-   /**
+   /*
      * Construct a handle with a new id.
      * 
      * @return The handle.
@@ -50,7 +50,7 @@ public interface FactHandleFactory {
 
     InternalFactHandle newInitialFactHandle(WorkingMemoryEntryPoint wmEntryPoint);
     
-    /**
+    /*
      * Increases the recency of the FactHandle
      * 
      * @param factHandle
@@ -60,7 +60,7 @@ public interface FactHandleFactory {
 
     void destroyFactHandle(InternalFactHandle factHandle);
 
-    /**
+    /*
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
     FactHandleFactory newInstance();

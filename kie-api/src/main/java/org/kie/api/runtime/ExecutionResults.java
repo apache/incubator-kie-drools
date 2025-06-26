@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.runtime;
 import java.util.Collection;
 import java.util.Map;
 
-/**
+/*
  * <p>
  * Contains the results for the BatchExecution Command. If the identifier is reference the results of a query, you'll need to cast the value to
  * QueryResults.

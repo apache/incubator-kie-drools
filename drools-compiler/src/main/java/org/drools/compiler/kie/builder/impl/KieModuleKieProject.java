@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
  * KieBaseModels and KieSessionModels are then indexed, with helper lookups
  * Each resulting KieModule is added to the KieRepository

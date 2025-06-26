@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.drl.ast.descr.BaseDescr;
 
-/**
+/*
  * An interface to define classes capable of building
  * specific conditional elements.
  */

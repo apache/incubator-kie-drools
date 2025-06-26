@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,12 +26,12 @@ public class SessionsPoolOption implements SingleValueRuleBaseOption {
 
     public static final SessionsPoolOption NO = SessionsPoolOption.get(-1);
 
-    /**
+    /*
      * Session pool size
      */
     private final int size;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param size
      */
@@ -47,7 +47,7 @@ public class SessionsPoolOption implements SingleValueRuleBaseOption {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the size of the session pool
      *
      * @return

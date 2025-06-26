@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.drools.drl.ast.descr;
 
 
-/**
+/*
  * An entry point descriptor for facts. This is part of the
  * support to multi-stream concurrent event assertion.
  */

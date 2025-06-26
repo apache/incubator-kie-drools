@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * <p>An implementation of an accumulator capable of collecting lists of values.
  * This is similar to the "collect" CE, but allows us to collect any value, not
  * only facts.</p>
@@ -121,7 +121,7 @@ public class CollectListAccumulateFunction extends AbstractAccumulateFunction<Co
         return true;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {

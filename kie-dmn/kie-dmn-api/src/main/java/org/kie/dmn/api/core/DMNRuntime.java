@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 
 public interface DMNRuntime extends DMNRuntimeEventManager {
 
-    /**
+    /*
      * Returns a list of all models available to this runtime
      *
      * @return the list of available models. An empty list in
@@ -32,7 +32,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     List<DMNModel> getModels();
 
-    /**
+    /*
      * Returns the model registered with the given namespace and
      * model name.
      *
@@ -44,7 +44,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     DMNModel getModel( String namespace, String modelName );
     
-    /**
+    /*
      * Returns the model registered with the given namespace and
      * model id.
      *
@@ -56,7 +56,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     DMNModel getModelById( String namespace, String modelId );
 
-    /**
+    /*
      * Evaluate all decisions for the model, given the context
      *
      * @param model the model to evaluate
@@ -66,7 +66,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     DMNResult evaluateAll( DMNModel model, DMNContext context );
 
-    /**
+    /*
      * Evaluate the decision identified by the given name and
      * all dependent decisions, given the context
      *
@@ -82,7 +82,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
     @Deprecated
     DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context );
 
-    /**
+    /*
      * Evaluate the decision identified by the given ID and
      * all dependent decisions, given the context
      *
@@ -98,7 +98,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
     @Deprecated
     DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context );
 
-    /**
+    /*
      * Evaluate all decisions identified by the given names and
      * all dependent decisions, given the context
      *
@@ -111,7 +111,7 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     DMNResult evaluateByName( DMNModel model, DMNContext context, String... decisionNames );
 
-    /**
+    /*
      * Evaluate all decision identified by the given IDs and
      * all dependent decisions, given the context
      *
@@ -124,19 +124,19 @@ public interface DMNRuntime extends DMNRuntimeEventManager {
      */
     DMNResult evaluateById( DMNModel model, DMNContext context, String... decisionIds );
 
-    /**
+    /*
      * Creates a new empty DMNContext
      *
      * @return a new empty DMNContext
      */
     DMNContext newContext();
 
-    /**
+    /*
      * Returns the ClassLoader used by this DMNRuntime
      */
     ClassLoader getRootClassLoader();
 
-    /**
+    /*
      * Evaluate the Decision Service identified by the given name, given the context
      *
      * @param model the model to evaluate

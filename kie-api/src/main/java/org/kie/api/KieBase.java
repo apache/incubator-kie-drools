@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 
-/**
+/*
  * <p>
  * The KieBase is a repository of all the application's knowledge definitions.
  * It will contain rules, processes, functions, type models. The KieBase itself
@@ -43,14 +43,14 @@ import org.kie.api.runtime.StatelessKieSession;
  */
 public interface KieBase extends KieBaseEventManager {
 
-    /**
+    /*
      * Returns a collection of the {@link KiePackage}s that exist in this {@link KieBase}.
      *
      * @return an immutable collection of the packages
      */
     Collection<KiePackage> getKiePackages();
 
-    /**
+    /*
      * Returns a reference to the {@link KiePackage} identified by the given name.
      *
      * @param packageName the name of the {@link KiePackage} to return
@@ -59,14 +59,14 @@ public interface KieBase extends KieBaseEventManager {
      */
     KiePackage getKiePackage( String packageName );
 
-    /**
+    /*
      * Removes a {@link KiePackage} and all the definitions it contains from the {@link KieBase}
      *
      * @param packageName the name of the {@link KiePackage} to remove
      */
     void removeKiePackage( String packageName );
 
-    /**
+    /*
      * Returns a reference to the {@link Rule} identified by the given package and rule names.
      *
      * @param packageName the package name to which the rule belongs to
@@ -76,7 +76,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     Rule getRule( String packageName,
                   String ruleName );
-    /**
+    /*
      * Removes a rule from the specified package.
      *
      * @param packageName the package name to which the rule belongs to
@@ -85,7 +85,7 @@ public interface KieBase extends KieBaseEventManager {
     void removeRule( String packageName,
                      String ruleName );
 
-    /**
+    /*
      * Returns a reference to the {@link Query} identified by the given package and query names.
      *
      * @param packageName the package name to which the query belongs to
@@ -95,7 +95,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     Query getQuery( String packageName,
                     String queryName );
-    /**
+    /*
      * Removes a query from the specified package.
      *
      * @param packageName the package name to which the query belongs to
@@ -104,7 +104,7 @@ public interface KieBase extends KieBaseEventManager {
     void removeQuery( String packageName,
                       String queryName );
 
-    /**
+    /*
      * Removes a function from the specified package.
      *
      * @param packageName the package name to which the function belongs to
@@ -113,7 +113,7 @@ public interface KieBase extends KieBaseEventManager {
     void removeFunction( String packageName,
                          String functionName );
 
-    /**
+    /*
      * Returns a reference to the {@link FactType} identified by the given package and type names.
      *
      * @param packageName the name of the package the fact belongs to
@@ -124,7 +124,7 @@ public interface KieBase extends KieBaseEventManager {
     FactType getFactType( String packageName,
                           String typeName );
 
-    /**
+    /*
      * Returns a reference to the {@link Process} identified by the given processId
      *
      * @param processId the id of the process
@@ -133,21 +133,21 @@ public interface KieBase extends KieBaseEventManager {
      */
     Process getProcess( String processId );
 
-    /**
+    /*
      * Removes a process.
      *
      * @param processId the id of the process
      */
     void removeProcess( String processId );
 
-    /**
+    /*
      * Returns a collection of the {@link Process}es that exist in this {@link KieBase}.
      *
      * @return an immutable collection of the processes
      */
     Collection<Process> getProcesses();
 
-    /**
+    /*
      * Creates a new {@link KieSession} using the given session configuration and/or environment.
      * Either one can be null and it will use a default.
      *
@@ -159,7 +159,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     KieSession newKieSession( KieSessionConfiguration conf, Environment environment );
 
-    /**
+    /*
      * Creates a new {@link KieSession} using the default session configuration.
      * Don't forget to {@link KieSession#dispose()} session when you are done.
      *
@@ -167,7 +167,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     KieSession newKieSession();
 
-    /**
+    /*
      * Creates a new {@link KieSessionsPool} storing the sessions created from this KieBase.
      * Don't forget to {@link KieSessionsPool#shutdown()} the pool when you are done.
      *
@@ -176,7 +176,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     KieSessionsPool newKieSessionsPool(int initialSize);
 
-    /**
+    /*
      * Returns a collection of the {@link KieSession}s that exist in this {@link KieBase}.
      * Be careful as sessions are not thread-safe and could be in use elsewhere.
      *
@@ -184,7 +184,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     Collection<? extends KieSession> getKieSessions();
 
-    /**
+    /*
      * Creates a new {@link StatelessKieSession} using the given session configuration.
      * You do not need to call {@link KieSession#dispose()} on this.
      *
@@ -194,7 +194,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     StatelessKieSession newStatelessKieSession( KieSessionConfiguration conf );
 
-    /**
+    /*
      * Creates a new {@link StatelessKieSession} using the default session configuration.
      * You do not need to call @{link #dispose()} on this.
      *
@@ -202,7 +202,7 @@ public interface KieBase extends KieBaseEventManager {
      */
     StatelessKieSession newStatelessKieSession();
 
-    /**
+    /*
      * Returns the set of the entry points declared and/or used  in this kie base
      *
      * @return a Set of entry points

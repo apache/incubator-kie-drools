@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.base.BaseClassFieldReader;
 import org.drools.base.base.ValueType;
 
-/**
+/*
  * A Base class for primitive boolean class field
  * extractors. This class centralizes type conversions.
  */
@@ -32,7 +32,7 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * This constructor is not supposed to be used from outside the class hirarchy
      * 
      * @param index

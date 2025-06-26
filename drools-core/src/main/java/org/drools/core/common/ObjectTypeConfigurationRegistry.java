@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         return this.typeConfMap.get( getKey( object ) );
     }
 
-    /**
+    /*
      * Returns the ObjectTypeConfiguration object for the given object or
      * creates a new one if none is found in the cache
      */

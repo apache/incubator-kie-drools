@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
-/**
+/*
  * Abstract base class for all kinds of groups of related cells.
  */
 public abstract class CellGroup extends SetOfNine {
@@ -36,14 +36,14 @@ public abstract class CellGroup extends SetOfNine {
 
     private List<Cell> cells = new ArrayList<>();
     
-    /**
+    /*
      * Constructor.
      */
     protected CellGroup() {
         super();
     }
 
-    /**
+    /*
      * Add another Cell object to the cells of this group.
      * @param cell a Cell object.
      */
@@ -51,7 +51,7 @@ public abstract class CellGroup extends SetOfNine {
         cells.add(cell);
     }
 
-    /**
+    /*
      * Returns the Cell objects in this group.
      * @return a List of Cell objects.
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-/**
+/*
  * Root path of an application.
  *
  * An application has a name. Many applications may be created. The name creates
@@ -38,14 +38,14 @@ public abstract class AppRoot extends LocalUriId implements Id {
         this.name = name;
     }
 
-    /**
+    /*
      * subclasses should override this using the appropriate
      * DI/ServiceLoading mechanism to allow the pattern <code>appRoot.get(Components.class)...</code>;
      * e.g. <code>appRoot.get(ProcessIds.class).get("my.process.id).tasks().get("my.task")</code>
      */
     abstract public <T extends ComponentRoot> T get(Class<T> providerId);
 
-    /**
+    /*
      * Name is only used to differentiate multiple applications.
      * Mostly useful in a distributed context, with RemoteIds.
      */

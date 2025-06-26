@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,23 +42,23 @@ public class BinaryHeapQueue<T extends QueueEntry>
         Externalizable {
     protected static final transient Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
 
-    /** The default capacity for a binary heap. */
+    /* The default capacity for a binary heap. */
     private static final int DEFAULT_CAPACITY = 13;
 
-    /** The comparator used to order the elements */
+    /* The comparator used to order the elements */
     private Comparator<T> comparator;
 
-    /** The number of elements currently in this heap. */
+    /* The number of elements currently in this heap. */
     private int size;
 
-    /** The elements in this heap. */
+    /* The elements in this heap. */
     private ArrayList<T> elements;
 
     public BinaryHeapQueue() {
 
     }
 
-    /**
+    /*
      * Constructs a new <code>BinaryHeap</code> that will use the given
      * comparator to order its elements.
      *
@@ -70,7 +70,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
              BinaryHeapQueue.DEFAULT_CAPACITY);
     }
 
-    /**
+    /*
      * Constructs a new <code>BinaryHeap</code>.
      *
      * @param comparator the comparator used to order the elements, null
@@ -103,7 +103,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         out.writeInt(size);
     }
 
-    /**
+    /*
      * Clears all elements from queue.
      */
     public void clear() {
@@ -112,7 +112,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         this.size = 0;
     }
 
-    /**
+    /*
      * Tests if queue is empty.
      *
      * @return <code>true</code> if queue is empty; <code>false</code>
@@ -122,7 +122,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         return this.size == 0;
     }
 
-    /**
+    /*
      * Tests if queue is full.
      *
      * @return <code>true</code> if queue is full; <code>false</code>
@@ -133,7 +133,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         return this.elements.size() == this.size + 1;
     }
 
-    /**
+    /*
      * Returns the number of elements in this heap.
      *
      * @return the number of elements in this heap
@@ -146,7 +146,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         return size > 0 ? this.elements.get(1) : null;
     }
 
-    /**
+    /*
      * Inserts an Queueable into queue.
      *
      * @param element the Queueable to be inserted
@@ -164,7 +164,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         }
     }
 
-    /**
+    /*
      * Returns the Queueable on top of heap and remove it.
      *
      * @return the Queueable at top of heap
@@ -218,7 +218,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         return result;
     }
 
-    /**
+    /*
      * Percolates element down heap from the position given by the index.
      * <p>
      * Assumes it is a maximum heap.
@@ -251,7 +251,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
     }
 
 
-    /**
+    /*
      * Percolates element up heap from the position given by the index.
      * <p>
      * Assume it is a maximum heap.
@@ -273,7 +273,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         setElement( hole, element );
     }
 
-    /**
+    /*
      * Percolates a new element up heap from the bottom.
      * <p>
      * Assume it is a maximum heap.
@@ -292,7 +292,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         percolateUpMaxHeap(size);
     }
 
-    /**
+    /*
      * Compares two objects using the comparator if specified, or the
      * natural order otherwise.
      *
@@ -304,7 +304,7 @@ public class BinaryHeapQueue<T extends QueueEntry>
         return comparator.compare( a, b );
     }
 
-    /**
+    /*
      * Increases the size of the heap to support additional elements
      */
     private void grow() {

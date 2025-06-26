@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -60,7 +60,7 @@ import org.kie.internal.conf.ShareBetaNodesOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * RuleBaseConfiguration
  *
  * A class to store RuleBase related configuration. It must be used at rule base instantiation time
@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: This API is under review and may change in the future.
  */
 
-/**
+/*
  * Available configuration options:
  * <pre>
  * drools.maintainTms = &lt;true|false&gt;
@@ -158,7 +158,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
 
     private int sessionPoolSize;
 
-    /**
+    /*
      * A constructor that sets the classloader to be used as the parent classloader
      * of this rule base classloaders, and the properties to be used
      * as base configuration options
@@ -797,7 +797,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         this.parallelExecution = ParallelExecutionOption.SEQUENTIAL;
     }
 
-    /**
+    /*
      * Returns true if the partitioning of the rulebase is enabled
      * and false otherwise. Default is false.
      * 
@@ -811,7 +811,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         return this.parallelExecution == ParallelExecutionOption.FULLY_PARALLEL;
     }
 
-    /**
+    /*
      * If multi-thread evaluation is enabled, this parameter configures the 
      * maximum number of threads each session can use for concurrent Rete
      * propagation. 
@@ -825,7 +825,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         this.maxThreads = maxThreads;
     }
 
-    /**
+    /*
      * Returns the configured number of maximum threads to use for concurrent
      * propagation when multi-thread evaluation is enabled. Default is zero.
      * 
@@ -839,7 +839,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         return this.declarativeAgenda;
     }
     
-    /**
+    /*
      * Enable declarative agenda
      * @param enabled
      */

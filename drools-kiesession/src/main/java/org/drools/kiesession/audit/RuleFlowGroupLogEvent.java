@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * A ruleflow-group event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the ruleflow group name and its size.
@@ -32,7 +32,7 @@ public class RuleFlowGroupLogEvent extends LogEvent {
     private String groupName;
     private int size;
 
-    /**
+    /*
      * Create a new ruleflow group log event.
      * 
      * @param type The type of event.  This can only be RULEFLOW_GROUP_ACTIVATED or RULEFLOW_GROUP_DEACTIVATED.

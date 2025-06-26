@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the <code>finishedby</code> evaluator definition.</p>
  * 
  * <p>The <b><code>finishedby</code></b> evaluator correlates two events and matches when the current event 
@@ -96,7 +96,7 @@ public class FinishedByEvaluatorDefinition
         out.writeObject( cache );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -107,7 +107,7 @@ public class FinishedByEvaluatorDefinition
                                   null );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -119,7 +119,7 @@ public class FinishedByEvaluatorDefinition
                                   parameterText );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -135,7 +135,7 @@ public class FinishedByEvaluatorDefinition
         
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -161,28 +161,28 @@ public class FinishedByEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.HANDLE;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType(ValueType type) {
@@ -191,7 +191,7 @@ public class FinishedByEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'finishedby' evaluator itself
      */
     public static class FinishedByEvaluator extends BaseEvaluator {
@@ -316,7 +316,7 @@ public class FinishedByEvaluatorDefinition
             return endDev == other.endDev;
         }
 
-        /**
+        /*
          * This methods sets the parameters appropriately.
          *
          * @param parameters

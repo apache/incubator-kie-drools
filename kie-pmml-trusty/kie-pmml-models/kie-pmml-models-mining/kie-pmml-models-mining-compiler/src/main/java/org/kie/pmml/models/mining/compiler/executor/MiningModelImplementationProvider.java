@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.pmml.models.mining.model.KiePMMLMiningModelWithSources;
 
 import static org.kie.pmml.models.mining.model.KiePMMLMiningModel.PMML_MODEL_TYPE;
 
-/**
+/*
  * Default <code>ModelImplementationProvider</code> for <b>Mining</b>
  */
 public class MiningModelImplementationProvider implements ModelImplementationProvider<MiningModel, KiePMMLMiningModel> {

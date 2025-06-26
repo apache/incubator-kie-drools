@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -279,7 +279,7 @@ public class ModelGenerator {
         return Optional.of(extendedLhs);
     }
 
-    /**
+    /*
      * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#attribute(org.drools.model.Rule.Attribute, Object)}
      * starting from a drools-compiler {@link RuleDescr}.
      * The tuple represent the Rule Attribute expressed in JavParser form, and the attribute value expressed in JavaParser form.
@@ -375,7 +375,7 @@ public class ModelGenerator {
         }
     }
 
-    /**
+    /*
      * Build a list of method calls, representing each needed {@link org.drools.model.impl.RuleBuilder#metadata(String, Object)}
      * starting from a drools-compiler {@link RuleDescr}.<br/>
      * Based on {@link org.drools.modelcompiler.KiePackagesBuilder#setRuleMetaAttributes(Rule, RuleImpl)} the reserved annotation keywords are:

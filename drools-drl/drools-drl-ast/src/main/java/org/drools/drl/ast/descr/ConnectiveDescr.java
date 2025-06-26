@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.drools.drl.ast.util.AstUtil;
 
-/**
+/*
  * This is used to connect restrictions together for a single field
  * eg:
  * age < 40 & > 30
@@ -139,7 +139,7 @@ public class ConnectiveDescr extends RestrictionDescr {
         return buf.toString();
     }
 
-    /**
+    /*
      * The connective types that can be used for a restriction
      */
     public static enum RestrictionConnectiveType {

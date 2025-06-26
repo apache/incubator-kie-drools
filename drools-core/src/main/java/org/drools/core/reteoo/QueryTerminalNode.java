@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.builder.BuildContext;
 
-/**
+/*
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
  * matched <code>Rule</code>.
  *
@@ -51,7 +51,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public QueryTerminalNode() {
     }
 
-    /**
+    /*
      * Constructor
      *
      * @param id node ID

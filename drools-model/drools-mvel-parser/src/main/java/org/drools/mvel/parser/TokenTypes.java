@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import com.github.javaparser.JavaToken;
 import static com.github.javaparser.utils.LineSeparator.SYSTEM;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.*;
 
-/**
+/*
  * Complements GeneratedJavaParserConstants
  */
 public class TokenTypes {
@@ -31,7 +31,7 @@ public class TokenTypes {
         return getCategory(kind).isWhitespace();
     }
 
-    /**
+    /*
      * @deprecated use isEndOfLineToken
      */
     @Deprecated
@@ -55,7 +55,7 @@ public class TokenTypes {
         return getCategory(kind).isComment();
     }
 
-    /**
+    /*
      * @deprecated use eolTokenKind
      */
     @Deprecated
@@ -63,7 +63,7 @@ public class TokenTypes {
         return eolTokenKind();
     }
 
-    /**
+    /*
      * @return the kind of EOL token to use on the platform you're running on.
      */
     public static int eolTokenKind() {
@@ -79,14 +79,14 @@ public class TokenTypes {
         throw new AssertionError("Unknown EOL character sequence");
     }
 
-    /**
+    /*
      * @return the token kind for a single space.
      */
     public static int spaceTokenKind() {
         return SPACE;
     }
 
-    /**
+    /*
      * @deprecated use spaceTokenKind
      */
     @Deprecated
@@ -94,7 +94,7 @@ public class TokenTypes {
         return spaceTokenKind();
     }
 
-    /**
+    /*
      * Category of a token, a little more detailed than
      * <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.5">The JLS</a>.
      */

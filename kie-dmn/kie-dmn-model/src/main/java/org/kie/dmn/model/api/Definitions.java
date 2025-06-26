@@ -39,12 +39,12 @@ public interface Definitions extends NamedElement {
 
     List<BusinessContextElement> getBusinessContextElement();
 
-    /**
+    /*
      * Internal model: this will filter from DRGElement the Decision Service
      */
     List<DecisionService> getDecisionService();
 
-    /**
+    /*
      * Internal model: mutates the current Definitions' ItemDefinition(s) typeRef QName to be properly valorized in the namespaces.
      * 
      * Utility method to ensure any QName references contained inside the ItemDefinitions have the namespace correctly valorized, also accordingly to the prefix.
@@ -76,12 +76,12 @@ public interface Definitions extends NamedElement {
 
     void setExporterVersion(String value);
 
-    /**
+    /*
      * @since DMN v1.2
      */
     DMNDI getDMNDI();
 
-    /**
+    /*
      * @since DMN v1.2
      */
     void setDMNDI(DMNDI value);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.PATH_PATTERN;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Node</code>
  */
 public class KiePMMLTreeModelNodeASTFactory {
@@ -83,7 +83,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         }
     }
 
-    /**
+    /*
      * This method is meant to be executed when <code>node</code> <b>is</b> a <i>final leaf</i>
      * @param node
      * @param parentPath
@@ -105,7 +105,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(getCorrectlyFormattedResult(node.getScore(), targetType), true);
     }
 
-    /**
+    /*
      * This method is meant to be executed when <code>node</code> <b>is not</b> a <i>final leaf</i>
      * @param node
      * @param parentPath
@@ -128,7 +128,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
     }
 
-    /**
+    /*
      * This method is meant to be executed when <b>noTrueChildStrategy</b> is <code>TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION</code>, <b>node</b>
      * is not a <i>final leaf</i>, and <b>node</b>'s score is not null
      * @param node

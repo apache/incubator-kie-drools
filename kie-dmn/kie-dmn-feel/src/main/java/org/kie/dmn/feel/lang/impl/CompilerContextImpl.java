@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public class CompilerContextImpl implements CompilerContext {
     private boolean doCompile;
     private FEELTypeRegistry typeRegistry = DefaultBuiltinFEELTypeRegistry.INSTANCE;
 
-    /**
+    /*
      * PLEASE NOTICE: it is recommended to instance the CompilerContext via the FEEL instance, so to have all profile configuration applied correctly.
      */
     public CompilerContextImpl(FEELEventListenersManager eventsManager) {

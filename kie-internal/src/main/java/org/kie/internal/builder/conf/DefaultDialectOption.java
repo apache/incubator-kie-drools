@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,26 +20,26 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the default dialect configuration.
  */
 public class DefaultDialectOption implements SingleValueKieBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the default DIALECT
      */
     public static final String PROPERTY_NAME = "drools.dialect.default";
 
     public static OptionKey<DefaultDialectOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * dialect name
      */
     private final String dialectName;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param dialectName
      */
@@ -47,7 +47,7 @@ public class DefaultDialectOption implements SingleValueKieBuilderOption {
         this.dialectName = dialectName;
     }
 
-    /**
+    /*
      * This is a factory method for this DefaultDialect configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -60,7 +60,7 @@ public class DefaultDialectOption implements SingleValueKieBuilderOption {
         return new DefaultDialectOption( dialectName );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
@@ -71,7 +71,7 @@ public class DefaultDialectOption implements SingleValueKieBuilderOption {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the name of the dialect configured as default
      *
      * @return

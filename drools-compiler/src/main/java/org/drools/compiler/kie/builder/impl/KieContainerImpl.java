@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -113,7 +113,7 @@ public class KieContainerImpl
         return kr.getKieModule(getReleaseId());
     }
 
-    /**
+    /*
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
      * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
@@ -122,7 +122,7 @@ public class KieContainerImpl
         this("impl"+UUID.randomUUID(), kProject, kr);
     }
 
-    /**
+    /*
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
      * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
@@ -131,7 +131,7 @@ public class KieContainerImpl
         this("impl"+UUID.randomUUID(), kProject, kr, containerReleaseId);
     }
 
-    /**
+    /*
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
      * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
@@ -144,7 +144,7 @@ public class KieContainerImpl
         initMBeans(containerId);
     }
 
-    /**
+    /*
      * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
      * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
      * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.

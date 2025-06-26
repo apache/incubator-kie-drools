@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,19 +25,19 @@ import org.drools.core.phreak.RuleAgendaItem;
 
 public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
 
-    /**
+    /*
      * @return
      *     The int total number of activations
      */
     int size();
 
-    /**
+    /*
      * @return
      *     boolean value indicating if this AgendaGroup is empty or not
      */
     boolean isEmpty();
 
-    /**
+    /*
      *
      * @return
      *     boolean value indicating if the AgendaGroup is active and thus being evaluated.
@@ -49,7 +49,7 @@ public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGrou
 
     PropagationContext getAutoFocusActivator();
 
-    /**
+    /*
      * Sets the auto-deactivate status of this RuleFlowGroup.
      * If this is set to true, an active RuleFlowGroup automatically
      * deactivates if it has no more activations.  If it had no

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  *
  * A special test for parsing a large workbook, to see how it scales.
  */
@@ -35,7 +35,7 @@ public class RuleWorksheetParseLargeTest {
 
     private long endTimer;
 
-    /**
+    /*
      * Tests parsing a large spreadsheet into an in memory ruleset. This doesn't
      * really do anything much at present. Takes a shed-load of memory to dump
      * out this much XML as a string, so really should think of using a stream

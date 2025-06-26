@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.drools.core.reteoo.builder;
 
 import org.drools.base.rule.RuleConditionElement;
 
-/**
+/*
  * An interface for Reteoo Component builders
  */
 public interface ReteooComponentBuilder {
 
-    /**
+    /*
      * Builds and attach if needed the given RuleConditionalElement
      * 
      * @param context current build context
@@ -35,7 +35,7 @@ public interface ReteooComponentBuilder {
                       BuildUtils utils,
                       RuleConditionElement rce);
 
-    /**
+    /*
      * A boolean function that indicates if the builder requires a previous left 
      * (tuple) activation in order to corretly build the given component.
      * 

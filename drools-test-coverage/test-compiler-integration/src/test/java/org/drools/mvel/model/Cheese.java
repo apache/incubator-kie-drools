@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -81,7 +81,7 @@ public class Cheese
         this.type = type;
     }
     
-    /**
+    /*
      * This is a test method to test shadow proxy delegation
      * when in the presence of a long or double parameter
      * @param newPrice

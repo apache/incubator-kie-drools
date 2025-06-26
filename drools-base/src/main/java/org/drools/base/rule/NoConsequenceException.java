@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.base.rule;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 
-/**
+/*
  * Validity exception indicating that a <code>Rule</code> does not contain a
  * <code>Consequence</code>s.
  */
@@ -31,7 +31,7 @@ public class NoConsequenceException extends InvalidRuleException {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * Construct.
      * 
      * @param rule

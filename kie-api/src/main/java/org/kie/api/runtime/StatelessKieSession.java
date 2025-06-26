@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.StatelessProcessSession;
 import org.kie.api.runtime.rule.StatelessRuleSession;
 
-/**
+/*
  * StatelessKieSession provides a convenience API, wrapping KieSession. It avoids the need to
  * call dispose(). Stateless sessions do not support
  * iterative invocations, the act of calling execute(...) is a single

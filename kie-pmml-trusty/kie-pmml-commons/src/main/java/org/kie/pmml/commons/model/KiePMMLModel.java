@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
-/**
+/*
  * KIE representation of PMML model
  */
 public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements PMMLModel {
@@ -81,7 +81,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         return targetField;
     }
 
-    /**
+    /*
      * Method to retrieve the <b>package</b> name to be used inside kiebase/package attribute of
      * kmodule.xml and to use for package creation inside PMMLAssemblerService
      * By default returns the package name of the current instance
@@ -125,7 +125,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         return localTransformations;
     }
 
-    /**
+    /*
      * models, so it may be <b>ignored</b> by others
      * @param requestData
      * @param context used to accumulate additional evaluated values

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.drl.ast.dsl.impl;
 import org.drools.drl.ast.dsl.DescrBuilder;
 import org.drools.drl.ast.descr.BaseDescr;
 
-/**
+/*
  * A base class for all DescrBuilders
  */
 public class BaseDescrBuilderImpl<P extends DescrBuilder<?,? extends BaseDescr>, T extends BaseDescr>

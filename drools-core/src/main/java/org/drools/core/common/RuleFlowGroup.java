@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public interface RuleFlowGroup extends org.kie.api.runtime.rule.RuleFlowGroup {
 
     boolean isAutoDeactivate();
 
-    /**
+    /*
      * Sets the auto-deactivate status of this RuleFlowGroup.
      * If this is set to true, an active RuleFlowGroup automatically
      * deactivates if it has no more activations.  If it had no

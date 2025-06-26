@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
     protected Boolean isListedInputData;
     protected Boolean isCollapsed;
 
-    /**
+    /*
      * Gets the value of the dmnLabel property.
      * 
      * @return
@@ -40,7 +40,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         return dmnLabel;
     }
 
-    /**
+    /*
      * Sets the value of the dmnLabel property.
      * 
      * @param value
@@ -52,7 +52,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         this.dmnLabel = value;
     }
 
-    /**
+    /*
      * Gets the value of the dmnDecisionServiceDividerLine property.
      * 
      * @return
@@ -64,7 +64,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         return dmnDecisionServiceDividerLine;
     }
 
-    /**
+    /*
      * Sets the value of the dmnDecisionServiceDividerLine property.
      * 
      * @param value
@@ -76,7 +76,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         this.dmnDecisionServiceDividerLine = value;
     }
 
-    /**
+    /*
      * Gets the value of the dmnElementRef property.
      * 
      * @return
@@ -88,7 +88,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         return dmnElementRef;
     }
 
-    /**
+    /*
      * Sets the value of the dmnElementRef property.
      * 
      * @param value
@@ -100,7 +100,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         this.dmnElementRef = value;
     }
 
-    /**
+    /*
      * Gets the value of the isListedInputData property.
      * 
      * @return
@@ -112,7 +112,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         return isListedInputData;
     }
 
-    /**
+    /*
      * Sets the value of the isListedInputData property.
      * 
      * @param value
@@ -124,7 +124,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         this.isListedInputData = value;
     }
 
-    /**
+    /*
      * Gets the value of the isCollapsed property.
      * 
      * @return
@@ -140,7 +140,7 @@ public class DMNShape extends Shape implements org.kie.dmn.model.api.dmndi.DMNSh
         }
     }
 
-    /**
+    /*
      * Sets the value of the isCollapsed property.
      * 
      * @param value

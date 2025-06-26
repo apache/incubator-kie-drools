@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFactory.BREAK_LABEL;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFactory.STATUS_HOLDER;
 
-/**
+/*
  * Class used to generate the <b>lhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>
  */
 public class KiePMMLDescrLhsFactory {

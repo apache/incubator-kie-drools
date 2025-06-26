@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,14 +24,14 @@ import org.drools.base.rule.GroupElementFactory;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 
-/**
+/*
  * The Reteoo component builder for forall CE
  */
 public class ForallBuilder
     implements
     ReteooComponentBuilder {
 
-    /**
+    /*
      * @inheritDoc
      */
     public void build(final BuildContext context,
@@ -81,7 +81,7 @@ public class ForallBuilder
 
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean requiresLeftActivation(final BuildUtils utils,

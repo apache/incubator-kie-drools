@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime.process;
 
-/**
+/*
  * A workflow process instance represents one specific instance of a
  * workflow process that is currently executing.  It is an extension
  * of a <code>ProcessInstance</code> and contains all runtime state
@@ -31,7 +31,7 @@ public interface WorkflowProcessInstance
     ProcessInstance,
     NodeInstanceContainer {
 
-    /**
+    /*
      * Returns the value of the variable with the given name.  Note
      * that only variables in the process-level scope will be searched.
      * Returns <code>null</code> if the value of the variable is null

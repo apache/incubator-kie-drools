@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -176,7 +176,7 @@ public enum BaseExpressionOperator {
         return BaseExpressionOperator.EQUALS;
     }
 
-    /**
+    /*
      * Support method that perform an equals/compare of given values
      * @param value1
      * @param value2

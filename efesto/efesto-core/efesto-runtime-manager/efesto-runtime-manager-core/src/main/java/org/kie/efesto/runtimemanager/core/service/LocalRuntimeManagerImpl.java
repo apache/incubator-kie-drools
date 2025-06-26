@@ -29,7 +29,7 @@ import org.kie.efesto.runtimemanager.api.service.LocalRuntimeManager;
 
 import static org.kie.efesto.runtimemanager.core.utils.RuntimeManagerUtils.getOptionalOutput;
 
-/**
+/*
  * This is the implementation that runs on local JVM
  */
 public class LocalRuntimeManagerImpl implements LocalRuntimeManager {

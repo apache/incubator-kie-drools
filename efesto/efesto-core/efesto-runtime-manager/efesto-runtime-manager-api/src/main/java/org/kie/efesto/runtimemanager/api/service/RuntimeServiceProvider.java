@@ -20,13 +20,13 @@ package org.kie.efesto.runtimemanager.api.service;
 
 import java.util.List;
 
-/**
+/*
  * This is the communication layer abstraction API, to be invoked internally by the framework.
  * The default implementation uses the KieServices found, by SPI, in the JVM where the  Efesto instance is running.
  */
 public interface RuntimeServiceProvider {
 
-    /**
+    /*
      * Return all the <code>KieRuntimeService</code>s exposed by the actual implementation
      * @return
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to generate a <code>KiePMMLDroolsRule</code> out of a <code>True</code> predicate to be used with <b>accumulation</b>
  */
 public class KiePMMLTruePredicateWithAccumulationASTFactory {

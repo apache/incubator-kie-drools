@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class SolversTest {
 
-    /**
+    /*
      * <pre>
      * when 
      *     Foo( r &amp;&amp; r2 )
@@ -125,7 +125,7 @@ public class SolversTest {
         }
     }
 
-    /**
+    /*
      * <pre>
      * when 
      *     Foo( descr &amp;&amp; descr2 )

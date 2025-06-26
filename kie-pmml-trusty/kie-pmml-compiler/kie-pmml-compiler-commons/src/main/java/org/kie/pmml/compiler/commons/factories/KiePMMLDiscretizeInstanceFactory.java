@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLDiscretizeBinInstanceFactory.getKiePMMLDiscretizeBins;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionInstanceFactory.getKiePMMLExtensions;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLDiscretize</code> instance
  * out of <code>Discretize</code>s
  */

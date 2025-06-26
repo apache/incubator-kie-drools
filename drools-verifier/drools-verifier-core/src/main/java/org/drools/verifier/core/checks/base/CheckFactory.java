@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 import org.drools.verifier.core.util.PortablePreconditions;
 
-/**
+/*
  * Creates checks. Uses a white list to make sure the only the checks the user wants are used.
  */
 public class CheckFactory {

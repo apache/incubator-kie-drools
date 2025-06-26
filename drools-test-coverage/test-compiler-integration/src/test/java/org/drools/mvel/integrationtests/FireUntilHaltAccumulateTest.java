@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
 
 
-/**
+/*
  * Tests behavior of Drools Fusion when several events are being
  * fed into the engine by thread A while the engine had been started by
  * fireUntilHalt by thread B.
@@ -92,7 +92,7 @@ public class FireUntilHaltAccumulateTest {
         }
     }
 
-    /**
+    /*
      * Events are being collected through accumulate while
      * separate thread inserts other events.
      * <p/>
@@ -141,7 +141,7 @@ public class FireUntilHaltAccumulateTest {
         statefulSession.insert(stockFactory.createStock("ST6", 1d));
     }
 
-    /**
+    /*
      * Factory creating events used in the test.
      */
     private static class StockFactory {

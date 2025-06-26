@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.compiler.service.PMMLCompilerService.getEfestoFinalOutputPMML;
 
-/**
+/*
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerServicePMMLInputStream {
@@ -75,7 +75,7 @@ public class PMMLCompilerServicePMMLInputStream {
         return toReturn;
     }
 
-    /**
+    /*
      * @param pmmlContext
      * @param resources
      * @return
@@ -89,7 +89,7 @@ public class PMMLCompilerServicePMMLInputStream {
                 .collect(Collectors.toList());
     }
 
-    /**
+    /*
      * @param pmmlContext
      * @param resource
      * @return
@@ -105,7 +105,7 @@ public class PMMLCompilerServicePMMLInputStream {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns an array where the first item is the <b>factory class</b> name and the second item is the
      * <b>package</b> name,
      * built starting from the given <code>Resource</code>

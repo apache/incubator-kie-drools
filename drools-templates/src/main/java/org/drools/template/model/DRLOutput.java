@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.template.model;
 
 import java.io.StringWriter;
 
-/**
+/*
  * This contains the DRL output that each piece of the parser spreadsheet will contribute to
  */
 public class DRLOutput {
@@ -37,7 +37,7 @@ public class DRLOutput {
         this.writer = new StringWriter();
     }
 
-    /**
+    /*
      * Return the rendered DRL so far
      */
     public String getDRL() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsType</code>s out of a <code>DerivedField</code>
  */
 public class KiePMMLDerivedFieldASTFactory {
@@ -40,7 +40,7 @@ public class KiePMMLDerivedFieldASTFactory {
         this.fieldTypeMap = fieldTypeMap;
     }
 
-    /**
+    /*
      * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with mapping between original field' name and <b>original type/generated type</b> tuple
      * @return
      */
@@ -48,7 +48,7 @@ public class KiePMMLDerivedFieldASTFactory {
         return new KiePMMLDerivedFieldASTFactory(fieldTypeMap);
     }
 
-    /**
+    /*
      * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>List&lt;DerivedField&gt;</code>s,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param derivedFields
@@ -57,7 +57,7 @@ public class KiePMMLDerivedFieldASTFactory {
         return derivedFields.stream().map(this::declareType).collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DerivedField</code>,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param derivedField

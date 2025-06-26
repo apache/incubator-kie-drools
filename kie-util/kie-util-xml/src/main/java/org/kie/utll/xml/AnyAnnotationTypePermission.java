@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAliasType;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.security.TypePermission;
 
-/**
+/*
  * Permission for any type which is annotated with an XStream annotation.
  * This presumes that because the class has an XStream annotation, it was designed with XStream in mind,
  * and therefore it is not vulnerable. Jackson and JAXB follow this philosophy too.

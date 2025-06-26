@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests negative patterns with or without additional constraints and events are
  * inserted through one or more entry points.
  * BZ-978979
@@ -282,7 +282,7 @@ public class NegativePatternsTest {
         clock.advanceTime(amount, TimeUnit.MILLISECONDS);
     }
 
-    /**
+    /*
      * Simple event used for tests.
      */
     public static class TestEvent implements Serializable {
@@ -310,7 +310,7 @@ public class NegativePatternsTest {
         }
     }
 
-    /**
+    /*
      * Listener tracking number of rules fired.
      */
     public static class TrackingAgendaEventListener extends DefaultAgendaEventListener {
@@ -327,7 +327,7 @@ public class NegativePatternsTest {
             }
         }
 
-        /**
+        /*
          * Return true if the rule was fired at least once
          *
          * @param rule - name of the rule
@@ -337,7 +337,7 @@ public class NegativePatternsTest {
             return rulesFired.containsKey(rule);
         }
 
-        /**
+        /*
          * Returns number saying how many times the rule was fired
          *
          * @param rule - name of the rule

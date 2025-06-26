@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the session clock configuration.
  */
 public class ClockTypeOption implements SingleValueKieSessionOption {
@@ -30,19 +30,19 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
     public static final ClockTypeOption PSEUDO = ClockTypeOption.get("pseudo");
     public static final ClockTypeOption REALTIME = ClockTypeOption.get("realtime");
 
-    /**
+    /*
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.clockType";
 
     public static OptionKey<ClockTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * clock type
      */
     private final String clockType;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param clockType
      */
@@ -50,7 +50,7 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
         this.clockType = clockType;
     }
 
-    /**
+    /*
      * This is a factory method for this Clock Type configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -63,14 +63,14 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
         return new ClockTypeOption( clockType );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * @return the configured clock type
      */
     public String getClockType() {

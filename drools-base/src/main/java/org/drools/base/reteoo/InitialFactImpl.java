@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.InitialFact;
 
-/**
+/*
  * We dont want users to be able to instantiate InitialFact so we expose it as
  * an interface and make the class and its constructor package protected
  */

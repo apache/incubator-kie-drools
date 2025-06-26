@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.api.builder.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
 * Tests compilation of facts extending java.util.Date (BZ 1072629).
 */
 public class DateExtendingFactTest {
@@ -51,7 +51,7 @@ public class DateExtendingFactTest {
         return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    /**
+    /*
      * Tests compiling DRL with a fact extending java.util.Date.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -62,7 +62,7 @@ public class DateExtendingFactTest {
     }
 
 
-    /**
+    /*
      * Sample fact extending java.util.Date.
      */
     public static class MyDate extends Date {

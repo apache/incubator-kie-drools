@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,7 +48,7 @@ public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
         return UNKNOWN;
     }
 
-    /** 
+    /* 
      * DMN v1.2 spec, chapter 7.3.2 ItemDefinition metamodel
      * FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time, and date and time. Was missing from spec document: date, Any, list, function, context.
      */

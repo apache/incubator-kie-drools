@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.event.process;
 
-/**
+/*
  * A runtime event that is generated when a ProcessInstance is completed.
  */
 public interface ProcessCompletedEvent

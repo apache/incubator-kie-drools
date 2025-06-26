@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import static org.drools.compiler.kproject.models.KieBaseModelImpl.defaultKieBas
 import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieModule;
 import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieProject;
 
-/**
+/*
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
  */
 public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {

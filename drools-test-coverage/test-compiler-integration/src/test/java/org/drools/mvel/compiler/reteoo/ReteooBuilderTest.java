@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,7 @@ public class ReteooBuilderTest {
 
     private final boolean writeTree = false;
 
-    /** Implementation specific subclasses must provide this. */
+    /* Implementation specific subclasses must provide this. */
     protected KieBase getKnowledgeBase() throws Exception {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }

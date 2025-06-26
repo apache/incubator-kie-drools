@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,14 +26,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * An object of this class acts as a template compiler, inserting spreadsheet
  * data into templates. Template data may come from a resource or an
  * InputStream, or you may provide a TemplateDataListener.
  */
 public class DataProviderCompiler {
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider the data provider for the spreadsheet data
@@ -47,7 +47,7 @@ public class DataProviderCompiler {
                        templateStream);
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider   the data provider for the spreadsheet data
@@ -59,7 +59,7 @@ public class DataProviderCompiler {
         return compile(dataProvider,templateStream, true );
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider the data provider for the spreadsheet data
@@ -71,7 +71,7 @@ public class DataProviderCompiler {
         return compile(dataProvider, listener, true);
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider the data provider for the spreadsheet data
@@ -86,7 +86,7 @@ public class DataProviderCompiler {
                        templateStream);
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider   the data provider for the spreadsheet data
@@ -102,7 +102,7 @@ public class DataProviderCompiler {
                        new TemplateDataListener(tc));
     }
 
-    /**
+    /*
      * Generates DRL from a data provider for the spreadsheet data and templates.
      *
      * @param dataProvider the data provider for the spreadsheet data

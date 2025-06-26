@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
-/**
+/*
  * Util class that provides various methods related to KieBase.
  */
 public final class KieBaseUtil {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -106,7 +106,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(LazyPhreakBuilder.class);
 
-    /**
+    /*
      * This method is called after the rule nodes have been added to the network
      * For add tuples are processed after the segments and pmems have been adjusted
      */
@@ -166,7 +166,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    /**
+    /*
      * This method is called before the rule nodes are removed from the network.
      * For remove tuples are processed before the segments and pmems have been adjusted
      */
@@ -795,7 +795,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    /**
+    /*
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
      * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chains, where an existing LeftTuple is staged
      * as delete. Or a new LeftTuple is created and staged as an insert.
@@ -968,7 +968,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    /**
+    /*
      * Create all missing peers
      */
     private static TupleImpl insertPeerLeftTuple(TupleImpl lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
@@ -1600,7 +1600,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return allLinkedTestMask;
     }
 
-    /**
+    /*
      * This adds the segment memory to the terminal node or ria node's list of memories.
      * In the case of the terminal node this allows it to know that all segments from
      * the tip to root are linked.
@@ -1681,7 +1681,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
 
-    /**
+    /*
      * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
      * To be in the same network, it must be a node is after the two output of the parent
      * and before the rianode.

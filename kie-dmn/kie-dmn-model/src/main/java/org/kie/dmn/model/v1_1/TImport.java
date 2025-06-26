@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ public class TImport extends KieDMNModelInstrumentedBase implements Import, NotA
         this.importType = value;
     }
 
-    /**
+    /*
      * @since DMN v1.2
      */
     @Override
@@ -69,7 +69,7 @@ public class TImport extends KieDMNModelInstrumentedBase implements Import, NotA
         return getAdditionalAttributes().get(NAME_QNAME);
     }
 
-    /**
+    /*
      * @since DMN v1.2
      */
     @Override

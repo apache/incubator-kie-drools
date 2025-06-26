@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,14 +46,14 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * Utility functions for reteoo build
  */
 public class BuildUtils {
 
     private final Map<Class< ? >, ReteooComponentBuilder> componentBuilders = new HashMap<>();
 
-    /**
+    /*
      * Adds the given builder for the given target to the builders map
      */
     public void addBuilder(final Class< ? > target,
@@ -62,7 +62,7 @@ public class BuildUtils {
                                     builder );
     }
 
-    /**
+    /*
      * Returns a builder for the given target from the builders map
      */
     public ReteooComponentBuilder getBuilderFor(final RuleConditionElement target) {
@@ -74,7 +74,7 @@ public class BuildUtils {
         return builder != null || cls.getSuperclass() == null ? builder : getBuilderFor(cls.getSuperclass());
     }
 
-    /**
+    /*
      * Attaches a node into the network. If a node already exists that could
      * substitute, it is used instead.
      *
@@ -167,7 +167,7 @@ public class BuildUtils {
         }
     }
 
-    /**
+    /*
      * Utility function to check if sharing is enabled for nodes of the given class
      */
     private boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
@@ -179,7 +179,7 @@ public class BuildUtils {
         return false;
     }
 
-    /**
+    /*
      * Creates and returns a BetaConstraints object for the given list of constraints
      *
      * @param context the current build context
@@ -226,7 +226,7 @@ public class BuildUtils {
         return constraints;
     }
 
-    /**
+    /*
      * Calculates the temporal distance between all event patterns in the given 
      * subrule.
      * 

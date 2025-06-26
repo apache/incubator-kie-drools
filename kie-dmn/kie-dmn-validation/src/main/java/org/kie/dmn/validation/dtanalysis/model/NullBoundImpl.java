@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,13 +20,13 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import org.kie.dmn.feel.runtime.Range;
 
-/**
+/*
  * For internal use. A semantically null Bound, that is meant NOT to be used for comparison.
  */
 @SuppressWarnings("rawtypes")
 public class NullBoundImpl extends Bound {
 
-    /**
+    /*
      * For internal use. A singleton instance of this semantically null Bound, that is meant NOT to be used for comparison in DT gap analysis
      */
     public static final NullBoundImpl NULL = new NullBoundImpl();

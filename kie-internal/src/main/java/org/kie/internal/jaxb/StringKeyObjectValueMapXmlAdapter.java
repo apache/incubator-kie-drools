@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This is a {@link XmlAdapter} for mapping Map&lt;String, Object&gt; instances
  * to classes/instances that <b>both</b> JAXB/XML and JSON can deal with.
  * <p>

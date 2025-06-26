@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.extensions;
 
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * Result of conversion from custom resource (like guided dtable or guided template) into DRL or DSLR.
  */
 public class ResourceConversionResult {

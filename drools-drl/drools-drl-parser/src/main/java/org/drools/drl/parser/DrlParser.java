@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-/**
+/*
  * This is a low level parser API. This will return textual AST representations
  * of the DRL source, including with DSL expanders if appropriate.
  */
@@ -81,7 +81,7 @@ public class DrlParser {
         }
     }
 
-    /** Parse a rule from text */
+    /* Parse a rule from text */
     public PackageDescr parse(final Resource resource, final String text) throws DroolsParserException {
         this.resource = resource;
         return parse(false, text);
@@ -122,7 +122,7 @@ public class DrlParser {
         return parse(false, reader);
     }
 
-    /**
+    /*
      * Parse and build a rule package from a DRL source with a domain specific
      * language.
      */
@@ -142,7 +142,7 @@ public class DrlParser {
         return parse(text.toString(), dsl);
     }
 
-    /**
+    /*
      * Parse and build a rule package from a DRL source with a domain specific
      * language.
      * 
@@ -227,7 +227,7 @@ public class DrlParser {
         }
     }
 
-    /**
+    /*
      * This will expand the DRL. useful for debugging.
      * 
      * @param source -
@@ -244,7 +244,7 @@ public class DrlParser {
                 resolver);
     }
 
-    /**
+    /*
      * This will expand the DRL using the given expander resolver. useful for
      * debugging.
      * 
@@ -286,14 +286,14 @@ public class DrlParser {
         return text;
     }
 
-    /**
+    /*
      * @return true if there were parser errors.
      */
     public boolean hasErrors() {
         return !this.results.isEmpty();
     }
 
-    /**
+    /*
      * @return a list of errors found while parsing. DroolsError: either ParserError, or ExpanderException
      */
     public List<DroolsError> getErrors() {
@@ -331,7 +331,7 @@ public class DrlParser {
         }
     }
 
-    /** Convert the antlr exceptions to drools parser exceptions */
+    /* Convert the antlr exceptions to drools parser exceptions */
     private void makeErrorList( final DRLParser parser ) {
         for ( final DroolsParserException recogErr : lexer.getErrors() ) {
             final ParserError err = new ParserError( resource,

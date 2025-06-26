@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 import org.drools.base.base.ValueType;
 
-/**
+/*
  * An interface for a class that is able to write values into a class
  * field
  */

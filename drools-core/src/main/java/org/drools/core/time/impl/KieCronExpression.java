@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
-/**
+/*
  * Provides a parser and evaluator for unix-like cron expressions. Cron
  * expressions provide the ability to specify complex time combinations such as
  * &quot;At 8:00am every Monday through Friday&quot; or &quot;At 1:30am every
@@ -246,7 +246,7 @@ public class KieCronExpression implements Serializable {
     protected transient boolean nearestWeekday = false;
     protected transient boolean expressionParsed = false;
 
-    /**
+    /*
      * Constructs a new <CODE>CronExpression</CODE> based on the specified
      * parameter.
      * @param cronExpression String representation of the cron expression the
@@ -264,7 +264,7 @@ public class KieCronExpression implements Serializable {
         buildExpression(this.cronExpression);
     }
 
-    /**
+    /*
      * Returns the string representation of the <CODE>CronExpression</CODE>
      * @return a string representation of the <CODE>CronExpression</CODE>
      */
@@ -272,7 +272,7 @@ public class KieCronExpression implements Serializable {
         return cronExpression;
     }
 
-    /**
+    /*
      * Indicates whether the specified cron expression can be parsed into a
      * valid cron expression
      * @param cronExpression the expression to evaluate

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.DSL.globalOf;
 
-/**
+/*
  * The starting point to create and define rules through the rule unit Java DSL.
  */
 public class RulesFactory {
@@ -48,14 +48,14 @@ public class RulesFactory {
         this.globals = new UnitGlobals(unit);
     }
 
-    /**
+    /*
      * Creates a new rule and automatically adds it to the ones belonging to the {@link RuleUnitDefinition}.
      */
     public RuleFactory rule() {
         return rule(UUID.randomUUID().toString());
     }
 
-    /**
+    /*
      * Creates a new rule with the given name and automatically adds it to the ones belonging to the {@link RuleUnitDefinition}.
      */
     public RuleFactory rule(String name) {

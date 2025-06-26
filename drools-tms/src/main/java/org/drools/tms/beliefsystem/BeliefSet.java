@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,13 +38,13 @@ public interface BeliefSet<M extends ModedAssertion<M>> {
     boolean isEmpty();
     int size();
 
-    /**
+    /*
      *  This will remove all entries and do clean up, like retract FHs.
      * @param propagationContext
      */
     void cancel(final PropagationContext propagationContext);
 
-    /**
+    /*
      * This will remove all entries, but not do cleanup, the FH is most likely needed else where
      * @param propagationContext
      */

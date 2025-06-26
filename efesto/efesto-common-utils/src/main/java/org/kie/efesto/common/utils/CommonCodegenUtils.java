@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -69,7 +69,7 @@ import static org.kie.efesto.common.api.constants.Constants.MISSING_STATIC_INITI
 import static org.kie.efesto.common.api.constants.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.efesto.common.api.constants.Constants.MISSING_VARIABLE_IN_BODY;
 
-/**
+/*
  * Class meant to provide <i>helper</i> methods to all <i>code-generating</i> classes
  */
 public class CommonCodegenUtils {
@@ -81,7 +81,7 @@ public class CommonCodegenUtils {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Populate the <code>ClassOrInterfaceDeclaration</code> with the provided <code>MethodDeclaration</code>s
      *
      * @param toPopulate
@@ -92,7 +92,7 @@ public class CommonCodegenUtils {
         methodDeclarations.forEach(toPopulate::addMember);
     }
 
-    /**
+    /*
      * For every entry in the given map, add
      * <pre>
      *     (<i>mapName</i>).put(<i>entry_key<i/>, this::<i>entry_value_ref</i>>);
@@ -123,7 +123,7 @@ public class CommonCodegenUtils {
         addMapPopulationExpressions(toAddExpr, body, mapName);
     }
 
-    /**
+    /*
      * Declare and initialize a new <code>Map</code> in the given <code>BlockStmt</code>
      *
      * @param body
@@ -136,7 +136,7 @@ public class CommonCodegenUtils {
         createMap(body, mapName, mapTypes, HashMap.class);
     }
 
-    /**
+    /*
      * Declare and initialize a new <code>LinkedHashMap</code> in the given <code>BlockStmt</code>
      *
      * @param body
@@ -149,7 +149,7 @@ public class CommonCodegenUtils {
         createMap(body, mapName, mapTypes, LinkedHashMap.class);
     }
 
-    /**
+    /*
      * Declare, initialize and populate a new <code>HashMap</code> in the given <code>BlockStmt</code>
      *
      * @param body
@@ -164,7 +164,7 @@ public class CommonCodegenUtils {
         addMapPopulationExpressions(toAdd, body, mapName);
     }
 
-    /**
+    /*
      * Declare, initialize and populate a new <code>LinkedHashMap</code> in the given <code>BlockStmt</code>
      *
      * @param body
@@ -179,7 +179,7 @@ public class CommonCodegenUtils {
         addMapPopulationExpressions(toAdd, body, mapName);
     }
 
-    /**
+    /*
      * For every entry in the given map, add a "put" statement to the provided {@link BlockStmt} body.
      *
      * @param toAdd   the map containing the input values to process
@@ -193,7 +193,7 @@ public class CommonCodegenUtils {
         });
     }
 
-    /**
+    /*
      * For every entry in the given list, add
      * <pre>
      *     (<i>listName</i>).add(new <i>ObjectCreationExpr</i>>);
@@ -226,7 +226,7 @@ public class CommonCodegenUtils {
         });
     }
 
-    /**
+    /*
      * Method to be used to populate a <code>List</code> inside a getter method meant to return only that <code>List</code>
      *
      * @param toAdd
@@ -255,7 +255,7 @@ public class CommonCodegenUtils {
         body.addStatement(getReturnStmt(listName));
     }
 
-    /**
+    /*
      * For every entry in the given list, add
      * <pre>
      *     (<i>listName</i>).add(<i>MethodCallExpr</i>>);
@@ -288,7 +288,7 @@ public class CommonCodegenUtils {
         });
     }
 
-    /**
+    /*
      * Create an empty <b>Arrays.asList()</b> <code>ExpressionStmt</code>
      *
      * @return
@@ -303,7 +303,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Create a populated <b>Arrays.asList(?... a)</b> <code>ExpressionStmt</code>
      *
      * @param source
@@ -319,7 +319,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns
      * <pre>
      *     empty (<i>methodName</i>)((list of <i>parameterType</i> <i>parameter name</i>)) {
@@ -352,7 +352,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns
      * <pre>
      *     empty (<i>methodName</i>)() {
@@ -371,7 +371,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns
      * <pre>
      *     return (<i>returnedVariableName</i>);
@@ -391,7 +391,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns
      * <pre>
      *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
@@ -416,7 +416,7 @@ public class CommonCodegenUtils {
         return getTypedClassOrInterfaceTypeByTypes(className, types);
     }
 
-    /**
+    /*
      * Returns
      * <pre>
      *     (<i>className</i>)<(<i>comma-separated list of types</i>)>
@@ -439,7 +439,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Set the value of the variable with the given <b>assignExpressionName</b> in the given <code>BlockStmt</code>
      * It throws <code>KieEfestoCommonException</code> if variable is not found
      *
@@ -457,7 +457,7 @@ public class CommonCodegenUtils {
         assignExpr.setValue(value);
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;AssignExpr&gt;</code> with the given <b>assignExpressionName</b> from the given
      * <code>BlockStmt</code>
      *
@@ -477,7 +477,7 @@ public class CommonCodegenUtils {
         return Optional.empty();
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;ExplicitConstructorInvocationStmt&gt;</code> from the given <code>BlockStmt</code>
      *
      * @param body
@@ -491,7 +491,7 @@ public class CommonCodegenUtils {
                 .findFirst();
     }
 
-    /**
+    /*
      * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ConstructorDeclaration</code>
      *
      * @param constructorDeclaration
@@ -518,7 +518,7 @@ public class CommonCodegenUtils {
                 .orElseThrow(() -> new KieEfestoCommonException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
     }
 
-    /**
+    /*
      * Set the <b>value</b> of the given <b>parameterName</b> in the given <code>ConstructorDeclaration</code>
      *
      * @param constructorDeclaration
@@ -543,7 +543,7 @@ public class CommonCodegenUtils {
         }
     }
 
-    /**
+    /*
      * Set the <b>value</b> of the given <b>parameterName</b> in the given
      * <code>ExplicitConstructorInvocationStmt</code>
      *
@@ -560,7 +560,7 @@ public class CommonCodegenUtils {
         parameterExpr.setName(value);
     }
 
-    /**
+    /*
      * Return an <code>BlockStmt</code>  from the given <code>ClassOrInterfaceDeclaration</code>
      *
      * @param classOrInterfaceDeclaration
@@ -570,7 +570,7 @@ public class CommonCodegenUtils {
         return getInitializerDeclaration(classOrInterfaceDeclaration).getBody();
     }
 
-    /**
+    /*
      * Return an <code>InitializerDeclaration</code>  from the given <code>ClassOrInterfaceDeclaration</code>
      *
      * @param classOrInterfaceDeclaration
@@ -585,7 +585,7 @@ public class CommonCodegenUtils {
                 .orElseThrow(() -> new KieEfestoCommonException(String.format(MISSING_STATIC_INITIALIZER, classOrInterfaceDeclaration)));
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;NameExpr&gt;</code>  from the given <code>ExplicitConstructorInvocationStmt</code>
      *
      * @param constructorInvocationStmt
@@ -601,7 +601,7 @@ public class CommonCodegenUtils {
                 .findFirst();
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;MethodReferenceExpr&gt;</code>  from the given
      * <code>ExplicitConstructorInvocationStmt</code>
      *
@@ -618,7 +618,7 @@ public class CommonCodegenUtils {
                 .findFirst();
     }
 
-    /**
+    /*
      * Return an <code>BlockStmt</code> for the method <b>methodName</b> from the given <code>ClassOrInterfaceDeclaration</code>
      *
      * @param classOrInterfaceDeclaration
@@ -633,7 +633,7 @@ public class CommonCodegenUtils {
     }
 
 
-    /**
+    /*
      * Return an <code>Optional&lt;MethodDeclaration&gt;</code> with the <b>first</b> method <b>methodName</b> from
      * the given <code>ClassOrInterfaceDeclaration</code>
      *
@@ -648,7 +648,7 @@ public class CommonCodegenUtils {
         return methodDeclarations.isEmpty() ? Optional.empty() : Optional.of(methodDeclarations.get(0));
     }
 
-    /**
+    /*
      * Add a <code>MethodDeclaration</code> to the class
      *
      * @param methodTemplate
@@ -668,7 +668,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Set the value of the variable with the given <b>variableDeclaratorName</b> in the given <code>BlockStmt</code>
      * It throws <code>KieEfestoCommonException</code> if variable is not found
      *
@@ -686,7 +686,7 @@ public class CommonCodegenUtils {
         variableDeclarator.setInitializer(value);
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b>
      * from the given <code>MethodDeclaration</code>
      *
@@ -702,7 +702,7 @@ public class CommonCodegenUtils {
         return getVariableDeclarator(body, variableName);
     }
 
-    /**
+    /*
      * Return an <code>Optional&lt;VariableDeclarator&gt;</code> with the <b>first</b> variable <b>variableName</b>
      * from the given <code>BlockStmt</code>
      *
@@ -744,7 +744,7 @@ public class CommonCodegenUtils {
         }
     }
 
-    /**
+    /*
      * Return a <code>lit&lt;NameExpr&gt;</code> with all the instances of the given <b>exprName</b>
      *
      * @param toRead
@@ -761,7 +761,7 @@ public class CommonCodegenUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Return a new {@link AssignExpr} from a target name and a generic {@link Expression}.
      *
      * @param target {@link String} containing the name to assign the expression to
@@ -772,7 +772,7 @@ public class CommonCodegenUtils {
         return new AssignExpr(new NameExpr(target), value, AssignExpr.Operator.ASSIGN);
     }
 
-    /**
+    /*
      * Return a new {@link AssignExpr} from a target name and an enum literal.
      *
      * @param target {@link String} containing the name to assign the expression to
@@ -783,7 +783,7 @@ public class CommonCodegenUtils {
         return assignExprFrom(target, literalExprFrom(value));
     }
 
-    /**
+    /*
      * Return a new {@link AssignExpr} from a target name and {@link String} literal.
      *
      * @param target {@link String} containing the name to assign the expression to
@@ -794,7 +794,7 @@ public class CommonCodegenUtils {
         return assignExprFrom(target, literalExprFrom(value));
     }
 
-    /**
+    /*
      * Return a new {@link Expression} containing an enum literal.
      *
      * @param input the enum value to be assigned
@@ -804,7 +804,7 @@ public class CommonCodegenUtils {
         return input == null ? new NullLiteralExpr() : new NameExpr(input.getClass().getCanonicalName() + "." + input.name());
     }
 
-    /**
+    /*
      * Return a new {@link Expression} containing an {@link String}.
      *
      * @param input the {@link String} value to be assigned
@@ -814,7 +814,7 @@ public class CommonCodegenUtils {
         return input == null ? new NullLiteralExpr() : new StringLiteralExpr(input);
     }
 
-    /**
+    /*
      * Return a new {@link MethodCallExpr} from scope, name and arguments.
      *
      * @param scope     the scope of the method to call
@@ -826,7 +826,7 @@ public class CommonCodegenUtils {
         return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
     }
 
-    /**
+    /*
      * Return a "chained" {@link MethodCallExpr} by name <b>parent</b> one.
      *
      * @param name   the name of the method to call
@@ -843,7 +843,7 @@ public class CommonCodegenUtils {
 
     }
 
-    /**
+    /*
      * Replace <code>StringLiteralExpresion</code>s in the given <code>Statement</code>
      *
      * @param container
@@ -863,7 +863,7 @@ public class CommonCodegenUtils {
         });
     }
 
-    /**
+    /*
      * Replace <code>Node</code>s in the given <code>Statement</code>
      *
      * @param container
@@ -874,7 +874,7 @@ public class CommonCodegenUtils {
         replacementTuples.forEach(replacementTuple -> replaceNodeInStatement(container, replacementTuple));
     }
 
-    /**
+    /*
      * Replace <code>Node</code> in the given <code>Statement</code>
      *
      * @param container
@@ -890,7 +890,7 @@ public class CommonCodegenUtils {
         });
     }
 
-    /**
+    /*
      * Add a <code>MethodDeclaration</code>s to the given <code>ClassOrInterfaceDeclaration</code>
      *
      * @param classOrInterfaceDeclaration
@@ -901,7 +901,7 @@ public class CommonCodegenUtils {
         toAdd.forEach(methodDeclaration -> addMethodDeclarationToClass(classOrInterfaceDeclaration, methodDeclaration));
     }
 
-    /**
+    /*
      * Add a <code>MethodDeclaration</code> to the given <code>ClassOrInterfaceDeclaration</code>
      *
      * @param classOrInterfaceDeclaration
@@ -916,7 +916,7 @@ public class CommonCodegenUtils {
                 .setBody(toAdd.getBody().get());
     }
 
-    /**
+    /*
      * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
      *
      * @return
@@ -926,7 +926,7 @@ public class CommonCodegenUtils {
                 .orElseThrow(() -> new KieEfestoCommonException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, variableName, methodDeclaration)));
     }
 
-    /**
+    /*
      * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
      *
      * @return
@@ -937,7 +937,7 @@ public class CommonCodegenUtils {
         return getVariableInitializer(blockStmt, variableName);
     }
 
-    /**
+    /*
      * Retrieve the <b>initializer</b> of the given <b>variableName</b> from the given <code>MethodDeclaration</code>
      *
      * @return
@@ -948,7 +948,7 @@ public class CommonCodegenUtils {
         return variableDeclarator.getInitializer();
     }
 
-    /**
+    /*
      * Replace the <code>List&lt;NameExpr&gt;</code>s in the given <code>Statement</code> with <code>NullLiteralExpr</code>
      *
      * @param container

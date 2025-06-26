@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.efesto.common.api.identifiers;
 
-/**
+/*
  * An identifier for a remote resource
  */
 public interface RemoteId extends Id {

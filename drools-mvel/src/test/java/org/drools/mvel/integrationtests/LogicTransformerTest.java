@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogicTransformerTest {
-    /**
+    /*
      * (a||b)&&c
      *
      * <pre>
@@ -102,7 +102,7 @@ public class LogicTransformerTest {
 
     }
 
-    /**
+    /*
      * (a||b)&&c
      *
      * <pre>
@@ -215,7 +215,7 @@ public class LogicTransformerTest {
 
     }
 
-    /**
+    /*
      * This data structure is now valid
      *
      * (Not (OR (A B) ) )
@@ -273,7 +273,7 @@ public class LogicTransformerTest {
         assertThat(b2.getChildren().get(0)).isEqualTo(b);
     }
 
-    /**
+    /*
      * Exists inside a not is redundant and should be eliminated
      *
      * (Not (exists (A) ) )
@@ -337,7 +337,7 @@ public class LogicTransformerTest {
         assertThat(b1).isEqualTo(b);
     }
 
-    /**
+    /*
      * This data structure is now valid (Exists (OR (A B) ) )
      *
      * <pre>
@@ -441,7 +441,7 @@ public class LogicTransformerTest {
 
     }
 
-    /**
+    /*
      * <pre>
      *                         _/|\_
      *                      __/  |  \__
@@ -621,10 +621,10 @@ public class LogicTransformerTest {
 
     }
 
-    /**
+    /*
      *
      *
-     * /**
+     * /*
      *
      * <pre>
      *                         _/|\_

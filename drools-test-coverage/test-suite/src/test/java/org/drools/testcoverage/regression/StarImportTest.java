@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-/**
+/*
  * Test suite for processing of facts imported using a "star" import and
  * declared in DRL at the same time.
  */
@@ -59,7 +59,7 @@ public class StarImportTest extends KieSessionTest {
     public static Stream<Arguments> parameters() {
         return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }
-    /**
+    /*
      * Tests that rule fires if supplied with a fact that is imported using
      * "star" import.
      *

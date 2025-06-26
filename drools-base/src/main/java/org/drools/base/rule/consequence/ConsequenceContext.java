@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ public interface ConsequenceContext extends RuleContext {
 
     void reset();
 
-    /**
+    /*
      * Asserts an object
      *
      * @param object -
@@ -48,7 +48,7 @@ public interface ConsequenceContext extends RuleContext {
 
     FactHandle insertAsync(Object object );
 
-    /**
+    /*
      * Asserts an object specifying that it implement the onPropertyChange
      * listener
      *
@@ -81,12 +81,12 @@ public interface ConsequenceContext extends RuleContext {
     void update(Object newObject);
     void update(Object newObject, BitMask mask, Class<?> modifiedClass);
 
-    /**
+    /*
      * @deprecated Use delete
      */
     void retract(FactHandle handle) ;
 
-    /**
+    /*
      * @deprecated Use delete
      */
     void retract(Object handle);
@@ -99,7 +99,7 @@ public interface ConsequenceContext extends RuleContext {
 
     Object get(Declaration declaration);
 
-    /**
+    /*
      * @return - The rule name
      */
     Rule getRule();

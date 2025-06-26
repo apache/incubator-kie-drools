@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,7 +41,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
  * subnetwork's tuple into a fact in order right join it with the tuple being propagated in
  * the main network.
@@ -55,7 +55,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     private LeftTupleSource   tupleSource;
 
-    /**
+    /*
      * This is first node inside of the subnetwork. The split, with two outs, would be the parent node.
      */
     private LeftTupleSource   startTupleSource;
@@ -80,7 +80,7 @@ public class RightInputAdapterNode extends ObjectSource
     public RightInputAdapterNode() {
     }
 
-    /**
+    /*
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
      * <code>ReteTuple</code> and the source that propagates the receive <code>ReteTuple<code>s.
      *
@@ -108,7 +108,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
 
-    /**
+    /*
      * used during network build time, potentially during rule removal time.
      * @param removingTN
      * @return
@@ -184,7 +184,7 @@ public class RightInputAdapterNode extends ObjectSource
         objectCount = count;
     }
 
-    /**
+    /*
      * Creates and return the node memory
      */    
     public RiaPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
@@ -213,7 +213,7 @@ public class RightInputAdapterNode extends ObjectSource
         return tupleMemoryEnabled;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next TupleSinkNode
@@ -222,7 +222,7 @@ public class RightInputAdapterNode extends ObjectSource
         return this.nextTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next TupleSinkNode
@@ -231,7 +231,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.nextTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous TupleSinkNode
@@ -240,7 +240,7 @@ public class RightInputAdapterNode extends ObjectSource
         return this.previousTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.api.runtime.StatelessKieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Convenient class to help generalizing drools StatelessKnowledgeSession and
  * StatefulKnowledgeSession. This is least common implementation. The sessions
  * are stored within and are created during construction of this class. Session
@@ -58,7 +58,7 @@ public class Session implements CommandExecutor, KieRuntimeEventManager {
         return this.stateful;
     }
 
-    /**
+    /*
      * Casts this session to StatelessKieSession
      *
      * @throws IllegalArgumentException
@@ -72,7 +72,7 @@ public class Session implements CommandExecutor, KieRuntimeEventManager {
         return (StatelessKieSession) session;
     }
 
-    /**
+    /*
      * Casts this session to KieSession
      *
      * @throws IllegalArgumentException
@@ -86,7 +86,7 @@ public class Session implements CommandExecutor, KieRuntimeEventManager {
         return (KieSession) session;
     }
 
-    /**
+    /*
      * If this session is stateful it is disposed
      */
     public void dispose() {

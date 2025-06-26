@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-/**
+/*
  * This class is used to store objects in Infinispan using ProtoStream.
  * This class inherits Serializable from BaseStoredEvent, but it uses ProtoStream instead of Java serialization.
  */

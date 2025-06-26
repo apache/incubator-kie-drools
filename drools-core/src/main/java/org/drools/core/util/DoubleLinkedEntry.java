@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,21 +21,21 @@ package org.drools.core.util;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.index.TupleList;
 
-/**
+/*
  * Items placed in a <code>LinkedList<code> must implement this interface .
  *
  * @see LinkedList
  */
 public interface DoubleLinkedEntry<T extends DoubleLinkedEntry<T>> extends SingleLinkedEntry<T> {
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
     T getPrevious();
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous LinkedListNode

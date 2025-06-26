@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -60,7 +60,7 @@ public class GroupElementBuilder
                              new ExistsBuilder() );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public void build(final BuildContext context,
@@ -81,7 +81,7 @@ public class GroupElementBuilder
         context.popRuleComponent();
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
@@ -98,7 +98,7 @@ public class GroupElementBuilder
             implements
             ReteooComponentBuilder {
 
-        /**
+        /*
          * @inheritDoc
          *
          * And group elements just iterate over their children
@@ -200,7 +200,7 @@ public class GroupElementBuilder
             implements
             ReteooComponentBuilder {
 
-        /**
+        /*
          * @inheritDoc
          */
         public void build(final BuildContext context,
@@ -219,7 +219,7 @@ public class GroupElementBuilder
             implements
             ReteooComponentBuilder {
 
-        /**
+        /*
          * @inheritDoc
          *
          * Not must verify what is the class of its child:
@@ -298,7 +298,7 @@ public class GroupElementBuilder
             implements
             ReteooComponentBuilder {
 
-        /**
+        /*
          * @inheritDoc
          *
          * Exists must verify what is the class of its child:
@@ -362,7 +362,7 @@ public class GroupElementBuilder
             context.setObjectSource( null );
         }
 
-        /**
+        /*
          * @inheritDoc
          */
         public boolean requiresLeftActivation(final BuildUtils utils,

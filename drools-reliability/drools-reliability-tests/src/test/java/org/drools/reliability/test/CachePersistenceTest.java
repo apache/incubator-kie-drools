@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.core.StorageManagerFactory.SESSION_STORAGE_PREFIX;
 
-/**
+/*
  * This class is an integration test with Infinispan embedded and remote cache manager to verify cache persistence.
  * If we want to test drools CacheManager's methods with a fake cacheManager, use CacheManagerTest
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ public class ScenarioResultMetadata {
 
     protected final Map<String, Integer> executed = new HashMap<>();
 
-    /**
+    /*
      * The <code>List</code> of audit log lines
      */
     protected final List<AuditLogLine> auditLogLines = new ArrayList<>();
@@ -65,7 +65,7 @@ public class ScenarioResultMetadata {
         executed.putAll(elements);
     }
 
-    /**
+    /*
      * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
      * @param messageIndex
      * @param decisionOrRuleName
@@ -75,7 +75,7 @@ public class ScenarioResultMetadata {
         auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, decisionOrRuleName, result));
     }
 
-    /**
+    /*
      * Add an <code>AuditLogLine</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
      * @param messageIndex
      * @param decisionOrRuleName
@@ -86,7 +86,7 @@ public class ScenarioResultMetadata {
         auditLogLines.add(new AuditLogLine(scenarioWithIndex.getIndex(), scenarioWithIndex.getScesimData().getDescription(), messageIndex, decisionOrRuleName, result, message));
     }
 
-    /**
+    /*
      * Add a <code>List&lt;AuditLogLine&gt;</code> to the end of {@link ScenarioResultMetadata#auditLogLines}
      * @param toAdd
      */
@@ -106,7 +106,7 @@ public class ScenarioResultMetadata {
         return unmodifiableMap(executed);
     }
 
-    /**
+    /*
      * @return an <b>unmodifiable</b> version of {@link ScenarioResultMetadata#auditLogLines}
      */
     public List<AuditLogLine> getAuditLogLines() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to generate a <b>DROOLS</b> (descr) object out of a<b>TreeModel</b>
  */
 public class KiePMMLDescrFactory {
@@ -46,7 +46,7 @@ public class KiePMMLDescrFactory {
         // Avoid instantiation
     }
 
-    /**
+    /*
      * Returns the <code>PackageDescr</code> built out of the given <code>KiePMMLDroolsAST</code>.
      * @param kiePMMLDroolsAST
      * @param packageName

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.internal.builder;
 
 import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
 
-/**
+/*
  * <p>
  * This class configures the knowledge package builder and compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ public class DecisionTableFunction
         super( "decision table" );
     }
 
-    /**
+    /*
      @param inputExpressionList a list of the N>=0 input expressions in display order
      @param inputValuesList * a list of N input values, corresponding to the input expressions. Each
      list element is a unary tests literal (see below).
@@ -142,7 +142,7 @@ public class DecisionTableFunction
         return tests;
     }
 
-    /**
+    /*
      * Convert row to DTDecisionRule
      * @param mainCtx the main context is used to identify the hosted FEELEventManager
      * @param embeddedFEEL a possibly cached embedded FEEL to compile the output expression, error will be reported up to the mainCtx

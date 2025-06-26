@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public interface MvelEvaluator extends Evaluator {
 
-    /**
+    /*
      * Evaluates the expression using the provided parameters.
      *
      * This method is used when evaluating left-activated
@@ -56,7 +56,7 @@ public interface MvelEvaluator extends Evaluator {
                                VariableRestriction.VariableContextEntry context,
                                FactHandle right);
 
-    /**
+    /*
      * Evaluates the expression using the provided parameters.
      *
      * This method is used when evaluating right-activated

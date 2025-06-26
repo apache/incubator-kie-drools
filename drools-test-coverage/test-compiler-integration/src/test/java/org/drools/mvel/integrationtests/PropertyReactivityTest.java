@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -603,7 +603,7 @@ public class PropertyReactivityTest {
 
     }
 
-    /**
+    /*
      * Tests the use of PR on constraints involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * Because getFullName doesn't have a setter, and we are not using
@@ -657,7 +657,7 @@ public class PropertyReactivityTest {
         assertThat(list).isEqualTo(List.of("XXX -> Walter"));
     }
 
-    /**
+    /*
      * Tests the use of PR on constraints involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * getFullName doesn't have a setter and Klass3 doesn't state that setName()
@@ -711,7 +711,7 @@ public class PropertyReactivityTest {
         assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter", "Find Heisenberg"));
     }
 
-    /**
+    /*
      * Tests the use of PR on constraints involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * getFullName doesn't have a setter but Klass4 states that setName()
@@ -763,7 +763,7 @@ public class PropertyReactivityTest {
         assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter", "Find Heisenberg"));
     }
 
-    /**
+    /*
      * Tests the use of PR on bindings involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * Because getFullName doesn't have a setter, and we are not using
@@ -817,7 +817,7 @@ public class PropertyReactivityTest {
         assertThat(list).isEqualTo(List.of("XXX White"));
     }
 
-    /**
+    /*
      * Tests the use of PR on bindings involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * getFullName doesn't have a setter but we are explicitly using @watches
@@ -870,7 +870,7 @@ public class PropertyReactivityTest {
         assertThat(list).isEqualTo(Arrays.asList("XXX White", "Walter White"  ));
     }
 
-    /**
+    /*
      * Tests the use of PR on bindings involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * getFullName doesn't have a setter but we are explicitly using @Modifies
@@ -1075,7 +1075,7 @@ public class PropertyReactivityTest {
         }
     }
 
-    /**
+    /*
      * Same as Klass3 but using @Modifies in setName() and setLastName()
      */
     @PropertyReactive

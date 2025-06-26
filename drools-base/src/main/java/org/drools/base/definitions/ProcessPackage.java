@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,12 +26,12 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * A package containing BPM processes
  */
 public class ProcessPackage implements ResourceTypePackage<Process> {
 
-    /**
+    /*
      * Finds or creates and registers a package in the given registry instance
      * @return the package that has been found
      */
@@ -52,7 +52,7 @@ public class ProcessPackage implements ResourceTypePackage<Process> {
         return this.ruleFlows;
     }
 
-    /**
+    /*
      * The ResourceType for {@link ProcessPackage} is always BPMN2,
      * but there is no distinction between CMMN as they all live under
      * the same package.

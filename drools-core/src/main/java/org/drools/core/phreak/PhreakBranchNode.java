@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -212,7 +212,7 @@ public class PhreakBranchNode {
         }
     }
 
-    /**
+    /*
      * A branch has two potential sinks. rtnSink  is for the sink if the contained logic returns true.
      * mainSink is for propagations after the branch node, if they are allowed.
      * it may have one or the other or both. there is no state that indicates whether one or the other or both

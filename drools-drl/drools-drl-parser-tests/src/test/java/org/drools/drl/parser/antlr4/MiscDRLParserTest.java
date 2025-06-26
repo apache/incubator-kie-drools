@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -1270,7 +1270,7 @@ class MiscDRLParserTest {
         assertThat(right.getObjectType()).isEqualTo("Cheese");
     }
 
-    /**
+    /*
      * Test that explicit "&&", "||" works as expected
      */
     @Test
@@ -1326,7 +1326,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" );");
     }
 
-    /**
+    /*
      * test basic foo : Fact() || Fact() stuff
      */
     @Test
@@ -1356,7 +1356,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" + bar );");
     }
 
-    /**
+    /*
      * test basic foo : Fact() || Fact() stuff binding to an "or"
      */
     @Test
@@ -2224,7 +2224,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    /**
+    /*
      * - Optional semicolon at the end of statements (int x = 0).
      * - Optional comma delimiting init, action, and result.
      */
@@ -2255,7 +2255,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    /**
+    /*
      * When the accumulate function (e.g. count()) has no arguments.
      */
     @Test
@@ -3869,7 +3869,7 @@ class MiscDRLParserTest {
         assertThat(ruleDescr.getNamespace()).isEqualTo("org.drools");
     }
 
-    /**
+    /*
      * Each test input is a constraint expression covering one of the existing DRL operators. The test is successful if the parser has
      * no errors and the descriptor's expression string is equal to the input.
      *

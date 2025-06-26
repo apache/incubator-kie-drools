@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,7 @@ public class ConversionsUsingCliTest {
             .isEqualTo(expectedContent);
     }
 
-    /**
+    /*
      * Due to limitations in the undelying yaml parser and Linux/Win newline (used in "then" RHS part of rule)
      * the test make sure the conversion take place as expected by similarity up to the first available "then".
      */

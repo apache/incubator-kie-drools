@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -119,7 +119,7 @@ public enum HitPolicy {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
+    /*
      * Unique – only a single rule can be matched
      */
     public static Object unique(
@@ -148,7 +148,7 @@ public enum HitPolicy {
         return null;
     }
 
-    /**
+    /*
      * First – return the first match in rule order
      */
     public static Object first(
@@ -163,7 +163,7 @@ public enum HitPolicy {
         return null;
     }
 
-    /**
+    /*
      * Any – multiple rules can match, but they all have the same output
      */
     public static Object any(
@@ -194,7 +194,7 @@ public enum HitPolicy {
         return null;
     }
 
-    /**
+    /*
      * Priority – multiple rules can match, with different outputs. The output that comes first in the supplied
      * output values list is returned
      */
@@ -213,7 +213,7 @@ public enum HitPolicy {
         return pairs.get(0).getRight();
     }
 
-    /**
+    /*
      * Output order – return a list of outputs in the order of the output values list
      */
     public static Object outputOrder(
@@ -232,7 +232,7 @@ public enum HitPolicy {
         return pairs.stream().map(Pair::getRight).collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Rule order – return a list of outputs in rule order
      * Collect – return a list of the outputs in arbitrary order
      */
@@ -271,7 +271,7 @@ public enum HitPolicy {
                 .collect(singleValueOrContext(dt.getOutputs()));
     }
 
-    /**
+    /*
      * C# – return the count of the outputs
      */
     public static Object countCollect(
@@ -287,7 +287,7 @@ public enum HitPolicy {
                 x -> new BigDecimal(x.collect(toSet()).size()));
     }
 
-    /**
+    /*
      * C< – return the minimum-valued output
      */
     public static Object minCollect(
@@ -304,7 +304,7 @@ public enum HitPolicy {
         return result;
     }
 
-    /**
+    /*
      * C> – return the maximum-valued output
      */
     public static Object maxCollect(
@@ -321,7 +321,7 @@ public enum HitPolicy {
         return result;
     }
 
-    /**
+    /*
      * C+ – return the sum of the outputs
      */
     public static Object sumCollect(

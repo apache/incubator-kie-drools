@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.process;
 
 import org.kie.api.definition.process.Process;
 
-/**
+/*
  * A process instance represents one specific instance of a process
  * that is currently executing.  Whenever a process is started, a
  * process instance is created that represents that specific instance
@@ -57,7 +57,7 @@ public interface ProcessInstance
     int SLA_VIOLATED = 3;
     int SLA_ABORTED   = 4;    
 
-    /**
+    /*
      * The id of the process definition that is related to this process instance.
      * @return the id of the process definition that is related to this process instance
      */
@@ -65,25 +65,25 @@ public interface ProcessInstance
 
     Process getProcess();
 
-    /**
+    /*
      * The unique id of this process instance.
      * @return the unique id of this process instance
      */
     String getId();
 
-    /**
+    /*
      * The name of the process definition that is related to this process instance.
      * @return the name of the process definition that is related to this process instance
      */
     String getProcessName();
 
-    /**
+    /*
      * The state of the process instance.
      * @return the state of the process instance
      */
     int getState();
 
-    /**
+    /*
      * Returns parent process instance id if this process instance has a parent
      * @return the unique id of parent process instance, 0 if this process instance doesn't have a parent
      */

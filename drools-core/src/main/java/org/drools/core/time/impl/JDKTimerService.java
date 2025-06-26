@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.TimerService;
 import org.kie.api.time.SessionClock;
 
-/**
+/*
  * A default Scheduler implementation that uses the
  * JDK built-in ScheduledThreadPoolExecutor as the
  * scheduler and the system clock as the clock.
@@ -67,7 +67,7 @@ public class JDKTimerService implements TimerService, SessionClock, InternalSche
         return this.jobFactoryManager;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public long getCurrentTime() {

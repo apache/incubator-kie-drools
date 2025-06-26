@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.drl.ast.dsl.PatternDescrBuilder;
 import org.drools.drl.ast.dsl.ForallDescrBuilder;
 import org.drools.drl.ast.descr.ForallDescr;
 
-/**
+/*
  * An implementation for the CEDescrBuilder
  */
 public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, ForallDescr>
@@ -34,7 +34,7 @@ public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Base
         super( parent, new ForallDescr() );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<ForallDescrBuilder<P>> pattern( String type ) {
@@ -44,7 +44,7 @@ public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Base
         return pattern;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PatternDescrBuilder<ForallDescrBuilder<P>> pattern() {

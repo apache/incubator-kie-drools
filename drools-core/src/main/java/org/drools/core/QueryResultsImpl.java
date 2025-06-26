@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-/**
+/*
  * Returned QueryResults instance for a requested named query. from here you can iterate the returned data, or
  * get a specific row. All the available Declarations used in the query can also be accessed.
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,26 +20,26 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the belief system configuration.
  */
 public class BeliefSystemTypeOption implements SingleValueRuleRuntimeOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the belief system configuration
      */
     public static final String PROPERTY_NAME = "drools.beliefSystem";
 
     public static OptionKey<BeliefSystemTypeOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * Belief System Type
      */
     private final String beliefSystemType;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param beliefSystemType
      */
@@ -47,7 +47,7 @@ public class BeliefSystemTypeOption implements SingleValueRuleRuntimeOption {
         this.beliefSystemType = beliefSystemType;
     }
 
-    /**
+    /*
      * This is a factory method for this belief system configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -60,14 +60,14 @@ public class BeliefSystemTypeOption implements SingleValueRuleRuntimeOption {
         return new BeliefSystemTypeOption( beliefSystemType );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * @return the configured belief system type
      */
     public String getBeliefSystemType() {

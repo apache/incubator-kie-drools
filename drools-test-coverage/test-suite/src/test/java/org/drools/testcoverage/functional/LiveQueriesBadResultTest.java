@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
+/*
  * Tests bad using and accessing to livequeries.
  */
 public class LiveQueriesBadResultTest {

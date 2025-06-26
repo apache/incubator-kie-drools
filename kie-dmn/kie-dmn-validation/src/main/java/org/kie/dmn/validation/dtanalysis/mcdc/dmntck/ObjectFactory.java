@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import jakarta.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
 
-/**
+/*
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
  * generated in the org.omg.dmn.tck.marshaller._20160719 package. 
@@ -47,14 +47,14 @@ public class ObjectFactory {
     private final static QName _ValueTypeValue_QNAME = new QName("http://www.omg.org/spec/DMN/20160719/testcase", "value");
     private final static QName _ValueTypeList_QNAME = new QName("http://www.omg.org/spec/DMN/20160719/testcase", "list");
 
-    /**
+    /*
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.omg.dmn.tck.marshaller._20160719
      * 
      */
     public ObjectFactory() {
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases }
      * 
      */
@@ -62,7 +62,7 @@ public class ObjectFactory {
         return new TestCases();
     }
 
-    /**
+    /*
      * Create an instance of {@link ValueType }
      * 
      */
@@ -70,7 +70,7 @@ public class ObjectFactory {
         return new ValueType();
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases.TestCase }
      * 
      */
@@ -78,7 +78,7 @@ public class ObjectFactory {
         return new TestCases.TestCase();
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases.Labels }
      * 
      */
@@ -86,7 +86,7 @@ public class ObjectFactory {
         return new TestCases.Labels();
     }
 
-    /**
+    /*
      * Create an instance of {@link ValueType.Component }
      * 
      */
@@ -94,7 +94,7 @@ public class ObjectFactory {
         return new ValueType.Component();
     }
 
-    /**
+    /*
      * Create an instance of {@link ValueType.List }
      * 
      */
@@ -102,7 +102,7 @@ public class ObjectFactory {
         return new ValueType.List();
     }
 
-    /**
+    /*
      * Create an instance of {@link ValueType.ExtensionElements }
      * 
      */
@@ -110,7 +110,7 @@ public class ObjectFactory {
         return new ValueType.ExtensionElements();
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases.TestCase.InputNode }
      * 
      */
@@ -118,7 +118,7 @@ public class ObjectFactory {
         return new TestCases.TestCase.InputNode();
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases.TestCase.ResultNode }
      * 
      */
@@ -126,7 +126,7 @@ public class ObjectFactory {
         return new TestCases.TestCase.ResultNode();
     }
 
-    /**
+    /*
      * Create an instance of {@link TestCases.TestCase.ExtensionElements }
      * 
      */
@@ -134,7 +134,7 @@ public class ObjectFactory {
         return new TestCases.TestCase.ExtensionElements();
     }
 
-    /**
+    /*
      * Create an instance of {@link JAXBElement }{@code <}{@link Object }{@code >}}
      * 
      */
@@ -143,7 +143,7 @@ public class ObjectFactory {
         return new JAXBElement<>(_ValueTypeValue_QNAME, Object.class, ValueType.class, value);
     }
 
-    /**
+    /*
      * Create an instance of {@link JAXBElement }{@code <}{@link ValueType.List }{@code >}}
      * 
      */

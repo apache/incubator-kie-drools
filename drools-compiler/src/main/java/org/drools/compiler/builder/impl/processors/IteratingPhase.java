@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-/**
+/*
  * Decorates a {@link CompilationPhase} via its {@link SinglePackagePhaseFactory}.
  * Iterates over a collection of {@link CompositePackageDescr}
  * and applies the decorated phase to it.

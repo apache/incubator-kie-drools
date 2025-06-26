@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-/**
+/*
  *
  * Test an excel file.
  * 
@@ -165,7 +165,7 @@ public class RuleWorksheetParseFromFileTest {
         assertThatExceptionOfType(DecisionTableParseException.class).isThrownBy(() -> RulesheetUtil.getRuleSheetListener(stream));
     }
 
-    /**
+    /*
      * See if it can cope with odd shaped rule table, including missing
      * conditions. Also is not "sequential".
      */

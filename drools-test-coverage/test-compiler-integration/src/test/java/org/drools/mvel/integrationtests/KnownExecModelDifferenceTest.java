@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * This is a place where known behavior differences between exec-model and non-exec-model.
  * They are not treated as a bug and should be documented in "Migration from non-executable model to executable model" section
  */

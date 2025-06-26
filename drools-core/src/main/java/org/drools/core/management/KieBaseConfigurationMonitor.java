@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.management.KieBaseConfigurationMonitorMBean;
 
-/**
+/*
  * An mbean monitor class for the knowledgebase configuration
  */
 public class KieBaseConfigurationMonitor implements KieBaseConfigurationMonitorMBean {

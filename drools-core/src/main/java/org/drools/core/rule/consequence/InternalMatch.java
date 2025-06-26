@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
-/**
+/*
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
  * As an <code>Activation</code>. Each <code>Activation</code> is assigned a number, this 
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
@@ -53,7 +53,7 @@ import org.kie.api.runtime.rule.Match;
  */
 public interface InternalMatch extends Serializable, QueueEntry, Match {
     
-    /**
+    /*
      * 
      * @return
      *     The rule that was activated.
@@ -62,7 +62,7 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
 
     Consequence getConsequence();
     
-    /**
+    /*
      * Each PropagationContext is assigned an id from a counter for the WorkingMemory action it
      * represents. All Activations return this id as the ActivationNumber, thus all Activations
      * created from the same PropagationContext will return the same long for this method.
@@ -79,21 +79,21 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
         return Collections.emptyList();
     }
 
-    /**
+    /*
      * Retrieve the <code>Tuple</code> that was activated.
      * 
      * @return The tuple.
      */
     TupleImpl getTuple();
 
-    /**
+    /*
      * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>
      * 
      * @return The propagation context
      */
     PropagationContext getPropagationContext();
 
-    /**
+    /*
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
      */
     void remove();

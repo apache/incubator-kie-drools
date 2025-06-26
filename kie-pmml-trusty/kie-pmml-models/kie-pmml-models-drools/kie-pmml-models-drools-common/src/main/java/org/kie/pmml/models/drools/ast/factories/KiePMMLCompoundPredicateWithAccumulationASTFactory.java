@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,14 +30,14 @@ import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>CompoundPredicate</code>
  */
 public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicateWithAccumulationASTFactory.class.getName());
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
      * Throws exception otherwise
      * @param predicateASTFactoryData
@@ -64,7 +64,7 @@ public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
         });
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param builder

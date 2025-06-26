@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.drools.traits.core.factmodel.HierarchyEncoder;
 
-/**
+/*
  * Encodes a hierachy using bit masks, according to the algorithm described in
  * M.F. van Bommel, P. Wang, Encoding Multiple Inheritance Hierarchies for Lattice Operations
  * Data & Knowledge Engineering 50 (2004) 175-194

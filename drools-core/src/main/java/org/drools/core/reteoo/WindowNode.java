@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.util.bitmask.BitMask;
 
-/**
+/*
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
  * to manage windows. They support multiple types of windows, like
  * sliding windows, tumbling windows, etc.
@@ -71,7 +71,7 @@ public class WindowNode extends ObjectSource
     public WindowNode() {
     }
 
-    /**
+    /*
      * Construct a <code>WindowNode</code> with a unique id using the provided
      * list of <code>AlphaNodeFieldConstraint</code> and the given <code>ObjectSource</code>.
      *
@@ -107,7 +107,7 @@ public class WindowNode extends ObjectSource
         return NodeTypeEnums.WindowNode;
     }
 
-    /**
+    /*
      * Returns the <code>FieldConstraints</code>
      *
      * @return <code>FieldConstraints</code>
@@ -116,7 +116,7 @@ public class WindowNode extends ObjectSource
         return this.constraints;
     }
 
-    /**
+    /*
      * Returns the list of behaviors for this window node
      */
     public BehaviorRuntime[] getBehaviors() {
@@ -230,7 +230,7 @@ public class WindowNode extends ObjectSource
         }
     }
 
-    /**
+    /*
      * Creates the WindowNode's memory.
      */
     public WindowMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
@@ -260,7 +260,7 @@ public class WindowNode extends ObjectSource
         return this.source.getId() == other.source.getId() && this.constraints.equals(other.constraints) && behavior.equals(other.behavior);
     }
 
-    /**
+    /*
      * Returns the next node
      *
      * @return The next ObjectSinkNode
@@ -269,7 +269,7 @@ public class WindowNode extends ObjectSource
         return this.nextRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      *
      * @param next The next ObjectSinkNode
@@ -278,7 +278,7 @@ public class WindowNode extends ObjectSource
         this.nextRightTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      *
      * @return The previous ObjectSinkNode
@@ -287,7 +287,7 @@ public class WindowNode extends ObjectSource
         return this.previousRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      *
      * @param previous The previous ObjectSinkNode

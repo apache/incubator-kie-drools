@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests inserting events into KIE Session from multiple threads using one and
  * two entry points.
  *
@@ -118,7 +118,7 @@ public class MTEntryPointsTest {
         }
     }
 
-    /**
+    /*
      * Inserts events using multiple threads into one EntryPoint. The insert
      * operation is synchronized on corresponding SessionEntryPoint instance.
      */
@@ -148,7 +148,7 @@ public class MTEntryPointsTest {
         }
     }
 
-    /**
+    /*
      * Inserts events using multiple threads into two EntryPoints. The insert
      * operation is synchronized on corresponding SessionEntryPoint instance.
      */
@@ -186,7 +186,7 @@ public class MTEntryPointsTest {
         }
     }
 
-    /**
+    /*
      * Inserts 10 test events into specified EntryPoint and advances pseudo-clock
      * time by a fixed amount.
      *
@@ -218,7 +218,7 @@ public class MTEntryPointsTest {
         }
     }
 
-    /**
+    /*
      * Immutable event used in the test.
      */
     public static class MessageEvent {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-/**
+/*
  * Custom DT collector: it only 1 output, return the output itself.
  * If more than 1 output, return a FEEL Context (hashmap) with name of the output and its value.
  * 

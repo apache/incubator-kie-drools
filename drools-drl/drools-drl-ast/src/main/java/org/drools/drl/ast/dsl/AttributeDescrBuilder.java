@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.AttributeDescr;
 
-/**
+/*
  *  A descriptor builder for attributes
  */
 public interface AttributeDescrBuilder<P extends DescrBuilder<?,?>>
     extends
     DescrBuilder<P, AttributeDescr> {
 
-    /**
+    /*
      * Sets the attribute value
      * 
      * @param value
@@ -35,7 +35,7 @@ public interface AttributeDescrBuilder<P extends DescrBuilder<?,?>>
      */
     public AttributeDescrBuilder<P> value( String value );
     
-    /**
+    /*
      * Sets the attribute value type
      * 
      * @param type see {@link AttributeDescr.Type}

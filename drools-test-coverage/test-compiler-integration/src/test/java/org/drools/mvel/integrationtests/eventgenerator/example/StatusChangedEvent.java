@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public class StatusChangedEvent extends Event {
     public static final int OLD_VALUE = 0;
     public static final int NEW_VALUE = 1;
 
-    /**
+    /*
      * Special constructor for a statusChanged event
      * @param parentId The id of the corresponding site, resource, ...
      */
@@ -39,7 +39,7 @@ public class StatusChangedEvent extends Event {
         addParameters(createStatusChangedParameters(oldValue, newValue));
     }
 
-    /**
+    /*
      * Special constructor for a statusChanged event
      * @param parentId The id of the corresponding site, resource, ...
      * @param start The start instance of the event.
@@ -50,7 +50,7 @@ public class StatusChangedEvent extends Event {
         super(EventType.STATUSCHANGED, parentId, start, end);
     }
 
-    /**
+    /*
      * Special constructor for a statusChanged event
      * @param parentId The id of the corresponding site, resource, ...
      * @param start The start instance of the event.
@@ -69,7 +69,7 @@ public class StatusChangedEvent extends Event {
         return params;
     }
 
-    /**
+    /*
      * @return value of the oldValue parameter if such a parameter exists, null otherwise
      */
     public String getParamOldValue() {
@@ -78,7 +78,7 @@ public class StatusChangedEvent extends Event {
         return null;
     }
 
-    /**
+    /*
      * @return value of the newValue parameter if such a parameter exists, null otherwise
      */
     public String getParamNewValue() {

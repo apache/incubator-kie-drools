@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the <code>metby</code> evaluator definition.</p>
  * 
  * <p>The <b><code>metby</code></b> evaluator correlates two events and matches when the current event's 
@@ -94,7 +94,7 @@ public class MetByEvaluatorDefinition
         out.writeObject( cache );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -105,7 +105,7 @@ public class MetByEvaluatorDefinition
                                   null );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -117,7 +117,7 @@ public class MetByEvaluatorDefinition
                                   parameterText );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -133,7 +133,7 @@ public class MetByEvaluatorDefinition
         
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -159,28 +159,28 @@ public class MetByEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.HANDLE;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType(ValueType type) {
@@ -189,7 +189,7 @@ public class MetByEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'metby' evaluator itself
      */
     public static class MetByEvaluator extends BaseEvaluator {
@@ -315,7 +315,7 @@ public class MetByEvaluatorDefinition
             return finalRange == other.finalRange;
         }
 
-        /**
+        /*
          * This methods sets the parameters appropriately.
          *
          * @param parameters

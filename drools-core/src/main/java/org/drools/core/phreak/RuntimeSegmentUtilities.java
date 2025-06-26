@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,14 +44,14 @@ import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 
 public class RuntimeSegmentUtilities {
 
-    /**
+    /*
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
     public static SegmentMemory getOrCreateSegmentMemory(LeftTupleNode node, ReteEvaluator reteEvaluator) {
         return getOrCreateSegmentMemory(reteEvaluator.getNodeMemory((MemoryFactory<? extends Memory>) node), node, reteEvaluator);
     }
 
-    /**
+    /*
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
     public static SegmentMemory getOrCreateSegmentMemory(Memory memory, LeftTupleNode node, ReteEvaluator reteEvaluator) {
@@ -149,7 +149,7 @@ public class RuntimeSegmentUtilities {
         return memory.getSegmentMemory();
     }
 
-    /**
+    /*
      * This adds the segment memory to the terminal node or ria node's list of memories.
      * In the case of the terminal node this allows it to know that all segments from
      * the tip to root are linked.

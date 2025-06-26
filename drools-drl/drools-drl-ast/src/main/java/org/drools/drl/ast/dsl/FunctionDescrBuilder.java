@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.FunctionDescr;
 
-/**
+/*
  *  A descriptor builder for functions
  */
 public interface FunctionDescrBuilder
@@ -28,7 +28,7 @@ public interface FunctionDescrBuilder
     DescrBuilder<PackageDescrBuilder, FunctionDescr>,
     ParameterSupportBuilder<FunctionDescrBuilder> {
 
-    /**
+    /*
      * Sets an alternate namespace for the function
      * 
      * @param namespace
@@ -37,7 +37,7 @@ public interface FunctionDescrBuilder
      */
     public FunctionDescrBuilder namespace( String namespace );
 
-    /**
+    /*
      * Sets function name
      * 
      * @param name
@@ -46,7 +46,7 @@ public interface FunctionDescrBuilder
      */
     public FunctionDescrBuilder name( String name );
 
-    /**
+    /*
      * Sets function return type
      * 
      * @param type
@@ -55,7 +55,7 @@ public interface FunctionDescrBuilder
      */
     public FunctionDescrBuilder returnType( String type );
 
-    /**
+    /*
      * Sets the function body
      * 
      * @param body
@@ -64,7 +64,7 @@ public interface FunctionDescrBuilder
      */
     public FunctionDescrBuilder body( String body );
 
-    /**
+    /*
      * Sets the function dialect. Default is java.
      * 
      * @param dialect

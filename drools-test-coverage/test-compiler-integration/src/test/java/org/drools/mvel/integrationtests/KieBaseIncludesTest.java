@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -48,7 +48,7 @@ public class KieBaseIncludesTest {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    /**
+    /*
      * Test the inclusion of a KieBase defined in one KJAR into the KieBase of another KJAR.
      * <p/>
      * The 2 KieBases use different package names for the rules (i.e. "rules" and "rules2").
@@ -136,7 +136,7 @@ public class KieBaseIncludesTest {
         assertThat(nrOfRules).isEqualTo(2);
     }
 
-    /**
+    /*
      * Test the inclusion of a KieBase defined in one KJAR into the KieBase of another KJAR.
      * <p/>
      * The 2 KieBases use the same package names for the rules (i.e. "rules").
@@ -224,7 +224,7 @@ public class KieBaseIncludesTest {
         assertThat(nrOfRules).isEqualTo(2);
     }
 
-    /**
+    /*
      * Helper method which determines the number of rules in the {@link KieBase}.
      *
      * @param kieBase
@@ -243,7 +243,7 @@ public class KieBaseIncludesTest {
         return nrOfRules;
     }
 
-    /**
+    /*
      * Test the inclusion of a KieBase defined in one KJAR into the KieBase of another KJAR.
      * <p/>
      * The 2 KieBases use the duplicate rule names, so an error should be reported
@@ -320,7 +320,7 @@ public class KieBaseIncludesTest {
                 .extracting(Message::getText).anyMatch(text -> text.contains("Duplicate rule name"));
     }
 
-    /**
+    /*
      * One KieBase that includes another KieBase from the same KJAR. Not duplicate names.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -380,7 +380,7 @@ public class KieBaseIncludesTest {
         kieSession.dispose();
     }
 
-    /**
+    /*
      * One KieBase that includes another KieBase from the same KJAR. Duplicate rule names.
      */
     @ParameterizedTest(name = "KieBase type={0}")

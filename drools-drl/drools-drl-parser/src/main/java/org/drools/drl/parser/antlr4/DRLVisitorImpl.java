@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -74,7 +74,7 @@ import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
 import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.util.StringUtils.unescapeJava;
 
-/**
+/*
  * Visitor implementation for DRL10Parser.
  * Basically, each visit method creates and returns a Descr object traversing the parse tree.
  * Finally, visitCompilationUnit() returns a PackageDescr object.
@@ -90,7 +90,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         this.resource = resource;
     }
 
-    /**
+    /*
      * Main entry point for creating PackageDescr from a parser tree.
      */
     @Override
@@ -107,7 +107,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return packageDescr;
     }
 
-    /**
+    /*
      * Add all children Descr to PackageDescr
      */
     private void applyChildrenDescrs(PackageDescr packageDescr, List<BaseDescr> descrList) {
@@ -332,7 +332,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return windowDeclarationDescr;
     }
 
-    /**
+    /*
      * entry point for one rule
      */
     @Override
@@ -540,7 +540,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return attributeDescr;
     }
 
-    /**
+    /*
      * entry point for LHS
      */
     @Override
@@ -599,7 +599,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return orDescr;
     }
 
-    /**
+    /*
      * entry point for a Pattern
      */
     @Override
@@ -666,7 +666,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return namedConsequenceDescr;
     }
 
-    /**
+    /*
      * process
      *
      * if (condition) do[namedConsequence1] else do[namedConsequence2]
@@ -886,7 +886,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
                 .build();
     }
 
-    /**
+    /*
      * Collect constraints in a Pattern
      */
     @Override
@@ -896,7 +896,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return exprConstraintDescrList;
     }
 
-    /**
+    /*
      * Collect constraints in a Pattern. Positional constraints comes first with semicolon.
      */
     private List<ExprConstraintDescr> visitConstraints(DRL10Parser.PositionalConstraintsContext positionalCtx, DRL10Parser.ConstraintsContext ctx) {
@@ -921,7 +921,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         }
     }
 
-    /**
+    /*
      * Takes one constraint as String and create ExprConstraintDescr.
      * In case of nested constraint, it could be multiple ExprConstraintDescr objects.
      */
@@ -946,7 +946,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         return descrList;
     }
 
-    /**
+    /*
      * Append a prefix to nested constraints.
      * For example,
      *     address.(city.startsWith("I"), city.length() == 5)
@@ -1149,7 +1149,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         }
     }
 
-    /**
+    /*
      * This is a special version of visitChildren().
      * This collects children BaseDescr objects and returns them as a list.
      */
@@ -1208,7 +1208,7 @@ public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
         }
     }
 
-    /**
+    /*
      * Return the text of constraint as-is
      */
     private String visitConstraintChildren(ParserRuleContext ctx) {

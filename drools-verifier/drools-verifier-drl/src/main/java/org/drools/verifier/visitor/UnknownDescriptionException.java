@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.verifier.visitor;
 
 import org.drools.drl.ast.descr.BaseDescr;
 
-/**
+/*
  * This exception is thrown when verifier tries to handle a descr that it is not
  * familiar with.
  */

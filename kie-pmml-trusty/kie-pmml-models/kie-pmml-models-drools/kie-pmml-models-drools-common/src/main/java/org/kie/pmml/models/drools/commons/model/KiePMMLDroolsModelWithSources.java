@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.pmml.commons.model.KiePMMLModelWithSources;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
-/**
+/*
  * KIE representation of PMML model that use <b>Drools</b> for implementation
  */
 public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources implements IsDrools,

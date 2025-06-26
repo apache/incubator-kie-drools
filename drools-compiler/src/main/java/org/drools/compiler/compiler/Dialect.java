@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,7 +56,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import static org.drools.base.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 
-/**
+/*
  * A Dialect implementation handles the building and execution of code
  * expressions and blocks for a rule. This api is considered unstable, and
  * subject to change. Those wishing to implement their own dialects should look

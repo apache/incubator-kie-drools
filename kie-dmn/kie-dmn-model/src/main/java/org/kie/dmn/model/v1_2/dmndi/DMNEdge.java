@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge
     protected org.kie.dmn.model.api.dmndi.DMNLabel dmnLabel;
     protected QName dmnElementRef;
 
-    /**
+    /*
      * Gets the value of the dmnLabel property.
      * 
      * @return
@@ -37,7 +37,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge
         return dmnLabel;
     }
 
-    /**
+    /*
      * Sets the value of the dmnLabel property.
      * 
      * @param value
@@ -49,7 +49,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge
         this.dmnLabel = value;
     }
 
-    /**
+    /*
      * Gets the value of the dmnElementRef property.
      * 
      * @return
@@ -61,7 +61,7 @@ public class DMNEdge extends Edge implements org.kie.dmn.model.api.dmndi.DMNEdge
         return dmnElementRef;
     }
 
-    /**
+    /*
      * Sets the value of the dmnElementRef property.
      * 
      * @param value

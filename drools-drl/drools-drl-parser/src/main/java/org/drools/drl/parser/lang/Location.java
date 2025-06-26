@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.drl.parser.lang;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*
  * A class to hold contextual information during DRL parsing
  */
 public class Location {

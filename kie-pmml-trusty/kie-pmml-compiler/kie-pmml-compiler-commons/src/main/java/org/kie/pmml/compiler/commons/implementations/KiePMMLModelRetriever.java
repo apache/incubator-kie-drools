@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ public class KiePMMLModelRetriever {
                 .findFirst();
     }
 
-    /**
+    /*
      * Read the given <code>CompilationDTO</code> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
      *
@@ -68,7 +68,7 @@ public class KiePMMLModelRetriever {
                                                                                      modelFunction);
     }
 
-    /**
+    /*
      * Read the given <code>CompilationDTO</code> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
      * Method provided only to have <b>drools</b> models working when invoked by a <code>KiePMMLMiningModel</code>
@@ -97,7 +97,7 @@ public class KiePMMLModelRetriever {
                 .findFirst();
     }
 
-    /**
+    /*
      * Returns a <code>Stream</code> with <code>ModelImplementationProvider</code> targeting the given
      * <code>PMML_MODEL</code>
      *

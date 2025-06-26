@@ -27,7 +27,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamedElement;
 
-/**
+/*
  * Class meant to provide helper methods to deal with unnamed model imports
  */
 public class UnnamedImportUtils {

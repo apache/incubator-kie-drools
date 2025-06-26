@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.Set;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.data.VerifierComponent;
 
-/**
+/*
  * Takes a list of Constraints and makes possibilities from them.
  */
 class Solver {
@@ -51,7 +51,7 @@ class Solver {
         }
     }
 
-    /**
+    /*
      * Add new descr.
      * 
      * @param descr
@@ -76,7 +76,7 @@ class Solver {
         }
     }
 
-    /**
+    /*
      * Ends subSolvers data collection.
      */
     protected void end() {

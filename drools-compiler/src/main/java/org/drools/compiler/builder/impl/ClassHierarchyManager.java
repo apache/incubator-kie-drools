@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -64,7 +64,7 @@ public class ClassHierarchyManager {
         return sortedDescriptors;
     }
 
-    /**
+    /*
      * Utility method to sort declared beans. Linearizes the hierarchy,
      * i.e.generates a sequence of declaration such that, if Sub is subclass of
      * Sup, then the index of Sub will be > than the index of Sup in the
@@ -201,7 +201,7 @@ public class ClassHierarchyManager {
         }
     }
 
-    /**
+    /*
      * In order to build a declared class, the fields inherited from its
      * superclass(es) are added to its declaration. Inherited descriptors are
      * marked as such to distinguish them from native ones. Various scenarioes

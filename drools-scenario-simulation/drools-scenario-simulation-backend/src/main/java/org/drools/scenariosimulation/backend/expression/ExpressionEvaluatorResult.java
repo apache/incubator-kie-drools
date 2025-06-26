@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * This DTO holds info related to an expression evaluation.
  * - successful: field represents status of involved evaluation (successful or failed);
  * - pathToWrongValue: a list which contains the steps to describe the wrong value. In case of nested object or collections,

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.time.Interval;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * <p>The implementation of the <code>overlappedby</code> evaluator definition.</p>
  * 
  * <p>The <b><code>overlappedby</code></b> evaluator correlates two events and matches when the correlated event 
@@ -103,7 +103,7 @@ public class OverlappedByEvaluatorDefinition
         out.writeObject(cache);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -114,7 +114,7 @@ public class OverlappedByEvaluatorDefinition
                                   null );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -126,7 +126,7 @@ public class OverlappedByEvaluatorDefinition
                                   parameterText );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -142,7 +142,7 @@ public class OverlappedByEvaluatorDefinition
         
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,
@@ -168,28 +168,28 @@ public class OverlappedByEvaluatorDefinition
         return eval;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String[] getEvaluatorIds() {
         return SUPPORTED_IDS;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean isNegatable() {
         return true;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Target getTarget() {
         return Target.HANDLE;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean supportsType(ValueType type) {
@@ -198,7 +198,7 @@ public class OverlappedByEvaluatorDefinition
         return true;
     }
 
-    /**
+    /*
      * Implements the 'overlappedby' evaluator itself
      */
     public static class OverlappedByEvaluator extends BaseEvaluator {
@@ -334,7 +334,7 @@ public class OverlappedByEvaluatorDefinition
             return maxDev == other.maxDev && minDev == other.minDev;
         }
 
-        /**
+        /*
          * This methods sets the parameters appropriately.
          *
          * @param parameters

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
+/*
  * An implementation of an accumulator capable of calculating maximum values
  */
 public class IntegerMinAccumulateFunction extends AbstractAccumulateFunction<IntegerMinAccumulateFunction.MinData> {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-/**
+/*
  * This contains methods common to many of the tests in drools-compiler. </p>
  * The {@link #createKnowledgeSession(KnowledgeBase)} method has been made
  * common so that tests in drools-compiler can be reused (with persistence) in

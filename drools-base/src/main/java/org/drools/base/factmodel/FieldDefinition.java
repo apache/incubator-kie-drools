@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.internal.definition.GenericTypeDefinition;
 
-/**
+/*
  * Declares a field to be dynamically generated.
  */
 public class FieldDefinition
@@ -121,14 +121,14 @@ public class FieldDefinition
         out.writeObject( this.setterName );
     }
 
-    /**
+    /*
      * @return Returns the name.
      */
     public String getName() {
         return name;
     }
 
-    /**
+    /*
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -139,14 +139,14 @@ public class FieldDefinition
         return this.type;
     }
 
-    /**
+    /*
      * @return Returns the fully qualified type.
      */
     public String getTypeName() {
         return this.type.getRawType();
     }
 
-    /**
+    /*
      * @param type The fully qualified type to set.
      */
     public void setTypeName(String type) {
@@ -157,21 +157,21 @@ public class FieldDefinition
         return this.accessor.getFieldType();
     }
 
-    /**
+    /*
      * @return Returns the key.
      */
     public boolean isKey() {
         return key;
     }
 
-    /**
+    /*
      * @param key The key to set.
      */
     public void setKey(boolean key) {
         this.key = key;
     }
 
-    /**
+    /*
      * Creates the String name for the get method for a field with the given name and type
      * @return
      */
@@ -189,7 +189,7 @@ public class FieldDefinition
                 1 ).toUpperCase() + this.name.substring( 1 );
     }
 
-    /**
+    /*
      * Creates the String name for the set method for a field with the given name and type
      *
      * @return
@@ -199,28 +199,28 @@ public class FieldDefinition
                 "set" + this.name.substring( 0, 1 ).toUpperCase() + this.name.substring( 1 );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean equals(Object o) {
         return (o != null) && this.getName().equals( ((FieldDefinition) o).getName() );
     }
 
-    /**
+    /*
      * @return Returns the field extractor
      */
     public FieldAccessor getFieldAccessor() {
         return this.accessor;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public int hashCode() {
         return this.getName().hashCode();
     }
 
-    /**
+    /*
      * Sets the value of this attribute in the target
      * bean instance
      *
@@ -231,7 +231,7 @@ public class FieldDefinition
         this.accessor.setValue( bean, value );
     }
 
-    /**
+    /*
      * Returns the value of this attribute in the target bean instance
      *
      * @param bean the target bean instance

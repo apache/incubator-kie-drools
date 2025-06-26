@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ class FEELProfileTest {
         assertThat(feel.evaluate("use cache(\"val 5\")")).isNull();
     }
 
-    /**
+    /*
      * This profile adds a function that use an object introduced as a value to the feel stack to reference external data 
      */
     public static class TestFEELProfile implements FEELProfile {

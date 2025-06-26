@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,12 +22,12 @@ import java.util.Map;
 
 import org.kie.api.runtime.process.ProcessRuntime;
 
-/**
+/*
  * see {@link ProcessRuntime}
  */
 public interface ProcessFluent<T, U> {
 
-    /**
+    /*
      * Start a new process instance.  The process (definition) that should
      * be used is referenced by the given process id.
      *
@@ -36,7 +36,7 @@ public interface ProcessFluent<T, U> {
      */
     T startProcess(String processId);
 
-    /**
+    /*
      * Start a new process instance.  The process (definition) that should
      * be used is referenced by the given process id.  Parameters can be passed
      * to the process instance (as name-value pairs), and these will be set
@@ -49,7 +49,7 @@ public interface ProcessFluent<T, U> {
     T startProcess(String processId,
                                  Map<String, Object> parameters);
 
-    /**
+    /*
      * Creates a new process instance (but does not yet start it).  The process
      * (definition) that should be used is referenced by the given process id.
      * Parameters can be passed to the process instance (as name-value pairs),
@@ -64,7 +64,7 @@ public interface ProcessFluent<T, U> {
     T createProcessInstance(String processId,
                                           Map<String, Object> parameters);
 
-    /**
+    /*
      * Starts the given process instance (which was created by using createProcesInstance
      * but not yet started).  This method can only be called once for each process
      * instance.  You should only use this method if you need a reference to the
@@ -75,7 +75,7 @@ public interface ProcessFluent<T, U> {
      */
     T startProcessInstance(String processInstanceId);
 
-    /**
+    /*
      * Signals the engine that an event has occurred. The type parameter defines
      * which type of event and the event parameter can contain additional information
      * related to the event.  All process instances that are listening to this type
@@ -91,7 +91,7 @@ public interface ProcessFluent<T, U> {
     T signalEvent(String type,
                      Object event);
 
-    /**
+    /*
      * Signals the process instance that an event has occurred. The type parameter defines
      * which type of event and the event parameter can contain additional information
      * related to the event.  All node instances inside the given process instance that
@@ -107,7 +107,7 @@ public interface ProcessFluent<T, U> {
                      Object event,
                      String processInstanceId);
 
-    /**
+    /*
      * Aborts the process instance with the given id.  If the process instance has been completed
      * (or aborted), or the process instance cannot be found, this method will throw an
      * <code>IllegalArgumentException</code>.
@@ -116,7 +116,7 @@ public interface ProcessFluent<T, U> {
      */
     T abortProcessInstance(String processInstanceId);
 
-    /**
+    /*
      * Returns the <code>WorkItemManager</code> related to this session.  This can be used to
      * register new <code>WorkItemHandler</code>s or to complete (or abort) <code>WorkItem</code>s.
      *

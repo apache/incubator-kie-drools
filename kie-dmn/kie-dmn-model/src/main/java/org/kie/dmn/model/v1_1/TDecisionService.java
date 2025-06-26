@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.kie.dmn.model.api.InformationItem;
 
 public class TDecisionService extends TNamedElement implements DecisionService {
 
-    /**
+    /*
      * This is not defined in the v1.1 XSD but used in this pojo for full backport of Decision Service onto v1.1 runtime. 
      */
     private InformationItem variable;

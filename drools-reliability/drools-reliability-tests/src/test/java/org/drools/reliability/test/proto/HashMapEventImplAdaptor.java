@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.infinispan.protostream.types.protobuf.AnySchema;
 
 import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
-/**
+/*
  * This adopter resides in test module, because main drools-reliability-infinispan module does not have dependency on drools-model-compiler module.
  */
 @ProtoAdapter(HashMapEventImpl.class)

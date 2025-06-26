@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.IntStream;
 import org.drools.drl.parser.lang.DroolsSoftKeywords;
 
-/**
+/*
  * Helper class for lexer. It requires instance creation to keep track of the lookahead counter.
  */
 public class LexerHelper {
@@ -57,7 +57,7 @@ public class LexerHelper {
         this.lookAheadCounter = 1;
     }
 
-    /**
+    /*
      * Determine if the current token is the end of a RHS DRL by lookahead.
      * 1. 'end'
      * 2. skip semi, WS, and comment

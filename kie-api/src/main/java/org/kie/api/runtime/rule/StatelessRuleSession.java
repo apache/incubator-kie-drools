@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.kie.api.runtime.rule;
 
 
-/**
+/*
  * This interface is used as part of the {@link org.kie.api.runtime.StatelessKieSession}, which is the interface
  * returned from the {@link org.kie.api.KieBase}.
  *
@@ -29,7 +29,7 @@ package org.kie.api.runtime.rule;
  */
 public interface StatelessRuleSession {
 
-    /**
+    /*
      * Execute a StatelessKieSession inserting just a single object. If a collection (or any other Iterable) or an array is used here, it will be inserted as-is,
      * It will not be iterated and its internal elements inserted.
      *
@@ -37,7 +37,7 @@ public interface StatelessRuleSession {
      */
     void execute(Object object);
 
-    /**
+    /*
      * Execute a StatelessKieSession, iterate the Iterable inserting each of its elements. If you have an array, use the Arrays.asList(...) method
      * to make that array Iterable.
      * @param objects

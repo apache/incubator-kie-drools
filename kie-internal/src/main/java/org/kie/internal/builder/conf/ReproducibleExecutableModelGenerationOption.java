@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * An Enum to force the reproducible executable model generation.
  *
  * drools.reproducibleExecutableModelGeneration = &lt;true|false&gt;
@@ -42,7 +42,7 @@ public enum ReproducibleExecutableModelGenerationOption implements SingleValueRu
         this.value = value;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

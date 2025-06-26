@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,12 +26,12 @@ import org.drools.core.reteoo.WindowNode;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.util.index.AlphaRangeIndex;
 
-/**
+/*
  * Receive notification of the logical parts of the RETE-OO network.
  */
 public interface NetworkHandler {
 
-    /**
+    /*
      * Receive notification of the beginning of an {@link org.kie.reteoo.ObjectTypeNode}
      *
      * <p>The Network parser will invoke this method only once, before any other event callback.</p>
@@ -41,7 +41,7 @@ public interface NetworkHandler {
      */
     void startObjectTypeNode(ObjectTypeNode objectTypeNode);
 
-    /**
+    /*
      * Receive notification of the a non-hashed {@link org.kie.reteoo.AlphaNode}.
      *
      * <p>The Parser will invoke this method at the beginning of every non-hashed Alpha in the Network;
@@ -54,7 +54,7 @@ public interface NetworkHandler {
      */
     void startNonHashedAlphaNode(AlphaNode alphaNode);
 
-    /**
+    /*
      * Receive notification of the end of a non-hashed {@link org.kie.reteoo.AlphaNode}.
      *
      * <p>The parser will invoke this method at the end of every alpha in the network; there will be a corresponding
@@ -76,7 +76,7 @@ public interface NetworkHandler {
 
     void endWindowNode(LeftInputAdapterNode leftInputAdapterNode);
 
-    /**
+    /*
      * Receive notification of the a group of hashed {@link org.kie.reteoo.AlphaNode}s.
      *
      * <p>The Parser will invoke this method at the beginning of every groups of hashed Alphas in the Network;
@@ -104,7 +104,7 @@ public interface NetworkHandler {
 
     void nullCaseAlphaNodeEnd(AlphaNode hashedAlpha);
 
-    /**
+    /*
      * Receive notification of alpha node range index
      */
     void startRangeIndex(AlphaRangeIndex alphaRangeIndex);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.drl.ast.dsl.DescrBuilder;
 import org.drools.drl.ast.dsl.NamedConsequenceDescrBuilder;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
 
-/**
+/*
  * A builder implementation for NamedConsequenceDescr using a fluent API.
  */
 public class NamedConsequenceDescrBuilderImpl<P extends DescrBuilder< ?, ? >>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
-/**
+/*
  * Borrowed gratuitously from Spring under ASL2.0.
  */
 public class FileSystemResource  extends BaseResource implements InternalResource, Externalizable {
@@ -49,7 +49,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         
     }
     
-    /**
+    /*
      * Create a new FileSystemResource from a File handle.
      * <p>Note: When building relative resources via {@link #createRelative},
      * the relative path will apply <i>at the same directory level</i>:
@@ -78,7 +78,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         this.encoding = encoding;
     }
 
-    /**
+    /*
      * Create a new FileSystemResource from a file path.
      * <p>Note: When building relative resources via {@link #createRelative},
      * it makes a difference whether the specified resource base path here
@@ -119,7 +119,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         return this.encoding;
     }
 
-    /**
+    /*
      * This implementation opens a FileInputStream for the underlying file.
      * @see java.io.FileInputStream
      */
@@ -154,7 +154,7 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
         return resources;
     }
     
-    /**
+    /*
      * This implementation returns a URL for the underlying file.
      * @see java.io.File#toURI()
      */

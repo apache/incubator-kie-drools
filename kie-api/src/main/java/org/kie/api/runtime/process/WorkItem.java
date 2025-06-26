@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.process;
 
 import java.util.Map;
 
-/**
+/*
  * Represents one unit of work that needs to be executed.  It contains
  * all the information that it necessary to execute this unit of work
  * as parameters, and (possibly) results related to its execution.
@@ -50,26 +50,26 @@ public interface WorkItem {
     int COMPLETED = 2;
     int ABORTED   = 3;
 
-    /**
+    /*
      * The unique id of this work item
      * @return the id of this work item
      */
     long getId();
 
-    /**
+    /*
      * The name of the work item.  This represents the type
      * of work that should be executed.
      * @return the name of the work item
      */
     String getName();
 
-    /**
+    /*
      * The state of the work item.
      * @return the state of the work item
      */
     int getState();
 
-    /**
+    /*
      * Returns the value of the parameter with the given name.  Parameters
      * can be used to pass information necessary for the execution of this
      * work item.  Returns <code>null</code> if the parameter cannot be found.
@@ -79,7 +79,7 @@ public interface WorkItem {
      */
     Object getParameter(String name);
 
-    /**
+    /*
      * Returns the map of parameters of this work item.  Parameters
      * can be used to pass information necessary for the execution
      * of this work item.
@@ -88,7 +88,7 @@ public interface WorkItem {
      */
     Map<String, Object> getParameters();
 
-    /**
+    /*
      * Returns the value of the result parameter with the given name.  Result parameters
      * can be used to pass information related the result of the execution of this
      * work item.  Returns <code>null</code> if the result cannot be found.
@@ -98,7 +98,7 @@ public interface WorkItem {
      */
     Object getResult(String name);
 
-    /**
+    /*
      * Returns the map of result parameters of this work item.  Result parameters
      * can be used to pass information related the result of the execution of this
      * work item.
@@ -107,7 +107,7 @@ public interface WorkItem {
      */
     Map<String, Object> getResults();
 
-    /**
+    /*
      * The id of the process instance that requested the execution of this
      * work item
      *

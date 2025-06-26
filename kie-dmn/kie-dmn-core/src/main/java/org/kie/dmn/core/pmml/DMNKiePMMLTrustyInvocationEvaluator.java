@@ -140,7 +140,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         return (Map) retrieved.iterator().next().getOutputData();
     }
 
-    /**
+    /*
      * This method retrieves the previously built <code>EfestoCompilationContext</code> for the given <code>ModelLocalUriId</code> or, eventually, recompile the model from scratch
      * @param pmmlModelLocalUriID
      * @param parentClassloader

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import static org.kie.maven.plugin.executors.GenerateModelExecutor.generateModel
 import static org.kie.maven.plugin.executors.GeneratePMMLModelExecutor.generatePMMLModel;
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.ancEnabled;
 
-/**
+/*
  * This goal builds the Drools files belonging to the kproject.
  */
 @Mojo(name = "build",

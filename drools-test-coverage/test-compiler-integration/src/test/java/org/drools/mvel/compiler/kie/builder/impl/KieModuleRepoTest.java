@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -75,7 +75,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-/**
+/*
  * This test contains
  * - normal tests that test for concurrency issues and memory leaks (that the KieModuleRepo
  * functions as a LRU cache, and evicts old {@link KieModule} instances )
@@ -106,7 +106,7 @@ public class KieModuleRepoTest {
         setCacheSize(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
     }
 
-    /**
+    /*
      * HELPER METHODS -------------------------------------------------------------------------------------------------------------
      */
 
@@ -171,7 +171,7 @@ public class KieModuleRepoTest {
         field.set(fieldObject, newValue);
     }
 
-    /**
+    /*
      * TESTS ----------------------------------------------------------------------------------------------------------------------
      */
 

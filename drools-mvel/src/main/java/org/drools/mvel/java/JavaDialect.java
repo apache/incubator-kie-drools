@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -335,7 +335,7 @@ public class JavaDialect implements Dialect {
         return result;
     }
 
-    /**
+    /*
      * Returns the current type resolver instance
      *
      * @return
@@ -396,7 +396,7 @@ public class JavaDialect implements Dialect {
         return ENTRY_POINT_BUILDER;
     }
 
-    /**
+    /*
      * This actually triggers the compiling of all the resources.
      * Errors are mapped back to the element that originally generated the semantic
      * code.
@@ -443,7 +443,7 @@ public class JavaDialect implements Dialect {
         this.errorHandlers.clear();
     }
 
-    /**
+    /*
      * @param classes
      * @param dumpDir
      * @throws IOException
@@ -476,7 +476,7 @@ public class JavaDialect implements Dialect {
         }
     }
 
-    /**
+    /*
      * This will add the rule for compiling later on.
      * It will not actually call the compiler
      */
@@ -595,7 +595,7 @@ public class JavaDialect implements Dialect {
         addClassName(resourceName);
     }
 
-    /**
+    /*
      * This adds a compile "task" for when the compiler of
      * semantics (JCI) is called later on with compileAll()\
      * which actually does the compiling.

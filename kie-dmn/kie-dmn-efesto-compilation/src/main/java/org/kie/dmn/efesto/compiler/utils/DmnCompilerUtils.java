@@ -112,7 +112,7 @@ public class DmnCompilerUtils {
         return dmnRuntime.getModels();
     }
 
-    /**
+    /*
      * This method remove unwanted preceding paths from given <code>File</code>, and always returns a <b>/</b>-separated path,
      * without leading <b>/</b>
      * @param fileToClean
@@ -122,7 +122,7 @@ public class DmnCompilerUtils {
         return getCleanedFilenameForURI(fileToClean.getPath());
     }
 
-    /**
+    /*
      * This method remove unwanted preceding paths from given <code>String</code>, and always returns a <b>/</b>-separated path,
      * without leading <b>/</b>
      * @param filenameToClean
@@ -142,7 +142,7 @@ public class DmnCompilerUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * This method remove unwanted preceding paths from given <code>String</code> and always returns a <b>/</b>-separated path,
      * @param filenameToClean
      *  @param patternToClean

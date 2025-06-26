@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.internal.builder;
 
-/**
+/*
  * This is a mixin style interface who's role is to provide process specific methods to the KnowledgeBuilder, currently there are none.
  */
 public interface ProcessBuilder {

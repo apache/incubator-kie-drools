@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Declares an enum to be dynamically generated.
  */
 public class EnumLiteralDefinition implements Externalizable {
@@ -39,7 +39,7 @@ public class EnumLiteralDefinition implements Externalizable {
 
     }
 
-    /**
+    /*
      * Default constructor
      *
      * @param name the literal's name
@@ -63,14 +63,14 @@ public class EnumLiteralDefinition implements Externalizable {
         out.writeObject( this.constructorArgs );
     }
 
-    /**
+    /*
      * @return Returns the name.
      */
     public String getName() {
         return name;
     }
 
-    /**
+    /*
      * @param name The name to set.
      */
     public void setName(String name) {

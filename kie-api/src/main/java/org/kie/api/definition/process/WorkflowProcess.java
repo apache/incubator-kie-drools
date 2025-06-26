@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.definition.process;
 
-/**
+/*
  * A WorkflowProcess is a type of Process that uses a flow chart (as a collection of Nodes and Connections)
  * to model the business logic.
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Priority
  * <ul>
  *  <li>System properties</li>
@@ -131,7 +131,7 @@ public class ChainedProperties
         out.writeObject( defaultProps );
     }
 
-    /**
+    /*
      * Specifically added properties take priority, so they go to the front of the list.
      */
     public ChainedProperties addProperties(Properties properties) {

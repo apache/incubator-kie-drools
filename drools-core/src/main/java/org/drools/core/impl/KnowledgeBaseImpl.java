@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -133,7 +133,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     private final transient Map<String, TypeDeclaration> classTypeDeclaration = new ConcurrentHashMap<>();
 
     private ClassFieldAccessorCache classFieldAccessorCache;
-    /** The root Rete-OO for this <code>RuleBase</code>. */
+    /* The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
     private final transient Map<Integer, SegmentPrototype> segmentProtos = isEagerSegmentCreation() ? new HashMap<>() : new ConcurrentHashMap<>();
@@ -261,7 +261,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     // ------------------------------------------------------------
 
 
-    /**
+    /*
      * @return the id
      */
     public String getId() {
@@ -339,7 +339,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         this.lock.writeLock().unlock();
     }
 
-    /**
+    /*
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
      * network. Before update network each referenced <code>WorkingMemory</code>
@@ -726,7 +726,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         return newValue;
     }
 
-    /**
+    /*
      * Merge a new package with an existing package.
      * Most of the work is done by the concrete implementations,
      * but this class does some work (including combining imports, compilation data, globals,
@@ -890,7 +890,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         return removedEntryNodeCache;
     }
 
-    /**
+    /*
      * Retrieve the Rete-OO network for this <code>RuleBase</code>.
      *
      * @return The RETE-OO network.

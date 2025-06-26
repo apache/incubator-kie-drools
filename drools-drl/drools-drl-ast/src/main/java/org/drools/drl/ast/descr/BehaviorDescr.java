@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.descr;
 
 import java.util.List;
 
-/**
+/*
  * A super class for all Behavior Descriptors like
  * time window, event window, distinct, etc
  */
@@ -29,26 +29,26 @@ public class BehaviorDescr extends BaseDescr {
     private String subtype;
     private List<String> params;
     
-    /**
+    /*
      * @param type
      */
     public BehaviorDescr() { }
     
-    /**
+    /*
      * @param type
      */
     public BehaviorDescr(String type) {
         setText(type);
     }
 
-    /**
+    /*
      * @return the type
      */
     public String getType() {
         return getText();
     }
 
-    /**
+    /*
      * @param type the type to set
      */
     public void setType(String type) {

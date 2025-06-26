@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -59,7 +59,7 @@ import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessa
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
 
-/**
+/*
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
  * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a
  * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side
@@ -86,7 +86,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     }
 
-    /**
+    /*
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a
      * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
      *
@@ -448,7 +448,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    /**
+    /*
      * Returns the next node
      * @return
      *      The next ObjectSinkNode
@@ -457,7 +457,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.nextRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      * @param next
      *      The next ObjectSinkNode
@@ -466,7 +466,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.nextRightTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      * @return
      *      The previous ObjectSinkNode
@@ -475,7 +475,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.previousRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      * @param previous
      *      The previous ObjectSinkNode
@@ -592,7 +592,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    /**
+    /*
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
      */
@@ -608,7 +608,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             this.detachedTuples = detachedTuples;
         }
 
-        /**
+        /*
          * Do not use this constructor. It should be used just by deserialization.
          */
         public LeftTupleSinkAdapter() {

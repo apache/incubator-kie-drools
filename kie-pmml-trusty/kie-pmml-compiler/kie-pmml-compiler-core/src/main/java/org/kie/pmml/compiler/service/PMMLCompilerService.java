@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ import org.kie.pmml.compiler.model.EfestoCallableOutputPMMLClassesContainer;
 
 import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
 
-/**
+/*
  * Class meant to <b>compile</b> resources
  */
 public class PMMLCompilerService {

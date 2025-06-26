@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
-/**
+/*
  * Class representing a <code>Pattern</code> with the referred field, its possible <code>KiePMMLOperatorValue</code>s and, eventually, nested <code>Pattern</code>s
  */
 public class KiePMMLFieldOperatorValue {
@@ -39,7 +39,7 @@ public class KiePMMLFieldOperatorValue {
     private final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues;
     private final String constraintsString;
 
-    /**
+    /*
      * @param name The name of the type
      * @param operator the operator to use to join multiple <code>KiePMMLOperatorValue</code>s (if provided)
      * @param kiePMMLOperatorValues the inner <code>List&lt;KiePMMLOperatorValue&gt;</code>

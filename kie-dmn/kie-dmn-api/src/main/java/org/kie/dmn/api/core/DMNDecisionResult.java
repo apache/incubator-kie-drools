@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.api.core;
 
 import java.util.List;
 
-/**
+/*
  * Stores the result of the evaluation of a decision
  *
  */
@@ -30,21 +30,21 @@ public interface DMNDecisionResult {
         NOT_EVALUATED, EVALUATING, SUCCEEDED, SKIPPED, FAILED;
     }
 
-    /**
+    /*
      * Returns the decision ID
      *
      * @return the decision ID
      */
     String getDecisionId();
 
-    /**
+    /*
      * Returns the decision name
      *
      * @return the decision name
      */
     String getDecisionName();
 
-    /**
+    /*
      * Returns the evaluation status
      * of this decision.
      *
@@ -53,7 +53,7 @@ public interface DMNDecisionResult {
      */
     DecisionEvaluationStatus getEvaluationStatus();
 
-    /**
+    /*
      * Returns the result of the evaluation
      * of the decision
      *
@@ -61,7 +61,7 @@ public interface DMNDecisionResult {
      */
     Object getResult();
 
-    /**
+    /*
      * Returns a list of DMN messages generated
      * during the evaluation of this decision.
      *
@@ -70,7 +70,7 @@ public interface DMNDecisionResult {
      */
     List<DMNMessage> getMessages();
 
-    /**
+    /*
      * Returns true if any error occurred during evaluation.
      *
      * @return true if any error ocurred during evaluation.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,18 +23,18 @@ import java.io.Serializable;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
  * for exposing information events.
  */
 public interface NetworkNode extends Serializable {
 
-    /**
+    /*
      * Returns the unique id that represents the node in the Rete network
      */
     int getId();
 
-    /**
+    /*
      * Returns the partition ID to which this node belongs to
      */
     RuleBasePartitionId getPartitionId();

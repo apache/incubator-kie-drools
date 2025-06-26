@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A <code>CompilationOutput</code>.
  *
  * It will be translated to a <code>GeneratedExecutableResource</code>,
@@ -30,13 +30,13 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
  */
 public interface EfestoCallableOutput extends EfestoCompilationOutput {
 
-    /**
+    /*
      * Returns the <b>full resource identifier</b> to be invoked for execution
      * @return
      */
     ModelLocalUriId getModelLocalUriId();
 
-    /**
+    /*
      * Returns the <b>full class names</b> to be instantiated for execution
      *
      * @return

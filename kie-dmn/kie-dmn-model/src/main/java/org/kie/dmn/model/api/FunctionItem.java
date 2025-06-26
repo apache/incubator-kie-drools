@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,14 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-/**
+/*
  * @since DMN v1.3
  */
 public interface FunctionItem extends DMNElement {
 
     List<InformationItem> getParameters();
 
-    /**
+    /*
      * for consistency in the modeling, use QName
      */
     QName getOutputTypeRef();

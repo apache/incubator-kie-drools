@@ -60,7 +60,7 @@ public interface PMMLRuntimeContext extends EfestoLocalRuntimeContext<PMMLListen
 
     Map<String, Double> getProbabilityMap();
 
-    /**
+    /*
      * Returns the <b>probability map</b> evaluated by the model
      *
      * @return

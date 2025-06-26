@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.builder.model;
 
 import static java.util.EnumSet.allOf;
 
-/**
+/*
  * ListenerModel is a model allowing to programmatically define a Listener and wire it to a KieSession
  */
 public interface ListenerModel {
@@ -51,13 +51,13 @@ public interface ListenerModel {
         }
     }
 
-    /**
+    /*
      * Returns the type of this ListenerModel
      * (i.e. the name of the class implementing the listener)
      */
     String getType();
 
-    /**
+    /*
      * Returns the Kind of this ListenerModel
      */
     ListenerModel.Kind getKind();

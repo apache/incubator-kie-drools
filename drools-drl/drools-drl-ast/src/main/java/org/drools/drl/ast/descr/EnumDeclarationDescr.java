@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -72,7 +72,7 @@ public class EnumDeclarationDescr extends AbstractClassTypeDeclarationDescr {
         return this.literals;
     }
 
-    /**
+    /*
      * @param literals the fields to set
      */
     public void setLiterals( List<EnumLiteralDescr> literals ) {

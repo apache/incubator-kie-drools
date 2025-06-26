@@ -25,7 +25,7 @@ public final class EfestoStringResource implements EfestoResource<String> {
     private final String content;
     private final ModelLocalUriId modelLocalUriId;
 
-    /**
+    /*
      *
      * @param content
      * @param modelLocalUriId

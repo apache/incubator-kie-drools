@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -106,7 +106,7 @@ public final class ClassUtils {
     }
 
 
-    /**
+    /*
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
      */
@@ -114,7 +114,7 @@ public final class ClassUtils {
         return stripExtension(pResourceName).replace('/', '.');
     }
 
-    /**
+    /*
      * Please do not use - internal
      * org.my.Class -> org/my/Class.class
      */
@@ -126,7 +126,7 @@ public final class ClassUtils {
         return pName.replace( '.', '/' ) + ".class";
     }
 
-    /**
+    /*
      * Please do not use - internal
      * org/my/Class.xxx -> org/my/Class
      */
@@ -159,7 +159,7 @@ public final class ClassUtils {
         return name.toString();
     }
 
-    /**
+    /*
      * This method will attempt to load the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
      */
@@ -220,7 +220,7 @@ public final class ClassUtils {
                 (ClassLoader)null);
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
      */
@@ -236,7 +236,7 @@ public final class ClassUtils {
         return object;
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
@@ -257,7 +257,7 @@ public final class ClassUtils {
         return object;
     }
 
-    /**
+    /*
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
@@ -268,7 +268,7 @@ public final class ClassUtils {
         return instantiateObject(className, null, args);
     }
 
-    /**
+    /*
      * Populates the import style pattern map from give comma delimited string
      */
     public static void addImportStylePatterns(Map<String, Object> patterns, String str) {
@@ -305,7 +305,7 @@ public final class ClassUtils {
         }
     }
 
-    /**
+    /*
      * Determines if a given full qualified class name matches any import style patterns.
      */
     public static boolean isMatched(Map<String, Object> patterns,
@@ -336,7 +336,7 @@ public final class ClassUtils {
         }
     }
 
-    /**
+    /*
      * Extracts the package name from the given class object
      */
     public static String getPackage(Class<?> cls) {

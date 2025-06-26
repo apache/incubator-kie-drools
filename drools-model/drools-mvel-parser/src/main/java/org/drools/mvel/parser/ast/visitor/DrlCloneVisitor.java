@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
 import org.drools.mvel.parser.ast.expr.WithStatement;
 
-/**
+/*
  * Should be used instead of .clone() when cloning DRL AST
  * drlExpr.accept(new DrlCloneVisitor(), null);
  */

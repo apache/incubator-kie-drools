@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ public class ClusteringCompilationDTO extends AbstractSpecificCompilationDTO<Clu
 
     private static final long serialVersionUID = -5903743905468597652L;
 
-    /**
+    /*
      * Private constructor
      * @param source
      */
@@ -34,7 +34,7 @@ public class ClusteringCompilationDTO extends AbstractSpecificCompilationDTO<Clu
         super(source);
     }
 
-    /**
+    /*
      * Default builder
      * @param source
      * @return

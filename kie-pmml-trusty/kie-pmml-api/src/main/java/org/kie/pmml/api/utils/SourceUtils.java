@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,15 +31,15 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 
 public class SourceUtils {
 
-    /**
+    /*
      * System property to dump generated PMML sources <b>yes</b>
      */
     public static final String DUMP_KIE_PMML_SOURCES = "dumpKiePmmlSources";
-    /**
+    /*
      * System property to override default output directory for generated PMML sources (inside <b>target</b>)
      */
     public static final String DUMP_KIE_PMML_DIRECTORY = "dumpKiePmmlDirectory";
-    /**
+    /*
      * Default output directory for generated PMML sources (<b>target/generated-pmml-sources</b>)
      */
     public static final String DEFAULT_DUMP_KIE_PMML_DIRECTORY = "generated-pmml-sources";

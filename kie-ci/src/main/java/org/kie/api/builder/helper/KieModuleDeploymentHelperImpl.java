@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,14 +51,14 @@ import org.slf4j.LoggerFactory;
 import static org.drools.util.IoUtils.readBytesFromInputStream;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
-/**
+/*
  * This is the main class where all interfaces and code comes together. 
  */
 final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelper implements SingleKieModuleDeploymentHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieModuleDeploymentHelperImpl.class);
 
-    /**
+    /*
      * package scope: Because users will do very unexpected things.
      */
 
@@ -68,7 +68,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         config = new KieModuleDeploymentConfig();
     }
 
-    /**
+    /*
      * Fluent API
      */
     
@@ -190,7 +190,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         }
     }
     
-    /**
+    /*
      * General/Single API
      */
     
@@ -247,11 +247,11 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         internalCreateAndDeployKjarToMaven(releaseId, kbaseName, ksessionName, resourceFilePaths, classesForKjar, dependencies);
     }
     
-    /**
+    /*
      * Internal methods
      */
 
-    /**
+    /*
      * Create a KJar and deploy it to maven.
      * 
      * @param releaseId The {@link ReleaseId} of the jar.
@@ -286,7 +286,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         repository.installArtifact(releaseId, kjar, pomFile);
     }
 
-    /**
+    /*
      * Create a KJar for deployment;
      * 
      * @param releaseId Release (deployment) id.
@@ -346,7 +346,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         return kieBuilder.getKieModule();
     }
 
-    /**
+    /*
      * Create the {@link KieFileSystem} instance to store the content going into the KJar.
      *
      * @return
@@ -358,7 +358,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         return kfs;
     }
 
-    /**
+    /*
      * Create the pom that will be placed in the KJar.
      * 
      * @param releaseId The release (deployment) id.
@@ -392,7 +392,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         return pom.toString();
     }
 
-    /**
+    /*
      * Create a list of {@link KJarResource} instances with the process files to be included in the KJar.
      * 
      * @return The list of {@link KJarResource} instances.
@@ -478,7 +478,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         return output;
     }
    
-    /**
+    /*
      * Find the resource files specified and create {@link KJarResource} instances from them.
      * 
      * @param resourceFilePaths A list of resource files or directories containing resource files
@@ -515,7 +515,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         }
     }
 
-    /**
+    /*
      * Add class to the {@link KieFileSystem}.
      * 
      * @param userClass The class to be added.

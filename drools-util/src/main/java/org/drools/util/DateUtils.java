@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -58,7 +58,7 @@ public class DateUtils {
         return fmt;
     }
 
-    /** Use the simple date formatter to read the date from a string */
+    /* Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input) {
         try {
             return df.get().parse(input);
@@ -73,12 +73,12 @@ public class DateUtils {
         }
     }
 
-    /** Use the simple date formatter to convert the Date into a String */
+    /* Use the simple date formatter to convert the Date into a String */
     public static String format(final Date input) {
         return df.get().format( input );
     }
     
-    /** Converts the right hand side date as appropriate */
+    /* Converts the right hand side date as appropriate */
     public static Date getRightDate(final Object object2) {
         if (object2 == null) {
             return null;
@@ -93,7 +93,7 @@ public class DateUtils {
         }
     }
 
-    /** Check for the system property override, if it exists */
+    /* Check for the system property override, if it exists */
     public static String getDateFormatMask() {
         String fmt = getConfig("drools.dateformat");
         if (fmt == null) {

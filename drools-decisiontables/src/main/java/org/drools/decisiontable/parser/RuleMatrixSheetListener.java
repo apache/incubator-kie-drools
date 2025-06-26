@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
 import org.drools.util.StringUtils;
 
-/**
+/*
  *         href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
  * Define a ruleset spreadsheet which contains a matrix style decision tables.
@@ -170,7 +170,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
         this.firstRule = getCurrentRule();
     }
 
-    /**
+    /*
      * This gets called each time a "new" rule table is found.
      */
     protected void preInitRuleTable(final int row,

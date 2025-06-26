@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime.rule;
 
-/**
+/*
  * An handle to a fact inserted into the working memory
  */
 public interface FactHandle {
@@ -36,19 +36,19 @@ public interface FactHandle {
 
     boolean isValid();
 
-    /**
+    /*
      * The way how the fact to which this FactHandle was assigned
      * has been inserted into the working memory
      */
     enum State {
         ALL,
 
-        /**
+        /*
          * A fact that has been explicitly stated into the working memory
          */
         STATED,
 
-        /**
+        /*
          * A fact that has been logically inserted into the working memory
          */
         LOGICAL;

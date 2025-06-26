@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Test coverage for the temporal evaluators.
  */
 public class TemporalEvaluatorFactoryTest {

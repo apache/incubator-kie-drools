@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,14 +28,14 @@ import java.util.stream.Collectors;
 
 import org.drools.model.codegen.ExecutableModelProject;
 
-/**
+/*
  * Utility class that holds default tests parameters.
  */
 public final class TestParametersUtil {
 
     private static final boolean TEST_WITH_ALPHA_NETWORK = Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"));
 
-    /**
+    /*
      * Get all KieBaseConfigurations for tests based on specified engine configurations.
      * @param engineConfigurations Engine configurations for tests. They should contain every configuration that
      * should be tested. What is not specified, is not returned as part of KieBaseConfigurations.
@@ -54,7 +54,7 @@ public final class TestParametersUtil {
         return parameters;
     }
 
-    /**
+    /*
      * Checks, if a test configuration matches specified engine configurations. Take note that the engine configurations
      * can contain contradictory configurations on first sight. This is because they should include all
      * configurations requested for tests. E.g. a test could require both combinations with executable model on and also off.
@@ -111,7 +111,7 @@ public final class TestParametersUtil {
         return true;
     }
 
-    /**
+    /*
      * Prepares collection of KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      */
@@ -124,7 +124,7 @@ public final class TestParametersUtil {
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }
 
-    /**
+    /*
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
@@ -133,7 +133,7 @@ public final class TestParametersUtil {
         return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.STREAM_MODE, testAlsoExecutableModel);
     }
 
-    /**
+    /*
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
@@ -143,7 +143,7 @@ public final class TestParametersUtil {
         return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.STREAM_MODE, testAlsoExecutableModel, testEquality);
     }
 
-    /**
+    /*
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
@@ -152,7 +152,7 @@ public final class TestParametersUtil {
         return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.CLOUD_MODE, testAlsoExecutableModel);
     }
 
-    /**
+    /*
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
@@ -201,7 +201,7 @@ public final class TestParametersUtil {
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }
 
-    /**
+    /*
      * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
      * @return Collection of combinations for parameterized tests.
      */
@@ -224,7 +224,7 @@ public final class TestParametersUtil {
         return parameters;
     }
 
-    /**
+    /*
      * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
      * Use only stateful kie sessions.
      * @return Collection of combinations for parameterized tests.
@@ -242,7 +242,7 @@ public final class TestParametersUtil {
         return parameters;
     }
 
-    /**
+    /*
      * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
      * Use only stream kie bases and stateful kie sessions.
      * @return Collection of combinations for parameterized tests.
@@ -258,7 +258,7 @@ public final class TestParametersUtil {
         return parameters;
     }
 
-    /**
+    /*
      * Returns KieBaseTestConfiguration instance with Equality while other properties are the same as original.
      */
     public static KieBaseTestConfiguration getEqualityInstanceOf(KieBaseTestConfiguration orig) {
@@ -273,7 +273,7 @@ public final class TestParametersUtil {
         throw new RuntimeException("Cannot find Equality instance of " + orig);
     }
 
-    /**
+    /*
      * Returns KieBaseTestConfiguration instance with Identity while other properties are the same as original.
      */
     public static KieBaseTestConfiguration getIdentityInstanceOf(KieBaseTestConfiguration orig) {
@@ -288,7 +288,7 @@ public final class TestParametersUtil {
         throw new RuntimeException("Cannot find Identity instance of " + orig);
     }
 
-    /**
+    /*
      * Returns KieBaseTestConfiguration instance with Stream while other properties are the same as original.
      */
     public static KieBaseTestConfiguration getStreamInstanceOf(KieBaseTestConfiguration orig) {
@@ -303,7 +303,7 @@ public final class TestParametersUtil {
         throw new RuntimeException("Cannot find Stream instance of " + orig);
     }
 
-    /**
+    /*
      * Returns KieBaseTestConfiguration instance with Cloud while other properties are the same as original.
      */
     public static KieBaseTestConfiguration getCloudInstanceOf(KieBaseTestConfiguration orig) {

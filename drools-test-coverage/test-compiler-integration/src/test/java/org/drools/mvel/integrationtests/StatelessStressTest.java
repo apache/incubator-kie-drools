@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.StatelessKieSession;
 
-/**
+/*
  * This is for testing possible PermSpace issues (leaking) when spawning lots of sessions in concurrent threads.
  * Normally this test will be XXX'ed out, as when running it will not terminate.
  */

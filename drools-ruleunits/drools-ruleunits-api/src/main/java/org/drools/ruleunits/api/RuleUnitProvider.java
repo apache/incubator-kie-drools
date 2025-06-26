@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,18 +21,18 @@ package org.drools.ruleunits.api;
 import org.drools.ruleunits.api.conf.RuleConfig;
 import org.kie.api.internal.utils.KieService;
 
-/**
+/*
  * A provider of {@link RuleUnit} and {@link RuleUnitInstance} from a given {@link RuleUnitData}.
  */
 public interface RuleUnitProvider extends KieService {
 
-    /**
+    /*
      * Provides the {@link RuleUnit} generated for the given {@link RuleUnitData}.
      * @return The generated {@link RuleUnit} or null if there's no {@link RuleUnit} generated for the given {@link RuleUnitData}.
      */
     <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData);
 
-    /**
+    /*
      * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData}.
      * This is equivalent to
      * <pre>
@@ -48,7 +48,7 @@ public interface RuleUnitProvider extends KieService {
         return ruleUnit.createInstance(ruleUnitData);
     }
 
-    /**
+    /*
      * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData} with {@link RuleConfig}.
      * This is equivalent to
      * <pre>
@@ -64,18 +64,18 @@ public interface RuleUnitProvider extends KieService {
         return ruleUnit.createInstance(ruleUnitData, ruleConfig);
     }
 
-    /**
+    /*
      * Invalidates all {@link RuleUnit}s generated from the given class.
      * @return The number of invalidated ruleunits.
      */
     <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass);
 
-    /**
+    /*
      * Creates a new RuleConfig instance.
      */
     RuleConfig newRuleConfig();
 
-    /**
+    /*
      * Returns an instance of the RuleUnitProvider.
      */
     static RuleUnitProvider get() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ public class Cheesery
         recalculateTotalAmount();
     }
 
-    /**
+    /*
      * Used to check inline evals.
      */
     public boolean hasSomeFlavour(String flavour) {

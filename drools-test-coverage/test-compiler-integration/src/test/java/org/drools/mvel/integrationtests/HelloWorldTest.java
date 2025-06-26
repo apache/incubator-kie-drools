@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.mvel2.debug.Frame;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * This is a sample class to launch a rule.
  */
 public class HelloWorldTest {

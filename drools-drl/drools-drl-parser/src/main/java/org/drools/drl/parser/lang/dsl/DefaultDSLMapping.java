@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
+/*
  * This is a default implementation of the DSL Mapping interface
  * capable of storing a list of DSLMappingEntries and managing it.
  */
@@ -49,7 +49,7 @@ public class DefaultDSLMapping
         this.options = new HashSet<>();
     }
 
-    /**
+    /*
      * Add one entry to the list of the entries
      * @param entry
      */
@@ -57,7 +57,7 @@ public class DefaultDSLMapping
         this.entries.add( entry );
     }
 
-    /**
+    /*
      * Adds all entries in the given list to this DSL Mapping
      * @param entries
      */
@@ -65,14 +65,14 @@ public class DefaultDSLMapping
         this.entries.addAll( entries );
     }
 
-    /**
+    /*
      * Returns an unmodifiable list of entries
      */
     public List<DSLMappingEntry> getEntries() {
         return Collections.unmodifiableList( this.entries );
     }
 
-    /**
+    /*
      * Returns the list of mappings for the given section 
      * @param section
      * @return
@@ -88,49 +88,49 @@ public class DefaultDSLMapping
         return list;
     }
 
-    /**
+    /*
      * Returns the identifier for this mapping
      */
     public String getIdentifier() {
         return this.identifier;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public void removeEntry(final DSLMappingEntry entry) {
         this.entries.remove( entry );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public String getDescription() {
         return this.description;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public void setDescription(final String description) {
         this.description = description;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public void setOptions( Collection<String> option ){
         this.options.addAll(option);
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public boolean getOption( String option ){

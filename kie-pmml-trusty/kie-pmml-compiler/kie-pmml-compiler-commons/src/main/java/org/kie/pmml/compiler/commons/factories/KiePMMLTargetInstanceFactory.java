@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.api.models.TargetValue;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLTarget</code> instance
  * out of <code>Target</code>s
  */

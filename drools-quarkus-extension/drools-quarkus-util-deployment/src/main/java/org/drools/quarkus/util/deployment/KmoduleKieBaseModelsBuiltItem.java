@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.builder.model.KieBaseModel;
 
 import io.quarkus.builder.item.SimpleBuildItem;
 
-/**
+/*
  * Optional build item, produced only in the presence of kmodule.xml (or in complete absence of rule units).
  */
 public final class KmoduleKieBaseModelsBuiltItem extends SimpleBuildItem {

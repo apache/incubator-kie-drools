@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ public class DroolsCompilationDTO<T extends Model> extends AbstractSpecificCompi
     private static final long serialVersionUID = 3279343826083191443L;
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
 
-    /**
+    /*
      * Private constructor that use given <code>CommonCompilationDTO</code>
      * @param source
      * @param fieldTypeMap
@@ -41,7 +41,7 @@ public class DroolsCompilationDTO<T extends Model> extends AbstractSpecificCompi
         this.fieldTypeMap = fieldTypeMap;
     }
 
-    /**
+    /*
      * Builder that use given <code>CommonCompilationDTO</code>
      * @param source
      * @param fieldTypeMap

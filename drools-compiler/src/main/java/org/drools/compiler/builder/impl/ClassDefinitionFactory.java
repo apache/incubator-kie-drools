@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -78,7 +78,7 @@ public class ClassDefinitionFactory {
         this.results = buildResultCollector;
     }
 
-    /**
+    /*
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
      */

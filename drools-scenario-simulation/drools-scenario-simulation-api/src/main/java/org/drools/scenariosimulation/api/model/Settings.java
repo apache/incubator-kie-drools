@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.scenariosimulation.api.model;
 
-/**
+/*
  * <code>Settings</code> to be used inside scenario simulation asset
  */
 public class Settings {
@@ -68,7 +68,7 @@ public class Settings {
         this.type = type;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated
@@ -76,7 +76,7 @@ public class Settings {
         return fileName;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated
@@ -84,7 +84,7 @@ public class Settings {
         this.fileName = fileName;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated
@@ -92,7 +92,7 @@ public class Settings {
         return kieSession;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated
@@ -100,7 +100,7 @@ public class Settings {
         this.kieSession = kieSession;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated
@@ -108,7 +108,7 @@ public class Settings {
         return kieBase;
     }
 
-    /**
+    /*
      * @deprecated
      */
     @Deprecated

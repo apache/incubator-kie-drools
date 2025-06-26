@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.drl.ast.descr;
 
-/**
+/*
  * A descriptor class for globals.
  */
 public class GlobalDescr extends BaseDescr {
@@ -39,28 +39,28 @@ public class GlobalDescr extends BaseDescr {
         this.type = type;
     }
 
-    /**
+    /*
      * @return the identifier
      */
     public String getIdentifier() {
         return this.identifier;
     }
 
-    /**
+    /*
      * @param identifier the identifier to set
      */
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
     }
 
-    /**
+    /*
      * @return the type
      */
     public String getType() {
         return this.type;
     }
 
-    /**
+    /*
      * @param type the type to set
      */
     public void setType(final String type) {

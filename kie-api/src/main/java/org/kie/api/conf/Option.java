@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,12 @@ package org.kie.api.conf;
 
 import java.io.Serializable;
 
-/**
+/*
  * A base interface for type safe options in configuration objects
  */
 public interface Option extends Serializable {
 
-    /**
+    /*
      * @return the property name for this option
      */
     @Deprecated // immutable properties should not need getter/setter, this is common now for "value" types.

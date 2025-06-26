@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.dmn.openapi;
 
 import org.kie.dmn.openapi.model.DMNOASResult;
 
-/**
+/*
  * Internal utility to generate OpenAPI (OAS) schema and related metadata information
  */
 public interface DMNOASGenerator {

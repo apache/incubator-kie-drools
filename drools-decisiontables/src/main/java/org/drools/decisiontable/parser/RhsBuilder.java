@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import java.util.Map;
 import org.drools.template.model.SnippetBuilder;
 import org.drools.template.parser.DecisionTableParseException;
 
-/**
+/*
  * Builds up a consequence entry.
  */
 public class RhsBuilder implements SourceBuilder {
@@ -40,7 +40,7 @@ public class RhsBuilder implements SourceBuilder {
     private List<String> values;
     private boolean hasValues;
 
-    /**
+    /*
      * @param boundVariable Pass in a bound variable if there is one.
      * Any cells below then will be called as methods on it.
      * Leaving it blank will make it work in "classic" mode.

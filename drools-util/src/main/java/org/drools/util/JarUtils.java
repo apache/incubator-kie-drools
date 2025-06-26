@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.util;
 
 import java.net.URL;
 
-/**
+/*
  * Utility to access jar files
  */
 public class JarUtils {
@@ -36,7 +36,7 @@ public class JarUtils {
         // Avoid instantiating class
     }
 
-    /**
+    /*
      * Fix resource urls are acquired by spring boot classloader's getResources() for Spring Boot fat jar
      * in order to be consistent with the actual path in the jar file.
      *
@@ -61,7 +61,7 @@ public class JarUtils {
         }
     }
 
-    /**
+    /*
      * Replace the new spring-boot nested path representation "/!BOOT-INF/" (introduced since 3.2) with the old "!/BOOT-INF/".
      * Because the new path representation doesn't meet the path manipulation in the drools codebase.
      * See https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes#nested-jar-support
@@ -74,7 +74,7 @@ public class JarUtils {
         }
     }
 
-    /**
+    /*
      * get path removing scheme prefix including additional scheme e.g. "jar:nested:"
      */
     public static String getPathWithoutScheme(URL url) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -196,14 +196,14 @@ public class PhreakPropagationContext
         return this.type;
     }
 
-    /**
+    /*
      * @return the entryPoint
      */
     public EntryPointId getEntryPoint() {
         return entryPoint;
     }
 
-    /**
+    /*
      * @param entryPoint the entryPoint to set
      */
     public void setEntryPoint(EntryPointId entryPoint) {

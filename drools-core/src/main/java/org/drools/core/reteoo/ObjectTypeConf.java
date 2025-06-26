@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,10 +46,10 @@ public interface ObjectTypeConf {
 
     TypeDeclaration getTypeDeclaration();
     
-    /** Whether or not, TMS is active for this object type. */
+    /* Whether or not, TMS is active for this object type. */
     boolean isTMSEnabled();
 
-    /**
+    /*
      * Enable TMS for this object type. 
      * */
     void enableTMS();

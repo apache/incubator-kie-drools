@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests evaluation of a backward chaining family relationships example using
  * several KieSessions.
  */
@@ -67,7 +67,7 @@ public class SeveralKieSessionsTest {
         kieModuleId = prepareKieModule(kieBaseTestConfiguration);
     }
 
-    /**
+    /*
      * Tests evaluation of a backward chaining family relationships example with
      * two KieSessions created from the same KieBase.
      *
@@ -89,7 +89,7 @@ public class SeveralKieSessionsTest {
         performTestAndDispose(ksessionOther);
     }
 
-    /**
+    /*
      * Inserts a new KieModule containing single KieBase and two KieSession
      * instances into KieRepository.
      * @param kieBaseTestConfiguration 
@@ -123,7 +123,7 @@ public class SeveralKieSessionsTest {
         return releaseId;
     }
 
-    /**
+    /*
      * Performs test on given KieSession and disposes the session afterwards.
      */
     private void performTestAndDispose(final KieSession ksession) throws Exception {
@@ -134,7 +134,7 @@ public class SeveralKieSessionsTest {
         }
     }
 
-    /**
+    /*
      * Performs the actual test on given KieSession.
      */
     private void performTest(final KieSession ksession) throws Exception {
@@ -249,7 +249,7 @@ public class SeveralKieSessionsTest {
         assertThat(listHolder.isGrandmaBlessedAgeTriggered()).isTrue();
     }
 
-    /**
+    /*
      * Static class to store results from the working memory.
      */
     public static class ListHolder implements Serializable {

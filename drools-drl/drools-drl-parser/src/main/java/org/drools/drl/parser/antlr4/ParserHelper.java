@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -73,7 +73,7 @@ import org.drools.drl.parser.lang.DroolsSoftKeywords;
 import org.drools.drl.parser.lang.DroolsToken;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-/**
+/*
  * This is a class to hold all the helper functions/methods used
  * by the DRL parser
  */
@@ -216,7 +216,7 @@ public class ParserHelper {
         return text2Validate != null && DroolsSoftKeywords.isOperator(text2Validate, negated);
     }
 
-    /**
+    /*
      * Check if the next token is a registered operator.
      * The registry is dynamic, so we can add custom operators dynamically.
      * @see org.drools.drl.parser.impl.Operator#addOperatorToRegistry(String, boolean)
@@ -358,12 +358,12 @@ public class ParserHelper {
         }
     }
 
-    /** return the raw DroolsParserException errors */
+    /* return the raw DroolsParserException errors */
     public List<DroolsParserException> getErrors() {
         return errors;
     }
 
-    /** Return a list of pretty strings summarising the errors */
+    /* Return a list of pretty strings summarising the errors */
     public List<String> getErrorMessages() {
         List<String> messages = new ArrayList<>( errors.size() );
 
@@ -374,12 +374,12 @@ public class ParserHelper {
         return messages;
     }
 
-    /** return true if any parser errors were accumulated */
+    /* return true if any parser errors were accumulated */
     public boolean hasErrors() {
         return !errors.isEmpty();
     }
 
-    /**
+    /*
      * Method that adds a paraphrase type into paraphrases stack.
      *
      * @param type
@@ -396,7 +396,7 @@ public class ParserHelper {
         return paraphrases.pop();
     }
 
-    /**
+    /*
      * Method that sets paraphrase value for a type into paraphrases stack.
      *
      * @param type

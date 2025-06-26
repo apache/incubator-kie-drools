@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,17 +26,17 @@ import jakarta.transaction.Synchronization;
 
 public interface PersistenceContextManager {
     
-    /**
+    /*
      * @return a {@link PersistenceContext} instance containing the Application Scoped EntityManager or persistence helper class.
      */
     PersistenceContext getApplicationScopedPersistenceContext();
     
-    /**
+    /*
      * @return a {@link PersistenceContext} instance containing the Command Scoped EntityManager or persistence helper class.
      */
     PersistenceContext getCommandScopedPersistenceContext();
    
-    /**
+    /*
      * This method should be called at the beginning of a {@link ExecutableRunner#execute(org.kie.api.command.Command)} method,
      * when the given {@link ExecutableRunner} instance is responsible for handling persistence.
      * See the {@link PersistableRunner} class.
@@ -49,7 +49,7 @@ public interface PersistenceContextManager {
      */
     void beginCommandScopedEntityManager();
     
-    /**
+    /*
      * This method should only called in the {@link Synchronization#afterCompletion(int)} method.
      * </p>
      * It is responsible for cleaning up the Command Scoped EntityManager (CSEM) instance, but <i>only</i> when 
@@ -62,7 +62,7 @@ public interface PersistenceContextManager {
      */
     void endCommandScopedEntityManager();
 
-    /**
+    /*
      * Executes the necessary actions in order to clean up and dispose of the internal fields of this instance.
      */
     void dispose();

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.kie.api.runtime.Context;
 
 public interface PMMLCommandExecutor {
 
-    /**
+    /*
      * Evaluate the given <code>Map<String, Object><code>
      * @param pmmlRequestData : it must contain the pmml file name (in the <i>source</i> property)
      * and the model name

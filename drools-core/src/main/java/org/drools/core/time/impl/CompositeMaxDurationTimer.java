@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.Calendars;
 
-/**
+/*
  * While a rule might have multiple DurationTimers, due to LHS CEP rules, there can only ever
  * be one timer attribute. Duration rules should be considered a priority over the one timer rule.
  * So the Timer cannot fire, until the maximum duration has passed.

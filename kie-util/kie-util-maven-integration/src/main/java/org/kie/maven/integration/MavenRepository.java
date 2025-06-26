@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -253,7 +253,7 @@ public class MavenRepository {
         return remoteRepoBuilder.build();
     }
 
-    /**
+    /*
      * Deploys a jar on a remote repository.
      *
      * @param repository The remote repository where the kjar will be deployed
@@ -297,7 +297,7 @@ public class MavenRepository {
     }
 
 
-    /**
+    /*
      * Installs the given jar into the local repository.
      *
      * @param releaseId The releaseId with which the kjar will be installed
@@ -312,7 +312,7 @@ public class MavenRepository {
         installArtifact( releaseId, jarFile, pomFile );
     }
 
-    /**
+    /*
      * Installs the given jar into the local repository.
      *
      * @param releaseId The releaseId with which the kjar will be installed
@@ -386,7 +386,7 @@ public class MavenRepository {
         return releaseId.getArtifactId() + "-" + releaseId.getVersion();
     }
     
-    /**
+    /*
      * Utility method specifically suggested for testing purposes only.
      */
     public void removeLocalArtifact(ReleaseId releaseId) {

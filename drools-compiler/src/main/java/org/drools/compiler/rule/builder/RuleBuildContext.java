@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-/**
+/*
  * A context for the current build
  */
 public class RuleBuildContext extends PackageBuildContext {
@@ -67,7 +67,7 @@ public class RuleBuildContext extends PackageBuildContext {
 
     private int xpathOffsetadjustment = 0;
 
-    /**
+    /*
      * Default constructor
      */
     public RuleBuildContext(final TypeDeclarationContext kBuilder,
@@ -100,28 +100,28 @@ public class RuleBuildContext extends PackageBuildContext {
         this.declarationResolver = new DeclarationScopeResolver(kBuilder.getGlobals(), getPkg());
     }
 
-    /**
+    /*
      * Returns the current Rule being built
      */
     public RuleImpl getRule() {
         return this.rule;
     }
 
-    /**
+    /*
      * Returns the current RuleDescriptor
      */
     public RuleDescr getRuleDescr() {
         return this.ruleDescr;
     }
 
-    /**
+    /*
      * Returns the available declarationResolver instance
      */
     public DeclarationScopeResolver getDeclarationResolver() {
         return this.declarationResolver;
     }
 
-    /**
+    /*
      * Sets the available declarationResolver instance
      */
     public void setDeclarationResolver(final DeclarationScopeResolver declarationResolver) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public enum FEELDialect {
 
     public final static Set<String> STANDARD_FEEL_URIS = getStandardFEELDialectURIS();
 
-    /**
+    /*
      * It returns <code>BFEEL</code> if provided namespace matches,
      * or <code>FEEL</code> if it matches any of the <code>STANDARD_FEEL_URIS</code>,
      * or throws an <code>IllegalArgumentException</code> if no match is found

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 
-/**
+/*
  *  A descriptor builder for declared types
  */
 public interface WindowDeclarationDescrBuilder
@@ -29,7 +29,7 @@ public interface WindowDeclarationDescrBuilder
     DescrBuilder<PackageDescrBuilder, WindowDeclarationDescr>,
     PatternContainerDescrBuilder<WindowDeclarationDescrBuilder, WindowDeclarationDescr>{
 
-    /**
+    /*
      * Defines the window name
      *  
      * @param name the window name

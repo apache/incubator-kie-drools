@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 
 public interface Scheduler {
-    /**
+    /*
      * Schedule a job for later execution
      * 
      * @param job
@@ -33,7 +33,7 @@ public interface Scheduler {
      */
     public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
     
-    /**
+    /*
      * Remove the job identified by the given job handle from the 
      * scheduled queue
      * 

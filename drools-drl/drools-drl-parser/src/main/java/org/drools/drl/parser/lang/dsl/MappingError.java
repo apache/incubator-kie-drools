@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.parser.lang.dsl;
 
 import org.drools.drl.parser.DroolsError;
 
-/**
+/*
  * MappingError
  * A class to represent errors found in a DSL mapping 
  *
@@ -59,7 +59,7 @@ public class MappingError extends DroolsError {
         this.line = new int[] { line };
     }
 
-    /**
+    /*
      * Returns this error code
      * @return
      */
@@ -71,21 +71,21 @@ public class MappingError extends DroolsError {
         return this.line;
     }
 
-    /**
+    /*
      * @return the offset
      */
     public int getOffset() {
         return this.offset;
     }
 
-    /**
+    /*
      * @return the template
      */
     public int getTemplate() {
         return this.template;
     }
 
-    /**
+    /*
      * @return the original content.
      */
     public String getTemplateText() {

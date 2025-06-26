@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,7 +35,7 @@ public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scor
     private final String characteristicsClassName;
     private final String packageCharacteristicsClassName;
 
-    /**
+    /*
      * Private constructor that use given <code>CommonCompilationDTO</code>
      * @param source
      */
@@ -48,7 +48,7 @@ public class ScorecardCompilationDTO extends AbstractSpecificCompilationDTO<Scor
                                                         characteristicsClassName);
     }
 
-    /**
+    /*
      * Builder that use given <code>CommonCompilationDTO</code>
      * @param source
      */

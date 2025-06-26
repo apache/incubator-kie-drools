@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,14 +20,14 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * A class for the parallel rules build threshold configuration.
  */
 public class ParallelRulesBuildThresholdOption implements SingleValueRuleBuilderOption {
 
     private static final long serialVersionUID = 1L;
 
-    /**
+    /*
      * The property name for the parallel rules build threshold option
      */
     public static final String PROPERTY_NAME = "drools.parallelRulesBuildThreshold";
@@ -36,7 +36,7 @@ public class ParallelRulesBuildThresholdOption implements SingleValueRuleBuilder
 
     private int parallelRulesBuildThreshold;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      *
      * @param key
@@ -45,7 +45,7 @@ public class ParallelRulesBuildThresholdOption implements SingleValueRuleBuilder
         this.parallelRulesBuildThreshold = parallelRulesBuildThreshold;
     }
 
-    /**
+    /*
      * This is a factory method for this ParallelRulesBuildThresholdOption configuration. The factory method is a best practice for the case
      * where the actual object construction is changed in the future.
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -67,7 +67,7 @@ public class MavenRequest {
 
     private boolean showErrors;
 
-    /**
+    /*
      * @see org.apache.maven.execution.MavenExecutionRequest
      */
     private int loggingLevel = MavenExecutionRequest.LOGGING_LEVEL_INFO;
@@ -92,41 +92,41 @@ public class MavenRequest {
 
     private LoggerManager mavenLoggerManager;
 
-    /**
+    /*
      * plexus configuration override
      */
     private URL overridingComponentsXml;
 
-    /**
+    /*
      * will processPlugins during project reading
      * @since 3.2
      */
     private boolean processPlugins;
 
-    /**
+    /*
      * will resolve dependencies during project reading
      * @since 3.2
      */
     private boolean resolveDependencies;
 
-    /**
+    /*
      * level of validation when reading pom (ie model building request)
      * default {@link ModelBuildingRequest#VALIDATION_LEVEL_MAVEN_2_0} etc...
      * @since 3.2
      */
     private int validationLevel = ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0;
 
-    /**
+    /*
      * @since 3.3
      */
     private boolean containerAutoWiring = false;
 
-    /**
+    /*
      * @since 3.3
      */
     private String containerComponentVisibility = PlexusConstants.REALM_VISIBILITY;
 
-    /**
+    /*
      * @since 3.3
      */
     private String containerClassPathScanning = PlexusConstants.SCANNING_INDEX;

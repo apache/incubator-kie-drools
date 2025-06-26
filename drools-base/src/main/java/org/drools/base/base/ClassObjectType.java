@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.util.ClassUtils;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
 
-/**
+/*
  * Java class semantics <code>ObjectType</code>.
  *
  *
@@ -57,7 +57,7 @@ public class ClassObjectType
 
     private static final long serialVersionUID = 510l;
 
-    /** Java object class. */
+    /* Java object class. */
     protected Class<?>        cls;
 
     protected String          clsName;
@@ -75,7 +75,7 @@ public class ClassObjectType
     public ClassObjectType() {
     }
 
-    /**
+    /*
      * Creates a new class object type with shadow disabled.
      *
      * @param objectTypeClass
@@ -86,7 +86,7 @@ public class ClassObjectType
               false );
     }
 
-    /**
+    /*
      * Creates a new class object type
      *
      * @param objectTypeClass the class represented by this class object type
@@ -194,7 +194,7 @@ public class ClassObjectType
         return "[ClassObjectType " + (this.isEvent ? "event=" : "class=") + getClassType().getName() + "]";
     }
 
-    /**
+    /*
      * Determine if another object is equal to this.
      *
      * @param object

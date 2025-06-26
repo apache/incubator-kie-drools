@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * An enum to configure the session query listener configuration.
  *
  * Query results are collected by a listener class. The "STANDARD"
@@ -36,7 +36,7 @@ public enum QueryListenerOption implements SingleValueRuleRuntimeOption {
     STANDARD("standard"),
     LIGHTWEIGHT("lightweight");
 
-    /**
+    /*
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.queryListener";
@@ -49,7 +49,7 @@ public enum QueryListenerOption implements SingleValueRuleRuntimeOption {
         this.option = option;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

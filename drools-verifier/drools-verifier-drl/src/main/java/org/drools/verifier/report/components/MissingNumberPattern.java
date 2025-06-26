@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class MissingNumberPattern extends MissingRange
         this.value = value;
     }
 
-    /**
+    /*
      * Returns alway null, because there is no rule that this is related to.
      */
     public String getRuleName() {

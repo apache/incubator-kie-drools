@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -73,21 +73,21 @@ public interface CodedHierarchy<T> {
 
     // These methods will work for any key code
 
-    /**
+    /*
      * Return the "ceiling" of the key's descendants, up to and including the element whose code is key
      * @param key a key, possibly the join of a number of member keys
      * @return
      */
     public Collection<T> lowerBorder( BitSet key );
 
-    /**
+    /*
      * * Return the "ceiling" of the key's descendants, excluding the element whose code is key, if any
      * @param key a key, possibly the join of a number of member keys
      * @return
      */
     public Collection<T> immediateChildren( BitSet key );
 
-    /**
+    /*
      * Returns all elements whose code is a descendant of key
      * @param key
      * @return
@@ -110,14 +110,14 @@ public interface CodedHierarchy<T> {
 
     // These methods work with a generic key, which need not correspond to a particular element
 
-    /**
+    /*
      * Return the "floor" of the key's ancestors, down to and including the element whose code is key, if any
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
     public Collection<T> upperBorder( BitSet key );
 
-    /**
+    /*
      *
      * Return the "floor" of the key's ancetsors, down to and excluding the element whose code is key
      * @param key a key, possibly the meet of a number of member keys
@@ -125,7 +125,7 @@ public interface CodedHierarchy<T> {
      */
     public Collection<T> immediateParents( BitSet key );
 
-    /**
+    /*
      * Returns all elements whose code is an ancestor of key
      * @param key
      * @return

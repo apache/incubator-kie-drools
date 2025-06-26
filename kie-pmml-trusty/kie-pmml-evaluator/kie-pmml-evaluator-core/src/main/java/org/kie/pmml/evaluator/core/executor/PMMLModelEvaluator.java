@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,13 +26,13 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLModelEvaluator<E extends KiePMMLModel> {
 
-    /**
+    /*
      * @return the <code>PMMLModelType</code> this <code>PMMLModelExecutor</code>
      * is specific for
      */
     PMML_MODEL getPMMLModelType();
 
-    /**
+    /*
      * Evaluate the model, given the context
      * It may be <code>null</code> for testing purpose for <b>not drools-related</b> models
      * @param model the model to evaluate

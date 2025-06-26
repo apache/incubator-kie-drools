@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.base.util.Drools.isNativeImage;
 
-/**
+/*
  * The main management agent for Drools. The purpose of this 
  * agent is to serve as a singleton for knowledge base and session
  * monitoring mbeans registration and management.
@@ -269,7 +269,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
             unregisterMBeansFromOwner(cbsKey);
         }
 
-        /**
+        /*
          * Get currently registered session monitor, eventually creating it if necessary.
          * @return the currently registered or newly created session monitor, or null if unable to create and register it on the JMX server.
          */

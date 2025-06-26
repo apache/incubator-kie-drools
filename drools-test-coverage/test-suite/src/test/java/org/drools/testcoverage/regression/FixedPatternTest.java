@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Test for BZ 1150308.
  */
 public class FixedPatternTest {
@@ -54,7 +54,7 @@ public class FixedPatternTest {
         }
     }
 
-    /**
+    /*
      * Tests fixed pattern without constraint in Decision table (BZ 1150308).
      */
     @ParameterizedTest(name = "KieBase type={0}")

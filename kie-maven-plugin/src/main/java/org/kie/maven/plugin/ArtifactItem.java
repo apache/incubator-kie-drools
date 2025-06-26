@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.apache.maven.artifact.ArtifactUtils;
 
 public class ArtifactItem {
 
-    /**
+    /*
      * Group Id of Artifact
      *
      * @parameter
@@ -33,7 +33,7 @@ public class ArtifactItem {
      */
     private String groupId;
 
-    /**
+    /*
      * Name of Artifact
      *
      * @parameter
@@ -41,14 +41,14 @@ public class ArtifactItem {
      */
     private String artifactId;
 
-    /**
+    /*
      * Version of Artifact
      *
      * @parameter
      */
     private String version = null;
 
-    /**
+    /*
      * Type of Artifact (War,Jar,etc)
      *
      * @parameter
@@ -56,14 +56,14 @@ public class ArtifactItem {
      */
     private String type = "jar";
 
-    /**
+    /*
      * Classifier for Artifact (tests,sources,etc)
      *
      * @parameter
      */
     private String classifier;
 
-    /**
+    /*
      * Artifact Item
      */
     private Artifact artifact;
@@ -72,7 +72,7 @@ public class ArtifactItem {
         // default constructor
     }
 
-    /**
+    /*
      * @param artifact {@link Artifact}
      */
     public ArtifactItem(Artifact artifact) {
@@ -91,77 +91,77 @@ public class ArtifactItem {
         return in;
     }
 
-    /**
+    /*
      * @return Returns the artifactId.
      */
     public String getArtifactId() {
         return artifactId;
     }
 
-    /**
+    /*
      * @param theArtifact The artifactId to set.
      */
     public void setArtifactId(String theArtifact) {
         this.artifactId = filterEmptyString(theArtifact);
     }
 
-    /**
+    /*
      * @return Returns the groupId.
      */
     public String getGroupId() {
         return groupId;
     }
 
-    /**
+    /*
      * @param groupId The groupId to set.
      */
     public void setGroupId(String groupId) {
         this.groupId = filterEmptyString(groupId);
     }
 
-    /**
+    /*
      * @return Returns the type.
      */
     public String getType() {
         return type;
     }
 
-    /**
+    /*
      * @param type The type to set.
      */
     public void setType(String type) {
         this.type = filterEmptyString(type);
     }
 
-    /**
+    /*
      * @return Returns the version.
      */
     public String getVersion() {
         return version;
     }
 
-    /**
+    /*
      * @param version The version to set.
      */
     public void setVersion(String version) {
         this.version = filterEmptyString(version);
     }
 
-    /**
+    /*
      * @return Returns the base version.
      */
     public String getBaseVersion() {
         return ArtifactUtils.toSnapshotVersion(version);
     }
 
-    /**
+    /*
      * @return Classifier.
      */
     public String getClassifier() {
         return classifier;
     }
 
-    /**
+    /*
      * @param classifier Classifier.
      */
     public void setClassifier(String classifier) {
@@ -177,14 +177,14 @@ public class ArtifactItem {
         }
     }
 
-    /**
+    /*
      * @return Returns the artifact.
      */
     public Artifact getArtifact() {
         return this.artifact;
     }
 
-    /**
+    /*
      * @param artifact The artifact to set.
      */
     public void setArtifact(Artifact artifact) {

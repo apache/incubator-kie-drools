@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,14 +32,14 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-/**
+/*
  * FEEL expression language engine interface
  *
  * This class is the entry point for the engine use
  */
 public interface FEEL {
     
-    /**
+    /*
      * Factory method to create a new FEEL engine instance using custom FEELProfile(s), using the specified classloader.
      *
      * @return a newly instantiated FEEL engine instance
@@ -48,14 +48,14 @@ public interface FEEL {
         return FEELBuilder.builder().withClassloader(cl).withProfiles(profiles).build();
     }
 
-    /**
+    /*
      * Factory method to create a new compiler context
      *
      * @return compiler context with default options set
      */
     CompilerContext newCompilerContext();
 
-    /**
+    /*
      * Compiles the string expression using the given
      * compiler context.
      *
@@ -65,7 +65,7 @@ public interface FEEL {
      */
     CompiledExpression compile(String expression, CompilerContext ctx);
 
-    /**
+    /*
      * Process the string expression using the given
      * compiler context. The returned <code>ProcessedExpression</code>
      * could be used to retrieve the actual <code>CompiledExpression</code>
@@ -76,7 +76,7 @@ public interface FEEL {
      */
     ProcessedExpression processExpression(String expression, CompilerContext ctx);
 
-    /**
+    /*
      * Compiles the string expression using the given
      * compiler context.
      *
@@ -86,7 +86,7 @@ public interface FEEL {
      */
     CompiledExpression processUnaryTests(String expression, CompilerContext ctx);
 
-    /**
+    /*
      * Evaluates the given FEEL expression and returns
      * the result
      *
@@ -95,7 +95,7 @@ public interface FEEL {
      */
     Object evaluate(String expression);
     
-    /**
+    /*
      * Evaluates the given FEEL expression using the
      * given EvaluationContext, and returns the result
      *
@@ -108,7 +108,7 @@ public interface FEEL {
      */
     Object evaluate(String expression, EvaluationContext ctx);
 
-    /**
+    /*
      * Evaluates the given FEEL expression using the
      * given input variables, and returns the result
      *
@@ -126,7 +126,7 @@ public interface FEEL {
      */
     Object evaluate(String expression, Map<String, Object> inputVariables);
 
-    /**
+    /*
      * Evaluates the given compiled FEEL expression using the
      * given input variables, and returns the result
      *
@@ -144,7 +144,7 @@ public interface FEEL {
      */
     Object evaluate(CompiledExpression expression, Map<String, Object> inputVariables);
     
-    /**
+    /*
      * Evaluates the given compiled FEEL expression using the
      * given EvaluationContext, and returns the result
      *
@@ -157,7 +157,7 @@ public interface FEEL {
      */
     Object evaluate(CompiledExpression expr, EvaluationContext ctx);
 
-    /**
+    /*
      * Evaluates the given expression as a list of of unary tests.
      * The syntax for this is defined in the FEEL grammar rule #17,
      * i.e., a list of unary tests separated by commas.
@@ -168,7 +168,7 @@ public interface FEEL {
      */
     List<UnaryTest> evaluateUnaryTests( String expression );
 
-    /**
+    /*
      * Evaluates the given expression as a list of of unary tests.
      * The syntax for this is defined in the FEEL grammar rule #17,
      * i.e., a list of unary tests separated by commas.
@@ -181,7 +181,7 @@ public interface FEEL {
      */
     List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes);
 
-    /**
+    /*
      * Registers a new event listener into this FEEL instance.
      * The event listeners are notified about signitificative
      * events during compilation or evaluation of expressions.
@@ -190,14 +190,14 @@ public interface FEEL {
      */
     void addListener( FEELEventListener listener );
 
-    /**
+    /*
      * Removes a listener from the list of event listeners.
      *
      * @param listener the listener to remove
      */
     void removeListener( FEELEventListener listener );
 
-    /**
+    /*
      * Retrieves the set of registered event listeners
      *
      * @return the set of listeners

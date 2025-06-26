@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-/**
+/*
  * Tests handling a collision of identifer and dynamic package import (BZ 1321281).
  * The test is modified not to depend on specific platforms (Windows, MacOS) not preserving case in file names.
  */

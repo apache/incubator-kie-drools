@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A <code>EfestoCallableOutput</code> containing compiled classes
  */
 public abstract class EfestoCallableOutputClassesContainer extends AbstractEfestoCallableCompilationOutput implements EfestoClassesContainer {

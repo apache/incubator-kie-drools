@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
-/**
+/*
  * Abstract base class for the three types of cell groups of nine cells.
  */
 public abstract class SetOfNine {
@@ -34,7 +34,7 @@ public abstract class SetOfNine {
         free = new HashSet<>( CellGroup.ALL_NINE);
     }
     
-    /**
+    /*
      * Redefine the set of acceptable values for this cell.
      * @param values the Integer objects representing the new set of acceptable values.
      */
@@ -43,7 +43,7 @@ public abstract class SetOfNine {
         Collections.addAll(free, values);
     }
 
-    /**
+    /*
      * Remove an Integer from the values still to be assigned to some cell of this group. 
      * @param i an Integer object
      */
@@ -51,7 +51,7 @@ public abstract class SetOfNine {
         free.remove(i);
     }
     
-    /**
+    /*
      * Returns the set of Integers that still need to be assigned to some cell of this group.
      * @return a Set of Integer objects.
      */
@@ -59,14 +59,14 @@ public abstract class SetOfNine {
         return free;
     }
     
-    /**
+    /*
      * Returns the number of Integers that still need to be assigned to some cell of this group.
      * @return an int value
      */
     public int getFreeCount() {
         return free.size();
     }
-    /**
+    /*
      * Returns the first (only) permissible Integer value.
      * @return an Integer object
      */

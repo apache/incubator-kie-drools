@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/**
+/*
  * Utility class to wrap a value with the possibility to specify error message or propose valid value.
  * - collectionPathToValue: In case of a failure with a collection value type, it holds the path to reach the wrong value
  * Note: null can be used as value.

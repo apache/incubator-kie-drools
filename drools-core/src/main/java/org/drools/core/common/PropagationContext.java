@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ public interface PropagationContext extends Externalizable {
 
     TerminalNode getTerminalNodeOrigin();
 
-    /**
+    /*
      * @return fact handle that was inserted, updated or retracted that created the PropagationContext
      */
     FactHandle getFactHandle();

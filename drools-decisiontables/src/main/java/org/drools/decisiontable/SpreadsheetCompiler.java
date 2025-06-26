@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,7 +38,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  *
  * This class handles the input XLS and CSV and extracts the rule DRL, ready for
  * pumping into drools.
@@ -57,7 +57,7 @@ public class SpreadsheetCompiler {
         this.trimCell = trimCell;
     }
 
-    /**
+    /*
      * Generates DRL from the input stream containing the spreadsheet.
      *
      * @param showPackage
@@ -75,7 +75,7 @@ public class SpreadsheetCompiler {
                         new DefaultRuleSheetListener( showPackage, trimCell ) );
     }
 
-    /**
+    /*
      * Generates DRL from the input stream containing the spreadsheet.
      *
      * @param xlsStream
@@ -97,7 +97,7 @@ public class SpreadsheetCompiler {
                         new DefaultRuleSheetListener(true, trimCell) );
     }
 
-    /**
+    /*
      * Generates DRL from the input stream containing the spreadsheet.
      *
      * @param xlsStream
@@ -142,7 +142,7 @@ public class SpreadsheetCompiler {
         }
     }
 
-    /**
+    /*
      * Convenience implementation, taking rules from the classpath. It is
      * recommended to use the stream version, as you can then change rules
      * dynamically. (that is a lot of the benefit of rule engines !).
@@ -164,7 +164,7 @@ public class SpreadsheetCompiler {
         }
     }
 
-    /**
+    /*
      * Looks for a named worksheet to find the decision tables on. Only works
      * with XLS format spreadsheets (as they have multiple worksheets).
      *

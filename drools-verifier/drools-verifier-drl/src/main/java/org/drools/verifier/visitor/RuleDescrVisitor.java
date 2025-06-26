@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -160,7 +160,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
         solvers.endExists();
     }
 
-    /**
+    /*
      * End leaf
      *
      * @param descr
@@ -182,7 +182,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
         return eval;
     }
 
-    /**
+    /*
      * Creates verifier object from rule consequence. Currently only supports
      * text based consequences.
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,52 +23,52 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
+/*
  * It describes how to reach a single property of a fact
  */
 public class FactMapping {
 
-    /**
+    /*
      * Expression to reach the property. I.e. person.fullName.last
      */
     private List<ExpressionElement> expressionElements = new LinkedList<>();
 
-    /**
+    /*
      * Identifier of this expression (it contains the type of expression, i.e. given/expected) - it is mapped to the <b>property</b> header
      */
     private ExpressionIdentifier expressionIdentifier;
 
-    /**
+    /*
      * Identify the fact by name and class name - it is mapped to <b>Instance</b> header
      */
     private FactIdentifier factIdentifier;
 
-    /**
+    /*
      * String name of the type of the property described by this class
      */
     private String className;
 
-    /**
+    /*
      * Alias to customize the <b>instance</b> label
      */
     private String factAlias;
 
-    /**
+    /*
      * Alias to customize the <b>property</b> label
      */
     private String expressionAlias;
 
-    /**
+    /*
      * Generic type(s) of the given properties, where applicable (ex collections)
      */
     private List<String> genericTypes;
 
-    /**
+    /*
      * It defines the FactMappingValueType. <b>FrontEnd scoped</b>
      */
     private FactMappingValueType factMappingValueType = FactMappingValueType.NOT_EXPRESSION;
 
-    /**
+    /*
      * The <b>width</b> of the FactMapping column. <b>FrontEnd scoped</b>
      */
     private Double columnWidth;
@@ -87,7 +87,7 @@ public class FactMapping {
         this.factIdentifier = factIdentifier;
     }
 
-    /**
+    /*
      * It <b>clones</b> the given <code>FactMapping</code>
      * @param original The original <code>FactMapping</code>
      */
@@ -159,7 +159,7 @@ public class FactMapping {
         this.genericTypes = genericTypes;
     }
 
-    /**
+    /*
      * It creates a new <code>FactMapping</code> cloning the instanced one.
      */
     public FactMapping cloneFactMapping() {

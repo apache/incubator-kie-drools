@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.decisiontable.InputType.CSV;
 import static org.drools.decisiontable.InputType.XLS;
 
-/**
+/*
  * Some basic unit tests for converter utility. Note that some of this may still
  * use the drools 2.x syntax, as it is not compiled, only tested that it
  * generates DRL in the correct structure (not that the DRL itself is correct).
@@ -398,7 +398,7 @@ public class SpreadsheetCompilerUnitTest {
     @Test
     public void testNoConstraintsEmptyCells() {
       
-        /**
+        /*
          * +--------------+--------------+
          * | CONDITION    | CONDITION    |
          * +--------------+--------------+
@@ -445,7 +445,7 @@ public class SpreadsheetCompilerUnitTest {
     @Test
     public void testNoConstraintsSpacesInCells() {
       
-        /**
+        /*
          * +--------------+--------------+
          * | CONDITION    | CONDITION    |
          * +--------------+--------------+
@@ -492,7 +492,7 @@ public class SpreadsheetCompilerUnitTest {
     @Test
     public void testNoConstraintsDelimitedSpacesInCells() {
       
-        /**
+        /*
          * +--------------+--------------+
          * | CONDITION    | CONDITION    |
          * +--------------+--------------+

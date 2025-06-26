@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * FEEL does not define the return type for function definition in its grammar.
  * While on FEEL layer the type could be inferred, at DMN layer this is governed in BKM case by the <variable typeRef value.
  * This is typically used to typecheck the result of a BKM function evaluation result.

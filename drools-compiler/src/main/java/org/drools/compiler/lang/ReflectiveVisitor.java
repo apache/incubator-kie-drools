@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Java Tip 98: Reflect on the Visitor design pattern. Implement visitors in
  * Java, using reflection.
  * http://www.javaworld.com/javaworld/javatips/jw-javatip98.html

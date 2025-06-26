@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import org.drools.drl.ast.dsl.GroupByDescrBuilder;
 import org.drools.drl.ast.dsl.PatternDescrBuilder;
 import org.drools.drl.ast.dsl.SourceDescrBuilder;
 
-/**
+/*
  * A descr builder implementation for pattern sources
  */
 public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends BaseDescrBuilderImpl<P, PatternDescr>

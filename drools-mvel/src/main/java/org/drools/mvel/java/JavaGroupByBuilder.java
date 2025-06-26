@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -73,7 +73,7 @@ import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import static org.drools.mvel.java.JavaRuleBuilderHelper.createVariableContext;
 import static org.drools.mvel.java.JavaRuleBuilderHelper.generateTemplates;
 
-/**
+/*
  * A builder for the java dialect groupby version
  */
 public class JavaGroupByBuilder

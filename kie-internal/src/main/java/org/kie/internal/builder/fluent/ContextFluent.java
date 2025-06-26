@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.command.ExecutableCommand;
 
 public interface ContextFluent<T, E>{
 
-    /**
+    /*
      * The last executed command result is set to a name in this executing context. Default Scope is Request
      * @param name
      * @return this
@@ -35,7 +35,7 @@ public interface ContextFluent<T, E>{
 
     T get(String name, Scope scope);
 
-    /**
+    /*
      * This sets an instance, for a given cls key, on the registry for commands to execute against.
      * This method will call "end" if within the context of a given registry command
      * @param name
@@ -45,14 +45,14 @@ public interface ContextFluent<T, E>{
      */
     <K>  K get(String name, Class<K> cls);
 
-    /**
+    /*
      * The output from the last command should be returned via the out results. It uses the last used name identifer for the previous
      * get or set.
      * @return this
      */
     T out();
 
-    /**
+    /*
      * The output from the last executed command should be returned and set to the given name in the context. It uses the specified
      * named identifierl
      * @param name
@@ -72,7 +72,7 @@ public interface ContextFluent<T, E>{
 
     T endConversation(String uuid);
 
-    /**
+    /*
      * End the scope of the current Command set
      * @return
      */

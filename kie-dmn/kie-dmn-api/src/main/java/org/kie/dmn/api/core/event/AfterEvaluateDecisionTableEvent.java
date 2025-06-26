@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
 
-    /**
+    /*
      * The decision that this node relates to
      * @return
      */

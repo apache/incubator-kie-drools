@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ class MarshallingUtilsTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(MarshallingUtilsTest.class);
 
-    /**
+    /*
      * Check behavior of MarshallingUtils QName marshaller.
      * Please notice ootb JDK {@link QName#toString()} method does not satisfy requirement of managing qname in DMN as in typeRef="feel:number"
      * because toString would never print out the prefix part.

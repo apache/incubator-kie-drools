@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,7 +27,7 @@ import org.drools.base.common.DroolsObjectInput;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
 
-/**
+/*
  * This is the supertype for the ASM generated classes for accessing a field.
  */
 abstract public class BaseClassFieldReader implements ReadAccessor, Externalizable {
@@ -42,7 +42,7 @@ abstract public class BaseClassFieldReader implements ReadAccessor, Externalizab
 
     }
 
-    /**
+    /*
      * This constructor is not supposed to be used from outside the class hirarchy
      */
     protected BaseClassFieldReader(final int index,

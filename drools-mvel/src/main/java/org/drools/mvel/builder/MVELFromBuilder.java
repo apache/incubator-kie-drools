@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.dataproviders.MVELDataProvider;
 import org.drools.mvel.expr.MVELCompilationUnit;
 
-/**
+/*
  * A builder for "from" conditional element
  */
 public class MVELFromBuilder

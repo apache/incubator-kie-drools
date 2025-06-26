@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ public interface RuleUnitComponentFactory extends KieService {
 
     RuleUnitDescription createRuleUnitDescription( KiePackage pkg, Class<?> ruleUnitClass );
 
-    /**
+    /*
      * Creates a rule unit description from the given qualified name.
      * Optional operation (may be provided by alternative implementations)
      * @return null if not supported or missing.

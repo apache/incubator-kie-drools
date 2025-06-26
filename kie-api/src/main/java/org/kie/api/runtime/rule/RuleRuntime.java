@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.rule;
 
 import java.util.Collection;
 
-/**
+/*
  * The {@link RuleRuntime} is a super-interface for all {@link org.kie.api.runtime.KieSession}s.
  * Although, users are encouraged to use {@link org.kie.api.runtime.KieSession} or {@link org.kie.api.runtime.KieRuntime}
  * interface instead of {@link RuleRuntime} interface, specially because of the <code>dispose()</code> method
@@ -32,7 +32,7 @@ public interface RuleRuntime
     extends
     EntryPoint {
 
-    /**
+    /*
      * <p>Request the engine to stop firing rules. If the engine is currently firing a rule, it will
      * finish executing this rule's consequence before stopping.</p>
      * <p>This method will not remove active Matches from the Agenda.
@@ -42,17 +42,17 @@ public interface RuleRuntime
      */
     void halt();
 
-    /**
+    /*
      * @return a reference to this session's <code>Agenda</code>.
      */
     Agenda getAgenda();
 
-    /**
+    /*
      * @return the WorkingMemoryEntryPoint instance associated with the given name.
      */
     EntryPoint getEntryPoint(String name);
 
-    /**
+    /*
      * Returns a collection of all available working memory entry points
      * for this session.
      *
@@ -60,7 +60,7 @@ public interface RuleRuntime
      */
     Collection< ? extends EntryPoint> getEntryPoints();
 
-    /**
+    /*
      * Retrieve the QueryResults of the specified query and arguments
      *
      * @param query

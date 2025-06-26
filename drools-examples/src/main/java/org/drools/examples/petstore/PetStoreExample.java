@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,7 +80,7 @@ public class PetStoreExample {
         ui.createAndShowGUI(exitOnClose);
     }
 
-    /**
+    /*
      * This swing UI is used to create a simple shopping cart to allow a user to add
      * and remove items from a shopping cart before doign a checkout upon doing a
      * checkout a callback is used to allow drools interaction with the shopping
@@ -96,7 +96,7 @@ public class PetStoreExample {
 
         private CheckoutCallback callback;
 
-        /**
+        /*
          * Build UI using specified items and using the given callback to pass the
          * items and jframe reference to the drools application
          * 
@@ -212,7 +212,7 @@ public class PetStoreExample {
             this.callback.setOutput( this.output );
         }
 
-        /**
+        /*
          * Create and show the GUI
          */
         public void createAndShowGUI(boolean exitOnClose) {
@@ -229,7 +229,7 @@ public class PetStoreExample {
             frame.setVisible( true );
         }
 
-        /**
+        /*
          * Adds the selected item to the table
          */
         private class ListSelectionHandler extends MouseAdapter {
@@ -239,7 +239,7 @@ public class PetStoreExample {
             }
         }
 
-        /**
+        /*
          * Removes the selected item from the table
          */
         private class TableSelectionHandler extends MouseAdapter {
@@ -250,7 +250,7 @@ public class PetStoreExample {
             }
         }
 
-        /**
+        /*
          * Calls the referenced callback, passing a the jrame and selected items.
          */
         private class CheckoutButtonHandler extends MouseAdapter {
@@ -261,7 +261,7 @@ public class PetStoreExample {
             }
         }
 
-        /**
+        /*
          * Resets the shopping cart, allowing the user to begin again.
          */
         private class ResetButtonHandler extends MouseAdapter {
@@ -272,7 +272,7 @@ public class PetStoreExample {
             }
         }
 
-        /**
+        /*
          * Used to render the name column in the table
          */
         private class NameRenderer extends DefaultTableCellRenderer {
@@ -289,7 +289,7 @@ public class PetStoreExample {
             }
         }
 
-        /**
+        /*
          * Used to render the price column in the table
          */
         private class PriceRenderer extends DefaultTableCellRenderer {
@@ -307,7 +307,7 @@ public class PetStoreExample {
         }
     }
 
-    /**
+    /*
      * This is the table model used to represent the users shopping cart While
      * we have two colums, both columns point to the same object. We user a
      * different renderer to display the different information abou the object -
@@ -371,7 +371,7 @@ public class PetStoreExample {
         }
     }
 
-    /**
+    /*
      * 
      * This callback is called when the user pressed the checkout button. It is
      * responsible for adding the items to the shopping cart, asserting the shopping
@@ -392,7 +392,7 @@ public class PetStoreExample {
             this.output = output;
         }
 
-        /**
+        /*
          * Populate the cart and assert into working memory Pass Jframe reference
          * for user interaction
          * 

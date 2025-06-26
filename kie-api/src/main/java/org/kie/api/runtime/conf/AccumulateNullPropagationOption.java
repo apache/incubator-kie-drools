@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.conf.OptionKey;
 
-/**
+/*
  * An option to define if 'accumulate' propagates its result even when its accumulate function result is 'null'.
  * For example, min(), max(), ave() returns 'null' when no fact matches the Pattern.
  *
@@ -35,7 +35,7 @@ public enum AccumulateNullPropagationOption implements SingleValueRuleRuntimeOpt
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the accumulate null propagation configuration
      */
     public static final String PROPERTY_NAME = "drools.accumulateNullPropagation";
@@ -44,7 +44,7 @@ public enum AccumulateNullPropagationOption implements SingleValueRuleRuntimeOpt
 
     private final boolean accumulateNullPropagation;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param accumulateNullPropagation
      */
@@ -52,7 +52,7 @@ public enum AccumulateNullPropagationOption implements SingleValueRuleRuntimeOpt
         this.accumulateNullPropagation = accumulateNullPropagation;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

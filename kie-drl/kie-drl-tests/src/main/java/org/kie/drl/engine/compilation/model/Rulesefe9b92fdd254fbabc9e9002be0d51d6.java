@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ public class Rulesefe9b92fdd254fbabc9e9002be0d51d6 implements org.drools.model.M
 
     java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = java.util.Collections.emptyList();
 
-    /**
+    /*
      * With the following expression ID:
      * org.drools.modelcompiler.builder.generator.DRLIdGenerator@36f48b4
      */

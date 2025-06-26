@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
-/**
+/*
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
  * to apply <code>FieldConstraint<.code>s on asserted fact
  * objects where the <code>FieldConstraint</code>s have no dependencies on any other of the facts in the current <code>Rule</code>.
@@ -49,7 +49,7 @@ public class AlphaNode extends ObjectSource
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The <code>FieldConstraint</code>
      */
     protected AlphaNodeFieldConstraint constraint;
@@ -61,7 +61,7 @@ public class AlphaNode extends ObjectSource
 
     }
 
-    /**
+    /*
      * Construct an <code>AlphaNode</code> with a unique id using the provided
      * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
      * Set the boolean flag to true if the node is supposed to have local
@@ -89,7 +89,7 @@ public class AlphaNode extends ObjectSource
         hashcode = calculateHashCode();
     }
 
-    /**
+    /*
      * Retruns the <code>FieldConstraint</code>
      *
      * @return <code>FieldConstraint</code>
@@ -181,7 +181,7 @@ public class AlphaNode extends ObjectSource
         return this.source.getId() == other.source.getId() && constraint.equals(other.constraint, getRuleBase());
     }
 
-    /**
+    /*
      * Returns the next node
      *
      * @return The next ObjectSinkNode
@@ -190,7 +190,7 @@ public class AlphaNode extends ObjectSource
         return this.nextRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the next node
      *
      * @param next The next ObjectSinkNode
@@ -199,7 +199,7 @@ public class AlphaNode extends ObjectSource
         this.nextRightTupleSinkNode = next;
     }
 
-    /**
+    /*
      * Returns the previous node
      *
      * @return The previous ObjectSinkNode
@@ -208,7 +208,7 @@ public class AlphaNode extends ObjectSource
         return this.previousRightTupleSinkNode;
     }
 
-    /**
+    /*
      * Sets the previous node
      *
      * @param previous The previous ObjectSinkNode
@@ -217,7 +217,7 @@ public class AlphaNode extends ObjectSource
         this.previousRightTupleSinkNode = previous;
     }
 
-    /**
+    /*
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,12 +24,12 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.AbstractEfestoCallableCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 
-/**
+/*
  * A generic <i>Resource</i> to be processed by specific engine
  */
 public abstract class AbstractMockOutput<T> extends AbstractEfestoCallableCompilationOutput implements EfestoResource<T> {
 
-    /**
+    /*
      * This is the <b>payload</b> to forward to the target compilation-engine
      */
     private final T content;

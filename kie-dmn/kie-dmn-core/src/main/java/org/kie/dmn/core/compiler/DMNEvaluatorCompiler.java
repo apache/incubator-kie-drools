@@ -880,7 +880,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         return parameterNames;
     }
 
-    /**
+    /*
      * This method is used to override the feel expression language used by the returned <code>FEEL</code>
      * @param ctx
      * @param expression
@@ -901,7 +901,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         }
     }
 
-    /**
+    /*
      * Utility method for DecisionTable with only 1 output, to infer typeRef from parent
      * @param model used for reporting errors
      * @param originalElement the original OutputClause[0] single output for which the DecisionTable parameter
@@ -964,7 +964,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         }
     }
 
-    /**
+    /*
      * Utility method to have a error message is reported if a DMN Variable is missing typeRef.
      * @param model used for reporting errors
      * @param variable the variable to extract typeRef
@@ -1134,7 +1134,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                                         inEvaluator, returnEvaluator);
     }
 
-    /**
+    /*
      * extract the generic T from the DMN representation of FEEL:list<T>
      */
     private DMNType extractOrSynthesizeGeneric(DMNModelImpl model, BaseDMNTypeImpl elementType) {

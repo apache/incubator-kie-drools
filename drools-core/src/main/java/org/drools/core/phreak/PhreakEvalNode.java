@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
-/**
+/*
 * Created with IntelliJ IDEA.
 * User: mdproctor
 * Date: 03/05/2013

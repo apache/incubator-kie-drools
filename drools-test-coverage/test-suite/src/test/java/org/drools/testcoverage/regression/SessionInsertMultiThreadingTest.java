@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Test to verify BRMS-532 (Drools Session insert
  * ConcurrentModificationException in Multithreading Environment) is fixed
  */
@@ -128,7 +128,7 @@ public class SessionInsertMultiThreadingTest {
         }
     }
 
-    /**
+    /*
      * Reproducer for BZ 1187070.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -176,7 +176,7 @@ public class SessionInsertMultiThreadingTest {
         }
     }
 
-    /**
+    /*
      * The Runnable performing the test on a given shared StatelessKieSession.
      */
     public static class StatelessKieSessionRunnable implements Runnable {
@@ -206,7 +206,7 @@ public class SessionInsertMultiThreadingTest {
         }
     }
 
-    /**
+    /*
      * The Runnable performing the test on a given shared KieSession.
      */
     public static class KieSessionRunnable implements Runnable {
@@ -232,7 +232,7 @@ public class SessionInsertMultiThreadingTest {
         }
     }
 
-    /**
+    /*
      * The Runnable performing the test on a given shared KieBase.
      */
     public static class KieBaseRunnable extends KieSessionRunnable {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
-/**
+/*
  * FactMappingValue contains the identifier of a fact mapping + the raw value
  * - collectionPathToValue: In case of an error occurred in a collection (List or Map), it contains the path which
  *                          describes how to reach the wrong field (eg. Item #1 | field | ... ).

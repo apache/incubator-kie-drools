@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -198,7 +198,7 @@ public class KiePMMLRegressionTableFactory {
 
     // not-public KiePMMLRegressionTable instantiation
 
-    /**
+    /*
      * Create <b>NumericPredictor</b>s <code>Map</code>es
      *
      * @param numericPredictors
@@ -210,7 +210,7 @@ public class KiePMMLRegressionTableFactory {
                                           KiePMMLRegressionTableFactory::getNumericPredictorEntry));
     }
 
-    /**
+    /*
      * Create a <b>NumericPredictor</b> <code>Entry</code>
      *
      * @param numericPredictor
@@ -227,7 +227,7 @@ public class KiePMMLRegressionTableFactory {
         }
     }
 
-    /**
+    /*
      * Create the <b>CategoricalPredictor</b>s <code>Map</code>
      *
      * @param categoricalPredictors
@@ -250,7 +250,7 @@ public class KiePMMLRegressionTableFactory {
                                           AbstractMap.SimpleEntry::getValue));
     }
 
-    /**
+    /*
      * Populate the <code>Map</code> for the given <b>categoricalPredictors</b>
      *
      * @param categoricalPredictors
@@ -265,7 +265,7 @@ public class KiePMMLRegressionTableFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * Get the <code>Map</code> of <b>PredictorTerm</b>' <code>VariableDeclarationExpr</code>s
      *
      * @param predictorTerms
@@ -285,7 +285,7 @@ public class KiePMMLRegressionTableFactory {
                                           AbstractMap.SimpleEntry::getValue));
     }
 
-    /**
+    /*
      * Get the <b>PredictorTerm</b> <code>SerializableFunction</code>
      *
      * @param predictorTerm
@@ -314,7 +314,7 @@ public class KiePMMLRegressionTableFactory {
         }
     }
 
-    /**
+    /*
      * Create a <b>resultUpdater</b> <code>CastExpr</code>
      *
      * @param normalizationMethod
@@ -414,7 +414,7 @@ public class KiePMMLRegressionTableFactory {
         }
     }
 
-    /**
+    /*
      * Create a <b>resultUpdater</b> <code>CastExpr</code>
      *
      * @param normalizationMethod
@@ -435,7 +435,7 @@ public class KiePMMLRegressionTableFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * Create <b>NumericPredictor</b>s <code>CastExpr</code>es
      *
      * @param numericPredictors
@@ -447,7 +447,7 @@ public class KiePMMLRegressionTableFactory {
                                           KiePMMLRegressionTableFactory::getNumericPredictorExpression));
     }
 
-    /**
+    /*
      * Create a <b>NumericPredictor</b> <code>CastExpr</code>
      *
      * @param numericPredictor
@@ -483,7 +483,7 @@ public class KiePMMLRegressionTableFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * Create the <b>CategoricalPredictor</b>s lambda <code>Expression</code>s map
      *
      * @param categoricalPredictors
@@ -508,7 +508,7 @@ public class KiePMMLRegressionTableFactory {
                                           AbstractMap.SimpleEntry::getValue));
     }
 
-    /**
+    /*
      * Populate the given <b>body</b> with the creation of a <code>Map</code> for the given <b>categoricalPredictors</b>
      *
      * @param categoricalPredictors
@@ -539,7 +539,7 @@ public class KiePMMLRegressionTableFactory {
         addMapPopulationExpressions(mapExpressions, toPopulate, categoricalPredictorMapName);
     }
 
-    /**
+    /*
      * Create <b>CategoricalPredictor</b> <code>CastExpr</code> to the class
      *
      * @param categoricalPredictorMapName
@@ -570,7 +570,7 @@ public class KiePMMLRegressionTableFactory {
         return toReturn;
     }
 
-    /**
+    /*
      * Get the <code>Map</code> of <b>PredictorTerm</b>' <code>VariableDeclarationExpr</code>s
      *
      * @param predictorTerms
@@ -590,7 +590,7 @@ public class KiePMMLRegressionTableFactory {
                                           AbstractMap.SimpleEntry::getValue));
     }
 
-    /**
+    /*
      * Get the <b>PredictorTerm</b> <code>VariableDeclarationExpr</code>
      *
      * @param predictorTerm
@@ -610,7 +610,7 @@ public class KiePMMLRegressionTableFactory {
         }
     }
 
-    /**
+    /*
      * Add a <b>PredictorTerm</b> <code>MethodDeclaration</code> to the class
      *
      * @param predictorTerm

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,7 +56,7 @@ public class QueryImpl extends RuleImpl implements Query {
         this.parameters = ( Declaration[] ) in.readObject();
     }
 
-    /**
+    /*
      * Override this as Queries will NEVER have a consequence, and it should
      * not be taken into account when deciding if it is valid.
      */

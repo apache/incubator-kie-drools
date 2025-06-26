@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -178,14 +178,14 @@ public class XStreamMarshaller
         }
     }
     
-    /** 
+    /* 
      * Unnecessary as was a tentative UTF-8 preamble output but still not working.
      */
     @Deprecated
     public void marshalMarshall(Object o) {
         marshalMarshall(o, System.out);
     }
-    /** 
+    /* 
      * Unnecessary as was a tentative UTF-8 preamble output but still not working.
      */
     @Deprecated

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -321,7 +321,7 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         return this.declaration;
     }
 
-    /**
+    /*
      * The index of the Pattern, in the list of patterns.
      * @return the patternIndex
      */
@@ -337,7 +337,7 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         this.objectIndex = objectIndex;
     }
 
-    /**
+    /*
      * The index of pattern in the tuple chain.
      * @return the tupleIndex
      */
@@ -445,7 +445,7 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         constraint.setType( type );
     }
 
-    /**
+    /*
      * @return the behaviors
      */
     public List<Behavior> getBehaviors() {
@@ -455,7 +455,7 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         return this.behaviors;
     }
 
-    /**
+    /*
      * @param behaviors the behaviors to set
      */
     public void setBehaviors(List<Behavior> behaviors) {

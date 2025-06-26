@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,17 +56,17 @@ public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";
     public static final String PACKAGE_NAME = "org.drools.ancompiler";
     private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
-    /**
+    /*
      * This field hold the fully qualified class name that the {@link ObjectTypeNode} is representing.
      */
     private String className;
 
-    /**
+    /*
      * This field will hold the "simple" name of the generated class
      */
     private String generatedClassSimpleName;
 
-    /**
+    /*
      * OTN we are creating a compiled network for
      */
     private ObjectTypeNode objectTypeNode;
@@ -226,7 +226,7 @@ public class ObjectTypeNodeCompiler {
         builder.append(initMethod);
     }
 
-    /**
+    /*
      * This method will output the package statement, followed by the opening of the class declaration
      */
     private void createClassDeclaration() {
@@ -238,7 +238,7 @@ public class ObjectTypeNodeCompiler {
         builder.append(ReadAccessor.class.getCanonicalName() + " readAccessor;\n");
     }
 
-    /**
+    /*
      * Creates the constructor for the generated class. If the hashedAlphaDeclarations is empty, it will just
      * output a empty default constructor; if it is not, the constructor will contain code to fill the hash
      * alpha maps with the values and node ids.
@@ -294,7 +294,7 @@ public class ObjectTypeNodeCompiler {
         builder.append("}").append(NEWLINE);
     }
 
-    /**
+    /*
      * Returns the fully qualified name of the generated subclass of {@link CompiledNetwork}
      *
      * @return name of generated class
@@ -303,7 +303,7 @@ public class ObjectTypeNodeCompiler {
         return getPackageName() + "." + generatedClassSimpleName;
     }
 
-    /**
+    /*
      * Returns the fully qualified binary name of the generated subclass of {@link CompiledNetwork}
      *
      * @return binary name of generated class
@@ -312,7 +312,7 @@ public class ObjectTypeNodeCompiler {
         return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".class";
     }
 
-    /**
+    /*
      * Returns the fully qualified source name of the generated subclass of {@link CompiledNetwork}
      *
      * @return binary name of generated class

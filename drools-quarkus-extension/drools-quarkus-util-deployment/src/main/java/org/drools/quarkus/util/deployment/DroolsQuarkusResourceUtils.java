@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
-/**
+/*
  * Utility class to aggregate and share resource handling in Drools/Kogito extensions
  */
 public class DroolsQuarkusResourceUtils {
@@ -97,7 +97,7 @@ public class DroolsQuarkusResourceUtils {
         return context;
     }
 
-    /**
+    /*
      * Verify if a class is available. First uses jandex indexes, then fallback on classLoader
      */
     private static boolean classAvailabilityResolver(IndexView index, String className) {

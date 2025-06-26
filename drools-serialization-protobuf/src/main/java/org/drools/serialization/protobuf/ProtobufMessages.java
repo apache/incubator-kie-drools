@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ public final class ProtobufMessages {
       com.google.protobuf.GeneratedMessageV3.
           ExtendableMessageOrBuilder<Header> {
 
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -46,7 +46,7 @@ public final class ProtobufMessages {
      * @return Whether the version field is set.
      */
     boolean hasVersion();
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -55,7 +55,7 @@ public final class ProtobufMessages {
      * @return The version.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Version getVersion();
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -64,7 +64,7 @@ public final class ProtobufMessages {
      */
     org.drools.serialization.protobuf.ProtobufMessages.VersionOrBuilder getVersionOrBuilder();
 
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -73,7 +73,7 @@ public final class ProtobufMessages {
      * @return Whether the signature field is set.
      */
     boolean hasSignature();
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -82,7 +82,7 @@ public final class ProtobufMessages {
      * @return The signature.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Signature getSignature();
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -91,7 +91,7 @@ public final class ProtobufMessages {
      */
     org.drools.serialization.protobuf.ProtobufMessages.SignatureOrBuilder getSignatureOrBuilder();
 
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -100,7 +100,7 @@ public final class ProtobufMessages {
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex> 
         getStrategyList();
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -108,7 +108,7 @@ public final class ProtobufMessages {
      * <code>repeated .org.drools.serialization.protobuf.Header.StrategyIndex strategy = 9;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex getStrategy(int index);
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -116,7 +116,7 @@ public final class ProtobufMessages {
      * <code>repeated .org.drools.serialization.protobuf.Header.StrategyIndex strategy = 9;</code>
      */
     int getStrategyCount();
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -125,7 +125,7 @@ public final class ProtobufMessages {
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndexOrBuilder> 
         getStrategyOrBuilderList();
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -135,7 +135,7 @@ public final class ProtobufMessages {
     org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndexOrBuilder getStrategyOrBuilder(
         int index);
 
-    /**
+    /*
      * <pre>
      * byte blobs
      * </pre>
@@ -144,7 +144,7 @@ public final class ProtobufMessages {
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
-    /**
+    /*
      * <pre>
      * byte blobs
      * </pre>
@@ -154,7 +154,7 @@ public final class ProtobufMessages {
      */
     com.google.protobuf.ByteString getPayload();
 
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -164,7 +164,7 @@ public final class ProtobufMessages {
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef> 
         getRuntimeClassDefinitionsList();
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -173,7 +173,7 @@ public final class ProtobufMessages {
      * <code>repeated .org.drools.serialization.protobuf.RuntimeClassDef runtime_class_definitions = 13;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef getRuntimeClassDefinitions(int index);
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -182,7 +182,7 @@ public final class ProtobufMessages {
      * <code>repeated .org.drools.serialization.protobuf.RuntimeClassDef runtime_class_definitions = 13;</code>
      */
     int getRuntimeClassDefinitionsCount();
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -192,7 +192,7 @@ public final class ProtobufMessages {
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDefOrBuilder> 
         getRuntimeClassDefinitionsOrBuilderList();
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -203,7 +203,7 @@ public final class ProtobufMessages {
     org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDefOrBuilder getRuntimeClassDefinitionsOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Header}
    */
   public static final class Header extends
@@ -246,46 +246,46 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Header.StrategyIndex)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int32 id = 1;</code>
        * @return Whether the id field is set.
        */
       boolean hasId();
-      /**
+      /*
        * <code>optional int32 id = 1;</code>
        * @return The id.
        */
       int getId();
 
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return Whether the name field is set.
        */
       boolean hasName();
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return The name.
        */
       java.lang.String getName();
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return The bytes for name.
        */
       com.google.protobuf.ByteString
           getNameBytes();
 
-      /**
+      /*
        * <code>optional bytes data = 3;</code>
        * @return Whether the data field is set.
        */
       boolean hasData();
-      /**
+      /*
        * <code>optional bytes data = 3;</code>
        * @return The data.
        */
       com.google.protobuf.ByteString getData();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Header.StrategyIndex}
      */
     public static final class StrategyIndex extends
@@ -325,7 +325,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int ID_FIELD_NUMBER = 1;
       private int id_ = 0;
-      /**
+      /*
        * <code>optional int32 id = 1;</code>
        * @return Whether the id field is set.
        */
@@ -333,7 +333,7 @@ public final class ProtobufMessages {
       public boolean hasId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 id = 1;</code>
        * @return The id.
        */
@@ -345,7 +345,7 @@ public final class ProtobufMessages {
       public static final int NAME_FIELD_NUMBER = 2;
       @SuppressWarnings("serial")
       private volatile java.lang.Object name_ = "";
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return Whether the name field is set.
        */
@@ -353,7 +353,7 @@ public final class ProtobufMessages {
       public boolean hasName() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return The name.
        */
@@ -372,7 +372,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string name = 2;</code>
        * @return The bytes for name.
        */
@@ -393,7 +393,7 @@ public final class ProtobufMessages {
 
       public static final int DATA_FIELD_NUMBER = 3;
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes data = 3;</code>
        * @return Whether the data field is set.
        */
@@ -401,7 +401,7 @@ public final class ProtobufMessages {
       public boolean hasData() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bytes data = 3;</code>
        * @return The data.
        */
@@ -601,7 +601,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Header.StrategyIndex}
        */
       public static final class Builder extends
@@ -769,7 +769,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int id_ ;
-        /**
+        /*
          * <code>optional int32 id = 1;</code>
          * @return Whether the id field is set.
          */
@@ -777,7 +777,7 @@ public final class ProtobufMessages {
         public boolean hasId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int32 id = 1;</code>
          * @return The id.
          */
@@ -785,7 +785,7 @@ public final class ProtobufMessages {
         public int getId() {
           return id_;
         }
-        /**
+        /*
          * <code>optional int32 id = 1;</code>
          * @param value The id to set.
          * @return This builder for chaining.
@@ -797,7 +797,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 id = 1;</code>
          * @return This builder for chaining.
          */
@@ -809,14 +809,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object name_ = "";
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @return Whether the name field is set.
          */
         public boolean hasName() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @return The name.
          */
@@ -834,7 +834,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @return The bytes for name.
          */
@@ -851,7 +851,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @param value The name to set.
          * @return This builder for chaining.
@@ -864,7 +864,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @return This builder for chaining.
          */
@@ -874,7 +874,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 2;</code>
          * @param value The bytes for name to set.
          * @return This builder for chaining.
@@ -889,7 +889,7 @@ public final class ProtobufMessages {
         }
 
         private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
-        /**
+        /*
          * <code>optional bytes data = 3;</code>
          * @return Whether the data field is set.
          */
@@ -897,7 +897,7 @@ public final class ProtobufMessages {
         public boolean hasData() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional bytes data = 3;</code>
          * @return The data.
          */
@@ -905,7 +905,7 @@ public final class ProtobufMessages {
         public com.google.protobuf.ByteString getData() {
           return data_;
         }
-        /**
+        /*
          * <code>optional bytes data = 3;</code>
          * @param value The data to set.
          * @return This builder for chaining.
@@ -917,7 +917,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bytes data = 3;</code>
          * @return This builder for chaining.
          */
@@ -994,7 +994,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int VERSION_FIELD_NUMBER = 1;
     private org.drools.serialization.protobuf.ProtobufMessages.Version version_;
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -1006,7 +1006,7 @@ public final class ProtobufMessages {
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -1018,7 +1018,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Version getVersion() {
       return version_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Version.getDefaultInstance() : version_;
     }
-    /**
+    /*
      * <pre>
      * Drools version for which this message was created
      * </pre>
@@ -1032,7 +1032,7 @@ public final class ProtobufMessages {
 
     public static final int SIGNATURE_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.Signature signature_;
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -1044,7 +1044,7 @@ public final class ProtobufMessages {
     public boolean hasSignature() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -1056,7 +1056,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Signature getSignature() {
       return signature_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Signature.getDefaultInstance() : signature_;
     }
-    /**
+    /*
      * <pre>
      * Signature to prevent security concerns
      * </pre>
@@ -1071,7 +1071,7 @@ public final class ProtobufMessages {
     public static final int STRATEGY_FIELD_NUMBER = 9;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex> strategy_;
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -1082,7 +1082,7 @@ public final class ProtobufMessages {
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex> getStrategyList() {
       return strategy_;
     }
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -1094,7 +1094,7 @@ public final class ProtobufMessages {
         getStrategyOrBuilderList() {
       return strategy_;
     }
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -1105,7 +1105,7 @@ public final class ProtobufMessages {
     public int getStrategyCount() {
       return strategy_.size();
     }
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -1116,7 +1116,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex getStrategy(int index) {
       return strategy_.get(index);
     }
-    /**
+    /*
      * <pre>
      * The list of strategy classes used for this serialization
      * </pre>
@@ -1131,7 +1131,7 @@ public final class ProtobufMessages {
 
     public static final int PAYLOAD_FIELD_NUMBER = 10;
     private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <pre>
      * byte blobs
      * </pre>
@@ -1143,7 +1143,7 @@ public final class ProtobufMessages {
     public boolean hasPayload() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <pre>
      * byte blobs
      * </pre>
@@ -1159,7 +1159,7 @@ public final class ProtobufMessages {
     public static final int RUNTIME_CLASS_DEFINITIONS_FIELD_NUMBER = 13;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef> runtimeClassDefinitions_;
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -1171,7 +1171,7 @@ public final class ProtobufMessages {
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef> getRuntimeClassDefinitionsList() {
       return runtimeClassDefinitions_;
     }
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -1184,7 +1184,7 @@ public final class ProtobufMessages {
         getRuntimeClassDefinitionsOrBuilderList() {
       return runtimeClassDefinitions_;
     }
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -1196,7 +1196,7 @@ public final class ProtobufMessages {
     public int getRuntimeClassDefinitionsCount() {
       return runtimeClassDefinitions_.size();
     }
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -1208,7 +1208,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef getRuntimeClassDefinitions(int index) {
       return runtimeClassDefinitions_.get(index);
     }
-    /**
+    /*
      * <pre>
      * classes generated after the KieBase compilation, which may be needed by the session
      * DROOLS-904
@@ -1458,7 +1458,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Header}
      */
     public static final class Builder extends
@@ -1775,7 +1775,7 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Version version_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Version, org.drools.serialization.protobuf.ProtobufMessages.Version.Builder, org.drools.serialization.protobuf.ProtobufMessages.VersionOrBuilder> versionBuilder_;
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1786,7 +1786,7 @@ public final class ProtobufMessages {
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1801,7 +1801,7 @@ public final class ProtobufMessages {
           return versionBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1821,7 +1821,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1839,7 +1839,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1862,7 +1862,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1879,7 +1879,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1891,7 +1891,7 @@ public final class ProtobufMessages {
         onChanged();
         return getVersionFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1906,7 +1906,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Version.getDefaultInstance() : version_;
         }
       }
-      /**
+      /*
        * <pre>
        * Drools version for which this message was created
        * </pre>
@@ -1930,7 +1930,7 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Signature signature_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Signature, org.drools.serialization.protobuf.ProtobufMessages.Signature.Builder, org.drools.serialization.protobuf.ProtobufMessages.SignatureOrBuilder> signatureBuilder_;
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -1941,7 +1941,7 @@ public final class ProtobufMessages {
       public boolean hasSignature() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -1956,7 +1956,7 @@ public final class ProtobufMessages {
           return signatureBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -1976,7 +1976,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -1994,7 +1994,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -2017,7 +2017,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -2034,7 +2034,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -2046,7 +2046,7 @@ public final class ProtobufMessages {
         onChanged();
         return getSignatureFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -2061,7 +2061,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Signature.getDefaultInstance() : signature_;
         }
       }
-      /**
+      /*
        * <pre>
        * Signature to prevent security concerns
        * </pre>
@@ -2094,7 +2094,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.Builder, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndexOrBuilder> strategyBuilder_;
 
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2108,7 +2108,7 @@ public final class ProtobufMessages {
           return strategyBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2122,7 +2122,7 @@ public final class ProtobufMessages {
           return strategyBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2136,7 +2136,7 @@ public final class ProtobufMessages {
           return strategyBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2157,7 +2157,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2175,7 +2175,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2195,7 +2195,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2216,7 +2216,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2234,7 +2234,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2252,7 +2252,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2271,7 +2271,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2288,7 +2288,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2305,7 +2305,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2316,7 +2316,7 @@ public final class ProtobufMessages {
           int index) {
         return getStrategyFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2330,7 +2330,7 @@ public final class ProtobufMessages {
           return strategyBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2345,7 +2345,7 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(strategy_);
         }
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2356,7 +2356,7 @@ public final class ProtobufMessages {
         return getStrategyFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.getDefaultInstance());
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2368,7 +2368,7 @@ public final class ProtobufMessages {
         return getStrategyFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Header.StrategyIndex.getDefaultInstance());
       }
-      /**
+      /*
        * <pre>
        * The list of strategy classes used for this serialization
        * </pre>
@@ -2395,7 +2395,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <pre>
        * byte blobs
        * </pre>
@@ -2407,7 +2407,7 @@ public final class ProtobufMessages {
       public boolean hasPayload() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <pre>
        * byte blobs
        * </pre>
@@ -2419,7 +2419,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getPayload() {
         return payload_;
       }
-      /**
+      /*
        * <pre>
        * byte blobs
        * </pre>
@@ -2435,7 +2435,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * byte blobs
        * </pre>
@@ -2462,7 +2462,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDefOrBuilder> runtimeClassDefinitionsBuilder_;
 
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2477,7 +2477,7 @@ public final class ProtobufMessages {
           return runtimeClassDefinitionsBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2492,7 +2492,7 @@ public final class ProtobufMessages {
           return runtimeClassDefinitionsBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2507,7 +2507,7 @@ public final class ProtobufMessages {
           return runtimeClassDefinitionsBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2529,7 +2529,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2548,7 +2548,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2569,7 +2569,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2591,7 +2591,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2610,7 +2610,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2629,7 +2629,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2649,7 +2649,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2667,7 +2667,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2685,7 +2685,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2697,7 +2697,7 @@ public final class ProtobufMessages {
           int index) {
         return getRuntimeClassDefinitionsFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2712,7 +2712,7 @@ public final class ProtobufMessages {
           return runtimeClassDefinitionsBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2728,7 +2728,7 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(runtimeClassDefinitions_);
         }
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2740,7 +2740,7 @@ public final class ProtobufMessages {
         return getRuntimeClassDefinitionsFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef.getDefaultInstance());
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2753,7 +2753,7 @@ public final class ProtobufMessages {
         return getRuntimeClassDefinitionsFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.RuntimeClassDef.getDefaultInstance());
       }
-      /**
+      /*
        * <pre>
        * classes generated after the KieBase compilation, which may be needed by the session
        * DROOLS-904
@@ -2847,40 +2847,40 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Version)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      * @return Whether the versionMajor field is set.
      */
     boolean hasVersionMajor();
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      * @return The versionMajor.
      */
     int getVersionMajor();
 
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      * @return Whether the versionMinor field is set.
      */
     boolean hasVersionMinor();
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      * @return The versionMinor.
      */
     int getVersionMinor();
 
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      * @return Whether the versionRevision field is set.
      */
     boolean hasVersionRevision();
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      * @return The versionRevision.
      */
     int getVersionRevision();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Version}
    */
   public static final class Version extends
@@ -2918,7 +2918,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int VERSION_MAJOR_FIELD_NUMBER = 1;
     private int versionMajor_ = 0;
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      * @return Whether the versionMajor field is set.
      */
@@ -2926,7 +2926,7 @@ public final class ProtobufMessages {
     public boolean hasVersionMajor() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int32 version_major = 1;</code>
      * @return The versionMajor.
      */
@@ -2937,7 +2937,7 @@ public final class ProtobufMessages {
 
     public static final int VERSION_MINOR_FIELD_NUMBER = 2;
     private int versionMinor_ = 0;
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      * @return Whether the versionMinor field is set.
      */
@@ -2945,7 +2945,7 @@ public final class ProtobufMessages {
     public boolean hasVersionMinor() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int32 version_minor = 2;</code>
      * @return The versionMinor.
      */
@@ -2956,7 +2956,7 @@ public final class ProtobufMessages {
 
     public static final int VERSION_REVISION_FIELD_NUMBER = 3;
     private int versionRevision_ = 0;
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      * @return Whether the versionRevision field is set.
      */
@@ -2964,7 +2964,7 @@ public final class ProtobufMessages {
     public boolean hasVersionRevision() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional int32 version_revision = 3;</code>
      * @return The versionRevision.
      */
@@ -3165,7 +3165,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Version}
      */
     public static final class Builder extends
@@ -3331,7 +3331,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int versionMajor_ ;
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        * @return Whether the versionMajor field is set.
        */
@@ -3339,7 +3339,7 @@ public final class ProtobufMessages {
       public boolean hasVersionMajor() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        * @return The versionMajor.
        */
@@ -3347,7 +3347,7 @@ public final class ProtobufMessages {
       public int getVersionMajor() {
         return versionMajor_;
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        * @param value The versionMajor to set.
        * @return This builder for chaining.
@@ -3359,7 +3359,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_major = 1;</code>
        * @return This builder for chaining.
        */
@@ -3371,7 +3371,7 @@ public final class ProtobufMessages {
       }
 
       private int versionMinor_ ;
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        * @return Whether the versionMinor field is set.
        */
@@ -3379,7 +3379,7 @@ public final class ProtobufMessages {
       public boolean hasVersionMinor() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        * @return The versionMinor.
        */
@@ -3387,7 +3387,7 @@ public final class ProtobufMessages {
       public int getVersionMinor() {
         return versionMinor_;
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        * @param value The versionMinor to set.
        * @return This builder for chaining.
@@ -3399,7 +3399,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_minor = 2;</code>
        * @return This builder for chaining.
        */
@@ -3411,7 +3411,7 @@ public final class ProtobufMessages {
       }
 
       private int versionRevision_ ;
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        * @return Whether the versionRevision field is set.
        */
@@ -3419,7 +3419,7 @@ public final class ProtobufMessages {
       public boolean hasVersionRevision() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        * @return The versionRevision.
        */
@@ -3427,7 +3427,7 @@ public final class ProtobufMessages {
       public int getVersionRevision() {
         return versionRevision_;
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        * @param value The versionRevision to set.
        * @return This builder for chaining.
@@ -3439,7 +3439,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 version_revision = 3;</code>
        * @return This builder for chaining.
        */
@@ -3517,35 +3517,35 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Signature)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return Whether the keyAlias field is set.
      */
     boolean hasKeyAlias();
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return The keyAlias.
      */
     java.lang.String getKeyAlias();
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return The bytes for keyAlias.
      */
     com.google.protobuf.ByteString
         getKeyAliasBytes();
 
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      * @return Whether the signature field is set.
      */
     boolean hasSignature();
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      * @return The signature.
      */
     com.google.protobuf.ByteString getSignature();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Signature}
    */
   public static final class Signature extends
@@ -3586,7 +3586,7 @@ public final class ProtobufMessages {
     public static final int KEY_ALIAS_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object keyAlias_ = "";
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return Whether the keyAlias field is set.
      */
@@ -3594,7 +3594,7 @@ public final class ProtobufMessages {
     public boolean hasKeyAlias() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return The keyAlias.
      */
@@ -3613,7 +3613,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string key_alias = 1;</code>
      * @return The bytes for keyAlias.
      */
@@ -3634,7 +3634,7 @@ public final class ProtobufMessages {
 
     public static final int SIGNATURE_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      * @return Whether the signature field is set.
      */
@@ -3642,7 +3642,7 @@ public final class ProtobufMessages {
     public boolean hasSignature() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional bytes signature = 2;</code>
      * @return The signature.
      */
@@ -3826,7 +3826,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Signature}
      */
     public static final class Builder extends
@@ -3981,14 +3981,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private java.lang.Object keyAlias_ = "";
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @return Whether the keyAlias field is set.
        */
       public boolean hasKeyAlias() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @return The keyAlias.
        */
@@ -4006,7 +4006,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @return The bytes for keyAlias.
        */
@@ -4023,7 +4023,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @param value The keyAlias to set.
        * @return This builder for chaining.
@@ -4036,7 +4036,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @return This builder for chaining.
        */
@@ -4046,7 +4046,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string key_alias = 1;</code>
        * @param value The bytes for keyAlias to set.
        * @return This builder for chaining.
@@ -4061,7 +4061,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        * @return Whether the signature field is set.
        */
@@ -4069,7 +4069,7 @@ public final class ProtobufMessages {
       public boolean hasSignature() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        * @return The signature.
        */
@@ -4077,7 +4077,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getSignature() {
         return signature_;
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        * @param value The signature to set.
        * @return This builder for chaining.
@@ -4089,7 +4089,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes signature = 2;</code>
        * @return This builder for chaining.
        */
@@ -4168,18 +4168,18 @@ public final class ProtobufMessages {
       com.google.protobuf.GeneratedMessageV3.
           ExtendableMessageOrBuilder<KnowledgeBase> {
 
-    /**
+    /*
      * <code>optional bytes signature = 1;</code>
      * @return Whether the signature field is set.
      */
     boolean hasSignature();
-    /**
+    /*
      * <code>optional bytes signature = 1;</code>
      * @return The signature.
      */
     com.google.protobuf.ByteString getSignature();
 
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4188,7 +4188,7 @@ public final class ProtobufMessages {
      * @return Whether the id field is set.
      */
     boolean hasId();
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4197,7 +4197,7 @@ public final class ProtobufMessages {
      * @return The id.
      */
     java.lang.String getId();
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4208,7 +4208,7 @@ public final class ProtobufMessages {
     com.google.protobuf.ByteString
         getIdBytes();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.KnowledgeBase}
    */
   public static final class KnowledgeBase extends
@@ -4249,7 +4249,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int SIGNATURE_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes signature = 1;</code>
      * @return Whether the signature field is set.
      */
@@ -4257,7 +4257,7 @@ public final class ProtobufMessages {
     public boolean hasSignature() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional bytes signature = 1;</code>
      * @return The signature.
      */
@@ -4269,7 +4269,7 @@ public final class ProtobufMessages {
     public static final int ID_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private volatile java.lang.Object id_ = "";
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4281,7 +4281,7 @@ public final class ProtobufMessages {
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4304,7 +4304,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <pre>
      * we should probably add the list of packages/rules/resources on the knowledge base
      * </pre>
@@ -4514,7 +4514,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.KnowledgeBase}
      */
     public static final class Builder extends
@@ -4674,7 +4674,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes signature = 1;</code>
        * @return Whether the signature field is set.
        */
@@ -4682,7 +4682,7 @@ public final class ProtobufMessages {
       public boolean hasSignature() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional bytes signature = 1;</code>
        * @return The signature.
        */
@@ -4690,7 +4690,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getSignature() {
         return signature_;
       }
-      /**
+      /*
        * <code>optional bytes signature = 1;</code>
        * @param value The signature to set.
        * @return This builder for chaining.
@@ -4702,7 +4702,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes signature = 1;</code>
        * @return This builder for chaining.
        */
@@ -4714,7 +4714,7 @@ public final class ProtobufMessages {
       }
 
       private java.lang.Object id_ = "";
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4725,7 +4725,7 @@ public final class ProtobufMessages {
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4747,7 +4747,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4768,7 +4768,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4785,7 +4785,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4799,7 +4799,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * we should probably add the list of packages/rules/resources on the knowledge base
        * </pre>
@@ -4885,74 +4885,74 @@ public final class ProtobufMessages {
       com.google.protobuf.GeneratedMessageV3.
           ExtendableMessageOrBuilder<KnowledgeSession> {
 
-    /**
+    /*
      * <code>optional bool multithread = 1;</code>
      * @return Whether the multithread field is set.
      */
     boolean hasMultithread();
-    /**
+    /*
      * <code>optional bool multithread = 1;</code>
      * @return The multithread.
      */
     boolean getMultithread();
 
-    /**
+    /*
      * <code>optional int64 time = 2;</code>
      * @return Whether the time field is set.
      */
     boolean hasTime();
-    /**
+    /*
      * <code>optional int64 time = 2;</code>
      * @return The time.
      */
     long getTime();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      * @return Whether the ruleData field is set.
      */
     boolean hasRuleData();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      * @return The ruleData.
      */
     org.drools.serialization.protobuf.ProtobufMessages.RuleData getRuleData();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.RuleDataOrBuilder getRuleDataOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      * @return Whether the processData field is set.
      */
     boolean hasProcessData();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      * @return The processData.
      */
     org.drools.serialization.protobuf.ProtobufMessages.ProcessData getProcessData();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ProcessDataOrBuilder getProcessDataOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      * @return Whether the timers field is set.
      */
     boolean hasTimers();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      * @return The timers.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Timers getTimers();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.TimersOrBuilder getTimersOrBuilder();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.KnowledgeSession}
    */
   public static final class KnowledgeSession extends
@@ -4991,7 +4991,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int MULTITHREAD_FIELD_NUMBER = 1;
     private boolean multithread_ = false;
-    /**
+    /*
      * <code>optional bool multithread = 1;</code>
      * @return Whether the multithread field is set.
      */
@@ -4999,7 +4999,7 @@ public final class ProtobufMessages {
     public boolean hasMultithread() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional bool multithread = 1;</code>
      * @return The multithread.
      */
@@ -5010,7 +5010,7 @@ public final class ProtobufMessages {
 
     public static final int TIME_FIELD_NUMBER = 2;
     private long time_ = 0L;
-    /**
+    /*
      * <code>optional int64 time = 2;</code>
      * @return Whether the time field is set.
      */
@@ -5018,7 +5018,7 @@ public final class ProtobufMessages {
     public boolean hasTime() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int64 time = 2;</code>
      * @return The time.
      */
@@ -5029,7 +5029,7 @@ public final class ProtobufMessages {
 
     public static final int RULE_DATA_FIELD_NUMBER = 3;
     private org.drools.serialization.protobuf.ProtobufMessages.RuleData ruleData_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      * @return Whether the ruleData field is set.
      */
@@ -5037,7 +5037,7 @@ public final class ProtobufMessages {
     public boolean hasRuleData() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      * @return The ruleData.
      */
@@ -5045,7 +5045,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.RuleData getRuleData() {
       return ruleData_ == null ? org.drools.serialization.protobuf.ProtobufMessages.RuleData.getDefaultInstance() : ruleData_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
      */
     @java.lang.Override
@@ -5055,7 +5055,7 @@ public final class ProtobufMessages {
 
     public static final int PROCESS_DATA_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.ProcessData processData_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      * @return Whether the processData field is set.
      */
@@ -5063,7 +5063,7 @@ public final class ProtobufMessages {
     public boolean hasProcessData() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      * @return The processData.
      */
@@ -5071,7 +5071,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.ProcessData getProcessData() {
       return processData_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ProcessData.getDefaultInstance() : processData_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
      */
     @java.lang.Override
@@ -5081,7 +5081,7 @@ public final class ProtobufMessages {
 
     public static final int TIMERS_FIELD_NUMBER = 5;
     private org.drools.serialization.protobuf.ProtobufMessages.Timers timers_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      * @return Whether the timers field is set.
      */
@@ -5089,7 +5089,7 @@ public final class ProtobufMessages {
     public boolean hasTimers() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      * @return The timers.
      */
@@ -5097,7 +5097,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Timers getTimers() {
       return timers_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.getDefaultInstance() : timers_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
      */
     @java.lang.Override
@@ -5355,7 +5355,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.KnowledgeSession}
      */
     public static final class Builder extends
@@ -5594,7 +5594,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private boolean multithread_ ;
-      /**
+      /*
        * <code>optional bool multithread = 1;</code>
        * @return Whether the multithread field is set.
        */
@@ -5602,7 +5602,7 @@ public final class ProtobufMessages {
       public boolean hasMultithread() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional bool multithread = 1;</code>
        * @return The multithread.
        */
@@ -5610,7 +5610,7 @@ public final class ProtobufMessages {
       public boolean getMultithread() {
         return multithread_;
       }
-      /**
+      /*
        * <code>optional bool multithread = 1;</code>
        * @param value The multithread to set.
        * @return This builder for chaining.
@@ -5622,7 +5622,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool multithread = 1;</code>
        * @return This builder for chaining.
        */
@@ -5634,7 +5634,7 @@ public final class ProtobufMessages {
       }
 
       private long time_ ;
-      /**
+      /*
        * <code>optional int64 time = 2;</code>
        * @return Whether the time field is set.
        */
@@ -5642,7 +5642,7 @@ public final class ProtobufMessages {
       public boolean hasTime() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 time = 2;</code>
        * @return The time.
        */
@@ -5650,7 +5650,7 @@ public final class ProtobufMessages {
       public long getTime() {
         return time_;
       }
-      /**
+      /*
        * <code>optional int64 time = 2;</code>
        * @param value The time to set.
        * @return This builder for chaining.
@@ -5662,7 +5662,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 time = 2;</code>
        * @return This builder for chaining.
        */
@@ -5676,14 +5676,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.RuleData ruleData_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.RuleData, org.drools.serialization.protobuf.ProtobufMessages.RuleData.Builder, org.drools.serialization.protobuf.ProtobufMessages.RuleDataOrBuilder> ruleDataBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        * @return Whether the ruleData field is set.
        */
       public boolean hasRuleData() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        * @return The ruleData.
        */
@@ -5694,7 +5694,7 @@ public final class ProtobufMessages {
           return ruleDataBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public Builder setRuleData(org.drools.serialization.protobuf.ProtobufMessages.RuleData value) {
@@ -5710,7 +5710,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public Builder setRuleData(
@@ -5724,7 +5724,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public Builder mergeRuleData(org.drools.serialization.protobuf.ProtobufMessages.RuleData value) {
@@ -5743,7 +5743,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public Builder clearRuleData() {
@@ -5756,7 +5756,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.RuleData.Builder getRuleDataBuilder() {
@@ -5764,7 +5764,7 @@ public final class ProtobufMessages {
         onChanged();
         return getRuleDataFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.RuleDataOrBuilder getRuleDataOrBuilder() {
@@ -5775,7 +5775,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.RuleData.getDefaultInstance() : ruleData_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.RuleData rule_data = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -5795,14 +5795,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.ProcessData processData_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.ProcessData, org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder, org.drools.serialization.protobuf.ProtobufMessages.ProcessDataOrBuilder> processDataBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        * @return Whether the processData field is set.
        */
       public boolean hasProcessData() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        * @return The processData.
        */
@@ -5813,7 +5813,7 @@ public final class ProtobufMessages {
           return processDataBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public Builder setProcessData(org.drools.serialization.protobuf.ProtobufMessages.ProcessData value) {
@@ -5829,7 +5829,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public Builder setProcessData(
@@ -5843,7 +5843,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public Builder mergeProcessData(org.drools.serialization.protobuf.ProtobufMessages.ProcessData value) {
@@ -5862,7 +5862,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public Builder clearProcessData() {
@@ -5875,7 +5875,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ProcessData.Builder getProcessDataBuilder() {
@@ -5883,7 +5883,7 @@ public final class ProtobufMessages {
         onChanged();
         return getProcessDataFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ProcessDataOrBuilder getProcessDataOrBuilder() {
@@ -5894,7 +5894,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.ProcessData.getDefaultInstance() : processData_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ProcessData process_data = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -5914,14 +5914,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Timers timers_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Timers, org.drools.serialization.protobuf.ProtobufMessages.Timers.Builder, org.drools.serialization.protobuf.ProtobufMessages.TimersOrBuilder> timersBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        * @return Whether the timers field is set.
        */
       public boolean hasTimers() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        * @return The timers.
        */
@@ -5932,7 +5932,7 @@ public final class ProtobufMessages {
           return timersBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public Builder setTimers(org.drools.serialization.protobuf.ProtobufMessages.Timers value) {
@@ -5948,7 +5948,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public Builder setTimers(
@@ -5962,7 +5962,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public Builder mergeTimers(org.drools.serialization.protobuf.ProtobufMessages.Timers value) {
@@ -5981,7 +5981,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public Builder clearTimers() {
@@ -5994,7 +5994,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.Builder getTimersBuilder() {
@@ -6002,7 +6002,7 @@ public final class ProtobufMessages {
         onChanged();
         return getTimersFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.TimersOrBuilder getTimersOrBuilder() {
@@ -6013,7 +6013,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Timers.getDefaultInstance() : timers_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers timers = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -6097,137 +6097,137 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.RuleData)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int64 last_id = 3;</code>
      * @return Whether the lastId field is set.
      */
     boolean hasLastId();
-    /**
+    /*
      * <code>optional int64 last_id = 3;</code>
      * @return The lastId.
      */
     long getLastId();
 
-    /**
+    /*
      * <code>optional int64 last_recency = 4;</code>
      * @return Whether the lastRecency field is set.
      */
     boolean hasLastRecency();
-    /**
+    /*
      * <code>optional int64 last_recency = 4;</code>
      * @return The lastRecency.
      */
     long getLastRecency();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      * @return Whether the initialFact field is set.
      */
     boolean hasInitialFact();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      * @return The initialFact.
      */
     org.drools.serialization.protobuf.ProtobufMessages.FactHandle getInitialFact();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getInitialFactOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      * @return Whether the agenda field is set.
      */
     boolean hasAgenda();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      * @return The agenda.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda getAgenda();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.AgendaOrBuilder getAgendaOrBuilder();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory> 
         getNodeMemoryList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory getNodeMemory(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     int getNodeMemoryCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder> 
         getNodeMemoryOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder getNodeMemoryOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint> 
         getEntryPointList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.EntryPoint getEntryPoint(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     int getEntryPointCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder> 
         getEntryPointOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder getEntryPointOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      * @return Whether the actionQueue field is set.
      */
     boolean hasActionQueue();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      * @return The actionQueue.
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActionQueue getActionQueue();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActionQueueOrBuilder getActionQueueOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      * @return Whether the oBSOLETETms field is set.
      */
     boolean hasOBSOLETETms();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      * @return The oBSOLETETms.
      */
     org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem getOBSOLETETms();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder getOBSOLETETmsOrBuilder();
   }
-  /**
+  /*
    * <pre>
    * the Rule Data serialization format
    * </pre>
@@ -6271,7 +6271,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int LAST_ID_FIELD_NUMBER = 3;
     private long lastId_ = 0L;
-    /**
+    /*
      * <code>optional int64 last_id = 3;</code>
      * @return Whether the lastId field is set.
      */
@@ -6279,7 +6279,7 @@ public final class ProtobufMessages {
     public boolean hasLastId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int64 last_id = 3;</code>
      * @return The lastId.
      */
@@ -6290,7 +6290,7 @@ public final class ProtobufMessages {
 
     public static final int LAST_RECENCY_FIELD_NUMBER = 4;
     private long lastRecency_ = 0L;
-    /**
+    /*
      * <code>optional int64 last_recency = 4;</code>
      * @return Whether the lastRecency field is set.
      */
@@ -6298,7 +6298,7 @@ public final class ProtobufMessages {
     public boolean hasLastRecency() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int64 last_recency = 4;</code>
      * @return The lastRecency.
      */
@@ -6309,7 +6309,7 @@ public final class ProtobufMessages {
 
     public static final int INITIAL_FACT_FIELD_NUMBER = 6;
     private org.drools.serialization.protobuf.ProtobufMessages.FactHandle initialFact_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      * @return Whether the initialFact field is set.
      */
@@ -6317,7 +6317,7 @@ public final class ProtobufMessages {
     public boolean hasInitialFact() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      * @return The initialFact.
      */
@@ -6325,7 +6325,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getInitialFact() {
       return initialFact_ == null ? org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : initialFact_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
      */
     @java.lang.Override
@@ -6335,7 +6335,7 @@ public final class ProtobufMessages {
 
     public static final int AGENDA_FIELD_NUMBER = 8;
     private org.drools.serialization.protobuf.ProtobufMessages.Agenda agenda_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      * @return Whether the agenda field is set.
      */
@@ -6343,7 +6343,7 @@ public final class ProtobufMessages {
     public boolean hasAgenda() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      * @return The agenda.
      */
@@ -6351,7 +6351,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Agenda getAgenda() {
       return agenda_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Agenda.getDefaultInstance() : agenda_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
      */
     @java.lang.Override
@@ -6362,14 +6362,14 @@ public final class ProtobufMessages {
     public static final int NODE_MEMORY_FIELD_NUMBER = 9;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory> nodeMemory_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory> getNodeMemoryList() {
       return nodeMemory_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     @java.lang.Override
@@ -6377,21 +6377,21 @@ public final class ProtobufMessages {
         getNodeMemoryOrBuilderList() {
       return nodeMemory_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     @java.lang.Override
     public int getNodeMemoryCount() {
       return nodeMemory_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory getNodeMemory(int index) {
       return nodeMemory_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
      */
     @java.lang.Override
@@ -6403,14 +6403,14 @@ public final class ProtobufMessages {
     public static final int ENTRY_POINT_FIELD_NUMBER = 10;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint> entryPoint_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint> getEntryPointList() {
       return entryPoint_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     @java.lang.Override
@@ -6418,21 +6418,21 @@ public final class ProtobufMessages {
         getEntryPointOrBuilderList() {
       return entryPoint_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     @java.lang.Override
     public int getEntryPointCount() {
       return entryPoint_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.EntryPoint getEntryPoint(int index) {
       return entryPoint_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
      */
     @java.lang.Override
@@ -6443,7 +6443,7 @@ public final class ProtobufMessages {
 
     public static final int ACTION_QUEUE_FIELD_NUMBER = 11;
     private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue actionQueue_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      * @return Whether the actionQueue field is set.
      */
@@ -6451,7 +6451,7 @@ public final class ProtobufMessages {
     public boolean hasActionQueue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      * @return The actionQueue.
      */
@@ -6459,7 +6459,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue getActionQueue() {
       return actionQueue_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.getDefaultInstance() : actionQueue_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
      */
     @java.lang.Override
@@ -6469,7 +6469,7 @@ public final class ProtobufMessages {
 
     public static final int OBSOLETE_TMS_FIELD_NUMBER = 12;
     private org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem oBSOLETETms_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      * @return Whether the oBSOLETETms field is set.
      */
@@ -6477,7 +6477,7 @@ public final class ProtobufMessages {
     public boolean hasOBSOLETETms() {
       return ((bitField0_ & 0x00000020) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      * @return The oBSOLETETms.
      */
@@ -6485,7 +6485,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem getOBSOLETETms() {
       return oBSOLETETms_ == null ? org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance() : oBSOLETETms_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      */
     @java.lang.Override
@@ -6761,7 +6761,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * <pre>
      * the Rule Data serialization format
      * </pre>
@@ -7127,7 +7127,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private long lastId_ ;
-      /**
+      /*
        * <code>optional int64 last_id = 3;</code>
        * @return Whether the lastId field is set.
        */
@@ -7135,7 +7135,7 @@ public final class ProtobufMessages {
       public boolean hasLastId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 last_id = 3;</code>
        * @return The lastId.
        */
@@ -7143,7 +7143,7 @@ public final class ProtobufMessages {
       public long getLastId() {
         return lastId_;
       }
-      /**
+      /*
        * <code>optional int64 last_id = 3;</code>
        * @param value The lastId to set.
        * @return This builder for chaining.
@@ -7155,7 +7155,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 last_id = 3;</code>
        * @return This builder for chaining.
        */
@@ -7167,7 +7167,7 @@ public final class ProtobufMessages {
       }
 
       private long lastRecency_ ;
-      /**
+      /*
        * <code>optional int64 last_recency = 4;</code>
        * @return Whether the lastRecency field is set.
        */
@@ -7175,7 +7175,7 @@ public final class ProtobufMessages {
       public boolean hasLastRecency() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 last_recency = 4;</code>
        * @return The lastRecency.
        */
@@ -7183,7 +7183,7 @@ public final class ProtobufMessages {
       public long getLastRecency() {
         return lastRecency_;
       }
-      /**
+      /*
        * <code>optional int64 last_recency = 4;</code>
        * @param value The lastRecency to set.
        * @return This builder for chaining.
@@ -7195,7 +7195,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 last_recency = 4;</code>
        * @return This builder for chaining.
        */
@@ -7209,14 +7209,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.FactHandle initialFact_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> initialFactBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        * @return Whether the initialFact field is set.
        */
       public boolean hasInitialFact() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        * @return The initialFact.
        */
@@ -7227,7 +7227,7 @@ public final class ProtobufMessages {
           return initialFactBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public Builder setInitialFact(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -7243,7 +7243,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public Builder setInitialFact(
@@ -7257,7 +7257,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public Builder mergeInitialFact(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -7276,7 +7276,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public Builder clearInitialFact() {
@@ -7289,7 +7289,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getInitialFactBuilder() {
@@ -7297,7 +7297,7 @@ public final class ProtobufMessages {
         onChanged();
         return getInitialFactFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getInitialFactOrBuilder() {
@@ -7308,7 +7308,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : initialFact_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle initial_fact = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -7328,14 +7328,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Agenda agenda_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Agenda, org.drools.serialization.protobuf.ProtobufMessages.Agenda.Builder, org.drools.serialization.protobuf.ProtobufMessages.AgendaOrBuilder> agendaBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        * @return Whether the agenda field is set.
        */
       public boolean hasAgenda() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        * @return The agenda.
        */
@@ -7346,7 +7346,7 @@ public final class ProtobufMessages {
           return agendaBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public Builder setAgenda(org.drools.serialization.protobuf.ProtobufMessages.Agenda value) {
@@ -7362,7 +7362,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public Builder setAgenda(
@@ -7376,7 +7376,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public Builder mergeAgenda(org.drools.serialization.protobuf.ProtobufMessages.Agenda value) {
@@ -7395,7 +7395,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public Builder clearAgenda() {
@@ -7408,7 +7408,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.Builder getAgendaBuilder() {
@@ -7416,7 +7416,7 @@ public final class ProtobufMessages {
         onChanged();
         return getAgendaFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.AgendaOrBuilder getAgendaOrBuilder() {
@@ -7427,7 +7427,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Agenda.getDefaultInstance() : agenda_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda agenda = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -7456,7 +7456,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder> nodeMemoryBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory> getNodeMemoryList() {
@@ -7466,7 +7466,7 @@ public final class ProtobufMessages {
           return nodeMemoryBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public int getNodeMemoryCount() {
@@ -7476,7 +7476,7 @@ public final class ProtobufMessages {
           return nodeMemoryBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory getNodeMemory(int index) {
@@ -7486,7 +7486,7 @@ public final class ProtobufMessages {
           return nodeMemoryBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder setNodeMemory(
@@ -7503,7 +7503,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder setNodeMemory(
@@ -7517,7 +7517,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder addNodeMemory(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory value) {
@@ -7533,7 +7533,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder addNodeMemory(
@@ -7550,7 +7550,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder addNodeMemory(
@@ -7564,7 +7564,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder addNodeMemory(
@@ -7578,7 +7578,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder addAllNodeMemory(
@@ -7593,7 +7593,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder clearNodeMemory() {
@@ -7606,7 +7606,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public Builder removeNodeMemory(int index) {
@@ -7619,14 +7619,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder getNodeMemoryBuilder(
           int index) {
         return getNodeMemoryFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder getNodeMemoryOrBuilder(
@@ -7636,7 +7636,7 @@ public final class ProtobufMessages {
           return nodeMemoryBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemoryOrBuilder> 
@@ -7647,14 +7647,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(nodeMemory_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder addNodeMemoryBuilder() {
         return getNodeMemoryFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder addNodeMemoryBuilder(
@@ -7662,7 +7662,7 @@ public final class ProtobufMessages {
         return getNodeMemoryFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory node_memory = 9;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder> 
@@ -7696,7 +7696,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.EntryPoint, org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder, org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder> entryPointBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint> getEntryPointList() {
@@ -7706,7 +7706,7 @@ public final class ProtobufMessages {
           return entryPointBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public int getEntryPointCount() {
@@ -7716,7 +7716,7 @@ public final class ProtobufMessages {
           return entryPointBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EntryPoint getEntryPoint(int index) {
@@ -7726,7 +7726,7 @@ public final class ProtobufMessages {
           return entryPointBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder setEntryPoint(
@@ -7743,7 +7743,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder setEntryPoint(
@@ -7757,7 +7757,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder addEntryPoint(org.drools.serialization.protobuf.ProtobufMessages.EntryPoint value) {
@@ -7773,7 +7773,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder addEntryPoint(
@@ -7790,7 +7790,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder addEntryPoint(
@@ -7804,7 +7804,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder addEntryPoint(
@@ -7818,7 +7818,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder addAllEntryPoint(
@@ -7833,7 +7833,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder clearEntryPoint() {
@@ -7846,7 +7846,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public Builder removeEntryPoint(int index) {
@@ -7859,14 +7859,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder getEntryPointBuilder(
           int index) {
         return getEntryPointFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder getEntryPointOrBuilder(
@@ -7876,7 +7876,7 @@ public final class ProtobufMessages {
           return entryPointBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.EntryPointOrBuilder> 
@@ -7887,14 +7887,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(entryPoint_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder addEntryPointBuilder() {
         return getEntryPointFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder addEntryPointBuilder(
@@ -7902,7 +7902,7 @@ public final class ProtobufMessages {
         return getEntryPointFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EntryPoint entry_point = 10;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EntryPoint.Builder> 
@@ -7927,14 +7927,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue actionQueue_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.ActionQueue, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueueOrBuilder> actionQueueBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        * @return Whether the actionQueue field is set.
        */
       public boolean hasActionQueue() {
         return ((bitField0_ & 0x00000040) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        * @return The actionQueue.
        */
@@ -7945,7 +7945,7 @@ public final class ProtobufMessages {
           return actionQueueBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public Builder setActionQueue(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue value) {
@@ -7961,7 +7961,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public Builder setActionQueue(
@@ -7975,7 +7975,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public Builder mergeActionQueue(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue value) {
@@ -7994,7 +7994,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public Builder clearActionQueue() {
@@ -8007,7 +8007,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Builder getActionQueueBuilder() {
@@ -8015,7 +8015,7 @@ public final class ProtobufMessages {
         onChanged();
         return getActionQueueFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueueOrBuilder getActionQueueOrBuilder() {
@@ -8026,7 +8026,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.getDefaultInstance() : actionQueue_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue action_queue = 11;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -8046,14 +8046,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem oBSOLETETms_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder> oBSOLETETmsBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        * @return Whether the oBSOLETETms field is set.
        */
       public boolean hasOBSOLETETms() {
         return ((bitField0_ & 0x00000080) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        * @return The oBSOLETETms.
        */
@@ -8064,7 +8064,7 @@ public final class ProtobufMessages {
           return oBSOLETETmsBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public Builder setOBSOLETETms(org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem value) {
@@ -8080,7 +8080,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public Builder setOBSOLETETms(
@@ -8094,7 +8094,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public Builder mergeOBSOLETETms(org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem value) {
@@ -8113,7 +8113,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public Builder clearOBSOLETETms() {
@@ -8126,7 +8126,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder getOBSOLETETmsBuilder() {
@@ -8134,7 +8134,7 @@ public final class ProtobufMessages {
         onChanged();
         return getOBSOLETETmsFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder getOBSOLETETmsOrBuilder() {
@@ -8145,7 +8145,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance() : oBSOLETETms_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -8229,35 +8229,35 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.RuntimeClassDef)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return Whether the classFqName field is set.
      */
     boolean hasClassFqName();
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return The classFqName.
      */
     java.lang.String getClassFqName();
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return The bytes for classFqName.
      */
     com.google.protobuf.ByteString
         getClassFqNameBytes();
 
-    /**
+    /*
      * <code>required bytes class_def = 2;</code>
      * @return Whether the classDef field is set.
      */
     boolean hasClassDef();
-    /**
+    /*
      * <code>required bytes class_def = 2;</code>
      * @return The classDef.
      */
     com.google.protobuf.ByteString getClassDef();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.RuntimeClassDef}
    */
   public static final class RuntimeClassDef extends
@@ -8298,7 +8298,7 @@ public final class ProtobufMessages {
     public static final int CLASS_FQ_NAME_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object classFqName_ = "";
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return Whether the classFqName field is set.
      */
@@ -8306,7 +8306,7 @@ public final class ProtobufMessages {
     public boolean hasClassFqName() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return The classFqName.
      */
@@ -8325,7 +8325,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>required string class_fq_name = 1;</code>
      * @return The bytes for classFqName.
      */
@@ -8346,7 +8346,7 @@ public final class ProtobufMessages {
 
     public static final int CLASS_DEF_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString classDef_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>required bytes class_def = 2;</code>
      * @return Whether the classDef field is set.
      */
@@ -8354,7 +8354,7 @@ public final class ProtobufMessages {
     public boolean hasClassDef() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>required bytes class_def = 2;</code>
      * @return The classDef.
      */
@@ -8546,7 +8546,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.RuntimeClassDef}
      */
     public static final class Builder extends
@@ -8707,14 +8707,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private java.lang.Object classFqName_ = "";
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @return Whether the classFqName field is set.
        */
       public boolean hasClassFqName() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @return The classFqName.
        */
@@ -8732,7 +8732,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @return The bytes for classFqName.
        */
@@ -8749,7 +8749,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @param value The classFqName to set.
        * @return This builder for chaining.
@@ -8762,7 +8762,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @return This builder for chaining.
        */
@@ -8772,7 +8772,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>required string class_fq_name = 1;</code>
        * @param value The bytes for classFqName to set.
        * @return This builder for chaining.
@@ -8787,7 +8787,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString classDef_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>required bytes class_def = 2;</code>
        * @return Whether the classDef field is set.
        */
@@ -8795,7 +8795,7 @@ public final class ProtobufMessages {
       public boolean hasClassDef() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>required bytes class_def = 2;</code>
        * @return The classDef.
        */
@@ -8803,7 +8803,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getClassDef() {
         return classDef_;
       }
-      /**
+      /*
        * <code>required bytes class_def = 2;</code>
        * @param value The classDef to set.
        * @return This builder for chaining.
@@ -8815,7 +8815,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>required bytes class_def = 2;</code>
        * @return This builder for chaining.
        */
@@ -8894,7 +8894,7 @@ public final class ProtobufMessages {
       com.google.protobuf.GeneratedMessageV3.
           ExtendableMessageOrBuilder<ProcessData> {
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.ProcessData}
    */
   public static final class ProcessData extends
@@ -9086,7 +9086,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ProcessData}
      */
     public static final class Builder extends
@@ -9275,7 +9275,7 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <pre>
      * these 2 fields are just for information
      * </pre>
@@ -9284,7 +9284,7 @@ public final class ProtobufMessages {
      * @return Whether the dormantActivations field is set.
      */
     boolean hasDormantActivations();
-    /**
+    /*
      * <pre>
      * these 2 fields are just for information
      * </pre>
@@ -9294,129 +9294,129 @@ public final class ProtobufMessages {
      */
     int getDormantActivations();
 
-    /**
+    /*
      * <code>optional int32 active_activations = 2;</code>
      * @return Whether the activeActivations field is set.
      */
     boolean hasActiveActivations();
-    /**
+    /*
      * <code>optional int32 active_activations = 2;</code>
      * @return The activeActivations.
      */
     int getActiveActivations();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup> 
         getAgendaGroupList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup getAgendaGroup(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     int getAgendaGroupCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder> 
         getAgendaGroupOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder getAgendaGroupOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      * @return Whether the focusStack field is set.
      */
     boolean hasFocusStack();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      * @return The focusStack.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack getFocusStack();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStackOrBuilder getFocusStackOrBuilder();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup> 
         getRuleFlowGroupList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup getRuleFlowGroup(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     int getRuleFlowGroupCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder> 
         getRuleFlowGroupOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder getRuleFlowGroupOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> 
         getMatchList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     int getMatchCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
         getMatchOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> 
         getRuleActivationList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Activation getRuleActivation(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     int getRuleActivationCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
         getRuleActivationOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getRuleActivationOrBuilder(
         int index);
   }
-  /**
+  /*
    * <pre>
    * the agenda message
    * </pre>
@@ -9463,127 +9463,127 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda.AgendaGroup)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return Whether the name field is set.
        */
       boolean hasName();
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The name.
        */
       java.lang.String getName();
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The bytes for name.
        */
       com.google.protobuf.ByteString
           getNameBytes();
 
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return Whether the isActive field is set.
        */
       boolean hasIsActive();
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return The isActive.
        */
       boolean getIsActive();
 
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return Whether the isAutoDeactivate field is set.
        */
       boolean hasIsAutoDeactivate();
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return The isAutoDeactivate.
        */
       boolean getIsAutoDeactivate();
 
-      /**
+      /*
        * <code>optional int64 activated_for_recency = 4;</code>
        * @return Whether the activatedForRecency field is set.
        */
       boolean hasActivatedForRecency();
-      /**
+      /*
        * <code>optional int64 activated_for_recency = 4;</code>
        * @return The activatedForRecency.
        */
       long getActivatedForRecency();
 
-      /**
+      /*
        * <code>optional int64 cleared_for_recency = 5;</code>
        * @return Whether the clearedForRecency field is set.
        */
       boolean hasClearedForRecency();
-      /**
+      /*
        * <code>optional int64 cleared_for_recency = 5;</code>
        * @return The clearedForRecency.
        */
       long getClearedForRecency();
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> 
           getMatchList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       int getMatchCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
           getMatchOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
           int index);
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> 
           getNodeInstanceList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       int getNodeInstanceCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
           getNodeInstanceOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
           int index);
 
-      /**
+      /*
        * <code>optional bool has_rule_flow_lister = 8;</code>
        * @return Whether the hasRuleFlowLister field is set.
        */
       boolean hasHasRuleFlowLister();
-      /**
+      /*
        * <code>optional bool has_rule_flow_lister = 8;</code>
        * @return The hasRuleFlowLister.
        */
       boolean getHasRuleFlowLister();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Agenda.AgendaGroup}
      */
     public static final class AgendaGroup extends
@@ -9625,52 +9625,52 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return Whether the processInstanceId field is set.
          */
         boolean hasProcessInstanceId();
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return The processInstanceId.
          */
         long getProcessInstanceId();
 
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return Whether the nodeInstanceId field is set.
          */
         boolean hasNodeInstanceId();
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The nodeInstanceId.
          */
         java.lang.String getNodeInstanceId();
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The bytes for nodeInstanceId.
          */
         com.google.protobuf.ByteString
             getNodeInstanceIdBytes();
 
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return Whether the processInstanceStringId field is set.
          */
         boolean hasProcessInstanceStringId();
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The processInstanceStringId.
          */
         java.lang.String getProcessInstanceStringId();
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The bytes for processInstanceStringId.
          */
         com.google.protobuf.ByteString
             getProcessInstanceStringIdBytes();
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance}
        */
       public static final class NodeInstance extends
@@ -9710,7 +9710,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
         private long processInstanceId_ = 0L;
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return Whether the processInstanceId field is set.
          */
@@ -9718,7 +9718,7 @@ public final class ProtobufMessages {
         public boolean hasProcessInstanceId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return The processInstanceId.
          */
@@ -9730,7 +9730,7 @@ public final class ProtobufMessages {
         public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 2;
         @SuppressWarnings("serial")
         private volatile java.lang.Object nodeInstanceId_ = "";
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return Whether the nodeInstanceId field is set.
          */
@@ -9738,7 +9738,7 @@ public final class ProtobufMessages {
         public boolean hasNodeInstanceId() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The nodeInstanceId.
          */
@@ -9757,7 +9757,7 @@ public final class ProtobufMessages {
             return s;
           }
         }
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The bytes for nodeInstanceId.
          */
@@ -9779,7 +9779,7 @@ public final class ProtobufMessages {
         public static final int PROCESS_INSTANCE_STRING_ID_FIELD_NUMBER = 3;
         @SuppressWarnings("serial")
         private volatile java.lang.Object processInstanceStringId_ = "";
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return Whether the processInstanceStringId field is set.
          */
@@ -9787,7 +9787,7 @@ public final class ProtobufMessages {
         public boolean hasProcessInstanceStringId() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The processInstanceStringId.
          */
@@ -9806,7 +9806,7 @@ public final class ProtobufMessages {
             return s;
           }
         }
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The bytes for processInstanceStringId.
          */
@@ -10016,7 +10016,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance}
          */
         public static final class Builder extends
@@ -10186,7 +10186,7 @@ public final class ProtobufMessages {
           private int bitField0_;
 
           private long processInstanceId_ ;
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return Whether the processInstanceId field is set.
            */
@@ -10194,7 +10194,7 @@ public final class ProtobufMessages {
           public boolean hasProcessInstanceId() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return The processInstanceId.
            */
@@ -10202,7 +10202,7 @@ public final class ProtobufMessages {
           public long getProcessInstanceId() {
             return processInstanceId_;
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @param value The processInstanceId to set.
            * @return This builder for chaining.
@@ -10214,7 +10214,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return This builder for chaining.
            */
@@ -10226,14 +10226,14 @@ public final class ProtobufMessages {
           }
 
           private java.lang.Object nodeInstanceId_ = "";
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return Whether the nodeInstanceId field is set.
            */
           public boolean hasNodeInstanceId() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return The nodeInstanceId.
            */
@@ -10251,7 +10251,7 @@ public final class ProtobufMessages {
               return (java.lang.String) ref;
             }
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return The bytes for nodeInstanceId.
            */
@@ -10268,7 +10268,7 @@ public final class ProtobufMessages {
               return (com.google.protobuf.ByteString) ref;
             }
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @param value The nodeInstanceId to set.
            * @return This builder for chaining.
@@ -10281,7 +10281,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return This builder for chaining.
            */
@@ -10291,7 +10291,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @param value The bytes for nodeInstanceId to set.
            * @return This builder for chaining.
@@ -10306,14 +10306,14 @@ public final class ProtobufMessages {
           }
 
           private java.lang.Object processInstanceStringId_ = "";
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return Whether the processInstanceStringId field is set.
            */
           public boolean hasProcessInstanceStringId() {
             return ((bitField0_ & 0x00000004) != 0);
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return The processInstanceStringId.
            */
@@ -10331,7 +10331,7 @@ public final class ProtobufMessages {
               return (java.lang.String) ref;
             }
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return The bytes for processInstanceStringId.
            */
@@ -10348,7 +10348,7 @@ public final class ProtobufMessages {
               return (com.google.protobuf.ByteString) ref;
             }
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @param value The processInstanceStringId to set.
            * @return This builder for chaining.
@@ -10361,7 +10361,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return This builder for chaining.
            */
@@ -10371,7 +10371,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @param value The bytes for processInstanceStringId to set.
            * @return This builder for chaining.
@@ -10452,7 +10452,7 @@ public final class ProtobufMessages {
       public static final int NAME_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object name_ = "";
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return Whether the name field is set.
        */
@@ -10460,7 +10460,7 @@ public final class ProtobufMessages {
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The name.
        */
@@ -10479,7 +10479,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The bytes for name.
        */
@@ -10500,7 +10500,7 @@ public final class ProtobufMessages {
 
       public static final int IS_ACTIVE_FIELD_NUMBER = 2;
       private boolean isActive_ = false;
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return Whether the isActive field is set.
        */
@@ -10508,7 +10508,7 @@ public final class ProtobufMessages {
       public boolean hasIsActive() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return The isActive.
        */
@@ -10519,7 +10519,7 @@ public final class ProtobufMessages {
 
       public static final int IS_AUTO_DEACTIVATE_FIELD_NUMBER = 3;
       private boolean isAutoDeactivate_ = false;
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return Whether the isAutoDeactivate field is set.
        */
@@ -10527,7 +10527,7 @@ public final class ProtobufMessages {
       public boolean hasIsAutoDeactivate() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return The isAutoDeactivate.
        */
@@ -10538,7 +10538,7 @@ public final class ProtobufMessages {
 
       public static final int ACTIVATED_FOR_RECENCY_FIELD_NUMBER = 4;
       private long activatedForRecency_ = 0L;
-      /**
+      /*
        * <code>optional int64 activated_for_recency = 4;</code>
        * @return Whether the activatedForRecency field is set.
        */
@@ -10546,7 +10546,7 @@ public final class ProtobufMessages {
       public boolean hasActivatedForRecency() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional int64 activated_for_recency = 4;</code>
        * @return The activatedForRecency.
        */
@@ -10557,7 +10557,7 @@ public final class ProtobufMessages {
 
       public static final int CLEARED_FOR_RECENCY_FIELD_NUMBER = 5;
       private long clearedForRecency_ = 0L;
-      /**
+      /*
        * <code>optional int64 cleared_for_recency = 5;</code>
        * @return Whether the clearedForRecency field is set.
        */
@@ -10565,7 +10565,7 @@ public final class ProtobufMessages {
       public boolean hasClearedForRecency() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional int64 cleared_for_recency = 5;</code>
        * @return The clearedForRecency.
        */
@@ -10577,14 +10577,14 @@ public final class ProtobufMessages {
       public static final int MATCH_FIELD_NUMBER = 6;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> match_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
         return match_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       @java.lang.Override
@@ -10592,21 +10592,21 @@ public final class ProtobufMessages {
           getMatchOrBuilderList() {
         return match_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       @java.lang.Override
       public int getMatchCount() {
         return match_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
         return match_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       @java.lang.Override
@@ -10618,14 +10618,14 @@ public final class ProtobufMessages {
       public static final int NODE_INSTANCE_FIELD_NUMBER = 7;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> nodeInstance_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> getNodeInstanceList() {
         return nodeInstance_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       @java.lang.Override
@@ -10633,21 +10633,21 @@ public final class ProtobufMessages {
           getNodeInstanceOrBuilderList() {
         return nodeInstance_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       @java.lang.Override
       public int getNodeInstanceCount() {
         return nodeInstance_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index) {
         return nodeInstance_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
        */
       @java.lang.Override
@@ -10658,7 +10658,7 @@ public final class ProtobufMessages {
 
       public static final int HAS_RULE_FLOW_LISTER_FIELD_NUMBER = 8;
       private boolean hasRuleFlowLister_ = false;
-      /**
+      /*
        * <code>optional bool has_rule_flow_lister = 8;</code>
        * @return Whether the hasRuleFlowLister field is set.
        */
@@ -10666,7 +10666,7 @@ public final class ProtobufMessages {
       public boolean hasHasRuleFlowLister() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional bool has_rule_flow_lister = 8;</code>
        * @return The hasRuleFlowLister.
        */
@@ -10945,7 +10945,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Agenda.AgendaGroup}
        */
       public static final class Builder extends
@@ -11266,14 +11266,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private java.lang.Object name_ = "";
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return Whether the name field is set.
          */
         public boolean hasName() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return The name.
          */
@@ -11291,7 +11291,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return The bytes for name.
          */
@@ -11308,7 +11308,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @param value The name to set.
          * @return This builder for chaining.
@@ -11321,7 +11321,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return This builder for chaining.
          */
@@ -11331,7 +11331,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @param value The bytes for name to set.
          * @return This builder for chaining.
@@ -11346,7 +11346,7 @@ public final class ProtobufMessages {
         }
 
         private boolean isActive_ ;
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return Whether the isActive field is set.
          */
@@ -11354,7 +11354,7 @@ public final class ProtobufMessages {
         public boolean hasIsActive() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return The isActive.
          */
@@ -11362,7 +11362,7 @@ public final class ProtobufMessages {
         public boolean getIsActive() {
           return isActive_;
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @param value The isActive to set.
          * @return This builder for chaining.
@@ -11374,7 +11374,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return This builder for chaining.
          */
@@ -11386,7 +11386,7 @@ public final class ProtobufMessages {
         }
 
         private boolean isAutoDeactivate_ ;
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return Whether the isAutoDeactivate field is set.
          */
@@ -11394,7 +11394,7 @@ public final class ProtobufMessages {
         public boolean hasIsAutoDeactivate() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return The isAutoDeactivate.
          */
@@ -11402,7 +11402,7 @@ public final class ProtobufMessages {
         public boolean getIsAutoDeactivate() {
           return isAutoDeactivate_;
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @param value The isAutoDeactivate to set.
          * @return This builder for chaining.
@@ -11414,7 +11414,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return This builder for chaining.
          */
@@ -11426,7 +11426,7 @@ public final class ProtobufMessages {
         }
 
         private long activatedForRecency_ ;
-        /**
+        /*
          * <code>optional int64 activated_for_recency = 4;</code>
          * @return Whether the activatedForRecency field is set.
          */
@@ -11434,7 +11434,7 @@ public final class ProtobufMessages {
         public boolean hasActivatedForRecency() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional int64 activated_for_recency = 4;</code>
          * @return The activatedForRecency.
          */
@@ -11442,7 +11442,7 @@ public final class ProtobufMessages {
         public long getActivatedForRecency() {
           return activatedForRecency_;
         }
-        /**
+        /*
          * <code>optional int64 activated_for_recency = 4;</code>
          * @param value The activatedForRecency to set.
          * @return This builder for chaining.
@@ -11454,7 +11454,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 activated_for_recency = 4;</code>
          * @return This builder for chaining.
          */
@@ -11466,7 +11466,7 @@ public final class ProtobufMessages {
         }
 
         private long clearedForRecency_ ;
-        /**
+        /*
          * <code>optional int64 cleared_for_recency = 5;</code>
          * @return Whether the clearedForRecency field is set.
          */
@@ -11474,7 +11474,7 @@ public final class ProtobufMessages {
         public boolean hasClearedForRecency() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional int64 cleared_for_recency = 5;</code>
          * @return The clearedForRecency.
          */
@@ -11482,7 +11482,7 @@ public final class ProtobufMessages {
         public long getClearedForRecency() {
           return clearedForRecency_;
         }
-        /**
+        /*
          * <code>optional int64 cleared_for_recency = 5;</code>
          * @param value The clearedForRecency to set.
          * @return This builder for chaining.
@@ -11494,7 +11494,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 cleared_for_recency = 5;</code>
          * @return This builder for chaining.
          */
@@ -11517,7 +11517,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> matchBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
@@ -11527,7 +11527,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public int getMatchCount() {
@@ -11537,7 +11537,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
@@ -11547,7 +11547,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder setMatch(
@@ -11564,7 +11564,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder setMatch(
@@ -11578,7 +11578,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder addMatch(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -11594,7 +11594,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder addMatch(
@@ -11611,7 +11611,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder addMatch(
@@ -11625,7 +11625,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder addMatch(
@@ -11639,7 +11639,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder addAllMatch(
@@ -11654,7 +11654,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder clearMatch() {
@@ -11667,7 +11667,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public Builder removeMatch(int index) {
@@ -11680,14 +11680,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getMatchBuilder(
             int index) {
           return getMatchFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
@@ -11697,7 +11697,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
@@ -11708,14 +11708,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(match_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder() {
           return getMatchFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder(
@@ -11723,7 +11723,7 @@ public final class ProtobufMessages {
           return getMatchFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder> 
@@ -11757,7 +11757,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> nodeInstanceBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> getNodeInstanceList() {
@@ -11767,7 +11767,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public int getNodeInstanceCount() {
@@ -11777,7 +11777,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index) {
@@ -11787,7 +11787,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder setNodeInstance(
@@ -11804,7 +11804,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder setNodeInstance(
@@ -11818,7 +11818,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder addNodeInstance(org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance value) {
@@ -11834,7 +11834,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder addNodeInstance(
@@ -11851,7 +11851,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder addNodeInstance(
@@ -11865,7 +11865,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder addNodeInstance(
@@ -11879,7 +11879,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder addAllNodeInstance(
@@ -11894,7 +11894,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder clearNodeInstance() {
@@ -11907,7 +11907,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public Builder removeNodeInstance(int index) {
@@ -11920,14 +11920,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder getNodeInstanceBuilder(
             int index) {
           return getNodeInstanceFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
@@ -11937,7 +11937,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
@@ -11948,14 +11948,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(nodeInstance_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder addNodeInstanceBuilder() {
           return getNodeInstanceFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder addNodeInstanceBuilder(
@@ -11963,7 +11963,7 @@ public final class ProtobufMessages {
           return getNodeInstanceFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder> 
@@ -11986,7 +11986,7 @@ public final class ProtobufMessages {
         }
 
         private boolean hasRuleFlowLister_ ;
-        /**
+        /*
          * <code>optional bool has_rule_flow_lister = 8;</code>
          * @return Whether the hasRuleFlowLister field is set.
          */
@@ -11994,7 +11994,7 @@ public final class ProtobufMessages {
         public boolean hasHasRuleFlowLister() {
           return ((bitField0_ & 0x00000080) != 0);
         }
-        /**
+        /*
          * <code>optional bool has_rule_flow_lister = 8;</code>
          * @return The hasRuleFlowLister.
          */
@@ -12002,7 +12002,7 @@ public final class ProtobufMessages {
         public boolean getHasRuleFlowLister() {
           return hasRuleFlowLister_;
         }
-        /**
+        /*
          * <code>optional bool has_rule_flow_lister = 8;</code>
          * @param value The hasRuleFlowLister to set.
          * @return This builder for chaining.
@@ -12014,7 +12014,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool has_rule_flow_lister = 8;</code>
          * @return This builder for chaining.
          */
@@ -12092,24 +12092,24 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda.FocusStack)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @return A list containing the groupName.
        */
       java.util.List<java.lang.String>
           getGroupNameList();
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @return The count of groupName.
        */
       int getGroupNameCount();
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @param index The index of the element to return.
        * @return The groupName at the given index.
        */
       java.lang.String getGroupName(int index);
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @param index The index of the value to return.
        * @return The bytes of the groupName at the given index.
@@ -12117,7 +12117,7 @@ public final class ProtobufMessages {
       com.google.protobuf.ByteString
           getGroupNameBytes(int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Agenda.FocusStack}
      */
     public static final class FocusStack extends
@@ -12158,7 +12158,7 @@ public final class ProtobufMessages {
       @SuppressWarnings("serial")
       private com.google.protobuf.LazyStringArrayList groupName_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @return A list containing the groupName.
        */
@@ -12166,14 +12166,14 @@ public final class ProtobufMessages {
           getGroupNameList() {
         return groupName_;
       }
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @return The count of groupName.
        */
       public int getGroupNameCount() {
         return groupName_.size();
       }
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @param index The index of the element to return.
        * @return The groupName at the given index.
@@ -12181,7 +12181,7 @@ public final class ProtobufMessages {
       public java.lang.String getGroupName(int index) {
         return groupName_.get(index);
       }
-      /**
+      /*
        * <code>repeated string group_name = 1;</code>
        * @param index The index of the value to return.
        * @return The bytes of the groupName at the given index.
@@ -12352,7 +12352,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Agenda.FocusStack}
        */
       public static final class Builder extends
@@ -12506,7 +12506,7 @@ public final class ProtobufMessages {
           }
           bitField0_ |= 0x00000001;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @return A list containing the groupName.
          */
@@ -12515,14 +12515,14 @@ public final class ProtobufMessages {
           groupName_.makeImmutable();
           return groupName_;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @return The count of groupName.
          */
         public int getGroupNameCount() {
           return groupName_.size();
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param index The index of the element to return.
          * @return The groupName at the given index.
@@ -12530,7 +12530,7 @@ public final class ProtobufMessages {
         public java.lang.String getGroupName(int index) {
           return groupName_.get(index);
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param index The index of the value to return.
          * @return The bytes of the groupName at the given index.
@@ -12539,7 +12539,7 @@ public final class ProtobufMessages {
             getGroupNameBytes(int index) {
           return groupName_.getByteString(index);
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param index The index to set the value at.
          * @param value The groupName to set.
@@ -12554,7 +12554,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param value The groupName to add.
          * @return This builder for chaining.
@@ -12568,7 +12568,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param values The groupName to add.
          * @return This builder for chaining.
@@ -12582,7 +12582,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @return This builder for chaining.
          */
@@ -12593,7 +12593,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string group_name = 1;</code>
          * @param value The bytes of the groupName to add.
          * @return This builder for chaining.
@@ -12675,94 +12675,94 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda.RuleFlowGroup)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return Whether the name field is set.
        */
       boolean hasName();
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The name.
        */
       java.lang.String getName();
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The bytes for name.
        */
       com.google.protobuf.ByteString
           getNameBytes();
 
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return Whether the isActive field is set.
        */
       boolean hasIsActive();
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return The isActive.
        */
       boolean getIsActive();
 
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return Whether the isAutoDeactivate field is set.
        */
       boolean hasIsAutoDeactivate();
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return The isAutoDeactivate.
        */
       boolean getIsAutoDeactivate();
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> 
           getMatchList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       int getMatchCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
           getMatchOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
           int index);
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> 
           getNodeInstanceList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getNodeInstance(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       int getNodeInstanceCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder> 
           getNodeInstanceOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
           int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Agenda.RuleFlowGroup}
      */
     public static final class RuleFlowGroup extends
@@ -12804,52 +12804,52 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return Whether the processInstanceId field is set.
          */
         boolean hasProcessInstanceId();
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return The processInstanceId.
          */
         long getProcessInstanceId();
 
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return Whether the nodeInstanceId field is set.
          */
         boolean hasNodeInstanceId();
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The nodeInstanceId.
          */
         java.lang.String getNodeInstanceId();
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The bytes for nodeInstanceId.
          */
         com.google.protobuf.ByteString
             getNodeInstanceIdBytes();
 
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return Whether the processInstanceStringId field is set.
          */
         boolean hasProcessInstanceStringId();
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The processInstanceStringId.
          */
         java.lang.String getProcessInstanceStringId();
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The bytes for processInstanceStringId.
          */
         com.google.protobuf.ByteString
             getProcessInstanceStringIdBytes();
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance}
        */
       public static final class NodeInstance extends
@@ -12889,7 +12889,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
         private long processInstanceId_ = 0L;
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return Whether the processInstanceId field is set.
          */
@@ -12897,7 +12897,7 @@ public final class ProtobufMessages {
         public boolean hasProcessInstanceId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 process_instance_id = 1;</code>
          * @return The processInstanceId.
          */
@@ -12909,7 +12909,7 @@ public final class ProtobufMessages {
         public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 2;
         @SuppressWarnings("serial")
         private volatile java.lang.Object nodeInstanceId_ = "";
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return Whether the nodeInstanceId field is set.
          */
@@ -12917,7 +12917,7 @@ public final class ProtobufMessages {
         public boolean hasNodeInstanceId() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The nodeInstanceId.
          */
@@ -12936,7 +12936,7 @@ public final class ProtobufMessages {
             return s;
           }
         }
-        /**
+        /*
          * <code>optional string node_instance_id = 2;</code>
          * @return The bytes for nodeInstanceId.
          */
@@ -12958,7 +12958,7 @@ public final class ProtobufMessages {
         public static final int PROCESS_INSTANCE_STRING_ID_FIELD_NUMBER = 3;
         @SuppressWarnings("serial")
         private volatile java.lang.Object processInstanceStringId_ = "";
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return Whether the processInstanceStringId field is set.
          */
@@ -12966,7 +12966,7 @@ public final class ProtobufMessages {
         public boolean hasProcessInstanceStringId() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The processInstanceStringId.
          */
@@ -12985,7 +12985,7 @@ public final class ProtobufMessages {
             return s;
           }
         }
-        /**
+        /*
          * <code>optional string process_instance_string_id = 3;</code>
          * @return The bytes for processInstanceStringId.
          */
@@ -13195,7 +13195,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance}
          */
         public static final class Builder extends
@@ -13365,7 +13365,7 @@ public final class ProtobufMessages {
           private int bitField0_;
 
           private long processInstanceId_ ;
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return Whether the processInstanceId field is set.
            */
@@ -13373,7 +13373,7 @@ public final class ProtobufMessages {
           public boolean hasProcessInstanceId() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return The processInstanceId.
            */
@@ -13381,7 +13381,7 @@ public final class ProtobufMessages {
           public long getProcessInstanceId() {
             return processInstanceId_;
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @param value The processInstanceId to set.
            * @return This builder for chaining.
@@ -13393,7 +13393,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional int64 process_instance_id = 1;</code>
            * @return This builder for chaining.
            */
@@ -13405,14 +13405,14 @@ public final class ProtobufMessages {
           }
 
           private java.lang.Object nodeInstanceId_ = "";
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return Whether the nodeInstanceId field is set.
            */
           public boolean hasNodeInstanceId() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return The nodeInstanceId.
            */
@@ -13430,7 +13430,7 @@ public final class ProtobufMessages {
               return (java.lang.String) ref;
             }
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return The bytes for nodeInstanceId.
            */
@@ -13447,7 +13447,7 @@ public final class ProtobufMessages {
               return (com.google.protobuf.ByteString) ref;
             }
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @param value The nodeInstanceId to set.
            * @return This builder for chaining.
@@ -13460,7 +13460,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @return This builder for chaining.
            */
@@ -13470,7 +13470,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string node_instance_id = 2;</code>
            * @param value The bytes for nodeInstanceId to set.
            * @return This builder for chaining.
@@ -13485,14 +13485,14 @@ public final class ProtobufMessages {
           }
 
           private java.lang.Object processInstanceStringId_ = "";
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return Whether the processInstanceStringId field is set.
            */
           public boolean hasProcessInstanceStringId() {
             return ((bitField0_ & 0x00000004) != 0);
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return The processInstanceStringId.
            */
@@ -13510,7 +13510,7 @@ public final class ProtobufMessages {
               return (java.lang.String) ref;
             }
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return The bytes for processInstanceStringId.
            */
@@ -13527,7 +13527,7 @@ public final class ProtobufMessages {
               return (com.google.protobuf.ByteString) ref;
             }
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @param value The processInstanceStringId to set.
            * @return This builder for chaining.
@@ -13540,7 +13540,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @return This builder for chaining.
            */
@@ -13550,7 +13550,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional string process_instance_string_id = 3;</code>
            * @param value The bytes for processInstanceStringId to set.
            * @return This builder for chaining.
@@ -13631,7 +13631,7 @@ public final class ProtobufMessages {
       public static final int NAME_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object name_ = "";
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return Whether the name field is set.
        */
@@ -13639,7 +13639,7 @@ public final class ProtobufMessages {
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The name.
        */
@@ -13658,7 +13658,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string name = 1;</code>
        * @return The bytes for name.
        */
@@ -13679,7 +13679,7 @@ public final class ProtobufMessages {
 
       public static final int IS_ACTIVE_FIELD_NUMBER = 2;
       private boolean isActive_ = false;
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return Whether the isActive field is set.
        */
@@ -13687,7 +13687,7 @@ public final class ProtobufMessages {
       public boolean hasIsActive() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_active = 2;</code>
        * @return The isActive.
        */
@@ -13698,7 +13698,7 @@ public final class ProtobufMessages {
 
       public static final int IS_AUTO_DEACTIVATE_FIELD_NUMBER = 3;
       private boolean isAutoDeactivate_ = false;
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return Whether the isAutoDeactivate field is set.
        */
@@ -13706,7 +13706,7 @@ public final class ProtobufMessages {
       public boolean hasIsAutoDeactivate() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_auto_deactivate = 3;</code>
        * @return The isAutoDeactivate.
        */
@@ -13718,14 +13718,14 @@ public final class ProtobufMessages {
       public static final int MATCH_FIELD_NUMBER = 4;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> match_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
         return match_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       @java.lang.Override
@@ -13733,21 +13733,21 @@ public final class ProtobufMessages {
           getMatchOrBuilderList() {
         return match_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       @java.lang.Override
       public int getMatchCount() {
         return match_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
         return match_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
        */
       @java.lang.Override
@@ -13759,14 +13759,14 @@ public final class ProtobufMessages {
       public static final int NODE_INSTANCE_FIELD_NUMBER = 5;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> nodeInstance_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> getNodeInstanceList() {
         return nodeInstance_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       @java.lang.Override
@@ -13774,21 +13774,21 @@ public final class ProtobufMessages {
           getNodeInstanceOrBuilderList() {
         return nodeInstance_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       @java.lang.Override
       public int getNodeInstanceCount() {
         return nodeInstance_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getNodeInstance(int index) {
         return nodeInstance_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
        */
       @java.lang.Override
@@ -14016,7 +14016,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Agenda.RuleFlowGroup}
        */
       public static final class Builder extends
@@ -14298,14 +14298,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private java.lang.Object name_ = "";
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return Whether the name field is set.
          */
         public boolean hasName() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return The name.
          */
@@ -14323,7 +14323,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return The bytes for name.
          */
@@ -14340,7 +14340,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @param value The name to set.
          * @return This builder for chaining.
@@ -14353,7 +14353,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @return This builder for chaining.
          */
@@ -14363,7 +14363,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string name = 1;</code>
          * @param value The bytes for name to set.
          * @return This builder for chaining.
@@ -14378,7 +14378,7 @@ public final class ProtobufMessages {
         }
 
         private boolean isActive_ ;
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return Whether the isActive field is set.
          */
@@ -14386,7 +14386,7 @@ public final class ProtobufMessages {
         public boolean hasIsActive() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return The isActive.
          */
@@ -14394,7 +14394,7 @@ public final class ProtobufMessages {
         public boolean getIsActive() {
           return isActive_;
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @param value The isActive to set.
          * @return This builder for chaining.
@@ -14406,7 +14406,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool is_active = 2;</code>
          * @return This builder for chaining.
          */
@@ -14418,7 +14418,7 @@ public final class ProtobufMessages {
         }
 
         private boolean isAutoDeactivate_ ;
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return Whether the isAutoDeactivate field is set.
          */
@@ -14426,7 +14426,7 @@ public final class ProtobufMessages {
         public boolean hasIsAutoDeactivate() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return The isAutoDeactivate.
          */
@@ -14434,7 +14434,7 @@ public final class ProtobufMessages {
         public boolean getIsAutoDeactivate() {
           return isAutoDeactivate_;
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @param value The isAutoDeactivate to set.
          * @return This builder for chaining.
@@ -14446,7 +14446,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool is_auto_deactivate = 3;</code>
          * @return This builder for chaining.
          */
@@ -14469,7 +14469,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> matchBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
@@ -14479,7 +14479,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public int getMatchCount() {
@@ -14489,7 +14489,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
@@ -14499,7 +14499,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder setMatch(
@@ -14516,7 +14516,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder setMatch(
@@ -14530,7 +14530,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder addMatch(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -14546,7 +14546,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder addMatch(
@@ -14563,7 +14563,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder addMatch(
@@ -14577,7 +14577,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder addMatch(
@@ -14591,7 +14591,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder addAllMatch(
@@ -14606,7 +14606,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder clearMatch() {
@@ -14619,7 +14619,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public Builder removeMatch(int index) {
@@ -14632,14 +14632,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getMatchBuilder(
             int index) {
           return getMatchFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
@@ -14649,7 +14649,7 @@ public final class ProtobufMessages {
             return matchBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
@@ -14660,14 +14660,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(match_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder() {
           return getMatchFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder(
@@ -14675,7 +14675,7 @@ public final class ProtobufMessages {
           return getMatchFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Activation match = 4;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder> 
@@ -14709,7 +14709,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder> nodeInstanceBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance> getNodeInstanceList() {
@@ -14719,7 +14719,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public int getNodeInstanceCount() {
@@ -14729,7 +14729,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getNodeInstance(int index) {
@@ -14739,7 +14739,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder setNodeInstance(
@@ -14756,7 +14756,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder setNodeInstance(
@@ -14770,7 +14770,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder addNodeInstance(org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance value) {
@@ -14786,7 +14786,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder addNodeInstance(
@@ -14803,7 +14803,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder addNodeInstance(
@@ -14817,7 +14817,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder addNodeInstance(
@@ -14831,7 +14831,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder addAllNodeInstance(
@@ -14846,7 +14846,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder clearNodeInstance() {
@@ -14859,7 +14859,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public Builder removeNodeInstance(int index) {
@@ -14872,14 +14872,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder getNodeInstanceBuilder(
             int index) {
           return getNodeInstanceFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
@@ -14889,7 +14889,7 @@ public final class ProtobufMessages {
             return nodeInstanceBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstanceOrBuilder> 
@@ -14900,14 +14900,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(nodeInstance_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder addNodeInstanceBuilder() {
           return getNodeInstanceFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder addNodeInstanceBuilder(
@@ -14915,7 +14915,7 @@ public final class ProtobufMessages {
           return getNodeInstanceFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup.NodeInstance node_instance = 5;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder> 
@@ -15003,7 +15003,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int DORMANT_ACTIVATIONS_FIELD_NUMBER = 1;
     private int dormantActivations_ = 0;
-    /**
+    /*
      * <pre>
      * these 2 fields are just for information
      * </pre>
@@ -15015,7 +15015,7 @@ public final class ProtobufMessages {
     public boolean hasDormantActivations() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <pre>
      * these 2 fields are just for information
      * </pre>
@@ -15030,7 +15030,7 @@ public final class ProtobufMessages {
 
     public static final int ACTIVE_ACTIVATIONS_FIELD_NUMBER = 2;
     private int activeActivations_ = 0;
-    /**
+    /*
      * <code>optional int32 active_activations = 2;</code>
      * @return Whether the activeActivations field is set.
      */
@@ -15038,7 +15038,7 @@ public final class ProtobufMessages {
     public boolean hasActiveActivations() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int32 active_activations = 2;</code>
      * @return The activeActivations.
      */
@@ -15050,14 +15050,14 @@ public final class ProtobufMessages {
     public static final int AGENDA_GROUP_FIELD_NUMBER = 3;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup> agendaGroup_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup> getAgendaGroupList() {
       return agendaGroup_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     @java.lang.Override
@@ -15065,21 +15065,21 @@ public final class ProtobufMessages {
         getAgendaGroupOrBuilderList() {
       return agendaGroup_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     @java.lang.Override
     public int getAgendaGroupCount() {
       return agendaGroup_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup getAgendaGroup(int index) {
       return agendaGroup_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
      */
     @java.lang.Override
@@ -15090,7 +15090,7 @@ public final class ProtobufMessages {
 
     public static final int FOCUS_STACK_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack focusStack_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      * @return Whether the focusStack field is set.
      */
@@ -15098,7 +15098,7 @@ public final class ProtobufMessages {
     public boolean hasFocusStack() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      * @return The focusStack.
      */
@@ -15106,7 +15106,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack getFocusStack() {
       return focusStack_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.getDefaultInstance() : focusStack_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
      */
     @java.lang.Override
@@ -15117,14 +15117,14 @@ public final class ProtobufMessages {
     public static final int RULE_FLOW_GROUP_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup> ruleFlowGroup_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup> getRuleFlowGroupList() {
       return ruleFlowGroup_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     @java.lang.Override
@@ -15132,21 +15132,21 @@ public final class ProtobufMessages {
         getRuleFlowGroupOrBuilderList() {
       return ruleFlowGroup_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     @java.lang.Override
     public int getRuleFlowGroupCount() {
       return ruleFlowGroup_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup getRuleFlowGroup(int index) {
       return ruleFlowGroup_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
      */
     @java.lang.Override
@@ -15158,14 +15158,14 @@ public final class ProtobufMessages {
     public static final int MATCH_FIELD_NUMBER = 6;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> match_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
       return match_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     @java.lang.Override
@@ -15173,21 +15173,21 @@ public final class ProtobufMessages {
         getMatchOrBuilderList() {
       return match_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     @java.lang.Override
     public int getMatchCount() {
       return match_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
       return match_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
      */
     @java.lang.Override
@@ -15199,14 +15199,14 @@ public final class ProtobufMessages {
     public static final int RULE_ACTIVATION_FIELD_NUMBER = 7;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> ruleActivation_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getRuleActivationList() {
       return ruleActivation_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     @java.lang.Override
@@ -15214,21 +15214,21 @@ public final class ProtobufMessages {
         getRuleActivationOrBuilderList() {
       return ruleActivation_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     @java.lang.Override
     public int getRuleActivationCount() {
       return ruleActivation_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.Activation getRuleActivation(int index) {
       return ruleActivation_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
      */
     @java.lang.Override
@@ -15481,7 +15481,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * <pre>
      * the agenda message
      * </pre>
@@ -15893,7 +15893,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int dormantActivations_ ;
-      /**
+      /*
        * <pre>
        * these 2 fields are just for information
        * </pre>
@@ -15905,7 +15905,7 @@ public final class ProtobufMessages {
       public boolean hasDormantActivations() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <pre>
        * these 2 fields are just for information
        * </pre>
@@ -15917,7 +15917,7 @@ public final class ProtobufMessages {
       public int getDormantActivations() {
         return dormantActivations_;
       }
-      /**
+      /*
        * <pre>
        * these 2 fields are just for information
        * </pre>
@@ -15933,7 +15933,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * these 2 fields are just for information
        * </pre>
@@ -15949,7 +15949,7 @@ public final class ProtobufMessages {
       }
 
       private int activeActivations_ ;
-      /**
+      /*
        * <code>optional int32 active_activations = 2;</code>
        * @return Whether the activeActivations field is set.
        */
@@ -15957,7 +15957,7 @@ public final class ProtobufMessages {
       public boolean hasActiveActivations() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int32 active_activations = 2;</code>
        * @return The activeActivations.
        */
@@ -15965,7 +15965,7 @@ public final class ProtobufMessages {
       public int getActiveActivations() {
         return activeActivations_;
       }
-      /**
+      /*
        * <code>optional int32 active_activations = 2;</code>
        * @param value The activeActivations to set.
        * @return This builder for chaining.
@@ -15977,7 +15977,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 active_activations = 2;</code>
        * @return This builder for chaining.
        */
@@ -16000,7 +16000,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder> agendaGroupBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup> getAgendaGroupList() {
@@ -16010,7 +16010,7 @@ public final class ProtobufMessages {
           return agendaGroupBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public int getAgendaGroupCount() {
@@ -16020,7 +16020,7 @@ public final class ProtobufMessages {
           return agendaGroupBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup getAgendaGroup(int index) {
@@ -16030,7 +16030,7 @@ public final class ProtobufMessages {
           return agendaGroupBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder setAgendaGroup(
@@ -16047,7 +16047,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder setAgendaGroup(
@@ -16061,7 +16061,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder addAgendaGroup(org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup value) {
@@ -16077,7 +16077,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder addAgendaGroup(
@@ -16094,7 +16094,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder addAgendaGroup(
@@ -16108,7 +16108,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder addAgendaGroup(
@@ -16122,7 +16122,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder addAllAgendaGroup(
@@ -16137,7 +16137,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder clearAgendaGroup() {
@@ -16150,7 +16150,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public Builder removeAgendaGroup(int index) {
@@ -16163,14 +16163,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder getAgendaGroupBuilder(
           int index) {
         return getAgendaGroupFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder getAgendaGroupOrBuilder(
@@ -16180,7 +16180,7 @@ public final class ProtobufMessages {
           return agendaGroupBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroupOrBuilder> 
@@ -16191,14 +16191,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(agendaGroup_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder addAgendaGroupBuilder() {
         return getAgendaGroupFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder addAgendaGroupBuilder(
@@ -16206,7 +16206,7 @@ public final class ProtobufMessages {
         return getAgendaGroupFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.AgendaGroup agenda_group = 3;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.AgendaGroup.Builder> 
@@ -16231,14 +16231,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack focusStack_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStackOrBuilder> focusStackBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        * @return Whether the focusStack field is set.
        */
       public boolean hasFocusStack() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        * @return The focusStack.
        */
@@ -16249,7 +16249,7 @@ public final class ProtobufMessages {
           return focusStackBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public Builder setFocusStack(org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack value) {
@@ -16265,7 +16265,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public Builder setFocusStack(
@@ -16279,7 +16279,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public Builder mergeFocusStack(org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack value) {
@@ -16298,7 +16298,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public Builder clearFocusStack() {
@@ -16311,7 +16311,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.Builder getFocusStackBuilder() {
@@ -16319,7 +16319,7 @@ public final class ProtobufMessages {
         onChanged();
         return getFocusStackFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStackOrBuilder getFocusStackOrBuilder() {
@@ -16330,7 +16330,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Agenda.FocusStack.getDefaultInstance() : focusStack_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Agenda.FocusStack focus_stack = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -16359,7 +16359,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder> ruleFlowGroupBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup> getRuleFlowGroupList() {
@@ -16369,7 +16369,7 @@ public final class ProtobufMessages {
           return ruleFlowGroupBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public int getRuleFlowGroupCount() {
@@ -16379,7 +16379,7 @@ public final class ProtobufMessages {
           return ruleFlowGroupBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup getRuleFlowGroup(int index) {
@@ -16389,7 +16389,7 @@ public final class ProtobufMessages {
           return ruleFlowGroupBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder setRuleFlowGroup(
@@ -16406,7 +16406,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder setRuleFlowGroup(
@@ -16420,7 +16420,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder addRuleFlowGroup(org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup value) {
@@ -16436,7 +16436,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder addRuleFlowGroup(
@@ -16453,7 +16453,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder addRuleFlowGroup(
@@ -16467,7 +16467,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder addRuleFlowGroup(
@@ -16481,7 +16481,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder addAllRuleFlowGroup(
@@ -16496,7 +16496,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder clearRuleFlowGroup() {
@@ -16509,7 +16509,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public Builder removeRuleFlowGroup(int index) {
@@ -16522,14 +16522,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder getRuleFlowGroupBuilder(
           int index) {
         return getRuleFlowGroupFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder getRuleFlowGroupOrBuilder(
@@ -16539,7 +16539,7 @@ public final class ProtobufMessages {
           return ruleFlowGroupBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroupOrBuilder> 
@@ -16550,14 +16550,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(ruleFlowGroup_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder addRuleFlowGroupBuilder() {
         return getRuleFlowGroupFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder addRuleFlowGroupBuilder(
@@ -16565,7 +16565,7 @@ public final class ProtobufMessages {
         return getRuleFlowGroupFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Agenda.RuleFlowGroup rule_flow_group = 5;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Agenda.RuleFlowGroup.Builder> 
@@ -16599,7 +16599,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> matchBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getMatchList() {
@@ -16609,7 +16609,7 @@ public final class ProtobufMessages {
           return matchBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public int getMatchCount() {
@@ -16619,7 +16619,7 @@ public final class ProtobufMessages {
           return matchBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getMatch(int index) {
@@ -16629,7 +16629,7 @@ public final class ProtobufMessages {
           return matchBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder setMatch(
@@ -16646,7 +16646,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder setMatch(
@@ -16660,7 +16660,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder addMatch(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -16676,7 +16676,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder addMatch(
@@ -16693,7 +16693,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder addMatch(
@@ -16707,7 +16707,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder addMatch(
@@ -16721,7 +16721,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder addAllMatch(
@@ -16736,7 +16736,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder clearMatch() {
@@ -16749,7 +16749,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public Builder removeMatch(int index) {
@@ -16762,14 +16762,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getMatchBuilder(
           int index) {
         return getMatchFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getMatchOrBuilder(
@@ -16779,7 +16779,7 @@ public final class ProtobufMessages {
           return matchBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
@@ -16790,14 +16790,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(match_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder() {
         return getMatchFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addMatchBuilder(
@@ -16805,7 +16805,7 @@ public final class ProtobufMessages {
         return getMatchFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation match = 6;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder> 
@@ -16839,7 +16839,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> ruleActivationBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation> getRuleActivationList() {
@@ -16849,7 +16849,7 @@ public final class ProtobufMessages {
           return ruleActivationBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public int getRuleActivationCount() {
@@ -16859,7 +16859,7 @@ public final class ProtobufMessages {
           return ruleActivationBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getRuleActivation(int index) {
@@ -16869,7 +16869,7 @@ public final class ProtobufMessages {
           return ruleActivationBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder setRuleActivation(
@@ -16886,7 +16886,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder setRuleActivation(
@@ -16900,7 +16900,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder addRuleActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -16916,7 +16916,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder addRuleActivation(
@@ -16933,7 +16933,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder addRuleActivation(
@@ -16947,7 +16947,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder addRuleActivation(
@@ -16961,7 +16961,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder addAllRuleActivation(
@@ -16976,7 +16976,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder clearRuleActivation() {
@@ -16989,7 +16989,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public Builder removeRuleActivation(int index) {
@@ -17002,14 +17002,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getRuleActivationBuilder(
           int index) {
         return getRuleActivationFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getRuleActivationOrBuilder(
@@ -17019,7 +17019,7 @@ public final class ProtobufMessages {
           return ruleActivationBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> 
@@ -17030,14 +17030,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(ruleActivation_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addRuleActivationBuilder() {
         return getRuleActivationFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder addRuleActivationBuilder(
@@ -17045,7 +17045,7 @@ public final class ProtobufMessages {
         return getRuleActivationFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Activation rule_activation = 7;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder> 
@@ -17134,89 +17134,89 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int32 node_id = 1;</code>
      * @return Whether the nodeId field is set.
      */
     boolean hasNodeId();
-    /**
+    /*
      * <code>optional int32 node_id = 1;</code>
      * @return The nodeId.
      */
     int getNodeId();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
      * @return Whether the nodeType field is set.
      */
     boolean hasNodeType();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
      * @return The nodeType.
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.NodeType getNodeType();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      * @return Whether the accumulate field is set.
      */
     boolean hasAccumulate();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      * @return The accumulate.
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory getAccumulate();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder getAccumulateOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      * @return Whether the ria field is set.
      */
     boolean hasRia();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      * @return The ria.
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory getRia();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder getRiaOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      * @return Whether the from field is set.
      */
     boolean hasFrom();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      * @return The from.
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory getFrom();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder getFromOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      * @return Whether the queryElement field is set.
      */
     boolean hasQueryElement();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      * @return The queryElement.
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory getQueryElement();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder getQueryElementOrBuilder();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory}
    */
   public static final class NodeMemory extends
@@ -17252,42 +17252,42 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.class, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.Builder.class);
     }
 
-    /**
+    /*
      * Protobuf enum {@code org.drools.serialization.protobuf.NodeMemory.NodeType}
      */
     public enum NodeType
         implements com.google.protobuf.ProtocolMessageEnum {
-      /**
+      /*
        * <code>ACCUMULATE = 0;</code>
        */
       ACCUMULATE(0),
-      /**
+      /*
        * <code>RIA = 1;</code>
        */
       RIA(1),
-      /**
+      /*
        * <code>FROM = 2;</code>
        */
       FROM(2),
-      /**
+      /*
        * <code>QUERY_ELEMENT = 3;</code>
        */
       QUERY_ELEMENT(3),
       ;
 
-      /**
+      /*
        * <code>ACCUMULATE = 0;</code>
        */
       public static final int ACCUMULATE_VALUE = 0;
-      /**
+      /*
        * <code>RIA = 1;</code>
        */
       public static final int RIA_VALUE = 1;
-      /**
+      /*
        * <code>FROM = 2;</code>
        */
       public static final int FROM_VALUE = 2;
-      /**
+      /*
        * <code>QUERY_ELEMENT = 3;</code>
        */
       public static final int QUERY_ELEMENT_VALUE = 3;
@@ -17297,7 +17297,7 @@ public final class ProtobufMessages {
         return value;
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
@@ -17307,7 +17307,7 @@ public final class ProtobufMessages {
         return forNumber(value);
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
@@ -17370,31 +17370,31 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> 
           getContextList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getContext(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       int getContextCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder> 
           getContextOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder getContextOrBuilder(
           int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory}
      */
     public static final class AccumulateNodeMemory extends
@@ -17434,37 +17434,37 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
         boolean hasTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
         org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return Whether the resultHandle field is set.
          */
         boolean hasResultHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return The resultHandle.
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResultHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder();
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext}
        */
       public static final class AccumulateContext extends
@@ -17502,7 +17502,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
@@ -17510,7 +17510,7 @@ public final class ProtobufMessages {
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
@@ -17518,7 +17518,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
           return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         @java.lang.Override
@@ -17528,7 +17528,7 @@ public final class ProtobufMessages {
 
         public static final int RESULT_HANDLE_FIELD_NUMBER = 2;
         private org.drools.serialization.protobuf.ProtobufMessages.FactHandle resultHandle_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return Whether the resultHandle field is set.
          */
@@ -17536,7 +17536,7 @@ public final class ProtobufMessages {
         public boolean hasResultHandle() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return The resultHandle.
          */
@@ -17544,7 +17544,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResultHandle() {
           return resultHandle_ == null ? org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : resultHandle_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          */
         @java.lang.Override
@@ -17728,7 +17728,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext}
          */
         public static final class Builder extends
@@ -17906,14 +17906,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return Whether the tuple field is set.
            */
           public boolean hasTuple() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return The tuple.
            */
@@ -17924,7 +17924,7 @@ public final class ProtobufMessages {
               return tupleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -17940,7 +17940,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(
@@ -17954,7 +17954,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -17973,7 +17973,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder clearTuple() {
@@ -17986,7 +17986,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -17994,7 +17994,7 @@ public final class ProtobufMessages {
             onChanged();
             return getTupleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -18005,7 +18005,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -18025,14 +18025,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.FactHandle resultHandle_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> resultHandleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            * @return Whether the resultHandle field is set.
            */
           public boolean hasResultHandle() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            * @return The resultHandle.
            */
@@ -18043,7 +18043,7 @@ public final class ProtobufMessages {
               return resultHandleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder setResultHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -18059,7 +18059,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder setResultHandle(
@@ -18073,7 +18073,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder mergeResultHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -18092,7 +18092,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder clearResultHandle() {
@@ -18105,7 +18105,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getResultHandleBuilder() {
@@ -18113,7 +18113,7 @@ public final class ProtobufMessages {
             onChanged();
             return getResultHandleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder() {
@@ -18124,7 +18124,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : resultHandle_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -18207,14 +18207,14 @@ public final class ProtobufMessages {
       public static final int CONTEXT_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> context_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> getContextList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       @java.lang.Override
@@ -18222,21 +18222,21 @@ public final class ProtobufMessages {
           getContextOrBuilderList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       @java.lang.Override
       public int getContextCount() {
         return context_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getContext(int index) {
         return context_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
        */
       @java.lang.Override
@@ -18402,7 +18402,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory}
        */
       public static final class Builder extends
@@ -18597,7 +18597,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder> contextBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext> getContextList() {
@@ -18607,7 +18607,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public int getContextCount() {
@@ -18617,7 +18617,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getContext(int index) {
@@ -18627,7 +18627,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder setContext(
@@ -18644,7 +18644,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder setContext(
@@ -18658,7 +18658,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder addContext(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext value) {
@@ -18674,7 +18674,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder addContext(
@@ -18691,7 +18691,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder addContext(
@@ -18705,7 +18705,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder addContext(
@@ -18719,7 +18719,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder addAllContext(
@@ -18734,7 +18734,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder clearContext() {
@@ -18747,7 +18747,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public Builder removeContext(int index) {
@@ -18760,14 +18760,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder getContextBuilder(
             int index) {
           return getContextFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder getContextOrBuilder(
@@ -18777,7 +18777,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContextOrBuilder> 
@@ -18788,14 +18788,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(context_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder addContextBuilder() {
           return getContextFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder addContextBuilder(
@@ -18803,7 +18803,7 @@ public final class ProtobufMessages {
           return getContextFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory.AccumulateContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.Builder> 
@@ -18892,31 +18892,31 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.RIANodeMemory)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> 
           getContextList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getContext(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       int getContextCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder> 
           getContextOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder getContextOrBuilder(
           int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.RIANodeMemory}
      */
     public static final class RIANodeMemory extends
@@ -18956,37 +18956,37 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
         boolean hasTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
         org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return Whether the resultHandle field is set.
          */
         boolean hasResultHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return The resultHandle.
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResultHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder();
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext}
        */
       public static final class RIAContext extends
@@ -19024,7 +19024,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
@@ -19032,7 +19032,7 @@ public final class ProtobufMessages {
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
@@ -19040,7 +19040,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
           return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         @java.lang.Override
@@ -19050,7 +19050,7 @@ public final class ProtobufMessages {
 
         public static final int RESULT_HANDLE_FIELD_NUMBER = 2;
         private org.drools.serialization.protobuf.ProtobufMessages.FactHandle resultHandle_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return Whether the resultHandle field is set.
          */
@@ -19058,7 +19058,7 @@ public final class ProtobufMessages {
         public boolean hasResultHandle() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          * @return The resultHandle.
          */
@@ -19066,7 +19066,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResultHandle() {
           return resultHandle_ == null ? org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : resultHandle_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
          */
         @java.lang.Override
@@ -19250,7 +19250,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext}
          */
         public static final class Builder extends
@@ -19428,14 +19428,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return Whether the tuple field is set.
            */
           public boolean hasTuple() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return The tuple.
            */
@@ -19446,7 +19446,7 @@ public final class ProtobufMessages {
               return tupleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -19462,7 +19462,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(
@@ -19476,7 +19476,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -19495,7 +19495,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder clearTuple() {
@@ -19508,7 +19508,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -19516,7 +19516,7 @@ public final class ProtobufMessages {
             onChanged();
             return getTupleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -19527,7 +19527,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -19547,14 +19547,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.FactHandle resultHandle_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> resultHandleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            * @return Whether the resultHandle field is set.
            */
           public boolean hasResultHandle() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            * @return The resultHandle.
            */
@@ -19565,7 +19565,7 @@ public final class ProtobufMessages {
               return resultHandleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder setResultHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -19581,7 +19581,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder setResultHandle(
@@ -19595,7 +19595,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder mergeResultHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -19614,7 +19614,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public Builder clearResultHandle() {
@@ -19627,7 +19627,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getResultHandleBuilder() {
@@ -19635,7 +19635,7 @@ public final class ProtobufMessages {
             onChanged();
             return getResultHandleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultHandleOrBuilder() {
@@ -19646,7 +19646,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : resultHandle_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle result_handle = 2;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -19729,14 +19729,14 @@ public final class ProtobufMessages {
       public static final int CONTEXT_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> context_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> getContextList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       @java.lang.Override
@@ -19744,21 +19744,21 @@ public final class ProtobufMessages {
           getContextOrBuilderList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       @java.lang.Override
       public int getContextCount() {
         return context_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getContext(int index) {
         return context_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
        */
       @java.lang.Override
@@ -19924,7 +19924,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.RIANodeMemory}
        */
       public static final class Builder extends
@@ -20119,7 +20119,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder> contextBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext> getContextList() {
@@ -20129,7 +20129,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public int getContextCount() {
@@ -20139,7 +20139,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getContext(int index) {
@@ -20149,7 +20149,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder setContext(
@@ -20166,7 +20166,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder setContext(
@@ -20180,7 +20180,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder addContext(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext value) {
@@ -20196,7 +20196,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder addContext(
@@ -20213,7 +20213,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder addContext(
@@ -20227,7 +20227,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder addContext(
@@ -20241,7 +20241,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder addAllContext(
@@ -20256,7 +20256,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder clearContext() {
@@ -20269,7 +20269,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public Builder removeContext(int index) {
@@ -20282,14 +20282,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder getContextBuilder(
             int index) {
           return getContextFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder getContextOrBuilder(
@@ -20299,7 +20299,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContextOrBuilder> 
@@ -20310,14 +20310,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(context_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder addContextBuilder() {
           return getContextFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder addContextBuilder(
@@ -20325,7 +20325,7 @@ public final class ProtobufMessages {
           return getContextFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory.RIAContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.Builder> 
@@ -20414,31 +20414,31 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.FromNodeMemory)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> 
           getContextList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getContext(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       int getContextCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder> 
           getContextOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder getContextOrBuilder(
           int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory}
      */
     public static final class FromNodeMemory extends
@@ -20478,70 +20478,70 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
         boolean hasTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
         org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> 
             getHandleList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index);
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         int getHandleCount();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
             getHandleOrBuilderList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
             int index);
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> 
             getObjectList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject getObject(int index);
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         int getObjectCount();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder> 
             getObjectOrBuilderList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder getObjectOrBuilder(
             int index);
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext}
        */
       public static final class FromContext extends
@@ -20582,29 +20582,29 @@ public final class ProtobufMessages {
             // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject)
             com.google.protobuf.MessageOrBuilder {
 
-          /**
+          /*
            * <code>optional int32 strategy_index = 8;</code>
            * @return Whether the strategyIndex field is set.
            */
           boolean hasStrategyIndex();
-          /**
+          /*
            * <code>optional int32 strategy_index = 8;</code>
            * @return The strategyIndex.
            */
           int getStrategyIndex();
 
-          /**
+          /*
            * <code>optional bytes object = 9;</code>
            * @return Whether the object field is set.
            */
           boolean hasObject();
-          /**
+          /*
            * <code>optional bytes object = 9;</code>
            * @return The object.
            */
           com.google.protobuf.ByteString getObject();
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject}
          */
         public static final class FromObject extends
@@ -20643,7 +20643,7 @@ public final class ProtobufMessages {
           private int bitField0_;
           public static final int STRATEGY_INDEX_FIELD_NUMBER = 8;
           private int strategyIndex_ = 0;
-          /**
+          /*
            * <code>optional int32 strategy_index = 8;</code>
            * @return Whether the strategyIndex field is set.
            */
@@ -20651,7 +20651,7 @@ public final class ProtobufMessages {
           public boolean hasStrategyIndex() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional int32 strategy_index = 8;</code>
            * @return The strategyIndex.
            */
@@ -20662,7 +20662,7 @@ public final class ProtobufMessages {
 
           public static final int OBJECT_FIELD_NUMBER = 9;
           private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-          /**
+          /*
            * <code>optional bytes object = 9;</code>
            * @return Whether the object field is set.
            */
@@ -20670,7 +20670,7 @@ public final class ProtobufMessages {
           public boolean hasObject() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional bytes object = 9;</code>
            * @return The object.
            */
@@ -20855,7 +20855,7 @@ public final class ProtobufMessages {
             Builder builder = new Builder(parent);
             return builder;
           }
-          /**
+          /*
            * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject}
            */
           public static final class Builder extends
@@ -21008,7 +21008,7 @@ public final class ProtobufMessages {
             private int bitField0_;
 
             private int strategyIndex_ ;
-            /**
+            /*
              * <code>optional int32 strategy_index = 8;</code>
              * @return Whether the strategyIndex field is set.
              */
@@ -21016,7 +21016,7 @@ public final class ProtobufMessages {
             public boolean hasStrategyIndex() {
               return ((bitField0_ & 0x00000001) != 0);
             }
-            /**
+            /*
              * <code>optional int32 strategy_index = 8;</code>
              * @return The strategyIndex.
              */
@@ -21024,7 +21024,7 @@ public final class ProtobufMessages {
             public int getStrategyIndex() {
               return strategyIndex_;
             }
-            /**
+            /*
              * <code>optional int32 strategy_index = 8;</code>
              * @param value The strategyIndex to set.
              * @return This builder for chaining.
@@ -21036,7 +21036,7 @@ public final class ProtobufMessages {
               onChanged();
               return this;
             }
-            /**
+            /*
              * <code>optional int32 strategy_index = 8;</code>
              * @return This builder for chaining.
              */
@@ -21048,7 +21048,7 @@ public final class ProtobufMessages {
             }
 
             private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-            /**
+            /*
              * <code>optional bytes object = 9;</code>
              * @return Whether the object field is set.
              */
@@ -21056,7 +21056,7 @@ public final class ProtobufMessages {
             public boolean hasObject() {
               return ((bitField0_ & 0x00000002) != 0);
             }
-            /**
+            /*
              * <code>optional bytes object = 9;</code>
              * @return The object.
              */
@@ -21064,7 +21064,7 @@ public final class ProtobufMessages {
             public com.google.protobuf.ByteString getObject() {
               return object_;
             }
-            /**
+            /*
              * <code>optional bytes object = 9;</code>
              * @param value The object to set.
              * @return This builder for chaining.
@@ -21076,7 +21076,7 @@ public final class ProtobufMessages {
               onChanged();
               return this;
             }
-            /**
+            /*
              * <code>optional bytes object = 9;</code>
              * @return This builder for chaining.
              */
@@ -21153,7 +21153,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
@@ -21161,7 +21161,7 @@ public final class ProtobufMessages {
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
@@ -21169,7 +21169,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
           return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         @java.lang.Override
@@ -21180,14 +21180,14 @@ public final class ProtobufMessages {
         public static final int HANDLE_FIELD_NUMBER = 2;
         @SuppressWarnings("serial")
         private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> handle_;
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getHandleList() {
           return handle_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
@@ -21195,21 +21195,21 @@ public final class ProtobufMessages {
             getHandleOrBuilderList() {
           return handle_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
         public int getHandleCount() {
           return handle_.size();
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
         public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index) {
           return handle_.get(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
@@ -21221,14 +21221,14 @@ public final class ProtobufMessages {
         public static final int OBJECT_FIELD_NUMBER = 3;
         @SuppressWarnings("serial")
         private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> object_;
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         @java.lang.Override
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> getObjectList() {
           return object_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         @java.lang.Override
@@ -21236,21 +21236,21 @@ public final class ProtobufMessages {
             getObjectOrBuilderList() {
           return object_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         @java.lang.Override
         public int getObjectCount() {
           return object_.size();
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         @java.lang.Override
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject getObject(int index) {
           return object_.get(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
          */
         @java.lang.Override
@@ -21445,7 +21445,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext}
          */
         public static final class Builder extends
@@ -21717,14 +21717,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return Whether the tuple field is set.
            */
           public boolean hasTuple() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return The tuple.
            */
@@ -21735,7 +21735,7 @@ public final class ProtobufMessages {
               return tupleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -21751,7 +21751,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(
@@ -21765,7 +21765,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -21784,7 +21784,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder clearTuple() {
@@ -21797,7 +21797,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -21805,7 +21805,7 @@ public final class ProtobufMessages {
             onChanged();
             return getTupleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -21816,7 +21816,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -21845,7 +21845,7 @@ public final class ProtobufMessages {
           private com.google.protobuf.RepeatedFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> handleBuilder_;
 
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getHandleList() {
@@ -21855,7 +21855,7 @@ public final class ProtobufMessages {
               return handleBuilder_.getMessageList();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public int getHandleCount() {
@@ -21865,7 +21865,7 @@ public final class ProtobufMessages {
               return handleBuilder_.getCount();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index) {
@@ -21875,7 +21875,7 @@ public final class ProtobufMessages {
               return handleBuilder_.getMessage(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder setHandle(
@@ -21892,7 +21892,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder setHandle(
@@ -21906,7 +21906,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder addHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -21922,7 +21922,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder addHandle(
@@ -21939,7 +21939,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder addHandle(
@@ -21953,7 +21953,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder addHandle(
@@ -21967,7 +21967,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder addAllHandle(
@@ -21982,7 +21982,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder clearHandle() {
@@ -21995,7 +21995,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder removeHandle(int index) {
@@ -22008,14 +22008,14 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getHandleBuilder(
               int index) {
             return getHandleFieldBuilder().getBuilder(index);
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
@@ -22025,7 +22025,7 @@ public final class ProtobufMessages {
               return handleBuilder_.getMessageOrBuilder(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
@@ -22036,14 +22036,14 @@ public final class ProtobufMessages {
               return java.util.Collections.unmodifiableList(handle_);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addHandleBuilder() {
             return getHandleFieldBuilder().addBuilder(
                 org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addHandleBuilder(
@@ -22051,7 +22051,7 @@ public final class ProtobufMessages {
             return getHandleFieldBuilder().addBuilder(
                 index, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder> 
@@ -22085,7 +22085,7 @@ public final class ProtobufMessages {
           private com.google.protobuf.RepeatedFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder> objectBuilder_;
 
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject> getObjectList() {
@@ -22095,7 +22095,7 @@ public final class ProtobufMessages {
               return objectBuilder_.getMessageList();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public int getObjectCount() {
@@ -22105,7 +22105,7 @@ public final class ProtobufMessages {
               return objectBuilder_.getCount();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject getObject(int index) {
@@ -22115,7 +22115,7 @@ public final class ProtobufMessages {
               return objectBuilder_.getMessage(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder setObject(
@@ -22132,7 +22132,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder setObject(
@@ -22146,7 +22146,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder addObject(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject value) {
@@ -22162,7 +22162,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder addObject(
@@ -22179,7 +22179,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder addObject(
@@ -22193,7 +22193,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder addObject(
@@ -22207,7 +22207,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder addAllObject(
@@ -22222,7 +22222,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder clearObject() {
@@ -22235,7 +22235,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public Builder removeObject(int index) {
@@ -22248,14 +22248,14 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder getObjectBuilder(
               int index) {
             return getObjectFieldBuilder().getBuilder(index);
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder getObjectOrBuilder(
@@ -22265,7 +22265,7 @@ public final class ProtobufMessages {
               return objectBuilder_.getMessageOrBuilder(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObjectOrBuilder> 
@@ -22276,14 +22276,14 @@ public final class ProtobufMessages {
               return java.util.Collections.unmodifiableList(object_);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder addObjectBuilder() {
             return getObjectFieldBuilder().addBuilder(
                 org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder addObjectBuilder(
@@ -22291,7 +22291,7 @@ public final class ProtobufMessages {
             return getObjectFieldBuilder().addBuilder(
                 index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext.FromObject object = 3;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.Builder> 
@@ -22379,14 +22379,14 @@ public final class ProtobufMessages {
       public static final int CONTEXT_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> context_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> getContextList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       @java.lang.Override
@@ -22394,21 +22394,21 @@ public final class ProtobufMessages {
           getContextOrBuilderList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       @java.lang.Override
       public int getContextCount() {
         return context_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getContext(int index) {
         return context_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
        */
       @java.lang.Override
@@ -22574,7 +22574,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.FromNodeMemory}
        */
       public static final class Builder extends
@@ -22769,7 +22769,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder> contextBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext> getContextList() {
@@ -22779,7 +22779,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public int getContextCount() {
@@ -22789,7 +22789,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getContext(int index) {
@@ -22799,7 +22799,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder setContext(
@@ -22816,7 +22816,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder setContext(
@@ -22830,7 +22830,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder addContext(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext value) {
@@ -22846,7 +22846,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder addContext(
@@ -22863,7 +22863,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder addContext(
@@ -22877,7 +22877,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder addContext(
@@ -22891,7 +22891,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder addAllContext(
@@ -22906,7 +22906,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder clearContext() {
@@ -22919,7 +22919,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public Builder removeContext(int index) {
@@ -22932,14 +22932,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder getContextBuilder(
             int index) {
           return getContextFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder getContextOrBuilder(
@@ -22949,7 +22949,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContextOrBuilder> 
@@ -22960,14 +22960,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(context_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder addContextBuilder() {
           return getContextFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder addContextBuilder(
@@ -22975,7 +22975,7 @@ public final class ProtobufMessages {
           return getContextFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory.FromContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder> 
@@ -23064,31 +23064,31 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> 
           getContextList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getContext(int index);
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       int getContextCount();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder> 
           getContextOrBuilderList();
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder getContextOrBuilder(
           int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory}
      */
     public static final class QueryElementNodeMemory extends
@@ -23128,61 +23128,61 @@ public final class ProtobufMessages {
           // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext)
           com.google.protobuf.MessageOrBuilder {
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
         boolean hasTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
         org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          * @return Whether the handle field is set.
          */
         boolean hasHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          * @return The handle.
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle();
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder();
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> 
             getResultList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResult(int index);
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         int getResultCount();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
             getResultOrBuilderList();
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultOrBuilder(
             int index);
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext}
        */
       public static final class QueryContext extends
@@ -23221,7 +23221,7 @@ public final class ProtobufMessages {
         private int bitField0_;
         public static final int TUPLE_FIELD_NUMBER = 1;
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return Whether the tuple field is set.
          */
@@ -23229,7 +23229,7 @@ public final class ProtobufMessages {
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          * @return The tuple.
          */
@@ -23237,7 +23237,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
           return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
          */
         @java.lang.Override
@@ -23247,7 +23247,7 @@ public final class ProtobufMessages {
 
         public static final int HANDLE_FIELD_NUMBER = 2;
         private org.drools.serialization.protobuf.ProtobufMessages.FactHandle handle_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          * @return Whether the handle field is set.
          */
@@ -23255,7 +23255,7 @@ public final class ProtobufMessages {
         public boolean hasHandle() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          * @return The handle.
          */
@@ -23263,7 +23263,7 @@ public final class ProtobufMessages {
         public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle() {
           return handle_ == null ? org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : handle_;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
          */
         @java.lang.Override
@@ -23274,14 +23274,14 @@ public final class ProtobufMessages {
         public static final int RESULT_FIELD_NUMBER = 3;
         @SuppressWarnings("serial")
         private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> result_;
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         @java.lang.Override
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getResultList() {
           return result_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         @java.lang.Override
@@ -23289,21 +23289,21 @@ public final class ProtobufMessages {
             getResultOrBuilderList() {
           return result_;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         @java.lang.Override
         public int getResultCount() {
           return result_.size();
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         @java.lang.Override
         public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResult(int index) {
           return result_.get(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
          */
         @java.lang.Override
@@ -23501,7 +23501,7 @@ public final class ProtobufMessages {
           Builder builder = new Builder(parent);
           return builder;
         }
-        /**
+        /*
          * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext}
          */
         public static final class Builder extends
@@ -23739,14 +23739,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return Whether the tuple field is set.
            */
           public boolean hasTuple() {
             return ((bitField0_ & 0x00000001) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            * @return The tuple.
            */
@@ -23757,7 +23757,7 @@ public final class ProtobufMessages {
               return tupleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -23773,7 +23773,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder setTuple(
@@ -23787,7 +23787,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -23806,7 +23806,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public Builder clearTuple() {
@@ -23819,7 +23819,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -23827,7 +23827,7 @@ public final class ProtobufMessages {
             onChanged();
             return getTupleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -23838,7 +23838,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 1;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -23858,14 +23858,14 @@ public final class ProtobufMessages {
           private org.drools.serialization.protobuf.ProtobufMessages.FactHandle handle_;
           private com.google.protobuf.SingleFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> handleBuilder_;
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            * @return Whether the handle field is set.
            */
           public boolean hasHandle() {
             return ((bitField0_ & 0x00000002) != 0);
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            * @return The handle.
            */
@@ -23876,7 +23876,7 @@ public final class ProtobufMessages {
               return handleBuilder_.getMessage();
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder setHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -23892,7 +23892,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder setHandle(
@@ -23906,7 +23906,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder mergeHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -23925,7 +23925,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public Builder clearHandle() {
@@ -23938,7 +23938,7 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getHandleBuilder() {
@@ -23946,7 +23946,7 @@ public final class ProtobufMessages {
             onChanged();
             return getHandleFieldBuilder().getBuilder();
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder() {
@@ -23957,7 +23957,7 @@ public final class ProtobufMessages {
                   org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance() : handle_;
             }
           }
-          /**
+          /*
            * <code>optional .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
            */
           private com.google.protobuf.SingleFieldBuilderV3<
@@ -23986,7 +23986,7 @@ public final class ProtobufMessages {
           private com.google.protobuf.RepeatedFieldBuilderV3<
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> resultBuilder_;
 
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getResultList() {
@@ -23996,7 +23996,7 @@ public final class ProtobufMessages {
               return resultBuilder_.getMessageList();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public int getResultCount() {
@@ -24006,7 +24006,7 @@ public final class ProtobufMessages {
               return resultBuilder_.getCount();
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getResult(int index) {
@@ -24016,7 +24016,7 @@ public final class ProtobufMessages {
               return resultBuilder_.getMessage(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder setResult(
@@ -24033,7 +24033,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder setResult(
@@ -24047,7 +24047,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder addResult(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -24063,7 +24063,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder addResult(
@@ -24080,7 +24080,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder addResult(
@@ -24094,7 +24094,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder addResult(
@@ -24108,7 +24108,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder addAllResult(
@@ -24123,7 +24123,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder clearResult() {
@@ -24136,7 +24136,7 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public Builder removeResult(int index) {
@@ -24149,14 +24149,14 @@ public final class ProtobufMessages {
             }
             return this;
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getResultBuilder(
               int index) {
             return getResultFieldBuilder().getBuilder(index);
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getResultOrBuilder(
@@ -24166,7 +24166,7 @@ public final class ProtobufMessages {
               return resultBuilder_.getMessageOrBuilder(index);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
@@ -24177,14 +24177,14 @@ public final class ProtobufMessages {
               return java.util.Collections.unmodifiableList(result_);
             }
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addResultBuilder() {
             return getResultFieldBuilder().addBuilder(
                 org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addResultBuilder(
@@ -24192,7 +24192,7 @@ public final class ProtobufMessages {
             return getResultFieldBuilder().addBuilder(
                 index, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
           }
-          /**
+          /*
            * <code>repeated .org.drools.serialization.protobuf.FactHandle result = 3;</code>
            */
           public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder> 
@@ -24280,14 +24280,14 @@ public final class ProtobufMessages {
       public static final int CONTEXT_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> context_;
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       @java.lang.Override
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> getContextList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       @java.lang.Override
@@ -24295,21 +24295,21 @@ public final class ProtobufMessages {
           getContextOrBuilderList() {
         return context_;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       @java.lang.Override
       public int getContextCount() {
         return context_.size();
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       @java.lang.Override
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getContext(int index) {
         return context_.get(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
        */
       @java.lang.Override
@@ -24475,7 +24475,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory}
        */
       public static final class Builder extends
@@ -24670,7 +24670,7 @@ public final class ProtobufMessages {
         private com.google.protobuf.RepeatedFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder> contextBuilder_;
 
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext> getContextList() {
@@ -24680,7 +24680,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageList();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public int getContextCount() {
@@ -24690,7 +24690,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getCount();
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getContext(int index) {
@@ -24700,7 +24700,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessage(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder setContext(
@@ -24717,7 +24717,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder setContext(
@@ -24731,7 +24731,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder addContext(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext value) {
@@ -24747,7 +24747,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder addContext(
@@ -24764,7 +24764,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder addContext(
@@ -24778,7 +24778,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder addContext(
@@ -24792,7 +24792,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder addAllContext(
@@ -24807,7 +24807,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder clearContext() {
@@ -24820,7 +24820,7 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public Builder removeContext(int index) {
@@ -24833,14 +24833,14 @@ public final class ProtobufMessages {
           }
           return this;
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder getContextBuilder(
             int index) {
           return getContextFieldBuilder().getBuilder(index);
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder getContextOrBuilder(
@@ -24850,7 +24850,7 @@ public final class ProtobufMessages {
             return contextBuilder_.getMessageOrBuilder(index);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContextOrBuilder> 
@@ -24861,14 +24861,14 @@ public final class ProtobufMessages {
             return java.util.Collections.unmodifiableList(context_);
           }
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder addContextBuilder() {
           return getContextFieldBuilder().addBuilder(
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder addContextBuilder(
@@ -24876,7 +24876,7 @@ public final class ProtobufMessages {
           return getContextFieldBuilder().addBuilder(
               index, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.getDefaultInstance());
         }
-        /**
+        /*
          * <code>repeated .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory.QueryContext context = 1;</code>
          */
         public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.Builder> 
@@ -24964,7 +24964,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int NODE_ID_FIELD_NUMBER = 1;
     private int nodeId_ = 0;
-    /**
+    /*
      * <code>optional int32 node_id = 1;</code>
      * @return Whether the nodeId field is set.
      */
@@ -24972,7 +24972,7 @@ public final class ProtobufMessages {
     public boolean hasNodeId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int32 node_id = 1;</code>
      * @return The nodeId.
      */
@@ -24983,14 +24983,14 @@ public final class ProtobufMessages {
 
     public static final int NODE_TYPE_FIELD_NUMBER = 2;
     private int nodeType_ = 0;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
      * @return Whether the nodeType field is set.
      */
     @java.lang.Override public boolean hasNodeType() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
      * @return The nodeType.
      */
@@ -25001,7 +25001,7 @@ public final class ProtobufMessages {
 
     public static final int ACCUMULATE_FIELD_NUMBER = 3;
     private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory accumulate_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      * @return Whether the accumulate field is set.
      */
@@ -25009,7 +25009,7 @@ public final class ProtobufMessages {
     public boolean hasAccumulate() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      * @return The accumulate.
      */
@@ -25017,7 +25017,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory getAccumulate() {
       return accumulate_ == null ? org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.getDefaultInstance() : accumulate_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
      */
     @java.lang.Override
@@ -25027,7 +25027,7 @@ public final class ProtobufMessages {
 
     public static final int RIA_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory ria_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      * @return Whether the ria field is set.
      */
@@ -25035,7 +25035,7 @@ public final class ProtobufMessages {
     public boolean hasRia() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      * @return The ria.
      */
@@ -25043,7 +25043,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory getRia() {
       return ria_ == null ? org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.getDefaultInstance() : ria_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
      */
     @java.lang.Override
@@ -25053,7 +25053,7 @@ public final class ProtobufMessages {
 
     public static final int FROM_FIELD_NUMBER = 5;
     private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory from_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      * @return Whether the from field is set.
      */
@@ -25061,7 +25061,7 @@ public final class ProtobufMessages {
     public boolean hasFrom() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      * @return The from.
      */
@@ -25069,7 +25069,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory getFrom() {
       return from_ == null ? org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.getDefaultInstance() : from_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
      */
     @java.lang.Override
@@ -25079,7 +25079,7 @@ public final class ProtobufMessages {
 
     public static final int QUERY_ELEMENT_FIELD_NUMBER = 6;
     private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory queryElement_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      * @return Whether the queryElement field is set.
      */
@@ -25087,7 +25087,7 @@ public final class ProtobufMessages {
     public boolean hasQueryElement() {
       return ((bitField0_ & 0x00000020) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      * @return The queryElement.
      */
@@ -25095,7 +25095,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory getQueryElement() {
       return queryElement_ == null ? org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.getDefaultInstance() : queryElement_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
      */
     @java.lang.Override
@@ -25342,7 +25342,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.NodeMemory}
      */
     public static final class Builder extends
@@ -25595,7 +25595,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int nodeId_ ;
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
@@ -25603,7 +25603,7 @@ public final class ProtobufMessages {
       public boolean hasNodeId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
@@ -25611,7 +25611,7 @@ public final class ProtobufMessages {
       public int getNodeId() {
         return nodeId_;
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @param value The nodeId to set.
        * @return This builder for chaining.
@@ -25623,7 +25623,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -25635,14 +25635,14 @@ public final class ProtobufMessages {
       }
 
       private int nodeType_ = 0;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
        * @return Whether the nodeType field is set.
        */
       @java.lang.Override public boolean hasNodeType() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
        * @return The nodeType.
        */
@@ -25651,7 +25651,7 @@ public final class ProtobufMessages {
         org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.NodeType result = org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.NodeType.forNumber(nodeType_);
         return result == null ? org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.NodeType.ACCUMULATE : result;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
        * @param value The nodeType to set.
        * @return This builder for chaining.
@@ -25665,7 +25665,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.NodeType node_type = 2;</code>
        * @return This builder for chaining.
        */
@@ -25679,14 +25679,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory accumulate_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder> accumulateBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        * @return Whether the accumulate field is set.
        */
       public boolean hasAccumulate() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        * @return The accumulate.
        */
@@ -25697,7 +25697,7 @@ public final class ProtobufMessages {
           return accumulateBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public Builder setAccumulate(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory value) {
@@ -25713,7 +25713,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public Builder setAccumulate(
@@ -25727,7 +25727,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public Builder mergeAccumulate(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory value) {
@@ -25746,7 +25746,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public Builder clearAccumulate() {
@@ -25759,7 +25759,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder getAccumulateBuilder() {
@@ -25767,7 +25767,7 @@ public final class ProtobufMessages {
         onChanged();
         return getAccumulateFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemoryOrBuilder getAccumulateOrBuilder() {
@@ -25778,7 +25778,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.AccumulateNodeMemory.getDefaultInstance() : accumulate_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.AccumulateNodeMemory accumulate = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -25798,14 +25798,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory ria_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder> riaBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        * @return Whether the ria field is set.
        */
       public boolean hasRia() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        * @return The ria.
        */
@@ -25816,7 +25816,7 @@ public final class ProtobufMessages {
           return riaBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public Builder setRia(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory value) {
@@ -25832,7 +25832,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public Builder setRia(
@@ -25846,7 +25846,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public Builder mergeRia(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory value) {
@@ -25865,7 +25865,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public Builder clearRia() {
@@ -25878,7 +25878,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.Builder getRiaBuilder() {
@@ -25886,7 +25886,7 @@ public final class ProtobufMessages {
         onChanged();
         return getRiaFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemoryOrBuilder getRiaOrBuilder() {
@@ -25897,7 +25897,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.RIANodeMemory.getDefaultInstance() : ria_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.RIANodeMemory ria = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -25917,14 +25917,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory from_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder> fromBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        * @return Whether the from field is set.
        */
       public boolean hasFrom() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        * @return The from.
        */
@@ -25935,7 +25935,7 @@ public final class ProtobufMessages {
           return fromBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public Builder setFrom(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory value) {
@@ -25951,7 +25951,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public Builder setFrom(
@@ -25965,7 +25965,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public Builder mergeFrom(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory value) {
@@ -25984,7 +25984,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public Builder clearFrom() {
@@ -25997,7 +25997,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.Builder getFromBuilder() {
@@ -26005,7 +26005,7 @@ public final class ProtobufMessages {
         onChanged();
         return getFromFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemoryOrBuilder getFromOrBuilder() {
@@ -26016,7 +26016,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.FromNodeMemory.getDefaultInstance() : from_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.FromNodeMemory from = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -26036,14 +26036,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory queryElement_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder, org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder> queryElementBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        * @return Whether the queryElement field is set.
        */
       public boolean hasQueryElement() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        * @return The queryElement.
        */
@@ -26054,7 +26054,7 @@ public final class ProtobufMessages {
           return queryElementBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public Builder setQueryElement(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory value) {
@@ -26070,7 +26070,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public Builder setQueryElement(
@@ -26084,7 +26084,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public Builder mergeQueryElement(org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory value) {
@@ -26103,7 +26103,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public Builder clearQueryElement() {
@@ -26116,7 +26116,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder getQueryElementBuilder() {
@@ -26124,7 +26124,7 @@ public final class ProtobufMessages {
         onChanged();
         return getQueryElementFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemoryOrBuilder getQueryElementOrBuilder() {
@@ -26135,7 +26135,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.NodeMemory.QueryElementNodeMemory.getDefaultInstance() : queryElement_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.NodeMemory.QueryElementNodeMemory query_element = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -26219,87 +26219,87 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.EntryPoint)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return Whether the entryPointId field is set.
      */
     boolean hasEntryPointId();
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return The entryPointId.
      */
     java.lang.String getEntryPointId();
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return The bytes for entryPointId.
      */
     com.google.protobuf.ByteString
         getEntryPointIdBytes();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> 
         getHandleList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     int getHandleCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
         getHandleOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      * @return Whether the tms field is set.
      */
     boolean hasTms();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      * @return The tms.
      */
     org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem getTms();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder getTmsOrBuilder();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration> 
         getOtcList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration getOtc(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     int getOtcCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder> 
         getOtcOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder getOtcOrBuilder(
         int index);
   }
-  /**
+  /*
    * <pre>
    * Entry point and its facts
    * </pre>
@@ -26345,7 +26345,7 @@ public final class ProtobufMessages {
     public static final int ENTRY_POINT_ID_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object entryPointId_ = "";
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return Whether the entryPointId field is set.
      */
@@ -26353,7 +26353,7 @@ public final class ProtobufMessages {
     public boolean hasEntryPointId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return The entryPointId.
      */
@@ -26372,7 +26372,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string entry_point_id = 1;</code>
      * @return The bytes for entryPointId.
      */
@@ -26394,14 +26394,14 @@ public final class ProtobufMessages {
     public static final int HANDLE_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> handle_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getHandleList() {
       return handle_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     @java.lang.Override
@@ -26409,21 +26409,21 @@ public final class ProtobufMessages {
         getHandleOrBuilderList() {
       return handle_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     @java.lang.Override
     public int getHandleCount() {
       return handle_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index) {
       return handle_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
      */
     @java.lang.Override
@@ -26434,7 +26434,7 @@ public final class ProtobufMessages {
 
     public static final int TMS_FIELD_NUMBER = 3;
     private org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem tms_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      * @return Whether the tms field is set.
      */
@@ -26442,7 +26442,7 @@ public final class ProtobufMessages {
     public boolean hasTms() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      * @return The tms.
      */
@@ -26450,7 +26450,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem getTms() {
       return tms_ == null ? org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance() : tms_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
      */
     @java.lang.Override
@@ -26461,14 +26461,14 @@ public final class ProtobufMessages {
     public static final int OTC_FIELD_NUMBER = 4;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration> otc_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration> getOtcList() {
       return otc_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     @java.lang.Override
@@ -26476,21 +26476,21 @@ public final class ProtobufMessages {
         getOtcOrBuilderList() {
       return otc_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     @java.lang.Override
     public int getOtcCount() {
       return otc_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration getOtc(int index) {
       return otc_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
      */
     @java.lang.Override
@@ -26700,7 +26700,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * <pre>
      * Entry point and its facts
      * </pre>
@@ -26989,14 +26989,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private java.lang.Object entryPointId_ = "";
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @return Whether the entryPointId field is set.
        */
       public boolean hasEntryPointId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @return The entryPointId.
        */
@@ -27014,7 +27014,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @return The bytes for entryPointId.
        */
@@ -27031,7 +27031,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @param value The entryPointId to set.
        * @return This builder for chaining.
@@ -27044,7 +27044,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -27054,7 +27054,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 1;</code>
        * @param value The bytes for entryPointId to set.
        * @return This builder for chaining.
@@ -27080,7 +27080,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.FactHandle, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder, org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> handleBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle> getHandleList() {
@@ -27090,7 +27090,7 @@ public final class ProtobufMessages {
           return handleBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public int getHandleCount() {
@@ -27100,7 +27100,7 @@ public final class ProtobufMessages {
           return handleBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandle getHandle(int index) {
@@ -27110,7 +27110,7 @@ public final class ProtobufMessages {
           return handleBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder setHandle(
@@ -27127,7 +27127,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder setHandle(
@@ -27141,7 +27141,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder addHandle(org.drools.serialization.protobuf.ProtobufMessages.FactHandle value) {
@@ -27157,7 +27157,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder addHandle(
@@ -27174,7 +27174,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder addHandle(
@@ -27188,7 +27188,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder addHandle(
@@ -27202,7 +27202,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder addAllHandle(
@@ -27217,7 +27217,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder clearHandle() {
@@ -27230,7 +27230,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public Builder removeHandle(int index) {
@@ -27243,14 +27243,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder getHandleBuilder(
           int index) {
         return getHandleFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder getHandleOrBuilder(
@@ -27260,7 +27260,7 @@ public final class ProtobufMessages {
           return handleBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.FactHandleOrBuilder> 
@@ -27271,14 +27271,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(handle_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addHandleBuilder() {
         return getHandleFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder addHandleBuilder(
@@ -27286,7 +27286,7 @@ public final class ProtobufMessages {
         return getHandleFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.FactHandle handle = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder> 
@@ -27311,14 +27311,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem tms_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder, org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder> tmsBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        * @return Whether the tms field is set.
        */
       public boolean hasTms() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        * @return The tms.
        */
@@ -27329,7 +27329,7 @@ public final class ProtobufMessages {
           return tmsBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public Builder setTms(org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem value) {
@@ -27345,7 +27345,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public Builder setTms(
@@ -27359,7 +27359,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public Builder mergeTms(org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem value) {
@@ -27378,7 +27378,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public Builder clearTms() {
@@ -27391,7 +27391,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.Builder getTmsBuilder() {
@@ -27399,7 +27399,7 @@ public final class ProtobufMessages {
         onChanged();
         return getTmsFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystemOrBuilder getTmsOrBuilder() {
@@ -27410,7 +27410,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance() : tms_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.TruthMaintenanceSystem tms = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -27439,7 +27439,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder> otcBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration> getOtcList() {
@@ -27449,7 +27449,7 @@ public final class ProtobufMessages {
           return otcBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public int getOtcCount() {
@@ -27459,7 +27459,7 @@ public final class ProtobufMessages {
           return otcBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration getOtc(int index) {
@@ -27469,7 +27469,7 @@ public final class ProtobufMessages {
           return otcBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder setOtc(
@@ -27486,7 +27486,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder setOtc(
@@ -27500,7 +27500,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder addOtc(org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration value) {
@@ -27516,7 +27516,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder addOtc(
@@ -27533,7 +27533,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder addOtc(
@@ -27547,7 +27547,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder addOtc(
@@ -27561,7 +27561,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder addAllOtc(
@@ -27576,7 +27576,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder clearOtc() {
@@ -27589,7 +27589,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public Builder removeOtc(int index) {
@@ -27602,14 +27602,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder getOtcBuilder(
           int index) {
         return getOtcFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder getOtcOrBuilder(
@@ -27619,7 +27619,7 @@ public final class ProtobufMessages {
           return otcBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfigurationOrBuilder> 
@@ -27630,14 +27630,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(otc_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder addOtcBuilder() {
         return getOtcFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder addOtcBuilder(
@@ -27645,7 +27645,7 @@ public final class ProtobufMessages {
         return getOtcFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ObjectTypeConfiguration otc = 4;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ObjectTypeConfiguration.Builder> 
@@ -27734,40 +27734,40 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.FactHandle)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
      * @return Whether the type field is set.
      */
     boolean hasType();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
      * @return The type.
      */
     org.drools.serialization.protobuf.ProtobufMessages.FactHandle.HandleType getType();
 
-    /**
+    /*
      * <code>optional int64 id = 2;</code>
      * @return Whether the id field is set.
      */
     boolean hasId();
-    /**
+    /*
      * <code>optional int64 id = 2;</code>
      * @return The id.
      */
     long getId();
 
-    /**
+    /*
      * <code>optional int64 recency = 3;</code>
      * @return Whether the recency field is set.
      */
     boolean hasRecency();
-    /**
+    /*
      * <code>optional int64 recency = 3;</code>
      * @return The recency.
      */
     long getRecency();
 
-    /**
+    /*
      * <pre>
      * event only attributes
      * </pre>
@@ -27776,7 +27776,7 @@ public final class ProtobufMessages {
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
-    /**
+    /*
      * <pre>
      * event only attributes
      * </pre>
@@ -27786,40 +27786,40 @@ public final class ProtobufMessages {
      */
     long getTimestamp();
 
-    /**
+    /*
      * <code>optional int64 duration = 5;</code>
      * @return Whether the duration field is set.
      */
     boolean hasDuration();
-    /**
+    /*
      * <code>optional int64 duration = 5;</code>
      * @return The duration.
      */
     long getDuration();
 
-    /**
+    /*
      * <code>optional bool is_expired = 6;</code>
      * @return Whether the isExpired field is set.
      */
     boolean hasIsExpired();
-    /**
+    /*
      * <code>optional bool is_expired = 6;</code>
      * @return The isExpired.
      */
     boolean getIsExpired();
 
-    /**
+    /*
      * <code>optional int64 activations_count = 7;</code>
      * @return Whether the activationsCount field is set.
      */
     boolean hasActivationsCount();
-    /**
+    /*
      * <code>optional int64 activations_count = 7;</code>
      * @return The activationsCount.
      */
     long getActivationsCount();
 
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -27828,7 +27828,7 @@ public final class ProtobufMessages {
      * @return Whether the strategyIndex field is set.
      */
     boolean hasStrategyIndex();
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -27838,18 +27838,18 @@ public final class ProtobufMessages {
      */
     int getStrategyIndex();
 
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return Whether the object field is set.
      */
     boolean hasObject();
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return The object.
      */
     com.google.protobuf.ByteString getObject();
 
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -27858,7 +27858,7 @@ public final class ProtobufMessages {
      * @return Whether the entryPoint field is set.
      */
     boolean hasEntryPoint();
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -27867,7 +27867,7 @@ public final class ProtobufMessages {
      * @return The entryPoint.
      */
     java.lang.String getEntryPoint();
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -27878,29 +27878,29 @@ public final class ProtobufMessages {
     com.google.protobuf.ByteString
         getEntryPointBytes();
 
-    /**
+    /*
      * <code>optional bool is_justified = 11;</code>
      * @return Whether the isJustified field is set.
      */
     boolean hasIsJustified();
-    /**
+    /*
      * <code>optional bool is_justified = 11;</code>
      * @return The isJustified.
      */
     boolean getIsJustified();
 
-    /**
+    /*
      * <code>optional int32 otn_count = 12;</code>
      * @return Whether the otnCount field is set.
      */
     boolean hasOtnCount();
-    /**
+    /*
      * <code>optional int32 otn_count = 12;</code>
      * @return The otnCount.
      */
     int getOtnCount();
   }
-  /**
+  /*
    * <pre>
    * a fact handle
    * </pre>
@@ -27942,42 +27942,42 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.FactHandle.class, org.drools.serialization.protobuf.ProtobufMessages.FactHandle.Builder.class);
     }
 
-    /**
+    /*
      * Protobuf enum {@code org.drools.serialization.protobuf.FactHandle.HandleType}
      */
     public enum HandleType
         implements com.google.protobuf.ProtocolMessageEnum {
-      /**
+      /*
        * <code>INITIAL_FACT = 1;</code>
        */
       INITIAL_FACT(1),
-      /**
+      /*
        * <code>FACT = 2;</code>
        */
       FACT(2),
-      /**
+      /*
        * <code>QUERY = 3;</code>
        */
       QUERY(3),
-      /**
+      /*
        * <code>EVENT = 4;</code>
        */
       EVENT(4),
       ;
 
-      /**
+      /*
        * <code>INITIAL_FACT = 1;</code>
        */
       public static final int INITIAL_FACT_VALUE = 1;
-      /**
+      /*
        * <code>FACT = 2;</code>
        */
       public static final int FACT_VALUE = 2;
-      /**
+      /*
        * <code>QUERY = 3;</code>
        */
       public static final int QUERY_VALUE = 3;
-      /**
+      /*
        * <code>EVENT = 4;</code>
        */
       public static final int EVENT_VALUE = 4;
@@ -27987,7 +27987,7 @@ public final class ProtobufMessages {
         return value;
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
@@ -27997,7 +27997,7 @@ public final class ProtobufMessages {
         return forNumber(value);
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
@@ -28059,14 +28059,14 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_ = 1;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
      * @return Whether the type field is set.
      */
     @java.lang.Override public boolean hasType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
      * @return The type.
      */
@@ -28077,7 +28077,7 @@ public final class ProtobufMessages {
 
     public static final int ID_FIELD_NUMBER = 2;
     private long id_ = 0L;
-    /**
+    /*
      * <code>optional int64 id = 2;</code>
      * @return Whether the id field is set.
      */
@@ -28085,7 +28085,7 @@ public final class ProtobufMessages {
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int64 id = 2;</code>
      * @return The id.
      */
@@ -28096,7 +28096,7 @@ public final class ProtobufMessages {
 
     public static final int RECENCY_FIELD_NUMBER = 3;
     private long recency_ = 0L;
-    /**
+    /*
      * <code>optional int64 recency = 3;</code>
      * @return Whether the recency field is set.
      */
@@ -28104,7 +28104,7 @@ public final class ProtobufMessages {
     public boolean hasRecency() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional int64 recency = 3;</code>
      * @return The recency.
      */
@@ -28115,7 +28115,7 @@ public final class ProtobufMessages {
 
     public static final int TIMESTAMP_FIELD_NUMBER = 4;
     private long timestamp_ = 0L;
-    /**
+    /*
      * <pre>
      * event only attributes
      * </pre>
@@ -28127,7 +28127,7 @@ public final class ProtobufMessages {
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <pre>
      * event only attributes
      * </pre>
@@ -28142,7 +28142,7 @@ public final class ProtobufMessages {
 
     public static final int DURATION_FIELD_NUMBER = 5;
     private long duration_ = 0L;
-    /**
+    /*
      * <code>optional int64 duration = 5;</code>
      * @return Whether the duration field is set.
      */
@@ -28150,7 +28150,7 @@ public final class ProtobufMessages {
     public boolean hasDuration() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional int64 duration = 5;</code>
      * @return The duration.
      */
@@ -28161,7 +28161,7 @@ public final class ProtobufMessages {
 
     public static final int IS_EXPIRED_FIELD_NUMBER = 6;
     private boolean isExpired_ = false;
-    /**
+    /*
      * <code>optional bool is_expired = 6;</code>
      * @return Whether the isExpired field is set.
      */
@@ -28169,7 +28169,7 @@ public final class ProtobufMessages {
     public boolean hasIsExpired() {
       return ((bitField0_ & 0x00000020) != 0);
     }
-    /**
+    /*
      * <code>optional bool is_expired = 6;</code>
      * @return The isExpired.
      */
@@ -28180,7 +28180,7 @@ public final class ProtobufMessages {
 
     public static final int ACTIVATIONS_COUNT_FIELD_NUMBER = 7;
     private long activationsCount_ = 0L;
-    /**
+    /*
      * <code>optional int64 activations_count = 7;</code>
      * @return Whether the activationsCount field is set.
      */
@@ -28188,7 +28188,7 @@ public final class ProtobufMessages {
     public boolean hasActivationsCount() {
       return ((bitField0_ & 0x00000040) != 0);
     }
-    /**
+    /*
      * <code>optional int64 activations_count = 7;</code>
      * @return The activationsCount.
      */
@@ -28199,7 +28199,7 @@ public final class ProtobufMessages {
 
     public static final int STRATEGY_INDEX_FIELD_NUMBER = 8;
     private int strategyIndex_ = 0;
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -28211,7 +28211,7 @@ public final class ProtobufMessages {
     public boolean hasStrategyIndex() {
       return ((bitField0_ & 0x00000080) != 0);
     }
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -28226,7 +28226,7 @@ public final class ProtobufMessages {
 
     public static final int OBJECT_FIELD_NUMBER = 9;
     private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return Whether the object field is set.
      */
@@ -28234,7 +28234,7 @@ public final class ProtobufMessages {
     public boolean hasObject() {
       return ((bitField0_ & 0x00000100) != 0);
     }
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return The object.
      */
@@ -28246,7 +28246,7 @@ public final class ProtobufMessages {
     public static final int ENTRY_POINT_FIELD_NUMBER = 10;
     @SuppressWarnings("serial")
     private volatile java.lang.Object entryPoint_ = "";
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -28258,7 +28258,7 @@ public final class ProtobufMessages {
     public boolean hasEntryPoint() {
       return ((bitField0_ & 0x00000200) != 0);
     }
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -28281,7 +28281,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <pre>
      * the entry point
      * </pre>
@@ -28306,7 +28306,7 @@ public final class ProtobufMessages {
 
     public static final int IS_JUSTIFIED_FIELD_NUMBER = 11;
     private boolean isJustified_ = false;
-    /**
+    /*
      * <code>optional bool is_justified = 11;</code>
      * @return Whether the isJustified field is set.
      */
@@ -28314,7 +28314,7 @@ public final class ProtobufMessages {
     public boolean hasIsJustified() {
       return ((bitField0_ & 0x00000400) != 0);
     }
-    /**
+    /*
      * <code>optional bool is_justified = 11;</code>
      * @return The isJustified.
      */
@@ -28325,7 +28325,7 @@ public final class ProtobufMessages {
 
     public static final int OTN_COUNT_FIELD_NUMBER = 12;
     private int otnCount_ = 0;
-    /**
+    /*
      * <code>optional int32 otn_count = 12;</code>
      * @return Whether the otnCount field is set.
      */
@@ -28333,7 +28333,7 @@ public final class ProtobufMessages {
     public boolean hasOtnCount() {
       return ((bitField0_ & 0x00000800) != 0);
     }
-    /**
+    /*
      * <code>optional int32 otn_count = 12;</code>
      * @return The otnCount.
      */
@@ -28683,7 +28683,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * <pre>
      * a fact handle
      * </pre>
@@ -28979,14 +28979,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int type_ = 1;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
        * @return Whether the type field is set.
        */
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
        * @return The type.
        */
@@ -28995,7 +28995,7 @@ public final class ProtobufMessages {
         org.drools.serialization.protobuf.ProtobufMessages.FactHandle.HandleType result = org.drools.serialization.protobuf.ProtobufMessages.FactHandle.HandleType.forNumber(type_);
         return result == null ? org.drools.serialization.protobuf.ProtobufMessages.FactHandle.HandleType.INITIAL_FACT : result;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
@@ -29009,7 +29009,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.FactHandle.HandleType type = 1;</code>
        * @return This builder for chaining.
        */
@@ -29021,7 +29021,7 @@ public final class ProtobufMessages {
       }
 
       private long id_ ;
-      /**
+      /*
        * <code>optional int64 id = 2;</code>
        * @return Whether the id field is set.
        */
@@ -29029,7 +29029,7 @@ public final class ProtobufMessages {
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 id = 2;</code>
        * @return The id.
        */
@@ -29037,7 +29037,7 @@ public final class ProtobufMessages {
       public long getId() {
         return id_;
       }
-      /**
+      /*
        * <code>optional int64 id = 2;</code>
        * @param value The id to set.
        * @return This builder for chaining.
@@ -29049,7 +29049,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 id = 2;</code>
        * @return This builder for chaining.
        */
@@ -29061,7 +29061,7 @@ public final class ProtobufMessages {
       }
 
       private long recency_ ;
-      /**
+      /*
        * <code>optional int64 recency = 3;</code>
        * @return Whether the recency field is set.
        */
@@ -29069,7 +29069,7 @@ public final class ProtobufMessages {
       public boolean hasRecency() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional int64 recency = 3;</code>
        * @return The recency.
        */
@@ -29077,7 +29077,7 @@ public final class ProtobufMessages {
       public long getRecency() {
         return recency_;
       }
-      /**
+      /*
        * <code>optional int64 recency = 3;</code>
        * @param value The recency to set.
        * @return This builder for chaining.
@@ -29089,7 +29089,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 recency = 3;</code>
        * @return This builder for chaining.
        */
@@ -29101,7 +29101,7 @@ public final class ProtobufMessages {
       }
 
       private long timestamp_ ;
-      /**
+      /*
        * <pre>
        * event only attributes
        * </pre>
@@ -29113,7 +29113,7 @@ public final class ProtobufMessages {
       public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <pre>
        * event only attributes
        * </pre>
@@ -29125,7 +29125,7 @@ public final class ProtobufMessages {
       public long getTimestamp() {
         return timestamp_;
       }
-      /**
+      /*
        * <pre>
        * event only attributes
        * </pre>
@@ -29141,7 +29141,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * event only attributes
        * </pre>
@@ -29157,7 +29157,7 @@ public final class ProtobufMessages {
       }
 
       private long duration_ ;
-      /**
+      /*
        * <code>optional int64 duration = 5;</code>
        * @return Whether the duration field is set.
        */
@@ -29165,7 +29165,7 @@ public final class ProtobufMessages {
       public boolean hasDuration() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional int64 duration = 5;</code>
        * @return The duration.
        */
@@ -29173,7 +29173,7 @@ public final class ProtobufMessages {
       public long getDuration() {
         return duration_;
       }
-      /**
+      /*
        * <code>optional int64 duration = 5;</code>
        * @param value The duration to set.
        * @return This builder for chaining.
@@ -29185,7 +29185,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 duration = 5;</code>
        * @return This builder for chaining.
        */
@@ -29197,7 +29197,7 @@ public final class ProtobufMessages {
       }
 
       private boolean isExpired_ ;
-      /**
+      /*
        * <code>optional bool is_expired = 6;</code>
        * @return Whether the isExpired field is set.
        */
@@ -29205,7 +29205,7 @@ public final class ProtobufMessages {
       public boolean hasIsExpired() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_expired = 6;</code>
        * @return The isExpired.
        */
@@ -29213,7 +29213,7 @@ public final class ProtobufMessages {
       public boolean getIsExpired() {
         return isExpired_;
       }
-      /**
+      /*
        * <code>optional bool is_expired = 6;</code>
        * @param value The isExpired to set.
        * @return This builder for chaining.
@@ -29225,7 +29225,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool is_expired = 6;</code>
        * @return This builder for chaining.
        */
@@ -29237,7 +29237,7 @@ public final class ProtobufMessages {
       }
 
       private long activationsCount_ ;
-      /**
+      /*
        * <code>optional int64 activations_count = 7;</code>
        * @return Whether the activationsCount field is set.
        */
@@ -29245,7 +29245,7 @@ public final class ProtobufMessages {
       public boolean hasActivationsCount() {
         return ((bitField0_ & 0x00000040) != 0);
       }
-      /**
+      /*
        * <code>optional int64 activations_count = 7;</code>
        * @return The activationsCount.
        */
@@ -29253,7 +29253,7 @@ public final class ProtobufMessages {
       public long getActivationsCount() {
         return activationsCount_;
       }
-      /**
+      /*
        * <code>optional int64 activations_count = 7;</code>
        * @param value The activationsCount to set.
        * @return This builder for chaining.
@@ -29265,7 +29265,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 activations_count = 7;</code>
        * @return This builder for chaining.
        */
@@ -29277,7 +29277,7 @@ public final class ProtobufMessages {
       }
 
       private int strategyIndex_ ;
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -29289,7 +29289,7 @@ public final class ProtobufMessages {
       public boolean hasStrategyIndex() {
         return ((bitField0_ & 0x00000080) != 0);
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -29301,7 +29301,7 @@ public final class ProtobufMessages {
       public int getStrategyIndex() {
         return strategyIndex_;
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -29317,7 +29317,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -29333,7 +29333,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return Whether the object field is set.
        */
@@ -29341,7 +29341,7 @@ public final class ProtobufMessages {
       public boolean hasObject() {
         return ((bitField0_ & 0x00000100) != 0);
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return The object.
        */
@@ -29349,7 +29349,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getObject() {
         return object_;
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @param value The object to set.
        * @return This builder for chaining.
@@ -29361,7 +29361,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return This builder for chaining.
        */
@@ -29373,7 +29373,7 @@ public final class ProtobufMessages {
       }
 
       private java.lang.Object entryPoint_ = "";
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29384,7 +29384,7 @@ public final class ProtobufMessages {
       public boolean hasEntryPoint() {
         return ((bitField0_ & 0x00000200) != 0);
       }
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29406,7 +29406,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29427,7 +29427,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29444,7 +29444,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29458,7 +29458,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * the entry point
        * </pre>
@@ -29477,7 +29477,7 @@ public final class ProtobufMessages {
       }
 
       private boolean isJustified_ ;
-      /**
+      /*
        * <code>optional bool is_justified = 11;</code>
        * @return Whether the isJustified field is set.
        */
@@ -29485,7 +29485,7 @@ public final class ProtobufMessages {
       public boolean hasIsJustified() {
         return ((bitField0_ & 0x00000400) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_justified = 11;</code>
        * @return The isJustified.
        */
@@ -29493,7 +29493,7 @@ public final class ProtobufMessages {
       public boolean getIsJustified() {
         return isJustified_;
       }
-      /**
+      /*
        * <code>optional bool is_justified = 11;</code>
        * @param value The isJustified to set.
        * @return This builder for chaining.
@@ -29505,7 +29505,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool is_justified = 11;</code>
        * @return This builder for chaining.
        */
@@ -29517,7 +29517,7 @@ public final class ProtobufMessages {
       }
 
       private int otnCount_ ;
-      /**
+      /*
        * <code>optional int32 otn_count = 12;</code>
        * @return Whether the otnCount field is set.
        */
@@ -29525,7 +29525,7 @@ public final class ProtobufMessages {
       public boolean hasOtnCount() {
         return ((bitField0_ & 0x00000800) != 0);
       }
-      /**
+      /*
        * <code>optional int32 otn_count = 12;</code>
        * @return The otnCount.
        */
@@ -29533,7 +29533,7 @@ public final class ProtobufMessages {
       public int getOtnCount() {
         return otnCount_;
       }
-      /**
+      /*
        * <code>optional int32 otn_count = 12;</code>
        * @param value The otnCount to set.
        * @return This builder for chaining.
@@ -29545,7 +29545,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 otn_count = 12;</code>
        * @return This builder for chaining.
        */
@@ -29623,7 +29623,7 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Activation)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29632,7 +29632,7 @@ public final class ProtobufMessages {
      * @return Whether the tuple field is set.
      */
     boolean hasTuple();
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29641,7 +29641,7 @@ public final class ProtobufMessages {
      * @return The tuple.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29650,52 +29650,52 @@ public final class ProtobufMessages {
      */
     org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-    /**
+    /*
      * <code>optional int32 salience = 3;</code>
      * @return Whether the salience field is set.
      */
     boolean hasSalience();
-    /**
+    /*
      * <code>optional int32 salience = 3;</code>
      * @return The salience.
      */
     int getSalience();
 
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return Whether the packageName field is set.
      */
     boolean hasPackageName();
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return The packageName.
      */
     java.lang.String getPackageName();
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return The bytes for packageName.
      */
     com.google.protobuf.ByteString
         getPackageNameBytes();
 
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return Whether the ruleName field is set.
      */
     boolean hasRuleName();
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return The ruleName.
      */
     java.lang.String getRuleName();
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return The bytes for ruleName.
      */
     com.google.protobuf.ByteString
         getRuleNameBytes();
 
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -29704,7 +29704,7 @@ public final class ProtobufMessages {
      * @return Whether the activationGroup field is set.
      */
     boolean hasActivationGroup();
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -29713,7 +29713,7 @@ public final class ProtobufMessages {
      * @return The activationGroup.
      */
     java.lang.String getActivationGroup();
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -29724,57 +29724,57 @@ public final class ProtobufMessages {
     com.google.protobuf.ByteString
         getActivationGroupBytes();
 
-    /**
+    /*
      * <code>optional bool is_activated = 8;</code>
      * @return Whether the isActivated field is set.
      */
     boolean hasIsActivated();
-    /**
+    /*
      * <code>optional bool is_activated = 8;</code>
      * @return The isActivated.
      */
     boolean getIsActivated();
 
-    /**
+    /*
      * <code>optional int64 handle_id = 9;</code>
      * @return Whether the handleId field is set.
      */
     boolean hasHandleId();
-    /**
+    /*
      * <code>optional int64 handle_id = 9;</code>
      * @return The handleId.
      */
     long getHandleId();
 
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @return A list containing the logicalDependency.
      */
     java.util.List<java.lang.Long> getLogicalDependencyList();
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @return The count of logicalDependency.
      */
     int getLogicalDependencyCount();
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @param index The index of the element to return.
      * @return The logicalDependency at the given index.
      */
     long getLogicalDependency(int index);
 
-    /**
+    /*
      * <code>optional bool evaluated = 11;</code>
      * @return Whether the evaluated field is set.
      */
     boolean hasEvaluated();
-    /**
+    /*
      * <code>optional bool evaluated = 11;</code>
      * @return The evaluated.
      */
     boolean getEvaluated();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Activation}
    */
   public static final class Activation extends
@@ -29816,7 +29816,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int TUPLE_FIELD_NUMBER = 2;
     private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29828,7 +29828,7 @@ public final class ProtobufMessages {
     public boolean hasTuple() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29840,7 +29840,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
       return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
     }
-    /**
+    /*
      * <pre>
      *optional int64 activation_number = 1;
      * </pre>
@@ -29854,7 +29854,7 @@ public final class ProtobufMessages {
 
     public static final int SALIENCE_FIELD_NUMBER = 3;
     private int salience_ = 0;
-    /**
+    /*
      * <code>optional int32 salience = 3;</code>
      * @return Whether the salience field is set.
      */
@@ -29862,7 +29862,7 @@ public final class ProtobufMessages {
     public boolean hasSalience() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int32 salience = 3;</code>
      * @return The salience.
      */
@@ -29874,7 +29874,7 @@ public final class ProtobufMessages {
     public static final int PACKAGE_NAME_FIELD_NUMBER = 4;
     @SuppressWarnings("serial")
     private volatile java.lang.Object packageName_ = "";
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return Whether the packageName field is set.
      */
@@ -29882,7 +29882,7 @@ public final class ProtobufMessages {
     public boolean hasPackageName() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return The packageName.
      */
@@ -29901,7 +29901,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string package_name = 4;</code>
      * @return The bytes for packageName.
      */
@@ -29923,7 +29923,7 @@ public final class ProtobufMessages {
     public static final int RULE_NAME_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
     private volatile java.lang.Object ruleName_ = "";
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return Whether the ruleName field is set.
      */
@@ -29931,7 +29931,7 @@ public final class ProtobufMessages {
     public boolean hasRuleName() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return The ruleName.
      */
@@ -29950,7 +29950,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string rule_name = 5;</code>
      * @return The bytes for ruleName.
      */
@@ -29972,7 +29972,7 @@ public final class ProtobufMessages {
     public static final int ACTIVATION_GROUP_FIELD_NUMBER = 7;
     @SuppressWarnings("serial")
     private volatile java.lang.Object activationGroup_ = "";
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -29984,7 +29984,7 @@ public final class ProtobufMessages {
     public boolean hasActivationGroup() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -30007,7 +30007,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <pre>
      *optional int64 propagation_number = 6;
      * </pre>
@@ -30032,7 +30032,7 @@ public final class ProtobufMessages {
 
     public static final int IS_ACTIVATED_FIELD_NUMBER = 8;
     private boolean isActivated_ = false;
-    /**
+    /*
      * <code>optional bool is_activated = 8;</code>
      * @return Whether the isActivated field is set.
      */
@@ -30040,7 +30040,7 @@ public final class ProtobufMessages {
     public boolean hasIsActivated() {
       return ((bitField0_ & 0x00000020) != 0);
     }
-    /**
+    /*
      * <code>optional bool is_activated = 8;</code>
      * @return The isActivated.
      */
@@ -30051,7 +30051,7 @@ public final class ProtobufMessages {
 
     public static final int HANDLE_ID_FIELD_NUMBER = 9;
     private long handleId_ = 0L;
-    /**
+    /*
      * <code>optional int64 handle_id = 9;</code>
      * @return Whether the handleId field is set.
      */
@@ -30059,7 +30059,7 @@ public final class ProtobufMessages {
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000040) != 0);
     }
-    /**
+    /*
      * <code>optional int64 handle_id = 9;</code>
      * @return The handleId.
      */
@@ -30071,7 +30071,7 @@ public final class ProtobufMessages {
     public static final int LOGICAL_DEPENDENCY_FIELD_NUMBER = 10;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.LongList logicalDependency_;
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @return A list containing the logicalDependency.
      */
@@ -30080,14 +30080,14 @@ public final class ProtobufMessages {
         getLogicalDependencyList() {
       return logicalDependency_;
     }
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @return The count of logicalDependency.
      */
     public int getLogicalDependencyCount() {
       return logicalDependency_.size();
     }
-    /**
+    /*
      * <code>repeated int64 logical_dependency = 10;</code>
      * @param index The index of the element to return.
      * @return The logicalDependency at the given index.
@@ -30098,7 +30098,7 @@ public final class ProtobufMessages {
 
     public static final int EVALUATED_FIELD_NUMBER = 11;
     private boolean evaluated_ = false;
-    /**
+    /*
      * <code>optional bool evaluated = 11;</code>
      * @return Whether the evaluated field is set.
      */
@@ -30106,7 +30106,7 @@ public final class ProtobufMessages {
     public boolean hasEvaluated() {
       return ((bitField0_ & 0x00000080) != 0);
     }
-    /**
+    /*
      * <code>optional bool evaluated = 11;</code>
      * @return The evaluated.
      */
@@ -30405,7 +30405,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Activation}
      */
     public static final class Builder extends
@@ -30694,7 +30694,7 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30705,7 +30705,7 @@ public final class ProtobufMessages {
       public boolean hasTuple() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30720,7 +30720,7 @@ public final class ProtobufMessages {
           return tupleBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30740,7 +30740,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30758,7 +30758,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30781,7 +30781,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30798,7 +30798,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30810,7 +30810,7 @@ public final class ProtobufMessages {
         onChanged();
         return getTupleFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30825,7 +30825,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
         }
       }
-      /**
+      /*
        * <pre>
        *optional int64 activation_number = 1;
        * </pre>
@@ -30847,7 +30847,7 @@ public final class ProtobufMessages {
       }
 
       private int salience_ ;
-      /**
+      /*
        * <code>optional int32 salience = 3;</code>
        * @return Whether the salience field is set.
        */
@@ -30855,7 +30855,7 @@ public final class ProtobufMessages {
       public boolean hasSalience() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int32 salience = 3;</code>
        * @return The salience.
        */
@@ -30863,7 +30863,7 @@ public final class ProtobufMessages {
       public int getSalience() {
         return salience_;
       }
-      /**
+      /*
        * <code>optional int32 salience = 3;</code>
        * @param value The salience to set.
        * @return This builder for chaining.
@@ -30875,7 +30875,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 salience = 3;</code>
        * @return This builder for chaining.
        */
@@ -30887,14 +30887,14 @@ public final class ProtobufMessages {
       }
 
       private java.lang.Object packageName_ = "";
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @return Whether the packageName field is set.
        */
       public boolean hasPackageName() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @return The packageName.
        */
@@ -30912,7 +30912,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @return The bytes for packageName.
        */
@@ -30929,7 +30929,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @param value The packageName to set.
        * @return This builder for chaining.
@@ -30942,7 +30942,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @return This builder for chaining.
        */
@@ -30952,7 +30952,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string package_name = 4;</code>
        * @param value The bytes for packageName to set.
        * @return This builder for chaining.
@@ -30967,14 +30967,14 @@ public final class ProtobufMessages {
       }
 
       private java.lang.Object ruleName_ = "";
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @return Whether the ruleName field is set.
        */
       public boolean hasRuleName() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @return The ruleName.
        */
@@ -30992,7 +30992,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @return The bytes for ruleName.
        */
@@ -31009,7 +31009,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @param value The ruleName to set.
        * @return This builder for chaining.
@@ -31022,7 +31022,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @return This builder for chaining.
        */
@@ -31032,7 +31032,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string rule_name = 5;</code>
        * @param value The bytes for ruleName to set.
        * @return This builder for chaining.
@@ -31047,7 +31047,7 @@ public final class ProtobufMessages {
       }
 
       private java.lang.Object activationGroup_ = "";
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31058,7 +31058,7 @@ public final class ProtobufMessages {
       public boolean hasActivationGroup() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31080,7 +31080,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31101,7 +31101,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31118,7 +31118,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31132,7 +31132,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        *optional int64 propagation_number = 6;
        * </pre>
@@ -31151,7 +31151,7 @@ public final class ProtobufMessages {
       }
 
       private boolean isActivated_ ;
-      /**
+      /*
        * <code>optional bool is_activated = 8;</code>
        * @return Whether the isActivated field is set.
        */
@@ -31159,7 +31159,7 @@ public final class ProtobufMessages {
       public boolean hasIsActivated() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional bool is_activated = 8;</code>
        * @return The isActivated.
        */
@@ -31167,7 +31167,7 @@ public final class ProtobufMessages {
       public boolean getIsActivated() {
         return isActivated_;
       }
-      /**
+      /*
        * <code>optional bool is_activated = 8;</code>
        * @param value The isActivated to set.
        * @return This builder for chaining.
@@ -31179,7 +31179,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool is_activated = 8;</code>
        * @return This builder for chaining.
        */
@@ -31191,7 +31191,7 @@ public final class ProtobufMessages {
       }
 
       private long handleId_ ;
-      /**
+      /*
        * <code>optional int64 handle_id = 9;</code>
        * @return Whether the handleId field is set.
        */
@@ -31199,7 +31199,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000040) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 9;</code>
        * @return The handleId.
        */
@@ -31207,7 +31207,7 @@ public final class ProtobufMessages {
       public long getHandleId() {
         return handleId_;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 9;</code>
        * @param value The handleId to set.
        * @return This builder for chaining.
@@ -31219,7 +31219,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 9;</code>
        * @return This builder for chaining.
        */
@@ -31237,7 +31237,7 @@ public final class ProtobufMessages {
           bitField0_ |= 0x00000080;
         }
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @return A list containing the logicalDependency.
        */
@@ -31246,14 +31246,14 @@ public final class ProtobufMessages {
         return ((bitField0_ & 0x00000080) != 0) ?
                  java.util.Collections.unmodifiableList(logicalDependency_) : logicalDependency_;
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @return The count of logicalDependency.
        */
       public int getLogicalDependencyCount() {
         return logicalDependency_.size();
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @param index The index of the element to return.
        * @return The logicalDependency at the given index.
@@ -31261,7 +31261,7 @@ public final class ProtobufMessages {
       public long getLogicalDependency(int index) {
         return logicalDependency_.getLong(index);
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @param index The index to set the value at.
        * @param value The logicalDependency to set.
@@ -31275,7 +31275,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @param value The logicalDependency to add.
        * @return This builder for chaining.
@@ -31287,7 +31287,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @param values The logicalDependency to add.
        * @return This builder for chaining.
@@ -31300,7 +31300,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 logical_dependency = 10;</code>
        * @return This builder for chaining.
        */
@@ -31312,7 +31312,7 @@ public final class ProtobufMessages {
       }
 
       private boolean evaluated_ ;
-      /**
+      /*
        * <code>optional bool evaluated = 11;</code>
        * @return Whether the evaluated field is set.
        */
@@ -31320,7 +31320,7 @@ public final class ProtobufMessages {
       public boolean hasEvaluated() {
         return ((bitField0_ & 0x00000100) != 0);
       }
-      /**
+      /*
        * <code>optional bool evaluated = 11;</code>
        * @return The evaluated.
        */
@@ -31328,7 +31328,7 @@ public final class ProtobufMessages {
       public boolean getEvaluated() {
         return evaluated_;
       }
-      /**
+      /*
        * <code>optional bool evaluated = 11;</code>
        * @param value The evaluated to set.
        * @return This builder for chaining.
@@ -31340,7 +31340,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool evaluated = 11;</code>
        * @return This builder for chaining.
        */
@@ -31418,48 +31418,48 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Tuple)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @return A list containing the handleId.
      */
     java.util.List<java.lang.Long> getHandleIdList();
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @return The count of handleId.
      */
     int getHandleIdCount();
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @param index The index of the element to return.
      * @return The handleId at the given index.
      */
     long getHandleId(int index);
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject> 
         getObjectList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.SerializedObject getObject(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     int getObjectCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder> 
         getObjectOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Tuple}
    */
   public static final class Tuple extends
@@ -31499,7 +31499,7 @@ public final class ProtobufMessages {
     public static final int HANDLE_ID_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.LongList handleId_;
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @return A list containing the handleId.
      */
@@ -31508,14 +31508,14 @@ public final class ProtobufMessages {
         getHandleIdList() {
       return handleId_;
     }
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @return The count of handleId.
      */
     public int getHandleIdCount() {
       return handleId_.size();
     }
-    /**
+    /*
      * <code>repeated int64 handle_id = 1;</code>
      * @param index The index of the element to return.
      * @return The handleId at the given index.
@@ -31527,14 +31527,14 @@ public final class ProtobufMessages {
     public static final int OBJECT_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject> object_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject> getObjectList() {
       return object_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     @java.lang.Override
@@ -31542,21 +31542,21 @@ public final class ProtobufMessages {
         getObjectOrBuilderList() {
       return object_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     @java.lang.Override
     public int getObjectCount() {
       return object_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.SerializedObject getObject(int index) {
       return object_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
      */
     @java.lang.Override
@@ -31740,7 +31740,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Tuple}
      */
     public static final class Builder extends
@@ -31962,7 +31962,7 @@ public final class ProtobufMessages {
           bitField0_ |= 0x00000001;
         }
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @return A list containing the handleId.
        */
@@ -31971,14 +31971,14 @@ public final class ProtobufMessages {
         return ((bitField0_ & 0x00000001) != 0) ?
                  java.util.Collections.unmodifiableList(handleId_) : handleId_;
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @return The count of handleId.
        */
       public int getHandleIdCount() {
         return handleId_.size();
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @param index The index of the element to return.
        * @return The handleId at the given index.
@@ -31986,7 +31986,7 @@ public final class ProtobufMessages {
       public long getHandleId(int index) {
         return handleId_.getLong(index);
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @param index The index to set the value at.
        * @param value The handleId to set.
@@ -32000,7 +32000,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @param value The handleId to add.
        * @return This builder for chaining.
@@ -32012,7 +32012,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @param values The handleId to add.
        * @return This builder for chaining.
@@ -32025,7 +32025,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 handle_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -32048,7 +32048,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.SerializedObject, org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder, org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder> objectBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject> getObjectList() {
@@ -32058,7 +32058,7 @@ public final class ProtobufMessages {
           return objectBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public int getObjectCount() {
@@ -32068,7 +32068,7 @@ public final class ProtobufMessages {
           return objectBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.SerializedObject getObject(int index) {
@@ -32078,7 +32078,7 @@ public final class ProtobufMessages {
           return objectBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder setObject(
@@ -32095,7 +32095,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder setObject(
@@ -32109,7 +32109,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder addObject(org.drools.serialization.protobuf.ProtobufMessages.SerializedObject value) {
@@ -32125,7 +32125,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder addObject(
@@ -32142,7 +32142,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder addObject(
@@ -32156,7 +32156,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder addObject(
@@ -32170,7 +32170,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder addAllObject(
@@ -32185,7 +32185,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder clearObject() {
@@ -32198,7 +32198,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public Builder removeObject(int index) {
@@ -32211,14 +32211,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder getObjectBuilder(
           int index) {
         return getObjectFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
@@ -32228,7 +32228,7 @@ public final class ProtobufMessages {
           return objectBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.SerializedObjectOrBuilder> 
@@ -32239,14 +32239,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(object_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder addObjectBuilder() {
         return getObjectFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder addObjectBuilder(
@@ -32254,7 +32254,7 @@ public final class ProtobufMessages {
         return getObjectFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.SerializedObject object = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.SerializedObject.Builder> 
@@ -32343,29 +32343,29 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.SerializedObject)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int32 strategy_index = 1;</code>
      * @return Whether the strategyIndex field is set.
      */
     boolean hasStrategyIndex();
-    /**
+    /*
      * <code>optional int32 strategy_index = 1;</code>
      * @return The strategyIndex.
      */
     int getStrategyIndex();
 
-    /**
+    /*
      * <code>optional bytes object = 2;</code>
      * @return Whether the object field is set.
      */
     boolean hasObject();
-    /**
+    /*
      * <code>optional bytes object = 2;</code>
      * @return The object.
      */
     com.google.protobuf.ByteString getObject();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.SerializedObject}
    */
   public static final class SerializedObject extends
@@ -32404,7 +32404,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int STRATEGY_INDEX_FIELD_NUMBER = 1;
     private int strategyIndex_ = 0;
-    /**
+    /*
      * <code>optional int32 strategy_index = 1;</code>
      * @return Whether the strategyIndex field is set.
      */
@@ -32412,7 +32412,7 @@ public final class ProtobufMessages {
     public boolean hasStrategyIndex() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int32 strategy_index = 1;</code>
      * @return The strategyIndex.
      */
@@ -32423,7 +32423,7 @@ public final class ProtobufMessages {
 
     public static final int OBJECT_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes object = 2;</code>
      * @return Whether the object field is set.
      */
@@ -32431,7 +32431,7 @@ public final class ProtobufMessages {
     public boolean hasObject() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional bytes object = 2;</code>
      * @return The object.
      */
@@ -32616,7 +32616,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.SerializedObject}
      */
     public static final class Builder extends
@@ -32769,7 +32769,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int strategyIndex_ ;
-      /**
+      /*
        * <code>optional int32 strategy_index = 1;</code>
        * @return Whether the strategyIndex field is set.
        */
@@ -32777,7 +32777,7 @@ public final class ProtobufMessages {
       public boolean hasStrategyIndex() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 strategy_index = 1;</code>
        * @return The strategyIndex.
        */
@@ -32785,7 +32785,7 @@ public final class ProtobufMessages {
       public int getStrategyIndex() {
         return strategyIndex_;
       }
-      /**
+      /*
        * <code>optional int32 strategy_index = 1;</code>
        * @param value The strategyIndex to set.
        * @return This builder for chaining.
@@ -32797,7 +32797,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 strategy_index = 1;</code>
        * @return This builder for chaining.
        */
@@ -32809,7 +32809,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes object = 2;</code>
        * @return Whether the object field is set.
        */
@@ -32817,7 +32817,7 @@ public final class ProtobufMessages {
       public boolean hasObject() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bytes object = 2;</code>
        * @return The object.
        */
@@ -32825,7 +32825,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getObject() {
         return object_;
       }
-      /**
+      /*
        * <code>optional bytes object = 2;</code>
        * @param value The object to set.
        * @return This builder for chaining.
@@ -32837,7 +32837,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes object = 2;</code>
        * @return This builder for chaining.
        */
@@ -32915,55 +32915,55 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.TruthMaintenanceSystem)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey> 
         getKeyList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.EqualityKey getKey(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     int getKeyCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder> 
         getKeyOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder getKeyOrBuilder(
         int index);
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet> 
         getOBSOLETEJustificationList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.BeliefSet getOBSOLETEJustification(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     int getOBSOLETEJustificationCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> 
         getOBSOLETEJustificationOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder getOBSOLETEJustificationOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.TruthMaintenanceSystem}
    */
   public static final class TruthMaintenanceSystem extends
@@ -33003,14 +33003,14 @@ public final class ProtobufMessages {
     public static final int KEY_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey> key_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey> getKeyList() {
       return key_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     @java.lang.Override
@@ -33018,21 +33018,21 @@ public final class ProtobufMessages {
         getKeyOrBuilderList() {
       return key_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     @java.lang.Override
     public int getKeyCount() {
       return key_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.EqualityKey getKey(int index) {
       return key_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
      */
     @java.lang.Override
@@ -33044,14 +33044,14 @@ public final class ProtobufMessages {
     public static final int OBSOLETE_JUSTIFICATION_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet> oBSOLETEJustification_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet> getOBSOLETEJustificationList() {
       return oBSOLETEJustification_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     @java.lang.Override
@@ -33059,21 +33059,21 @@ public final class ProtobufMessages {
         getOBSOLETEJustificationOrBuilderList() {
       return oBSOLETEJustification_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     @java.lang.Override
     public int getOBSOLETEJustificationCount() {
       return oBSOLETEJustification_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet getOBSOLETEJustification(int index) {
       return oBSOLETEJustification_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
      */
     @java.lang.Override
@@ -33252,7 +33252,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.TruthMaintenanceSystem}
      */
     public static final class Builder extends
@@ -33502,7 +33502,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.EqualityKey, org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder, org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder> keyBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey> getKeyList() {
@@ -33512,7 +33512,7 @@ public final class ProtobufMessages {
           return keyBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public int getKeyCount() {
@@ -33522,7 +33522,7 @@ public final class ProtobufMessages {
           return keyBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EqualityKey getKey(int index) {
@@ -33532,7 +33532,7 @@ public final class ProtobufMessages {
           return keyBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder setKey(
@@ -33549,7 +33549,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder setKey(
@@ -33563,7 +33563,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder addKey(org.drools.serialization.protobuf.ProtobufMessages.EqualityKey value) {
@@ -33579,7 +33579,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder addKey(
@@ -33596,7 +33596,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder addKey(
@@ -33610,7 +33610,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder addKey(
@@ -33624,7 +33624,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder addAllKey(
@@ -33639,7 +33639,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder clearKey() {
@@ -33652,7 +33652,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public Builder removeKey(int index) {
@@ -33665,14 +33665,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder getKeyBuilder(
           int index) {
         return getKeyFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder getKeyOrBuilder(
@@ -33682,7 +33682,7 @@ public final class ProtobufMessages {
           return keyBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.EqualityKeyOrBuilder> 
@@ -33693,14 +33693,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(key_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder addKeyBuilder() {
         return getKeyFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder addKeyBuilder(
@@ -33708,7 +33708,7 @@ public final class ProtobufMessages {
         return getKeyFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.EqualityKey key = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.EqualityKey.Builder> 
@@ -33742,7 +33742,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> oBSOLETEJustificationBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet> getOBSOLETEJustificationList() {
@@ -33752,7 +33752,7 @@ public final class ProtobufMessages {
           return oBSOLETEJustificationBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public int getOBSOLETEJustificationCount() {
@@ -33762,7 +33762,7 @@ public final class ProtobufMessages {
           return oBSOLETEJustificationBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet getOBSOLETEJustification(int index) {
@@ -33772,7 +33772,7 @@ public final class ProtobufMessages {
           return oBSOLETEJustificationBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder setOBSOLETEJustification(
@@ -33789,7 +33789,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder setOBSOLETEJustification(
@@ -33803,7 +33803,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder addOBSOLETEJustification(org.drools.serialization.protobuf.ProtobufMessages.BeliefSet value) {
@@ -33819,7 +33819,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder addOBSOLETEJustification(
@@ -33836,7 +33836,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder addOBSOLETEJustification(
@@ -33850,7 +33850,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder addOBSOLETEJustification(
@@ -33864,7 +33864,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder addAllOBSOLETEJustification(
@@ -33879,7 +33879,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder clearOBSOLETEJustification() {
@@ -33892,7 +33892,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public Builder removeOBSOLETEJustification(int index) {
@@ -33905,14 +33905,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder getOBSOLETEJustificationBuilder(
           int index) {
         return getOBSOLETEJustificationFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder getOBSOLETEJustificationOrBuilder(
@@ -33922,7 +33922,7 @@ public final class ProtobufMessages {
           return oBSOLETEJustificationBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> 
@@ -33933,14 +33933,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(oBSOLETEJustification_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder addOBSOLETEJustificationBuilder() {
         return getOBSOLETEJustificationFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder addOBSOLETEJustificationBuilder(
@@ -33948,7 +33948,7 @@ public final class ProtobufMessages {
         return getOBSOLETEJustificationFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.BeliefSet OBSOLETE_justification = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder> 
@@ -34037,35 +34037,35 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ObjectTypeConfiguration)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return Whether the type field is set.
      */
     boolean hasType();
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return The type.
      */
     java.lang.String getType();
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return The bytes for type.
      */
     com.google.protobuf.ByteString
         getTypeBytes();
 
-    /**
+    /*
      * <code>optional bool tms_enabled = 2;</code>
      * @return Whether the tmsEnabled field is set.
      */
     boolean hasTmsEnabled();
-    /**
+    /*
      * <code>optional bool tms_enabled = 2;</code>
      * @return The tmsEnabled.
      */
     boolean getTmsEnabled();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.ObjectTypeConfiguration}
    */
   public static final class ObjectTypeConfiguration extends
@@ -34105,7 +34105,7 @@ public final class ProtobufMessages {
     public static final int TYPE_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object type_ = "";
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return Whether the type field is set.
      */
@@ -34113,7 +34113,7 @@ public final class ProtobufMessages {
     public boolean hasType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return The type.
      */
@@ -34132,7 +34132,7 @@ public final class ProtobufMessages {
         return s;
       }
     }
-    /**
+    /*
      * <code>optional string type = 1;</code>
      * @return The bytes for type.
      */
@@ -34153,7 +34153,7 @@ public final class ProtobufMessages {
 
     public static final int TMS_ENABLED_FIELD_NUMBER = 2;
     private boolean tmsEnabled_ = false;
-    /**
+    /*
      * <code>optional bool tms_enabled = 2;</code>
      * @return Whether the tmsEnabled field is set.
      */
@@ -34161,7 +34161,7 @@ public final class ProtobufMessages {
     public boolean hasTmsEnabled() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional bool tms_enabled = 2;</code>
      * @return The tmsEnabled.
      */
@@ -34346,7 +34346,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ObjectTypeConfiguration}
      */
     public static final class Builder extends
@@ -34501,14 +34501,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private java.lang.Object type_ = "";
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The type.
        */
@@ -34526,7 +34526,7 @@ public final class ProtobufMessages {
           return (java.lang.String) ref;
         }
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The bytes for type.
        */
@@ -34543,7 +34543,7 @@ public final class ProtobufMessages {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
@@ -34556,7 +34556,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return This builder for chaining.
        */
@@ -34566,7 +34566,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @param value The bytes for type to set.
        * @return This builder for chaining.
@@ -34581,7 +34581,7 @@ public final class ProtobufMessages {
       }
 
       private boolean tmsEnabled_ ;
-      /**
+      /*
        * <code>optional bool tms_enabled = 2;</code>
        * @return Whether the tmsEnabled field is set.
        */
@@ -34589,7 +34589,7 @@ public final class ProtobufMessages {
       public boolean hasTmsEnabled() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bool tms_enabled = 2;</code>
        * @return The tmsEnabled.
        */
@@ -34597,7 +34597,7 @@ public final class ProtobufMessages {
       public boolean getTmsEnabled() {
         return tmsEnabled_;
       }
-      /**
+      /*
        * <code>optional bool tms_enabled = 2;</code>
        * @param value The tmsEnabled to set.
        * @return This builder for chaining.
@@ -34609,7 +34609,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bool tms_enabled = 2;</code>
        * @return This builder for chaining.
        */
@@ -34687,61 +34687,61 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.EqualityKey)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int32 status = 1;</code>
      * @return Whether the status field is set.
      */
     boolean hasStatus();
-    /**
+    /*
      * <code>optional int32 status = 1;</code>
      * @return The status.
      */
     int getStatus();
 
-    /**
+    /*
      * <code>optional int64 handle_id = 2;</code>
      * @return Whether the handleId field is set.
      */
     boolean hasHandleId();
-    /**
+    /*
      * <code>optional int64 handle_id = 2;</code>
      * @return The handleId.
      */
     long getHandleId();
 
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @return A list containing the otherHandle.
      */
     java.util.List<java.lang.Long> getOtherHandleList();
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @return The count of otherHandle.
      */
     int getOtherHandleCount();
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @param index The index of the element to return.
      * @return The otherHandle at the given index.
      */
     long getOtherHandle(int index);
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      * @return Whether the beliefSet field is set.
      */
     boolean hasBeliefSet();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      * @return The beliefSet.
      */
     org.drools.serialization.protobuf.ProtobufMessages.BeliefSet getBeliefSet();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder getBeliefSetOrBuilder();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.EqualityKey}
    */
   public static final class EqualityKey extends
@@ -34780,7 +34780,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int STATUS_FIELD_NUMBER = 1;
     private int status_ = 0;
-    /**
+    /*
      * <code>optional int32 status = 1;</code>
      * @return Whether the status field is set.
      */
@@ -34788,7 +34788,7 @@ public final class ProtobufMessages {
     public boolean hasStatus() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int32 status = 1;</code>
      * @return The status.
      */
@@ -34799,7 +34799,7 @@ public final class ProtobufMessages {
 
     public static final int HANDLE_ID_FIELD_NUMBER = 2;
     private long handleId_ = 0L;
-    /**
+    /*
      * <code>optional int64 handle_id = 2;</code>
      * @return Whether the handleId field is set.
      */
@@ -34807,7 +34807,7 @@ public final class ProtobufMessages {
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional int64 handle_id = 2;</code>
      * @return The handleId.
      */
@@ -34819,7 +34819,7 @@ public final class ProtobufMessages {
     public static final int OTHER_HANDLE_FIELD_NUMBER = 3;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.LongList otherHandle_;
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @return A list containing the otherHandle.
      */
@@ -34828,14 +34828,14 @@ public final class ProtobufMessages {
         getOtherHandleList() {
       return otherHandle_;
     }
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @return The count of otherHandle.
      */
     public int getOtherHandleCount() {
       return otherHandle_.size();
     }
-    /**
+    /*
      * <code>repeated int64 other_handle = 3;</code>
      * @param index The index of the element to return.
      * @return The otherHandle at the given index.
@@ -34846,7 +34846,7 @@ public final class ProtobufMessages {
 
     public static final int BELIEFSET_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.BeliefSet beliefSet_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      * @return Whether the beliefSet field is set.
      */
@@ -34854,7 +34854,7 @@ public final class ProtobufMessages {
     public boolean hasBeliefSet() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      * @return The beliefSet.
      */
@@ -34862,7 +34862,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet getBeliefSet() {
       return beliefSet_ == null ? org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.getDefaultInstance() : beliefSet_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
      */
     @java.lang.Override
@@ -35081,7 +35081,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.EqualityKey}
      */
     public static final class Builder extends
@@ -35297,7 +35297,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int status_ ;
-      /**
+      /*
        * <code>optional int32 status = 1;</code>
        * @return Whether the status field is set.
        */
@@ -35305,7 +35305,7 @@ public final class ProtobufMessages {
       public boolean hasStatus() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 status = 1;</code>
        * @return The status.
        */
@@ -35313,7 +35313,7 @@ public final class ProtobufMessages {
       public int getStatus() {
         return status_;
       }
-      /**
+      /*
        * <code>optional int32 status = 1;</code>
        * @param value The status to set.
        * @return This builder for chaining.
@@ -35325,7 +35325,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int32 status = 1;</code>
        * @return This builder for chaining.
        */
@@ -35337,7 +35337,7 @@ public final class ProtobufMessages {
       }
 
       private long handleId_ ;
-      /**
+      /*
        * <code>optional int64 handle_id = 2;</code>
        * @return Whether the handleId field is set.
        */
@@ -35345,7 +35345,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 2;</code>
        * @return The handleId.
        */
@@ -35353,7 +35353,7 @@ public final class ProtobufMessages {
       public long getHandleId() {
         return handleId_;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 2;</code>
        * @param value The handleId to set.
        * @return This builder for chaining.
@@ -35365,7 +35365,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 2;</code>
        * @return This builder for chaining.
        */
@@ -35383,7 +35383,7 @@ public final class ProtobufMessages {
           bitField0_ |= 0x00000004;
         }
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @return A list containing the otherHandle.
        */
@@ -35392,14 +35392,14 @@ public final class ProtobufMessages {
         return ((bitField0_ & 0x00000004) != 0) ?
                  java.util.Collections.unmodifiableList(otherHandle_) : otherHandle_;
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @return The count of otherHandle.
        */
       public int getOtherHandleCount() {
         return otherHandle_.size();
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @param index The index of the element to return.
        * @return The otherHandle at the given index.
@@ -35407,7 +35407,7 @@ public final class ProtobufMessages {
       public long getOtherHandle(int index) {
         return otherHandle_.getLong(index);
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @param index The index to set the value at.
        * @param value The otherHandle to set.
@@ -35421,7 +35421,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @param value The otherHandle to add.
        * @return This builder for chaining.
@@ -35433,7 +35433,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @param values The otherHandle to add.
        * @return This builder for chaining.
@@ -35446,7 +35446,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>repeated int64 other_handle = 3;</code>
        * @return This builder for chaining.
        */
@@ -35460,14 +35460,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.BeliefSet beliefSet_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.BeliefSet, org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder, org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder> beliefSetBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        * @return Whether the beliefSet field is set.
        */
       public boolean hasBeliefSet() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        * @return The beliefSet.
        */
@@ -35478,7 +35478,7 @@ public final class ProtobufMessages {
           return beliefSetBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public Builder setBeliefSet(org.drools.serialization.protobuf.ProtobufMessages.BeliefSet value) {
@@ -35494,7 +35494,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public Builder setBeliefSet(
@@ -35508,7 +35508,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public Builder mergeBeliefSet(org.drools.serialization.protobuf.ProtobufMessages.BeliefSet value) {
@@ -35527,7 +35527,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public Builder clearBeliefSet() {
@@ -35540,7 +35540,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.Builder getBeliefSetBuilder() {
@@ -35548,7 +35548,7 @@ public final class ProtobufMessages {
         onChanged();
         return getBeliefSetFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.BeliefSetOrBuilder getBeliefSetOrBuilder() {
@@ -35559,7 +35559,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.BeliefSet.getDefaultInstance() : beliefSet_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.BeliefSet beliefSet = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -35643,42 +35643,42 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.BeliefSet)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional int64 handle_id = 1;</code>
      * @return Whether the handleId field is set.
      */
     boolean hasHandleId();
-    /**
+    /*
      * <code>optional int64 handle_id = 1;</code>
      * @return The handleId.
      */
     long getHandleId();
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency> 
         getLogicalDependencyList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency getLogicalDependency(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     int getLogicalDependencyCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder> 
         getLogicalDependencyOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder getLogicalDependencyOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.BeliefSet}
    */
   public static final class BeliefSet extends
@@ -35717,7 +35717,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int HANDLE_ID_FIELD_NUMBER = 1;
     private long handleId_ = 0L;
-    /**
+    /*
      * <code>optional int64 handle_id = 1;</code>
      * @return Whether the handleId field is set.
      */
@@ -35725,7 +35725,7 @@ public final class ProtobufMessages {
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional int64 handle_id = 1;</code>
      * @return The handleId.
      */
@@ -35737,14 +35737,14 @@ public final class ProtobufMessages {
     public static final int LOGICALDEPENDENCY_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency> logicalDependency_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency> getLogicalDependencyList() {
       return logicalDependency_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     @java.lang.Override
@@ -35752,21 +35752,21 @@ public final class ProtobufMessages {
         getLogicalDependencyOrBuilderList() {
       return logicalDependency_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     @java.lang.Override
     public int getLogicalDependencyCount() {
       return logicalDependency_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency getLogicalDependency(int index) {
       return logicalDependency_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
      */
     @java.lang.Override
@@ -35949,7 +35949,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.BeliefSet}
      */
     public static final class Builder extends
@@ -36148,7 +36148,7 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private long handleId_ ;
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
@@ -36156,7 +36156,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
@@ -36164,7 +36164,7 @@ public final class ProtobufMessages {
       public long getHandleId() {
         return handleId_;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @param value The handleId to set.
        * @return This builder for chaining.
@@ -36176,7 +36176,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -36199,7 +36199,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder> logicalDependencyBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency> getLogicalDependencyList() {
@@ -36209,7 +36209,7 @@ public final class ProtobufMessages {
           return logicalDependencyBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public int getLogicalDependencyCount() {
@@ -36219,7 +36219,7 @@ public final class ProtobufMessages {
           return logicalDependencyBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency getLogicalDependency(int index) {
@@ -36229,7 +36229,7 @@ public final class ProtobufMessages {
           return logicalDependencyBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder setLogicalDependency(
@@ -36246,7 +36246,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder setLogicalDependency(
@@ -36260,7 +36260,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder addLogicalDependency(org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency value) {
@@ -36276,7 +36276,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder addLogicalDependency(
@@ -36293,7 +36293,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder addLogicalDependency(
@@ -36307,7 +36307,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder addLogicalDependency(
@@ -36321,7 +36321,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder addAllLogicalDependency(
@@ -36336,7 +36336,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder clearLogicalDependency() {
@@ -36349,7 +36349,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public Builder removeLogicalDependency(int index) {
@@ -36362,14 +36362,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder getLogicalDependencyBuilder(
           int index) {
         return getLogicalDependencyFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder getLogicalDependencyOrBuilder(
@@ -36379,7 +36379,7 @@ public final class ProtobufMessages {
           return logicalDependencyBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.LogicalDependencyOrBuilder> 
@@ -36390,14 +36390,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(logicalDependency_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder addLogicalDependencyBuilder() {
         return getLogicalDependencyFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder addLogicalDependencyBuilder(
@@ -36405,7 +36405,7 @@ public final class ProtobufMessages {
         return getLogicalDependencyFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.LogicalDependency logicalDependency = 2;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.LogicalDependency.Builder> 
@@ -36494,22 +36494,22 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.LogicalDependency)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      * @return Whether the activation field is set.
      */
     boolean hasActivation();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      * @return The activation.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
 
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -36518,7 +36518,7 @@ public final class ProtobufMessages {
      * @return Whether the objectStrategyIndex field is set.
      */
     boolean hasObjectStrategyIndex();
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -36528,18 +36528,18 @@ public final class ProtobufMessages {
      */
     int getObjectStrategyIndex();
 
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return Whether the object field is set.
      */
     boolean hasObject();
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return The object.
      */
     com.google.protobuf.ByteString getObject();
 
-    /**
+    /*
      * <pre>
      * the actual value reference
      * </pre>
@@ -36548,7 +36548,7 @@ public final class ProtobufMessages {
      * @return Whether the valueStrategyIndex field is set.
      */
     boolean hasValueStrategyIndex();
-    /**
+    /*
      * <pre>
      * the actual value reference
      * </pre>
@@ -36558,18 +36558,18 @@ public final class ProtobufMessages {
      */
     int getValueStrategyIndex();
 
-    /**
+    /*
      * <code>optional bytes value = 11;</code>
      * @return Whether the value field is set.
      */
     boolean hasValue();
-    /**
+    /*
      * <code>optional bytes value = 11;</code>
      * @return The value.
      */
     com.google.protobuf.ByteString getValue();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.LogicalDependency}
    */
   public static final class LogicalDependency extends
@@ -36609,7 +36609,7 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int ACTIVATION_FIELD_NUMBER = 2;
     private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      * @return Whether the activation field is set.
      */
@@ -36617,7 +36617,7 @@ public final class ProtobufMessages {
     public boolean hasActivation() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      * @return The activation.
      */
@@ -36625,7 +36625,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation() {
       return activation_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
      */
     @java.lang.Override
@@ -36635,7 +36635,7 @@ public final class ProtobufMessages {
 
     public static final int OBJECT_STRATEGY_INDEX_FIELD_NUMBER = 8;
     private int objectStrategyIndex_ = 0;
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -36647,7 +36647,7 @@ public final class ProtobufMessages {
     public boolean hasObjectStrategyIndex() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <pre>
      * the actual object reference
      * </pre>
@@ -36662,7 +36662,7 @@ public final class ProtobufMessages {
 
     public static final int OBJECT_FIELD_NUMBER = 9;
     private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return Whether the object field is set.
      */
@@ -36670,7 +36670,7 @@ public final class ProtobufMessages {
     public boolean hasObject() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional bytes object = 9;</code>
      * @return The object.
      */
@@ -36681,7 +36681,7 @@ public final class ProtobufMessages {
 
     public static final int VALUE_STRATEGY_INDEX_FIELD_NUMBER = 10;
     private int valueStrategyIndex_ = 0;
-    /**
+    /*
      * <pre>
      * the actual value reference
      * </pre>
@@ -36693,7 +36693,7 @@ public final class ProtobufMessages {
     public boolean hasValueStrategyIndex() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <pre>
      * the actual value reference
      * </pre>
@@ -36708,7 +36708,7 @@ public final class ProtobufMessages {
 
     public static final int VALUE_FIELD_NUMBER = 11;
     private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
-    /**
+    /*
      * <code>optional bytes value = 11;</code>
      * @return Whether the value field is set.
      */
@@ -36716,7 +36716,7 @@ public final class ProtobufMessages {
     public boolean hasValue() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional bytes value = 11;</code>
      * @return The value.
      */
@@ -36949,7 +36949,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.LogicalDependency}
      */
     public static final class Builder extends
@@ -37157,14 +37157,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return Whether the activation field is set.
        */
       public boolean hasActivation() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return The activation.
        */
@@ -37175,7 +37175,7 @@ public final class ProtobufMessages {
           return activationBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public Builder setActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -37191,7 +37191,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public Builder setActivation(
@@ -37205,7 +37205,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public Builder mergeActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -37224,7 +37224,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public Builder clearActivation() {
@@ -37237,7 +37237,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getActivationBuilder() {
@@ -37245,7 +37245,7 @@ public final class ProtobufMessages {
         onChanged();
         return getActivationFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder() {
@@ -37256,7 +37256,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -37274,7 +37274,7 @@ public final class ProtobufMessages {
       }
 
       private int objectStrategyIndex_ ;
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -37286,7 +37286,7 @@ public final class ProtobufMessages {
       public boolean hasObjectStrategyIndex() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -37298,7 +37298,7 @@ public final class ProtobufMessages {
       public int getObjectStrategyIndex() {
         return objectStrategyIndex_;
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -37314,7 +37314,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * the actual object reference
        * </pre>
@@ -37330,7 +37330,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString object_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return Whether the object field is set.
        */
@@ -37338,7 +37338,7 @@ public final class ProtobufMessages {
       public boolean hasObject() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return The object.
        */
@@ -37346,7 +37346,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getObject() {
         return object_;
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @param value The object to set.
        * @return This builder for chaining.
@@ -37358,7 +37358,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes object = 9;</code>
        * @return This builder for chaining.
        */
@@ -37370,7 +37370,7 @@ public final class ProtobufMessages {
       }
 
       private int valueStrategyIndex_ ;
-      /**
+      /*
        * <pre>
        * the actual value reference
        * </pre>
@@ -37382,7 +37382,7 @@ public final class ProtobufMessages {
       public boolean hasValueStrategyIndex() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <pre>
        * the actual value reference
        * </pre>
@@ -37394,7 +37394,7 @@ public final class ProtobufMessages {
       public int getValueStrategyIndex() {
         return valueStrategyIndex_;
       }
-      /**
+      /*
        * <pre>
        * the actual value reference
        * </pre>
@@ -37410,7 +37410,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <pre>
        * the actual value reference
        * </pre>
@@ -37426,7 +37426,7 @@ public final class ProtobufMessages {
       }
 
       private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes value = 11;</code>
        * @return Whether the value field is set.
        */
@@ -37434,7 +37434,7 @@ public final class ProtobufMessages {
       public boolean hasValue() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional bytes value = 11;</code>
        * @return The value.
        */
@@ -37442,7 +37442,7 @@ public final class ProtobufMessages {
       public com.google.protobuf.ByteString getValue() {
         return value_;
       }
-      /**
+      /*
        * <code>optional bytes value = 11;</code>
        * @param value The value to set.
        * @return This builder for chaining.
@@ -37454,7 +37454,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional bytes value = 11;</code>
        * @return This builder for chaining.
        */
@@ -37532,31 +37532,31 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action> 
         getActionList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action getAction(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     int getActionCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder> 
         getActionOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder getActionOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue}
    */
   public static final class ActionQueue extends
@@ -37592,74 +37592,74 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.class, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Builder.class);
     }
 
-    /**
+    /*
      * Protobuf enum {@code org.drools.serialization.protobuf.ActionQueue.ActionType}
      */
     public enum ActionType
         implements com.google.protobuf.ProtocolMessageEnum {
-      /**
+      /*
        * <code>BEHAVIOR_EXPIRE = 1;</code>
        */
       BEHAVIOR_EXPIRE(1),
-      /**
+      /*
        * <code>DEACTIVATE_CALLBACK = 2;</code>
        */
       DEACTIVATE_CALLBACK(2),
-      /**
+      /*
        * <code>LOGICAL_RETRACT = 3;</code>
        */
       LOGICAL_RETRACT(3),
-      /**
+      /*
        * <code>PROPAGATE = 4;</code>
        */
       PROPAGATE(4),
-      /**
+      /*
        * <code>ASSERT = 5;</code>
        */
       ASSERT(5),
-      /**
+      /*
        * <code>EXPIRE = 6;</code>
        */
       EXPIRE(6),
-      /**
+      /*
        * <code>SIGNAL = 7;</code>
        */
       SIGNAL(7),
-      /**
+      /*
        * <code>SIGNAL_PROCESS_INSTANCE = 8;</code>
        */
       SIGNAL_PROCESS_INSTANCE(8),
       ;
 
-      /**
+      /*
        * <code>BEHAVIOR_EXPIRE = 1;</code>
        */
       public static final int BEHAVIOR_EXPIRE_VALUE = 1;
-      /**
+      /*
        * <code>DEACTIVATE_CALLBACK = 2;</code>
        */
       public static final int DEACTIVATE_CALLBACK_VALUE = 2;
-      /**
+      /*
        * <code>LOGICAL_RETRACT = 3;</code>
        */
       public static final int LOGICAL_RETRACT_VALUE = 3;
-      /**
+      /*
        * <code>PROPAGATE = 4;</code>
        */
       public static final int PROPAGATE_VALUE = 4;
-      /**
+      /*
        * <code>ASSERT = 5;</code>
        */
       public static final int ASSERT_VALUE = 5;
-      /**
+      /*
        * <code>EXPIRE = 6;</code>
        */
       public static final int EXPIRE_VALUE = 6;
-      /**
+      /*
        * <code>SIGNAL = 7;</code>
        */
       public static final int SIGNAL_VALUE = 7;
-      /**
+      /*
        * <code>SIGNAL_PROCESS_INSTANCE = 8;</code>
        */
       public static final int SIGNAL_PROCESS_INSTANCE_VALUE = 8;
@@ -37669,7 +37669,7 @@ public final class ProtobufMessages {
         return value;
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
@@ -37679,7 +37679,7 @@ public final class ProtobufMessages {
         return forNumber(value);
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
@@ -37746,7 +37746,7 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.Action)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <pre>
        * must always have a type to switch
        * </pre>
@@ -37755,7 +37755,7 @@ public final class ProtobufMessages {
        * @return Whether the type field is set.
        */
       boolean hasType();
-      /**
+      /*
        * <pre>
        * must always have a type to switch
        * </pre>
@@ -37765,7 +37765,7 @@ public final class ProtobufMessages {
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionType getType();
 
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -37774,7 +37774,7 @@ public final class ProtobufMessages {
        * @return Whether the behaviorExpire field is set.
        */
       boolean hasBehaviorExpire();
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -37783,7 +37783,7 @@ public final class ProtobufMessages {
        * @return The behaviorExpire.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire getBehaviorExpire();
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -37792,112 +37792,112 @@ public final class ProtobufMessages {
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder getBehaviorExpireOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        * @return Whether the deactivateCallback field is set.
        */
       boolean hasDeactivateCallback();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        * @return The deactivateCallback.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback getDeactivateCallback();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder getDeactivateCallbackOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        * @return Whether the logicalRetract field is set.
        */
       boolean hasLogicalRetract();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        * @return The logicalRetract.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract getLogicalRetract();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder getLogicalRetractOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        * @return Whether the propagate field is set.
        */
       boolean hasPropagate();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        * @return The propagate.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate getPropagate();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.PropagateOrBuilder getPropagateOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        * @return Whether the assert field is set.
        */
       boolean hasAssert();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        * @return The assert.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert getAssert();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.AssertOrBuilder getAssertOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        * @return Whether the expire field is set.
        */
       boolean hasExpire();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        * @return The expire.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire getExpire();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ExpireOrBuilder getExpireOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        * @return Whether the signal field is set.
        */
       boolean hasSignal();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        * @return The signal.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal getSignal();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalOrBuilder getSignalOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        * @return Whether the signalProcessInstance field is set.
        */
       boolean hasSignalProcessInstance();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        * @return The signalProcessInstance.
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance getSignalProcessInstance();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder getSignalProcessInstanceOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Action}
      */
     public static final class Action extends
@@ -37936,7 +37936,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int TYPE_FIELD_NUMBER = 1;
       private int type_ = 1;
-      /**
+      /*
        * <pre>
        * must always have a type to switch
        * </pre>
@@ -37947,7 +37947,7 @@ public final class ProtobufMessages {
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <pre>
        * must always have a type to switch
        * </pre>
@@ -37962,7 +37962,7 @@ public final class ProtobufMessages {
 
       public static final int BEHAVIOR_EXPIRE_FIELD_NUMBER = 2;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire_;
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -37974,7 +37974,7 @@ public final class ProtobufMessages {
       public boolean hasBehaviorExpire() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -37986,7 +37986,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire getBehaviorExpire() {
         return behaviorExpire_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire.getDefaultInstance() : behaviorExpire_;
       }
-      /**
+      /*
        * <pre>
        * should only contain one of the following messages
        * </pre>
@@ -38000,7 +38000,7 @@ public final class ProtobufMessages {
 
       public static final int DEACTIVATE_CALLBACK_FIELD_NUMBER = 3;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback deactivateCallback_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        * @return Whether the deactivateCallback field is set.
        */
@@ -38008,7 +38008,7 @@ public final class ProtobufMessages {
       public boolean hasDeactivateCallback() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        * @return The deactivateCallback.
        */
@@ -38016,7 +38016,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback getDeactivateCallback() {
         return deactivateCallback_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.getDefaultInstance() : deactivateCallback_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
        */
       @java.lang.Override
@@ -38026,7 +38026,7 @@ public final class ProtobufMessages {
 
       public static final int LOGICAL_RETRACT_FIELD_NUMBER = 4;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract logicalRetract_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        * @return Whether the logicalRetract field is set.
        */
@@ -38034,7 +38034,7 @@ public final class ProtobufMessages {
       public boolean hasLogicalRetract() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        * @return The logicalRetract.
        */
@@ -38042,7 +38042,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract getLogicalRetract() {
         return logicalRetract_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.getDefaultInstance() : logicalRetract_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
        */
       @java.lang.Override
@@ -38052,7 +38052,7 @@ public final class ProtobufMessages {
 
       public static final int PROPAGATE_FIELD_NUMBER = 5;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate propagate_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        * @return Whether the propagate field is set.
        */
@@ -38060,7 +38060,7 @@ public final class ProtobufMessages {
       public boolean hasPropagate() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        * @return The propagate.
        */
@@ -38068,7 +38068,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate getPropagate() {
         return propagate_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.getDefaultInstance() : propagate_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
        */
       @java.lang.Override
@@ -38078,7 +38078,7 @@ public final class ProtobufMessages {
 
       public static final int ASSERT_FIELD_NUMBER = 6;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert assert_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        * @return Whether the assert field is set.
        */
@@ -38086,7 +38086,7 @@ public final class ProtobufMessages {
       public boolean hasAssert() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        * @return The assert.
        */
@@ -38094,7 +38094,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert getAssert() {
         return assert_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.getDefaultInstance() : assert_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
        */
       @java.lang.Override
@@ -38104,7 +38104,7 @@ public final class ProtobufMessages {
 
       public static final int EXPIRE_FIELD_NUMBER = 7;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire expire_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        * @return Whether the expire field is set.
        */
@@ -38112,7 +38112,7 @@ public final class ProtobufMessages {
       public boolean hasExpire() {
         return ((bitField0_ & 0x00000040) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        * @return The expire.
        */
@@ -38120,7 +38120,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire getExpire() {
         return expire_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.getDefaultInstance() : expire_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
        */
       @java.lang.Override
@@ -38130,7 +38130,7 @@ public final class ProtobufMessages {
 
       public static final int SIGNAL_FIELD_NUMBER = 8;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal signal_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        * @return Whether the signal field is set.
        */
@@ -38138,7 +38138,7 @@ public final class ProtobufMessages {
       public boolean hasSignal() {
         return ((bitField0_ & 0x00000080) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        * @return The signal.
        */
@@ -38146,7 +38146,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal getSignal() {
         return signal_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.getDefaultInstance() : signal_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
        */
       @java.lang.Override
@@ -38156,7 +38156,7 @@ public final class ProtobufMessages {
 
       public static final int SIGNAL_PROCESS_INSTANCE_FIELD_NUMBER = 9;
       private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance signalProcessInstance_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        * @return Whether the signalProcessInstance field is set.
        */
@@ -38164,7 +38164,7 @@ public final class ProtobufMessages {
       public boolean hasSignalProcessInstance() {
         return ((bitField0_ & 0x00000100) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        * @return The signalProcessInstance.
        */
@@ -38172,7 +38172,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance getSignalProcessInstance() {
         return signalProcessInstance_ == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.getDefaultInstance() : signalProcessInstance_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
        */
       @java.lang.Override
@@ -38467,7 +38467,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Action}
        */
       public static final class Builder extends
@@ -38795,7 +38795,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int type_ = 1;
-        /**
+        /*
          * <pre>
          * must always have a type to switch
          * </pre>
@@ -38806,7 +38806,7 @@ public final class ProtobufMessages {
         @java.lang.Override public boolean hasType() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <pre>
          * must always have a type to switch
          * </pre>
@@ -38819,7 +38819,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionType result = org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionType.forNumber(type_);
           return result == null ? org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE : result;
         }
-        /**
+        /*
          * <pre>
          * must always have a type to switch
          * </pre>
@@ -38837,7 +38837,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <pre>
          * must always have a type to switch
          * </pre>
@@ -38855,7 +38855,7 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire behaviorExpire_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpireOrBuilder> behaviorExpireBuilder_;
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38866,7 +38866,7 @@ public final class ProtobufMessages {
         public boolean hasBehaviorExpire() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38881,7 +38881,7 @@ public final class ProtobufMessages {
             return behaviorExpireBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38901,7 +38901,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38919,7 +38919,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38942,7 +38942,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38959,7 +38959,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38971,7 +38971,7 @@ public final class ProtobufMessages {
           onChanged();
           return getBehaviorExpireFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -38986,7 +38986,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.BehaviorExpire.getDefaultInstance() : behaviorExpire_;
           }
         }
-        /**
+        /*
          * <pre>
          * should only contain one of the following messages
          * </pre>
@@ -39010,14 +39010,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback deactivateCallback_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder> deactivateCallbackBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          * @return Whether the deactivateCallback field is set.
          */
         public boolean hasDeactivateCallback() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          * @return The deactivateCallback.
          */
@@ -39028,7 +39028,7 @@ public final class ProtobufMessages {
             return deactivateCallbackBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public Builder setDeactivateCallback(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback value) {
@@ -39044,7 +39044,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public Builder setDeactivateCallback(
@@ -39058,7 +39058,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public Builder mergeDeactivateCallback(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback value) {
@@ -39077,7 +39077,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public Builder clearDeactivateCallback() {
@@ -39090,7 +39090,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.Builder getDeactivateCallbackBuilder() {
@@ -39098,7 +39098,7 @@ public final class ProtobufMessages {
           onChanged();
           return getDeactivateCallbackFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallbackOrBuilder getDeactivateCallbackOrBuilder() {
@@ -39109,7 +39109,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.DeactivateCallback.getDefaultInstance() : deactivateCallback_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.DeactivateCallback deactivate_callback = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39129,14 +39129,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract logicalRetract_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder> logicalRetractBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          * @return Whether the logicalRetract field is set.
          */
         public boolean hasLogicalRetract() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          * @return The logicalRetract.
          */
@@ -39147,7 +39147,7 @@ public final class ProtobufMessages {
             return logicalRetractBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public Builder setLogicalRetract(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract value) {
@@ -39163,7 +39163,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public Builder setLogicalRetract(
@@ -39177,7 +39177,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public Builder mergeLogicalRetract(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract value) {
@@ -39196,7 +39196,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public Builder clearLogicalRetract() {
@@ -39209,7 +39209,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.Builder getLogicalRetractBuilder() {
@@ -39217,7 +39217,7 @@ public final class ProtobufMessages {
           onChanged();
           return getLogicalRetractFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetractOrBuilder getLogicalRetractOrBuilder() {
@@ -39228,7 +39228,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.LogicalRetract.getDefaultInstance() : logicalRetract_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.LogicalRetract logical_retract = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39248,14 +39248,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate propagate_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.PropagateOrBuilder> propagateBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          * @return Whether the propagate field is set.
          */
         public boolean hasPropagate() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          * @return The propagate.
          */
@@ -39266,7 +39266,7 @@ public final class ProtobufMessages {
             return propagateBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public Builder setPropagate(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate value) {
@@ -39282,7 +39282,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public Builder setPropagate(
@@ -39296,7 +39296,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public Builder mergePropagate(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate value) {
@@ -39315,7 +39315,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public Builder clearPropagate() {
@@ -39328,7 +39328,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.Builder getPropagateBuilder() {
@@ -39336,7 +39336,7 @@ public final class ProtobufMessages {
           onChanged();
           return getPropagateFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.PropagateOrBuilder getPropagateOrBuilder() {
@@ -39347,7 +39347,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Propagate.getDefaultInstance() : propagate_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Propagate propagate = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39367,14 +39367,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert assert_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.AssertOrBuilder> assertBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          * @return Whether the assert field is set.
          */
         public boolean hasAssert() {
           return ((bitField0_ & 0x00000020) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          * @return The assert.
          */
@@ -39385,7 +39385,7 @@ public final class ProtobufMessages {
             return assertBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public Builder setAssert(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert value) {
@@ -39401,7 +39401,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public Builder setAssert(
@@ -39415,7 +39415,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public Builder mergeAssert(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert value) {
@@ -39434,7 +39434,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public Builder clearAssert() {
@@ -39447,7 +39447,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.Builder getAssertBuilder() {
@@ -39455,7 +39455,7 @@ public final class ProtobufMessages {
           onChanged();
           return getAssertFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.AssertOrBuilder getAssertOrBuilder() {
@@ -39466,7 +39466,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Assert.getDefaultInstance() : assert_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Assert assert = 6;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39486,14 +39486,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire expire_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ExpireOrBuilder> expireBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          * @return Whether the expire field is set.
          */
         public boolean hasExpire() {
           return ((bitField0_ & 0x00000040) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          * @return The expire.
          */
@@ -39504,7 +39504,7 @@ public final class ProtobufMessages {
             return expireBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public Builder setExpire(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire value) {
@@ -39520,7 +39520,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public Builder setExpire(
@@ -39534,7 +39534,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public Builder mergeExpire(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire value) {
@@ -39553,7 +39553,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public Builder clearExpire() {
@@ -39566,7 +39566,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.Builder getExpireBuilder() {
@@ -39574,7 +39574,7 @@ public final class ProtobufMessages {
           onChanged();
           return getExpireFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ExpireOrBuilder getExpireOrBuilder() {
@@ -39585,7 +39585,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Expire.getDefaultInstance() : expire_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Expire expire = 7;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39605,14 +39605,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal signal_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalOrBuilder> signalBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          * @return Whether the signal field is set.
          */
         public boolean hasSignal() {
           return ((bitField0_ & 0x00000080) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          * @return The signal.
          */
@@ -39623,7 +39623,7 @@ public final class ProtobufMessages {
             return signalBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public Builder setSignal(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal value) {
@@ -39639,7 +39639,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public Builder setSignal(
@@ -39653,7 +39653,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public Builder mergeSignal(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal value) {
@@ -39672,7 +39672,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public Builder clearSignal() {
@@ -39685,7 +39685,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.Builder getSignalBuilder() {
@@ -39693,7 +39693,7 @@ public final class ProtobufMessages {
           onChanged();
           return getSignalFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalOrBuilder getSignalOrBuilder() {
@@ -39704,7 +39704,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Signal.getDefaultInstance() : signal_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.Signal signal = 8;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39724,14 +39724,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance signalProcessInstance_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder> signalProcessInstanceBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          * @return Whether the signalProcessInstance field is set.
          */
         public boolean hasSignalProcessInstance() {
           return ((bitField0_ & 0x00000100) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          * @return The signalProcessInstance.
          */
@@ -39742,7 +39742,7 @@ public final class ProtobufMessages {
             return signalProcessInstanceBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public Builder setSignalProcessInstance(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance value) {
@@ -39758,7 +39758,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public Builder setSignalProcessInstance(
@@ -39772,7 +39772,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public Builder mergeSignalProcessInstance(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance value) {
@@ -39791,7 +39791,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public Builder clearSignalProcessInstance() {
@@ -39804,7 +39804,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.Builder getSignalProcessInstanceBuilder() {
@@ -39812,7 +39812,7 @@ public final class ProtobufMessages {
           onChanged();
           return getSignalProcessInstanceFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstanceOrBuilder getSignalProcessInstanceOrBuilder() {
@@ -39823,7 +39823,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.SignalProcessInstance.getDefaultInstance() : signalProcessInstance_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance signal_process_instance = 9;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -39907,18 +39907,18 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.BehaviorExpire)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
       boolean hasNodeId();
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
       int getNodeId();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.BehaviorExpire}
      */
     public static final class BehaviorExpire extends
@@ -39956,7 +39956,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int NODE_ID_FIELD_NUMBER = 1;
       private int nodeId_ = 0;
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
@@ -39964,7 +39964,7 @@ public final class ProtobufMessages {
       public boolean hasNodeId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
@@ -40133,7 +40133,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.BehaviorExpire}
        */
       public static final class Builder extends
@@ -40273,7 +40273,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int nodeId_ ;
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return Whether the nodeId field is set.
          */
@@ -40281,7 +40281,7 @@ public final class ProtobufMessages {
         public boolean hasNodeId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return The nodeId.
          */
@@ -40289,7 +40289,7 @@ public final class ProtobufMessages {
         public int getNodeId() {
           return nodeId_;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @param value The nodeId to set.
          * @return This builder for chaining.
@@ -40301,7 +40301,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -40379,24 +40379,24 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.DeactivateCallback)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return Whether the ruleflowGroup field is set.
        */
       boolean hasRuleflowGroup();
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return The ruleflowGroup.
        */
       java.lang.String getRuleflowGroup();
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return The bytes for ruleflowGroup.
        */
       com.google.protobuf.ByteString
           getRuleflowGroupBytes();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.DeactivateCallback}
      */
     public static final class DeactivateCallback extends
@@ -40436,7 +40436,7 @@ public final class ProtobufMessages {
       public static final int RULEFLOW_GROUP_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object ruleflowGroup_ = "";
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return Whether the ruleflowGroup field is set.
        */
@@ -40444,7 +40444,7 @@ public final class ProtobufMessages {
       public boolean hasRuleflowGroup() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return The ruleflowGroup.
        */
@@ -40463,7 +40463,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string ruleflow_group = 1;</code>
        * @return The bytes for ruleflowGroup.
        */
@@ -40641,7 +40641,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.DeactivateCallback}
        */
       public static final class Builder extends
@@ -40783,14 +40783,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private java.lang.Object ruleflowGroup_ = "";
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @return Whether the ruleflowGroup field is set.
          */
         public boolean hasRuleflowGroup() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @return The ruleflowGroup.
          */
@@ -40808,7 +40808,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @return The bytes for ruleflowGroup.
          */
@@ -40825,7 +40825,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @param value The ruleflowGroup to set.
          * @return This builder for chaining.
@@ -40838,7 +40838,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @return This builder for chaining.
          */
@@ -40848,7 +40848,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string ruleflow_group = 1;</code>
          * @param value The bytes for ruleflowGroup to set.
          * @return This builder for chaining.
@@ -40929,55 +40929,55 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.LogicalRetract)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
       boolean hasHandleId();
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
       long getHandleId();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return Whether the activation field is set.
        */
       boolean hasActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return The activation.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
 
-      /**
+      /*
        * <code>optional bool fully_retract = 3;</code>
        * @return Whether the fullyRetract field is set.
        */
       boolean hasFullyRetract();
-      /**
+      /*
        * <code>optional bool fully_retract = 3;</code>
        * @return The fullyRetract.
        */
       boolean getFullyRetract();
 
-      /**
+      /*
        * <code>optional bool update = 4;</code>
        * @return Whether the update field is set.
        */
       boolean hasUpdate();
-      /**
+      /*
        * <code>optional bool update = 4;</code>
        * @return The update.
        */
       boolean getUpdate();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.LogicalRetract}
      */
     public static final class LogicalRetract extends
@@ -41015,7 +41015,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
       private long handleId_ = 0L;
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
@@ -41023,7 +41023,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
@@ -41034,7 +41034,7 @@ public final class ProtobufMessages {
 
       public static final int ACTIVATION_FIELD_NUMBER = 2;
       private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return Whether the activation field is set.
        */
@@ -41042,7 +41042,7 @@ public final class ProtobufMessages {
       public boolean hasActivation() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        * @return The activation.
        */
@@ -41050,7 +41050,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation() {
         return activation_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
        */
       @java.lang.Override
@@ -41060,7 +41060,7 @@ public final class ProtobufMessages {
 
       public static final int FULLY_RETRACT_FIELD_NUMBER = 3;
       private boolean fullyRetract_ = false;
-      /**
+      /*
        * <code>optional bool fully_retract = 3;</code>
        * @return Whether the fullyRetract field is set.
        */
@@ -41068,7 +41068,7 @@ public final class ProtobufMessages {
       public boolean hasFullyRetract() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bool fully_retract = 3;</code>
        * @return The fullyRetract.
        */
@@ -41079,7 +41079,7 @@ public final class ProtobufMessages {
 
       public static final int UPDATE_FIELD_NUMBER = 4;
       private boolean update_ = false;
-      /**
+      /*
        * <code>optional bool update = 4;</code>
        * @return Whether the update field is set.
        */
@@ -41087,7 +41087,7 @@ public final class ProtobufMessages {
       public boolean hasUpdate() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional bool update = 4;</code>
        * @return The update.
        */
@@ -41307,7 +41307,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.LogicalRetract}
        */
       public static final class Builder extends
@@ -41500,7 +41500,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long handleId_ ;
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return Whether the handleId field is set.
          */
@@ -41508,7 +41508,7 @@ public final class ProtobufMessages {
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return The handleId.
          */
@@ -41516,7 +41516,7 @@ public final class ProtobufMessages {
         public long getHandleId() {
           return handleId_;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @param value The handleId to set.
          * @return This builder for chaining.
@@ -41528,7 +41528,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -41542,14 +41542,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          * @return Whether the activation field is set.
          */
         public boolean hasActivation() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          * @return The activation.
          */
@@ -41560,7 +41560,7 @@ public final class ProtobufMessages {
             return activationBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public Builder setActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -41576,7 +41576,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public Builder setActivation(
@@ -41590,7 +41590,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public Builder mergeActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -41609,7 +41609,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public Builder clearActivation() {
@@ -41622,7 +41622,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getActivationBuilder() {
@@ -41630,7 +41630,7 @@ public final class ProtobufMessages {
           onChanged();
           return getActivationFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder() {
@@ -41641,7 +41641,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -41659,7 +41659,7 @@ public final class ProtobufMessages {
         }
 
         private boolean fullyRetract_ ;
-        /**
+        /*
          * <code>optional bool fully_retract = 3;</code>
          * @return Whether the fullyRetract field is set.
          */
@@ -41667,7 +41667,7 @@ public final class ProtobufMessages {
         public boolean hasFullyRetract() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional bool fully_retract = 3;</code>
          * @return The fullyRetract.
          */
@@ -41675,7 +41675,7 @@ public final class ProtobufMessages {
         public boolean getFullyRetract() {
           return fullyRetract_;
         }
-        /**
+        /*
          * <code>optional bool fully_retract = 3;</code>
          * @param value The fullyRetract to set.
          * @return This builder for chaining.
@@ -41687,7 +41687,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool fully_retract = 3;</code>
          * @return This builder for chaining.
          */
@@ -41699,7 +41699,7 @@ public final class ProtobufMessages {
         }
 
         private boolean update_ ;
-        /**
+        /*
          * <code>optional bool update = 4;</code>
          * @return Whether the update field is set.
          */
@@ -41707,7 +41707,7 @@ public final class ProtobufMessages {
         public boolean hasUpdate() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional bool update = 4;</code>
          * @return The update.
          */
@@ -41715,7 +41715,7 @@ public final class ProtobufMessages {
         public boolean getUpdate() {
           return update_;
         }
-        /**
+        /*
          * <code>optional bool update = 4;</code>
          * @param value The update to set.
          * @return This builder for chaining.
@@ -41727,7 +41727,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool update = 4;</code>
          * @return This builder for chaining.
          */
@@ -41805,18 +41805,18 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.Propagate)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
       boolean hasNodeId();
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
       int getNodeId();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Propagate}
      */
     public static final class Propagate extends
@@ -41854,7 +41854,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int NODE_ID_FIELD_NUMBER = 1;
       private int nodeId_ = 0;
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
@@ -41862,7 +41862,7 @@ public final class ProtobufMessages {
       public boolean hasNodeId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
@@ -42031,7 +42031,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Propagate}
        */
       public static final class Builder extends
@@ -42171,7 +42171,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int nodeId_ ;
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return Whether the nodeId field is set.
          */
@@ -42179,7 +42179,7 @@ public final class ProtobufMessages {
         public boolean hasNodeId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return The nodeId.
          */
@@ -42187,7 +42187,7 @@ public final class ProtobufMessages {
         public int getNodeId() {
           return nodeId_;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @param value The nodeId to set.
          * @return This builder for chaining.
@@ -42199,7 +42199,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -42277,89 +42277,89 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.Assert)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
       boolean hasHandleId();
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
       long getHandleId();
 
-      /**
+      /*
        * <code>optional bool remove_logical = 2;</code>
        * @return Whether the removeLogical field is set.
        */
       boolean hasRemoveLogical();
-      /**
+      /*
        * <code>optional bool remove_logical = 2;</code>
        * @return The removeLogical.
        */
       boolean getRemoveLogical();
 
-      /**
+      /*
        * <code>optional bool update_equals_map = 3;</code>
        * @return Whether the updateEqualsMap field is set.
        */
       boolean hasUpdateEqualsMap();
-      /**
+      /*
        * <code>optional bool update_equals_map = 3;</code>
        * @return The updateEqualsMap.
        */
       boolean getUpdateEqualsMap();
 
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return Whether the originPkgName field is set.
        */
       boolean hasOriginPkgName();
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return The originPkgName.
        */
       java.lang.String getOriginPkgName();
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return The bytes for originPkgName.
        */
       com.google.protobuf.ByteString
           getOriginPkgNameBytes();
 
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return Whether the originRuleName field is set.
        */
       boolean hasOriginRuleName();
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return The originRuleName.
        */
       java.lang.String getOriginRuleName();
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return The bytes for originRuleName.
        */
       com.google.protobuf.ByteString
           getOriginRuleNameBytes();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        * @return Whether the tuple field is set.
        */
       boolean hasTuple();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        * @return The tuple.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Assert}
      */
     public static final class Assert extends
@@ -42399,7 +42399,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
       private long handleId_ = 0L;
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
@@ -42407,7 +42407,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
@@ -42418,7 +42418,7 @@ public final class ProtobufMessages {
 
       public static final int REMOVE_LOGICAL_FIELD_NUMBER = 2;
       private boolean removeLogical_ = false;
-      /**
+      /*
        * <code>optional bool remove_logical = 2;</code>
        * @return Whether the removeLogical field is set.
        */
@@ -42426,7 +42426,7 @@ public final class ProtobufMessages {
       public boolean hasRemoveLogical() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bool remove_logical = 2;</code>
        * @return The removeLogical.
        */
@@ -42437,7 +42437,7 @@ public final class ProtobufMessages {
 
       public static final int UPDATE_EQUALS_MAP_FIELD_NUMBER = 3;
       private boolean updateEqualsMap_ = false;
-      /**
+      /*
        * <code>optional bool update_equals_map = 3;</code>
        * @return Whether the updateEqualsMap field is set.
        */
@@ -42445,7 +42445,7 @@ public final class ProtobufMessages {
       public boolean hasUpdateEqualsMap() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional bool update_equals_map = 3;</code>
        * @return The updateEqualsMap.
        */
@@ -42457,7 +42457,7 @@ public final class ProtobufMessages {
       public static final int ORIGIN_PKG_NAME_FIELD_NUMBER = 4;
       @SuppressWarnings("serial")
       private volatile java.lang.Object originPkgName_ = "";
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return Whether the originPkgName field is set.
        */
@@ -42465,7 +42465,7 @@ public final class ProtobufMessages {
       public boolean hasOriginPkgName() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return The originPkgName.
        */
@@ -42484,7 +42484,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string origin_pkg_name = 4;</code>
        * @return The bytes for originPkgName.
        */
@@ -42506,7 +42506,7 @@ public final class ProtobufMessages {
       public static final int ORIGIN_RULE_NAME_FIELD_NUMBER = 5;
       @SuppressWarnings("serial")
       private volatile java.lang.Object originRuleName_ = "";
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return Whether the originRuleName field is set.
        */
@@ -42514,7 +42514,7 @@ public final class ProtobufMessages {
       public boolean hasOriginRuleName() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return The originRuleName.
        */
@@ -42533,7 +42533,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string origin_rule_name = 5;</code>
        * @return The bytes for originRuleName.
        */
@@ -42554,7 +42554,7 @@ public final class ProtobufMessages {
 
       public static final int TUPLE_FIELD_NUMBER = 6;
       private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        * @return Whether the tuple field is set.
        */
@@ -42562,7 +42562,7 @@ public final class ProtobufMessages {
       public boolean hasTuple() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        * @return The tuple.
        */
@@ -42570,7 +42570,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
         return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
        */
       @java.lang.Override
@@ -42819,7 +42819,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Assert}
        */
       public static final class Builder extends
@@ -43042,7 +43042,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long handleId_ ;
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return Whether the handleId field is set.
          */
@@ -43050,7 +43050,7 @@ public final class ProtobufMessages {
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return The handleId.
          */
@@ -43058,7 +43058,7 @@ public final class ProtobufMessages {
         public long getHandleId() {
           return handleId_;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @param value The handleId to set.
          * @return This builder for chaining.
@@ -43070,7 +43070,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -43082,7 +43082,7 @@ public final class ProtobufMessages {
         }
 
         private boolean removeLogical_ ;
-        /**
+        /*
          * <code>optional bool remove_logical = 2;</code>
          * @return Whether the removeLogical field is set.
          */
@@ -43090,7 +43090,7 @@ public final class ProtobufMessages {
         public boolean hasRemoveLogical() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional bool remove_logical = 2;</code>
          * @return The removeLogical.
          */
@@ -43098,7 +43098,7 @@ public final class ProtobufMessages {
         public boolean getRemoveLogical() {
           return removeLogical_;
         }
-        /**
+        /*
          * <code>optional bool remove_logical = 2;</code>
          * @param value The removeLogical to set.
          * @return This builder for chaining.
@@ -43110,7 +43110,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool remove_logical = 2;</code>
          * @return This builder for chaining.
          */
@@ -43122,7 +43122,7 @@ public final class ProtobufMessages {
         }
 
         private boolean updateEqualsMap_ ;
-        /**
+        /*
          * <code>optional bool update_equals_map = 3;</code>
          * @return Whether the updateEqualsMap field is set.
          */
@@ -43130,7 +43130,7 @@ public final class ProtobufMessages {
         public boolean hasUpdateEqualsMap() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional bool update_equals_map = 3;</code>
          * @return The updateEqualsMap.
          */
@@ -43138,7 +43138,7 @@ public final class ProtobufMessages {
         public boolean getUpdateEqualsMap() {
           return updateEqualsMap_;
         }
-        /**
+        /*
          * <code>optional bool update_equals_map = 3;</code>
          * @param value The updateEqualsMap to set.
          * @return This builder for chaining.
@@ -43150,7 +43150,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bool update_equals_map = 3;</code>
          * @return This builder for chaining.
          */
@@ -43162,14 +43162,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object originPkgName_ = "";
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @return Whether the originPkgName field is set.
          */
         public boolean hasOriginPkgName() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @return The originPkgName.
          */
@@ -43187,7 +43187,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @return The bytes for originPkgName.
          */
@@ -43204,7 +43204,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @param value The originPkgName to set.
          * @return This builder for chaining.
@@ -43217,7 +43217,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @return This builder for chaining.
          */
@@ -43227,7 +43227,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string origin_pkg_name = 4;</code>
          * @param value The bytes for originPkgName to set.
          * @return This builder for chaining.
@@ -43242,14 +43242,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object originRuleName_ = "";
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @return Whether the originRuleName field is set.
          */
         public boolean hasOriginRuleName() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @return The originRuleName.
          */
@@ -43267,7 +43267,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @return The bytes for originRuleName.
          */
@@ -43284,7 +43284,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @param value The originRuleName to set.
          * @return This builder for chaining.
@@ -43297,7 +43297,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @return This builder for chaining.
          */
@@ -43307,7 +43307,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string origin_rule_name = 5;</code>
          * @param value The bytes for originRuleName to set.
          * @return This builder for chaining.
@@ -43324,14 +43324,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          * @return Whether the tuple field is set.
          */
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000020) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          * @return The tuple.
          */
@@ -43342,7 +43342,7 @@ public final class ProtobufMessages {
             return tupleBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -43358,7 +43358,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public Builder setTuple(
@@ -43372,7 +43372,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -43391,7 +43391,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public Builder clearTuple() {
@@ -43404,7 +43404,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -43412,7 +43412,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTupleFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -43423,7 +43423,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 6;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -43507,29 +43507,29 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.Expire)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
       boolean hasHandleId();
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
       long getHandleId();
 
-      /**
+      /*
        * <code>optional int32 node_id = 2;</code>
        * @return Whether the nodeId field is set.
        */
       boolean hasNodeId();
-      /**
+      /*
        * <code>optional int32 node_id = 2;</code>
        * @return The nodeId.
        */
       int getNodeId();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Expire}
      */
     public static final class Expire extends
@@ -43567,7 +43567,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
       private long handleId_ = 0L;
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
@@ -43575,7 +43575,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
@@ -43586,7 +43586,7 @@ public final class ProtobufMessages {
 
       public static final int NODE_ID_FIELD_NUMBER = 2;
       private int nodeId_ = 0;
-      /**
+      /*
        * <code>optional int32 node_id = 2;</code>
        * @return Whether the nodeId field is set.
        */
@@ -43594,7 +43594,7 @@ public final class ProtobufMessages {
       public boolean hasNodeId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int32 node_id = 2;</code>
        * @return The nodeId.
        */
@@ -43780,7 +43780,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Expire}
        */
       public static final class Builder extends
@@ -43933,7 +43933,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long handleId_ ;
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return Whether the handleId field is set.
          */
@@ -43941,7 +43941,7 @@ public final class ProtobufMessages {
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return The handleId.
          */
@@ -43949,7 +43949,7 @@ public final class ProtobufMessages {
         public long getHandleId() {
           return handleId_;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @param value The handleId to set.
          * @return This builder for chaining.
@@ -43961,7 +43961,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -43973,7 +43973,7 @@ public final class ProtobufMessages {
         }
 
         private int nodeId_ ;
-        /**
+        /*
          * <code>optional int32 node_id = 2;</code>
          * @return Whether the nodeId field is set.
          */
@@ -43981,7 +43981,7 @@ public final class ProtobufMessages {
         public boolean hasNodeId() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional int32 node_id = 2;</code>
          * @return The nodeId.
          */
@@ -43989,7 +43989,7 @@ public final class ProtobufMessages {
         public int getNodeId() {
           return nodeId_;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 2;</code>
          * @param value The nodeId to set.
          * @return This builder for chaining.
@@ -44001,7 +44001,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 2;</code>
          * @return This builder for chaining.
          */
@@ -44079,35 +44079,35 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.Signal)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return Whether the type field is set.
        */
       boolean hasType();
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The type.
        */
       java.lang.String getType();
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The bytes for type.
        */
       com.google.protobuf.ByteString
           getTypeBytes();
 
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return Whether the event field is set.
        */
       boolean hasEvent();
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return The event.
        */
       com.google.protobuf.ByteString getEvent();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Signal}
      */
     public static final class Signal extends
@@ -44148,7 +44148,7 @@ public final class ProtobufMessages {
       public static final int TYPE_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object type_ = "";
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return Whether the type field is set.
        */
@@ -44156,7 +44156,7 @@ public final class ProtobufMessages {
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The type.
        */
@@ -44175,7 +44175,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The bytes for type.
        */
@@ -44196,7 +44196,7 @@ public final class ProtobufMessages {
 
       public static final int EVENT_FIELD_NUMBER = 2;
       private com.google.protobuf.ByteString event_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return Whether the event field is set.
        */
@@ -44204,7 +44204,7 @@ public final class ProtobufMessages {
       public boolean hasEvent() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return The event.
        */
@@ -44388,7 +44388,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.Signal}
        */
       public static final class Builder extends
@@ -44543,14 +44543,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private java.lang.Object type_ = "";
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return Whether the type field is set.
          */
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return The type.
          */
@@ -44568,7 +44568,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return The bytes for type.
          */
@@ -44585,7 +44585,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @param value The type to set.
          * @return This builder for chaining.
@@ -44598,7 +44598,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return This builder for chaining.
          */
@@ -44608,7 +44608,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @param value The bytes for type to set.
          * @return This builder for chaining.
@@ -44623,7 +44623,7 @@ public final class ProtobufMessages {
         }
 
         private com.google.protobuf.ByteString event_ = com.google.protobuf.ByteString.EMPTY;
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return Whether the event field is set.
          */
@@ -44631,7 +44631,7 @@ public final class ProtobufMessages {
         public boolean hasEvent() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return The event.
          */
@@ -44639,7 +44639,7 @@ public final class ProtobufMessages {
         public com.google.protobuf.ByteString getEvent() {
           return event_;
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @param value The event to set.
          * @return This builder for chaining.
@@ -44651,7 +44651,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return This builder for chaining.
          */
@@ -44729,52 +44729,52 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return Whether the type field is set.
        */
       boolean hasType();
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The type.
        */
       java.lang.String getType();
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The bytes for type.
        */
       com.google.protobuf.ByteString
           getTypeBytes();
 
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return Whether the event field is set.
        */
       boolean hasEvent();
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return The event.
        */
       com.google.protobuf.ByteString getEvent();
 
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return Whether the processInstanceId field is set.
        */
       boolean hasProcessInstanceId();
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return The processInstanceId.
        */
       java.lang.String getProcessInstanceId();
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return The bytes for processInstanceId.
        */
       com.google.protobuf.ByteString
           getProcessInstanceIdBytes();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance}
      */
     public static final class SignalProcessInstance extends
@@ -44816,7 +44816,7 @@ public final class ProtobufMessages {
       public static final int TYPE_FIELD_NUMBER = 1;
       @SuppressWarnings("serial")
       private volatile java.lang.Object type_ = "";
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return Whether the type field is set.
        */
@@ -44824,7 +44824,7 @@ public final class ProtobufMessages {
       public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The type.
        */
@@ -44843,7 +44843,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string type = 1;</code>
        * @return The bytes for type.
        */
@@ -44864,7 +44864,7 @@ public final class ProtobufMessages {
 
       public static final int EVENT_FIELD_NUMBER = 2;
       private com.google.protobuf.ByteString event_ = com.google.protobuf.ByteString.EMPTY;
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return Whether the event field is set.
        */
@@ -44872,7 +44872,7 @@ public final class ProtobufMessages {
       public boolean hasEvent() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional bytes event = 2;</code>
        * @return The event.
        */
@@ -44884,7 +44884,7 @@ public final class ProtobufMessages {
       public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 3;
       @SuppressWarnings("serial")
       private volatile java.lang.Object processInstanceId_ = "";
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return Whether the processInstanceId field is set.
        */
@@ -44892,7 +44892,7 @@ public final class ProtobufMessages {
       public boolean hasProcessInstanceId() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return The processInstanceId.
        */
@@ -44911,7 +44911,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string process_instance_id = 3;</code>
        * @return The bytes for processInstanceId.
        */
@@ -45120,7 +45120,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue.SignalProcessInstance}
        */
       public static final class Builder extends
@@ -45290,14 +45290,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private java.lang.Object type_ = "";
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return Whether the type field is set.
          */
         public boolean hasType() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return The type.
          */
@@ -45315,7 +45315,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return The bytes for type.
          */
@@ -45332,7 +45332,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @param value The type to set.
          * @return This builder for chaining.
@@ -45345,7 +45345,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @return This builder for chaining.
          */
@@ -45355,7 +45355,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string type = 1;</code>
          * @param value The bytes for type to set.
          * @return This builder for chaining.
@@ -45370,7 +45370,7 @@ public final class ProtobufMessages {
         }
 
         private com.google.protobuf.ByteString event_ = com.google.protobuf.ByteString.EMPTY;
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return Whether the event field is set.
          */
@@ -45378,7 +45378,7 @@ public final class ProtobufMessages {
         public boolean hasEvent() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return The event.
          */
@@ -45386,7 +45386,7 @@ public final class ProtobufMessages {
         public com.google.protobuf.ByteString getEvent() {
           return event_;
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @param value The event to set.
          * @return This builder for chaining.
@@ -45398,7 +45398,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional bytes event = 2;</code>
          * @return This builder for chaining.
          */
@@ -45410,14 +45410,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object processInstanceId_ = "";
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @return Whether the processInstanceId field is set.
          */
         public boolean hasProcessInstanceId() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @return The processInstanceId.
          */
@@ -45435,7 +45435,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @return The bytes for processInstanceId.
          */
@@ -45452,7 +45452,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @param value The processInstanceId to set.
          * @return This builder for chaining.
@@ -45465,7 +45465,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @return This builder for chaining.
          */
@@ -45475,7 +45475,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string process_instance_id = 3;</code>
          * @param value The bytes for processInstanceId to set.
          * @return This builder for chaining.
@@ -45555,14 +45555,14 @@ public final class ProtobufMessages {
     public static final int ACTION_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action> action_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action> getActionList() {
       return action_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     @java.lang.Override
@@ -45570,21 +45570,21 @@ public final class ProtobufMessages {
         getActionOrBuilderList() {
       return action_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     @java.lang.Override
     public int getActionCount() {
       return action_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action getAction(int index) {
       return action_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
      */
     @java.lang.Override
@@ -45750,7 +45750,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.ActionQueue}
      */
     public static final class Builder extends
@@ -45945,7 +45945,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder> actionBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action> getActionList() {
@@ -45955,7 +45955,7 @@ public final class ProtobufMessages {
           return actionBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public int getActionCount() {
@@ -45965,7 +45965,7 @@ public final class ProtobufMessages {
           return actionBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action getAction(int index) {
@@ -45975,7 +45975,7 @@ public final class ProtobufMessages {
           return actionBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder setAction(
@@ -45992,7 +45992,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder setAction(
@@ -46006,7 +46006,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder addAction(org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action value) {
@@ -46022,7 +46022,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder addAction(
@@ -46039,7 +46039,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder addAction(
@@ -46053,7 +46053,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder addAction(
@@ -46067,7 +46067,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder addAllAction(
@@ -46082,7 +46082,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder clearAction() {
@@ -46095,7 +46095,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public Builder removeAction(int index) {
@@ -46108,14 +46108,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder getActionBuilder(
           int index) {
         return getActionFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder getActionOrBuilder(
@@ -46125,7 +46125,7 @@ public final class ProtobufMessages {
           return actionBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.ActionOrBuilder> 
@@ -46136,14 +46136,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(action_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder addActionBuilder() {
         return getActionFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder addActionBuilder(
@@ -46151,7 +46151,7 @@ public final class ProtobufMessages {
         return getActionFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.ActionQueue.Action action = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.ActionQueue.Action.Builder> 
@@ -46240,31 +46240,31 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Timers)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer> 
         getTimerList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer getTimer(int index);
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     int getTimerCount();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder> 
         getTimerOrBuilderList();
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder getTimerOrBuilder(
         int index);
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Timers}
    */
   public static final class Timers extends
@@ -46300,50 +46300,50 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Timers.class, org.drools.serialization.protobuf.ProtobufMessages.Timers.Builder.class);
     }
 
-    /**
+    /*
      * Protobuf enum {@code org.drools.serialization.protobuf.Timers.TimerType}
      */
     public enum TimerType
         implements com.google.protobuf.ProtocolMessageEnum {
-      /**
+      /*
        * <code>EXPIRE = 1;</code>
        */
       EXPIRE(1),
-      /**
+      /*
        * <code>ACTIVATION = 2;</code>
        */
       ACTIVATION(2),
-      /**
+      /*
        * <code>BEHAVIOR = 3;</code>
        */
       BEHAVIOR(3),
-      /**
+      /*
        * <code>PROCESS = 4;</code>
        */
       PROCESS(4),
-      /**
+      /*
        * <code>TIMER_NODE = 5;</code>
        */
       TIMER_NODE(5),
       ;
 
-      /**
+      /*
        * <code>EXPIRE = 1;</code>
        */
       public static final int EXPIRE_VALUE = 1;
-      /**
+      /*
        * <code>ACTIVATION = 2;</code>
        */
       public static final int ACTIVATION_VALUE = 2;
-      /**
+      /*
        * <code>BEHAVIOR = 3;</code>
        */
       public static final int BEHAVIOR_VALUE = 3;
-      /**
+      /*
        * <code>PROCESS = 4;</code>
        */
       public static final int PROCESS_VALUE = 4;
-      /**
+      /*
        * <code>TIMER_NODE = 5;</code>
        */
       public static final int TIMER_NODE_VALUE = 5;
@@ -46353,7 +46353,7 @@ public final class ProtobufMessages {
         return value;
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
@@ -46363,7 +46363,7 @@ public final class ProtobufMessages {
         return forNumber(value);
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
@@ -46428,78 +46428,78 @@ public final class ProtobufMessages {
         com.google.protobuf.GeneratedMessageV3.
             ExtendableMessageOrBuilder<Timer> {
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
        * @return Whether the type field is set.
        */
       boolean hasType();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
        * @return The type.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerType getType();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        * @return Whether the expire field is set.
        */
       boolean hasExpire();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        * @return The expire.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer getExpire();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimerOrBuilder getExpireOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        * @return Whether the activation field is set.
        */
       boolean hasActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        * @return The activation.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer getActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimerOrBuilder getActivationOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        * @return Whether the behavior field is set.
        */
       boolean hasBehavior();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        * @return The behavior.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer getBehavior();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimerOrBuilder getBehaviorOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        * @return Whether the timerNode field is set.
        */
       boolean hasTimerNode();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        * @return The timerNode.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer getTimerNode();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimerOrBuilder getTimerNodeOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers.Timer}
      */
     public static final class Timer extends
@@ -46539,14 +46539,14 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int TYPE_FIELD_NUMBER = 1;
       private int type_ = 1;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
        * @return Whether the type field is set.
        */
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
        * @return The type.
        */
@@ -46557,7 +46557,7 @@ public final class ProtobufMessages {
 
       public static final int EXPIRE_FIELD_NUMBER = 2;
       private org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer expire_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        * @return Whether the expire field is set.
        */
@@ -46565,7 +46565,7 @@ public final class ProtobufMessages {
       public boolean hasExpire() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        * @return The expire.
        */
@@ -46573,7 +46573,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer getExpire() {
         return expire_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.getDefaultInstance() : expire_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
        */
       @java.lang.Override
@@ -46583,7 +46583,7 @@ public final class ProtobufMessages {
 
       public static final int ACTIVATION_FIELD_NUMBER = 3;
       private org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer activation_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        * @return Whether the activation field is set.
        */
@@ -46591,7 +46591,7 @@ public final class ProtobufMessages {
       public boolean hasActivation() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        * @return The activation.
        */
@@ -46599,7 +46599,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer getActivation() {
         return activation_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.getDefaultInstance() : activation_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
        */
       @java.lang.Override
@@ -46609,7 +46609,7 @@ public final class ProtobufMessages {
 
       public static final int BEHAVIOR_FIELD_NUMBER = 4;
       private org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer behavior_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        * @return Whether the behavior field is set.
        */
@@ -46617,7 +46617,7 @@ public final class ProtobufMessages {
       public boolean hasBehavior() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        * @return The behavior.
        */
@@ -46625,7 +46625,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer getBehavior() {
         return behavior_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance() : behavior_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
        */
       @java.lang.Override
@@ -46635,7 +46635,7 @@ public final class ProtobufMessages {
 
       public static final int TIMER_NODE_FIELD_NUMBER = 5;
       private org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer timerNode_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        * @return Whether the timerNode field is set.
        */
@@ -46643,7 +46643,7 @@ public final class ProtobufMessages {
       public boolean hasTimerNode() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        * @return The timerNode.
        */
@@ -46651,7 +46651,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer getTimerNode() {
         return timerNode_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance() : timerNode_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
        */
       @java.lang.Override
@@ -46894,7 +46894,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Timers.Timer}
        */
       public static final class Builder extends
@@ -47139,14 +47139,14 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int type_ = 1;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
          * @return Whether the type field is set.
          */
         @java.lang.Override public boolean hasType() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
          * @return The type.
          */
@@ -47155,7 +47155,7 @@ public final class ProtobufMessages {
           org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerType result = org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerType.forNumber(type_);
           return result == null ? org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerType.EXPIRE : result;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
          * @param value The type to set.
          * @return This builder for chaining.
@@ -47169,7 +47169,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerType type = 1;</code>
          * @return This builder for chaining.
          */
@@ -47183,14 +47183,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer expire_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimerOrBuilder> expireBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          * @return Whether the expire field is set.
          */
         public boolean hasExpire() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          * @return The expire.
          */
@@ -47201,7 +47201,7 @@ public final class ProtobufMessages {
             return expireBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public Builder setExpire(org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer value) {
@@ -47217,7 +47217,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public Builder setExpire(
@@ -47231,7 +47231,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public Builder mergeExpire(org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer value) {
@@ -47250,7 +47250,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public Builder clearExpire() {
@@ -47263,7 +47263,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.Builder getExpireBuilder() {
@@ -47271,7 +47271,7 @@ public final class ProtobufMessages {
           onChanged();
           return getExpireFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimerOrBuilder getExpireOrBuilder() {
@@ -47282,7 +47282,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Timers.ExpireTimer.getDefaultInstance() : expire_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ExpireTimer expire = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -47302,14 +47302,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer activation_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimerOrBuilder> activationBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          * @return Whether the activation field is set.
          */
         public boolean hasActivation() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          * @return The activation.
          */
@@ -47320,7 +47320,7 @@ public final class ProtobufMessages {
             return activationBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public Builder setActivation(org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer value) {
@@ -47336,7 +47336,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public Builder setActivation(
@@ -47350,7 +47350,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public Builder mergeActivation(org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer value) {
@@ -47369,7 +47369,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public Builder clearActivation() {
@@ -47382,7 +47382,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.Builder getActivationBuilder() {
@@ -47390,7 +47390,7 @@ public final class ProtobufMessages {
           onChanged();
           return getActivationFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimerOrBuilder getActivationOrBuilder() {
@@ -47401,7 +47401,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Timers.ActivationTimer.getDefaultInstance() : activation_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.ActivationTimer activation = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -47421,14 +47421,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer behavior_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimerOrBuilder> behaviorBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          * @return Whether the behavior field is set.
          */
         public boolean hasBehavior() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          * @return The behavior.
          */
@@ -47439,7 +47439,7 @@ public final class ProtobufMessages {
             return behaviorBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public Builder setBehavior(org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer value) {
@@ -47455,7 +47455,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public Builder setBehavior(
@@ -47469,7 +47469,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public Builder mergeBehavior(org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer value) {
@@ -47488,7 +47488,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public Builder clearBehavior() {
@@ -47501,7 +47501,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.Builder getBehaviorBuilder() {
@@ -47509,7 +47509,7 @@ public final class ProtobufMessages {
           onChanged();
           return getBehaviorFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimerOrBuilder getBehaviorOrBuilder() {
@@ -47520,7 +47520,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance() : behavior_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.BehaviorTimer behavior = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -47540,14 +47540,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer timerNode_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimerOrBuilder> timerNodeBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          * @return Whether the timerNode field is set.
          */
         public boolean hasTimerNode() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          * @return The timerNode.
          */
@@ -47558,7 +47558,7 @@ public final class ProtobufMessages {
             return timerNodeBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public Builder setTimerNode(org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer value) {
@@ -47574,7 +47574,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public Builder setTimerNode(
@@ -47588,7 +47588,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public Builder mergeTimerNode(org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer value) {
@@ -47607,7 +47607,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public Builder clearTimerNode() {
@@ -47620,7 +47620,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.Builder getTimerNodeBuilder() {
@@ -47628,7 +47628,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTimerNodeFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimerOrBuilder getTimerNodeOrBuilder() {
@@ -47639,7 +47639,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance() : timerNode_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Timers.TimerNodeTimer timer_node = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -47723,63 +47723,63 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Timers.ExpireTimer)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
       boolean hasHandleId();
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
       long getHandleId();
 
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return Whether the entryPointId field is set.
        */
       boolean hasEntryPointId();
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return The entryPointId.
        */
       java.lang.String getEntryPointId();
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return The bytes for entryPointId.
        */
       com.google.protobuf.ByteString
           getEntryPointIdBytes();
 
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return Whether the className field is set.
        */
       boolean hasClassName();
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return The className.
        */
       java.lang.String getClassName();
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return The bytes for className.
        */
       com.google.protobuf.ByteString
           getClassNameBytes();
 
-      /**
+      /*
        * <code>optional int64 next_fire_timestamp = 4;</code>
        * @return Whether the nextFireTimestamp field is set.
        */
       boolean hasNextFireTimestamp();
-      /**
+      /*
        * <code>optional int64 next_fire_timestamp = 4;</code>
        * @return The nextFireTimestamp.
        */
       long getNextFireTimestamp();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers.ExpireTimer}
      */
     public static final class ExpireTimer extends
@@ -47819,7 +47819,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
       private long handleId_ = 0L;
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return Whether the handleId field is set.
        */
@@ -47827,7 +47827,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 1;</code>
        * @return The handleId.
        */
@@ -47839,7 +47839,7 @@ public final class ProtobufMessages {
       public static final int ENTRY_POINT_ID_FIELD_NUMBER = 2;
       @SuppressWarnings("serial")
       private volatile java.lang.Object entryPointId_ = "";
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return Whether the entryPointId field is set.
        */
@@ -47847,7 +47847,7 @@ public final class ProtobufMessages {
       public boolean hasEntryPointId() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return The entryPointId.
        */
@@ -47866,7 +47866,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string entry_point_id = 2;</code>
        * @return The bytes for entryPointId.
        */
@@ -47888,7 +47888,7 @@ public final class ProtobufMessages {
       public static final int CLASS_NAME_FIELD_NUMBER = 3;
       @SuppressWarnings("serial")
       private volatile java.lang.Object className_ = "";
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return Whether the className field is set.
        */
@@ -47896,7 +47896,7 @@ public final class ProtobufMessages {
       public boolean hasClassName() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return The className.
        */
@@ -47915,7 +47915,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string class_name = 3;</code>
        * @return The bytes for className.
        */
@@ -47936,7 +47936,7 @@ public final class ProtobufMessages {
 
       public static final int NEXT_FIRE_TIMESTAMP_FIELD_NUMBER = 4;
       private long nextFireTimestamp_ = 0L;
-      /**
+      /*
        * <code>optional int64 next_fire_timestamp = 4;</code>
        * @return Whether the nextFireTimestamp field is set.
        */
@@ -47944,7 +47944,7 @@ public final class ProtobufMessages {
       public boolean hasNextFireTimestamp() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional int64 next_fire_timestamp = 4;</code>
        * @return The nextFireTimestamp.
        */
@@ -48161,7 +48161,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Timers.ExpireTimer}
        */
       public static final class Builder extends
@@ -48344,7 +48344,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long handleId_ ;
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return Whether the handleId field is set.
          */
@@ -48352,7 +48352,7 @@ public final class ProtobufMessages {
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return The handleId.
          */
@@ -48360,7 +48360,7 @@ public final class ProtobufMessages {
         public long getHandleId() {
           return handleId_;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @param value The handleId to set.
          * @return This builder for chaining.
@@ -48372,7 +48372,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -48384,14 +48384,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object entryPointId_ = "";
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @return Whether the entryPointId field is set.
          */
         public boolean hasEntryPointId() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @return The entryPointId.
          */
@@ -48409,7 +48409,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @return The bytes for entryPointId.
          */
@@ -48426,7 +48426,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @param value The entryPointId to set.
          * @return This builder for chaining.
@@ -48439,7 +48439,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @return This builder for chaining.
          */
@@ -48449,7 +48449,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string entry_point_id = 2;</code>
          * @param value The bytes for entryPointId to set.
          * @return This builder for chaining.
@@ -48464,14 +48464,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object className_ = "";
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @return Whether the className field is set.
          */
         public boolean hasClassName() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @return The className.
          */
@@ -48489,7 +48489,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @return The bytes for className.
          */
@@ -48506,7 +48506,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @param value The className to set.
          * @return This builder for chaining.
@@ -48519,7 +48519,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @return This builder for chaining.
          */
@@ -48529,7 +48529,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string class_name = 3;</code>
          * @param value The bytes for className to set.
          * @return This builder for chaining.
@@ -48544,7 +48544,7 @@ public final class ProtobufMessages {
         }
 
         private long nextFireTimestamp_ ;
-        /**
+        /*
          * <code>optional int64 next_fire_timestamp = 4;</code>
          * @return Whether the nextFireTimestamp field is set.
          */
@@ -48552,7 +48552,7 @@ public final class ProtobufMessages {
         public boolean hasNextFireTimestamp() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional int64 next_fire_timestamp = 4;</code>
          * @return The nextFireTimestamp.
          */
@@ -48560,7 +48560,7 @@ public final class ProtobufMessages {
         public long getNextFireTimestamp() {
           return nextFireTimestamp_;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_timestamp = 4;</code>
          * @param value The nextFireTimestamp to set.
          * @return This builder for chaining.
@@ -48572,7 +48572,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_timestamp = 4;</code>
          * @return This builder for chaining.
          */
@@ -48650,37 +48650,37 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Timers.ActivationTimer)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        * @return Whether the activation field is set.
        */
       boolean hasActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        * @return The activation.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        * @return Whether the trigger field is set.
        */
       boolean hasTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        * @return The trigger.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Trigger getTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers.ActivationTimer}
      */
     public static final class ActivationTimer extends
@@ -48718,7 +48718,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int ACTIVATION_FIELD_NUMBER = 1;
       private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        * @return Whether the activation field is set.
        */
@@ -48726,7 +48726,7 @@ public final class ProtobufMessages {
       public boolean hasActivation() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        * @return The activation.
        */
@@ -48734,7 +48734,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Activation getActivation() {
         return activation_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
        */
       @java.lang.Override
@@ -48744,7 +48744,7 @@ public final class ProtobufMessages {
 
       public static final int TRIGGER_FIELD_NUMBER = 2;
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger trigger_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        * @return Whether the trigger field is set.
        */
@@ -48752,7 +48752,7 @@ public final class ProtobufMessages {
       public boolean hasTrigger() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        * @return The trigger.
        */
@@ -48760,7 +48760,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger getTrigger() {
         return trigger_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : trigger_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
        */
       @java.lang.Override
@@ -48944,7 +48944,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Timers.ActivationTimer}
        */
       public static final class Builder extends
@@ -49122,14 +49122,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Activation activation_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Activation, org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder, org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          * @return Whether the activation field is set.
          */
         public boolean hasActivation() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          * @return The activation.
          */
@@ -49140,7 +49140,7 @@ public final class ProtobufMessages {
             return activationBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public Builder setActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -49156,7 +49156,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public Builder setActivation(
@@ -49170,7 +49170,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public Builder mergeActivation(org.drools.serialization.protobuf.ProtobufMessages.Activation value) {
@@ -49189,7 +49189,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public Builder clearActivation() {
@@ -49202,7 +49202,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Activation.Builder getActivationBuilder() {
@@ -49210,7 +49210,7 @@ public final class ProtobufMessages {
           onChanged();
           return getActivationFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder() {
@@ -49221,7 +49221,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Activation.getDefaultInstance() : activation_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Activation activation = 1;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -49241,14 +49241,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Trigger trigger_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          * @return Whether the trigger field is set.
          */
         public boolean hasTrigger() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          * @return The trigger.
          */
@@ -49259,7 +49259,7 @@ public final class ProtobufMessages {
             return triggerBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public Builder setTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -49275,7 +49275,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public Builder setTrigger(
@@ -49289,7 +49289,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public Builder mergeTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -49308,7 +49308,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public Builder clearTrigger() {
@@ -49321,7 +49321,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder getTriggerBuilder() {
@@ -49329,7 +49329,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTriggerFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder() {
@@ -49340,7 +49340,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : trigger_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -49424,40 +49424,40 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Timers.BehaviorTimer)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int32 DEPRECATED_node_id = 1;</code>
        * @return Whether the dEPRECATEDNodeId field is set.
        */
       boolean hasDEPRECATEDNodeId();
-      /**
+      /*
        * <code>optional int32 DEPRECATED_node_id = 1;</code>
        * @return The dEPRECATEDNodeId.
        */
       int getDEPRECATEDNodeId();
 
-      /**
+      /*
        * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
        * @return Whether the dEPRECATEDBehaviorIndex field is set.
        */
       boolean hasDEPRECATEDBehaviorIndex();
-      /**
+      /*
        * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
        * @return The dEPRECATEDBehaviorIndex.
        */
       int getDEPRECATEDBehaviorIndex();
 
-      /**
+      /*
        * <code>optional int64 handle_id = 3;</code>
        * @return Whether the handleId field is set.
        */
       boolean hasHandleId();
-      /**
+      /*
        * <code>optional int64 handle_id = 3;</code>
        * @return The handleId.
        */
       long getHandleId();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers.BehaviorTimer}
      */
     public static final class BehaviorTimer extends
@@ -49495,7 +49495,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int DEPRECATED_NODE_ID_FIELD_NUMBER = 1;
       private int dEPRECATEDNodeId_ = 0;
-      /**
+      /*
        * <code>optional int32 DEPRECATED_node_id = 1;</code>
        * @return Whether the dEPRECATEDNodeId field is set.
        */
@@ -49503,7 +49503,7 @@ public final class ProtobufMessages {
       public boolean hasDEPRECATEDNodeId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 DEPRECATED_node_id = 1;</code>
        * @return The dEPRECATEDNodeId.
        */
@@ -49514,7 +49514,7 @@ public final class ProtobufMessages {
 
       public static final int DEPRECATED_BEHAVIOR_INDEX_FIELD_NUMBER = 2;
       private int dEPRECATEDBehaviorIndex_ = 0;
-      /**
+      /*
        * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
        * @return Whether the dEPRECATEDBehaviorIndex field is set.
        */
@@ -49522,7 +49522,7 @@ public final class ProtobufMessages {
       public boolean hasDEPRECATEDBehaviorIndex() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
        * @return The dEPRECATEDBehaviorIndex.
        */
@@ -49533,7 +49533,7 @@ public final class ProtobufMessages {
 
       public static final int HANDLE_ID_FIELD_NUMBER = 3;
       private long handleId_ = 0L;
-      /**
+      /*
        * <code>optional int64 handle_id = 3;</code>
        * @return Whether the handleId field is set.
        */
@@ -49541,7 +49541,7 @@ public final class ProtobufMessages {
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional int64 handle_id = 3;</code>
        * @return The handleId.
        */
@@ -49743,7 +49743,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Timers.BehaviorTimer}
        */
       public static final class Builder extends
@@ -49909,7 +49909,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int dEPRECATEDNodeId_ ;
-        /**
+        /*
          * <code>optional int32 DEPRECATED_node_id = 1;</code>
          * @return Whether the dEPRECATEDNodeId field is set.
          */
@@ -49917,7 +49917,7 @@ public final class ProtobufMessages {
         public boolean hasDEPRECATEDNodeId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_node_id = 1;</code>
          * @return The dEPRECATEDNodeId.
          */
@@ -49925,7 +49925,7 @@ public final class ProtobufMessages {
         public int getDEPRECATEDNodeId() {
           return dEPRECATEDNodeId_;
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_node_id = 1;</code>
          * @param value The dEPRECATEDNodeId to set.
          * @return This builder for chaining.
@@ -49937,7 +49937,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_node_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -49949,7 +49949,7 @@ public final class ProtobufMessages {
         }
 
         private int dEPRECATEDBehaviorIndex_ ;
-        /**
+        /*
          * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
          * @return Whether the dEPRECATEDBehaviorIndex field is set.
          */
@@ -49957,7 +49957,7 @@ public final class ProtobufMessages {
         public boolean hasDEPRECATEDBehaviorIndex() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
          * @return The dEPRECATEDBehaviorIndex.
          */
@@ -49965,7 +49965,7 @@ public final class ProtobufMessages {
         public int getDEPRECATEDBehaviorIndex() {
           return dEPRECATEDBehaviorIndex_;
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
          * @param value The dEPRECATEDBehaviorIndex to set.
          * @return This builder for chaining.
@@ -49977,7 +49977,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 DEPRECATED_behavior_index = 2;</code>
          * @return This builder for chaining.
          */
@@ -49989,7 +49989,7 @@ public final class ProtobufMessages {
         }
 
         private long handleId_ ;
-        /**
+        /*
          * <code>optional int64 handle_id = 3;</code>
          * @return Whether the handleId field is set.
          */
@@ -49997,7 +49997,7 @@ public final class ProtobufMessages {
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 3;</code>
          * @return The handleId.
          */
@@ -50005,7 +50005,7 @@ public final class ProtobufMessages {
         public long getHandleId() {
           return handleId_;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 3;</code>
          * @param value The handleId to set.
          * @return This builder for chaining.
@@ -50017,7 +50017,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 handle_id = 3;</code>
          * @return This builder for chaining.
          */
@@ -50095,48 +50095,48 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Timers.TimerNodeTimer)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
       boolean hasNodeId();
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
       int getNodeId();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        * @return Whether the tuple field is set.
        */
       boolean hasTuple();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        * @return The tuple.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        * @return Whether the trigger field is set.
        */
       boolean hasTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        * @return The trigger.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Trigger getTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers.TimerNodeTimer}
      */
     public static final class TimerNodeTimer extends
@@ -50174,7 +50174,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int NODE_ID_FIELD_NUMBER = 1;
       private int nodeId_ = 0;
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return Whether the nodeId field is set.
        */
@@ -50182,7 +50182,7 @@ public final class ProtobufMessages {
       public boolean hasNodeId() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int32 node_id = 1;</code>
        * @return The nodeId.
        */
@@ -50193,7 +50193,7 @@ public final class ProtobufMessages {
 
       public static final int TUPLE_FIELD_NUMBER = 2;
       private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        * @return Whether the tuple field is set.
        */
@@ -50201,7 +50201,7 @@ public final class ProtobufMessages {
       public boolean hasTuple() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        * @return The tuple.
        */
@@ -50209,7 +50209,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Tuple getTuple() {
         return tuple_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
        */
       @java.lang.Override
@@ -50219,7 +50219,7 @@ public final class ProtobufMessages {
 
       public static final int TRIGGER_FIELD_NUMBER = 3;
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger trigger_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        * @return Whether the trigger field is set.
        */
@@ -50227,7 +50227,7 @@ public final class ProtobufMessages {
       public boolean hasTrigger() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        * @return The trigger.
        */
@@ -50235,7 +50235,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger getTrigger() {
         return trigger_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : trigger_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
        */
       @java.lang.Override
@@ -50435,7 +50435,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Timers.TimerNodeTimer}
        */
       public static final class Builder extends
@@ -50624,7 +50624,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private int nodeId_ ;
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return Whether the nodeId field is set.
          */
@@ -50632,7 +50632,7 @@ public final class ProtobufMessages {
         public boolean hasNodeId() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return The nodeId.
          */
@@ -50640,7 +50640,7 @@ public final class ProtobufMessages {
         public int getNodeId() {
           return nodeId_;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @param value The nodeId to set.
          * @return This builder for chaining.
@@ -50652,7 +50652,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 node_id = 1;</code>
          * @return This builder for chaining.
          */
@@ -50666,14 +50666,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Tuple tuple_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Tuple, org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder, org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          * @return Whether the tuple field is set.
          */
         public boolean hasTuple() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          * @return The tuple.
          */
@@ -50684,7 +50684,7 @@ public final class ProtobufMessages {
             return tupleBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public Builder setTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -50700,7 +50700,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public Builder setTuple(
@@ -50714,7 +50714,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public Builder mergeTuple(org.drools.serialization.protobuf.ProtobufMessages.Tuple value) {
@@ -50733,7 +50733,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public Builder clearTuple() {
@@ -50746,7 +50746,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Tuple.Builder getTupleBuilder() {
@@ -50754,7 +50754,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTupleFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
@@ -50765,7 +50765,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Tuple tuple = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -50785,14 +50785,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Trigger trigger_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          * @return Whether the trigger field is set.
          */
         public boolean hasTrigger() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          * @return The trigger.
          */
@@ -50803,7 +50803,7 @@ public final class ProtobufMessages {
             return triggerBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public Builder setTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -50819,7 +50819,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public Builder setTrigger(
@@ -50833,7 +50833,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public Builder mergeTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -50852,7 +50852,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public Builder clearTrigger() {
@@ -50865,7 +50865,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder getTriggerBuilder() {
@@ -50873,7 +50873,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTriggerFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder() {
@@ -50884,7 +50884,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : trigger_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger trigger = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -50967,14 +50967,14 @@ public final class ProtobufMessages {
     public static final int TIMER_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer> timer_;
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     @java.lang.Override
     public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer> getTimerList() {
       return timer_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     @java.lang.Override
@@ -50982,21 +50982,21 @@ public final class ProtobufMessages {
         getTimerOrBuilderList() {
       return timer_;
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     @java.lang.Override
     public int getTimerCount() {
       return timer_.size();
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     @java.lang.Override
     public org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer getTimer(int index) {
       return timer_.get(index);
     }
-    /**
+    /*
      * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
      */
     @java.lang.Override
@@ -51168,7 +51168,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Timers}
      */
     public static final class Builder extends
@@ -51368,7 +51368,7 @@ public final class ProtobufMessages {
       private com.google.protobuf.RepeatedFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer, org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder, org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder> timerBuilder_;
 
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer> getTimerList() {
@@ -51378,7 +51378,7 @@ public final class ProtobufMessages {
           return timerBuilder_.getMessageList();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public int getTimerCount() {
@@ -51388,7 +51388,7 @@ public final class ProtobufMessages {
           return timerBuilder_.getCount();
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer getTimer(int index) {
@@ -51398,7 +51398,7 @@ public final class ProtobufMessages {
           return timerBuilder_.getMessage(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder setTimer(
@@ -51415,7 +51415,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder setTimer(
@@ -51429,7 +51429,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder addTimer(org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer value) {
@@ -51445,7 +51445,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder addTimer(
@@ -51462,7 +51462,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder addTimer(
@@ -51476,7 +51476,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder addTimer(
@@ -51490,7 +51490,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder addAllTimer(
@@ -51505,7 +51505,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder clearTimer() {
@@ -51518,7 +51518,7 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public Builder removeTimer(int index) {
@@ -51531,14 +51531,14 @@ public final class ProtobufMessages {
         }
         return this;
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder getTimerBuilder(
           int index) {
         return getTimerFieldBuilder().getBuilder(index);
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder getTimerOrBuilder(
@@ -51548,7 +51548,7 @@ public final class ProtobufMessages {
           return timerBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public java.util.List<? extends org.drools.serialization.protobuf.ProtobufMessages.Timers.TimerOrBuilder> 
@@ -51559,14 +51559,14 @@ public final class ProtobufMessages {
           return java.util.Collections.unmodifiableList(timer_);
         }
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder addTimerBuilder() {
         return getTimerFieldBuilder().addBuilder(
             org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder addTimerBuilder(
@@ -51574,7 +51574,7 @@ public final class ProtobufMessages {
         return getTimerFieldBuilder().addBuilder(
             index, org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.getDefaultInstance());
       }
-      /**
+      /*
        * <code>repeated .org.drools.serialization.protobuf.Timers.Timer timer = 1;</code>
        */
       public java.util.List<org.drools.serialization.protobuf.ProtobufMessages.Timers.Timer.Builder> 
@@ -51663,78 +51663,78 @@ public final class ProtobufMessages {
       // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Trigger)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
      * @return Whether the type field is set.
      */
     boolean hasType();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
      * @return The type.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.TriggerType getType();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      * @return Whether the cron field is set.
      */
     boolean hasCron();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      * @return The cron.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger getCron();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTriggerOrBuilder getCronOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      * @return Whether the interval field is set.
      */
     boolean hasInterval();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      * @return The interval.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger getInterval();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTriggerOrBuilder getIntervalOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      * @return Whether the pit field is set.
      */
     boolean hasPit();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      * @return The pit.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger getPit();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder getPitOrBuilder();
 
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      * @return Whether the cmdt field is set.
      */
     boolean hasCmdt();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      * @return The cmdt.
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger getCmdt();
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      */
     org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTriggerOrBuilder getCmdtOrBuilder();
   }
-  /**
+  /*
    * Protobuf type {@code org.drools.serialization.protobuf.Trigger}
    */
   public static final class Trigger extends
@@ -51770,42 +51770,42 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Trigger.class, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder.class);
     }
 
-    /**
+    /*
      * Protobuf enum {@code org.drools.serialization.protobuf.Trigger.TriggerType}
      */
     public enum TriggerType
         implements com.google.protobuf.ProtocolMessageEnum {
-      /**
+      /*
        * <code>CRON = 0;</code>
        */
       CRON(0),
-      /**
+      /*
        * <code>INTERVAL = 1;</code>
        */
       INTERVAL(1),
-      /**
+      /*
        * <code>POINT_IN_TIME = 2;</code>
        */
       POINT_IN_TIME(2),
-      /**
+      /*
        * <code>COMPOSITE_MAX_DURATION = 3;</code>
        */
       COMPOSITE_MAX_DURATION(3),
       ;
 
-      /**
+      /*
        * <code>CRON = 0;</code>
        */
       public static final int CRON_VALUE = 0;
-      /**
+      /*
        * <code>INTERVAL = 1;</code>
        */
       public static final int INTERVAL_VALUE = 1;
-      /**
+      /*
        * <code>POINT_IN_TIME = 2;</code>
        */
       public static final int POINT_IN_TIME_VALUE = 2;
-      /**
+      /*
        * <code>COMPOSITE_MAX_DURATION = 3;</code>
        */
       public static final int COMPOSITE_MAX_DURATION_VALUE = 3;
@@ -51815,7 +51815,7 @@ public final class ProtobufMessages {
         return value;
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
@@ -51825,7 +51825,7 @@ public final class ProtobufMessages {
         return forNumber(value);
       }
 
-      /**
+      /*
        * @param value The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
@@ -51888,96 +51888,96 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Trigger.CronTrigger)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return Whether the startTime field is set.
        */
       boolean hasStartTime();
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return The startTime.
        */
       long getStartTime();
 
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return Whether the endTime field is set.
        */
       boolean hasEndTime();
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return The endTime.
        */
       long getEndTime();
 
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return Whether the repeatLimit field is set.
        */
       boolean hasRepeatLimit();
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return The repeatLimit.
        */
       int getRepeatLimit();
 
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return Whether the repeatCount field is set.
        */
       boolean hasRepeatCount();
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return The repeatCount.
        */
       int getRepeatCount();
 
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return Whether the cronExpression field is set.
        */
       boolean hasCronExpression();
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return The cronExpression.
        */
       java.lang.String getCronExpression();
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return The bytes for cronExpression.
        */
       com.google.protobuf.ByteString
           getCronExpressionBytes();
 
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return Whether the nextFireTime field is set.
        */
       boolean hasNextFireTime();
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return The nextFireTime.
        */
       long getNextFireTime();
 
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @return A list containing the calendarName.
        */
       java.util.List<java.lang.String>
           getCalendarNameList();
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @return The count of calendarName.
        */
       int getCalendarNameCount();
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @param index The index of the element to return.
        * @return The calendarName at the given index.
        */
       java.lang.String getCalendarName(int index);
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @param index The index of the value to return.
        * @return The bytes of the calendarName at the given index.
@@ -51985,7 +51985,7 @@ public final class ProtobufMessages {
       com.google.protobuf.ByteString
           getCalendarNameBytes(int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Trigger.CronTrigger}
      */
     public static final class CronTrigger extends
@@ -52026,7 +52026,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int START_TIME_FIELD_NUMBER = 1;
       private long startTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return Whether the startTime field is set.
        */
@@ -52034,7 +52034,7 @@ public final class ProtobufMessages {
       public boolean hasStartTime() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return The startTime.
        */
@@ -52045,7 +52045,7 @@ public final class ProtobufMessages {
 
       public static final int END_TIME_FIELD_NUMBER = 2;
       private long endTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return Whether the endTime field is set.
        */
@@ -52053,7 +52053,7 @@ public final class ProtobufMessages {
       public boolean hasEndTime() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return The endTime.
        */
@@ -52064,7 +52064,7 @@ public final class ProtobufMessages {
 
       public static final int REPEAT_LIMIT_FIELD_NUMBER = 3;
       private int repeatLimit_ = 0;
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return Whether the repeatLimit field is set.
        */
@@ -52072,7 +52072,7 @@ public final class ProtobufMessages {
       public boolean hasRepeatLimit() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return The repeatLimit.
        */
@@ -52083,7 +52083,7 @@ public final class ProtobufMessages {
 
       public static final int REPEAT_COUNT_FIELD_NUMBER = 4;
       private int repeatCount_ = 0;
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return Whether the repeatCount field is set.
        */
@@ -52091,7 +52091,7 @@ public final class ProtobufMessages {
       public boolean hasRepeatCount() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return The repeatCount.
        */
@@ -52103,7 +52103,7 @@ public final class ProtobufMessages {
       public static final int CRON_EXPRESSION_FIELD_NUMBER = 5;
       @SuppressWarnings("serial")
       private volatile java.lang.Object cronExpression_ = "";
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return Whether the cronExpression field is set.
        */
@@ -52111,7 +52111,7 @@ public final class ProtobufMessages {
       public boolean hasCronExpression() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return The cronExpression.
        */
@@ -52130,7 +52130,7 @@ public final class ProtobufMessages {
           return s;
         }
       }
-      /**
+      /*
        * <code>optional string cron_expression = 5;</code>
        * @return The bytes for cronExpression.
        */
@@ -52151,7 +52151,7 @@ public final class ProtobufMessages {
 
       public static final int NEXT_FIRE_TIME_FIELD_NUMBER = 6;
       private long nextFireTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return Whether the nextFireTime field is set.
        */
@@ -52159,7 +52159,7 @@ public final class ProtobufMessages {
       public boolean hasNextFireTime() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return The nextFireTime.
        */
@@ -52172,7 +52172,7 @@ public final class ProtobufMessages {
       @SuppressWarnings("serial")
       private com.google.protobuf.LazyStringArrayList calendarName_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @return A list containing the calendarName.
        */
@@ -52180,14 +52180,14 @@ public final class ProtobufMessages {
           getCalendarNameList() {
         return calendarName_;
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @return The count of calendarName.
        */
       public int getCalendarNameCount() {
         return calendarName_.size();
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @param index The index of the element to return.
        * @return The calendarName at the given index.
@@ -52195,7 +52195,7 @@ public final class ProtobufMessages {
       public java.lang.String getCalendarName(int index) {
         return calendarName_.get(index);
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 7;</code>
        * @param index The index of the value to return.
        * @return The bytes of the calendarName at the given index.
@@ -52464,7 +52464,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Trigger.CronTrigger}
        */
       public static final class Builder extends
@@ -52693,7 +52693,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long startTime_ ;
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return Whether the startTime field is set.
          */
@@ -52701,7 +52701,7 @@ public final class ProtobufMessages {
         public boolean hasStartTime() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return The startTime.
          */
@@ -52709,7 +52709,7 @@ public final class ProtobufMessages {
         public long getStartTime() {
           return startTime_;
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @param value The startTime to set.
          * @return This builder for chaining.
@@ -52721,7 +52721,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return This builder for chaining.
          */
@@ -52733,7 +52733,7 @@ public final class ProtobufMessages {
         }
 
         private long endTime_ ;
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return Whether the endTime field is set.
          */
@@ -52741,7 +52741,7 @@ public final class ProtobufMessages {
         public boolean hasEndTime() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return The endTime.
          */
@@ -52749,7 +52749,7 @@ public final class ProtobufMessages {
         public long getEndTime() {
           return endTime_;
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @param value The endTime to set.
          * @return This builder for chaining.
@@ -52761,7 +52761,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return This builder for chaining.
          */
@@ -52773,7 +52773,7 @@ public final class ProtobufMessages {
         }
 
         private int repeatLimit_ ;
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return Whether the repeatLimit field is set.
          */
@@ -52781,7 +52781,7 @@ public final class ProtobufMessages {
         public boolean hasRepeatLimit() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return The repeatLimit.
          */
@@ -52789,7 +52789,7 @@ public final class ProtobufMessages {
         public int getRepeatLimit() {
           return repeatLimit_;
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @param value The repeatLimit to set.
          * @return This builder for chaining.
@@ -52801,7 +52801,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return This builder for chaining.
          */
@@ -52813,7 +52813,7 @@ public final class ProtobufMessages {
         }
 
         private int repeatCount_ ;
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return Whether the repeatCount field is set.
          */
@@ -52821,7 +52821,7 @@ public final class ProtobufMessages {
         public boolean hasRepeatCount() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return The repeatCount.
          */
@@ -52829,7 +52829,7 @@ public final class ProtobufMessages {
         public int getRepeatCount() {
           return repeatCount_;
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @param value The repeatCount to set.
          * @return This builder for chaining.
@@ -52841,7 +52841,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return This builder for chaining.
          */
@@ -52853,14 +52853,14 @@ public final class ProtobufMessages {
         }
 
         private java.lang.Object cronExpression_ = "";
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @return Whether the cronExpression field is set.
          */
         public boolean hasCronExpression() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @return The cronExpression.
          */
@@ -52878,7 +52878,7 @@ public final class ProtobufMessages {
             return (java.lang.String) ref;
           }
         }
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @return The bytes for cronExpression.
          */
@@ -52895,7 +52895,7 @@ public final class ProtobufMessages {
             return (com.google.protobuf.ByteString) ref;
           }
         }
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @param value The cronExpression to set.
          * @return This builder for chaining.
@@ -52908,7 +52908,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @return This builder for chaining.
          */
@@ -52918,7 +52918,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional string cron_expression = 5;</code>
          * @param value The bytes for cronExpression to set.
          * @return This builder for chaining.
@@ -52933,7 +52933,7 @@ public final class ProtobufMessages {
         }
 
         private long nextFireTime_ ;
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return Whether the nextFireTime field is set.
          */
@@ -52941,7 +52941,7 @@ public final class ProtobufMessages {
         public boolean hasNextFireTime() {
           return ((bitField0_ & 0x00000020) != 0);
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return The nextFireTime.
          */
@@ -52949,7 +52949,7 @@ public final class ProtobufMessages {
         public long getNextFireTime() {
           return nextFireTime_;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @param value The nextFireTime to set.
          * @return This builder for chaining.
@@ -52961,7 +52961,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return This builder for chaining.
          */
@@ -52980,7 +52980,7 @@ public final class ProtobufMessages {
           }
           bitField0_ |= 0x00000040;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @return A list containing the calendarName.
          */
@@ -52989,14 +52989,14 @@ public final class ProtobufMessages {
           calendarName_.makeImmutable();
           return calendarName_;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @return The count of calendarName.
          */
         public int getCalendarNameCount() {
           return calendarName_.size();
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param index The index of the element to return.
          * @return The calendarName at the given index.
@@ -53004,7 +53004,7 @@ public final class ProtobufMessages {
         public java.lang.String getCalendarName(int index) {
           return calendarName_.get(index);
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param index The index of the value to return.
          * @return The bytes of the calendarName at the given index.
@@ -53013,7 +53013,7 @@ public final class ProtobufMessages {
             getCalendarNameBytes(int index) {
           return calendarName_.getByteString(index);
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param index The index to set the value at.
          * @param value The calendarName to set.
@@ -53028,7 +53028,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param value The calendarName to add.
          * @return This builder for chaining.
@@ -53042,7 +53042,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param values The calendarName to add.
          * @return This builder for chaining.
@@ -53056,7 +53056,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @return This builder for chaining.
          */
@@ -53067,7 +53067,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 7;</code>
          * @param value The bytes of the calendarName to add.
          * @return This builder for chaining.
@@ -53149,90 +53149,90 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Trigger.IntervalTrigger)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return Whether the startTime field is set.
        */
       boolean hasStartTime();
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return The startTime.
        */
       long getStartTime();
 
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return Whether the endTime field is set.
        */
       boolean hasEndTime();
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return The endTime.
        */
       long getEndTime();
 
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return Whether the repeatLimit field is set.
        */
       boolean hasRepeatLimit();
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return The repeatLimit.
        */
       int getRepeatLimit();
 
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return Whether the repeatCount field is set.
        */
       boolean hasRepeatCount();
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return The repeatCount.
        */
       int getRepeatCount();
 
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return Whether the nextFireTime field is set.
        */
       boolean hasNextFireTime();
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return The nextFireTime.
        */
       long getNextFireTime();
 
-      /**
+      /*
        * <code>optional int64 period = 7;</code>
        * @return Whether the period field is set.
        */
       boolean hasPeriod();
-      /**
+      /*
        * <code>optional int64 period = 7;</code>
        * @return The period.
        */
       long getPeriod();
 
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @return A list containing the calendarName.
        */
       java.util.List<java.lang.String>
           getCalendarNameList();
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @return The count of calendarName.
        */
       int getCalendarNameCount();
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @param index The index of the element to return.
        * @return The calendarName at the given index.
        */
       java.lang.String getCalendarName(int index);
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @param index The index of the value to return.
        * @return The bytes of the calendarName at the given index.
@@ -53240,7 +53240,7 @@ public final class ProtobufMessages {
       com.google.protobuf.ByteString
           getCalendarNameBytes(int index);
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Trigger.IntervalTrigger}
      */
     public static final class IntervalTrigger extends
@@ -53280,7 +53280,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int START_TIME_FIELD_NUMBER = 1;
       private long startTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return Whether the startTime field is set.
        */
@@ -53288,7 +53288,7 @@ public final class ProtobufMessages {
       public boolean hasStartTime() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 start_time = 1;</code>
        * @return The startTime.
        */
@@ -53299,7 +53299,7 @@ public final class ProtobufMessages {
 
       public static final int END_TIME_FIELD_NUMBER = 2;
       private long endTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return Whether the endTime field is set.
        */
@@ -53307,7 +53307,7 @@ public final class ProtobufMessages {
       public boolean hasEndTime() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 end_time = 2;</code>
        * @return The endTime.
        */
@@ -53318,7 +53318,7 @@ public final class ProtobufMessages {
 
       public static final int REPEAT_LIMIT_FIELD_NUMBER = 3;
       private int repeatLimit_ = 0;
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return Whether the repeatLimit field is set.
        */
@@ -53326,7 +53326,7 @@ public final class ProtobufMessages {
       public boolean hasRepeatLimit() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional int32 repeat_limit = 3;</code>
        * @return The repeatLimit.
        */
@@ -53337,7 +53337,7 @@ public final class ProtobufMessages {
 
       public static final int REPEAT_COUNT_FIELD_NUMBER = 4;
       private int repeatCount_ = 0;
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return Whether the repeatCount field is set.
        */
@@ -53345,7 +53345,7 @@ public final class ProtobufMessages {
       public boolean hasRepeatCount() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional int32 repeat_count = 4;</code>
        * @return The repeatCount.
        */
@@ -53356,7 +53356,7 @@ public final class ProtobufMessages {
 
       public static final int NEXT_FIRE_TIME_FIELD_NUMBER = 6;
       private long nextFireTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return Whether the nextFireTime field is set.
        */
@@ -53364,7 +53364,7 @@ public final class ProtobufMessages {
       public boolean hasNextFireTime() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional int64 next_fire_time = 6;</code>
        * @return The nextFireTime.
        */
@@ -53375,7 +53375,7 @@ public final class ProtobufMessages {
 
       public static final int PERIOD_FIELD_NUMBER = 7;
       private long period_ = 0L;
-      /**
+      /*
        * <code>optional int64 period = 7;</code>
        * @return Whether the period field is set.
        */
@@ -53383,7 +53383,7 @@ public final class ProtobufMessages {
       public boolean hasPeriod() {
         return ((bitField0_ & 0x00000020) != 0);
       }
-      /**
+      /*
        * <code>optional int64 period = 7;</code>
        * @return The period.
        */
@@ -53396,7 +53396,7 @@ public final class ProtobufMessages {
       @SuppressWarnings("serial")
       private com.google.protobuf.LazyStringArrayList calendarName_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @return A list containing the calendarName.
        */
@@ -53404,14 +53404,14 @@ public final class ProtobufMessages {
           getCalendarNameList() {
         return calendarName_;
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @return The count of calendarName.
        */
       public int getCalendarNameCount() {
         return calendarName_.size();
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @param index The index of the element to return.
        * @return The calendarName at the given index.
@@ -53419,7 +53419,7 @@ public final class ProtobufMessages {
       public java.lang.String getCalendarName(int index) {
         return calendarName_.get(index);
       }
-      /**
+      /*
        * <code>repeated string calendar_name = 8;</code>
        * @param index The index of the value to return.
        * @return The bytes of the calendarName at the given index.
@@ -53690,7 +53690,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Trigger.IntervalTrigger}
        */
       public static final class Builder extends
@@ -53917,7 +53917,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long startTime_ ;
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return Whether the startTime field is set.
          */
@@ -53925,7 +53925,7 @@ public final class ProtobufMessages {
         public boolean hasStartTime() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return The startTime.
          */
@@ -53933,7 +53933,7 @@ public final class ProtobufMessages {
         public long getStartTime() {
           return startTime_;
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @param value The startTime to set.
          * @return This builder for chaining.
@@ -53945,7 +53945,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 start_time = 1;</code>
          * @return This builder for chaining.
          */
@@ -53957,7 +53957,7 @@ public final class ProtobufMessages {
         }
 
         private long endTime_ ;
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return Whether the endTime field is set.
          */
@@ -53965,7 +53965,7 @@ public final class ProtobufMessages {
         public boolean hasEndTime() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return The endTime.
          */
@@ -53973,7 +53973,7 @@ public final class ProtobufMessages {
         public long getEndTime() {
           return endTime_;
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @param value The endTime to set.
          * @return This builder for chaining.
@@ -53985,7 +53985,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 end_time = 2;</code>
          * @return This builder for chaining.
          */
@@ -53997,7 +53997,7 @@ public final class ProtobufMessages {
         }
 
         private int repeatLimit_ ;
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return Whether the repeatLimit field is set.
          */
@@ -54005,7 +54005,7 @@ public final class ProtobufMessages {
         public boolean hasRepeatLimit() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return The repeatLimit.
          */
@@ -54013,7 +54013,7 @@ public final class ProtobufMessages {
         public int getRepeatLimit() {
           return repeatLimit_;
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @param value The repeatLimit to set.
          * @return This builder for chaining.
@@ -54025,7 +54025,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 repeat_limit = 3;</code>
          * @return This builder for chaining.
          */
@@ -54037,7 +54037,7 @@ public final class ProtobufMessages {
         }
 
         private int repeatCount_ ;
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return Whether the repeatCount field is set.
          */
@@ -54045,7 +54045,7 @@ public final class ProtobufMessages {
         public boolean hasRepeatCount() {
           return ((bitField0_ & 0x00000008) != 0);
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return The repeatCount.
          */
@@ -54053,7 +54053,7 @@ public final class ProtobufMessages {
         public int getRepeatCount() {
           return repeatCount_;
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @param value The repeatCount to set.
          * @return This builder for chaining.
@@ -54065,7 +54065,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int32 repeat_count = 4;</code>
          * @return This builder for chaining.
          */
@@ -54077,7 +54077,7 @@ public final class ProtobufMessages {
         }
 
         private long nextFireTime_ ;
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return Whether the nextFireTime field is set.
          */
@@ -54085,7 +54085,7 @@ public final class ProtobufMessages {
         public boolean hasNextFireTime() {
           return ((bitField0_ & 0x00000010) != 0);
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return The nextFireTime.
          */
@@ -54093,7 +54093,7 @@ public final class ProtobufMessages {
         public long getNextFireTime() {
           return nextFireTime_;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @param value The nextFireTime to set.
          * @return This builder for chaining.
@@ -54105,7 +54105,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 6;</code>
          * @return This builder for chaining.
          */
@@ -54117,7 +54117,7 @@ public final class ProtobufMessages {
         }
 
         private long period_ ;
-        /**
+        /*
          * <code>optional int64 period = 7;</code>
          * @return Whether the period field is set.
          */
@@ -54125,7 +54125,7 @@ public final class ProtobufMessages {
         public boolean hasPeriod() {
           return ((bitField0_ & 0x00000020) != 0);
         }
-        /**
+        /*
          * <code>optional int64 period = 7;</code>
          * @return The period.
          */
@@ -54133,7 +54133,7 @@ public final class ProtobufMessages {
         public long getPeriod() {
           return period_;
         }
-        /**
+        /*
          * <code>optional int64 period = 7;</code>
          * @param value The period to set.
          * @return This builder for chaining.
@@ -54145,7 +54145,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 period = 7;</code>
          * @return This builder for chaining.
          */
@@ -54164,7 +54164,7 @@ public final class ProtobufMessages {
           }
           bitField0_ |= 0x00000040;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @return A list containing the calendarName.
          */
@@ -54173,14 +54173,14 @@ public final class ProtobufMessages {
           calendarName_.makeImmutable();
           return calendarName_;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @return The count of calendarName.
          */
         public int getCalendarNameCount() {
           return calendarName_.size();
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param index The index of the element to return.
          * @return The calendarName at the given index.
@@ -54188,7 +54188,7 @@ public final class ProtobufMessages {
         public java.lang.String getCalendarName(int index) {
           return calendarName_.get(index);
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param index The index of the value to return.
          * @return The bytes of the calendarName at the given index.
@@ -54197,7 +54197,7 @@ public final class ProtobufMessages {
             getCalendarNameBytes(int index) {
           return calendarName_.getByteString(index);
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param index The index to set the value at.
          * @param value The calendarName to set.
@@ -54212,7 +54212,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param value The calendarName to add.
          * @return This builder for chaining.
@@ -54226,7 +54226,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param values The calendarName to add.
          * @return This builder for chaining.
@@ -54240,7 +54240,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @return This builder for chaining.
          */
@@ -54251,7 +54251,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>repeated string calendar_name = 8;</code>
          * @param value The bytes of the calendarName to add.
          * @return This builder for chaining.
@@ -54333,18 +54333,18 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Trigger.PointInTimeTrigger)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 next_fire_time = 1;</code>
        * @return Whether the nextFireTime field is set.
        */
       boolean hasNextFireTime();
-      /**
+      /*
        * <code>optional int64 next_fire_time = 1;</code>
        * @return The nextFireTime.
        */
       long getNextFireTime();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Trigger.PointInTimeTrigger}
      */
     public static final class PointInTimeTrigger extends
@@ -54382,7 +54382,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int NEXT_FIRE_TIME_FIELD_NUMBER = 1;
       private long nextFireTime_ = 0L;
-      /**
+      /*
        * <code>optional int64 next_fire_time = 1;</code>
        * @return Whether the nextFireTime field is set.
        */
@@ -54390,7 +54390,7 @@ public final class ProtobufMessages {
       public boolean hasNextFireTime() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 next_fire_time = 1;</code>
        * @return The nextFireTime.
        */
@@ -54560,7 +54560,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Trigger.PointInTimeTrigger}
        */
       public static final class Builder extends
@@ -54700,7 +54700,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long nextFireTime_ ;
-        /**
+        /*
          * <code>optional int64 next_fire_time = 1;</code>
          * @return Whether the nextFireTime field is set.
          */
@@ -54708,7 +54708,7 @@ public final class ProtobufMessages {
         public boolean hasNextFireTime() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 1;</code>
          * @return The nextFireTime.
          */
@@ -54716,7 +54716,7 @@ public final class ProtobufMessages {
         public long getNextFireTime() {
           return nextFireTime_;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 1;</code>
          * @param value The nextFireTime to set.
          * @return This builder for chaining.
@@ -54728,7 +54728,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 next_fire_time = 1;</code>
          * @return This builder for chaining.
          */
@@ -54806,44 +54806,44 @@ public final class ProtobufMessages {
         // @@protoc_insertion_point(interface_extends:org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger)
         com.google.protobuf.MessageOrBuilder {
 
-      /**
+      /*
        * <code>optional int64 maxDurationTimestamp = 1;</code>
        * @return Whether the maxDurationTimestamp field is set.
        */
       boolean hasMaxDurationTimestamp();
-      /**
+      /*
        * <code>optional int64 maxDurationTimestamp = 1;</code>
        * @return The maxDurationTimestamp.
        */
       long getMaxDurationTimestamp();
 
-      /**
+      /*
        * <code>optional int64 timerCurrentDate = 2;</code>
        * @return Whether the timerCurrentDate field is set.
        */
       boolean hasTimerCurrentDate();
-      /**
+      /*
        * <code>optional int64 timerCurrentDate = 2;</code>
        * @return The timerCurrentDate.
        */
       long getTimerCurrentDate();
 
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        * @return Whether the timerTrigger field is set.
        */
       boolean hasTimerTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        * @return The timerTrigger.
        */
       org.drools.serialization.protobuf.ProtobufMessages.Trigger getTimerTrigger();
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        */
       org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTimerTriggerOrBuilder();
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger}
      */
     public static final class CompositeMaxDurationTrigger extends
@@ -54881,7 +54881,7 @@ public final class ProtobufMessages {
       private int bitField0_;
       public static final int MAXDURATIONTIMESTAMP_FIELD_NUMBER = 1;
       private long maxDurationTimestamp_ = 0L;
-      /**
+      /*
        * <code>optional int64 maxDurationTimestamp = 1;</code>
        * @return Whether the maxDurationTimestamp field is set.
        */
@@ -54889,7 +54889,7 @@ public final class ProtobufMessages {
       public boolean hasMaxDurationTimestamp() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional int64 maxDurationTimestamp = 1;</code>
        * @return The maxDurationTimestamp.
        */
@@ -54900,7 +54900,7 @@ public final class ProtobufMessages {
 
       public static final int TIMERCURRENTDATE_FIELD_NUMBER = 2;
       private long timerCurrentDate_ = 0L;
-      /**
+      /*
        * <code>optional int64 timerCurrentDate = 2;</code>
        * @return Whether the timerCurrentDate field is set.
        */
@@ -54908,7 +54908,7 @@ public final class ProtobufMessages {
       public boolean hasTimerCurrentDate() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional int64 timerCurrentDate = 2;</code>
        * @return The timerCurrentDate.
        */
@@ -54919,7 +54919,7 @@ public final class ProtobufMessages {
 
       public static final int TIMERTRIGGER_FIELD_NUMBER = 3;
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger timerTrigger_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        * @return Whether the timerTrigger field is set.
        */
@@ -54927,7 +54927,7 @@ public final class ProtobufMessages {
       public boolean hasTimerTrigger() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        * @return The timerTrigger.
        */
@@ -54935,7 +54935,7 @@ public final class ProtobufMessages {
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger getTimerTrigger() {
         return timerTrigger_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : timerTrigger_;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
        */
       @java.lang.Override
@@ -55137,7 +55137,7 @@ public final class ProtobufMessages {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
+      /*
        * Protobuf type {@code org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger}
        */
       public static final class Builder extends
@@ -55317,7 +55317,7 @@ public final class ProtobufMessages {
         private int bitField0_;
 
         private long maxDurationTimestamp_ ;
-        /**
+        /*
          * <code>optional int64 maxDurationTimestamp = 1;</code>
          * @return Whether the maxDurationTimestamp field is set.
          */
@@ -55325,7 +55325,7 @@ public final class ProtobufMessages {
         public boolean hasMaxDurationTimestamp() {
           return ((bitField0_ & 0x00000001) != 0);
         }
-        /**
+        /*
          * <code>optional int64 maxDurationTimestamp = 1;</code>
          * @return The maxDurationTimestamp.
          */
@@ -55333,7 +55333,7 @@ public final class ProtobufMessages {
         public long getMaxDurationTimestamp() {
           return maxDurationTimestamp_;
         }
-        /**
+        /*
          * <code>optional int64 maxDurationTimestamp = 1;</code>
          * @param value The maxDurationTimestamp to set.
          * @return This builder for chaining.
@@ -55345,7 +55345,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 maxDurationTimestamp = 1;</code>
          * @return This builder for chaining.
          */
@@ -55357,7 +55357,7 @@ public final class ProtobufMessages {
         }
 
         private long timerCurrentDate_ ;
-        /**
+        /*
          * <code>optional int64 timerCurrentDate = 2;</code>
          * @return Whether the timerCurrentDate field is set.
          */
@@ -55365,7 +55365,7 @@ public final class ProtobufMessages {
         public boolean hasTimerCurrentDate() {
           return ((bitField0_ & 0x00000002) != 0);
         }
-        /**
+        /*
          * <code>optional int64 timerCurrentDate = 2;</code>
          * @return The timerCurrentDate.
          */
@@ -55373,7 +55373,7 @@ public final class ProtobufMessages {
         public long getTimerCurrentDate() {
           return timerCurrentDate_;
         }
-        /**
+        /*
          * <code>optional int64 timerCurrentDate = 2;</code>
          * @param value The timerCurrentDate to set.
          * @return This builder for chaining.
@@ -55385,7 +55385,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional int64 timerCurrentDate = 2;</code>
          * @return This builder for chaining.
          */
@@ -55399,14 +55399,14 @@ public final class ProtobufMessages {
         private org.drools.serialization.protobuf.ProtobufMessages.Trigger timerTrigger_;
         private com.google.protobuf.SingleFieldBuilderV3<
             org.drools.serialization.protobuf.ProtobufMessages.Trigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder> timerTriggerBuilder_;
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          * @return Whether the timerTrigger field is set.
          */
         public boolean hasTimerTrigger() {
           return ((bitField0_ & 0x00000004) != 0);
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          * @return The timerTrigger.
          */
@@ -55417,7 +55417,7 @@ public final class ProtobufMessages {
             return timerTriggerBuilder_.getMessage();
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public Builder setTimerTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -55433,7 +55433,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public Builder setTimerTrigger(
@@ -55447,7 +55447,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public Builder mergeTimerTrigger(org.drools.serialization.protobuf.ProtobufMessages.Trigger value) {
@@ -55466,7 +55466,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public Builder clearTimerTrigger() {
@@ -55479,7 +55479,7 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.Trigger.Builder getTimerTriggerBuilder() {
@@ -55487,7 +55487,7 @@ public final class ProtobufMessages {
           onChanged();
           return getTimerTriggerFieldBuilder().getBuilder();
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         public org.drools.serialization.protobuf.ProtobufMessages.TriggerOrBuilder getTimerTriggerOrBuilder() {
@@ -55498,7 +55498,7 @@ public final class ProtobufMessages {
                 org.drools.serialization.protobuf.ProtobufMessages.Trigger.getDefaultInstance() : timerTrigger_;
           }
         }
-        /**
+        /*
          * <code>optional .org.drools.serialization.protobuf.Trigger timerTrigger = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
@@ -55581,14 +55581,14 @@ public final class ProtobufMessages {
     private int bitField0_;
     public static final int TYPE_FIELD_NUMBER = 1;
     private int type_ = 0;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
      * @return Whether the type field is set.
      */
     @java.lang.Override public boolean hasType() {
       return ((bitField0_ & 0x00000001) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
      * @return The type.
      */
@@ -55599,7 +55599,7 @@ public final class ProtobufMessages {
 
     public static final int CRON_FIELD_NUMBER = 2;
     private org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger cron_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      * @return Whether the cron field is set.
      */
@@ -55607,7 +55607,7 @@ public final class ProtobufMessages {
     public boolean hasCron() {
       return ((bitField0_ & 0x00000002) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      * @return The cron.
      */
@@ -55615,7 +55615,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger getCron() {
       return cron_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.getDefaultInstance() : cron_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
      */
     @java.lang.Override
@@ -55625,7 +55625,7 @@ public final class ProtobufMessages {
 
     public static final int INTERVAL_FIELD_NUMBER = 3;
     private org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger interval_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      * @return Whether the interval field is set.
      */
@@ -55633,7 +55633,7 @@ public final class ProtobufMessages {
     public boolean hasInterval() {
       return ((bitField0_ & 0x00000004) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      * @return The interval.
      */
@@ -55641,7 +55641,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger getInterval() {
       return interval_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.getDefaultInstance() : interval_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
      */
     @java.lang.Override
@@ -55651,7 +55651,7 @@ public final class ProtobufMessages {
 
     public static final int PIT_FIELD_NUMBER = 4;
     private org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger pit_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      * @return Whether the pit field is set.
      */
@@ -55659,7 +55659,7 @@ public final class ProtobufMessages {
     public boolean hasPit() {
       return ((bitField0_ & 0x00000008) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      * @return The pit.
      */
@@ -55667,7 +55667,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger getPit() {
       return pit_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.getDefaultInstance() : pit_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
      */
     @java.lang.Override
@@ -55677,7 +55677,7 @@ public final class ProtobufMessages {
 
     public static final int CMDT_FIELD_NUMBER = 5;
     private org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger cmdt_;
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      * @return Whether the cmdt field is set.
      */
@@ -55685,7 +55685,7 @@ public final class ProtobufMessages {
     public boolean hasCmdt() {
       return ((bitField0_ & 0x00000010) != 0);
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      * @return The cmdt.
      */
@@ -55693,7 +55693,7 @@ public final class ProtobufMessages {
     public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger getCmdt() {
       return cmdt_ == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.getDefaultInstance() : cmdt_;
     }
-    /**
+    /*
      * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
      */
     @java.lang.Override
@@ -55924,7 +55924,7 @@ public final class ProtobufMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
+    /*
      * Protobuf type {@code org.drools.serialization.protobuf.Trigger}
      */
     public static final class Builder extends
@@ -56164,14 +56164,14 @@ public final class ProtobufMessages {
       private int bitField0_;
 
       private int type_ = 0;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
        * @return Whether the type field is set.
        */
       @java.lang.Override public boolean hasType() {
         return ((bitField0_ & 0x00000001) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
        * @return The type.
        */
@@ -56180,7 +56180,7 @@ public final class ProtobufMessages {
         org.drools.serialization.protobuf.ProtobufMessages.Trigger.TriggerType result = org.drools.serialization.protobuf.ProtobufMessages.Trigger.TriggerType.forNumber(type_);
         return result == null ? org.drools.serialization.protobuf.ProtobufMessages.Trigger.TriggerType.CRON : result;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
        * @param value The type to set.
        * @return This builder for chaining.
@@ -56194,7 +56194,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.TriggerType type = 1;</code>
        * @return This builder for chaining.
        */
@@ -56208,14 +56208,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger cron_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTriggerOrBuilder> cronBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        * @return Whether the cron field is set.
        */
       public boolean hasCron() {
         return ((bitField0_ & 0x00000002) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        * @return The cron.
        */
@@ -56226,7 +56226,7 @@ public final class ProtobufMessages {
           return cronBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public Builder setCron(org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger value) {
@@ -56242,7 +56242,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public Builder setCron(
@@ -56256,7 +56256,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public Builder mergeCron(org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger value) {
@@ -56275,7 +56275,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public Builder clearCron() {
@@ -56288,7 +56288,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.Builder getCronBuilder() {
@@ -56296,7 +56296,7 @@ public final class ProtobufMessages {
         onChanged();
         return getCronFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTriggerOrBuilder getCronOrBuilder() {
@@ -56307,7 +56307,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Trigger.CronTrigger.getDefaultInstance() : cron_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CronTrigger cron = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -56327,14 +56327,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger interval_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTriggerOrBuilder> intervalBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        * @return Whether the interval field is set.
        */
       public boolean hasInterval() {
         return ((bitField0_ & 0x00000004) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        * @return The interval.
        */
@@ -56345,7 +56345,7 @@ public final class ProtobufMessages {
           return intervalBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public Builder setInterval(org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger value) {
@@ -56361,7 +56361,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public Builder setInterval(
@@ -56375,7 +56375,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public Builder mergeInterval(org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger value) {
@@ -56394,7 +56394,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public Builder clearInterval() {
@@ -56407,7 +56407,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.Builder getIntervalBuilder() {
@@ -56415,7 +56415,7 @@ public final class ProtobufMessages {
         onChanged();
         return getIntervalFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTriggerOrBuilder getIntervalOrBuilder() {
@@ -56426,7 +56426,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Trigger.IntervalTrigger.getDefaultInstance() : interval_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.IntervalTrigger interval = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -56446,14 +56446,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger pit_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder> pitBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        * @return Whether the pit field is set.
        */
       public boolean hasPit() {
         return ((bitField0_ & 0x00000008) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        * @return The pit.
        */
@@ -56464,7 +56464,7 @@ public final class ProtobufMessages {
           return pitBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public Builder setPit(org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger value) {
@@ -56480,7 +56480,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public Builder setPit(
@@ -56494,7 +56494,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public Builder mergePit(org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger value) {
@@ -56513,7 +56513,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public Builder clearPit() {
@@ -56526,7 +56526,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.Builder getPitBuilder() {
@@ -56534,7 +56534,7 @@ public final class ProtobufMessages {
         onChanged();
         return getPitFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTriggerOrBuilder getPitOrBuilder() {
@@ -56545,7 +56545,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Trigger.PointInTimeTrigger.getDefaultInstance() : pit_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.PointInTimeTrigger pit = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -56565,14 +56565,14 @@ public final class ProtobufMessages {
       private org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger cmdt_;
       private com.google.protobuf.SingleFieldBuilderV3<
           org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder, org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTriggerOrBuilder> cmdtBuilder_;
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        * @return Whether the cmdt field is set.
        */
       public boolean hasCmdt() {
         return ((bitField0_ & 0x00000010) != 0);
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        * @return The cmdt.
        */
@@ -56583,7 +56583,7 @@ public final class ProtobufMessages {
           return cmdtBuilder_.getMessage();
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public Builder setCmdt(org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger value) {
@@ -56599,7 +56599,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public Builder setCmdt(
@@ -56613,7 +56613,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public Builder mergeCmdt(org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger value) {
@@ -56632,7 +56632,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public Builder clearCmdt() {
@@ -56645,7 +56645,7 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder getCmdtBuilder() {
@@ -56653,7 +56653,7 @@ public final class ProtobufMessages {
         onChanged();
         return getCmdtFieldBuilder().getBuilder();
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       public org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTriggerOrBuilder getCmdtOrBuilder() {
@@ -56664,7 +56664,7 @@ public final class ProtobufMessages {
               org.drools.serialization.protobuf.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.getDefaultInstance() : cmdt_;
         }
       }
-      /**
+      /*
        * <code>optional .org.drools.serialization.protobuf.Trigger.CompositeMaxDurationTrigger cmdt = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<

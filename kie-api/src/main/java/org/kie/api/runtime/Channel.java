@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.runtime;
 
-/**
+/*
  * <p>
  * A channel provides a mechanism to send objects from the working memory to some external process
  * or function.  For instance, a channel can be used to inform some piece of code that an object
@@ -45,7 +45,7 @@ package org.kie.api.runtime;
  */
 public interface Channel {
 
-    /**
+    /*
      * Sends the given object to this channel.
      *
      * @param object

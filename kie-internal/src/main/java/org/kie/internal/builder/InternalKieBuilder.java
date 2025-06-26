@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public interface InternalKieBuilder extends KieBuilder {
 
     IncrementalResults incrementalBuild();
 
-    /**
+    /*
      * Builds all the KieBases contained in the KieModule for which this KieBuilder has been created
      * @param classFilter Used to prevent compilation of Java source files.
      *          This filter will be tested on all source file names before they are compiled.

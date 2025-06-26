@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.pmml.models.drools.tuples;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
+/*
  * Class to represent a <b>original type/generated type</b> tuple
  */
 public class KiePMMLOriginalTypeGeneratedType implements Serializable {

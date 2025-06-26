@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ import static com.github.javaparser.ast.type.ArrayType.unwrapArrayTypes;
 import static com.github.javaparser.ast.type.ArrayType.wrapInArrayTypes;
 import static com.github.javaparser.utils.Utils.assertNotNull;
 
-/**
+/*
  * Base class for {@link GeneratedJavaParser}
  */
 abstract class GeneratedMvelParserBase {
@@ -72,7 +72,7 @@ abstract class GeneratedMvelParserBase {
         getTokenSource().reset();
     }
 
-    /**
+    /*
      * Return the list of JavaParser specific tokens that have been encountered while parsing code using this parser.
      *
      * @return a list of tokens
@@ -100,7 +100,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * Return a TokenRange spanning from begin to end
      */
     TokenRange range(JavaToken begin, JavaToken end) {
@@ -110,7 +110,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * Return a TokenRange spanning from begin to end
      */
     TokenRange range(Node begin, JavaToken end) {
@@ -120,7 +120,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * Return a TokenRange spanning from begin to end
      */
     TokenRange range(JavaToken begin, Node end) {
@@ -130,7 +130,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * Return a TokenRange spanning from begin to end
      */
     TokenRange range(Node begin, Node end) {
@@ -140,7 +140,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * @return secondChoice if firstChoice is JavaToken.UNKNOWN, otherwise firstChoice
      */
     JavaToken orIfInvalid(JavaToken firstChoice, JavaToken secondChoice) {
@@ -155,7 +155,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * @return the begin-token secondChoice if firstChoice is JavaToken.UNKNOWN, otherwise firstChoice
      */
     JavaToken orIfInvalid(JavaToken firstChoice, Node secondChoice) {
@@ -165,7 +165,7 @@ abstract class GeneratedMvelParserBase {
         return null;
     }
 
-    /**
+    /*
      * Get the token that starts the NodeList l
      */
     JavaToken nodeListBegin(NodeList<?> l) {
@@ -245,14 +245,14 @@ abstract class GeneratedMvelParserBase {
         return tokenRange;
     }
 
-    /**
+    /*
      * Quickly create a new, empty, NodeList
      */
     <T extends Node> NodeList<T> emptyNodeList() {
         return new NodeList<>();
     }
 
-    /**
+    /*
      * Add obj to list and return it. Create a new list if list is null
      */
     <T extends Node> NodeList<T> add(NodeList<T> list, T obj) {
@@ -263,7 +263,7 @@ abstract class GeneratedMvelParserBase {
         return list;
     }
 
-    /**
+    /*
      * Add obj to list only when list is not null
      */
     <T extends Node> NodeList<T> addWhenNotNull(NodeList<T> list, T obj) {
@@ -273,7 +273,7 @@ abstract class GeneratedMvelParserBase {
         return add(list, obj);
     }
 
-    /**
+    /*
      * Add obj to list at position pos
      */
     <T extends Node> NodeList<T> prepend(NodeList<T> list, T obj) {
@@ -284,7 +284,7 @@ abstract class GeneratedMvelParserBase {
         return list;
     }
 
-    /**
+    /*
      * Add obj to list
      */
     <T> List<T> add(List<T> list, T obj) {
@@ -295,7 +295,7 @@ abstract class GeneratedMvelParserBase {
         return list;
     }
 
-    /**
+    /*
      * Propagate expansion of the range on the right to the parent. This is necessary when the right border of the child
      * is determining the right border of the parent (i.e., the child is the last element of the parent). In this case
      * when we "enlarge" the child we should enlarge also the parent.
@@ -312,7 +312,7 @@ abstract class GeneratedMvelParserBase {
         }
     }
 
-    /**
+    /*
      * Workaround for rather complex ambiguity that lambda's create
      */
     Expression generateLambda(Expression ret, Statement lambdaBody) {
@@ -338,7 +338,7 @@ abstract class GeneratedMvelParserBase {
         return ret;
     }
 
-    /**
+    /*
      * Throws together an ArrayCreationExpr from a lot of pieces
      */
     ArrayCreationExpr juggleArrayCreation(TokenRange range, List<TokenRange> levelRanges, Type type, NodeList<Expression> dimensions, List<NodeList<AnnotationExpr>> arrayAnnotations, ArrayInitializerExpr arrayInitializerExpr) {
@@ -350,7 +350,7 @@ abstract class GeneratedMvelParserBase {
         return new ArrayCreationExpr(range, type, levels, arrayInitializerExpr);
     }
 
-    /**
+    /*
      * Throws together a Type, taking care of all the array brackets
      */
     Type juggleArrayType(Type partialType, List<ArrayType.ArrayBracketPair> additionalBrackets) {
@@ -360,7 +360,7 @@ abstract class GeneratedMvelParserBase {
         return wrapInArrayTypes(elementType, additionalBrackets, leftMostBrackets).clone();
     }
 
-    /**
+    /*
      * This is the code from ParseException.initialise, modified to be more horizontal.
      */
     private String makeMessageForParseException(ParseException exception) {
@@ -415,7 +415,7 @@ abstract class GeneratedMvelParserBase {
         return sb.toString();
     }
 
-    /**
+    /*
      * Converts a NameExpr or a FieldAccessExpr scope to a Name.
      */
     Name scopeToName(Expression scope) {

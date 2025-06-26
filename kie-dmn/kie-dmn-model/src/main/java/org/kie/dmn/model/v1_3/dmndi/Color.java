@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
     protected int green;
     protected int blue;
 
-    /**
+    /*
      * Gets the value of the red property.
      * 
      */
@@ -34,7 +34,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         return red;
     }
 
-    /**
+    /*
      * Sets the value of the red property.
      * 
      */
@@ -42,7 +42,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         this.red = value;
     }
 
-    /**
+    /*
      * Gets the value of the green property.
      * 
      */
@@ -50,7 +50,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         return green;
     }
 
-    /**
+    /*
      * Sets the value of the green property.
      * 
      */
@@ -58,7 +58,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         this.green = value;
     }
 
-    /**
+    /*
      * Gets the value of the blue property.
      * 
      */
@@ -66,7 +66,7 @@ public class Color extends KieDMNModelInstrumentedBase implements org.kie.dmn.mo
         return blue;
     }
 
-    /**
+    /*
      * Sets the value of the blue property.
      * 
      */

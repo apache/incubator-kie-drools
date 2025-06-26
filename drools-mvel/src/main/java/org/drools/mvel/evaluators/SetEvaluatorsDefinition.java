@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * This class defines all the set built in evaluators like contains, memberOf,
  * etc.
  */
@@ -222,7 +222,7 @@ public class SetEvaluatorsDefinition
         out.writeObject( evaluators );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -231,7 +231,7 @@ public class SetEvaluatorsDefinition
                                              operator );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -254,7 +254,7 @@ public class SetEvaluatorsDefinition
 
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests queries using temporal operators on events from two entry points.
  */
 public class CepQueryTest {
@@ -88,7 +88,7 @@ public class CepQueryTest {
         secondEntryPoint.insert(new TestEvent("one"));
     }
 
-    /**
+    /*
      * Tests query using temporal operator 'after' on events from two entry points.
      */
     @ParameterizedTest(name = "KieBase type={0}")
@@ -102,7 +102,7 @@ public class CepQueryTest {
         assertThat(((TestEvent) results.iterator().next().get("$result")).getName()).as("Unexpected query result content").isEqualTo("one");
     }
 
-    /**
+    /*
      * Simple event used in the test.
      */
     public static class TestEvent {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -93,7 +93,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
         this(null, scope, typeArguments, name, arguments);
     }
 
-    /**
+    /*
      * This constructor is used by the parser and is considered private.
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
@@ -180,7 +180,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
         return Optional.ofNullable(typeArguments);
     }
 
-    /**
+    /*
      * Sets the typeArguments
      *
      * @param typeArguments the typeArguments, can be null
@@ -273,7 +273,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
         return super.replace(node, replacementNode);
     }
 
-    /**
+    /*
      * Attempts to resolve the declaration corresponding to the invoked method. If successful, a
      * {@link ResolvedMethodDeclaration} representing the declaration of the constructor invoked by this
      * {@code NullSafeMethodCallExpr} is returned. Otherwise, an {@link UnsolvedSymbolException} is thrown.
@@ -291,7 +291,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
         return getSymbolResolver().resolveDeclaration(this, ResolvedMethodDeclaration.class);
     }
 
-    /**
+    /*
      * @deprecated Call {@link #resolve()} instead.
      */
     @Deprecated

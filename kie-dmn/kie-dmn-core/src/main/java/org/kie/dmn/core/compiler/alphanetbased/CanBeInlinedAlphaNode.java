@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ public class CanBeInlinedAlphaNode extends AlphaNode implements CanInlineInANC<L
         MethodCallExpr methodCallExpr;
         String id;
 
-        /**
+        /*
          * IMPORTANT: remember to use the FEEL expression as an Identifier for the same constraint
          * <p>
          * Prefix: column name + value

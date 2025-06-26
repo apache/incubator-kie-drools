@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -51,7 +51,7 @@ public class EnvironmentImpl implements Environment {
         environment.put(name, object);
     }
 
-    /**
+    /*
      * This class adds the possibility of storing null values in the {@link ConcurrentHashMap}, 
      * since storing null values in an {@link Environment} is something that happens in the kie code. 
      * 

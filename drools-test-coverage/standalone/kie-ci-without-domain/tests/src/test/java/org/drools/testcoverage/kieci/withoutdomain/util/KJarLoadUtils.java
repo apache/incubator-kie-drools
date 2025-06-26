@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.kie.api.builder.ReleaseId;
 
 import java.util.Properties;
 
-/**
+/*
  * Common utilities for loading KJar used in tests.
  */
 public class KJarLoadUtils {
@@ -33,7 +33,7 @@ public class KJarLoadUtils {
     private KJarLoadUtils() {
     }
 
-    /**
+    /*
      * Returns ReleaseId (GAV) of the kjar specified in given resource as properties 'groupId', 'artifactId', and 'version'.
      * Some GAV components (typically 'version') are filtered by Maven, so it is useful to store them in resource files.
      *

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,12 +26,12 @@ import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-/**
+/*
  * A generic <i>input</i> to be consumed
  */
 public interface EfestoInput<T> {
 
-    /**
+    /*
      * The unique, full identifier of a given model' resource
      * @return
      */
@@ -39,7 +39,7 @@ public interface EfestoInput<T> {
 
     T getInputData();
 
-    /**
+    /*
      * Returns the first-level cache key for the current <code>EfestoInput</code>
      * @return
      */
@@ -48,7 +48,7 @@ public interface EfestoInput<T> {
         return new EfestoClassKey(this.getClass(), generics.toArray(new Type[0]));
     }
 
-    /**
+    /*
      * Returns the second-level cache key for the current <code>EfestoInput</code>
      * @return
      */

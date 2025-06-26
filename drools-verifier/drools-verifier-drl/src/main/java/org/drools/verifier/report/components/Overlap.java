@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.drools.verifier.data.VerifierComponent;
 
-/**
+/*
  * Object type that indicates an overlap between two objects.
  * 
  * Overlap happens when only some values can satisfy both objects

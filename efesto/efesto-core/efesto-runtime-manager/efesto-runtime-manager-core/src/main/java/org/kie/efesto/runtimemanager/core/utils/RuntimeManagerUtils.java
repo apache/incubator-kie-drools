@@ -115,7 +115,7 @@ public class RuntimeManagerUtils {
         });
     }
 
-    /**
+    /*
      * Retrieves a <code>KieRuntimeService</code> from caches
      *
      * @param context
@@ -139,7 +139,7 @@ public class RuntimeManagerUtils {
         return retrieved;
     }
 
-    /**
+    /*
      * Looks for <code>KieRuntimeService</code> inside the <b>secondLevelCache</b> by <code>EfestoIdentifierClassKey</code>
      *
      * @param input
@@ -149,7 +149,7 @@ public class RuntimeManagerUtils {
         return secondLevelCache.get(input.getSecondLevelCacheKey());
     }
 
-    /**
+    /*
      * Looks for <code>KieRuntimeService</code> inside the <b>firstLevelCache</b> by <code>EfestoClassKey</code>
      *
      * @param context
@@ -168,7 +168,7 @@ public class RuntimeManagerUtils {
                 Optional.empty();
     }
 
-    /**
+    /*
      * Returns all for <code>KieRuntimeService</code> from all discovered <code>RuntimeServiceProvider</code>s
      */
     static List<KieRuntimeService> getKieRuntimeServiceFromRuntimeServiceProviders() {

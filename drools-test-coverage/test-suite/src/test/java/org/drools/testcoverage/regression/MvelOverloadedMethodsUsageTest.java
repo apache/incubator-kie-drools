@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Test verifies that bug #843284 is fixed. Bug is about Mvel not choosing
  * correct overloaded method from multiple with same types of arguments but in
  * different order, e.g. method(int, int, String) vs method(int, String, int).

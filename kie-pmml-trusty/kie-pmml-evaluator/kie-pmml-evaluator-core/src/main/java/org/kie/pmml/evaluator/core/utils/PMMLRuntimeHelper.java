@@ -288,7 +288,7 @@ public class PMMLRuntimeHelper {
         return toReturn;
     }
 
-    /**
+    /*
      * Returns an <code>Optional&lt;PMMLModelExecutor&gt;</code> to allow
      * incremental development of different model-specific executors
      * @param pmmlMODEL
@@ -302,7 +302,7 @@ public class PMMLRuntimeHelper {
                 .findFirst();
     }
 
-    /**
+    /*
      * Send the given <code>PMMLStep</code>
      * to the <code>PMMLRuntimeContext</code>
      * @param stepSupplier

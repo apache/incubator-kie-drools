@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * This class defines the matches evaluator
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
@@ -63,7 +63,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         out.writeObject(evaluators);
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -72,7 +72,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
                                              operator );
     }
 
-    /**
+    /*
      * @inheridDoc
      */
     public Evaluator getEvaluator(ValueType type,
@@ -96,7 +96,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Evaluator getEvaluator(final ValueType type,

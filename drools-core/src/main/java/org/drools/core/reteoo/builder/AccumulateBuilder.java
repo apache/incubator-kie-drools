@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ public class AccumulateBuilder
         implements
         ReteooComponentBuilder {
 
-    /**
+    /*
      * @inheritDoc
      */
     public void build(final BuildContext context,
@@ -111,7 +111,7 @@ public class AccumulateBuilder
         context.popRuleComponent();
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean requiresLeftActivation(final BuildUtils utils,

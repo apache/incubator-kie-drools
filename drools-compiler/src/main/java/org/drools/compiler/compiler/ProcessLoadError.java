@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
-/**
+/*
  * This is used for reporting errors with loading a ruleflow.
  */
 public class ProcessLoadError extends DroolsError {

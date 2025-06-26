@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.util.Collections;
 import org.dmg.pmml.False;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 
-/**
+/*
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLFalsePredicate</code> instance
  * out of <code>False</code>s
  */

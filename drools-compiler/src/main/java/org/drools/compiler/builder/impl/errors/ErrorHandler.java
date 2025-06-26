@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.List;
 import org.drools.drl.parser.DroolsError;
 import org.kie.internal.jci.CompilationProblem;
 
-/**
+/*
  * This is the super of the error handlers. Each error handler knows how to
  * report a compile error of its type, should it happen. This is needed, as
  * the compiling is done as one hit at the end, and we need to be able to
@@ -43,7 +43,7 @@ public abstract class ErrorHandler {
 
     private boolean    inError = false;
 
-    /** This needes to be checked if there is infact an error */
+    /* This needes to be checked if there is infact an error */
     public boolean isInError() {
         return this.inError;
     }
@@ -53,14 +53,14 @@ public abstract class ErrorHandler {
         this.inError = true;
     }
 
-    /**
+    /*
      *
      * @return A DroolsError object populated as appropriate, should the
      *         unthinkable happen and this need to be reported.
      */
     public abstract DroolsError getError();
 
-    /**
+    /*
      * We must use an error of JCI problem objects. If there are no
      * problems, null is returned. These errors are placed in the
      * DroolsError instances. Its not 1 to 1 with reported errors.

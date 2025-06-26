@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -95,7 +95,7 @@ public class FEELCompilerTest {
         assertThat(parseInterpretedCompileEvaluate("(true)")).isEqualTo(Boolean.TRUE);
     }
 
-    /**
+    /*
      * See {@link FEELTernaryLogicTest}
      */
     @Test
@@ -125,7 +125,7 @@ public class FEELCompilerTest {
         assertThat(parseInterpretedCompileEvaluate("(true or false) and false")).isEqualTo(Boolean.FALSE);
     }
 
-    /**
+    /*
      * Partially from {@link FEELConditionsAndLoopsTest}
      */
     @Test
@@ -349,7 +349,7 @@ public class FEELCompilerTest {
         assertThat(parseInterpretedCompileEvaluate("{ a : 1, b : a }")).isEqualTo(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(1))));
     }
 
-    /**
+    /*
      * See {@link FEELParserTest}
      */
     @Test
@@ -360,7 +360,7 @@ public class FEELCompilerTest {
         assertThat(parseInterpretedCompileEvaluate(inputExpression)).isEqualTo(mapOf(entry("a string key", new BigDecimal(10)), entry("a non-string key", new BigDecimal(11)), entry("a key.with + /' odd chars", new BigDecimal(12))));
     }
 
-    /**
+    /*
      * See {@link FEELParserTest}
      */
     @Test
@@ -386,7 +386,7 @@ public class FEELCompilerTest {
                                                                                                entry("xxx", "Tirelli")))));
     }
 
-    /**
+    /*
      * See {@link FEELParserTest}
      */
     @Test

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
  * deadlocks when modifying the rulebase while creating new sessions.
  */
@@ -156,7 +156,7 @@ public class ReteooRuleBaseMultiThreadedTest {
         abstract void doOperation();
     }
 
-    /**
+    /*
      * This thread will continually try to remove a package and add a package to
      * the rulebase
      */
@@ -171,7 +171,7 @@ public class ReteooRuleBaseMultiThreadedTest {
         }
     }
 
-    /**
+    /*
      * This thread will continually create and dispose new stateful sessions
      */
     private class SessionCreator extends BlockedThread {

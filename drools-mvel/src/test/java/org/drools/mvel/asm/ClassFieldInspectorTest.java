@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -256,14 +256,14 @@ public class ClassFieldInspectorTest {
     static class SubPerson {
         private int childField;
 
-        /**
+        /*
          * @return the childField
          */
         public int getChildField() {
             return this.childField;
         }
 
-        /**
+        /*
          * @param childField the childField to set
          */
         public void setChildField(final int childField) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -90,7 +90,7 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return evaluator.executeExpression(compiledExpression, params);
     }
 
-    /**
+    /*
      * The clean works in the following ways:
      * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#');
      * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case, removing

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/*
  * A rule template made up of a name, the decision table columns required, the
  * decision table columns that must be empty and the contents of the rule.
  */
@@ -79,7 +79,7 @@ public class RuleTemplate {
         this.contents = replaceOptionals(contents);
     }
 
-    /**
+    /*
      * @see java.lang.Object#toString()
      */
     public String toString() {

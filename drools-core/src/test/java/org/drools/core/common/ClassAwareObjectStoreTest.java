@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -91,7 +91,7 @@ public class ClassAwareObjectStoreTest {
         assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
-    /**
+    /*
      * Should have identical results to {@link #queryBySuperTypeFindsSubType()}
      */
     @ParameterizedTest

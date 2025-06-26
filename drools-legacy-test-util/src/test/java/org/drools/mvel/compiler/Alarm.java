@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ public class Alarm implements Serializable {
         return "[Alarm message=" + this.message + "]";
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public int hashCode() {
@@ -47,7 +47,7 @@ public class Alarm implements Serializable {
         return result;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean equals(final Object obj) {
@@ -71,14 +71,14 @@ public class Alarm implements Serializable {
         return true;
     }
 
-    /**
+    /*
      * @return the message
      */
     public String getMessage() {
         return this.message;
     }
 
-    /**
+    /*
      * @param message the message to set
      */
     public void setMessage(final String message) {

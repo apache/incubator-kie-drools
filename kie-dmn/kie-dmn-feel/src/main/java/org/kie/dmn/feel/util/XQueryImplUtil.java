@@ -68,7 +68,7 @@ public class XQueryImplUtil {
          }
     }
 
-    /**
+    /*
      * It replaces all the XML Character References (&, ", ', <, >) in a given input string with their "escaping" characters.
      * This is required to run XPath functions containing XML Character References.
      * @param input A string input representing one of the parameter of managed functions

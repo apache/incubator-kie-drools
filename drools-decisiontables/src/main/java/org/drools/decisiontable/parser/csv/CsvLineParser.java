@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * A simple parser for CSV (Comma-Separated Values) format.
  * Supports quoted fields and escaped quotes.
  */
 public class CsvLineParser {
     private static final char DELIMITER = ',';
 
-    /**
+    /*
      * Parses a line of CSV text into a list of fields.
      *
      * @param input The CSV line to parse

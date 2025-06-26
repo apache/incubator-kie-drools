@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.template.model;
 
-/**
+/*
  * Represents an import (nominally at the rule-set level). The idea of this can
  * be extended to other ruleset level settings.
  */
@@ -28,14 +28,14 @@ public class Import extends DRLElement
 
     private String className;
 
-    /**
+    /*
      * @return Returns the className.
      */
     public String getClassName() {
         return this.className;
     }
 
-    /**
+    /*
      * @param clazz The className to set.
      */
     public void setClassName(final String clazz) {

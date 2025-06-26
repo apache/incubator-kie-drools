@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.pmml.commons;
 
 import org.kie.pmml.commons.model.HasSourcesMap;
 
-/**
+/*
  * Interface used to decouple <code>PMMLCompilerService</code> from <code>KiePMMLDroolsModelWithSources</code>
  */
 public interface HasRule extends HasSourcesMap {

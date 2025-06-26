@@ -32,7 +32,7 @@ import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
-/**
+/*
  * Generic abstraction for dependency injection annotations that allow to
  * use different frameworks based needs.
  * <p>
@@ -45,7 +45,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
  */
 public interface DependencyInjectionAnnotator {
 
-    /**
+    /*
      * Annotates the given node with an annotation to produce a DI instance of the node target class, e.g. Produces,
      * Bean. This is used by configuration classes in the DI, like a factory method.
      * 
@@ -55,21 +55,21 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault);
 
-    /**
+    /*
      * Annotates given node with name annotation e.g. Named, Qualifier
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withNamed(T node, String name);
 
-    /**
+    /*
      * Annotates given node with application level annotations e.g. ApplicationScoped, Component
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withApplicationComponent(T node);
 
-    /**
+    /*
      * Annotates given node with application level annotations e.g. ApplicationScoped, Component
      * additionally adding name to it
      *
@@ -78,14 +78,14 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withNamedApplicationComponent(T node, String name);
 
-    /**
+    /*
      * Annotates given node with singleton level annotations e.g. Singleton, Component
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withSingletonComponent(T node);
 
-    /**
+    /*
      * Annotates given node with singleton level annotations e.g. Singleton, Component
      * additionally adding name to it
      *
@@ -94,7 +94,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withNamedSingletonComponent(T node, String name);
 
-    /**
+    /*
      * Annotates given node with injection annotations e.g. Inject, Autowire
      *
      * @param node node to be annotated
@@ -102,7 +102,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean forceLazyInit);
 
-    /**
+    /*
      * Annotates given node with injection annotations e.g. Inject, Autowire
      *
      * @param node node to be annotated
@@ -111,7 +111,7 @@ public interface DependencyInjectionAnnotator {
         return withInjection(node, false);
     }
 
-    /**
+    /*
      * Annotates given node with injection annotations e.g. Inject, Autowire
      * additionally adding name to it
      *
@@ -120,14 +120,14 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withNamedInjection(T node, String name);
 
-    /**
+    /*
      * Annotates given node with optional injection annotations e.g. Inject, Autowire
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node);
 
-    /**
+    /*
      * Annotates given node with incoming message that it should consume from
      *
      * @param node node to be annotated
@@ -135,7 +135,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withIncomingMessage(T node, String channel);
 
-    /**
+    /*
      * Annotates given node with outgoing message that it should send to
      *
      * @param node node to be annotated
@@ -143,7 +143,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withOutgoingMessage(T node, String channel);
 
-    /**
+    /*
      * Annotates given node with configuration parameter injection
      *
      * @param node node to be annotated
@@ -151,7 +151,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey);
 
-    /**
+    /*
      * Annotates given node with configuration parameter injection with default value
      *
      * @param node node to be annotated
@@ -160,7 +160,7 @@ public interface DependencyInjectionAnnotator {
      */
     <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey, String defaultValue);
 
-    /**
+    /*
      * Annotates given node with Transactional annotation
      *
      * @param node node to be annotated
@@ -172,7 +172,7 @@ public interface DependencyInjectionAnnotator {
 
     String getTransactionalAnnotation();
 
-    /**
+    /*
      * Annotates and enhances method used to produce messages
      *
      * @param produceMethod method to be annotated
@@ -181,7 +181,7 @@ public interface DependencyInjectionAnnotator {
      */
     MethodCallExpr withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event);
 
-    /**
+    /*
      * Annotates given node with set of roles to enforce security
      *
      * @param node node to be annotated
@@ -200,14 +200,14 @@ public interface DependencyInjectionAnnotator {
         return node;
     }
 
-    /**
+    /*
      * Returns type that allows to inject optional instances of the same type
      *
      * @return fully qualified class name
      */
     String optionalInstanceInjectionType();
 
-    /**
+    /*
      * Creates an expression that represents optional instance for given field
      *
      * @param fieldName name of the field that should be considered optional
@@ -215,7 +215,7 @@ public interface DependencyInjectionAnnotator {
      */
     Expression optionalInstanceExists(String fieldName);
 
-    /**
+    /*
      * Creates an expression that returns instance for given optional field
      *
      * @param fieldName name of the optional field that should be accessed
@@ -225,14 +225,14 @@ public interface DependencyInjectionAnnotator {
         return new MethodCallExpr(new NameExpr(fieldName), "get");
     }
 
-    /**
+    /*
      * Returns type that allows to inject multiple instances of the same type
      *
      * @return fully qualified class name
      */
     String multiInstanceInjectionType();
 
-    /**
+    /*
      * Creates an expression that returns a list of instances for given multi instance field
      *
      * @param fieldName name of the multi field that should be accessed
@@ -240,14 +240,14 @@ public interface DependencyInjectionAnnotator {
      */
     Expression getMultiInstance(String fieldName);
 
-    /**
+    /*
      * Returns type that allows to mark instance as application component e.g. ApplicationScoped, Component
      *
      * @return fully qualified class name
      */
     String applicationComponentType();
 
-    /**
+    /*
      * Returns type to be used as message emitter
      *
      * @param dataType type of the data produces by the emitter
@@ -255,21 +255,21 @@ public interface DependencyInjectionAnnotator {
      */
     String emitterType(String dataType);
 
-    /**
+    /*
      * Annotates given node with a initializing annotation e.g. Startup
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withEagerStartup(T node);
 
-    /**
+    /*
      * Annotates given node with factory class annotations e.g. Configuration for Spring Boot
      *
      * @param node node to be annotated
      */
     <T extends NodeWithAnnotations<?>> T withFactoryClass(T node);
 
-    /**
+    /*
      * Annotates given node with factory method annotations e.g. Produces, Bean
      *
      * @param node node to be annotated

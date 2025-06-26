@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
         this(null, value);
     }
 
-    /**
+    /*
      * This constructor is used by the parser and is considered private.
      */
     public BigDecimalLiteralExpr(TokenRange tokenRange, String value) {
@@ -77,7 +77,7 @@ public final class BigDecimalLiteralExpr extends LiteralStringValueExpr {
         return super.remove(node);
     }
 
-    /**
+    /*
      * @return the literal value as an long while respecting different number representations
      */
     public BigDecimal asBigDecimal() {

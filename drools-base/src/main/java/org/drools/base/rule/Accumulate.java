@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,7 +33,7 @@ import org.drools.base.reteoo.SortDeclarations;
 import org.drools.base.rule.accessor.Accumulator;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * A class to represent the Accumulate CE
  */
 public abstract class Accumulate extends ConditionalElement
@@ -77,7 +77,7 @@ public abstract class Accumulate extends ConditionalElement
 
     public abstract Object createFunctionContext();
 
-    /**
+    /*
      * Executes the initialization block of code
      */
     public abstract Object init(final Object workingMemoryContext,
@@ -85,7 +85,7 @@ public abstract class Accumulate extends ConditionalElement
                                 Object funcContext, final BaseTuple leftTuple,
                                 final ValueResolver valueResolver);
 
-    /**
+    /*
      * Executes the accumulate (action) code for the given fact handle
      */
     public abstract Object accumulate(final Object workingMemoryContext,
@@ -94,7 +94,7 @@ public abstract class Accumulate extends ConditionalElement
                                       final FactHandle handle,
                                       final ValueResolver valueResolver);
 
-    /**
+    /*
      * Executes the reverse (action) code for the given fact handle
      */
     public abstract boolean tryReverse(final Object workingMemoryContext,
@@ -104,7 +104,7 @@ public abstract class Accumulate extends ConditionalElement
                                        final BaseTuple match,
                                        final ValueResolver valueResolver);
 
-    /**
+    /*
      * Gets the result of the accumulation
      */
     public abstract Object getResult(final Object workingMemoryContext,
@@ -112,7 +112,7 @@ public abstract class Accumulate extends ConditionalElement
                                      final BaseTuple leftTuple,
                                      final ValueResolver valueResolver);
 
-    /**
+    /*
      * Returns true if this accumulate supports reverse
      */
     public abstract boolean supportsReverse();
@@ -138,7 +138,7 @@ public abstract class Accumulate extends ConditionalElement
         return Collections.emptyMap();
     }
     
-    /**
+    /*
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {

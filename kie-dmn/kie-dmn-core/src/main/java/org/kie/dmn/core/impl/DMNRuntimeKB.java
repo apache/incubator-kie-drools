@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,12 +37,12 @@ public interface DMNRuntimeKB {
 
     List<DMNRuntimeEventListener> getListeners();
 
-    /**
+    /*
      * @throws UnsupportedOperationException if not supported on this platform.
      */
     ClassLoader getRootClassLoader();
 
-    /**
+    /*
      * @throws UnsupportedOperationException if not supported on this platform.
      */
     InternalKnowledgeBase getInternalKnowledgeBase();

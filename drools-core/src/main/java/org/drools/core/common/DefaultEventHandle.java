@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         this.entryPointId = entryPointId;
     }
 
-    /**
+    /*
      * Creates a new event fact handle.
      *
      * @param id this event fact handle ID
@@ -92,14 +92,14 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         return EVENT_FORMAT_VERSION;
     }
 
-    /**
+    /*
      * @see Object
      */
     public String toString() {
         return toExternalForm();
     }
 
-    /**
+    /*
      * Always returns true, since the EventFactHandle is
      * only used for Events, and not for regular Facts
      */
@@ -107,7 +107,7 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         return true;
     }
 
-    /**
+    /*
      * Returns the timestamp of the occurrence of this event.
      * @return
      */
@@ -115,7 +115,7 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         return startTimestamp;
     }
 
-    /**
+    /*
      * Returns the duration of this event. In case this is a primitive event,
      * returns 0 (zero).
      *
@@ -125,7 +125,7 @@ public class DefaultEventHandle extends DefaultFactHandle implements EventHandle
         return duration;
     }
 
-    /**
+    /*
      * Returns the end timestamp for this event. This is the same as:
      *
      * startTimestamp + duration

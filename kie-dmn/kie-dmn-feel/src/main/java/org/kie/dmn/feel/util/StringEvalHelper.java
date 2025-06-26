@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -101,7 +101,7 @@ public class StringEvalHelper {
         return new String(target, 0, pos);
     }
 
-    /**
+    /*
      * This method defines what characters are valid for the output of normalizeVariableName. Spaces and control characters are invalid.
      * There is a fast-path for well known characters
      */

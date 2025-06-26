@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -94,7 +94,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
                 new IllegalArgumentException("Error during evaluation: " + l.stream().map(FEELEvent::getMessage).collect(Collectors.joining(", "))));
     }
     
-    /**
+    /*
      * Perform compilation and evaluation of FEEL Unary Tests,
      * implementing the command pattern of {@link DMNFeelExpressionEvaluator#executeAndVerifyErrors(Function)}
      */
@@ -130,7 +130,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         
     }
 
-    /**
+    /*
      * Common internal method that execute the command and manage error
      * @param command
      * @param <T>
@@ -168,7 +168,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         returnMap.put(fieldName, fieldValue);
     }
 
-    /**
+    /*
      * In DMN only Lists are structured result while Maps are context so "plain" FEEL expressions
      * @param resultClass
      * @return
@@ -178,7 +178,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         return resultClass != null && ScenarioSimulationSharedUtils.isList(resultClass.getCanonicalName());
     }
 
-    /**
+    /*
      * In DMN only Lists are structured input while Maps are context so "plain" FEEL expressions
      * @param className
      * @return
@@ -188,7 +188,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         return ScenarioSimulationSharedUtils.isList(className);
     }
 
-    /**
+    /*
      * This is not used for DMN
      * @param element
      * @param fieldName

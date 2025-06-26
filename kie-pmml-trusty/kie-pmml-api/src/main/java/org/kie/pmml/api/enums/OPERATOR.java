@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public enum OPERATOR implements Named {
     IS_MISSING("isMissing", ""),
     IS_NOT_MISSING("isNotMissing", "");
 
-    /**
+    /*
      * <code>OPERATOR</code>s that operates with <code>Number</code>s
      */
     static final List<OPERATOR> NUMBER_OPERATORS = Arrays.asList(EQUAL,
@@ -44,14 +44,14 @@ public enum OPERATOR implements Named {
                                                                  GREATER_THAN,
                                                                  GREATER_OR_EQUAL);
 
-    /**
+    /*
      * <code>OPERATOR</code>s that operates <b>ONLY</b >with <code>Number</code>s
      */
     static final List<OPERATOR> ONLY_NUMBER_OPERATORS = Arrays.asList(LESS_THAN,
                                                                  LESS_OR_EQUAL,
                                                                  GREATER_THAN,
                                                                  GREATER_OR_EQUAL);
-    /**
+    /*
      * <code>OPERATOR</code>s that operates with a <b>value</b>
      */
     static final List<OPERATOR> VALUE_OPERATORS = Arrays.asList(EQUAL,
@@ -75,7 +75,7 @@ public enum OPERATOR implements Named {
                 .orElseThrow(() -> new KieEnumException("Failed to find OPERATOR with name: " + name));
     }
 
-    /**
+    /*
      * Returns <code>true</code> if the <code>OPERATOR</code> is applicable only for <code>NUMBER</code>s
      * @return
      */

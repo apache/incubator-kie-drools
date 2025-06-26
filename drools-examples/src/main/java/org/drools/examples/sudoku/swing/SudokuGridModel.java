@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,26 @@
  */
 package org.drools.examples.sudoku.swing;
 
-/**
+/*
  * An interface representing a 9x9 Sudoku Grid of Cells.
  */
 public interface SudokuGridModel {
-   /**
+   /*
     * The number of rows in the Grid, i.e. the height
     */
    public static int NUM_ROWS = 9;
 
-   /**
+   /*
     * The number of columns in the Grid, i.e. the width
     */
    public static int NUM_COLS = 9;
 
-   /**
+   /*
     * The number of colums that make up a zone within the Grid
     */
    public static int INNER_GRID_WIDTH = 3;   
    
-   /**
+   /*
     * The number of rows that make up a zone within the Grid
     */
    public static int INNER_GRID_HEIGHT = 3;

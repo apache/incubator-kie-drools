@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -179,7 +179,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         exprConstraintDescrVisitor.visit(descr);
     }
 
-    /**
+    /*
      * End leaf
      *
      * @param descr
@@ -201,7 +201,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         return predicate;
     }
 
-    /**
+    /*
      * End
      *
      * @param descr
@@ -245,7 +245,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         pattern.setSourceType(entryPoint.getVerifierComponentType());
     }
 
-    /**
+    /*
      * End leaf
      *
      * @param descr

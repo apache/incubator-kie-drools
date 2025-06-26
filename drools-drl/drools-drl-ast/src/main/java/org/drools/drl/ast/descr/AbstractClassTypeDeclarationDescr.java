@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -70,7 +70,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         this.type.setNamespace( namespace );
     }
 
-    /**
+    /*
      * @return the identifier
      */
     public String getTypeName() {
@@ -81,7 +81,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         return this.type.getFullName();
     }
 
-    /**
+    /*
      * @param typeName the identifier to set
      */
     public void setTypeName( String typeName ) {
@@ -124,7 +124,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         return l;
     }
 
-    /**
+    /*
      * @return the fields
      */
     @SuppressWarnings("unchecked")
@@ -135,7 +135,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         return fields;
     }
 
-    /**
+    /*
      * @param fields the fields to set
      */
     public void setFields( Map<String, TypeFieldDescr> fields ) {

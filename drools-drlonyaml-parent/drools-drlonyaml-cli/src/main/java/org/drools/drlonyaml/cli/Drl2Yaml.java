@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import static org.drools.drlonyaml.cli.utils.Utils.conventionInputStream;
 import static org.drools.drlonyaml.cli.utils.Utils.conventionOutputConsumer;
 import static org.drools.drlonyaml.model.Utils.getYamlMapper;
 
-/**
+/*
  * Note: beyond different annotations, Parameters and Options are managed per subcommand,
  * in order to have them listed after the specific subcommand on the CLI.
  */

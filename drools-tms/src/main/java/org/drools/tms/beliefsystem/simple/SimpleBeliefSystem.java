@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.drools.tms.beliefsystem.BeliefSystem;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
-/**
+/*
  * Default implementation emulates classical Drools TMS behaviour.
  *
  */

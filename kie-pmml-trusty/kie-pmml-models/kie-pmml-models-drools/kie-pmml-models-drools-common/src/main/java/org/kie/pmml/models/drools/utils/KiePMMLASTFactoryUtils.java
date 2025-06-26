@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public class KiePMMLASTFactoryUtils {
         // not instatiate
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code> or <code>OR</code>. Throws exception otherwise
      * @param compoundPredicate
      * @param fieldTypeMap
@@ -69,7 +69,7 @@ public class KiePMMLASTFactoryUtils {
         return toReturn;
     }
 
-    /**
+    /*
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>XOR</code>. Throws exception otherwise
      * @param compoundPredicate
      * @param fieldTypeMap
@@ -91,7 +91,7 @@ public class KiePMMLASTFactoryUtils {
         return getXORConstraintEntryFromSimplePredicates(simplePredicates, fieldTypeMap);
     }
 
-    /**
+    /*
      * This method should be invoked with a <code>List&lt;SimplePredicate&gt;</code> where each <code>SimplePredicate</code> is referring to the same field
      * @param fieldName
      * @param containerOperator
@@ -128,7 +128,7 @@ public class KiePMMLASTFactoryUtils {
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
     }
 
-    /**
+    /*
      * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>predicatesByField</b>
      * @param toPopulate
      * @param booleanOperator
@@ -151,7 +151,7 @@ public class KiePMMLASTFactoryUtils {
         }
     }
 
-    /**
+    /*
      * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>compoundPredicates</b>
      * @param toPopulate
      * @param compoundPredicates

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
-/**
+/*
  * Eclipse compiler implementation
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {

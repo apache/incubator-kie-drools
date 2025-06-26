@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ public class Node {
         outgoingLinks = new HashSet<>();
     }
 
-    /**
+    /*
      * This constructor is used for a case where Node to Rule is not 1-to-1 (e.g. collapseWithRuleNamePrefix)
      * @param packageName
      * @param ruleName

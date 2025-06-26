@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.base.base.ValueType;
 
-/**
+/*
  * A Base class for primitive boolean class field
  * write accessors. This class centralizes type conversions.
  */
@@ -40,7 +40,7 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
     public BaseBooleanClassFieldWriter() {
     }
 
-    /**
+    /*
      * This constructor is not supposed to be used from outside the class hierarchy
      * 
      * @param index

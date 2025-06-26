@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -1825,7 +1825,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertThat(results.get(0).intValue()).isEqualTo(25);
     }
 
-    /**
+    /*
      * test that creates a new knowledge base, new stateful session, inserts new
      * fact, serializes the knowledge base and session and fact using one output
      * stream then deserializes and verifies that fact in the session is the

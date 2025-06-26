@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,13 +18,13 @@
  */
 package org.drools.template.model;
 
-/**
+/*
  * Classes that implement this interface should generate DRL fragments according
  * to the drools java semantic module.
  */
 public interface DRLJavaEmitter {
 
-    /**
+    /*
      * Each node can add its contribution to the output
      */
     void renderDRL(DRLOutput out);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ public abstract class Shape extends DiagramElement implements org.kie.dmn.model.
 
     protected org.kie.dmn.model.api.dmndi.Bounds bounds;
 
-    /**
+    /*
      * the optional bounds of the shape relative to the origin of its nesting plane.
      * 
      * @return
@@ -34,7 +34,7 @@ public abstract class Shape extends DiagramElement implements org.kie.dmn.model.
         return bounds;
     }
 
-    /**
+    /*
      * Sets the value of the bounds property.
      * 
      * @param value

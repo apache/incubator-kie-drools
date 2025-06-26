@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -75,7 +75,7 @@ public class NumberEvalHelper {
         }
     }
 
-    /**
+    /*
      * This method checks if the input is an instance of BigDecimal, BigInteger
      * or any other subclass Number. If so, it returns an Optional containing
      * the result of calling intValue() on the number. If the input is not a recognized number type,

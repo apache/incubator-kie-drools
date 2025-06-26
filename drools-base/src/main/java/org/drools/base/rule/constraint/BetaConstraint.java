@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,7 @@ public interface BetaConstraint<C>
 
     C createContext();
 
-    /**
+    /*
      * Clone this constraints only if it is already used by a different node, otherwise returns this
      */
     <T> T cloneIfInUse();

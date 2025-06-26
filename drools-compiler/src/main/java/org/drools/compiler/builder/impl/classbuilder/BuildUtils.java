@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,7 +56,7 @@ public final class BuildUtils {
 
 
 
-    /**
+    /*
      * Returns the corresponding internal type representation for the
      * given type.
      *
@@ -97,7 +97,7 @@ public final class BuildUtils {
         return internalType;
     }
 
-    /**
+    /*
      * Returns the corresponding type descriptor for the
      * given type.
      *
@@ -186,7 +186,7 @@ public final class BuildUtils {
         return j;
     }
 
-    /**
+    /*
      * Returns true if the provided type is a primitive type
      *
      * @param type
@@ -202,7 +202,7 @@ public final class BuildUtils {
 
 
 
-    /**
+    /*
      * Returns true if the provided type is an arrayType
      * Can only be used with internal names, i.e. after [ has been prefix
      *

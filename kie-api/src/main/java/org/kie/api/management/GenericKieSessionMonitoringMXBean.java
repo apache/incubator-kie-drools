@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,56 +23,56 @@ import java.util.Map;
 
 import javax.management.ObjectName;
 
-/**
+/*
  * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
  */
 public interface GenericKieSessionMonitoringMXBean {
 
-    /**
+    /*
      * Resets all stats
      */
     void reset();
 
-    /**
+    /*
      * Returns this MBean name
      */
     ObjectName getName();
 
-    /**
+    /*
      * @return the associated Kie Base ID
      */
     String getKieBaseId();
 
-    /**
+    /*
      * @return the total number of matches fired in this session since last
      * reset.
      */
     long getTotalMatchesFired();
 
-    /**
+    /*
      * @return the total number of matches cancelled in this session since
      * last reset.
      */
     long getTotalMatchesCancelled();
 
-    /**
+    /*
      * @return the total number of matches created in this session since
      * last reset.
      */
     long getTotalMatchesCreated();
 
-    /**
+    /*
      * @return the total milliseconds spent firing rules in this session since last reset.
      */
     long getTotalFiringTime();
 
-    /**
+    /*
      * @return the average firing time in milliseconds for rules in this session
      * since last reset.
      */
     double getAverageFiringTime();
 
-    /**
+    /*
      * @return the timestamp of the last stats reset
      */
     Date getLastReset();
@@ -85,7 +85,7 @@ public interface GenericKieSessionMonitoringMXBean {
         long getFiringTime();
         Date getLastReset();
     }
-    /**
+    /*
      * Returns the statistics for a single rule in this session,
      * like number of matches created, cancelled and fired as well as firing time.
      *
@@ -116,7 +116,7 @@ public interface GenericKieSessionMonitoringMXBean {
 
     String getKieSessionName();
 
-    /**
+    /*
      * Return the total number of KieSession monitored by name by this MBean.
      * If the type of KieSession monitored is Stateful, this is the total count of Stateful KieSession(s) currently live under the specified KieSession name.
      * If the type of KieSession monitored is Stateless, this is the total amount of Working Memory created.

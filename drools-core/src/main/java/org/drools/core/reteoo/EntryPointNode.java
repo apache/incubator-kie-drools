@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import org.drools.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * A node that is an entry point into the Rete network.
  *
  * As we move the design to support network partitions and concurrent processing
@@ -63,12 +63,12 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
     protected static final transient Logger log = LoggerFactory.getLogger(EntryPointNode.class);
 
-    /**
+    /*
      * The entry point ID for this node
      */
     private EntryPointId                      entryPoint;
 
-    /**
+    /*
      * The object type nodes under this node
      */
     protected Map<ObjectType, ObjectTypeNode> objectTypeNodes;
@@ -129,7 +129,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         return NodeTypeEnums.EntryPointNode;
     }
 
-    /**
+    /*
      * @return the entryPoint
      */
     public EntryPointId getEntryPoint() {
@@ -263,7 +263,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
     }
 
-    /**
+    /*
      * This is the entry point into the network for all asserted Facts. Iterates a cache
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
      * exist it first iterates and builds the cache.
@@ -283,7 +283,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
     }
 
-    /**
+    /*
      * Retract a fact object from this <code>RuleBase</code> and the specified
      * <code>WorkingMemory</code>.
      *
@@ -329,7 +329,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         }
     }
 
-    /**
+    /*
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>Objects</code> propagated from this <code>ObjectSource</code>.
      *

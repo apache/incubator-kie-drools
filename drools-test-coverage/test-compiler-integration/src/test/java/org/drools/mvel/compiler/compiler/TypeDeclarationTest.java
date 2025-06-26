@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -200,7 +200,7 @@ public class TypeDeclarationTest {
 //        assertFalse("Errors Expected", errors.isEmpty());
     }
 
-    /**
+    /*
      * The same resource (containing a type declaration) is added twice in the
      * kbuilder.
      */
@@ -223,7 +223,7 @@ public class TypeDeclarationTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    /**
+    /*
      * 2 resources (containing a the same type declaration) are added to the
      * kbuilder.
      * The expectation here is to silently discard the second type declaration.
@@ -249,7 +249,7 @@ public class TypeDeclarationTest {
     }
 
 
-    /**
+    /*
      * 2 resources (containing different declarations of the same type ) are added
      * to the kbuilder.
      * The expectation here is that compilation fails because we are changing
@@ -289,7 +289,7 @@ public class TypeDeclarationTest {
         }
     }
 
-    /**
+    /*
      * 2 resources (containing different declarations of the same type ) are added
      * to the kbuilder.
      * The expectation here is to silently discard the second type declaration.
@@ -351,7 +351,7 @@ public class TypeDeclarationTest {
         */
     }
 
-    /**
+    /*
      * 2 resources (containing different declarations of the same type ) are added
      * to the kbuilder.
      * The expectation here is that the compilation fails because we are
@@ -391,7 +391,7 @@ public class TypeDeclarationTest {
         }
     }
 
-    /**
+    /*
      * 2 resources (containing different declarations of the same type ) are added
      * to the kbuilder.
      * The expectation here is that the compilation fails because we are

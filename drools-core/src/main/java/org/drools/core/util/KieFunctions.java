@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.core.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
+/*
  * This class contains a set of utility functions that were created with the aim to be used in the context
  * of a process's action scripts and conditions scripts. To make the life of the script programmer easier.
  * This class will be automatically imported by the platform when process script related classes are

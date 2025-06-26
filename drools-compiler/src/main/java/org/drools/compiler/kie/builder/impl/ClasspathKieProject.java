@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -61,7 +61,7 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_JAR_PATH;
 import static org.drools.wiring.api.classloader.ProjectClassLoader.createProjectClassLoader;
 
-/**
+/*
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
  * KieBaseModels and KieSessionModels are then indexed, with helper lookups
  * Each resulting KieModule is added to the KieRepository

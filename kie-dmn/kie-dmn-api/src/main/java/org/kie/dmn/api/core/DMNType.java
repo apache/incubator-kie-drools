@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.util.Map;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 
-/**
+/*
  * Represent a DMN type; in the vast majority of cases, this representation exists as a result of a DMN model specifying an {@link ItemDefinition}.<br/>
  * <br/>
  * <h1>Design document</h1>
@@ -208,14 +208,14 @@ public interface DMNType
 
     DMNType clone();
 
-    /**
+    /*
      * Definition of `instance of` accordingly to FEEL specifications Table 61.
      * @param o
      * @return if o is instance of the type represented by this type. If the parameter is null, returns false. 
      */
     boolean isInstanceOf(Object o);
     
-    /**
+    /*
      * Check if the value passed as parameter can be assigned to this type.
      * It checks
      * 1. type itself

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * This is the main user class for verifier. This will use rules to validate
  * rules, caching the "knowledge base" of verifier rules.
  */
@@ -165,7 +165,7 @@ public class VerifierImpl
         ksession = verifierKnowledgeBase.newKieSession();
     }
 
-    /**
+    /*
      * Returns the verifier results as <code>AnalysisResult</code> object.
      *
      * @return Analysis result
@@ -245,7 +245,7 @@ public class VerifierImpl
         }
     }
 
-    /**
+    /*
      *
      * Adds meta data from DRL to package and rule.
      *

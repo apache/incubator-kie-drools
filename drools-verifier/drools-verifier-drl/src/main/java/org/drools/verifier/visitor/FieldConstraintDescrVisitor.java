@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -126,7 +126,7 @@ public class FieldConstraintDescrVisitor {
         }
     }
 
-    /**
+    /*
      * End
      *
      * @param descr
@@ -151,7 +151,7 @@ public class FieldConstraintDescrVisitor {
         solvers.addPatternComponent(restriction);
     }
 
-    /**
+    /*
      * End
      *
      * @param descr
@@ -239,7 +239,7 @@ public class FieldConstraintDescrVisitor {
         }
     }
 
-    /**
+    /*
      * End
      * <p/>
      * Foo( bar == $bar )<br>
@@ -269,7 +269,7 @@ public class FieldConstraintDescrVisitor {
         solvers.addPatternComponent(restriction);
     }
 
-    /**
+    /*
      * End
      *
      * @param descr

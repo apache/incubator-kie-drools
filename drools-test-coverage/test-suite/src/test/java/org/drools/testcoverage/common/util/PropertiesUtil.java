@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,14 +29,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Provides utility methods to obtain relevant properties and directories for a test.
  */
 public class PropertiesUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
 
-    /**
+    /*
      * The maximum number of parent directories of baseDir to be searched for build.properties file.
      */
     private static final int BUILD_PROPS_SEARCH_PARENT_DIR_LIMIT = 2;
@@ -48,7 +48,7 @@ public class PropertiesUtil {
     private PropertiesUtil() {
     }
 
-    /**
+    /*
      * Gets the base directory of the test execution that was specified by System property <code>basedir</code>.
      * Method expects the property to be set.
      *
@@ -64,7 +64,7 @@ public class PropertiesUtil {
         return basedir;
     }
 
-    /**
+    /*
      * Returns location of directory for temporary files
      *
      * @return directory to save temporary files to
@@ -87,7 +87,7 @@ public class PropertiesUtil {
         return tempDir;
     }
 
-    /**
+    /*
      * Returns the directory to store log files.
      *
      * @return directory to store log files to
@@ -96,7 +96,7 @@ public class PropertiesUtil {
         return new File(getBasedir(), getProperty("log.dir", "target/log"));
     }
 
-    /**
+    /*
      * Retrieves the property value.
      *
      * @param key name of the property
@@ -106,7 +106,7 @@ public class PropertiesUtil {
         return getProperties().getProperty(key);
     }
 
-    /**
+    /*
      * Retrieves the property value.
      *
      * @param key name of the property
@@ -123,7 +123,7 @@ public class PropertiesUtil {
         }
     }
 
-    /**
+    /*
      * Get all properties defined in build.properties file.
      *
      * @throws IllegalStateException when reading the property fails

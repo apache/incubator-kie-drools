@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.api.definition;
 
-/**
+/*
  * A top level interface for Knowledge Descriptors.
  *
  * A descriptor is a class that describes a knowledge asset. It usually

@@ -21,7 +21,7 @@ package org.drools.util;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
+/*
  * Class meant to provide utility methods specific to <code>Path</code> management
  */
 public class PathUtils {

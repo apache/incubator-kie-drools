@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.drl.parser.impl.Operator;
 
-/**
+/*
  * An evaluator definition interface that allows for pluggable
  * evaluator implementation.
  *
@@ -33,7 +33,7 @@ import org.drools.drl.parser.impl.Operator;
  */
 public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime.rule.EvaluatorDefinition {
 
-    /**
+    /*
      * Returns the list of identifies this
      * evaluator implementation supports
      *
@@ -41,7 +41,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     String[] getEvaluatorIds();
 
-    /**
+    /*
      * My apologies to English speakers if the word "negatable" does not
      * exist. :)
      *
@@ -53,7 +53,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     boolean isNegatable();
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -78,7 +78,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText );
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -110,7 +110,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget );
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -132,7 +132,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     Evaluator getEvaluator(ValueType type, Operator operator, String parameterText);
 
-    /**
+    /*
      * Returns the evaluator instance for the given type and the
      * defined parameterText
      *
@@ -150,7 +150,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     Evaluator getEvaluator(ValueType type, Operator operator);
 
-    /**
+    /*
      * Returns true in case this evaluator supports operations over values
      * of that specific type.
      *
@@ -159,7 +159,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     boolean supportsType(ValueType type);
 
-    /**
+    /*
      * There are evaluators that operate on *fact* attributes,
      * evaluators that operate on *fact handle* attributes, and
      * evaluators that operate on both. This method returns
@@ -170,7 +170,7 @@ public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime
      */
     Target getTarget();
     
-    /**
+    /*
      * An enum for the target of the evaluator
      */
     enum Target {

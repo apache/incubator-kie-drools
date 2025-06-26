@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.drl.ast.descr;
 
-/**
+/*
  * This Descr is used in jBPM code (jbpm-flow-builder) as part of the syntax tree
  * for the scripts used in BPMN2 definitions.
  */

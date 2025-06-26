@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Predicate</code>
  */
 public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
@@ -41,7 +41,7 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
         return new KiePMMLPredicateASTFactory(predicateASTFactoryData);
     }
 
-    /**
+    /*
      * Manage the given <code>Predicate</code>.
      * <p>
      * It creates rules that, in the <b>rhs</b>, set an <b>accumulation</b> value
@@ -76,7 +76,7 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
         }
     }
 
-    /**
+    /*
      * Manage the given <code>Predicate</code>.
      * <p>
      * It creates rules that, in the <b>rhs</b>, eventually set a <b>final</b> result

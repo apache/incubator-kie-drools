@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,11 +18,11 @@
  */
 package org.kie.api.management;
 
-/**
+/*
  * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
  */
 public interface KieSessionMonitoringMXBean extends GenericKieSessionMonitoringMXBean {
-    /**        
+    /*        
      * @return the total fact count current loaded into the session      
      */       
     long getTotalFactCount();

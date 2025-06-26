@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.pmml.commons.model;
 
-/**
+/*
  * Marker interface used to define if a given <code>KiePMMLModel</code> implements the interpreted version.
  * This is used, at codegen-time, to generate the correct instantiation inside <code>KiePMMLFactoryFactory.getInstantiationExpression</code>
  */

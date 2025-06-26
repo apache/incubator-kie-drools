@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ import org.kie.api.definition.rule.Propagation;
 
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
 
-/**
+/*
  * This builds the rule structure from an AST.
  * Generates semantic code where necessary if semantics are used.
  * This is an internal API.
@@ -89,7 +89,7 @@ public class RuleBuilder {
         context.initRule();
     }
 
-    /**
+    /*
      * Build the give rule into the
      */
     public static void build(final RuleBuildContext context) {

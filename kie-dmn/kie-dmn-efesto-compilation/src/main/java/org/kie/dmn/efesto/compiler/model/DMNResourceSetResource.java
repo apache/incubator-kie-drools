@@ -23,7 +23,7 @@ import org.kie.api.io.Resource;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 
-/**
+/*
  * Resource set for "dmn" files
  */
 public class DMNResourceSetResource extends EfestoSetResource<Resource> {

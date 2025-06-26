@@ -66,7 +66,7 @@ public class GeneratedResourceUtils {
         }
     }
 
-    /**
+    /*
      * find GeneratedExecutableResource from GeneratedResources without IndexFile
      */
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
@@ -84,7 +84,7 @@ public class GeneratedResourceUtils {
         }
     }
 
-    /**
+    /*
      * find GeneratedExecutableResource from GeneratedResources without IndexFile
      */
     public static Optional<GeneratedModelResource> getGeneratedModelResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {

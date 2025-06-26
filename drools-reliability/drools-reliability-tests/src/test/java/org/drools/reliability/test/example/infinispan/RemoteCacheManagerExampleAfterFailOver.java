@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.reliability.test.util.TestConfigurationUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
-/**
+/*
  * Example class to demonstrate how to use RemoteCacheManager.
  * <p>
  * See RemoteCacheManagerExample for more details.

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
     protected String documentation;
     protected Double resolution;
 
-    /**
+    /*
      * Gets the value of the name property.
      * 
      * @return
@@ -36,7 +36,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
         return name;
     }
 
-    /**
+    /*
      * Sets the value of the name property.
      * 
      * @param value
@@ -48,7 +48,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
         this.name = value;
     }
 
-    /**
+    /*
      * Gets the value of the documentation property.
      * 
      * @return
@@ -60,7 +60,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
         return documentation;
     }
 
-    /**
+    /*
      * Sets the value of the documentation property.
      * 
      * @param value
@@ -72,7 +72,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
         this.documentation = value;
     }
 
-    /**
+    /*
      * Gets the value of the resolution property.
      * 
      * @return
@@ -84,7 +84,7 @@ public abstract class Diagram extends DiagramElement implements org.kie.dmn.mode
         return resolution;
     }
 
-    /**
+    /*
      * Sets the value of the resolution property.
      * 
      * @param value

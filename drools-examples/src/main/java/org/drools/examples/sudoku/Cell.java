@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.examples.sudoku;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/*
  * Represents a single cell in the Sudoku grid.
  */
 public class Cell extends SetOfNine {
@@ -32,7 +32,7 @@ public class Cell extends SetOfNine {
     private CellSqr   cellSqr;
     private Set<Cell> exCells;
 
-    /**
+    /*
      * Constructor, leaving all references at null. You must call
      * makeReferences to complete the object. 
      */
@@ -40,7 +40,7 @@ public class Cell extends SetOfNine {
         super();
     }
     
-    /**
+    /*
      * Set references to all cell groups containing this cell. 
      * @param row the cell group for the row
      * @param col the cell group for the column
@@ -57,7 +57,7 @@ public class Cell extends SetOfNine {
         this.exCells.remove(this);
     }
 
-    /**
+    /*
      * Retrieves the value.
      * @return an Integer or null
      */
@@ -65,7 +65,7 @@ public class Cell extends SetOfNine {
         return value;
     }
 
-    /**
+    /*
      * Set the cell value.
      * @param value an Integer object
      */
@@ -74,7 +74,7 @@ public class Cell extends SetOfNine {
         this.value = value;
     }
     
-    /**
+    /*
      * Return the set of Cell objects where contents are mutually exclusive with
      * this cell; they are in the same row or same column or same block.
      * 
@@ -84,7 +84,7 @@ public class Cell extends SetOfNine {
         return exCells;
     }
     
-    /**
+    /*
      * Returns the row group of nine of this cell.
      * @return a CellRow object.
      */
@@ -92,7 +92,7 @@ public class Cell extends SetOfNine {
         return cellRow;
     }
     
-    /**
+    /*
      * Returns the row number.
      * @return an int value.
      */
@@ -100,7 +100,7 @@ public class Cell extends SetOfNine {
         return cellRow.getNumber();
     }
 
-    /**
+    /*
      * Returns the column group of nine of this cell.
      * @return a CellCol object.
      */
@@ -108,7 +108,7 @@ public class Cell extends SetOfNine {
         return cellCol;
     }
 
-    /**
+    /*
      * Returns the column number.
      * @return an int value.
      */
@@ -116,7 +116,7 @@ public class Cell extends SetOfNine {
         return cellCol.getNumber();
     }
 
-    /**
+    /*
      * Returns the 3x3 block group of nine of this cell.
      * @return a cellSqr object.
      */

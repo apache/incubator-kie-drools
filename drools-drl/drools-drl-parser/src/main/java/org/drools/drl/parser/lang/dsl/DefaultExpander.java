@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.drl.parser.lang.ExpanderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * The default expander uses String templates to provide pseudo natural
  * language, as well as general DSLs.
  * 
@@ -98,7 +98,7 @@ public class DefaultExpander
     private boolean                     showKeyword  = false;
     private boolean                     showUsage    = false;
 
-    /**
+    /*
      * Creates a new DefaultExpander
      */
     public DefaultExpander() {
@@ -110,7 +110,7 @@ public class DefaultExpander
                                                     "" ) );
     }
 
-    /**
+    /*
      * Add the new mapping to this expander.
      * 
      * @param mapping
@@ -138,7 +138,7 @@ public class DefaultExpander
         if ( mapping.getOption( "usage" ) ) showUsage = true;
     }
 
-    /**
+    /*
      * @inheritDoc
      * @throws IOException
      */
@@ -157,7 +157,7 @@ public class DefaultExpander
         }
     }
 
-    /**
+    /*
      * @inheritDoc
      * @throws IOException
      */
@@ -223,7 +223,7 @@ public class DefaultExpander
         return count;
     }
 
-    /**
+    /*
      * Expand constructions like rules and queries
      * 
      * @param drl
@@ -305,7 +305,7 @@ public class DefaultExpander
         return buf;
     }
 
-    /**
+    /*
      * Clean up constructions that exists only in the unexpanded code
      * 
      * @param drl
@@ -331,7 +331,7 @@ public class DefaultExpander
         return comments.matcher(drl).replaceAll("");
     }
 
-    /**
+    /*
      * Expand all configured keywords
      * 
      * @param drl
@@ -410,7 +410,7 @@ public class DefaultExpander
         return theValue;
     }
 
-    /**
+    /*
      * Perform the substitutions.
      * 
      * @param exp
@@ -533,7 +533,7 @@ public class DefaultExpander
         return exp;
     }
 
-    /**
+    /*
      * Expand LHS for a construction
      * 
      * @param lhs
@@ -608,7 +608,7 @@ public class DefaultExpander
         return buf.toString();
     }
 
-    /**
+    /*
      * Expand RHS for rules
      * 
      * @param lhs
@@ -712,14 +712,14 @@ public class DefaultExpander
         this.errors.add( error );
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public List<ExpanderException> getErrors() {
         return this.errors;
     }
 
-    /**
+    /*
      * @inheritDoc
      */
     public boolean hasErrors() {

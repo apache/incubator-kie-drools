@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -612,7 +612,7 @@ public class KieBuilderImpl
         return pomModel;
     }
 
-    /**
+    /*
      * This can be used for performance reason to avoid the recomputation of the pomModel when it is already available
      */
     public void setPomModel( PomModel pomModel ) {

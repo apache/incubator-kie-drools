@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.DEFAULT_TO
 import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.evaluateLevenshteinDistance;
 import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.splitText;
 
-/**
+/*
  * KiePMML representation of an InlineTable <b>Row</b>
  */
 public class KiePMMLRow implements Serializable {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.drools.drl.ast.descr;
 
-/**
+/*
  * This represents a constraint in a pattern defined by an arbitrary
  * expression. The constraint can be any valid java/mvel expression.
  */
@@ -47,28 +47,28 @@ public class ExprConstraintDescr extends BaseDescr implements ExpressionDescr {
         return getText();
     }
 
-    /**
+    /*
      * @return the type
      */
     public Type getType() {
         return type;
     }
 
-    /**
+    /*
      * @param type the type to set
      */
     public void setType( Type type ) {
         this.type = type;
     }
 
-    /**
+    /*
      * @return the position
      */
     public int getPosition() {
         return position;
     }
 
-    /**
+    /*
      * @param position the position to set
      */
     public void setPosition( int position ) {

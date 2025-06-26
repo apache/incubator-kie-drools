@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,27 +18,27 @@
  */
 package org.drools.base.rule;
 
-/**
+/*
  * Base exception for errors during <code>Rule</code> construction.
  */
 public class RuleConstructionException extends RuntimeException {
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * @see java.lang.Exception#Exception()
      */
     RuleConstructionException() {
         super();
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message)
      */
     RuleConstructionException(final String message) {
         super( message );
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(String message, Throwable cause)
      */
     RuleConstructionException(final String message,
@@ -47,7 +47,7 @@ public class RuleConstructionException extends RuntimeException {
                cause );
     }
 
-    /**
+    /*
      * @see java.lang.Exception#Exception(Throwable cause)
      */
     RuleConstructionException(final Throwable cause) {

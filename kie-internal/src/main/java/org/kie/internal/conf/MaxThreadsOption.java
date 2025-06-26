@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,26 +21,26 @@ package org.kie.internal.conf;
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
 
-/**
+/*
  * A class for the max threads configuration.
  */
 public class MaxThreadsOption implements SingleValueRuleBaseOption {
 
     private static final long serialVersionUID = 510l;
 
-    /**
+    /*
      * The property name for the max threads
      */
     public static final String PROPERTY_NAME = "drools.maxThreads";
 
     public static OptionKey<MaxThreadsOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * max threads
      */
     private final int maxThreads;
 
-    /**
+    /*
      * Private constructor to enforce the use of the factory method
      * @param maxThreads
      */
@@ -48,7 +48,7 @@ public class MaxThreadsOption implements SingleValueRuleBaseOption {
         this.maxThreads = maxThreads;
     }
 
-    /**
+    /*
      * This is a factory method for this Max Threads configuration.
      * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
@@ -61,14 +61,14 @@ public class MaxThreadsOption implements SingleValueRuleBaseOption {
         return new MaxThreadsOption( threshold );
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    /**
+    /*
      * Returns the maximum number of threads for partition evaluation
      *
      * @return

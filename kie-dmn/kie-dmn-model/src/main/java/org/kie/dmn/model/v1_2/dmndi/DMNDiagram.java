@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,7 +28,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
     protected org.kie.dmn.model.api.dmndi.Dimension size;
     protected List<org.kie.dmn.model.api.dmndi.DiagramElement> dmnDiagramElement;
 
-    /**
+    /*
      * Gets the value of the size property.
      * 
      * @return
@@ -40,7 +40,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
         return size;
     }
 
-    /**
+    /*
      * Sets the value of the size property.
      * 
      * @param value
@@ -52,7 +52,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
         this.size = value;
     }
 
-    /**
+    /*
      * Gets the value of the dmnDiagramElement property.
      * 
      * <p>

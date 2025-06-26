@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,7 @@
  */
 package org.kie.internal.task.exception;
 
-/**
+/*
  * Base class for all exceptions for the task related activities
  *
  * see org.jbpm.services.task.service.TaskServiceSession#addTask(org.jbpm.services.task.Task, ContentData)

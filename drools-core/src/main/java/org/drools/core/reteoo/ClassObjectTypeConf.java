@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -162,7 +162,7 @@ public class ClassObjectTypeConf
         return concreteObjectTypeNode;
     }
 
-    /**
+    /*
      * This will return the package name - if the package is null, it will
      * work it out from the class name (this is in cases where funky classloading is used).
      */

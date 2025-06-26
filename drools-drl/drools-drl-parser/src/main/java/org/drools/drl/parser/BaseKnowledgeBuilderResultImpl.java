@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Arrays;
 
-/**
+/*
  * A base abstract class for all Knowledge Builder results
  *
  */
@@ -53,7 +53,7 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
         return getSeverity().equals(ResultSeverity.ERROR);
     }
 
-    /**
+    /*
      * Classes that extend this must provide a printable message,
      * which summarises the error.
      */
@@ -61,7 +61,7 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
         return message;
     }
 
-    /**
+    /*
      * Needed when the message depends on status of mutable classes
      * @param message
      */
@@ -69,7 +69,7 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
         this.message = message;
     }
 
-    /**
+    /*
      * Returns the lines of the error in the source file
      * @return
      */

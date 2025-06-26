@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.RuleRuntimeEventManager;
 import org.kie.api.logger.KieRuntimeLogger;
 
-/**
+/*
  * A manager for runtime events.
  */
 public interface KieRuntimeEventManager
@@ -30,7 +30,7 @@ public interface KieRuntimeEventManager
     RuleRuntimeEventManager,
     ProcessEventManager {
 
-    /**
+    /*
      * Returns the KieRuntimeLogger registered on this KieRuntimeEventManager if any
      */
     KieRuntimeLogger getLogger();

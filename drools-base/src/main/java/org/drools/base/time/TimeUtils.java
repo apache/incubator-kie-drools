@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.base.time;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
+/*
  * A helper class with utility methods for
  * time related operations.
  */
@@ -48,7 +48,7 @@ public class TimeUtils {
     //    private static final long    YEA_MS = 365 * DAY_MS;
 
     
-    /**
+    /*
      * This method calculates the transitive closure of the given adjacency matrix
      * in order to find the temporal distance between each event represented in the
      * adjacency matrix.
@@ -92,7 +92,7 @@ public class TimeUtils {
         return result;
     }
     
-    /**
+    /*
      * Parses the given time String and returns the corresponding time
      * in milliseconds
      * 

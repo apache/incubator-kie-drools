@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.modelcompiler.dsl.pattern.D;
 
 public class Rulesefe9b92fdd254fbabc9e9002be0d51d6_rule_second {
 
-    /**
+    /*
      * Rule name: second
      */
     public static org.drools.model.Rule rule_second() {

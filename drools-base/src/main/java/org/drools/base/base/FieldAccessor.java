@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.WriteAccessor;
 
 
-/**
+/*
  * An interface for Accessor classes that joins both reader and writer accessor methods 
  */
 public interface FieldAccessor extends ReadAccessor, WriteAccessor {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.QueryResults;
 
-/**
+/*
  * A knowledge session for a <code>RuleBase</code>.
  *
  * While this object can be serialised out, it cannot be serialised in. This is because
@@ -41,7 +41,7 @@ import org.kie.api.runtime.rule.QueryResults;
  */
 public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager, WorkingMemoryEntryPoint {
 
-    /**
+    /*
      * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface
      * is more subject to change.
      * @return
@@ -49,7 +49,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     Agenda getAgenda();
 
-    /**
+    /*
      * Set a specific instance as a global in this working memory. Null values will return doing nothing.
      * The global identifier and its type must be declared in the drl.
      *
@@ -63,7 +63,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
 
     Environment getEnvironment();
 
-    /**
+    /*
      * Sets the GlobalResolver instance to be used when resolving globals, replaces the current GlobalResolver.
      * Typcicaly a delegating GlobalResolver is created that first gets a reference to the current GlobalResolver,
      * for delegating
@@ -72,28 +72,28 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     void setGlobalResolver(GlobalResolver globalResolver);
 
-    /**
+    /*
      * Fire all items on the agenda until empty.
      */
     int fireAllRules();
 
-    /**
+    /*
      * Fire all items on the agenda until empty, using the given AgendaFiler
      */
     int fireAllRules(AgendaFilter agendaFilter);
 
-    /**
+    /*
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
      */
     int fireAllRules( int fireLimit );
 
-    /**
+    /*
      * Fire all items on the agenda using the given AgendaFiler
      * until empty or at most 'fireLimit' rules have fired
      */
     int fireAllRules(final AgendaFilter agendaFilter, int fireLimit );
 
-    /**
+    /*
      * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
@@ -101,7 +101,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     Iterator<?> iterateObjects();
 
-    /**
+    /*
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
@@ -113,7 +113,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     Iterator<?> iterateObjects(org.kie.api.runtime.ObjectFilter filter);
 
-    /**
+    /*
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
@@ -121,7 +121,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     Iterator<InternalFactHandle> iterateFactHandles();
 
-    /**
+    /*
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
@@ -133,13 +133,13 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     Iterator<InternalFactHandle> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
-    /**
+    /*
      * Set the focus to the specified AgendaGroup
      * @param focus
      */
     void setFocus(String focus);
 
-    /**
+    /*
      * Retrieve the QueryResults of the specified query and arguments
      *
      * @param query
@@ -156,46 +156,46 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
      */
     QueryResults getQueryResults(String query, Object... arguments);
 
-    /**
+    /*
      * Clear the Agenda. Iterates over each AgendaGroup cancalling all Activations.
      */
     void clearAgenda();
 
-    /**
+    /*
      * Clear the Agenda Group, cancelling all its Activations.
      */
     void clearAgendaGroup(String group);
 
-    /**
+    /*
      * Clears the Activation Group, cancellings all its Activations
      * @param group
      */
     void clearActivationGroup(String group);
 
-    /**
+    /*
      * Clears the RuleFlow group, cancelling all its Activations
      * @param group
      */
     void clearRuleFlowGroup(String group);
 
-    /**
+    /*
      * Starts a new process instance for the process with the given id.
      */
     ProcessInstance startProcess(String processId);
 
-    /**
+    /*
      * Starts a new process instance for the process with the given id.
      */
     ProcessInstance startProcess(String processId, Map<String, Object> parameters);
 
-    /**
+    /*
      * Returns the list of process instances of this working memory.
      * This list is unmodifiable.
      * @return the list of process instances
      */
     Collection<ProcessInstance> getProcessInstances();
 
-    /**
+    /*
      * Returns the process instance with the given id.
      * @return the process instance with the given id
      */
@@ -205,7 +205,7 @@ public interface WorkingMemory extends ReteEvaluator, WorkingMemoryEventManager,
 
     WorkItemManager getWorkItemManager();
 
-    /**
+    /*
      * Stops rule firing after the current rule finishes executing
      */
     void halt();

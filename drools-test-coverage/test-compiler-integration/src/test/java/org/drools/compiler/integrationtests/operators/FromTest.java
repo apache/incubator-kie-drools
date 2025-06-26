@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -692,7 +692,7 @@ public class FromTest {
         kieContainer.newKieBase(kieBaseConfiguration);
     }
 
-    /**
+    /*
      * JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
      */
     @ParameterizedTest(name = "KieBase type={0}")

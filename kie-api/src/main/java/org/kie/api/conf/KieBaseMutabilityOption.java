@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.kie.api.conf;
 
 
-/**
+/*
  * An option to define if a KieBase should be mutable or not.
  * By default mutability (incremental compilation) is allowed but for performances reasonds
  * it is strongly recommended to set this option to "disabled" if you don't need it.
@@ -33,14 +33,14 @@ public enum KieBaseMutabilityOption implements SingleValueKieBaseOption {
     ALLOWED,
     DISABLED;
 
-    /**
+    /*
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.kieBaseMutability";
 
     public static OptionKey<KieBaseMutabilityOption> KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public String getPropertyName() {

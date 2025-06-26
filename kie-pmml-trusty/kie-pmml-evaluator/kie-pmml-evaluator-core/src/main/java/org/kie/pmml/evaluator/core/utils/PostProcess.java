@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
-/**
+/*
  * Class meant to provide static methods related to <b>post-process</b> manipulation
  */
 public class PostProcess {
@@ -59,7 +59,7 @@ public class PostProcess {
         populateOutputFields(toReturn, processingDTO);
     }
 
-    /**
+    /*
      * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given
      * <code>KiePMMLModel</code>
      * during evaluation
@@ -88,7 +88,7 @@ public class PostProcess {
         toPopulate.setProbabilityMap(pmmlContext.getProbabilityMap());
     }
 
-    /**
+    /*
      * Execute <b>modifications</b> on target result.
      *
      * @param toModify
@@ -115,7 +115,7 @@ public class PostProcess {
                 });
     }
 
-    /**
+    /*
      * Verify that the returned value has the required type as defined inside <code>DataDictionary/MiningSchema</code>
      *
      * @param model
@@ -134,7 +134,7 @@ public class PostProcess {
         }
     }
 
-    /**
+    /*
      * Populated the <code>PMML4Result</code> with <code>OutputField</code> results
      *
      * @param toUpdate

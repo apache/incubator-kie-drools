@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ import org.drools.base.rule.Declaration;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface BaseTuple {
-    /**
+    /*
      * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
      * specifcy the <code>Pattern</code> that they depend on.
      *
@@ -33,7 +33,7 @@ public interface BaseTuple {
      */
     FactHandle get(Declaration declaration);
 
-    /**
+    /*
      * Returns the <code>FactHandle</code> for the given pattern index. If the pattern is empty
      * It returns null.
      *
@@ -50,7 +50,7 @@ public interface BaseTuple {
 
     Object getObject(Declaration declaration);
 
-    /**
+    /*
      * Returns the size of this tuple in number of elements (patterns)
      */
     int size();
@@ -59,14 +59,14 @@ public interface BaseTuple {
 
     Object[] toObjects(boolean reverse);
 
-    /**
+    /*
      * Returns the fact handles in reverse order
      */
     FactHandle[] toFactHandles();
 
     BaseTuple getParent();
 
-    /**
+    /*
      * Returns the tuple at the given index
      * @param index
      * @return

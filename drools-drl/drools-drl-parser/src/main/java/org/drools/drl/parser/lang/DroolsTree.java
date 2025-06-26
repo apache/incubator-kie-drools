@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,22 +22,22 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
-/**
+/*
  * An extension of the CommonTree class that keeps the char offset information.
  */
 public class DroolsTree extends CommonTree {
 
-    /**
+    /*
      * start char offset
      */
     int startCharOffset = -1;
 
-    /**
+    /*
      * end char offset
      */
     int endCharOffset = -1;
 
-    /**
+    /*
      * editor type
      *
      * @see DroolsEditorType
@@ -57,7 +57,7 @@ public class DroolsTree extends CommonTree {
         return new DroolsTree(this);
     }
 
-    /**
+    /*
      * getter for start char offset
      *
      * @return start char offset
@@ -66,7 +66,7 @@ public class DroolsTree extends CommonTree {
         return startCharOffset;
     }
 
-    /**
+    /*
      * setter for start char offset
      *
      * @param startCharOffset
@@ -76,7 +76,7 @@ public class DroolsTree extends CommonTree {
         this.startCharOffset = startCharOffset;
     }
 
-    /**
+    /*
      * getter of end char offset
      *
      * @return end char offset
@@ -85,7 +85,7 @@ public class DroolsTree extends CommonTree {
         return endCharOffset;
     }
 
-    /**
+    /*
      * setter of end char offset
      *
      * @param endCharOffset
@@ -95,7 +95,7 @@ public class DroolsTree extends CommonTree {
         this.endCharOffset = endCharOffset;
     }
 
-    /**
+    /*
      * getter of editor type
      *
      * @return editor type
@@ -105,7 +105,7 @@ public class DroolsTree extends CommonTree {
         return editorElementType;
     }
 
-    /**
+    /*
      * setter of editor type
      *
      * @param editorElementType

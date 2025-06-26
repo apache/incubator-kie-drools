@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
-/**
+/*
  * The Truth Maintenance System is responsible for tracking two things. Firstly
  * It maintains a Map to track the classes with the same Equality, using the
  * EqualityKey. The EqualityKey has an internal data structure which references

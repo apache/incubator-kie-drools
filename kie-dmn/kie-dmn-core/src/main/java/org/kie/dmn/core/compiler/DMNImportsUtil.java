@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -154,7 +154,7 @@ public class DMNImportsUtil {
         };
     }
 
-    /**
+    /*
      * Resolves a DMN import by searching for the corresponding DMNModel based on the provided Import object.
      * If the import is resolved successfully, it is checked and merged with the current DMN model.
      * @param i : The Import object representing the DMN import to be resolved.
@@ -179,7 +179,7 @@ public class DMNImportsUtil {
         checkLocatedDMNModel(i, located, model, toMerge);
     }
 
-    /**
+    /*
      * This method is used to checks if a DMNModel is located and processes it by setting the import alias or merging it with the original model.
      * @param i : represents an import object, and it has a name (i.getName()). If the name is available, it will be used as the import alias.
      * @param located : it is a DMN model that has been locate.
@@ -201,7 +201,7 @@ public class DMNImportsUtil {
         }
     }
 
-    /**
+    /*
      * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
      *
      * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
@@ -219,7 +219,7 @@ public class DMNImportsUtil {
         }
     }
 
-    /**
+    /*
      * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
      * @param model : Represents a DMN model that requires the PMML import resolution.
      * @param anImport : Object that specifies the import details for the PMML resource.
@@ -232,7 +232,7 @@ public class DMNImportsUtil {
         resolvePMMLImportTypeFromModelLocalUriId(model, anImport, relativeResource, dmnCompilerConfig);
     }
 
-    /**
+    /*
      * Resolves the PMML import type for a given DMN model and import, consuming and processing the PMML import information.
      * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer for appropriate processing.
      * @param model : represents a DMN model where the PMML import information will be added.
@@ -250,7 +250,7 @@ public class DMNImportsUtil {
         }
     }
 
-    /**
+    /*
      * Method to retrieve the original Pmml model from Efesto storage, eventually storing it if not already present
      * @param pmmlModelLocalUriId
      * @param classLoader
@@ -266,7 +266,7 @@ public class DMNImportsUtil {
         return toReturn;
     }
 
-    /**
+    /*
      * Logs an error message when an unsupported or unknown import type is encountered during DMN model compilation.
      * @param model : Instance of the DMNModelImpl that represents the DMN model where the error occurred.
      * @param importType : The type of the import that caused the error (e.g., DMN, PMML, or unknown type).
@@ -282,7 +282,7 @@ public class DMNImportsUtil {
                 importType);
     }
 
-    /**
+    /*
      * This method ensures that all necessary components from the source DMN model are integrated into the target model,
      * including the import chain and various types of nodes (inputs, items, decisions, etc.).
      * @param model : The DMNModelImpl instance into which elements from the source model will be imported.
@@ -308,7 +308,7 @@ public class DMNImportsUtil {
         }
     }
 
-    /**
+    /*
      * Method used to retrieve the name of the PMML model invoked inside a BusinessKnowledgeModel
      * @param dmndefs
      * @param pmmlImportedName the name used, inside the DMN file, for the pmml import
@@ -362,7 +362,7 @@ public class DMNImportsUtil {
         return contextEntry.getVariable().getName().equals(expectedVariableName);
     }
 
-    /**
+    /*
      * Retrieve the file with the given name scanning first the classpath, then the given classloader
      * @param pmmlFileName
      * @param classLoader

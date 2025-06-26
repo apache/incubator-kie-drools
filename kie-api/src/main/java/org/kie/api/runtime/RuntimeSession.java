@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,12 +24,12 @@ import java.util.Map;
 
 public interface RuntimeSession extends CommandExecutor {
 
-    /**
+    /*
      * @return the Globals store
      */
     Globals getGlobals();
 
-    /**
+    /*
      * Sets a global value on the globals store
      *
      * @param identifier the global identifier
@@ -39,7 +39,7 @@ public interface RuntimeSession extends CommandExecutor {
                    Object value);
 
 
-    /**
+    /*
      * Registers a channel with the given name
      *
      * @param name the name of the channel
@@ -48,19 +48,19 @@ public interface RuntimeSession extends CommandExecutor {
     void registerChannel(String name,
                          Channel channel);
 
-    /**
+    /*
      * Unregisters the channel with the given name
      *
      * @param name
      */
     void unregisterChannel(String name);
 
-    /**
+    /*
      * @return a map with all registered channels.
      */
     Map<String, Channel> getChannels();
 
-    /**
+    /*
      * @return the KieBase reference from which this stateless session was created.
      */
     KieBase getKieBase();

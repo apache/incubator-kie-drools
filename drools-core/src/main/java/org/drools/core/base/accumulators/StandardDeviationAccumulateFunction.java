@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,7 @@
 package org.drools.core.base.accumulators;
 
 
-/**
+/*
  * An implementation of an accumulator capable of calculating standard deviation.
  */
 public class StandardDeviationAccumulateFunction extends VarianceAccumulateFunction {

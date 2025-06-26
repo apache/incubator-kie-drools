@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.marshalling;
 import org.kie.api.KieBase;
 import org.kie.api.internal.utils.KieService;
 
-/**
+/*
  *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
@@ -36,7 +36,7 @@ public interface KieMarshallers extends KieService {
 
     ObjectMarshallingStrategy newSerializeMarshallingStrategy(ObjectMarshallingStrategyAcceptor acceptor);
 
-    /**
+    /*
      * The marshalling strategies for this method are undefined and thus they are derived from the ksession's or environment
      * provided.
      *
@@ -45,7 +45,7 @@ public interface KieMarshallers extends KieService {
      */
     Marshaller newMarshaller(KieBase kbase);
 
-    /**
+    /*
      * This will override the strategies specified in the ksession or environment.
      *
      * @param kbase

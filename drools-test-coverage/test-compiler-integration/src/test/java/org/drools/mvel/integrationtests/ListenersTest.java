@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -47,7 +47,7 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
+/*
  * Tests stateful/stateless KieSession listeners registration - DROOLS-818.
  */
 public class ListenersTest {
@@ -138,7 +138,7 @@ public class ListenersTest {
         throw new IllegalArgumentException("Expected at least one MarkingListener in the collection");
     }
 
-    /**
+    /*
      * Inserts a new KieModule containing single KieBase and a stateful and stateless KieSessions with listeners
      * into KieRepository.
      * @param kieBaseTestConfiguration 
@@ -181,7 +181,7 @@ public class ListenersTest {
         return RELEASE_ID;
     }
 
-    /**
+    /*
      * Listener which just marks that it had fired.
      */
     public interface MarkingListener {
@@ -189,7 +189,7 @@ public class ListenersTest {
         boolean hasFired();
     }
 
-    /**
+    /*
      * A listener marking that an AgendaEvent has fired.
      */
     public static class MarkingAgendaEventListener extends DefaultAgendaEventListener implements MarkingListener {
@@ -207,7 +207,7 @@ public class ListenersTest {
         }
     }
 
-    /**
+    /*
      * A listener marking that a RuleRuntimeEvent has fired.
      */
     public static class MarkingRuntimeEventListener extends DefaultRuleRuntimeEventListener implements MarkingListener {

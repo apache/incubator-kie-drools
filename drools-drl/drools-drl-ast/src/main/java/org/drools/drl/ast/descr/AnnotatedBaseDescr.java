@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-/**
+/*
  * This is the super type for all pattern AST nodes.
  */
 public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
@@ -54,7 +54,7 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
         out.writeObject( annotations );
     }
     
-    /**
+    /*
      * Assigns a new annotation to this type
      * @param annotation
      * @return returns the previous value of this annotation
@@ -81,7 +81,7 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
                                      annotation );
     }
 
-    /**
+    /*
      * Assigns a new annotation to this type with the respective name and value
      * @param name
      * @param value
@@ -105,7 +105,7 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
                                      annotation );
     }
 
-    /**
+    /*
      * Returns the annotation with the given name
      * @param name
      */
@@ -125,7 +125,7 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
         return getAnnotation(name) != null;
     }
 
-    /**
+    /*
     * Returns the set of annotation names for this type
     * @return
     */

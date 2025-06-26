@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,12 +38,12 @@ public interface StockTickInterface {
 
     public abstract void setTime(long time);
 
-    /**
+    /*
      * @return the duration
      */
     public abstract long getDuration();
 
-    /**
+    /*
      * @param duration the duration to set
      */
     public abstract void setDuration(long duration);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.kie.api.runtime.process;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
-/**
+/*
  * A node instance represents the execution of one specific node
  * in a process instance.  Whenever a node is reached during the
  * execution of a process instance, a node instance will be created.
@@ -39,7 +39,7 @@ import org.kie.api.definition.process.WorkflowElementIdentifier;
  */
 public interface NodeInstance {
 
-    /**
+    /*
      * The id of the node instance.  This is unique within the
      * node instance container this node instance lives in.
      *
@@ -47,7 +47,7 @@ public interface NodeInstance {
      */
     String getId();
 
-    /**
+    /*
      * The id of the node this node instance refers to.  The node
      * represents the definition that this node instance was based
      * on.
@@ -56,7 +56,7 @@ public interface NodeInstance {
      */
     WorkflowElementIdentifier getNodeId();
 
-    /**
+    /*
      * Return the node this node instance refers to.  The node
      * represents the definition that this node instance was based
      * on.
@@ -65,19 +65,19 @@ public interface NodeInstance {
      */
     Node getNode();
 
-    /**
+    /*
      * The name of the node this node instance refers to.
      * @return the name of the node this node instance refers to
      */
     String getNodeName();
 
-    /**
+    /*
      * The process instance that this node instance is executing in.
      * @return the process instance that this node instance is executing in
      */
     WorkflowProcessInstance getProcessInstance();
 
-    /**
+    /*
      * The node instance container that this node instance is part of.
      * If the node was defined in the top-level process scope, this is
      * the same as the process instance.  If not, it is the node instance

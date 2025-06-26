@@ -24,7 +24,7 @@ import org.kie.efesto.common.api.listener.EfestoListener;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
-/**
+/*
  * This is the internal, local-JVM specific, <code>EfestoRuntimeContext</code>. To be used, internally, by <code>RuntimeServiceProviders</code>
  * @param <T>
  */

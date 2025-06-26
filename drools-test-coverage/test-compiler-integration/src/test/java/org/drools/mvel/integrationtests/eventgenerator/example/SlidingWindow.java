@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public class SlidingWindow {
         //System.out.println ("Sliding window "+this.id+" expires at "+Tools.formattedDate(this.windowEnd));
     }
 
-    /**
+    /*
      * @return the id
      */
     public String getId() {
@@ -78,98 +78,98 @@ public class SlidingWindow {
         this.windowEnd = end;
     }
 
-    /**
+    /*
      * @return the windowLength
      */
     public long getWindowLength() {
         return windowLength;
     }
 
-    /**
+    /*
      * @param windowLength the windowLength to set
      */
     public void setWindowLength(int windowLength) {
         this.windowLength = windowLength;
     }
 
-    /**
+    /*
      * @return the shift
      */
     public long getWindowShift() {
         return windowShift;
     }
 
-    /**
+    /*
      * @param shift the shift to set
      */
     public void setShift(int windowShift) {
         this.windowShift = windowShift;
     }
 
-    /**
+    /*
      * @return the numberEvents
      */
     public int getNumberEvents() {
         return numberEvents;
     }
 
-    /**
+    /*
      * @param numberEvents the numberEvents to set
      */
     public void setNumberEvents(int numberEvents) {
         this.numberEvents = numberEvents;
     }
 
-/*    *//**
+/*    *//*
      * @return the eventsInWindow
      *//*
     public int getNumberEventsInWindow() {
         return this.eventsInWindow.size();
     }
 
-    *//**
+    *//*
      * @return the eventsInWindow
      *//*
     public List<Event> getEventsInWindow() {
         return eventsInWindow;
     }
 
-    *//**
+    *//*
      * @param eventsInWindow the eventsInWindow to set
      *//*
     public void setEventsInWindow(List<Event> eventsInWindow) {
         this.eventsInWindow = eventsInWindow;
     }
 
-    *//**
+    *//*
      * @param additionalEventsInWindow the additional events in window to add
      *//*
     public void addEventsInWindow(List<Event> additionalEventsInWindow) {
         this.eventsInWindow.addAll(additionalEventsInWindow);
     }
 
-    *//**
+    *//*
      * @param expiredEventsInWindow the events in window to remove
      *//*
     public void removeEventsInWindow(List<Event> expiredEventsInWindow) {
         this.eventsInWindow.removeAll(expiredEventsInWindow);
     }*/
 
-    /**
+    /*
      * @return the parentId
      */
     public String getParentId() {
         return parentId;
     }
 
-    /**
+    /*
      * @param parentId the parentId to set
      */
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
-    /**
+    /*
      * Advances the sliding window
      */
     public void advance() {
@@ -178,70 +178,70 @@ public class SlidingWindow {
         //System.out.println ("Sliding window "+this.getId()+" is reset to "+Tools.formattedInterval(this.windowStart, this.windowEnd));
     }
 
-    /**
+    /*
      * @return the lastUpdate
      */
     public long getLastUpdate() {
         return lastUpdate;
     }
 
-    /**
+    /*
      * @param lastUpdate the lastUpdate to set
      */
     public void setLastUpdate(long lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
-    /**
+    /*
      * @return the state
      */
     public int getState() {
         return state;
     }
 
-    /**
+    /*
      * @param state the state to set
      */
     public void setState(int state) {
         this.state = state;
     }
 
-    /**
+    /*
      * @return the readyForAction
      */
     public boolean isReadyToEvaluate() {
         return readyToEvaluate;
     }
 
-    /**
+    /*
      * @param readyForAction the readyForAction to set
      */
     public void setReadyToEvaluate(boolean readyToEvaluate) {
         this.readyToEvaluate = readyToEvaluate;
     }
 
-    /**
+    /*
      * @return the workingFreezersCount
      *//*
     public int getWorkingFreezersCount() {
         return workingFreezersCount;
     }
 
-    *//**
+    *//*
      * @param workingFreezersCount the workingFreezersCount to set
      *//*
     public void setWorkingFreezersCount(int workingFreezersCount) {
         this.workingFreezersCount = workingFreezersCount;
     }
 
-    *//**
+    *//*
      * @return the workingFridgesCount
      *//*
     public int getWorkingFridgesCount() {
         return workingFridgesCount;
     }
 
-    *//**
+    *//*
      * @param workingFridgesCount the workingFridgesCount to set
      *//*
     public void setWorkingFridgesCount(int workingFridgesCount) {

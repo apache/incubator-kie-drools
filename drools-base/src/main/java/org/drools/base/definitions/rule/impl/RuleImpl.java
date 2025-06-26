@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -75,21 +75,21 @@ public class RuleImpl implements Externalizable,
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";
 
-    /** The parent pkg */
+    /* The parent pkg */
     private String                   pkg;
 
-    /** Name of the rule. */
+    /* Name of the rule. */
     private String                   name;
 
-    /** Parent Rule Name, optional */
+    /* Parent Rule Name, optional */
     private RuleImpl                 parent;
 
     private List<RuleImpl>           children;
 
-    /** Salience value. */
+    /* Salience value. */
     private Salience salience = SalienceInteger.DEFAULT_SALIENCE;
 
-    /** The Rule is dirty after patterns have been added */
+    /* The Rule is dirty after patterns have been added */
     private boolean                  dirty;
     private Map<String, Declaration> declarations;
     private Map<String, String[]>    requiredDeclarations = new HashMap<>();
@@ -102,15 +102,15 @@ public class RuleImpl implements Externalizable,
 
     private Map<String, Object>      metaAttributes = new HashMap<>();
 
-    /** Consequence. */
+    /* Consequence. */
     private Consequence consequence;
 
     private Map<String, Consequence> namedConsequences;
 
-    /** Timer semantics that controls the firing of a rule */
+    /* Timer semantics that controls the firing of a rule */
     private Timer timer;
 
-    /** Load order in Package */
+    /* Load order in Package */
     private int                      loadOrder;
 
     private String                   activationGroup;
@@ -141,7 +141,7 @@ public class RuleImpl implements Externalizable,
 
     public RuleImpl() { }
 
-    /**
+    /*
      * Construct a
      * <code>Rule<code> with the given name for the specified pkg parent
      *
@@ -234,7 +234,7 @@ public class RuleImpl implements Externalizable,
         usedQueries.add(query);
     }
 
-    /**
+    /*
      * Returns the lists of queries from which this rule (or query) depends on ordered
      * by their relative dependencies, e.g. if R1 -> A -> B -> C (where the letter are queries)
      * it will return [C, B, A]
@@ -275,7 +275,7 @@ public class RuleImpl implements Externalizable,
         this.dialect = dialect;
     }
 
-    /**
+    /*
      * Returns the Timer semantics for a rule. Timer based rules are not added directly to the Agenda
      * instead they are scheduled for Agenda addition, based on the timer.
      */
@@ -283,7 +283,7 @@ public class RuleImpl implements Externalizable,
         return timer;
     }
 
-    /**
+    /*
      * Sets the timer semantics for a rule. Timer based rules are not added directly to the Agenda
      * instead they are scheduled for Agenda addition, based on the timer.
      */
@@ -291,7 +291,7 @@ public class RuleImpl implements Externalizable,
         this.timer = timer;
     }
 
-    /**
+    /*
      * Determine if this rule is internally consistent and valid.
      * This will include checks to make sure the rules semantic components (actions and predicates)
      * are valid.
@@ -326,7 +326,7 @@ public class RuleImpl implements Externalizable,
         return this.pkg;
     }
 
-    /**
+    /*
      * Retrieve the name of this rule.
      *
      * @return The name of this rule.
@@ -340,7 +340,7 @@ public class RuleImpl implements Externalizable,
         return getPackageName() + "." + getName();
     }
 
-    /**
+    /*
      * Retrieve the <code>Rule</code> salience.
      *
      * @return The salience.
@@ -349,7 +349,7 @@ public class RuleImpl implements Externalizable,
         return this.salience;
     }
 
-    /**
+    /*
      * Retrieve the <code>Rule</code> salience value.
      *
      * @return The salience value.
@@ -358,7 +358,7 @@ public class RuleImpl implements Externalizable,
         return getSalience().getValue();
     }
 
-    /**
+    /*
      * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
      *
      * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
@@ -367,7 +367,7 @@ public class RuleImpl implements Externalizable,
         return getSalience().isDynamic();
     }
 
-    /**
+    /*
      * Set the <code>Rule<code> salience.
      *
      *  @param salience The salience.
@@ -409,7 +409,7 @@ public class RuleImpl implements Externalizable,
         return isSet(NO_LOOP_BIT);
     }
 
-    /**
+    /*
      * This returns true is the rule is effective.
      * If the rule is not effective, it cannot activate.
      *
@@ -470,7 +470,7 @@ public class RuleImpl implements Externalizable,
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
-    /**
+    /*
      * Retrieve a parameter <code>Declaration</code> by identifier.
      *
      * @param identifier
@@ -496,7 +496,7 @@ public class RuleImpl implements Externalizable,
         this.requiredDeclarations.put(consequenceName, requiredDeclarations);
     }
 
-    /**
+    /*
      * This field is updated at runtime, when the first logical assertion is done. I'm currently not too happy about having this determine at runtime
      * but its currently easier than trying to do this at compile time, although eventually this should be changed
      * @return
@@ -517,7 +517,7 @@ public class RuleImpl implements Externalizable,
         set(LOCK_ON_ACTIVE_BIT, lockOnActive);
     }
 
-    /**
+    /*
      * Retrieve the set of all <i>root fact object </i> parameter
      * <code>Declarations</code>.
      *
@@ -532,7 +532,7 @@ public class RuleImpl implements Externalizable,
         return this.declarations;
     }
 
-    /**
+    /*
      * Add a pattern to the rule. All patterns are searched for bindings which are then added to the rule
      * as declarations
      *
@@ -545,7 +545,7 @@ public class RuleImpl implements Externalizable,
         this.lhsRoot.addChild( element );
     }
 
-    /**
+    /*
      * Retrieve the <code>List</code> of <code>Conditions</code> for this
      * rule.
      *
@@ -580,7 +580,7 @@ public class RuleImpl implements Externalizable,
         return lhs;
     }
 
-    /**
+    /*
      * Uses the LogicTransformer to process the Rule patters - if no ORs are
      * used this will return an array of a single AND element. If there are Ors
      * it will return an And element for each possible logic branch. The
@@ -609,7 +609,7 @@ public class RuleImpl implements Externalizable,
         }
     }
 
-    /**
+    /*
      * Set the <code>Consequence</code> that is associated with the successful
      * match of this rule.
      *
@@ -621,7 +621,7 @@ public class RuleImpl implements Externalizable,
         this.consequence = consequence;
     }
 
-    /**
+    /*
      * Retrieve the <code>Consequence</code> associated with this
      * <code>Rule</code>.
      *
@@ -722,7 +722,7 @@ public class RuleImpl implements Externalizable,
         set(SEMANTICALLY_VALID_BIT, valid);
     }
 
-    /**
+    /*
      * This will return if the semantic actions or predicates in the rules
      * are valid.
      * This is provided so that lists of rules can be provided even if their semantic actions
@@ -744,7 +744,7 @@ public class RuleImpl implements Externalizable,
         this.calendars = calendars;
     }
 
-    /**
+    /*
      * Sets the date from which this rule takes effect (can include time to the millisecond).
      * @param effectiveDate
      */
@@ -752,7 +752,7 @@ public class RuleImpl implements Externalizable,
         this.dateEffective = effectiveDate;
     }
 
-    /**
+    /*
      * Sets the date after which the rule will no longer apply (can include time to the millisecond).
      * @param expiresDate
      */
@@ -768,7 +768,7 @@ public class RuleImpl implements Externalizable,
         return this.dateExpires;
     }
 
-    /**
+    /*
      * A rule is enabled by default. This can explicitly disable it in which case it will never activate.
      */
     public void setEnabled(final Enabled b) {

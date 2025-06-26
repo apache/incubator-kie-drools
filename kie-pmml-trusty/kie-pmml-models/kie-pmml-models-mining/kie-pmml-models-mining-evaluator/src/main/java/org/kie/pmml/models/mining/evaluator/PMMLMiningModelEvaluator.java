@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -53,7 +53,7 @@ import static org.kie.pmml.api.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 import static org.kie.pmml.evaluator.core.utils.PMMLListenerUtils.stepExecuted;
 
-/**
+/*
  * Default <code>PMMLModelExecutor</code> for <b>Mining</b>
  */
 public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMiningModel> {
@@ -106,7 +106,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         return toReturn;
     }
 
-    /**
+    /*
      * Returns a <code>KiePMMLNameValue</code> representation of the <code>PMML4Result</code>.
      * <b>It is based on the assumption there is only one result to be considered, defined as</b>
      * {@link PMML4Result#getResultObjectName() }
@@ -125,7 +125,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         return new KiePMMLNameValue(fieldName, retrieved);
     }
 
-    /**
+    /*
      * Returns a <code>List&lt;KiePMMLNameValue&gt;</code> representation of the given <code>Map&lt;String,
      * Double&gt;</code>.
      *
@@ -145,7 +145,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         }).collect(Collectors.toList());
     }
 
-    /**
+    /*
      * Returns a <code>KiePMMLValueWeight</code> if the given <code>MULTIPLE_MODEL_METHOD</code> expect it;
      * the original <b>rawObject</b>, otherwise
      *
@@ -217,7 +217,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         addStep(() -> getStep(segment, pmml4Result), pmmlContext);
     }
 
-    /**
+    /*
      * Send the given <code>PMMLStep</code>
      * to the <code>PMMLRuntimeContext</code>
      *
@@ -228,7 +228,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         stepExecuted(stepSupplier, pmmlContext);
     }
 
-    /**
+    /*
      * Return a <code>PMMLStep</code> out of the given <code>KiePMMLSegment</code> and
      * <code>PMML4Result</code>
      * @param segment
@@ -246,7 +246,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         return toReturn;
     }
 
-    /**
+    /*
      * Evaluate the whole <code>KiePMMLMiningModel</code>
      * Being it a <b>meta</b> model, it actually works as the top-level PMML model,
      * recursively and indirectly invoking model-specific evaluators (through <code>PMMLRuntime</code> container)
@@ -270,7 +270,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         return getPMML4Result(toEvaluate, inputData, pmmlContext);
     }
 
-    /**
+    /*
      * Evaluate the model contained in the <code>KiePMMLSegment</code>, indirectly invoking
      * the model-specific runtime (through <code>PMMLRuntime</code> container)
      *

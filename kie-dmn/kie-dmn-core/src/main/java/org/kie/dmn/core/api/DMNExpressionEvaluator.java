@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,12 +22,12 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 
-/**
+/*
  * An Expression Evaluator interface for DMN defined expressions
  */
 @FunctionalInterface
 public interface DMNExpressionEvaluator {
-    /**
+    /*
      * Evaluates the expression, returning its result type (SUCCESS/FAILURE) and
      * result value.
      *

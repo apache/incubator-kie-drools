@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,7 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
                 processInstance.getProcessId(), processInstance.getProcessName(), processInstance.getId());
     }
 
-    /**
+    /*
      * Create a new ruleflow node log event.
      * 
      * @param type The type of event.  This can only be RULEFLOW_NODE_START or RULEFLOW_NODE_END.

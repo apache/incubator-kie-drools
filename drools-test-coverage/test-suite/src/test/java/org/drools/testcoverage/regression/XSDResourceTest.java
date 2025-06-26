@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,12 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-/**
+/*
  * Tests KIE package compilation when there is a XSD resource (BZ 1120972).
  */
 public class XSDResourceTest {
 
-    /**
+    /*
      * Verifies that a XSD resource on the classpath does not break KIE package compilation.
      */
     @Test

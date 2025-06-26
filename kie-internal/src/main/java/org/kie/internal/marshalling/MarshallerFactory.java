@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 
-/**
+/*
  * <p>
  * The MarshallerFactory is used to marshal and unmarshal StatefulKnowledgeSessions. At the simplest it can be used as follows:
  * </p>
@@ -102,7 +102,7 @@ public class MarshallerFactory {
         return getMarshallerProvider().newSerializeMarshallingStrategy( acceptor );
     }
 
-    /**
+    /*
      * Default uses the serialise marshalling strategy.
      * @return
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.kie.internal.utils;
 
 import java.util.List;
 
-/**
+/*
  * Variable indexer that allows to transform variable instance into other representation (usually string)
  * to be able to use it for queries.
  *
@@ -28,7 +28,7 @@ import java.util.List;
  */
 public interface VariableIndexer<V> {
 
-    /**
+    /*
      * Tests if given variable shall be indexed by this indexer
      *
      * NOTE: only one indexer can be used for given variable
@@ -38,7 +38,7 @@ public interface VariableIndexer<V> {
      */
     boolean accept(Object variable);
 
-    /**
+    /*
      * Performs index/transform operation of the variable. Result of this operation can be
      * either single value or list of values to support complex type separation.
      * For example when variable is of type Person that has name, address phone indexer could

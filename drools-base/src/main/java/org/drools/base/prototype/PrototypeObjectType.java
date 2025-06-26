@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -64,7 +64,7 @@ public class PrototypeObjectType implements ObjectType {
     // org.kie.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /**
+    /*
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
      *

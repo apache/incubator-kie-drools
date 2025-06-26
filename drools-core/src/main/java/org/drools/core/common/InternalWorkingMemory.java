@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -55,7 +55,7 @@ public interface InternalWorkingMemory
     
     InternalKnowledgeRuntime getKnowledgeRuntime();
     
-    /**
+    /*
      * Returns a map of channel Id->Channel of all channels in
      * this working memory
      * 
@@ -69,7 +69,7 @@ public interface InternalWorkingMemory
     
     void endBatchExecution();
     
-    /**
+    /*
      * Returns the number of time units (usually ms) that the engine is idle
      * according to the session clock or -1 if it is not idle.
      * 
@@ -79,7 +79,7 @@ public interface InternalWorkingMemory
      */
     long getIdleTime();
     
-    /**
+    /*
      * Returns the number of time units (usually ms) to
      * the next scheduled job
      * 
@@ -90,7 +90,7 @@ public interface InternalWorkingMemory
     
     void updateEntryPointsCache();
     
-    /**
+    /*
      * Returns the total number of facts in the working memory, i.e., counting
      * all facts from all entry points. This is an approximate value and may not
      * be accurate due to the concurrent nature of the entry points.

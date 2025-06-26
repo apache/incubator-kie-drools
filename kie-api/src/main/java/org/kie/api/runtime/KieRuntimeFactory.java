@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.api.internal.utils.KieService;
 
-/**
+/*
  * Maintains a collection of Knowledge Runtimes
  * that is bound to the given KieBase.
  */
@@ -35,7 +35,7 @@ public class KieRuntimeFactory {
     private final KieBase kieBase;
     private final ConcurrentHashMap<Class<?>, Object> runtimeServices = new ConcurrentHashMap<>();
 
-    /**
+    /*
      * Creates an instance of this factory for the given KieBase
      */
     public static KieRuntimeFactory of(KieBase kieBase) {
@@ -46,7 +46,7 @@ public class KieRuntimeFactory {
         this.kieBase = kieBase;
     }
 
-    /**
+    /*
      * Returns a singleton instance of the given class (if any)
      * @throws NoSuchElementException if it is not possible to find a service for the given class
      */
@@ -55,7 +55,7 @@ public class KieRuntimeFactory {
         return (T) runtimeServices.computeIfAbsent(cls, this::createRuntimeInstance);
     }
 
-    /**
+    /*
      * Create a runtime instance, and return nulls if it fails.
      * Respects the Map#computeIfAbsent contract
      * @param c

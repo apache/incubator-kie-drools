@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,14 +18,14 @@
  */
 package org.drools.examples.sudoku;
 
-/**
+/*
  * A counter bean.
  */
 public class Counter {
 
     private int count;
     
-    /**
+    /*
      * Constructor, setting an initial value.
      * @param init the initialization value
      */

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,7 +29,7 @@ public final class EfestoInputStreamResource implements EfestoResource<InputStre
 
     private final String fileName;
 
-    /**
+    /*
      *
      * @param inputStream
      * @param fileName Name of the file, included suffix.

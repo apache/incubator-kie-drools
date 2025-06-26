@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,14 +38,14 @@ public class ReliabilityUtils {
         // no constructor
     }
 
-    /**
+    /*
      * Returns a String representation of the activation.
      */
     public static String getActivationKey(Match match) {
         return getActivationKey(match, null);
     }
 
-    /**
+    /*
      * Returns a String representation of the activation, replacing the new fact handle id with the old fact handle id.
      * Used to find an activation key in the persisted storage.
      */

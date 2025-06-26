@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,25 +21,25 @@ package org.kie.api.runtime.rule;
 import java.io.Externalizable;
 import java.io.Serializable;
 
-/**
+/*
  * An interface for accumulate external function implementations
  */
 public interface AccumulateFunction<C extends Serializable> extends Externalizable {
 
-    /**
+    /*
      * Creates and returns a new context object
      * @return new context object
      */
     C createContext();
 
-    /**
+    /*
      * Initializes the accumulator
      * @param context never null
      * @throws Exception
      */
     void init(C context) throws Exception;
 
-    /**
+    /*
      * Initializes the accumulator, possibly returning a new accumulation context instead of the original one
      * @param context
      * @return new context object
@@ -53,14 +53,14 @@ public interface AccumulateFunction<C extends Serializable> extends Externalizab
         return context;
     }
 
-    /**
+    /*
      * Executes the accumulation action
      * @param context never null
      * @param value
      */
     void accumulate(C context, Object value);
 
-    /**
+    /*
      * Executes the accumulation action returning the accumulated object that will be passed back
      * to the reverse method when this value will be eventually removed from acccumulation.
      * @param context
@@ -72,7 +72,7 @@ public interface AccumulateFunction<C extends Serializable> extends Externalizab
         return value;
     }
 
-    /**
+    /*
      * Reverses the accumulation action
      * @param context never null
      * @param value
@@ -80,23 +80,23 @@ public interface AccumulateFunction<C extends Serializable> extends Externalizab
      */
     void reverse(C context, Object value) throws Exception;
 
-    /**
+    /*
      * @return the current value in this accumulation session
      * @throws Exception
      */
     Object getResult(C context) throws Exception;
 
-    /**
+    /*
      * @return true if the function supports reverse, otherwise false
      */
     boolean supportsReverse();
 
-    /**
+    /*
      * @return the class type of the result of this function
      */
     Class<?> getResultType();
 
-    /**
+    /*
      * Reverses the accumulation action
      * @param context
      * @param value

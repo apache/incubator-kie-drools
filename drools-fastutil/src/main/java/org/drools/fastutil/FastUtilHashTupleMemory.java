@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -247,7 +247,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
             this.set = set;
         }
 
-        /**
+        /*
          * This only seems to be used in tests, so is not performance sensitive
          * @param target
          */

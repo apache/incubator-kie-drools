@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -62,7 +62,7 @@ public interface RuleScenarioExecutableBuilder {
 
     Map<String, Object> run();
 
-    /**
+    /*
      * Method to calculate actual number of available rules filtered by active agenda group
      * @param kieBase
      * @param activeAgendaGroup name of the active agenda group. Use <code>null</code> if default one

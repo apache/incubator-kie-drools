@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Most common denominator for JavaCompiler settings.
  * 
  * If you need more specific settings you have to provide
@@ -42,7 +42,7 @@ public class JavaCompilerSettings {
 
     private final List<String> options;
 
-    /** @deprecated */
+    /* @deprecated */
     private boolean verbose = false;
 
     public JavaCompilerSettings() {
@@ -111,12 +111,12 @@ public class JavaCompilerSettings {
         return debug;
     }
 
-    /** @deprecated */
+    /* @deprecated */
     public void setVerbose( final boolean pVerbose ) {
         verbose = pVerbose;
     }
 
-    /** @deprecated */
+    /* @deprecated */
     public boolean isVerbose() {
         return verbose;
     }

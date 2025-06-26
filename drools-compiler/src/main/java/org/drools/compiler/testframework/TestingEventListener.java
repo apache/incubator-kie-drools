@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -43,7 +43,7 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
-/**
+/*
  * This tracks what is happening in the engine with rule activations and firings.
  * It also allows you to choose what to include/exclude from firing.
  *
@@ -92,7 +92,7 @@ public class TestingEventListener implements AgendaEventListener {
 
 
 
-//    /**
+//    /*
 //     * Exclusive means DO NOT fire the rules mentioned.
 //     * For those rules, they will still be counted, just not allowed to activate.
 //     * Inclusive means only the rules on the given set are allowed to fire.
@@ -166,7 +166,7 @@ public class TestingEventListener implements AgendaEventListener {
 
 
 
-    /**
+    /*
      * @return A map of the number of times a given rule "fired".
      * (of course in reality the side effect of its firing may have been nilled out).
      */
@@ -174,7 +174,7 @@ public class TestingEventListener implements AgendaEventListener {
         return this.firingCounts;
     }
 
-    /**
+    /*
      * Return a list of the rules fired, for display purposes.
      */
     public String[] getRulesFiredSummary() {

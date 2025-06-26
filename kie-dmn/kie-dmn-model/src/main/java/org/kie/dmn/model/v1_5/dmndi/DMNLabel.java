@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,7 +22,7 @@ public class DMNLabel extends Shape implements org.kie.dmn.model.api.dmndi.DMNLa
 
     protected String text;
 
-    /**
+    /*
      * Gets the value of the text property.
      * 
      * @return
@@ -34,7 +34,7 @@ public class DMNLabel extends Shape implements org.kie.dmn.model.api.dmndi.DMNLa
         return text;
     }
 
-    /**
+    /*
      * Sets the value of the text property.
      * 
      * @param value

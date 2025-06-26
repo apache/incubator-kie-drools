@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,7 @@ import java.util.function.BiConsumer;
 
 import org.kie.internal.runtime.Closeable;
 
-/**
+/*
  * Base class for Thread-safe Event Support in Drools. Note that subclasses wishing to access
  * the listeners should do so via the <method>getEventListenersIterator</method> method. This
  * will provide an Iterator accessing the current snapshot of the underlying list, freeing the
@@ -71,7 +71,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
         return hasListeners;
     }
 
-    /**
+    /*
      * Adds the specified listener to the list of listeners. Note that this method needs to be
      * synchonized because it performs two independent operations on the underlying list
      *
@@ -84,7 +84,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
         }
     }
 
-    /**
+    /*
      * Removes all event listeners of the specified class. Note that this method needs to be
      * synchonized because it performs two independent operations on the underlying list
      *

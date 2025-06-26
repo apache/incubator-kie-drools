@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,19 +24,19 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 
-/**
+/*
  * Holds build processing info, warnings and errors.
  */
 public interface BuildResultCollector {
     void addBuilderResult(KnowledgeBuilderResult result);
 
-    /**
+    /*
      * This will return true if there were errors in the package building and
      * compiling phase
      */
     boolean hasErrors();
 
-    /**
+    /*
      * Return the knowledge builder results for the listed severities.
      *
      * @param severities

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 
 import org.kie.internal.definition.KnowledgeDefinition;
 
-/**
+/*
  * The window declaration defines a window that can be used by patterns
  * in rules
  */

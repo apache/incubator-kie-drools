@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,7 @@ import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 
-/**
+/*
  * A builder implementation for PackageDescrs using a fluent API.
  */
 public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
@@ -64,14 +64,14 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
         return new PackageDescrBuilderImpl(resource);
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PackageDescr getDescr() {
         return descr;
     }
 
-    /**
+    /*
      * {@inheritDoc}
      */
     public PackageDescrBuilder name( String name ) {

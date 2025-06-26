@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,7 +32,7 @@ import org.drools.impact.analysis.model.right.SpecificProperty;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.jupiter.api.Test;
 
-/**
+/*
  * This test is to verify that DeleteSpecificFactAction can be handled correctly.
  * DeleteSpecificFactAction cannot be created by ModelBuilder from DRL, so we programmatically add it to the model.
  */

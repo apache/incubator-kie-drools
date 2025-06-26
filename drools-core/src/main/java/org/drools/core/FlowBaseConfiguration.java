@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -37,7 +37,7 @@ import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * FlowBaseConfiguration
  *
  * A class to store FlowBase related configuration. It must be used at flow base instantiation time
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: This API is under review and may change in the future.
  */
 
-/**
+/*
  * <pre>
  * </pre>
  */
@@ -80,7 +80,7 @@ public class FlowBaseConfiguration extends BaseConfiguration<KieBaseOption, Sing
     }
 
 
-    /**
+    /*
      * A constructor that sets the classloader to be used as the parent classloader
      * of this rule base classloaders, and the properties to be used
      * as base configuration options

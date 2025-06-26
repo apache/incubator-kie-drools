@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,12 +34,12 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
 
-/**
+/*
  * Represents all possible KieBase configurations for tests.
  */
 public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -47,7 +47,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY(IDENTITY),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -55,7 +55,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_ALPHA_NETWORK(IDENTITY + ALPHA_NETWORK_COMPILER),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -63,7 +63,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_MODEL_PATTERN(IDENTITY, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -71,7 +71,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(IDENTITY + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -79,7 +79,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY(0),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -87,7 +87,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY_ALPHA_NETWORK(ALPHA_NETWORK_COMPILER),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -95,7 +95,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY_MODEL_PATTERN(0, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -103,7 +103,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -111,7 +111,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY(IDENTITY + STREAM_MODE),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -119,7 +119,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY_ALPHA_NETWORK(IDENTITY + STREAM_MODE + ALPHA_NETWORK_COMPILER),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -127,7 +127,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY_MODEL_PATTERN(IDENTITY + STREAM_MODE, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -135,7 +135,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(IDENTITY + STREAM_MODE + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -143,7 +143,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY(STREAM_MODE),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -151,7 +151,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY_ALPHA_NETWORK(STREAM_MODE + ALPHA_NETWORK_COMPILER),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -159,7 +159,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY_MODEL_PATTERN(STREAM_MODE, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
@@ -167,7 +167,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(STREAM_MODE + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
@@ -175,7 +175,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      */
     CLOUD_IDENTITY_IMMUTABLE(IDENTITY + IMMUTABLE),
 
-    /**
+    /*
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.

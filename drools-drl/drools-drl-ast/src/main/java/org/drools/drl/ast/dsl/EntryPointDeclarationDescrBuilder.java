@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.drl.ast.dsl;
 
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 
-/**
+/*
  * An interface for the entry point declaration descriptor builder
  */
 public interface EntryPointDeclarationDescrBuilder
@@ -28,7 +28,7 @@ public interface EntryPointDeclarationDescrBuilder
     AnnotatedDescrBuilder<EntryPointDeclarationDescrBuilder>, 
     DescrBuilder<PackageDescrBuilder, EntryPointDeclarationDescr> {
 
-    /**
+    /*
      * Declares the entry point id 
      * 
      * @param name the name of the entry point to be declared

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,7 @@ public class ParseException extends RuntimeException {
 
     private Throwable         cause;
 
-    /**
+    /*
      * Thrown if there is an exception related to parsing a line in a drl file.
      * For more generic exception, a different exception class will be used.
      */
@@ -36,7 +36,7 @@ public class ParseException extends RuntimeException {
         this.lineNumber = lineNumber;
     }
 
-    /**
+    /*
      * Allows nesting of misc exceptions, yet preserving the line number
      * that triggered the error.
      */
@@ -48,14 +48,14 @@ public class ParseException extends RuntimeException {
         this.cause = cause;
     }
 
-    /**
+    /*
      * The line number on which the error occurred.
      */
     public int getLineNumber() {
         return this.lineNumber;
     }
 
-    /**
+    /*
      * This will print out a summary, including the line number. 
      * It will also print out the cause message if applicable.
      */

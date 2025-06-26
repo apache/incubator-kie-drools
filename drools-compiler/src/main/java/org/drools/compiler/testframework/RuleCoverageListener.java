@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 
-/**
+/*
  * Measure the rule coverage.
  */
 public class RuleCoverageListener implements AgendaEventListener {
@@ -39,7 +39,7 @@ public class RuleCoverageListener implements AgendaEventListener {
     private final Set<String> rules;
     private int totalCount;
 
-    /**
+    /*
      * Pass in the expected rules to fire.
      * @param expectedRuleNames
      */
@@ -71,7 +71,7 @@ public class RuleCoverageListener implements AgendaEventListener {
         return rules;
     }
 
-    /**
+    /*
      * @return A set of rules that were not fired.
      */
     public String[] getUnfiredRules() {

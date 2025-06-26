@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -87,7 +87,7 @@ public class TypeDeclarationUtils {
         }
     }
 
-    /**
+    /*
      * Tries to determine the namespace (package) of a simple type chosen to be
      * the superclass of a declared bean. Looks among imports, local
      * declarations and previous declarations. Means that a class can't extend

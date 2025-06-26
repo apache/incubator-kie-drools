@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.common.RuleBasePartitionId;
 
-/**
+/*
  * An abstract super class for the LeftTupleSinkAdapters
  */
 public abstract class AbstractLeftTupleSinkAdapter 
@@ -48,7 +48,7 @@ public abstract class AbstractLeftTupleSinkAdapter
         this.partitionId = (RuleBasePartitionId) in.readObject();
     }
 
-    /**
+    /*
      * Returns the partition to which this propagator belongs to
      *
      * @return the ID of the partition
@@ -57,7 +57,7 @@ public abstract class AbstractLeftTupleSinkAdapter
         return this.partitionId;
     }
 
-    /**
+    /*
      * Sets the partition to which this propagator belongs to
      *
      * @param partitionId

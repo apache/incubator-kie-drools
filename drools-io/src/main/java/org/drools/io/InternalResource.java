@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,7 +44,7 @@ public interface InternalResource extends Resource {
     
     Collection<Resource> listResources();
     
-    /**
+    /*
      * Returns the description of the resource. This is just a text description
      * of the resource used to add more information about it.
      * This is not a mandatory attribute
