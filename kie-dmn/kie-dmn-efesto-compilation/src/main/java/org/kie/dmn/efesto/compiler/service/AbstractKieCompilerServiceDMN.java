@@ -51,10 +51,9 @@ import org.slf4j.Logger;
 
 import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
 
+@SuppressWarnings({"uncheck", "rawtypes"})
 public abstract class AbstractKieCompilerServiceDMN implements KieCompilerService<EfestoCompilationOutput,
         EfestoCompilationContext> {
-
-//    static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
 
     @Override
     public boolean hasCompilationSource(String fileName) {
@@ -127,7 +126,6 @@ public abstract class AbstractKieCompilerServiceDMN implements KieCompilerServic
             storeMappedModelTuple(mappedModelSourceTuple);
             return toReturn;
         } catch (Exception e) {
-            logger.error("ERROR", e);
             throw new KieCompilerServiceException(e);
         }
     }
