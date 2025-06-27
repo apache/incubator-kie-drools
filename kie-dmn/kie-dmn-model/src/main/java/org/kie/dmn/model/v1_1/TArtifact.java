@@ -18,8 +18,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.api.Artifact;
+import org.kie.dmn.model.impl.AbstractTArtifact;
 
-public abstract class TArtifact extends TDMNElement implements Artifact {
+public abstract class TArtifact extends AbstractTArtifact {
 
 }

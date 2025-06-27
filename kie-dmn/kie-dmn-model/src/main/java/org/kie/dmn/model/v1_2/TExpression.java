@@ -18,25 +18,8 @@
  */
 package org.kie.dmn.model.v1_2;
 
-import javax.xml.namespace.QName;
+import org.kie.dmn.model.impl.AbstractTExpression;
 
-import org.kie.dmn.model.api.Expression;
-
-public class TExpression extends TDMNElement implements Expression {
-
-    /**
-     * align with internal model
-     */
-    protected QName typeRef;
-
-    @Override
-    public QName getTypeRef() {
-        return this.typeRef;
-    }
-
-    @Override
-    public void setTypeRef(QName value) {
-        this.typeRef = value;
-    }
+public class TExpression extends AbstractTExpression implements URIFEELed {
 
 }

@@ -18,30 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import org.kie.dmn.model.api.Group;
+import org.kie.dmn.model.impl.AbstractTGroup;
 
-public class TGroup extends TArtifact implements Group {
-
-    protected String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String value) {
-        this.id = value;
-    }
+public class TGroup extends AbstractTGroup implements URIFEELed {
 
 }

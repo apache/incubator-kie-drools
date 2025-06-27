@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionService;
-import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.impl.AbstractKieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_3.TDMNElementReference;
 import org.kie.dmn.model.v1_3.TDecisionService;
 
@@ -70,8 +70,8 @@ public class DecisionServiceConverter extends InvocableConverter {
                 object = readItem(reader, context, null);
             }
             if (object instanceof DMNModelInstrumentedBase) {
-                ((KieDMNModelInstrumentedBase) object).setParent((KieDMNModelInstrumentedBase) parent);
-                ((KieDMNModelInstrumentedBase) parent).addChildren((KieDMNModelInstrumentedBase) object);
+                ((AbstractKieDMNModelInstrumentedBase) object).setParent((AbstractKieDMNModelInstrumentedBase) parent);
+                ((AbstractKieDMNModelInstrumentedBase) parent).addChildren((AbstractKieDMNModelInstrumentedBase) object);
             }
             reader.moveUp();
             assignChildElement(parent, nodeName, object);

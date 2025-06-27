@@ -18,17 +18,17 @@
  */
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.xml.namespace.QName;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.model.impl.AbstractKieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.TDefinitions;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public abstract class DMNModelInstrumentedBaseConverter
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
+        AbstractKieDMNModelInstrumentedBase mib = (AbstractKieDMNModelInstrumentedBase) parent;
 
         CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
         
@@ -67,7 +67,7 @@ public abstract class DMNModelInstrumentedBaseConverter
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
-        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
+        AbstractKieDMNModelInstrumentedBase mib = (AbstractKieDMNModelInstrumentedBase) parent;
 
         CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
         for (Entry<String, String> kv : mib.getNsContext().entrySet()) {

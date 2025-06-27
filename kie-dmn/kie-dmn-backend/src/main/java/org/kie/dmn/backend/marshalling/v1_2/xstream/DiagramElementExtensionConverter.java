@@ -18,18 +18,17 @@
  */
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
+import java.util.ArrayList;
+import java.util.List;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.impl.AbstractKieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +71,8 @@ public class DiagramElementExtensionConverter extends DMNModelInstrumentedBaseCo
                 try {
                     Object object = readItem(reader, context, null);
                     if (object instanceof DMNModelInstrumentedBase) {
-                        ((KieDMNModelInstrumentedBase) object).setParent(obj);
-                        obj.addChildren((KieDMNModelInstrumentedBase) object);
+                        ((AbstractKieDMNModelInstrumentedBase) object).setParent(obj);
+                        obj.addChildren((AbstractKieDMNModelInstrumentedBase) object);
                     }
                     assignChildElement(obj, nodeName, object);
                 } catch (CannotResolveClassException e) {

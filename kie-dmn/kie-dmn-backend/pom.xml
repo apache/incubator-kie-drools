@@ -126,7 +126,8 @@
                     **/20191111/DMNDI13.xsd,
                     **/20211108/DMN14.xsd,
                     **/20230324/DMN15.xsd,
-                    **/20230324/DMNDI15.xsd</includes>
+                    **/20230324/DMNDI15.xsd,
+                    **/20240513/DMN16.xsd</includes>
                   <fileMappers>
                     <!-- remove all parent directories from it, flattening it under the classes directory -->
                     <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper/>

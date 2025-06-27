@@ -29,6 +29,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.model.impl.AbstractKieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,25 +49,25 @@ public abstract class DMNModelInstrumentedBaseConverter
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
-        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
+        AbstractKieDMNModelInstrumentedBase mib = (AbstractKieDMNModelInstrumentedBase) parent;
 
         CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
-        
+
         Map<String, String> currentNSCtx = customStaxReader.getNsContext();
         mib.getNsContext().putAll(currentNSCtx);
 
         mib.setLocation( customStaxReader.getLocation() );
-        
+
         mib.setAdditionalAttributes( customStaxReader.getAdditionalAttributes() );
     }
-    
+
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         // no call to super as super is abstract method.
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
-        KieDMNModelInstrumentedBase mib = (KieDMNModelInstrumentedBase) parent;
+        AbstractKieDMNModelInstrumentedBase mib = (AbstractKieDMNModelInstrumentedBase) parent;
 
         CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
         for (Entry<String, String> kv : mib.getNsContext().entrySet()) {
