@@ -143,7 +143,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             Process<? extends Model> process = processes.get().processById(processId);
             long numberOfProcessInstanceMigrated = process.instances().migrateAll(migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion());
             Map<String, Object> message = new HashMap<>();
-            message.put("message", "All intances migrated");
+            message.put("message", "All instances migrated");
             message.put("numberOfProcessInstanceMigrated", numberOfProcessInstanceMigrated);
             return buildOkResponse(message);
         } catch (Exception e) {
