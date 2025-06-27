@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
-             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-             namespace="https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31"
-             id="_150E738D-C81A-4BE8-8595-D85A63A8D60B"
-             name="DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43"
-             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
-             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-             xmlns:kie="https://kie.org/dmn/extensions/1.0">
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31" id="_150E738D-C81A-4BE8-8595-D85A63A8D60B" name="DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43">
   <decision name="time" id="_13CBFAD6-3811-459A-930D-026239B0B26E">
     <variable name="time" id="_8809F755-F0B3-4A31-9E10-02AE1C54B2A2" typeRef="time" />
     <informationRequirement id="_F0D8BBA6-6707-4433-8212-0324F8CB927E">
       <requiredInput href="#_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20" />
     </informationRequirement>
     <literalExpression id="_6A50752C-AFA3-4497-8F04-693338815A09" typeRef="time" label="time">
-      <text>time(a time)</text>
+      <text>time(a_time)</text>
     </literalExpression>
   </decision>
-  <inputData name="a time" id="_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20">
-    <variable name="a time" id="_85F94F9C-49AF-4AB2-A772-6A0326280049" typeRef="string" />
+  <inputData name="a_time" id="_CD0AF8FB-4B6D-41C9-A5E2-8B01D4731B20">
+    <variable name="a_time" id="_85F94F9C-49AF-4AB2-A772-6A0326280049" typeRef="string" />
   </inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_4CF8B0C0-E536-4E12-B339-B3DD51296C11" name="Default DRD" useAlternativeInputDataShape="false">
