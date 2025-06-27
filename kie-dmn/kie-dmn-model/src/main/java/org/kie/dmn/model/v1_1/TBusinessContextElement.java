@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,20 +18,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.api.BusinessContextElement;
+import org.kie.dmn.model.impl.AbstractTBusinessContextElement;
 
-public abstract class TBusinessContextElement extends TNamedElement implements BusinessContextElement {
-
-    private String uri;
-
-    @Override
-    public String getURI() {
-        return uri;
-    }
-
-    @Override
-    public void setURI( final String value ) {
-        this.uri = value;
-    }
+public abstract class TBusinessContextElement extends AbstractTBusinessContextElement {
 
 }

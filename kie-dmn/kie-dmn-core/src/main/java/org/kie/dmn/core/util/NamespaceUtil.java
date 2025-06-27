@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -42,7 +42,7 @@ public class NamespaceUtil {
      * @return
      */
     public static QName getNamespaceAndName(DMNModelInstrumentedBase localElement, Map<String, QName> importAliases, QName typeRef, String modelNamespace) {
-        if (localElement instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
+        if (localElement instanceof org.kie.dmn.model.v1_1.URIFEELed) {
             if (!typeRef.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
                 return new QName(localElement.getNamespaceURI(typeRef.getPrefix()), typeRef.getLocalPart());
             } else {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,24 +18,11 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import java.util.ArrayList;
-
-import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.List;
+import org.kie.dmn.model.impl.AbstractTList;
 
 /**
  * Representation for DMN XSD tList type.
  */
-public class TList extends TExpression implements List {
-
-    private java.util.List<Expression> expression;
-
-    @Override
-    public java.util.List<Expression> getExpression() {
-        if ( expression == null ) {
-            expression = new ArrayList<>();
-        }
-        return this.expression;
-    }
+public class TList extends AbstractTList implements URIFEELed {
 
 }

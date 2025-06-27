@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,30 +18,7 @@
  */
 package org.kie.dmn.model.v1_3;
 
-import org.kie.dmn.model.api.Group;
+import org.kie.dmn.model.impl.AbstractTGroup;
 
-public class TGroup extends TArtifact implements Group {
-
-    protected String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String value) {
-        this.id = value;
-    }
-
+public class TGroup extends AbstractTGroup implements URIFEELed {
 }

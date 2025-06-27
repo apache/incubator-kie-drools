@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,14 +27,15 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.impl.AbstractTFunctionDefinition;
 
-public class TFunctionDefinition extends TExpression implements FunctionDefinition {
+public class TFunctionDefinition extends AbstractTFunctionDefinition implements URIFEELed {
 
     @Deprecated
     public static final QName KIND_QNAME = new QName( KieDMNModelInstrumentedBase.URI_KIE, "kind" );
 
     @Deprecated
-    public static enum Kind {
+    public enum Kind {
         FEEL("F"), JAVA("J"), PMML("P");
 
         public final String code;
@@ -54,27 +55,6 @@ public class TFunctionDefinition extends TExpression implements FunctionDefiniti
             }
             return null;
         }
-    }
-
-    private List<InformationItem> formalParameter;
-    private Expression expression;
-
-    @Override
-    public List<InformationItem> getFormalParameter() {
-        if ( formalParameter == null ) {
-            formalParameter = new ArrayList<>();
-        }
-        return this.formalParameter;
-    }
-
-    @Override
-    public Expression getExpression() {
-        return expression;
-    }
-
-    @Override
-    public void setExpression(final Expression value) {
-        this.expression = value;
     }
 
     /**
