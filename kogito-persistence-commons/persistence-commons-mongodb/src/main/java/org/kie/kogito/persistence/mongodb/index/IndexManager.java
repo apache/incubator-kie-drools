@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.persistence.api.schema.EntityIndexDescriptor;
 import org.kie.kogito.persistence.api.schema.IndexDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
@@ -66,30 +65,25 @@ public class IndexManager {
     Map<String, String> collectionIndexMapping = new ConcurrentHashMap<>();
 
     @Inject
-    IndexSchemaAcceptor schemaAcceptor;
-
-    @Inject
     Event<ProcessIndexEvent> processIndexEvent;
 
     @Inject
     Instance<MongoClientManager> mongoClientManager;
 
-    @ConfigProperty(name = "kogito.apps.persistence.indexing", defaultValue = "true")
-    Boolean indexEnabled;
+    @Inject
+    MongoConfig mongoConfig;
 
     public void onSchemaRegisteredEvent(@Observes SchemaRegisteredEvent event) {
-        if (schemaAcceptor.accept(event.getSchemaType())) {
-            indexes.putAll(event.getSchemaDescriptor().getEntityIndexDescriptors());
-            if (indexEnabled) {
-                updateIndexes(event.getSchemaDescriptor().getEntityIndexDescriptors().values());
-            }
-
-            event.getSchemaDescriptor().getProcessDescriptor().ifPresent(processDescriptor -> processIndexEvent.fire(new ProcessIndexEvent(processDescriptor)));
+        indexes.putAll(event.getSchemaDescriptor().getEntityIndexDescriptors());
+        if (mongoConfig.indexEnabled()) {
+            updateIndexes(event.getSchemaDescriptor().getEntityIndexDescriptors().values());
         }
+
+        event.getSchemaDescriptor().getProcessDescriptor().ifPresent(processDescriptor -> processIndexEvent.fire(new ProcessIndexEvent(processDescriptor)));
     }
 
     public void onIndexCreateOrUpdateEvent(@Observes IndexCreateOrUpdateEvent event) {
-        if (!indexEnabled) {
+        if (!mongoConfig.indexEnabled()) {
             return;
         }
         String indexType = collectionIndexMapping.put(event.getCollection(), event.getIndex());

@@ -25,12 +25,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
-import org.kie.kogito.index.model.ProcessInstance;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -59,9 +56,6 @@ class DomainQueryTest {
     private static final Class rootType = ProcessInstanceEntity.class;
 
     @Mock
-    PanacheRepositoryBase<ProcessInstance, String> repository;
-
-    @Mock
     EntityManager entityManager;
 
     @Mock
@@ -75,7 +69,6 @@ class DomainQueryTest {
 
     @BeforeEach
     public void setup() {
-        when(repository.getEntityManager()).thenReturn(entityManager);
         when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
         when(criteriaBuilder.createQuery(rootType)).thenReturn(criteriaQuery);
         when(entityManager.createQuery(criteriaQuery)).thenReturn(mockQuery);
@@ -83,7 +76,7 @@ class DomainQueryTest {
 
     @Test
     void testNoParameters() {
-        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(entityManager, Function.identity(), rootType);
 
         query.execute();
 
@@ -96,7 +89,7 @@ class DomainQueryTest {
 
     @Test
     void testEmptyParameters() {
-        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(entityManager, Function.identity(), rootType);
         query.filter(emptyList());
         query.sort(emptyList());
 
@@ -111,7 +104,7 @@ class DomainQueryTest {
 
     @Test
     void testPagination() {
-        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(entityManager, Function.identity(), rootType);
         query.limit(10);
         query.offset(0);
 
@@ -148,7 +141,7 @@ class DomainQueryTest {
             return order;
         });
 
-        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(entityManager, Function.identity(), rootType);
         query.sort(asList(orderBy("name", DESC), orderBy("date", ASC)));
 
         query.execute();

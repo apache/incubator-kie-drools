@@ -18,12 +18,6 @@
  */
 package org.kie.kogito.index.postgresql.reporting.database;
 
-import java.util.Locale;
-import java.util.Objects;
-
-import org.kie.kogito.index.jpa.model.JobEntityRepository;
-import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
-import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;
@@ -38,18 +32,15 @@ import jakarta.persistence.EntityManager;
 @ApplicationScoped
 public class PostgresDataIndexDatabaseManagerImpl extends BasePostgresDatabaseManagerImpl {
 
-    private ProcessInstanceEntityRepository processInstanceEntityRepository;
-    private UserTaskInstanceEntityRepository userTaskInstanceEntityRepository;
-    private JobEntityRepository jobEntityRepository;
-
     protected PostgresDataIndexDatabaseManagerImpl() {
         //CDI proxy
     }
 
+    private EntityManager em;
+
     @Inject
-    public PostgresDataIndexDatabaseManagerImpl(final ProcessInstanceEntityRepository processInstanceEntityRepository,
-            final UserTaskInstanceEntityRepository userTaskInstanceEntityRepository,
-            final JobEntityRepository jobEntityRepository,
+    public PostgresDataIndexDatabaseManagerImpl(
+            final EntityManager em,
             final PostgresIndexesSqlBuilder indexesSqlBuilder,
             final PostgresTableSqlBuilder tableSqlBuilder,
             final PostgresTriggerDeleteSqlBuilder triggerDeleteSqlBuilder,
@@ -60,23 +51,12 @@ public class PostgresDataIndexDatabaseManagerImpl extends BasePostgresDatabaseMa
                 triggerDeleteSqlBuilder,
                 triggerInsertSqlBuilder,
                 applyMappingSqlBuilder);
-        this.processInstanceEntityRepository = Objects.requireNonNull(processInstanceEntityRepository);
-        this.userTaskInstanceEntityRepository = Objects.requireNonNull(userTaskInstanceEntityRepository);
-        this.jobEntityRepository = Objects.requireNonNull(jobEntityRepository);
+        this.em = em;
     }
 
     @Override
     protected EntityManager getEntityManager(final String sourceTableName) {
-        switch (sourceTableName.toLowerCase(Locale.ROOT)) {
-            case "processes":
-                return processInstanceEntityRepository.getEntityManager();
-            case "tasks":
-                return userTaskInstanceEntityRepository.getEntityManager();
-            case "jobs":
-                return jobEntityRepository.getEntityManager();
-            default:
-                throw new IllegalArgumentException(String.format("There is no repository defined for '%s'.", sourceTableName));
-        }
+        return em;
     }
 
 }

@@ -38,7 +38,6 @@
     <module>data-index-storage-postgresql</module>
     <module>data-index-storage-jpa-common</module>
     <module>data-index-storage-common</module>
-    <module>data-index-storage-infinispan</module>
     <module>data-index-storage-mongodb</module>
     <module>data-index-storage-postgresql-reporting</module>
     <module>data-index-storage-jpa</module>

@@ -43,7 +43,6 @@ import org.kie.kogito.index.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.kie.kogito.index.jpa.model.AttachmentEntity;
 import org.kie.kogito.index.jpa.model.CommentEntity;
 import org.kie.kogito.index.jpa.model.UserTaskInstanceEntity;
-import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -54,6 +53,7 @@ import com.google.common.net.UrlEscapers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import static java.lang.String.format;
@@ -66,8 +66,8 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
     }
 
     @Inject
-    public UserTaskInstanceEntityStorage(UserTaskInstanceEntityRepository repository, UserTaskInstanceEntityMapper mapper) {
-        super(repository, UserTaskInstanceEntity.class, mapper::mapToModel);
+    public UserTaskInstanceEntityStorage(EntityManager em, UserTaskInstanceEntityMapper mapper) {
+        super(em, UserTaskInstanceEntity.class, mapper::mapToModel);
     }
 
     @Override
@@ -257,11 +257,13 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
     }
 
     private UserTaskInstanceEntity findOrInit(String taskId) {
-        return repository.findByIdOptional(taskId).orElseGet(() -> {
-            UserTaskInstanceEntity ut = new UserTaskInstanceEntity();
+        UserTaskInstanceEntity ut = em.find(UserTaskInstanceEntity.class, taskId);
+        if (ut == null) {
+            ut = new UserTaskInstanceEntity();
             ut.setId(taskId);
-            repository.persist(ut);
-            return ut;
-        });
+            em.persist(ut);
+        }
+        return ut;
+
     }
 }

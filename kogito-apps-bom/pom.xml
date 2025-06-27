@@ -357,6 +357,17 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-common-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-common-quarkus</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-test-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -379,6 +390,17 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-graphql-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-graphql-quarkus</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-service-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -391,6 +413,23 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-service-common</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-service-quarkus-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-service-quarkus-common</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-service-quarkus-common</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
             </dependency>
@@ -581,12 +620,25 @@
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
-            <dependency>
+             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>persistence-commons-mongodb</artifactId>
                 <version>${project.version}</version>
                 <classifier>javadoc</classifier>
             </dependency>
+            
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>persistence-commons-mongodb-quarkus</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.kie.kogito</groupId>
+               <artifactId>persistence-commons-mongodb-quarkus</artifactId>
+               <version>${project.version}</version>
+               <classifier>sources</classifier>
+            </dependency>
+           
 
             <dependency>
                 <groupId>org.kie.kogito</groupId>

@@ -37,13 +37,13 @@ import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.storage.Constants.ID;
 import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.storage.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
 import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 
 public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceDataEvent<?>, ObjectNode> {
 
@@ -54,8 +54,8 @@ public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceData
         }
 
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, isNullOrEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
-        json.put(PROCESS_ID, isNullOrEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
+        json.put(ID, isEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
+        json.put(PROCESS_ID, isEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
         ObjectNode kogito = getObjectMapper().createObjectNode();
         kogito.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
         kogito.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(event));
@@ -75,13 +75,13 @@ public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceData
             UserTaskInstanceStateDataEvent data = (UserTaskInstanceStateDataEvent) event;
             json.put("actualOwner", data.getData().getActualOwner());
 
-            if (!isNullOrEmpty(data.getData().getUserTaskDescription())) {
+            if (!isEmpty(data.getData().getUserTaskDescription())) {
                 json.put("description", data.getData().getUserTaskDescription());
             }
-            if (!isNullOrEmpty(data.getData().getUserTaskName())) {
+            if (!isEmpty(data.getData().getUserTaskName())) {
                 json.put("name", data.getData().getUserTaskName());
             }
-            if (!isNullOrEmpty(data.getData().getUserTaskPriority())) {
+            if (!isEmpty(data.getData().getUserTaskPriority())) {
                 json.put("priority", data.getData().getUserTaskPriority());
             }
 

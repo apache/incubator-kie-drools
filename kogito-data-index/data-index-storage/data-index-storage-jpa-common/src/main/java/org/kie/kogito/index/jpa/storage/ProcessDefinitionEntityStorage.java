@@ -18,35 +18,28 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
+import java.util.Optional;
+
 import org.kie.kogito.index.jpa.mapper.ProcessDefinitionEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
-import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityRepository;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 
-import io.quarkus.arc.DefaultBean;
-
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
-@DefaultBean
 public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefinitionKey, ProcessDefinitionEntity, ProcessDefinition> {
 
     protected ProcessDefinitionEntityStorage() {
     }
 
     @Inject
-    public ProcessDefinitionEntityStorage(ProcessDefinitionEntityRepository repository, ProcessDefinitionEntityMapper mapper) {
-        super(repository, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
-                e.getVersion()));
-    }
-
-    @Transactional
-    @Override
-    public boolean containsKey(ProcessDefinitionKey key) {
-        return getRepository().count("id = ?1 and version = ?2", key.getId(), key.getVersion()) == 1;
+    public ProcessDefinitionEntityStorage(EntityManager em, ProcessDefinitionEntityMapper mapper, Instance<JsonPredicateBuilder> predicateBuilder) {
+        super(em, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
+                e.getVersion()), Optional.ofNullable(predicateBuilder.stream().findAny().orElse(null)));
     }
 
 }

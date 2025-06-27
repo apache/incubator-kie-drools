@@ -23,7 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.kie.kogito.index.model.*;
+import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.Timer;
+import org.kie.kogito.index.model.UserTaskInstance;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

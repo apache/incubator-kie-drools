@@ -19,7 +19,7 @@
 package org.kie.kogito.persistence.mongodb.client;
 
 import org.bson.Document;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.persistence.mongodb.index.MongoConfig;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -31,16 +31,14 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class MongoClientManager {
 
-    private static final String DATABASE_PROPERTY = "quarkus.mongodb.database";
-
-    String database;
+    //TODO private static final String DATABASE_PROPERTY = "quarkus.mongodb.database";
+    //ConfigProvider.getConfig().getValue(DATABASE_PROPERTY, String.class);
 
     @Inject
     MongoClient mongoClient;
 
-    public MongoClientManager() {
-        database = ConfigProvider.getConfig().getValue(DATABASE_PROPERTY, String.class);
-    }
+    @Inject
+    MongoConfig mongoConfig;
 
     public <E> MongoCollection<E> getCollection(String collection, Class<E> type) {
         return getMongoDatabase().getCollection(collection, type);
@@ -51,6 +49,6 @@ public class MongoClientManager {
     }
 
     private MongoDatabase getMongoDatabase() {
-        return mongoClient.getDatabase(database);
+        return mongoClient.getDatabase(mongoConfig.database());
     }
 }

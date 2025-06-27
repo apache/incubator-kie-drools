@@ -19,75 +19,68 @@
 package org.kie.kogito.index.jpa.storage;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.Storage;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-
-import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractStorage<K, E extends AbstractEntity, V> extends AbstractJPAStorageFetcher<K, E, V> implements Storage<K, V> {
 
     private Class<V> modelClass;
 
     private Function<V, E> mapToEntity;
-    private Function<E, K> mapEntityToKey;
 
     protected AbstractStorage() {
     }
 
-    protected AbstractStorage(PanacheRepositoryBase<E, K> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
+    protected AbstractStorage(EntityManager em, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
             Function<V, E> mapToEntity, Function<E, K> mapEntityToKey) {
-        super(repository, entityClass, mapToModel);
+        this(em, modelClass, entityClass, mapToModel, mapToEntity, mapEntityToKey, Optional.empty());
+    }
+
+    protected AbstractStorage(EntityManager em, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
+            Function<V, E> mapToEntity, Function<E, K> mapEntityToKey, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
+        super(em, entityClass, mapToModel, jsonPredicateBuilder);
         this.modelClass = modelClass;
         this.mapToEntity = mapToEntity;
-        this.mapEntityToKey = mapEntityToKey;
     }
 
     @Override
     @Transactional
     public V put(K key, V value) {
-        repository.getEntityManager().merge(mapToEntity.apply(value));
+        em.merge(mapToEntity.apply(value));
         return value;
     }
 
     @Override
     @Transactional
     public V remove(K key) {
-        V value = get(key);
+        E value = em.find(entityClass, key);
         if (value != null) {
-            repository.deleteById(key);
+            em.remove(value);
+            return mapToModel.apply(value);
+        } else {
+            return null;
         }
-        return value;
     }
 
     @Transactional
     @Override
     public boolean containsKey(K key) {
-        return repository.count("id = ?1", key) == 1;
+        return em.find(entityClass, key) != null;
     }
 
     @Override
     public Map<K, V> entries() {
-        return repository.streamAll().collect(toMap(mapEntityToKey, mapToModel));
-    }
-
-    @Override
-    @Transactional
-    public void clear() {
-        repository.deleteAll();
+        throw new UnsupportedOperationException("We should not iterate over all entries");
     }
 
     @Override
     public String getRootType() {
         return modelClass.getCanonicalName();
-    }
-
-    protected PanacheRepositoryBase<E, K> getRepository() {
-        return repository;
     }
 }

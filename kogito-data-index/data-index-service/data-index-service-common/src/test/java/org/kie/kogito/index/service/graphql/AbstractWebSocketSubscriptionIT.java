@@ -31,7 +31,6 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
-import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
@@ -62,7 +61,7 @@ import static org.kie.kogito.index.test.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
-public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT {
+public abstract class AbstractWebSocketSubscriptionIT {
 
     @Inject
     public ProtobufService protobufService;
@@ -266,7 +265,14 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
         return cf;
     }
 
+    protected abstract void indexProcessCloudEvent(ProcessInstanceDataEvent<?> event);
+
+    protected abstract void indexUserTaskCloudEvent(UserTaskInstanceDataEvent<?> event);
+
+    protected abstract void indexJobCloudEvent(KogitoJobCloudEvent event);
+
     protected abstract String getProcessProtobufFileContent() throws Exception;
 
     protected abstract String getUserTaskProtobufFileContent() throws Exception;
+
 }

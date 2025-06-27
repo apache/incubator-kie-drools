@@ -20,6 +20,7 @@ package org.kie.kogito.index.jpa.storage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.kogito.index.jpa.model.AbstractEntity;
@@ -28,8 +29,7 @@ import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.api.query.SortDirection;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -41,20 +41,26 @@ import jakarta.persistence.metamodel.Attribute;
 
 import static java.util.stream.Collectors.toList;
 
-public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
+public class JPAQuery<E extends AbstractEntity, T> implements Query<T> {
 
-    protected final PanacheRepositoryBase<E, K> repository;
+    protected final EntityManager em;
     private Integer limit;
     private Integer offset;
     private List<AttributeFilter<?>> filters;
     private List<AttributeSort> sortBy;
     protected final Class<E> entityClass;
     protected final Function<E, T> mapper;
+    private Optional<JsonPredicateBuilder> jsonPredicateBuilder;
 
-    public JPAQuery(PanacheRepositoryBase<E, K> repository, Function<E, T> mapper, Class<E> entityClass) {
-        this.repository = repository;
+    public JPAQuery(EntityManager em, Function<E, T> mapper, Class<E> entityClass) {
+        this(em, mapper, entityClass, Optional.empty());
+    }
+
+    public JPAQuery(EntityManager em, Function<E, T> mapper, Class<E> entityClass, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
+        this.em = em;
         this.mapper = mapper;
         this.entityClass = entityClass;
+        this.jsonPredicateBuilder = jsonPredicateBuilder;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
 
     @Override
     public List<T> execute() {
-        CriteriaBuilder builder = repository.getEntityManager().getCriteriaBuilder();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaQuery = builder.createQuery(entityClass);
         Root<E> root = criteriaQuery.from(entityClass);
         addWhere(builder, criteriaQuery, root);
@@ -94,7 +100,7 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
             }).collect(toList());
             criteriaQuery.orderBy(orderBy);
         }
-        jakarta.persistence.Query query = repository.getEntityManager().createQuery(criteriaQuery);
+        jakarta.persistence.Query query = em.createQuery(criteriaQuery);
         if (limit != null) {
             query.setMaxResults(limit);
         }
@@ -105,7 +111,8 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
     }
 
     protected Function<AttributeFilter<?>, Predicate> filterPredicateFunction(Root<E> root, CriteriaBuilder builder) {
-        return filter -> buildPredicateFunction(filter, root, builder);
+        return filter -> jsonPredicateBuilder.filter(b -> filter.isJson()).map(b -> b.buildPredicate(filter, root, builder))
+                .orElseGet(() -> buildPredicateFunction(filter, root, builder));
     }
 
     protected final Predicate buildPredicateFunction(AttributeFilter filter, Root<E> root, CriteriaBuilder builder) {
@@ -174,7 +181,7 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
     }
 
     private boolean isPluralAttribute(final String attribute) {
-        return this.repository.getEntityManager().getMetamodel().entity(this.entityClass).getDeclaredPluralAttributes().stream()
+        return this.em.getMetamodel().entity(this.entityClass).getDeclaredPluralAttributes().stream()
                 .map(Attribute::getName)
                 .anyMatch(pluralAttribute -> pluralAttribute.equals(attribute));
     }
@@ -188,12 +195,12 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
 
     @Override
     public long count() {
-        CriteriaBuilder builder = repository.getEntityManager().getCriteriaBuilder();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
         Root<E> root = criteriaQuery.from(entityClass);
         criteriaQuery.select(builder.count(root));
         addWhere(builder, criteriaQuery, root);
-        return repository.getEntityManager().createQuery(criteriaQuery).getSingleResult();
+        return em.createQuery(criteriaQuery).getSingleResult();
     }
 
     private <V> void addWhere(CriteriaBuilder builder, CriteriaQuery<V> criteriaQuery, Root<E> root) {

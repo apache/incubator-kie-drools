@@ -27,14 +27,9 @@ import java.time.temporal.ChronoUnit;
 
 import org.kie.kogito.index.DateTimeUtils;
 
-import io.quarkus.arc.DefaultBean;
-
 import graphql.language.StringValue;
 import graphql.schema.CoercingSerializeException;
-import jakarta.enterprise.context.ApplicationScoped;
 
-@ApplicationScoped
-@DefaultBean
 public class DefaultDateTimeCoercing implements DateTimeCoercing {
 
     public static ZonedDateTime parseDateTime(String s) {

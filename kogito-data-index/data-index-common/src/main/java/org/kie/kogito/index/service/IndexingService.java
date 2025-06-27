@@ -19,13 +19,11 @@
 package org.kie.kogito.index.service;
 
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.microprofile.faulttolerance.Retry;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -74,8 +72,6 @@ public class IndexingService {
     @Inject
     DataIndexStorageService manager;
 
-    //retry in case of rare but possible race condition during the insert for the first registry
-    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
         ProcessInstanceStorage storage = manager.getProcessInstanceStorage();
         if (event instanceof MultipleProcessInstanceDataEvent) {
@@ -93,15 +89,11 @@ public class IndexingService {
         }
     }
 
-    //retry in case of rare but possible race condition during the insert for the first registry
-    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessDefinition(ProcessDefinitionDataEvent definitionDataEvent) {
         ProcessDefinitionKey key = new ProcessDefinitionKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion());
         manager.getProcessDefinitionStorage().put(key, ProcessDefinitionHelper.merge(manager.getProcessDefinitionStorage().get(key), definitionDataEvent));
     }
 
-    //retry in case of rare but possible race condition during the insert for the first registry
-    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public <T> void indexUserTaskInstanceEvent(UserTaskInstanceDataEvent<T> event) {
         UserTaskInstanceStorage storage = manager.getUserTaskInstanceStorage();
         if (event instanceof MultipleUserTaskInstanceDataEvent) {

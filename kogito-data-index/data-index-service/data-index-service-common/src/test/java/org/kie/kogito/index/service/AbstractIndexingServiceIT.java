@@ -36,6 +36,7 @@ import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
@@ -94,7 +95,7 @@ import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.test.TestUtils.getProcessDefinitionDataEvent;
 import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
-public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
+public abstract class AbstractIndexingServiceIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIndexingServiceIT.class);
     public static final String CURRENT_USER = "currentUser";
@@ -230,6 +231,10 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.ProcessInstances[49].id", is(pIds.get(49))));
     }
 
+    protected abstract void indexProcessCloudEvent(ProcessInstanceDataEvent<?> startEvent);
+
+    protected abstract void indexProcessCloudEvent(ProcessDefinitionDataEvent definitionDataEvent);
+
     @Test
     void testUserTaskInstancePagination() {
         String processId = "deals";
@@ -287,6 +292,8 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.UserTaskInstances[0].id", is(taskIds.get(0)))
                         .body("data.UserTaskInstances[99].id", is(taskIds.get(99))));
     }
+
+    protected abstract void indexUserTaskCloudEvent(UserTaskInstanceDataEvent<?> event);
 
     @Test
     void testConcurrentProcessInstanceIndex() throws Exception {
@@ -445,6 +452,8 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 
         validateJob(getJobById(jobId), event);
     }
+
+    protected abstract void indexJobCloudEvent(KogitoJobCloudEvent event);
 
     protected void validateJob(String query, KogitoJobCloudEvent event) {
         LOGGER.debug("GraphQL query: {}", query);

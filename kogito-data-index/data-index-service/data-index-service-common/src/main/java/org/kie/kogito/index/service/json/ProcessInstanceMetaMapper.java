@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.storage.Constants.ID;
 import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
@@ -38,6 +37,7 @@ import static org.kie.kogito.index.storage.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
 import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_NAME;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 
 public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent<?>, ObjectNode> {
 
@@ -50,8 +50,8 @@ public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEv
         }
 
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, isNullOrEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
-        json.put(PROCESS_ID, isNullOrEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
+        json.put(ID, isEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
+        json.put(PROCESS_ID, isEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
         ObjectNode kogito = getObjectMapper().createObjectNode();
         kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event));
         kogito.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
@@ -76,13 +76,13 @@ public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEv
         json.put(PROCESS_ID, event.getKogitoProcessId());
         json.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
 
-        if (!isNullOrEmpty(event.getKogitoRootProcessInstanceId())) {
+        if (!isEmpty(event.getKogitoRootProcessInstanceId())) {
             json.put("rootProcessInstanceId", event.getKogitoRootProcessInstanceId());
         }
-        if (!isNullOrEmpty(event.getKogitoParentProcessInstanceId())) {
+        if (!isEmpty(event.getKogitoParentProcessInstanceId())) {
             json.put("parentProcessInstanceId", event.getKogitoParentProcessInstanceId());
         }
-        if (!isNullOrEmpty(event.getKogitoRootProcessId())) {
+        if (!isEmpty(event.getKogitoRootProcessId())) {
             json.put("rootProcessId", event.getKogitoRootProcessId());
         }
 
@@ -95,12 +95,12 @@ public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEv
 
             json.put("state", state.getData().getState());
             json.put(PROCESS_NAME, state.getData().getProcessName());
-            if (!isNullOrEmpty(state.getData().getBusinessKey())) {
+            if (!isEmpty(state.getData().getBusinessKey())) {
                 json.put("businessKey", state.getData().getBusinessKey());
             }
             if (state.getData().getEventType() != null && state.getData().getEventType() == 1) {
                 json.put("start", state.getData().getEventDate().toInstant().toEpochMilli());
-                if (!isNullOrEmpty(state.getData().getEventUser())) {
+                if (!isEmpty(state.getData().getEventUser())) {
                     json.put("createdBy", state.getData().getEventUser());
                 }
             }
@@ -108,7 +108,7 @@ public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEv
                 json.put("end", state.getData().getEventDate().toInstant().toEpochMilli());
             }
 
-            if (!isNullOrEmpty(state.getData().getEventUser())) {
+            if (!isEmpty(state.getData().getEventUser())) {
                 json.put("updatedBy", state.getData().getEventUser());
             }
         }

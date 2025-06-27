@@ -42,12 +42,8 @@
       <artifactId>data-index-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-vertx-graphql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-reactive-routes</artifactId>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java</artifactId>
     </dependency>
     <dependency>
       <groupId>com.graphql-java</groupId>

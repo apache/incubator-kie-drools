@@ -38,9 +38,8 @@ import org.kie.kogito.persistence.api.schema.SchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.runtime.StartupEvent;
-
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
@@ -64,15 +63,12 @@ public class ProtobufService {
     FileDescriptorSource kogitoDescriptors;
 
     @Inject
-    ProtobufMonitorService protobufMonitorService;
-
-    @Inject
     Event<FileDescriptorRegisteredEvent> domainModelEvent;
 
     @Inject
     Event<SchemaRegisteredEvent> schemaEvent;
 
-    void onStart(@Observes StartupEvent ev) {
+    void onStart(@Observes @Initialized(ApplicationScoped.class) Object pointless) {
         kogitoDescriptors.getFileDescriptors().forEach((name, bytes) -> {
             LOGGER.info("Registering Kogito ProtoBuffer file: {}", name);
             String content = new String(bytes);
@@ -88,8 +84,6 @@ public class ProtobufService {
                 throw new ProtobufFileRegistrationException(e);
             }
         });
-
-        protobufMonitorService.startMonitoring();
     }
 
     public void registerProtoBufferType(String content) throws ProtobufValidationException {

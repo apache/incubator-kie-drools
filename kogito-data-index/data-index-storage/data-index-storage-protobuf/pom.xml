@@ -57,12 +57,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infinispan.protostream</groupId>
-      <artifactId>protostream</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>persistence-commons-protobuf</artifactId>
     </dependency>
 
     <!-- test -->

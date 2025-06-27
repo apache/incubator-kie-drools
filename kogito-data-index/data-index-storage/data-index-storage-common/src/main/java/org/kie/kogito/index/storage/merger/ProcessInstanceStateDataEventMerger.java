@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 
 @ApplicationScoped
 public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMerger {
@@ -60,7 +60,7 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
             pi.setError(null);
         }
         pi.setBusinessKey(event.getData().getBusinessKey());
-        pi.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
+        pi.setAddons(isEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
         pi.setEndpoint(event.getSource() == null ? null : event.getSource().toString());
         pi.setLastUpdate(toZonedDateTime(event.getTime()));
         pi.setDefinition(definitions(event));
@@ -78,7 +78,7 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
         pd.setId(event.getData().getProcessId());
         pd.setName(event.getData().getProcessName());
         pd.setVersion(event.getData().getProcessVersion());
-        pd.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
+        pd.setAddons(isEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
         pd.setRoles(event.getData().getRoles());
         pd.setType(event.getKogitoProcessType());
         pd.setEndpoint(event.getSource() == null ? null : event.getSource().toString());

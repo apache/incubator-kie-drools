@@ -26,12 +26,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.index.jpa.model.UserTaskInstanceEntity;
-import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.index.test.TestUtils;
 
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 public abstract class AbstractUserTaskInstanceStorageIT {
@@ -44,7 +44,7 @@ public abstract class AbstractUserTaskInstanceStorageIT {
     UserTaskInstanceStorage storage;
 
     @Inject
-    UserTaskInstanceEntityRepository userTaskInstanceRepository;
+    EntityManager em;
 
     @Test
     @Transactional
@@ -269,7 +269,7 @@ public abstract class AbstractUserTaskInstanceStorageIT {
                 .hasFieldOrPropertyWithValue("state", "InProgress");
 
         // Initializing comments and attachments just for the test
-        UserTaskInstanceEntity taskInstanceEntity = userTaskInstanceRepository.findById(taskId);
+        UserTaskInstanceEntity taskInstanceEntity = em.find(UserTaskInstanceEntity.class, taskId);
         taskInstanceEntity.setComments(new ArrayList<>());
         taskInstanceEntity.setAttachments(new ArrayList<>());
 

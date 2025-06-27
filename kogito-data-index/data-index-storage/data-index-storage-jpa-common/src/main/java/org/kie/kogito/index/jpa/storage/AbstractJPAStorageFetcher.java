@@ -18,32 +18,44 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.StorageFetcher;
 import org.kie.kogito.persistence.api.query.Query;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Multi;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implements StorageFetcher<K, V> {
 
     private static final String LISTENER_NOT_AVAILABLE_IN_JPA = "Listener not available in JPA database";
 
-    protected PanacheRepositoryBase<E, K> repository;
+    protected EntityManager em;
     protected Class<E> entityClass;
     protected Function<E, V> mapToModel;
+    protected Optional<JsonPredicateBuilder> jsonPredicateBuilder = Optional.empty();
+
+    private String entityName;
 
     protected AbstractJPAStorageFetcher() {
     }
 
-    protected AbstractJPAStorageFetcher(PanacheRepositoryBase<E, K> repository, Class<E> entityClass, Function<E, V> mapToModel) {
-        this.repository = repository;
+    protected AbstractJPAStorageFetcher(EntityManager em, Class<E> entityClass, Function<E, V> mapToModel) {
+        this(em, entityClass, mapToModel, Optional.empty());
+    }
+
+    protected AbstractJPAStorageFetcher(EntityManager em, Class<E> entityClass, Function<E, V> mapToModel, Optional<JsonPredicateBuilder> jsonPredicateBuilder) {
+        this.em = em;
         this.entityClass = entityClass;
         this.mapToModel = mapToModel;
+        this.jsonPredicateBuilder = jsonPredicateBuilder;
+        Entity entity = entityClass.getAnnotation(Entity.class);
+        this.entityName = entity != null ? entity.name() : entityClass.getSimpleName();
     }
 
     @Override
@@ -63,18 +75,19 @@ public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implement
 
     @Override
     public Query<V> query() {
-        return new JPAQuery<>(repository, mapToModel, entityClass);
+        return new JPAQuery<>(em, mapToModel, entityClass, jsonPredicateBuilder);
     }
 
     @Override
     @Transactional
     public V get(K key) {
-        return repository.findByIdOptional(key).map(mapToModel).orElse(null);
+        E result = em.find(entityClass, key);
+        return result == null ? null : mapToModel.apply(result);
     }
 
     @Override
     @Transactional
     public void clear() {
-        repository.deleteAll();
+        em.createQuery("DELETE from " + entityName).executeUpdate();
     }
 }

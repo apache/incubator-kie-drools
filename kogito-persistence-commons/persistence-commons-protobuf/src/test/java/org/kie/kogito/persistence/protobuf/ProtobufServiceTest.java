@@ -29,8 +29,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.quarkus.runtime.StartupEvent;
-
 import jakarta.enterprise.event.Event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +40,6 @@ import static org.kie.kogito.persistence.protobuf.TestUtils.getValidEntityIndexD
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,9 +48,6 @@ import static org.mockito.Mockito.verify;
 class ProtobufServiceTest {
 
     FileDescriptorSource kogitoDescriptors;
-
-    @Mock
-    ProtobufMonitorService protobufMonitorService;
 
     @Mock
     Event<FileDescriptorRegisteredEvent> domainModelEvent;
@@ -75,11 +69,9 @@ class ProtobufServiceTest {
         String content = getTestFileContent();
         kogitoDescriptors.addProtoFile("test", content);
 
-        StartupEvent event = mock(StartupEvent.class);
-        protobufService.onStart(event);
+        protobufService.onStart(null);
 
         verify(schemaEvent).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test", content, getValidEntityIndexDescriptors(true), null), SCHEMA_TYPE)));
-        verify(protobufMonitorService).startMonitoring();
     }
 
     @Test

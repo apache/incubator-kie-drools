@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
@@ -42,7 +43,6 @@ import org.kie.kogito.index.jpa.mapper.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.jpa.model.MilestoneEntity;
 import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
-import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
 import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.MilestoneStatus;
@@ -50,10 +50,10 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 
-import io.quarkus.arc.DefaultBean;
-
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER;
@@ -61,15 +61,14 @@ import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TY
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
-@DefaultBean
 public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<String, ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
 
     protected ProcessInstanceEntityStorage() {
     }
 
     @Inject
-    public ProcessInstanceEntityStorage(ProcessInstanceEntityRepository repository, ProcessInstanceEntityMapper mapper) {
-        super(repository, ProcessInstanceEntity.class, mapper::mapToModel);
+    public ProcessInstanceEntityStorage(EntityManager em, ProcessInstanceEntityMapper mapper, Instance<JsonPredicateBuilder> jsonPredicateBuilder) {
+        super(em, ProcessInstanceEntity.class, mapper::mapToModel, Optional.ofNullable(jsonPredicateBuilder.stream().findAny().orElse(null)));
     }
 
     @Override
@@ -112,17 +111,19 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
     }
 
     private ProcessInstanceEntity findOrInit(ProcessInstanceDataEvent<?> event) {
-        return repository.findByIdOptional(event.getKogitoProcessInstanceId()).orElseGet(() -> {
-            ProcessInstanceEntity pi = new ProcessInstanceEntity();
+        ProcessInstanceEntity pi = em.find(ProcessInstanceEntity.class, event.getKogitoProcessInstanceId());
+        if (pi == null) {
+            pi = new ProcessInstanceEntity();
             pi.setProcessId(event.getKogitoProcessId());
             pi.setVersion(event.getKogitoProcessInstanceVersion());
             pi.setId(event.getKogitoProcessInstanceId());
             pi.setLastUpdate(toZonedDateTime(event.getTime()));
             pi.setNodes(new ArrayList<>());
             pi.setMilestones(new ArrayList<>());
-            repository.persist(pi);
-            return pi;
-        });
+            em.persist(pi);
+        }
+        return pi;
+
     }
 
     private void indexEvent(ProcessInstanceEntity pi, ProcessInstanceDataEvent<?> event) {

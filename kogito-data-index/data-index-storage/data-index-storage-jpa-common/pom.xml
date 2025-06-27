@@ -46,9 +46,18 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-common</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>persistence-commons-jpa-base</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>

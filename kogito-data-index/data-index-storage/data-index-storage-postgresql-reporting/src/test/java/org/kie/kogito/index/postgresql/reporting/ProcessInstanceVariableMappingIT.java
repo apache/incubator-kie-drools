@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
-import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
@@ -33,6 +32,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityResult;
 import jakarta.persistence.FieldResult;
 import jakarta.persistence.Id;
@@ -54,7 +54,8 @@ class ProcessInstanceVariableMappingIT {
             "ProcessInstanceVariableExtract";
 
     @Inject
-    ProcessInstanceEntityRepository repository;
+    EntityManager em;
+
     @Inject
     ProcessInstanceEntityStorage storage;
 
@@ -80,8 +81,7 @@ class ProcessInstanceVariableMappingIT {
         storage.indexVariable(event3);
 
         @SuppressWarnings("unchecked")
-        List<ProcessInstanceVariableExtract> results = repository
-                .getEntityManager()
+        List<ProcessInstanceVariableExtract> results = em
                 .createNativeQuery(SQL, "ProcessInstanceVariableMappingMapping")
                 .getResultList();
 

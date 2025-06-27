@@ -21,11 +21,11 @@ package org.kie.kogito.index.jpa.storage;
 import org.kie.kogito.index.jpa.mapper.JobEntityMapper;
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.index.jpa.model.JobEntity;
-import org.kie.kogito.index.jpa.model.JobEntityRepository;
 import org.kie.kogito.index.model.Job;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
 public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> {
@@ -34,7 +34,7 @@ public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> {
     }
 
     @Inject
-    public JobEntityStorage(JobEntityRepository repository, JobEntityMapper mapper) {
-        super(repository, Job.class, JobEntity.class, mapper::mapToModel, mapper::mapToEntity, AbstractEntity::getId);
+    public JobEntityStorage(EntityManager em, JobEntityMapper mapper) {
+        super(em, Job.class, JobEntity.class, mapper::mapToModel, mapper::mapToEntity, AbstractEntity::getId);
     }
 }

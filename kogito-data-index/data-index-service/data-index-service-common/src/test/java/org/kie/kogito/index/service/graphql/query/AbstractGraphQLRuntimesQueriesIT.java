@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
@@ -35,12 +36,12 @@ import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.index.service.graphql.GraphQLSchemaManagerImpl;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
@@ -67,7 +68,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingIT {
+public abstract class AbstractGraphQLRuntimesQueriesIT {
 
     @Inject
     public GraphQLSchemaManagerImpl manager;
@@ -549,4 +550,13 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     }
 
     protected abstract String getTestProtobufFileContent() throws Exception;
+
+    protected abstract void indexUserTaskCloudEvent(UserTaskInstanceDataEvent<?> attachmentEvent);
+
+    protected abstract void indexProcessCloudEvent(ProcessDefinitionDataEvent definitionEvent);
+
+    protected abstract void indexProcessCloudEvent(ProcessInstanceDataEvent<?> variableEvent);
+
+    protected abstract void indexJobCloudEvent(KogitoJobCloudEvent event);
+
 }

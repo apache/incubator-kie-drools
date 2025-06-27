@@ -37,8 +37,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mutiny</artifactId>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>mutiny</artifactId>
     </dependency>
   </dependencies>
 </project>
