@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jackson.utils;
+package org.kie.kogito.serverless.workflow.executor.events;
 
-import java.util.function.Function;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+public class InMemoryEventShared {
 
-public class StringConverter implements Function<JsonNode, String> {
+    public static final InMemoryEventShared INSTANCE = new InMemoryEventShared();
 
-    @Override
-    public String apply(JsonNode t) {
-        try {
-            return t.isNull() ? null : JsonObjectUtils.toString(t);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid value for json node " + t);
-        }
+    private Map<String, CloudEventReceiver> receivers = new ConcurrentHashMap<>();
+
+    public Map<String, CloudEventReceiver> receivers() {
+        return receivers;
+    }
+
+    private InMemoryEventShared() {
+
     }
 }

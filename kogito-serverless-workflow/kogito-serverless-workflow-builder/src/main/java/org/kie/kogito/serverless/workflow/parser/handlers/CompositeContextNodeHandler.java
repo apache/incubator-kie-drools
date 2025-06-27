@@ -187,7 +187,8 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
 
     private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             EventRef eventRef, String inputVar) {
-        return sendEventNode(embeddedSubProcess.actionNode(parserContext.newId()), eventDefinition(eventRef.getTriggerEventRef()), eventRef.getData(), inputVar);
+        return sendEventNode(
+                embeddedSubProcess.actionNode(parserContext.newId()), eventDefinition(eventRef.getTriggerEventRef()), eventRef.getData(), eventRef.getContextAttributes(), inputVar);
     }
 
     private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,

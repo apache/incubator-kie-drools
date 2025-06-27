@@ -21,6 +21,8 @@ package org.kie.kogito.event;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,7 +63,15 @@ public class DataEventFactory {
     }
 
     public static <T> DataEvent<T> from(T eventData, String trigger, KogitoProcessInstance pi) {
-        return from(eventData, trigger, URI.create("/process/" + pi.getProcessId()), Optional.empty(), ProcessMeta.fromKogitoProcessInstance(pi));
+        return from(eventData, trigger, pi, Collections.emptyMap());
+    }
+
+    public static <T> DataEvent<T> from(T eventData, String trigger, KogitoProcessInstance pi, Map<String, Object> contextAttributes) {
+        AbstractDataEvent<T> ce = (AbstractDataEvent<T>) from(eventData, trigger, URI.create("/process/" + pi.getProcessId()), Optional.empty(), ProcessMeta.fromKogitoProcessInstance(pi));
+        if (contextAttributes != null) {
+            contextAttributes.forEach((k, v) -> ce.addExtensionAttribute(k, v));
+        }
+        return ce;
     }
 
     public static <T> DataEvent<T> from(T eventData, String type, URI source, Optional<String> subject, CloudEventExtension... extensions) {
@@ -82,5 +92,4 @@ public class DataEventFactory {
 
     private DataEventFactory() {
     }
-
 }

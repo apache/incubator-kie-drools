@@ -19,6 +19,7 @@
 package org.jbpm.process.instance.impl.actions;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -28,6 +29,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.kogito.event.impl.MessageProducer;
+import org.kie.kogito.event.impl.MessageProducerWithContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -37,9 +39,9 @@ public class ProduceEventAction<T> implements Action, Serializable {
 
     private final String varName;
     private final String triggerName;
-    private final Supplier<MessageProducer<T>> supplier;
+    private final Supplier<? extends MessageProducer<T>> supplier;
 
-    public ProduceEventAction(String triggerName, String varName, Supplier<MessageProducer<T>> supplier) {
+    public ProduceEventAction(String triggerName, String varName, Supplier<? extends MessageProducer<T>> supplier) {
         this.triggerName = triggerName;
         this.varName = varName;
         this.supplier = supplier;
@@ -53,7 +55,17 @@ public class ProduceEventAction<T> implements Action, Serializable {
         InternalKnowledgeRuntime runtime = (InternalKnowledgeRuntime) context.getKieRuntime();
         InternalProcessRuntime process = (InternalProcessRuntime) runtime.getProcessRuntime();
         process.getProcessEventSupport().fireOnMessage(pi, context.getNodeInstance(), runtime, triggerName, object);
-        supplier.get().produce(pi, getObject(object, context));
+        final MessageProducer<T> producer = supplier.get();
+        final T obj = getObject(object, context);
+        if (producer instanceof MessageProducerWithContext) {
+            ((MessageProducerWithContext<T>) producer).produce(pi, obj, getContextAttrs(object, context));
+        } else {
+            producer.produce(pi, obj);
+        }
+    }
+
+    protected Map<String, Object> getContextAttrs(Object object, KogitoProcessContext context) {
+        return Collections.emptyMap();
     }
 
     protected T getObject(Object object, KogitoProcessContext context) {

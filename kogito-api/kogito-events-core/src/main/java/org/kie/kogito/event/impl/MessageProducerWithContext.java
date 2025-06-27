@@ -16,21 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jackson.utils;
+package org.kie.kogito.event.impl;
 
-import java.util.function.Function;
+import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-public class StringConverter implements Function<JsonNode, String> {
+public interface MessageProducerWithContext<D> extends MessageProducer<D> {
 
-    @Override
-    public String apply(JsonNode t) {
-        try {
-            return t.isNull() ? null : JsonObjectUtils.toString(t);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid value for json node " + t);
-        }
+    default void produce(KogitoProcessInstance pi, D eventData) {
+        produce(pi, eventData, Map.of());
     }
+
+    void produce(KogitoProcessInstance pi, D eventData, Map<String, Object> contextAttrs);
 }

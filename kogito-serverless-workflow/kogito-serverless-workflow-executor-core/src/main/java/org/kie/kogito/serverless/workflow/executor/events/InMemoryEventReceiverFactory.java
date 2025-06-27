@@ -16,21 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jackson.utils;
+package org.kie.kogito.serverless.workflow.executor.events;
 
-import java.util.function.Function;
+import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventReceiverFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-
-public class StringConverter implements Function<JsonNode, String> {
+public class InMemoryEventReceiverFactory implements EventReceiverFactory {
 
     @Override
-    public String apply(JsonNode t) {
-        try {
-            return t.isNull() ? null : JsonObjectUtils.toString(t);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid value for json node " + t);
-        }
+    public EventReceiver apply(String trigger) {
+        return InMemoryEventShared.INSTANCE.receivers().computeIfAbsent(trigger, t -> new CloudEventReceiver());
+    }
+
+    // lower priority
+    public int ordinal() {
+        return Integer.MAX_VALUE;
     }
 }

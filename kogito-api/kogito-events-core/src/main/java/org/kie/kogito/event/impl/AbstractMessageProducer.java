@@ -18,13 +18,15 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.Map;
+
 import org.kie.kogito.event.DataEventFactory;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMessageProducer<D> implements MessageProducer<D> {
+public abstract class AbstractMessageProducer<D> implements MessageProducerWithContext<D> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageProducer.class);
 
@@ -48,8 +50,8 @@ public abstract class AbstractMessageProducer<D> implements MessageProducer<D> {
     }
 
     @Override
-    public void produce(KogitoProcessInstance pi, D eventData) {
-        emitter.emit(DataEventFactory.from(eventData, trigger, pi))
+    public void produce(KogitoProcessInstance pi, D eventData, Map<String, Object> contextAttrs) {
+        emitter.emit(DataEventFactory.from(eventData, trigger, pi, contextAttrs))
                 .exceptionally(ex -> {
                     logger.error("An error was caught while process " + pi.getProcessId() + " produced message " + eventData, ex);
                     return null;

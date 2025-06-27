@@ -19,8 +19,11 @@
 package org.kie.kogito.serverless.workflow.fluent;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.Process;
@@ -76,7 +79,15 @@ public class ActionBuilder {
     }
 
     public static ActionBuilder trigger(EventDefBuilder builder, JsonNode data) {
-        ActionBuilder actionBuilder = new ActionBuilder(new Action().withEventRef(new EventRef().withData(data).withTriggerEventRef(builder.getName())));
+        return trigger(builder, data, Collections.emptyMap());
+    }
+
+    public static ActionBuilder trigger(EventDefBuilder builder, JsonNode data, String procRefId) {
+        return trigger(builder, data, Map.of(CloudEventExtensionConstants.PROCESS_REFERENCE_ID, procRefId));
+    }
+
+    public static ActionBuilder trigger(EventDefBuilder builder, JsonNode data, Map<String, String> contextAttributes) {
+        ActionBuilder actionBuilder = new ActionBuilder(new Action().withEventRef(new EventRef().withContextAttributes(contextAttributes).withData(data).withTriggerEventRef(builder.getName())));
         actionBuilder.eventDefinition = Optional.of(builder);
         return actionBuilder;
     }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.serverless.workflow.executor;
+package org.kie.kogito.serverless.workflow.executor.events;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,21 +39,10 @@ import org.slf4j.LoggerFactory;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
 
-public class KafkaEventReceiver implements EventReceiver {
+public class CloudEventReceiver implements EventReceiver {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaEventReceiver.class);
-    private final Collection<Subscription<?, CloudEvent>> subscriptions = new ArrayList<>();
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void onEvent(CloudEvent value) {
-        for (Subscription subscription : subscriptions) {
-            try {
-                subscription.getConsumer().apply(subscription.getConverter().convert(value));
-            } catch (IOException e) {
-                logger.info("Problem deserializing event {}", value, e);
-            }
-        }
-    }
+    private static final Logger logger = LoggerFactory.getLogger(CloudEventReceiver.class);
+    protected final Collection<Subscription<?, CloudEvent>> subscriptions = new ArrayList<>();
 
     @Override
     public <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass) {
@@ -78,5 +67,16 @@ public class KafkaEventReceiver implements EventReceiver {
                 };
             }
         })));
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void onEvent(CloudEvent value) {
+        for (Subscription subscription : subscriptions) {
+            try {
+                subscription.getConsumer().apply(subscription.getConverter().convert(value));
+            } catch (IOException e) {
+                logger.info("Problem deserializing event {}", value, e);
+            }
+        }
     }
 }

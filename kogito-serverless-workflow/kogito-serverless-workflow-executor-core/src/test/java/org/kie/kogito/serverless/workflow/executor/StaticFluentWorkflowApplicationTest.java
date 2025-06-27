@@ -62,9 +62,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.call;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.log;
 import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.subprocess;
+import static org.kie.kogito.serverless.workflow.fluent.ActionBuilder.trigger;
+import static org.kie.kogito.serverless.workflow.fluent.EventDefBuilder.eventDef;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.expr;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.java;
 import static org.kie.kogito.serverless.workflow.fluent.FunctionBuilder.log;
+import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.callback;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.forEach;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.inject;
 import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.operation;
@@ -138,6 +141,20 @@ public class StaticFluentWorkflowApplicationTest {
             Process<JsonNodeModel> process = application.process(workflow);
             assertThat(application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(ODD);
             assertThat(application.execute(process, Collections.singletonMap("input", 7)).getWorkflowdata().get(MESSAGE).asText()).isEqualTo(EVEN);
+        }
+    }
+
+    @Test
+    void testEventPubSub() throws InterruptedException, TimeoutException {
+        final String eventType = "eventType";
+        Workflow subscriber =
+                workflow("testCallback").start(callback(call(expr("prefix", "{slogan:.slogan+\"er Beti\"}")), eventDef(eventType)).outputFilter("{slogan:.slogan+.name}")).end().build();
+        Workflow publisher = workflow("testPublishEvent").start(operation().action(trigger(eventDef("eventType"), jsonObject().put("name", ".name"), ".id"))).end().build();
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            String id = application.execute(subscriber, jsonObject().put("slogan", "Viva ")).getId();
+            application.execute(publisher, jsonObject().put("name", " manque pierda").put("id", id));
+            assertThat(application.waitForFinish(id, Duration.ofSeconds(3)).orElseThrow().getWorkflowdata())
+                    .isEqualTo(jsonObject().put("slogan", "Viva er Beti manque pierda"));
         }
     }
 

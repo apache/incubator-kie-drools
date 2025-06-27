@@ -141,10 +141,12 @@ public class ExpressionUtils {
         }
         if (objectClass != null) {
             // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"))
-            return new CastExpr(StaticJavaParser.parseClassOrInterfaceType(object.getClass().getName()),
-                    new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
-                            NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                            NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object))))));
+            String str = TypeConverterRegistry.get().forTypeReverse(object).apply(object);
+            return str == null ? new NullLiteralExpr()
+                    : new CastExpr(StaticJavaParser.parseClassOrInterfaceType(object.getClass().getName()),
+                            new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
+                                    NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
+                                    NodeList.nodeList(new StringLiteralExpr().setString(str))));
         } else {
             return new StringLiteralExpr().setString(object.toString());
         }

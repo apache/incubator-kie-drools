@@ -133,15 +133,16 @@ public abstract class StateHandler<S extends State> {
 
     protected final <T extends NodeFactory<?, ?> & SupportsAction<?, ?>>
             NodeFactory<?, ?> sendEventNode(T actionNode, ProduceEvent event) {
-        return sendEventNode(actionNode, eventDefinition(event.getEventRef()), event.getData(), DEFAULT_WORKFLOW_VAR);
+        return sendEventNode(actionNode, eventDefinition(event.getEventRef()), event.getData(), event.getContextAttributes(), DEFAULT_WORKFLOW_VAR);
     }
 
     protected final <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> sendEventNode(T actionNode,
             EventDefinition eventDefinition,
             JsonNode data,
+            Map<String, String> contextAttributes,
             String defaultWorkflowVar) {
         return NodeFactoryUtils.sendEventNode(
-                actionNode.action(new ProduceEventActionSupplier(workflow, eventDefinition.getType(), defaultWorkflowVar, data)),
+                actionNode.action(new ProduceEventActionSupplier(workflow, eventDefinition.getType(), defaultWorkflowVar, data, contextAttributes)),
                 eventDefinition,
                 defaultWorkflowVar);
     }

@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jackson.utils;
+package org.kie.kogito.serverless.workflow.executor.events;
 
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.EventEmitter;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class StringConverter implements Function<JsonNode, String> {
+import io.cloudevents.jackson.JsonCloudEventData;
+
+public class InMemoryEventEmitter implements EventEmitter {
+
+    private CloudEventReceiver eventReceiver;
+
+    InMemoryEventEmitter(CloudEventReceiver eventReceiver) {
+        this.eventReceiver = eventReceiver;
+    }
 
     @Override
-    public String apply(JsonNode t) {
-        try {
-            return t.isNull() ? null : JsonObjectUtils.toString(t);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid value for json node " + t);
-        }
+    public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
+        eventReceiver.onEvent(dataEvent.asCloudEvent(o -> JsonCloudEventData.wrap((JsonNode) o)));
+        return CompletableFuture.completedStage(null);
     }
 }

@@ -20,6 +20,7 @@ package com.myspace.demo;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Map;
 
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.impl.StringEventMarshaller;
@@ -39,7 +40,8 @@ public class MessageProducer extends org.kie.kogito.event.impl.AbstractMessagePr
 
     }
 
-    public void produce(KogitoProcessInstance pi, $Type$ eventData) {
+    @Override
+    public void produce(KogitoProcessInstance pi, $Type$ eventData, Map<String, Object> contextAttrs) {
 
     }
 

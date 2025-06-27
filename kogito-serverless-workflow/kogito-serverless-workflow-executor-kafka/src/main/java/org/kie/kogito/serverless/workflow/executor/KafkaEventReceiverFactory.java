@@ -30,6 +30,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.EventReceiverFactory;
+import org.kie.kogito.serverless.workflow.executor.events.CloudEventReceiver;
 import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +41,14 @@ public class KafkaEventReceiverFactory implements EventReceiverFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaEventReceiverFactory.class);
     private Map<String, String> trigger2Topic = KafkaPropertiesFactory.get().triggerToTopicMap("kogito.addon.messaging.incoming.trigger.");
-    private Map<String, KafkaEventReceiver> receivers = new ConcurrentHashMap<>();
+    private Map<String, CloudEventReceiver> receivers = new ConcurrentHashMap<>();
     private Consumer<byte[], CloudEvent> consumer;
     private Lock consumerLock = new ReentrantLock();
     private Thread consumerThread;
 
     @Override
     public EventReceiver apply(String trigger) {
-        return receivers.computeIfAbsent(trigger2Topic.getOrDefault(trigger, trigger), k -> new KafkaEventReceiver());
+        return receivers.computeIfAbsent(trigger2Topic.getOrDefault(trigger, trigger), k -> new CloudEventReceiver());
     }
 
     @Override
@@ -111,7 +112,7 @@ public class KafkaEventReceiverFactory implements EventReceiverFactory {
             }
             for (ConsumerRecord<byte[], CloudEvent> record : records) {
                 String topic = record.topic();
-                KafkaEventReceiver receiver = receivers.get(topic);
+                CloudEventReceiver receiver = receivers.get(topic);
                 if (receiver == null) {
                     logger.info("No subscription for topic {}", topic);
                 } else {
