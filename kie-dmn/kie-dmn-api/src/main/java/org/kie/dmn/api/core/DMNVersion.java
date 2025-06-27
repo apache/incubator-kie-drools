@@ -52,6 +52,10 @@ public enum DMNVersion {
 
     public static DMNVersion inferDMNVersion(Collection<String> nsContextValues) {
         DMNVersion toReturn = DMNVersion.getLatest();
+        //TODO - Replace with this
+        //if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+        //dmn 1.6 - 20240513
+        //dmn1.5 - 20230324
         if (nsContextValues.stream().anyMatch("https://www.omg.org/spec/DMN/20240513/MODEL/"::equals)) {
             toReturn = DMNVersion.V1_6;
         }else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN::equals)) {

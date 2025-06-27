@@ -775,12 +775,12 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void timeFunctionWithDeprecateEvent(boolean useExecModelCompiler) {
-       // FEELEvent warningEvent = new FEELEventBase( FEELEvent.Severity.WARN, Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE), null);
-        String expectedMessage = Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE);
+    void timeFunctionWithoutWarningEvent(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
+        //TODO : replace this
+        //final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/timeFunction.dmn", getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("timeFunction.dmn", getClass());
 
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/timeFunction.dmn", getClass());
         runtime.addListener(DMNRuntimeUtil.createListener());
 
         final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
@@ -791,7 +791,29 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("a time", "00:01:00@Etc/UTC");
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult).isNotNull();
-        //size 1
+        assertThat(dmnResult.getMessages().size()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void timeFunctionWithWarningEvent(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String expectedMessage = Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE);
+        //TODO : replace this
+        //final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/timeFunction.dmn", getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("timeFunction.dmn", getClass());
+
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a time", "00:01:00@Etc/UTC");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.getMessages().size()).isEqualTo(1);
         assertThat(dmnResult.getMessages().get(0).getFeelEvent().getMessage()).isEqualTo(expectedMessage);
     }
     //other test 1_6
