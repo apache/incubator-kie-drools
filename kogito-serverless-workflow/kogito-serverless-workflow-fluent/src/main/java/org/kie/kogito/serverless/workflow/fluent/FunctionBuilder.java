@@ -20,9 +20,10 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
@@ -39,6 +40,16 @@ import static org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler.
 public class FunctionBuilder {
 
     private FunctionDefinition functionDefinition;
+
+    private static Map<WorkflowLogLevel, FunctionBuilder> logFunctions = buildLogFunctionsMap();
+
+    private static Map<WorkflowLogLevel, FunctionBuilder> buildLogFunctionsMap() {
+        return Stream.of(WorkflowLogLevel.values()).collect(Collectors.toMap(l -> l, l -> buildLogFunction(l)));
+    }
+
+    private static FunctionBuilder buildLogFunction(WorkflowLogLevel level) {
+        return custom("log" + level, SYSOUT_TYPE + CUSTOM_TYPE_SEPARATOR + level);
+    }
 
     @SuppressWarnings("squid:S115")
     public enum HttpMethod {
@@ -89,8 +100,16 @@ public class FunctionBuilder {
         return custom(name, ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + langName + CUSTOM_TYPE_SEPARATOR + moduleName + ServiceTypeHandler.INTFC_SEPARATOR + methodName);
     }
 
+    /**
+     * @deprecated Replaced by {@link #log(WorkflowLogLevel)}
+     */
+    @Deprecated
     public static FunctionBuilder log(String name, WorkflowLogLevel level) {
         return custom(name, SYSOUT_TYPE + CUSTOM_TYPE_SEPARATOR + level);
+    }
+
+    public static FunctionBuilder log(WorkflowLogLevel level) {
+        return logFunctions.get(level);
     }
 
     public static FunctionBuilder custom(String name, String operation) {
@@ -118,22 +137,5 @@ public class FunctionBuilder {
 
     String getName() {
         return functionDefinition.getName();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(functionDefinition.getName());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        FunctionBuilder other = (FunctionBuilder) obj;
-        return Objects.equals(functionDefinition.getName(), other.functionDefinition.getName());
     }
 }

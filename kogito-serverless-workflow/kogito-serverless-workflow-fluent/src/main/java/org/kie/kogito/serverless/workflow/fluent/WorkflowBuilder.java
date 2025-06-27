@@ -20,9 +20,11 @@ package org.kie.kogito.serverless.workflow.fluent;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
@@ -32,8 +34,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.events.EventDefinition;
-import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.start.Start;
 import io.serverlessworkflow.api.states.DefaultState;
@@ -45,6 +45,9 @@ public class WorkflowBuilder {
 
     private static ObjectMapper mapper = ObjectMapperFactory.get();
 
+    private final Collection<FunctionBuilder> functionDefinitions = new HashSet<>();
+    private final Collection<EventDefBuilder> eventDefinitions = new HashSet<>();
+
     public static WorkflowBuilder workflow(String id) {
         return workflow(id, id, "1_0");
     }
@@ -54,8 +57,6 @@ public class WorkflowBuilder {
     }
 
     private Workflow workflow;
-    private List<FunctionDefinition> functions = new LinkedList<>();
-    private List<EventDefinition> events = new LinkedList<>();
     private List<State> states = new LinkedList<>();
 
     private WorkflowBuilder(String id, String name, String version) {
@@ -97,20 +98,18 @@ public class WorkflowBuilder {
 
     public Workflow build() {
         workflow.setStates(states);
-        workflow.withFunctions(new Functions(functions));
-        workflow.withEvents(new Events(events));
+        workflow.withFunctions(new Functions(functionDefinitions.stream().map(FunctionBuilder::build).collect(Collectors.toList())));
+        workflow.withEvents(new Events(eventDefinitions.stream().map(EventDefBuilder::build).collect(Collectors.toList())));
         return workflow;
     }
 
     public final WorkflowBuilder function(FunctionBuilder functionBuilder) {
-        FunctionDefinition function = functionBuilder.build();
-        functions.add(function);
+        functionDefinitions.add(functionBuilder);
         return this;
     }
 
     public final WorkflowBuilder event(EventDefBuilder eventBuilder) {
-        EventDefinition event = eventBuilder.build();
-        events.add(event);
+        eventDefinitions.add(eventBuilder);
         return this;
     }
 

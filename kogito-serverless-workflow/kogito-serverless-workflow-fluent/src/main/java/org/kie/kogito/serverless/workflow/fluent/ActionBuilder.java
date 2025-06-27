@@ -118,12 +118,16 @@ public class ActionBuilder {
         return new ActionBuilder(new Action().withFunctionRef(new FunctionRef().withRefName(functionName).withArguments(args)));
     }
 
+    /**
+     * @deprecated Replaced by {@link #log(WorkflowLogLevel)}
+     */
+    @Deprecated
     public static ActionBuilder log(String functionName, String message) {
         return call(functionName, logArgs(message));
     }
 
     public static ActionBuilder log(WorkflowLogLevel logLevel, String message) {
-        return call(FunctionBuilder.log("log-" + logLevel, logLevel), logArgs(message));
+        return call(FunctionBuilder.log(logLevel), logArgs(message));
     }
 
     private static JsonNode logArgs(String message) {
