@@ -20,9 +20,11 @@ package org.kie.dmn.trisotech.model.v1_3;
 
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.v1_3.TExpression;
+import org.kie.dmn.model.v1_3.URIFEELed;
 import org.kie.dmn.trisotech.model.api.Filter;
 
-public class TFilter extends TExpression implements Filter {
+public class TFilter extends TExpression implements Filter,
+                                                    URIFEELed {
 
     private Expression in;
     private Expression match;

@@ -72,6 +72,14 @@ class XStreamMarshallerTest {
         dmn15nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DI, org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DI);
         dmn15nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DC, org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DC);
         mappedNamespaces.put(XStreamMarshaller.DMN_VERSION.DMN_v1_5, dmn15nameSpaces);
+
+        Map<XStreamMarshaller.URI_NAMESPACE, String> dmn16nameSpaces = new EnumMap<>(XStreamMarshaller.URI_NAMESPACE.class);
+        dmn16nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DMN, org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DMN);
+        dmn16nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_FEEL, org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_FEEL);
+        dmn16nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DMNDI, org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DMNDI);
+        dmn16nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DI, org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DI);
+        dmn16nameSpaces.put(org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DC, org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DC);
+        mappedNamespaces.put(XStreamMarshaller.DMN_VERSION.DMN_v1_6, dmn16nameSpaces);
     }
 
     @Test
