@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,21 +18,7 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.api.InputData;
+import org.kie.dmn.model.impl.AbstractTInputData;
 
-public class TInputData extends TDRGElement implements InputData {
-
-    protected InformationItem variable;
-
-    @Override
-    public InformationItem getVariable() {
-        return variable;
-    }
-
-    @Override
-    public void setVariable(InformationItem value) {
-        this.variable = value;
-    }
-
+public class TInputData extends AbstractTInputData implements URIFEELed {
 }

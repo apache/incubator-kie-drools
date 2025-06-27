@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,31 +18,8 @@
  */
 package org.kie.dmn.model.v1_5;
 
-import org.kie.dmn.model.api.ChildExpression;
-import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.impl.AbstractTChildExpression;
 
-public class TChildExpression extends KieDMNModelInstrumentedBase implements ChildExpression {
-
-    protected Expression expression;
-    
-    protected String id;
-
-    @Override
-    public Expression getExpression() {
-        return expression;
-    }
-
-    @Override
-    public void setExpression(Expression value) {
-        this.expression = value;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String value) {
-        this.id = value;
-    }
+public class TChildExpression extends AbstractTChildExpression implements URIFEELed {
 
 }
