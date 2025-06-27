@@ -18,20 +18,8 @@
  */
 package org.kie.dmn.model.v1_5;
 
-import org.kie.dmn.model.api.RuleAnnotation;
+import org.kie.dmn.model.impl.AbstractTRuleAnnotation;
 
-public class TRuleAnnotation extends KieDMNModelInstrumentedBase implements RuleAnnotation {
-
-    protected String text;
-
-    @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
-    public void setText(String value) {
-        this.text = value;
-    }
+public class TRuleAnnotation extends AbstractTRuleAnnotation implements URIFEELed {
 
 }

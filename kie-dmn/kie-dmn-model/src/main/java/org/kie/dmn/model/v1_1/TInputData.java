@@ -18,21 +18,8 @@
  */
 package org.kie.dmn.model.v1_1;
 
-import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.api.InputData;
+import org.kie.dmn.model.impl.AbstractTInputData;
 
-public class TInputData extends TDRGElement implements InputData {
-
-    private InformationItem variable;
-
-    @Override
-    public InformationItem getVariable() {
-        return variable;
-    }
-
-    @Override
-    public void setVariable(final InformationItem value) {
-        this.variable = value;
-    }
+public class TInputData extends AbstractTInputData implements URIFEELed {
 
 }
