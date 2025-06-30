@@ -33,6 +33,7 @@ import jakarta.inject.Inject;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasItems;
 
 @Timeout(10000)
 public abstract class AbstractMessagingConsumerIT {
@@ -130,15 +131,19 @@ public abstract class AbstractMessagingConsumerIT {
 
         await()
                 .atMost(timeout)
-                .untilAsserted(() -> given().contentType(ContentType.JSON)
-                        .body("{ \"query\" : \"{ ProcessInstances { id, state } }\" }")
-                        .when().post("/graphql")
-                        .then().log().ifValidationFails().statusCode(200)
-                        .body("data.ProcessInstances.size()", is(2))
-                        .body("data.ProcessInstances[0].id", is(processInstanceId1))
-                        .body("data.ProcessInstances[0].state", is("ACTIVE"))
-                        .body("data.ProcessInstances[1].id", is(processInstanceId2))
-                        .body("data.ProcessInstances[1].state", is("ACTIVE")));
+                .untilAsserted(() -> {
+                    var response = given().contentType(ContentType.JSON)
+                            .body("{ \"query\" : \"{ ProcessInstances { id, state } }\" }")
+                            .when().post("/graphql")
+                            .then().extract().response();
+
+                    // Continue with assertions
+                    response.then().log().ifValidationFails().statusCode(200)
+                            .body("data.ProcessInstances.size()", is(2))
+                            .body("data.ProcessInstances.id", hasItems(processInstanceId1, processInstanceId2))
+                            .body("data.ProcessInstances.findAll { it.id == '" + processInstanceId1 + "' }.state[0]", is("ACTIVE"))
+                            .body("data.ProcessInstances.findAll { it.id == '" + processInstanceId2 + "' }.state[0]", is("ACTIVE"));
+                });
 
     }
 
