@@ -56,13 +56,8 @@ public class DefaultInstanceEventBatch implements EventBatch {
                                 ((ProcessInstanceStateDataEvent) event1).getData().getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_STARTED ? -1 : 1;
             }
         });
-
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (cl == null) {
-            cl = this.getClass().getClassLoader();
-        }
         this.dataEventAdapters = new ArrayList<>();
-        ServiceLoader.load(DataEventAdapter.class, cl).forEach(this.dataEventAdapters::add);
+        ServiceLoader.load(DataEventAdapter.class).forEach(this.dataEventAdapters::add);
         this.dataEventAdapters.stream().forEach(a -> a.setup(new DataEventAdapterConfig(this.service, this.addons)));
     }
 

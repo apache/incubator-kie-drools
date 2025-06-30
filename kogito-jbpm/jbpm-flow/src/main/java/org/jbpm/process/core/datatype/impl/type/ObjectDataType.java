@@ -118,13 +118,11 @@ public class ObjectDataType implements DataType {
     @Override
     public Class<?> getObjectClass() {
         if (clazz == null) {
-            clazz = findClass(className, classLoader);
-            if (clazz == null) {
-                clazz = findClass(className, Thread.currentThread().getContextClassLoader());
+            try {
+                clazz = classLoader != null ? Class.forName(className, true, classLoader) : Class.forName(className);
+            } catch (ClassNotFoundException ex) {
+                throw new IllegalArgumentException(ex);
             }
-        }
-        if (clazz == null) {
-            throw new IllegalArgumentException("Cannot find class " + className);
         }
         return clazz;
     }
@@ -132,17 +130,6 @@ public class ObjectDataType implements DataType {
     @Override
     public boolean isAssignableFrom(DataType dataType) {
         return DataTypeUtils.isAssignableFrom(this, dataType) || className.equals(DEFAULT_TYPE);
-    }
-
-    private static Class<?> findClass(String typeName, ClassLoader cl) {
-        if (cl != null) {
-            try {
-                return Class.forName(typeName, true, cl);
-            } catch (ClassNotFoundException e) {
-                // will return null
-            }
-        }
-        return null;
     }
 
     @Override
