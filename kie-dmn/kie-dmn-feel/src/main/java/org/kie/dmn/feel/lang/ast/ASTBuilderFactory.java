@@ -159,6 +159,10 @@ public class ASTBuilderFactory {
         return new DashNode( ctx );
     }
 
+    public static DescendantExpressionNode newDescendantExpressionNode(ParserRuleContext ctx, BaseNode expr, BaseNode name) {
+        return new DescendantExpressionNode( ctx, expr, name );
+    }
+
     public static CTypeNode newCTypeNode(ParserRuleContext ctx, Type type) {
         return new CTypeNode(ctx, type);
     }
