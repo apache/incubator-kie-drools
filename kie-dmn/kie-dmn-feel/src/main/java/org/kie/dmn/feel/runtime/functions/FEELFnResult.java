@@ -26,8 +26,16 @@ import org.kie.dmn.feel.util.Either;
 
 public class FEELFnResult<T> extends Either<FEELEvent, T> {
 
+    private FEELEvent event;
+
     protected FEELFnResult(Optional<FEELEvent> left, Optional<T> right) {
         super(left, right);
+        event = null;
+    }
+
+    protected FEELFnResult(Optional<FEELEvent> left, Optional<T> right, FEELEvent warningEvent) {
+        this(left, right);
+        this.event = warningEvent;
     }
 
     public static <T> FEELFnResult<T> ofError(FEELEvent event) {
@@ -36,6 +44,10 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
     
     public static <T> FEELFnResult<T> ofResult(T value) {
         return new FEELFnResult<>(Optional.empty(), Optional.ofNullable(value));
+    }
+
+    public static <T> FEELFnResult<T> ofEventedResult(T value, FEELEvent warningEvent) {
+        return new FEELFnResult<>(Optional.empty(), Optional.ofNullable(value), warningEvent);
     }
     
     public <X> FEELFnResult<X> map(Function<T, X> rightFn) {
@@ -48,6 +60,10 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
         return isLeft()
                 ? ofError(this.getLeft().get())
                 : rightFn.apply(this.getRight().get());
+    }
+
+    public FEELEvent getEvent() {
+        return event;
     }
 
 }

@@ -68,7 +68,7 @@ public final class Msg {
     public static final Message0 OPERATION_IS_UNDEFINED_FOR_PARAMETERS = new Message0("Based on the specification, the operation is undefined for the specified parameter set.");
 
     public static final Message3 INVALID_PARAMETERS_FOR_OPERATION = new Message3("Based on the specification, the '%s' operation is not applicable with the specified parameters '%s' and '%s'");
-
+    public static final Message0 DEPRECATE_TIME_WITH_TIMEZONE = new Message0("Usage of 'time' with a timezone is deprecated in DMN 1.6. This usage may be removed in future versions.");
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);
     }

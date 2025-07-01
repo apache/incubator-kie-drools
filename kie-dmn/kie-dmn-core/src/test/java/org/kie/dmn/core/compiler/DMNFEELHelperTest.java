@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
@@ -35,7 +36,7 @@ class DMNFEELHelperTest {
 
     @BeforeAll
     static void setUp() {
-        DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT);
+        DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT, DMNVersion.getLatest());
     }
 
     @Test
