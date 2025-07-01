@@ -62,6 +62,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
@@ -76,7 +77,9 @@ import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
+import org.kie.dmn.feel.util.Msg;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
@@ -769,6 +772,45 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult.getContext().get("time")).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isEqualTo(LocalTime.of(5, 48, 23));
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void timeFunctionWithoutWarningEvent(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/timeFunction.dmn", getClass());
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a_time", "00:01:00@Etc/UTC");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.getMessages().size()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void timeFunctionWithWarningEvent(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String expectedMessage = Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/timeFunction.dmn", getClass());
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a_time", "00:01:00@Etc/UTC");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.getMessages().size()).isEqualTo(1);
+        assertThat(dmnResult.getMessages().get(0).getFeelEvent().getMessage()).isEqualTo(expectedMessage);
+    }
+
 
     @ParameterizedTest
     @MethodSource("params")

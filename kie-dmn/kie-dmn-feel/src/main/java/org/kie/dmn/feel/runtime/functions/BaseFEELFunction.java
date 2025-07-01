@@ -20,16 +20,15 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -43,6 +42,7 @@ import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -268,6 +268,7 @@ public abstract class BaseFEELFunction
                                    Supplier<List<String>> parameterNamesSupplier,
                                    Supplier<List<Object>> parameterValuesSupplier) {
         source = getFEELDialectAdaptedEither(ctx, source);
+        source = getEventedValueEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                         if (left instanceof InvalidParametersEvent invalidParametersEvent) {
@@ -297,6 +298,23 @@ public abstract class BaseFEELFunction
         } else {
             return source;
         }
+    }
+
+    /**
+     * Resolves a value from the given Either, notifying the EvaluationContext
+     * if it contains a FEELEvent from a FEELFnResult
+     * @param ctx the evaluation context to notify of events
+     * @param source the input value, possibly a FEELFnResult with an event
+     * @return a right Either with the resolved value if an event is present, else the original source
+     */
+    private Either<FEELEvent, Object> getEventedValueEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
+        if(ctx.getDMNVersion().getDmnVersion() > 15 && source instanceof FEELFnResult<Object>feelFnresult && feelFnresult.getEvent() != null ) {
+            ctx.notifyEvt(feelFnresult::getEvent);
+            return Either.ofRight(feelFnresult.getOrElse(null));
+        } else {
+            return source;
+        }
+
     }
 
     /**
