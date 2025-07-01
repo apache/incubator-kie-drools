@@ -21,6 +21,7 @@ package org.kie.kogito.codegen.decision;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,6 +49,7 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
+import org.kie.dmn.validation.DMNValidator;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
@@ -85,8 +87,11 @@ public class DecisionCodegenUtils {
             SPIUtils.getCompilationManager(true).orElseThrow(() -> new RuntimeException("Compilation Manager not " +
                     "available"));
 
-    private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
-    private static final String domainDashboardDmnTemplate = "/grafana-dashboard-template/blank-dashboard.json";
+    private static final String OPERATIONAL_DASHBOARD_DMN_TEMPLATE = "/grafana-dashboard-template/operational-dashboard-template.json";
+    private static final String DOMAIN_DASHBOARD_DMN_TEMPLATE = "/grafana-dashboard-template/blank-dashboard.json";
+
+    private DecisionCodegenUtils() {
+    }
 
     static Map.Entry<String, GeneratedResources> generateModelsFromResources(Collection<GeneratedFile> generatedFiles,
             List<String> classesForManualReflection,
@@ -125,33 +130,45 @@ public class DecisionCodegenUtils {
     static Map.Entry<String, GeneratedResources> loadModelsAndValidate(KogitoBuildContext context, Map<Resource, CollectedResource> r2cr,
             Set<DMNProfile> customDMNProfiles,
             RuntimeTypeCheckOption runtimeTypeCheckOption) {
-        DecisionValidation.dmnValidateResources(context, r2cr.keySet());
+        Set<DMNValidator.Validation> validations = new HashSet<>();
+        DecisionValidation.ValidationOption validateOption = DecisionValidation.fromContext(context);
+        if (validateOption == DecisionValidation.ValidationOption.DISABLED) {
+            LOGGER.info("DMN Validation was set to DISABLED, skipping VALIDATE_SCHEMA, VALIDATE_MODEL.");
+        } else {
+            validations.add(DMNValidator.Validation.VALIDATE_SCHEMA);
+            validations.add(DMNValidator.Validation.VALIDATE_MODEL);
+        }
         Set<Resource> dmnResources = r2cr.keySet();
         ModelLocalUriId dmnModelLocalUriId = new ModelLocalUriId(LocalUri.Root.append("dmn").append("scesim"));
         DMNResourceSetResource toProcessDmn = new DMNResourceSetResource(dmnResources, dmnModelLocalUriId);
-        EfestoCompilationContext dmnCompilationContext = DmnCompilationContext.buildWithParentClassLoader(context.getClassLoader(), customDMNProfiles, runtimeTypeCheckOption);
+        EfestoCompilationContext dmnCompilationContext = DmnCompilationContext.buildWithParentClassLoader(context.getClassLoader(), customDMNProfiles, validations, runtimeTypeCheckOption);
         compilationManager.processResource(dmnCompilationContext, toProcessDmn);
         Map<String, GeneratedResources> generatedResourcesMap = dmnCompilationContext.getGeneratedResourcesMap();
-        Map.Entry<String, GeneratedResources> toReturn = generatedResourcesMap.entrySet().stream().filter(entry -> entry.getKey().equals("dmn")).findFirst().orElseThrow(() -> new RuntimeException());
+        Map.Entry<String, GeneratedResources> toReturn = generatedResourcesMap.entrySet().stream().filter(entry -> entry.getKey().equals("dmn")).findFirst().orElseThrow(RuntimeException::new);
         toReturn.getValue().stream().filter(GeneratedModelResource.class::isInstance)
                 .map(GeneratedModelResource.class::cast)
-                .forEach(generatedResource -> {
+                .forEach(generatedModelResource -> {
                     GeneratedResources generatedResources = (GeneratedResources) dmnCompilationContext.getGeneratedResourcesMap().get("dmn");
                     if (generatedResources == null) {
-                        ContextStorage.putEfestoCompilationContext(generatedResource.getModelLocalUriId(), dmnCompilationContext);
+                        ContextStorage.putEfestoCompilationContext(generatedModelResource.getModelLocalUriId(), dmnCompilationContext);
                     } else {
                         Optional<GeneratedModelResource> first = generatedResources.stream()
                                 .filter(GeneratedModelResource.class::isInstance)
                                 .map(GeneratedModelResource.class::cast)
-                                .filter(storedGeneratedResources -> storedGeneratedResources.getModelLocalUriId().equals(generatedResource.getModelLocalUriId()))
+                                .filter(storedGeneratedResources -> storedGeneratedResources.getModelLocalUriId().equals(generatedModelResource.getModelLocalUriId()))
                                 .findFirst();
                         // let's avoid overwrite an already compiled resources
                         if (first.isEmpty() || first.get().getCompiledModel() == null) {
-                            ContextStorage.putEfestoCompilationContext(generatedResource.getModelLocalUriId(), dmnCompilationContext);
+                            ContextStorage.putEfestoCompilationContext(generatedModelResource.getModelLocalUriId(), dmnCompilationContext);
+                        }
+                        // let's manage DMNMessages
+                        Object additionalInfo = generatedModelResource.getAdditionalInfo();
+                        if (additionalInfo instanceof List schemaModelValidations) {
+                            DecisionValidation.logAndProcessValidationMessages(validateOption, schemaModelValidations);
                         }
                     }
                 });
-        return generatedResourcesMap.entrySet().stream().filter(entry -> entry.getKey().equals("dmn")).findFirst().orElseThrow(() -> new RuntimeException());
+        return toReturn;
     }
 
     static DMNResource getDMNResourceFromGeneratedModelResource(GeneratedModelResource generatedModelResource, Map<Resource, CollectedResource> r2cr) {
@@ -290,7 +307,7 @@ public class DecisionCodegenUtils {
         Definitions definitions = resourceGenerator.getDmnModel().getDefinitions();
         List<Decision> decisions = definitions.getDrgElement().stream().filter(x -> x.getParentDRDElement() instanceof Decision).map(x -> (Decision) x).collect(toList());
         Optional<String> operationalDashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
-                operationalDashboardDmnTemplate,
+                OPERATIONAL_DASHBOARD_DMN_TEMPLATE,
                 resourceGenerator.getNameURL(),
                 context.getPropertiesMap(),
                 resourceGenerator.getNameURL(),
@@ -299,7 +316,7 @@ public class DecisionCodegenUtils {
         String dashboardName = GrafanaConfigurationWriter.buildDashboardName(context.getGAV(), resourceGenerator.getNameURL());
         operationalDashboard.ifPresent(dashboard -> generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dashboard, dashboardName + ".json")));
         Optional<String> domainDashboard = GrafanaConfigurationWriter.generateDomainSpecificDMNDashboard(
-                domainDashboardDmnTemplate,
+                DOMAIN_DASHBOARD_DMN_TEMPLATE,
                 resourceGenerator.getNameURL(),
                 context.getPropertiesMap(),
                 resourceGenerator.getNameURL(),

@@ -18,11 +18,8 @@
  */
 package org.kie.kogito.codegen.decision;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,18 +27,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.api.builder.Message.Level;
-import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.NamedElement;
-import org.kie.dmn.validation.DMNValidator;
-import org.kie.dmn.validation.DMNValidatorFactory;
-import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
@@ -58,7 +49,7 @@ public class DecisionValidation {
 
     }
 
-    public static enum ValidationOption {
+    public enum ValidationOption {
         /**
          * Perform DMN Validation and blocks if any Errors is found. This is the default.
          */
@@ -73,19 +64,7 @@ public class DecisionValidation {
         IGNORE;
     }
 
-    /**
-     * Performs VALIDATE_SCHEMA, VALIDATE_MODEL for XSD schema validation and Semantic validation with DRL rules as exec model
-     */
-    static void dmnValidateResources(KogitoBuildContext context, Collection<Resource> resources) {
-        ValidationOption validateOption = fromContext(context);
-        if (validateOption == ValidationOption.DISABLED) {
-            LOG.info("DMN Validation was set to DISABLED, skipping VALIDATE_SCHEMA, VALIDATE_MODEL.");
-            return;
-        }
-        List<DMNMessage> schemaModelValidations = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()))
-                .validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA,
-                        DMNValidator.Validation.VALIDATE_MODEL)
-                .theseModels(resources.toArray(new Resource[] {}));
+    static void logAndProcessValidationMessages(ValidationOption validateOption, List<DMNMessage> schemaModelValidations) {
         logValidationMessages(schemaModelValidations, DecisionValidation::extractMsgPrefix, DMNMessage::getText);
         processMessagesHandleErrors(validateOption, schemaModelValidations);
     }
@@ -103,83 +82,38 @@ public class DecisionValidation {
         return "";
     }
 
-    private static ValidationOption fromContext(KogitoBuildContext context) {
+    public static ValidationOption fromContext(KogitoBuildContext context) {
         if (context == null) {
             LOG.info("No GeneratorContext available, will assume {}=ENABLED", DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
             return ValidationOption.ENABLED;
         }
         Optional<String> applicationProperty = context.getApplicationProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
-        if (!applicationProperty.isPresent()) {
+        if (applicationProperty.isEmpty()) {
             return ValidationOption.ENABLED; // the default
         }
         Optional<ValidationOption> configOption = Arrays.stream(ValidationOption.values())
                 .filter(e -> e.name().equalsIgnoreCase(applicationProperty.get()))
                 .findAny();
-        if (!configOption.isPresent()) {
+        if (configOption.isEmpty()) {
             LOG.warn("Validation configuration value {} does not correspond to any valid option, will assume {}=ENABLED", applicationProperty.get(), DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
             return ValidationOption.ENABLED;
         }
         return configOption.get();
     }
 
-    private static Reader resourceToReader(Resource resource) {
-        try {
-            return resource.getReader();
-        } catch (IOException e) {
-            throw new RuntimeException("DecisionValidation unable to locate Resource's Reader", e);
-        }
-    }
-
     private static void logValidationMessages(List<DMNMessage> validation,
             Function<DMNMessage, String> prefixer,
             Function<DMNMessage, String> computeMessage) {
         for (DMNMessage msg : validation) {
-            Consumer<String> logFn = null;
-            switch (msg.getLevel()) {
-                case ERROR:
-                    logFn = LOG::error;
-                    break;
-                case WARNING:
-                    logFn = LOG::warn;
-                    break;
-                case INFO:
-                default:
-                    logFn = LOG::info;
-                    break;
-            }
+            Consumer<String> logFn = switch (msg.getLevel()) {
+                case ERROR -> LOG::error;
+                case WARNING -> LOG::warn;
+                default -> LOG::info;
+            };
             StringBuilder sb = new StringBuilder();
             sb.append(prefixer.apply(msg));
             sb.append(computeMessage.apply(msg));
             logFn.accept(sb.toString());
-        }
-    }
-
-    /**
-     * Performs ANALYZE_DECISION_TABLE for DMN Decision Table (static) analysis
-     */
-    static void dmnValidateDecisionTablesInModels(KogitoBuildContext context, Collection<DMNModel> dmnModels) {
-        ValidationOption validateOption = fromContext(context);
-        if (validateOption == ValidationOption.DISABLED) {
-            LOG.info("DMN Validation was set to DISABLED, skipping Decision Table (static) analysis.");
-            return;
-        }
-
-        LOG.info("Initializing DMN DT Validator...");
-        DMNDTAnalyser dmndtAnalyser = new DMNDTAnalyser(Arrays.asList(new ExtendedDMNProfile())); // TODO pending DROOLS-5072 refactoring
-        LOG.info("DMN DT Validator initialized.");
-        for (DMNModel model : dmnModels) {
-            LOG.info("Analysing decision tables in DMN Model '{}' ...", model.getName());
-            List<DTAnalysis> results = dmndtAnalyser.analyse(model, new HashSet<>(Arrays.asList(DMNValidator.Validation.ANALYZE_DECISION_TABLE)));
-            if (results.isEmpty()) {
-                LOG.info(" no decision tables found.");
-            } else {
-                for (DTAnalysis r : results) {
-                    LOG.info(" analysis for decision table '{}':", nameOrIDOfTable(r));
-                    List<DMNMessage> messages = r.asDMNMessages();
-                    logValidationMessages(messages, p -> "  ", DMNMessage::getMessage);
-                    processMessagesHandleErrors(validateOption, messages);
-                }
-            }
         }
     }
 

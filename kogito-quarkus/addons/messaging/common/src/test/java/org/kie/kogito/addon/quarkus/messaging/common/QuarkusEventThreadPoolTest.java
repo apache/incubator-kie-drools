@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -122,7 +123,7 @@ public class QuarkusEventThreadPoolTest {
                 return temp + 1;
             });
         }
-        List<Future<Integer>> answers = executor.invokeAll(runnables);
+        List<Future<Integer>> answers = executor.invokeAll(runnables, 5, TimeUnit.MINUTES);
         assertEquals(count, counter.get());
         for (int i = 0; i < answers.size(); i++) {
             assertEquals(i + 1, answers.get(i).get());
