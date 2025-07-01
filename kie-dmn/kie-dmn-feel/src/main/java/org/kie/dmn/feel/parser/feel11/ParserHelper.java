@@ -46,7 +46,7 @@ import org.kie.dmn.feel.lang.types.GenRangeType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.FilterPathExpressionContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.PathDescendantFilterExpressionContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.QualifiedNameContext;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.StringEvalHelper;
@@ -307,10 +307,10 @@ public class ParserHelper {
      * a specific heuristic for scope retrieval for filterPathExpression
      */
     public int fphStart(ParserRuleContext ctx, Parser parser) {
-        if (!(ctx instanceof FEEL_1_1Parser.FilterPathExpressionContext)) { // I expect in `var[1].name` for this param ctx=`var[1]` to be a filterPathExpression
+        if (!(ctx instanceof FEEL_1_1Parser.PathDescendantFilterExpressionContext)) { // I expect in `var[1].name` for this param ctx=`var[1]` to be a filterPathExpression
             return 0;
         }
-        FilterPathExpressionContext ctx0 = (FEEL_1_1Parser.FilterPathExpressionContext) ctx;
+        PathDescendantFilterExpressionContext ctx0 = (FEEL_1_1Parser.PathDescendantFilterExpressionContext) ctx;
         boolean ctxSquared = ctx0.filter != null && ctx0.n0 != null;
         if (!ctxSquared) { // I expect `var[1]` to be in the squared form `...[...]`
             return 0;

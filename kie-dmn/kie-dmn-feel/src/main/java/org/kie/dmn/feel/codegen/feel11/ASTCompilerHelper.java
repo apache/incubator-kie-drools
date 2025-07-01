@@ -50,6 +50,7 @@ import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.DescendantExpressionNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
@@ -110,6 +111,7 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.CONTEXTNODE_CT
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.CONTEXTTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.CTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.DASHNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.DESCENDANTEXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.DETERMINEOPERATOR_S;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.FILTEREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.FOREXPRESSIONNODE_CT;
@@ -154,7 +156,7 @@ import static org.kie.dmn.feel.util.CodegenUtils.getVariableDeclaratorWithObject
 
 public class ASTCompilerHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ASTCompilerVisitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ASTCompilerHelper.class);
     private static final String EXTENDED_FUNCTION_PACKAGE = "org.kie.dmn.feel.runtime.functions.extended";
     private final ASTCompilerVisitor astCompilerVisitor;
     private final BlockStmt toPopulate;
@@ -246,6 +248,14 @@ public class ASTCompilerHelper {
 
     public BlockStmt add(DashNode n) {
         return addVariableDeclaratorWithObjectCreation(DASHNODE_CT, NodeList.nodeList(), n.getText());
+    }
+
+    public BlockStmt add(DescendantExpressionNode n) {
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        Expression nameExpression = getNodeExpression(n.getName());
+        return addVariableDeclaratorWithObjectCreation(DESCENDANTEXPRESSIONNODE_CT,
+                NodeList.nodeList(expressionExpression, nameExpression),
+                n.getText());
     }
 
     public BlockStmt add(ForExpressionNode n) {
