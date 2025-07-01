@@ -18,7 +18,45 @@
  */
 package org.kie.dmn.feel.lang.ast.visitor;
 
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.ASTNode;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.BetweenNode;
+import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.CTypeNode;
+import org.kie.dmn.feel.lang.ast.ContextEntryNode;
+import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.ContextTypeNode;
+import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.DescendantExpressionNode;
+import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
+import org.kie.dmn.feel.lang.ast.ForExpressionNode;
+import org.kie.dmn.feel.lang.ast.FormalParameterNode;
+import org.kie.dmn.feel.lang.ast.FunctionDefNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.FunctionTypeNode;
+import org.kie.dmn.feel.lang.ast.IfExpressionNode;
+import org.kie.dmn.feel.lang.ast.InNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.InstanceOfNode;
+import org.kie.dmn.feel.lang.ast.IterationContextNode;
+import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.ListTypeNode;
+import org.kie.dmn.feel.lang.ast.NameDefNode;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
+import org.kie.dmn.feel.lang.ast.NamedParameterNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.NumberNode;
+import org.kie.dmn.feel.lang.ast.PathExpressionNode;
+import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
+import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
+import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
+import org.kie.dmn.feel.lang.ast.Visitor;
 
 public abstract class DefaultedVisitor<T> implements Visitor<T> {
 

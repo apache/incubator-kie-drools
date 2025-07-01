@@ -91,8 +91,6 @@ public class DescendantExpressionNode extends BaseNode {
                         Object key = entry.getKey();
                         Object value = entry.getValue();
 
-                        //Object value1 = EvalHelper.getDefinedValue( current, name.getText() ).toOptional()
-
                         if (name.getText().equals(key)) {
                             results.add(value);
                         }

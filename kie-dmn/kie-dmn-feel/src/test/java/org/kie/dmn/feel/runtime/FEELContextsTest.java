@@ -42,7 +42,11 @@ public class FEELContextsTest extends BaseFEELTest {
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 { "{ first name : \"Bob\", birthday : date(\"1978-09-12\"), salutation : \"Hello \"+first name }",
-                        "asd", null },
+                        new HashMap<String,Object>() {{
+                            put( "first name", "Bob" );
+                            put( "birthday", LocalDate.of(1978, 9, 12) );
+                            put( "salutation", "Hello Bob" );
+                        }}, null },
                 // nested contexts + qualified name
                 { "{ full name : { first name: \"Bob\", last name : \"Doe\" }, birthday : date(\"1978-09-12\"), salutation : \"Hello \"+full name.first name }",
                         new HashMap<String,Object>() {{
