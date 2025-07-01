@@ -35,6 +35,7 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
@@ -67,7 +68,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 String dfName =df.getName();
                 BuiltInType ft = getBuiltInTypeByDataType(df.getDataType());
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-                DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, model.getFeelDialect());
+                DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, model.getFeelDialect(), model.getDMNVersion());
                 List<UnaryTest> av = new ArrayList<>();
                 if (df.getValues() != null && !df.getValues().isEmpty() && ft != BuiltInType.UNKNOWN) {
                     final BuiltInType feelType = ft;
