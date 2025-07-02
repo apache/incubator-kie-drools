@@ -20,7 +20,11 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -50,6 +54,7 @@ public abstract class BaseFEELFunction
         implements FEELFunction {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final int DMN_VERSION = 15;
 
     private String name;
     private Symbol symbol;
@@ -268,7 +273,6 @@ public abstract class BaseFEELFunction
                                    Supplier<List<String>> parameterNamesSupplier,
                                    Supplier<List<Object>> parameterValuesSupplier) {
         source = getFEELDialectAdaptedEither(ctx, source);
-        source = getEventedValueEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                         if (left instanceof InvalidParametersEvent invalidParametersEvent) {
@@ -308,7 +312,7 @@ public abstract class BaseFEELFunction
      * @return a right Either with the resolved value if an event is present, else the original source
      */
     private Either<FEELEvent, Object> getEventedValueEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
-        if(ctx.getDMNVersion().getDmnVersion() > 15 && source instanceof FEELFnResult<Object>feelFnresult && feelFnresult.getEvent() != null ) {
+        if(ctx.getDMNVersion().getDmnVersion() > DMN_VERSION && source instanceof FEELFnResult<Object> feelFnresult && feelFnresult.getEvent() != null ) {
             ctx.notifyEvt(feelFnresult::getEvent);
             return Either.ofRight(feelFnresult.getOrElse(null));
         } else {
