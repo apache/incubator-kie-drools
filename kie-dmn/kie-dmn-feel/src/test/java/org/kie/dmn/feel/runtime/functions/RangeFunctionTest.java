@@ -330,7 +330,7 @@ class RangeFunctionTest {
     }
 
     @Test
-    void nodesDescendant_True() {
+    void nodesEndpointsAscendant_True() {
         Object left = 1;
         Object right = 2;
         assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
@@ -359,7 +359,7 @@ class RangeFunctionTest {
     }
 
     @Test
-    void nodesDescendant_False() {
+    void nodesEndpointsAscendant_False() {
         Object left = 2;
         Object right = 1;
         assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))

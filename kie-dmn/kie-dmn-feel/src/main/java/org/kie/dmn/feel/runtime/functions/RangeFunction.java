@@ -189,7 +189,7 @@ public class RangeFunction extends BaseFEELFunction {
     /**
      * @param leftObject
      * @param rightObject
-     * @return It checks if the leftObject is a greater than rightObject, false otherwise. If one of the endpoints is null,
+     * @return It checks if the leftObject is lower or equals to rightObject, false otherwise. If one of the endpoints is null,
      * the endpoint range is considered to be in ascending order.
      */
     @SuppressWarnings("unchecked")
