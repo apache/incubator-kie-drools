@@ -356,6 +356,26 @@ class RangeFunctionTest {
         assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
                 .withFailMessage("P2DT20H14M - P2DT20H15M")
                 .isTrue();
+        left = new NullNode("null");
+        right = Duration.parse("P2DT20H15M");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("null - P2DT20H15M")
+                .isTrue();
+        left  = 2;
+        right = new NullNode("null");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2 - null")
+                .isTrue();
+        left  = new NullNode("null");
+        right = new NullNode("null");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("null - null")
+                .isTrue();
+        left  = null;
+        right = null;
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("null - null")
+                .isTrue();
     }
 
     @Test

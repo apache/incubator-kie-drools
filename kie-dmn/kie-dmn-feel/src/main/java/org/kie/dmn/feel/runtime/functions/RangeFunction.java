@@ -194,7 +194,8 @@ public class RangeFunction extends BaseFEELFunction {
      */
     @SuppressWarnings("unchecked")
     protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightObject) {
-        boolean oneEndpointIsNull = leftObject == null || rightObject == null;
+        boolean oneEndpointIsNull = leftObject == null || rightObject == null
+                || leftObject instanceof NullNode || rightObject instanceof NullNode;
         return oneEndpointIsNull || ((Comparable<Object>) leftObject).compareTo(rightObject) <= 0;
     }
 
