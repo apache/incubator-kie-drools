@@ -543,7 +543,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         testConfig = conf;
         String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements.dmn", this.getClass());
-        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.LENIENT));
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
         final DMNModel dmnModel = runtime.getModel(
                 nameSpace,
                 "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
