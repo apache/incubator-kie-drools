@@ -28,6 +28,7 @@ import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNConditionalEvaluator;
@@ -62,7 +63,7 @@ class DMNEvaluatorCompilerTest {
 
     @BeforeAll
     static void setUp() {
-        DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT);
+        DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT, DMNVersion.getLatest());
         DMN_COMPILER_CONTEXT = new DMNCompilerContext(DMN_FEEL_HELPER);
 
         DMNCompilerImpl compiler = new DMNCompilerImpl();

@@ -16,30 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.model.v1_5;
+package org.kie.dmn.feel.runtime.functions;
 
-public enum TDecisionTableOrientation {
 
-    RULE_AS_ROW("Rule-as-Row"),
-    RULE_AS_COLUMN("Rule-as-Column"),
-    CROSS_TABLE("CrossTable");
-    private final String value;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.util.Msg;
 
-    TDecisionTableOrientation(String v) {
-        value = v;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class FEELFnResultTest {
+
+    @Test
+    void testOfWarnedResult() {
+        FEELEvent warningEvent = new FEELEventBase( FEELEvent.Severity.WARN, Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE), null);
+        String value = "test";
+        FEELFnResult<String> result = FEELFnResult.ofEventedResult(value, warningEvent);
+        assertThat(result).isNotNull();
+        assertThat(result.getEvent()).isEqualTo(warningEvent);
+        assertThat(result.getOrElse(null)).isEqualTo(value);
     }
-
-    public String value() {
-        return value;
-    }
-
-    public static TDecisionTableOrientation fromValue(String v) {
-        for (TDecisionTableOrientation c: TDecisionTableOrientation.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
 }

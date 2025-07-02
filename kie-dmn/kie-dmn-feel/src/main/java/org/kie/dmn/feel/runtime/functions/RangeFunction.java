@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -200,7 +201,7 @@ public class RangeFunction extends BaseFEELFunction {
         if (STUBBED == null) {
             // Defaulting FEELDialect to FEEL
             STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(),
-                                                new FEELEventListenersManager(), 0, FEELDialect.FEEL);
+                                                new FEELEventListenersManager(), 0, FEELDialect.FEEL, DMNVersion.getLatest());
         }
         return STUBBED;
     }

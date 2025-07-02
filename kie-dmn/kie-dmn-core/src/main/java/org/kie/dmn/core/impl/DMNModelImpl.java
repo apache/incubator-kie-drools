@@ -44,6 +44,7 @@ import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -59,11 +60,12 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV14;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV16;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -107,6 +109,8 @@ public class DMNModelImpl
 
     private FEELDialect feelDialect;
 
+    private DMNVersion dmnVersion;
+
     public DMNModelImpl() {
         // needed because Externalizable.
     }
@@ -119,6 +123,7 @@ public class DMNModelImpl
         String expressionLanguage = definitions.getExpressionLanguage() != null ? definitions.getExpressionLanguage() : "";
         try {
             feelDialect = FEELDialect.fromNamespace(expressionLanguage);
+            dmnVersion = DMNVersion.inferDMNVersion(definitions.getNsContext().values());
         } catch (IllegalArgumentException e) {
             feelDialect = FEELDialect.FEEL;
         }
@@ -134,6 +139,10 @@ public class DMNModelImpl
         return feelDialect;
     }
 
+    public DMNVersion getDMNVersion() {
+        return dmnVersion;
+    }
+
     private void wireTypeRegistry(Definitions definitions) {
         if (definitions instanceof org.kie.dmn.model.v1_1.TDefinitions) {
             types = new DMNTypeRegistryV11(Collections.unmodifiableMap(importAliases));
@@ -143,8 +152,10 @@ public class DMNModelImpl
             types = new DMNTypeRegistryV13(Collections.unmodifiableMap(importAliases));
         } else if (definitions instanceof org.kie.dmn.model.v1_4.TDefinitions) {
             types = new DMNTypeRegistryV14(Collections.unmodifiableMap(importAliases));
-        } else {
+        } else if (definitions instanceof org.kie.dmn.model.v1_5.TDefinitions) {
             types = new DMNTypeRegistryV15(Collections.unmodifiableMap(importAliases));
+        } else {
+            types = new DMNTypeRegistryV16(Collections.unmodifiableMap(importAliases));
         }
     }
     

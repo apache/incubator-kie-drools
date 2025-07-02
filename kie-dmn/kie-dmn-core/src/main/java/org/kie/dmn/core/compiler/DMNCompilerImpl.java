@@ -37,11 +37,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNVersion;
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -203,7 +204,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs, resource);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
-        DMNCompilerContext ctx = configureDMNCompiler(model.getFeelDialect(), relativeResolver);
+        DMNCompilerContext ctx = configureDMNCompiler(model.getFeelDialect(), model.getDMNVersion(), relativeResolver);
         if (!dmndefs.getImport().isEmpty()) {
             iterateImports(dmndefs, dmnModels, model, relativeResolver );
         }
@@ -215,13 +216,14 @@ public class DMNCompilerImpl implements DMNCompiler {
     /**
      * This method will Configures and creates a DMNCompilerContext for the DMN compiler, setting up the FEEL helper and relative resolver.
      * @param feeldialect : It used by the DMN compiler for parsing and evaluating FEEL expressions.
+     * @param dmnVersion : DMN version of the model.
      * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
      * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
      */
-    private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
+    private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, DMNVersion dmnVersion, Function<String, Reader> relativeResolver) {
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect);
+        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect, dmnVersion);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
         ctx.setRelativeResolver(relativeResolver);
         return ctx;

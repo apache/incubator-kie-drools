@@ -21,84 +21,20 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.kie.dmn.model.api.Artifact;
-import org.kie.dmn.model.api.BusinessContextElement;
-import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.ElementCollection;
-import org.kie.dmn.model.api.Import;
-import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.dmndi.DMNDI;
+import org.kie.dmn.model.impl.AbstractTDefinitions;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 
-public class TDefinitions extends TNamedElement implements Definitions {
+import static org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_FEEL;
 
-    public static final String DEFAULT_EXPRESSION_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+public class TDefinitions extends AbstractTDefinitions implements URIFEELed {
 
-    public static final String DEFAULT_TYPE_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+    public static final String DEFAULT_EXPRESSION_LANGUAGE = URI_FEEL;
 
-    private List<Import> _import;
-    private List<ItemDefinition> itemDefinition;
-    private List<DRGElement> drgElement;
-    private List<Artifact> artifact;
-    private List<ElementCollection> elementCollection;
-    private List<BusinessContextElement> businessContextElement;
+    public static final String DEFAULT_TYPE_LANGUAGE = URI_FEEL;
+
     private List<DecisionService> decisionService;
-    private String expressionLanguage;
-    private String typeLanguage;
-    private String namespace;
-    private String exporter;
-    private String exporterVersion;
-
-    @Override
-    public List<Import> getImport() {
-        if ( _import == null ) {
-            _import = new ArrayList<>();
-        }
-        return this._import;
-    }
-
-    @Override
-    public List<ItemDefinition> getItemDefinition() {
-        if ( itemDefinition == null ) {
-            itemDefinition = new ArrayList<>();
-        }
-        return this.itemDefinition;
-    }
-
-    @Override
-    public List<DRGElement> getDrgElement() {
-        if ( drgElement == null ) {
-            drgElement = new ArrayList<>();
-        }
-        return this.drgElement;
-    }
-
-    @Override
-    public List<Artifact> getArtifact() {
-        if ( artifact == null ) {
-            artifact = new ArrayList<>();
-        }
-        return this.artifact;
-    }
-
-    @Override
-    public List<ElementCollection> getElementCollection() {
-        if ( elementCollection == null ) {
-            elementCollection = new ArrayList<>();
-        }
-        return this.elementCollection;
-    }
-
-    @Override
-    public List<BusinessContextElement> getBusinessContextElement() {
-        if ( businessContextElement == null ) {
-            businessContextElement = new ArrayList<>();
-        }
-        return this.businessContextElement;
-    }
 
     @Override
     public List<DecisionService> getDecisionService() {
@@ -116,7 +52,6 @@ public class TDefinitions extends TNamedElement implements Definitions {
         return this.decisionService;
     }
 
-
     @Override
     public String getExpressionLanguage() {
         if ( expressionLanguage == null ) {
@@ -127,52 +62,12 @@ public class TDefinitions extends TNamedElement implements Definitions {
     }
 
     @Override
-    public void setExpressionLanguage( final String value ) {
-        this.expressionLanguage = value;
-    }
-
-    @Override
     public String getTypeLanguage() {
         if ( typeLanguage == null ) {
             return DEFAULT_TYPE_LANGUAGE;
         } else {
             return typeLanguage;
         }
-    }
-
-    @Override
-    public void setTypeLanguage( final String value ) {
-        this.typeLanguage = value;
-    }
-
-    @Override
-    public String getNamespace() {
-        return namespace;
-    }
-
-    @Override
-    public void setNamespace( final String value ) {
-        this.namespace = value;
-    }
-
-    @Override
-    public String getExporter() {
-        return exporter;
-    }
-
-    @Override
-    public void setExporter( final String value ) {
-        this.exporter = value;
-    }
-
-    @Override
-    public String getExporterVersion() {
-        return exporterVersion;
-    }
-
-    @Override
-    public void setExporterVersion( final String value ) {
-        this.exporterVersion = value;
     }
 
     @Override

@@ -18,36 +18,24 @@
  */
 package org.kie.dmn.efesto.compiler.service;
 
-import org.kie.dmn.api.core.DMNMessage;
+import java.io.File;
+import java.util.List;
+import java.util.Set;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.identifiers.DmnIdFactory;
-import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
-import org.kie.dmn.api.identifiers.LocalCompilationSourceIdDmn;
-import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
-import org.kie.dmn.validation.DMNValidator;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
-import org.kie.efesto.common.api.io.MemoryFile;
-import org.kie.efesto.common.core.storage.ContextStorage;
-import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
-import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
 import org.kie.efesto.common.api.model.EfestoCompilationContext;
+import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Collections;
-import java.util.List;
-
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getCleanedFilenameForURI;
-import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
-
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModelsFromFiles;
 
 public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieCompilerServiceDMNFile.class);
 
     @Override
     @SuppressWarnings( "rawtypes")
@@ -63,39 +51,17 @@ public class KieCompilerServiceDMNFile extends AbstractKieCompilerServiceDMN {
                                                                 this.getClass().getName(),
                                                                 toProcess.getClass().getName()));
         }
+        if (!(context instanceof DmnCompilationContext dmnContext)) {
+            throw new KieCompilerServiceException(String.format("Wrong %s context parameter for from %s",
+                                                                context.getClass().getName(),
+                                                                this.getClass().getName()));
+        }
         EfestoFileResource fileResource = (EfestoFileResource) toProcess;
-        File dmnFile = fileResource.getContent();
-        String modelSource;
-        try {
-            modelSource = dmnFile instanceof MemoryFile memoryFile ? new String(memoryFile.getContent(), StandardCharsets.UTF_8) : ( Files.readString(dmnFile.toPath()));
-
-        } catch (IOException e) {
-            throw new KieCompilerServiceException(String.format("%s failed to read content of %s",
-                                                                this.getClass().getName(),
-                                                                fileResource.getContent()));
-        }
-        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
-                                                       DMNValidator.Validation.VALIDATE_SCHEMA,
-                                                       DMNValidator.Validation.VALIDATE_MODEL,
-                                                       DMNValidator.Validation.VALIDATE_COMPILATION,
-                                                       DMNValidator.Validation.ANALYZE_DECISION_TABLE);
-        // see https://github.com/apache/incubator-kie-issues/issues/1619
-//        if (DmnCompilerUtils.hasError(messages)) {
-//            return Collections.emptyList();
-//        }
-        try {
-            String fileName = getCleanedFilenameForURI(dmnFile);
-            LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
-                    .get(KieDmnComponentRoot.class)
-                    .get(DmnIdFactory.class)
-                    .get(fileName);
-            ContextStorage.putEfestoCompilationSource(localCompilationSourceIdDmn, modelSource);
-            DMNModel dmnModel = getDMNModel(modelSource);
-            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(fileName,
-                    dmnModel.getName(),
-                    modelSource, dmnModel));
-        } catch (Exception e) {
-            throw new EfestoCompilationManagerException(e);
-        }
+        Set<File> dmnFiles = Set.of(fileResource.getContent());
+        List<DMNModel> dmnModels = getDMNModelsFromFiles(dmnFiles, dmnContext.getCustomDMNProfiles(), dmnContext.getRuntimeTypeCheckOption(), dmnContext.getContextClassloader());
+        List<ModelSourceTuple> modelSourceTuples = dmnModels.stream()
+                .map(this::readDMNModel)
+                .toList();
+        return getListEfestoCompilationOutput(modelSourceTuples, dmnContext, LOGGER);
     }
 }
