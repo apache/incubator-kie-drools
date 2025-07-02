@@ -17,7 +17,7 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
 -->
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_C1C3315B-AE8F-445A-BD91-AABA022783E9" id="_5B4B6163-513E-4B5A-833C-F0E6BEBF5A6E" name="ImportedModel" xmlns:included0="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_C1C3315B-AE8F-445A-BD91-AABA022783E9" id="_5B4B6163-513E-4B5A-833C-F0E6BEBF5A6E" name="ImportedModel" xmlns:included0="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
   <import id="_D5D8393C-E2F1-486E-88C7-F81B235297E1" name="InputData" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" locationURI="./InputDataModel.dmn" />
   <decision name="DB" id="_C68277F3-B12D-46C7-8CF5-AE9AFB0F2CF9">
     <variable name="DB" id="_B2C9906D-95DF-414F-9D4C-84FBCF342C7C" typeRef="boolean" />
