@@ -198,9 +198,9 @@ class RangeFunctionTest {
                                       new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
                                               , Range.RangeBoundary.CLOSED),
                                       from);
-        from = "[2..1]";
+        from = "[1..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
                                               , Range.RangeBoundary.CLOSED),
                                       from);
         from = "[\"a\"..\"z\"]";
@@ -326,6 +326,59 @@ class RangeFunctionTest {
     void nodesReturnsSameType_False() {
         assertThat(rangeFunction.nodesReturnsSameType("1", 1))
                 .withFailMessage("\"1\" - 1")
+                .isFalse();
+    }
+
+    @Test
+    void nodesDescendant_True() {
+        Object left = 1;
+        Object right = 2;
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("1 - 2")
+                .isTrue();
+        left  = 2;
+        right = 2;
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2 - 2")
+                .isTrue();
+        left = DateTimeFormatter.ISO_DATE.parse("1982-10-13", LocalDate::from);
+        right = DateTimeFormatter.ISO_DATE.parse("2017-02-18", LocalDate::from);
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("1982-10-13 - 2017-02-18")
+                .isTrue();
+        left = LocalDateTime.of(2017, 2, 18, 10, 30, 4, 0);
+        right = LocalDateTime.of(2017, 2, 18, 10, 30, 59, 0);
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2017-02-18T10:30:04 - 2017-02-18T10:30:59")
+                .isTrue();
+        left = Duration.parse("P2DT20H14M");
+        right = Duration.parse("P2DT20H15M");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("P2DT20H14M - P2DT20H15M")
+                .isTrue();
+    }
+
+    @Test
+    void nodesDescendant_False() {
+        Object left = 2;
+        Object right = 1;
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2 - 1")
+                .isFalse();
+        left = DateTimeFormatter.ISO_DATE.parse("2017-02-18", LocalDate::from);
+        right = DateTimeFormatter.ISO_DATE.parse("1982-10-13", LocalDate::from);
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2017-02-18 - 1982-10-13")
+                .isFalse();
+        left = LocalDateTime.of(2017, 2, 18, 10, 30, 59, 0);
+        right = LocalDateTime.of(2017, 2, 18, 10, 30, 4, 0);
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2017-02-18T10:30:59 - 2017-02-18T10:30:04")
+                .isFalse();
+        left = Duration.parse("P2DT20H15M");
+        right = Duration.parse("P2DT20H14M");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("P2DT20H15M - P2DT20H14M")
                 .isFalse();
     }
 

@@ -135,6 +135,11 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
+
+        if (!nodesValueRangeAreAscending(left, right)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "range endpoints must be in ascending order"));
+        }
+
         Range toReturn = getReturnedValue(left, right, startBoundary, endBoundary);
         // Boundary values need to be always defined in range string. They can be undefined only in unary test, that
         // represents range, e.g. (<10).
@@ -166,7 +171,7 @@ public class RangeFunction extends BaseFEELFunction {
 
     /**
      * @param leftObject
-     * @param leftObject
+     * @param rightObject
      * @return
      */
     protected boolean nodesReturnsSameType(Object leftObject, Object rightObject) {
@@ -179,6 +184,18 @@ public class RangeFunction extends BaseFEELFunction {
             Class<?> right = rightObject.getClass();
             return left.equals(right) || left.isAssignableFrom(right) || right.isAssignableFrom(left);
         }
+    }
+
+    /**
+     * @param leftObject
+     * @param rightObject
+     * @return It checks if the leftObject is a greater than rightObject, false otherwise. If one of the endpoints is null,
+     * the endpoint range is considered to be in ascending order.
+     */
+    @SuppressWarnings("unchecked")
+    protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightObject) {
+        boolean oneEndpointIsNull = leftObject == null || rightObject == null;
+        return oneEndpointIsNull || ((Comparable<Object>) leftObject).compareTo(rightObject) <= 0;
     }
 
     protected BaseNode parse(String input) {
