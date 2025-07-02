@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_1C6D2AC9-BE68-4498-8B4D-B56F44D9705B" id="_777F1D04-47F9-40F1-88EB-37D6F0332BCF" name="ImportedModel" xmlns:included0="https://kie.org/dmn/_97457F07-FEAA-4609-B4C5-5F588159C0DB" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <import id="_9EEC76A1-598E-45F0-BC6F-A521131F6183" name="ModelA" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kie.org/dmn/_97457F07-FEAA-4609-B4C5-5F588159C0DB" locationURI="./ModelA.dmn" />
+  <decision name="DB" id="_9F06F70B-1FFA-4D91-9CF9-9643D7F458C0">
+    <variable name="DB" id="_06A3D2FA-506F-4484-8175-F5CCF9615F63" typeRef="boolean" />
+    <informationRequirement id="_074AA48E-C7E8-4E52-AB8F-E483CB453A2A">
+      <requiredInput href="https://kie.org/dmn/_97457F07-FEAA-4609-B4C5-5F588159C0DB#_3EC06FAA-496B-47AA-86BD-A9894E70C2E4" />
+    </informationRequirement>
+    <literalExpression id="_3F04DADA-63D6-4960-992E-E2A368E1154C" typeRef="boolean" label="DB">
+      <text>ModelA.Person.Age &gt;= 18</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_E1B7B8AB-21E3-47BD-A069-2B7303F33A43" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_3F04DADA-63D6-4960-992E-E2A368E1154C">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_C66851B5-FD83-476E-8A65-E3BBEFE2C19B" dmnElementRef="_9F06F70B-1FFA-4D91-9CF9-9643D7F458C0" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="660" y="100" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_FC908D15-EF92-4784-A2EC-2AA9A864935D" dmnElementRef="included0:_3EC06FAA-496B-47AA-86BD-A9894E70C2E4">
+        <dc:Bounds x="660" y="280" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_99656C30-E6A0-4A54-960F-B1ABD8C85C68" dmnElementRef="_074AA48E-C7E8-4E52-AB8F-E483CB453A2A" sourceElement="_FC908D15-EF92-4784-A2EC-2AA9A864935D" targetElement="_C66851B5-FD83-476E-8A65-E3BBEFE2C19B">
+        <di:waypoint x="740" y="320" />
+        <di:waypoint x="740" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
