@@ -70,7 +70,7 @@ public class DMNInputDataTransitiveImportTest {
     }
 
     @Test
-    void testInputDataError() throws IOException {
+    void testInputDataWithInvalidName() throws IOException {
         List<Resource> resources = Arrays.asList(
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/InputDataModel.dmn"),
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/ImportedModel.dmn"),
@@ -102,7 +102,7 @@ public class DMNInputDataTransitiveImportTest {
     }
 
     @Test
-    void testInputDataTransitiveImportError() throws IOException {
+    void testInputDataWithInvalidAge() throws IOException {
         List<Resource> resources = Arrays.asList(
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/InputDataModel.dmn"),
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/ImportedModel.dmn"),
