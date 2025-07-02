@@ -30,13 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.lang.ast.AtLiteralNode;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.BooleanNode;
-import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
-import org.kie.dmn.feel.lang.ast.NullNode;
-import org.kie.dmn.feel.lang.ast.NumberNode;
-import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -370,6 +364,16 @@ class RangeFunctionTest {
         right = new NullNode("null");
         assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
                 .withFailMessage("null - null")
+                .isTrue();
+        left = new UndefinedValueNode();
+        right = Duration.parse("P2DT20H15M");
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("undefined - P2DT20H15M")
+                .isTrue();
+        left  = 2;
+        right = new UndefinedValueNode();
+        assertThat(rangeFunction.nodesValueRangeAreAscending(left, right))
+                .withFailMessage("2 - undefined")
                 .isTrue();
         left  = null;
         right = null;

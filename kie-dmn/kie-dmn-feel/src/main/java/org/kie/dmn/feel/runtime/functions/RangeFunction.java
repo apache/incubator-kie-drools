@@ -44,6 +44,7 @@ import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
@@ -190,13 +191,14 @@ public class RangeFunction extends BaseFEELFunction {
      * @param leftObject
      * @param rightObject
      * @return It checks if the leftObject is lower or equals to rightObject, false otherwise. If one of the endpoints is null,
-     * the endpoint range is considered to be in ascending order.
+     * or undefined, the endpoint range is considered as an ascending interval.
      */
     @SuppressWarnings("unchecked")
     protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightObject) {
-        boolean oneEndpointIsNull = leftObject == null || rightObject == null
-                || leftObject instanceof NullNode || rightObject instanceof NullNode;
-        return oneEndpointIsNull || ((Comparable<Object>) leftObject).compareTo(rightObject) <= 0;
+        boolean atLeastOneEndpointIsNullOrUndefined = leftObject == null || rightObject == null
+                || leftObject instanceof NullNode || rightObject instanceof NullNode
+                || leftObject instanceof UndefinedValueNode || rightObject instanceof UndefinedValueNode;
+        return atLeastOneEndpointIsNullOrUndefined || ((Comparable<Object>) leftObject).compareTo(rightObject) <= 0;
     }
 
     protected BaseNode parse(String input) {
