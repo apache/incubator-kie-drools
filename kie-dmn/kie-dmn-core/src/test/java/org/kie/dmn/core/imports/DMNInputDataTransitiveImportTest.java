@@ -46,7 +46,7 @@ public class DMNInputDataTransitiveImportTest {
         );
 
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_D2213AB5-8DE3-4A44-B4FA-117DE18E82CE", "ImportingModel");
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -54,21 +54,18 @@ public class DMNInputDataTransitiveImportTest {
         person.put("Age", 27);
 
         DMNContext context = dmnRuntime.newContext();
-        Map<String, Object> modelA = new HashMap<>();
-        modelA.put("Person", person);
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("Person", person);
 
-        Map<String, Object> modelB = new HashMap<>();
-        modelB.put("ModelA", modelA);
+        Map<String, Object> importedModel = new HashMap<>();
+        importedModel.put("InputData", inputData);
 
-        context.set("ModelB", modelB);
-        context.set("ModelA", modelA);
-        System.out.println(context.getAll());
+        context.set("Imported", importedModel);
+        context.set("InputData", inputData);
         DMNResult result = dmnRuntime.evaluateAll(model, context);
-        System.out.println(result.getDecisionResults());
-        result.getMessages().forEach(System.out::println);
 
         assertThat(result.hasErrors()).isFalse();
-        assertThat(result.getDecisionResultByName("ModelB.DB").getResult()).isEqualTo(true);
+        assertThat(result.getDecisionResultByName("Imported.DB").getResult()).isEqualTo(true);
         assertThat(result.getDecisionResultByName("DC").getResult()).isEqualTo(true);
     }
 
@@ -81,7 +78,7 @@ public class DMNInputDataTransitiveImportTest {
         );
 
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_D2213AB5-8DE3-4A44-B4FA-117DE18E82CE", "ImportingModel");
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -89,21 +86,18 @@ public class DMNInputDataTransitiveImportTest {
         person.put("Age", 27);
 
         DMNContext context = dmnRuntime.newContext();
-        Map<String, Object> modelA = new HashMap<>();
-        modelA.put("Person", person);
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("Person", person);
 
-        Map<String, Object> modelB = new HashMap<>();
-        modelB.put("ModelA", modelA);
+        Map<String, Object> importedModel = new HashMap<>();
+        importedModel.put("InputData", inputData);
 
-        context.set("ModelB", modelB);
-        context.set("ModelA", modelA);
-        System.out.println(context.getAll());
+        context.set("Imported", importedModel);
+        context.set("InputData", inputData);
         DMNResult result = dmnRuntime.evaluateAll(model, context);
-        System.out.println(result.getDecisionResults());
-        result.getMessages().forEach(System.out::println);
 
         assertThat(result.hasErrors()).isFalse();
-        assertThat(result.getDecisionResultByName("ModelB.DB").getResult()).isEqualTo(true);
+        assertThat(result.getDecisionResultByName("Imported.DB").getResult()).isEqualTo(true);
         assertThat(result.getDecisionResultByName("DC").getResult()).isEqualTo(false);
     }
 
@@ -116,7 +110,7 @@ public class DMNInputDataTransitiveImportTest {
         );
 
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_D2213AB5-8DE3-4A44-B4FA-117DE18E82CE", "ImportingModel");
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -124,21 +118,18 @@ public class DMNInputDataTransitiveImportTest {
         person.put("Age", 15);
 
         DMNContext context = dmnRuntime.newContext();
-        Map<String, Object> modelA = new HashMap<>();
-        modelA.put("Person", person);
+        Map<String, Object> InputData = new HashMap<>();
+        InputData.put("Person", person);
 
-        Map<String, Object> modelB = new HashMap<>();
-        modelB.put("ModelA", modelA);
+        Map<String, Object> importedModel = new HashMap<>();
+        importedModel.put("InputData", InputData);
 
-        context.set("ModelB", modelB);
-        context.set("ModelA", modelA);
-        System.out.println(context.getAll());
+        context.set("Imported", importedModel);
+        context.set("InputData", InputData);
         DMNResult result = dmnRuntime.evaluateAll(model, context);
-        System.out.println(result.getDecisionResults());
-        result.getMessages().forEach(System.out::println);
 
         assertThat(result.hasErrors()).isFalse();
-        assertThat(result.getDecisionResultByName("ModelB.DB").getResult()).isEqualTo(false);
+        assertThat(result.getDecisionResultByName("Imported.DB").getResult()).isEqualTo(false);
         assertThat(result.getDecisionResultByName("DC").getResult()).isEqualTo(false);
     }
 }

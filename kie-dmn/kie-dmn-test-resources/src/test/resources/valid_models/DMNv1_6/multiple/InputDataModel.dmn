@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_97457F07-FEAA-4609-B4C5-5F588159C0DB" id="_DD54A10F-7F23-411D-B3F8-48D5F84E1934" name="InputDataModel" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
-  <itemDefinition id="_A22BA2F4-0DFA-47B6-800A-05450155E4D9" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-    <itemComponent id="_5D0781A4-5985-4D50-B9E1-F7582F547B20" name="Name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" id="_0671E2C0-D0E6-4713-9270-00C9BD747359" name="InputDataModel" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_23FD4311-381E-48C0-A3D5-CB77C5E78A06" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_E6810ECC-1D42-4263-A0DE-3BD721D04F4E" name="Name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_D0112C25-C6EE-48EC-AB20-560ECB355AE8" name="Age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_5E3C35E4-0CA3-45D2-8706-70E9D9D4F469" name="Age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
       <typeRef>number</typeRef>
     </itemComponent>
   </itemDefinition>
-  <inputData name="Person" id="_3EC06FAA-496B-47AA-86BD-A9894E70C2E4">
-    <variable name="Person" id="_CCD9FD5E-6F3F-4E85-9FCD-CA8A9860F585" typeRef="tPerson" />
+  <inputData name="Person" id="_D93251BA-B455-4041-9148-4491E3FBFC76">
+    <variable name="Person" id="_A059BAAD-C714-4730-B5AF-68C38EF29D4F" typeRef="tPerson" />
   </inputData>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram id="_292B52F7-73E6-4E86-8265-5A1094C6AE61" name="Default DRD" useAlternativeInputDataShape="false">
+    <dmndi:DMNDiagram id="_0C6569DA-C0AF-449C-A745-479C696B678E" name="Default DRD" useAlternativeInputDataShape="false">
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths />
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id="_D9F6CECE-23A7-4932-8743-6F10EDE46FCA" dmnElementRef="_3EC06FAA-496B-47AA-86BD-A9894E70C2E4" isCollapsed="false" isListedInputData="false">
-        <dc:Bounds x="660" y="200" width="160" height="80" />
+      <dmndi:DMNShape id="_03F91203-4E21-4060-B798-ABD50BC86A42" dmnElementRef="_D93251BA-B455-4041-9148-4491E3FBFC76" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="520" y="160" width="160" height="80" />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
