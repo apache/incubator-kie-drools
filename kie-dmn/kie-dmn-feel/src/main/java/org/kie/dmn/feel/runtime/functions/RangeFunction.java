@@ -188,15 +188,16 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     /**
-     * @param leftObject
+     * @param leftValue
      * @param rightValue
      * @return It checks if the leftValueis lower or equals to rightValue, false otherwise. If one of the endpoints is null,
      * or undefined, the endpoint range is considered as an ascending interval.
      */
     @SuppressWarnings("unchecked")
-    protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightValue) {
-        boolean atLeastOneEndpointIsNullOrUndefined = leftObject == null || rightValue == null;
-        return atLeastOneEndpointIsNullOrUndefined || ((Comparable<Object>) leftObject).compareTo(rightValue) <= 0;
+    protected boolean nodesValueRangeAreAscending(Object leftValue, Object rightValue) {
+        boolean atLeastOneEndpointIsNullOrUndefined = leftValue == null || rightValue == null;
+        return atLeastOneEndpointIsNullOrUndefined ||
+                ((Comparable<Object>) leftValue).compareTo(rightValue) <= 0;
     }
 
     protected BaseNode parse(String input) {
