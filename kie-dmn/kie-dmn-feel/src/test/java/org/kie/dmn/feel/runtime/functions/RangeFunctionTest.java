@@ -37,7 +37,6 @@ import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
