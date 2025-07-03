@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -47,6 +48,8 @@ import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -492,7 +495,6 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
                 executedDecisionIds.add(event.getDecision().getId());
             }
-
         });
         final DMNModel dmnModel = runtime.getModel(
                 "https://kie.org/dmn/_0E7C2E43-9E1B-4AB6-8FD1-B3A1461B8C54",
@@ -657,10 +659,11 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     @MethodSource("params")
     void multipleInvalidElements(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_5/DMN-MultipleInvalidElements.dmn",
-                this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_5/DMN-MultipleInvalidElements" +
+                                                                        ".dmn",
+                                                                this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31150E",
-                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+                                                   "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
@@ -678,15 +681,15 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         String decision2RoundUpLiteralExpressionSourceId = "_43236F2B-9857-454F-8EA0-39B37C7519CF";
         String businessKnowledgeModelExpressionSourceId = "_4AC1BD7D-5A8D-4A88-94F9-0B80BDF0D9B1";
         Set<String> expectedIds = new HashSet<>(Arrays.asList(decision1SourceId,
-                decision2SourceId,
-                decision1RoundUpLiteralExpressionSourceId,
-                decision2RoundUpLiteralExpressionSourceId,
-                businessKnowledgeModelExpressionSourceId));
+                                                              decision2SourceId,
+                                                              decision1RoundUpLiteralExpressionSourceId,
+                                                              decision2RoundUpLiteralExpressionSourceId,
+                                                              businessKnowledgeModelExpressionSourceId));
 
         assertThat(dmnResult.getMessages()).hasSize(6);
         Set<String> retrievedIds = dmnResult.getMessages(DMNMessage.Severity.ERROR)
-                    .stream()
-                            .map(DMNMessage::getSourceId)
+                .stream()
+                .map(DMNMessage::getSourceId)
                 .collect(Collectors.toSet());
         assertThat(retrievedIds).hasSameSizeAs(expectedIds).containsAll(expectedIds);
 
@@ -697,7 +700,138 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         retrievedResult = dmnResult.getDecisionResultById(decision2SourceId);
         assertThat(retrievedResult).isNotNull();
         assertThat(retrievedResult.getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+    }
 
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithDefaultMode(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
+                                                                        ".dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 80);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(3);
+        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+        List<String> nullResults = Arrays.asList("_A40F3AA4-2832-4D98-83F0-7D604F9A090F", "_3DC41DB9-BE1D-4289-A639-24AB57ED082D");
+        String succeedResult = "_E9468D45-51EB-48DA-8B30-7D65696FDFB8";
+        nullResults.forEach(nullResult -> assertThat(dmnResult.getDecisionResultById(nullResult).getResult()).isNull());
+        assertThat(dmnResult.getDecisionResultById(succeedResult).getResult()).isNotNull();
+    }
 
-     }
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithLenientMode(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
+                                                                        ".dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.LENIENT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 80);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(3);
+        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+        List<String> nullResults = Arrays.asList("_A40F3AA4-2832-4D98-83F0-7D604F9A090F", "_3DC41DB9-BE1D-4289-A639-24AB57ED082D");
+        String succeedResult = "_E9468D45-51EB-48DA-8B30-7D65696FDFB8";
+        nullResults.forEach(nullResult -> assertThat(dmnResult.getDecisionResultById(nullResult).getResult()).isNull());
+        assertThat(dmnResult.getDecisionResultById(succeedResult).getResult()).isNotNull();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithStrictModeEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
+                                                                        ".dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 80);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(2);
+        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+        dmnResult.getDecisionResults().forEach(decisionResult -> assertThat(decisionResult.getResult()).isNull());
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithStrictModeEvaluateInvalidDecision(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
+                                                                        ".dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 80);
+        final DMNResult dmnResult = runtime.evaluateById(dmnModel, dmnContext, "_A40F3AA4-2832-4D98-83F0-7D604F9A090F");
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(1);
+        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+        dmnResult.getDecisionResults().forEach(decisionResult -> assertThat(decisionResult.getResult()).isNull());
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithStrictModeEvaluateValidDecision(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
+                                                                        ".dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
+        dmnContext.set("Conditional Input", 107);
+        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("Score", 80);
+        final DMNResult dmnResult = runtime.evaluateById(dmnModel, dmnContext, "_E9468D45-51EB-48DA-8B30-7D65696FDFB8");
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR)).isEmpty();
+        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+        List<String> nullResults = Arrays.asList("_A40F3AA4-2832-4D98-83F0-7D604F9A090F", "_3DC41DB9-BE1D-4289-A639-24AB57ED082D");
+        String succeedResult = "_E9468D45-51EB-48DA-8B30-7D65696FDFB8";
+        nullResults.forEach(nullResult -> assertThat(dmnResult.getDecisionResultById(nullResult).getResult()).isNull());
+        assertThat(dmnResult.getDecisionResultById(succeedResult).getResult()).isNotNull();
+    }
 }
