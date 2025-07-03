@@ -137,7 +137,7 @@ public class RangeFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
 
-        if (!nodesValueRangeAreAscending(left, right)) {
+        if (!nodesValuesRangeAreAscending(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "range endpoints must be in ascending order"));
         }
 
@@ -194,7 +194,7 @@ public class RangeFunction extends BaseFEELFunction {
      * or undefined, the endpoint range is considered as an ascending interval.
      */
     @SuppressWarnings("unchecked")
-    protected boolean nodesValueRangeAreAscending(Object leftValue, Object rightValue) {
+    protected boolean nodesValuesRangeAreAscending(Object leftValue, Object rightValue) {
         boolean atLeastOneEndpointIsNullOrUndefined = leftValue == null || rightValue == null;
         return atLeastOneEndpointIsNullOrUndefined ||
                 ((Comparable<Object>) leftValue).compareTo(rightValue) <= 0;
