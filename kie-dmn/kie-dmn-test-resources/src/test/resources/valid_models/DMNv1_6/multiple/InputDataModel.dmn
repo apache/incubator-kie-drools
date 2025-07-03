@@ -17,12 +17,12 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
 -->
-<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" id="_0671E2C0-D0E6-4713-9270-00C9BD747359" name="InputDataModel" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
-  <itemDefinition id="_23FD4311-381E-48C0-A3D5-CB77C5E78A06" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-    <itemComponent id="_E6810ECC-1D42-4263-A0DE-3BD721D04F4E" name="Name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" id="_0671E2C0-D0E6-4713-9270-00C9BD747359" name="InputDataModel" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_23FD4311-381E-48C0-A3D5-CB77C5E78A06" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+    <itemComponent id="_E6810ECC-1D42-4263-A0DE-3BD721D04F4E" name="Name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_5E3C35E4-0CA3-45D2-8706-70E9D9D4F469" name="Age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_5E3C35E4-0CA3-45D2-8706-70E9D9D4F469" name="Age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>number</typeRef>
     </itemComponent>
   </itemDefinition>
