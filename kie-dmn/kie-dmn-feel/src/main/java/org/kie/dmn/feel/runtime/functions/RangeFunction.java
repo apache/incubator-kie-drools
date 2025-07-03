@@ -44,7 +44,6 @@ import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
@@ -68,17 +67,18 @@ public class RangeFunction extends BaseFEELFunction {
             baseNode -> baseNode instanceof AtLiteralNode,
             baseNode -> baseNode instanceof FunctionInvocationNode);
 
-    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(Objects::isNull,
-            object -> object instanceof String,
-            object -> object instanceof Number,
-            object -> object instanceof Duration,
-            object -> object instanceof ChronoPeriod,
-            object -> object instanceof ZonedDateTime,
-            object -> object instanceof OffsetDateTime,
-            object -> object instanceof LocalDateTime,
-            object -> object instanceof LocalDate,
-            object -> object instanceof OffsetTime,
-            object -> object instanceof LocalTime);
+    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(
+            ChronoPeriod.class::isInstance,
+            Duration.class::isInstance,
+            LocalDate.class::isInstance,
+            LocalDateTime.class::isInstance,
+            LocalTime.class::isInstance,
+            Number.class::isInstance,
+            Objects::isNull,
+            OffsetDateTime.class::isInstance,
+            OffsetTime.class::isInstance,
+            String.class::isInstance,
+            ZonedDateTime.class::isInstance);
 
     private RangeFunction() {
         super("range");
@@ -189,16 +189,14 @@ public class RangeFunction extends BaseFEELFunction {
 
     /**
      * @param leftObject
-     * @param rightObject
-     * @return It checks if the leftObject is lower or equals to rightObject, false otherwise. If one of the endpoints is null,
+     * @param rightValue
+     * @return It checks if the leftValueis lower or equals to rightValue, false otherwise. If one of the endpoints is null,
      * or undefined, the endpoint range is considered as an ascending interval.
      */
     @SuppressWarnings("unchecked")
-    protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightObject) {
-        boolean atLeastOneEndpointIsNullOrUndefined = leftObject == null || rightObject == null
-                || leftObject instanceof NullNode || rightObject instanceof NullNode
-                || leftObject instanceof UndefinedValueNode || rightObject instanceof UndefinedValueNode;
-        return atLeastOneEndpointIsNullOrUndefined || ((Comparable<Object>) leftObject).compareTo(rightObject) <= 0;
+    protected boolean nodesValueRangeAreAscending(Object leftObject, Object rightValue) {
+        boolean atLeastOneEndpointIsNullOrUndefined = leftObject == null || rightValue == null;
+        return atLeastOneEndpointIsNullOrUndefined || ((Comparable<Object>) leftObject).compareTo(rightValue) <= 0;
     }
 
     protected BaseNode parse(String input) {
