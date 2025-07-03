@@ -67,17 +67,18 @@ public class RangeFunction extends BaseFEELFunction {
             baseNode -> baseNode instanceof AtLiteralNode,
             baseNode -> baseNode instanceof FunctionInvocationNode);
 
-    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(Objects::isNull,
-            object -> object instanceof String,
-            object -> object instanceof Number,
-            object -> object instanceof Duration,
-            object -> object instanceof ChronoPeriod,
-            object -> object instanceof ZonedDateTime,
-            object -> object instanceof OffsetDateTime,
-            object -> object instanceof LocalDateTime,
-            object -> object instanceof LocalDate,
-            object -> object instanceof OffsetTime,
-            object -> object instanceof LocalTime);
+    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(
+            ChronoPeriod.class::isInstance,
+            Duration.class::isInstance,
+            LocalDate.class::isInstance,
+            LocalDateTime.class::isInstance,
+            LocalTime.class::isInstance,
+            Number.class::isInstance,
+            Objects::isNull,
+            OffsetDateTime.class::isInstance,
+            OffsetTime.class::isInstance,
+            String.class::isInstance,
+            ZonedDateTime.class::isInstance);
 
     private RangeFunction() {
         super("range");
@@ -135,6 +136,11 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
+
+        if (!nodesValuesRangeAreAscending(left, right)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "range endpoints must be in ascending order"));
+        }
+
         Range toReturn = getReturnedValue(left, right, startBoundary, endBoundary);
         // Boundary values need to be always defined in range string. They can be undefined only in unary test, that
         // represents range, e.g. (<10).
@@ -166,7 +172,7 @@ public class RangeFunction extends BaseFEELFunction {
 
     /**
      * @param leftObject
-     * @param leftObject
+     * @param rightObject
      * @return
      */
     protected boolean nodesReturnsSameType(Object leftObject, Object rightObject) {
@@ -179,6 +185,19 @@ public class RangeFunction extends BaseFEELFunction {
             Class<?> right = rightObject.getClass();
             return left.equals(right) || left.isAssignableFrom(right) || right.isAssignableFrom(left);
         }
+    }
+
+    /**
+     * @param leftValue
+     * @param rightValue
+     * @return It checks if the leftValueis lower or equals to rightValue, false otherwise. If one of the endpoints is null,
+     * or undefined, the endpoint range is considered as an ascending interval.
+     */
+    @SuppressWarnings("unchecked")
+    protected boolean nodesValuesRangeAreAscending(Object leftValue, Object rightValue) {
+        boolean atLeastOneEndpointIsNullOrUndefined = leftValue == null || rightValue == null;
+        return atLeastOneEndpointIsNullOrUndefined ||
+                ((Comparable<Object>) leftValue).compareTo(rightValue) <= 0;
     }
 
     protected BaseNode parse(String input) {
