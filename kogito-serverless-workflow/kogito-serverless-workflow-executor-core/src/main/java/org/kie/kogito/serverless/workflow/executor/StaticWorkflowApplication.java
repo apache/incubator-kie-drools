@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -104,6 +105,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
     private final UnitOfWorkManager manager;
     private ProcessInstancesFactory processInstancesFactory;
+    private ExecutorService executor;
 
     private static class StaticCompletionEventListener extends DefaultKogitoProcessEventListener {
 
@@ -136,6 +138,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         private Collection<KogitoProcessEventListener> listeners = new ArrayList<>();
         private Optional<UnitOfWorkManager> manager = Optional.empty();
         private Collection<EventPublisher> publishers = new ArrayList<>();
+        private ExecutorService executor;
 
         private WorkflowApplicationBuilder() {
         }
@@ -171,6 +174,11 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
             return this;
         }
 
+        public WorkflowApplicationBuilder withExecutorService(ExecutorService executor) {
+            this.executor = executor;
+            return this;
+        }
+
         public StaticWorkflowApplication build() {
             if (properties == null) {
                 this.properties = loadApplicationDotProperties();
@@ -178,7 +186,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
             Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
             listeners.add(new StaticCompletionEventListener(queues));
             StaticWorkflowApplication application =
-                    new StaticWorkflowApplication(properties, queues, listeners, manager.orElseGet(() -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())));
+                    new StaticWorkflowApplication(properties, queues, listeners, manager.orElseGet(() -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), executor);
             application.applicationRegisters.forEach(register -> register.register(application));
             EventManager eventManager = application.manager.eventManager();
             eventManager.setService(serviceName);
@@ -220,7 +228,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     }
 
     private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners,
-            UnitOfWorkManager manager) {
+            UnitOfWorkManager manager, ExecutorService executor) {
         super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(new CachedWorkItemHandlerConfig(),
                 new DefaultProcessEventListenerConfig(listeners), manager), new StaticConfigBean()));
         if (!properties.isEmpty()) {
@@ -228,6 +236,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         }
         this.queues = queues;
         this.manager = manager;
+        this.executor = executor;
         applicationRegisters = ServiceLoader.load(StaticApplicationRegister.class);
         workflowRegisters = ServiceLoader.load(StaticWorkflowRegister.class);
         processRegisters = ServiceLoader.load(StaticProcessRegister.class);
@@ -393,6 +402,10 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         public Collection<String> processIds() {
             return map.keySet();
         }
+    }
+
+    ExecutorService executorService() {
+        return executor;
     }
 
     @Override
