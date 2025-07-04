@@ -16,11 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.integrationtests.excetpion;
 
-public class ServiceException extends RuntimeException {
+package org.kie.kogito.it;
 
-    public ServiceException(String message) {
-        super(message);
-    }
+import org.kie.kogito.testcontainers.springboot.PostgreSqlSpringBootTestResource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
+@ContextConfiguration(initializers = PostgreSqlSpringBootTestResource.class)
+public class PostgreSQLTransactionalErrorHandlingIT extends TransactionalErrorHandlingTest {
 }

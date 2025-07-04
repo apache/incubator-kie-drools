@@ -37,7 +37,7 @@
   <bpmn2:interface id="_A4898FE5-A2BC-4D3C-90F2-7992CD7FB20C_ServiceInterface" name="org.kie.kogito.integrationtests.HelloService" implementationRef="org.kie.kogito.integrationtests.HelloService">
     <bpmn2:operation id="_A4898FE5-A2BC-4D3C-90F2-7992CD7FB20C_ServiceOperation" name="echo" implementationRef="echo"/>
   </bpmn2:interface>
-  <bpmn2:error id="org.kie.kogito.integrationtests.excetpion.ServiceException" errorCode="org.kie.kogito.integrationtests.excetpion.ServiceException"/>
+  <bpmn2:error id="org.kie.kogito.integrationtests.exception.ServiceException" errorCode="org.kie.kogito.integrationtests.exception.ServiceException"/>
   <bpmn2:interface id="_F12F8E21-9130-49C3-A73F-F3B0093104FB_ServiceInterface" name="org.kie.kogito.integrationtests.HelloService" implementationRef="org.kie.kogito.integrationtests.HelloService">
     <bpmn2:operation id="_F12F8E21-9130-49C3-A73F-F3B0093104FB_ServiceOperation" name="hello" implementationRef="hello"/>
   </bpmn2:interface>
@@ -263,7 +263,7 @@
           </drools:metaData>
         </bpmn2:extensionElements>
         <bpmn2:outgoing>_D20C84EC-27D5-4FFD-B959-87DFF80B9AA1</bpmn2:outgoing>
-        <bpmn2:errorEventDefinition drools:erefname="org.kie.kogito.integrationtests.excetpion.ServiceException" errorRef="org.kie.kogito.integrationtests.excetpion.ServiceException"/>
+        <bpmn2:errorEventDefinition drools:erefname="org.kie.kogito.integrationtests.exception.ServiceException" errorRef="org.kie.kogito.integrationtests.exception.ServiceException"/>
       </bpmn2:startEvent>
       <bpmn2:serviceTask id="_A4898FE5-A2BC-4D3C-90F2-7992CD7FB20C" drools:serviceimplementation="Java" drools:serviceinterface="org.kie.kogito.integrationtests.HelloService" drools:serviceoperation="echo" name="Failed" implementation="Java" operationRef="_A4898FE5-A2BC-4D3C-90F2-7992CD7FB20C_ServiceOperation">
         <bpmn2:extensionElements>

@@ -250,22 +250,35 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             ((InternalProcessRuntime) kruntime.getProcessRuntime())
                     .getProcessEventSupport().fireBeforeNodeTriggered(this, kruntime);
         }
-        try {
-            internalTrigger(from, type);
-        } catch (Exception e) {
-            if (!WORKFLOW_PARAM_TRANSACTIONS.get(getProcessInstance().getProcess())) {
-                logger.error("Node instance causing process instance error in id {} in a non transactional environment", this.getStringId());
-                captureError(e);
-                return;
-            } else {
-                logger.error("Node instance causing process instance error in id {} in a transactional environment (Wrapping)", this.getStringId());
-                throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
-            }
-            // stop after capturing error
-        }
+
+        captureExecutionException(() -> internalTrigger(from, type));
+
         if (!hidden) {
             ((InternalProcessRuntime) kruntime.getProcessRuntime())
                     .getProcessEventSupport().fireAfterNodeTriggered(this, kruntime);
+        }
+    }
+
+    protected void captureExecutionException(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            if (!WORKFLOW_PARAM_TRANSACTIONS.get(getProcessInstance().getProcess())) {
+                logger.error("Error executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a non transactional environment  ", getStringId(), getNodeName(),
+                        getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+                captureError(e);
+            } else {
+                // Checking if the exception has been already wrapped by the actual node instance to avoid unnecessary wrappings.
+                if (e instanceof ProcessInstanceExecutionException executionException && getId().equals(executionException.getFailedNodeInstanceId())) {
+                    logger.debug("Exception already wrapped by node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}')... propagating exception.", getStringId(),
+                            getNodeName(),
+                            getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+                    throw executionException;
+                }
+                logger.error("Error executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a transactional environment (Wrapping)", getStringId(), getNodeName(),
+                        getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+                throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
+            }
         }
     }
 
@@ -465,8 +478,10 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             ((InternalProcessRuntime) kruntime.getProcessRuntime())
                     .getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
         }
+
         // trigger next node
-        nodeInstance.trigger(this, type);
+        captureExecutionException(() -> nodeInstance.trigger(this, type));
+
         Collection<Connection> outgoing = getNode().getOutgoingConnections(type);
         for (Connection conn : outgoing) {
             if (conn.getTo().getId().equals(nodeInstance.getNodeId())) {

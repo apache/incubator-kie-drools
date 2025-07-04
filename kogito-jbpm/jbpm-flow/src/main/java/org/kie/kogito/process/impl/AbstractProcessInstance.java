@@ -98,7 +98,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected String errorMessage;
     protected String nodeInError;
-    protected String nodeInstanceInError;
+    protected String nodeInstanceIdInError;
     protected Throwable errorCause;
     protected ProcessError processError;
 
@@ -172,7 +172,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         startDate = wpi.getStartDate();
         errorMessage = wpi.getErrorMessage();
         nodeInError = wpi.getNodeIdInError();
-        nodeInstanceInError = wpi.getNodeInstanceIdInError();
+        nodeInstanceIdInError = wpi.getNodeInstanceIdInError();
         errorCause = wpi.getErrorCause().orElse(null);
 
         if (this.status == STATE_ERROR) {
@@ -835,7 +835,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
             @Override
             public String failedNodeInstanceId() {
-                return nodeInstanceInError;
+                return nodeInstanceIdInError;
             }
 
             @Override
@@ -851,13 +851,23 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             @Override
             public void retrigger() {
                 executeInWorkflowProcessInstanceWrite(pi -> {
+                    NodeInstance nodeInstanceInError = pi.getNodeInstance(nodeInstanceIdInError, true);
                     NodeInstanceImpl ni = (NodeInstanceImpl) pi.getByNodeDefinitionId(nodeInError, pi.getNodeContainer());
+
                     clearError(pi);
+
                     getProcessRuntime().getProcessEventSupport().fireProcessRetriggered(pi, pi.getKnowledgeRuntime());
                     org.kie.api.runtime.process.NodeInstanceContainer nodeInstanceContainer = ni.getNodeInstanceContainer();
                     if (nodeInstanceContainer instanceof NodeInstance) {
                         ((NodeInstance) nodeInstanceContainer).internalSetTriggerTime(new Date());
                     }
+
+                    if (nodeInstanceInError != null && nodeInstanceInError.getLeaveTime() == null && nodeInstanceInError.getCancelType() == null) {
+                        // Cancelling the node instance in error before retriggering if it is active to avoid duplicated node instances.
+                        // This is required when dealing with work items (ej: Human Tasks)
+                        nodeInstanceInError.cancel();
+                    }
+
                     ni.internalSetRetrigger(true);
                     ni.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
                     return null;

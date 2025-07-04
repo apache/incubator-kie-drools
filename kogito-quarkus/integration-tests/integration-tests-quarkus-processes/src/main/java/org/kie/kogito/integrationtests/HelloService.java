@@ -20,7 +20,7 @@ package org.kie.kogito.integrationtests;
 
 import java.io.IOException;
 
-import org.kie.kogito.integrationtests.excetpion.ServiceException;
+import org.kie.kogito.integrationtests.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

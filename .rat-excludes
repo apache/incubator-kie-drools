@@ -164,6 +164,8 @@ PMMLTree.pmml
 PMMLRegression.pmml
 # quarkus/integration-tests/integration-tests-quarkus-rules/src/test/resources/LoanUnit.xls.properties.test
 LoanUnit.xls.properties.test
+# quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-processes-persistence-common/src/main/resources/transactional_error.bpmn
+transactional_error.bpmn
 # springboot/addons/events/decisions/src/main/resources/META-INF/kogito.addon
 kogito.addon
 # springboot/addons/events/predictions/src/main/resources/META-INF/kogito.addon
@@ -216,3 +218,5 @@ PMMLRegression.pmml
 .gitignore
 # springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/.gitignore
 .gitignore
+# springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/src/main/resources/transactional_error.bpmn
+transactional_error.bpmn
