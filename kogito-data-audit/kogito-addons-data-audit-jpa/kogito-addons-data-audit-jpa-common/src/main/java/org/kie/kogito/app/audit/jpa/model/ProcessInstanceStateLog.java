@@ -56,6 +56,7 @@ public class ProcessInstanceStateLog extends AbstractProcessInstanceLog {
         MIGRATED,
         SLA_VIOLATION,
         STATE_UPDATED,
+        RETRIGGERED,
     }
 
     @Id

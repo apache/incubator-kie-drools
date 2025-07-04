@@ -109,6 +109,7 @@ public class JPADataAuditStore implements DataAuditStore {
             case ProcessInstanceStateEventBody.EVENT_TYPE_ENDED -> ProcessStateLogType.COMPLETED;
             case ProcessInstanceStateEventBody.EVENT_TYPE_MIGRATED -> ProcessStateLogType.MIGRATED;
             case ProcessInstanceStateEventBody.EVENT_TYPE_UPDATED -> ProcessStateLogType.STATE_UPDATED;
+            case ProcessInstanceStateEventBody.EVENT_TYPE_RETRIGGERED -> ProcessStateLogType.RETRIGGERED;
             default -> throw new IllegalArgumentException("Unknown ProcessInstanceStateDataEvent type " + event.getData().getEventType());
         };
     }
