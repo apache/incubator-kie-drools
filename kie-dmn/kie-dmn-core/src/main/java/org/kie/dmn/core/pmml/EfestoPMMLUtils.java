@@ -147,6 +147,8 @@ public class EfestoPMMLUtils {
                         .findFirst()
                         .orElse(null);
         ContextStorage.putEfestoCompilationContext(pmmlModelLocalUriId, pmmlCompilationContext);
+        ModelLocalUriId sourceLocalUriId = getPmmlModelLocalUriId(fileName, "source");
+        ContextStorage.putEfestoCompilationSource(sourceLocalUriId, pmmlSource);
     }
 
     /**
@@ -241,11 +243,16 @@ public class EfestoPMMLUtils {
         File parentDir = null;
         if (dmnResource instanceof FileSystemResource fileSystemResource && fileSystemResource.getFile() != null) {
             parentDir = fileSystemResource.getFile().getParentFile();
+            return parentDir.toPath();
         } else if (dmnResource instanceof ClassPathResource classPathResource) {
             try {
                 URL resourceUrl = classPathResource.getURL();
                 if (resourceUrl != null && resourceUrl.getFile() != null) {
-                    parentDir = new File(resourceUrl.getFile()).getParentFile();
+                    String filePath = resourceUrl.getFile();
+                    if (filePath.startsWith("file:")) {
+                        filePath = filePath.substring(5);
+                    }
+                    parentDir = new File(filePath).getParentFile();
                 }
             } catch (Exception e) {
                 logger.warn("Failed to retrieve the URL from ClassPathResource {}", classPathResource, e);
