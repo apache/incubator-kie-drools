@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,18 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.identifiers;
+package org.kie.dmn.core.compiler;
 
-public class DmnIdFactory implements DmnComponentRoot {
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.impl.TupleIdentifier;
+import org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase;
 
-    public LocalComponentIdDmn get(String fileName, String modelName) {
-        return new LocalComponentIdDmn(fileName, modelName);
+import javax.xml.namespace.QName;
+import java.util.Map;
+
+public class DMNTypeRegistryV16 extends DMNTypeRegistryAbstract {
+
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
+
+
+    public DMNTypeRegistryV16(Map<TupleIdentifier, QName> aliases) {
+        super(aliases);
     }
 
-    public LocalCompilationSourceIdDmn get(String fileName) {
-        if (fileName.contains(".")) {
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-        }
-        return new LocalCompilationSourceIdDmn(fileName);
+    @Override
+    public DMNType unknown() {
+        return UNKNOWN;
+    }
+
+    @Override
+    public String feelNS() {
+        return KieDMNModelInstrumentedBase.URI_FEEL;
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.feel.util;
 
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -31,11 +32,11 @@ public class EvaluationContextTestUtil {
 
     public static EvaluationContext newEmptyEvaluationContext(FEELEventListenersManager mgr) {
         // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL);
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL, DMNVersion.getLatest());
     }
 
     public static EvaluationContext newEmptyEvaluationContext() {
         // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL, DMNVersion.getLatest());
     }
 }
