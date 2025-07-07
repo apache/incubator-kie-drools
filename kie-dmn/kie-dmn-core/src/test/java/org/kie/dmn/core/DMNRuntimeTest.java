@@ -29,14 +29,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -461,6 +454,45 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat((Map<String, Object>) dmnResult.getContext().get("Math")).containsEntry("Sum", BigDecimal.valueOf(15));
         assertThat((Map<String, Object>) dmnResult.getContext().get("Math")).containsEntry("Product", BigDecimal.valueOf(50));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedExpressions(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BoxedExpressions.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_DD8CA20C-A4CE-4317-A012-3A7B11F69235",
+                "DMN_62B43D6C-D304-414F-A0EC-9360AF8431B0"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getContext().get("boxedFilter")).isEqualTo(Collections.singletonList("Mango"));
+        assertThat(dmnResult.getContext().get("boxedIterator")).isEqualTo(Collections.singletonList(BigDecimal.valueOf(10)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedIterator(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BoxedExpressions.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_DD8CA20C-A4CE-4317-A012-3A7B11F69235",
+                "DMN_62B43D6C-D304-414F-A0EC-9360AF8431B0"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getContext().get("boxedIterator")).isEqualTo(Collections.singletonList(10));
     }
 
     @ParameterizedTest

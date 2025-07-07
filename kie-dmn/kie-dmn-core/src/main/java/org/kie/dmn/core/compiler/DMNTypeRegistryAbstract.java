@@ -65,7 +65,7 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
                     // already added, skip it
                     continue;
                 } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, false, null, null, unknown(), type);
+                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, true, null, null, unknown(), type);
                 } else if( type == BuiltInType.CONTEXT ) {
                     feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
                 } else {
