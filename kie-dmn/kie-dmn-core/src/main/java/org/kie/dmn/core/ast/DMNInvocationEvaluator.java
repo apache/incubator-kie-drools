@@ -31,7 +31,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNVersion;
-import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;

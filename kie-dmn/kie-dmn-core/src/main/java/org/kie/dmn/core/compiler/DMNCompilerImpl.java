@@ -43,7 +43,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
-import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;

@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -46,7 +44,6 @@ import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -273,6 +270,7 @@ public abstract class BaseFEELFunction
                                    Supplier<List<String>> parameterNamesSupplier,
                                    Supplier<List<Object>> parameterValuesSupplier) {
         source = getFEELDialectAdaptedEither(ctx, source);
+        source = getEventedValueEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                         if (left instanceof InvalidParametersEvent invalidParametersEvent) {
