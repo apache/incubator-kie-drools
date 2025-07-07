@@ -72,9 +72,9 @@
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
-    <version.io.micrometer>1.14.5</version.io.micrometer>
+    <version.io.micrometer>1.14.8</version.io.micrometer>
     <version.io.quarkus>3.20.1</version.io.quarkus>
-    <version.io.netty>4.1.121.Final</version.io.netty>
+    <version.io.netty>4.1.122.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.10</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
 
@@ -101,7 +101,7 @@
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.14.Final</version.org.infinispan>
+    <version.org.infinispan>15.0.15.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
@@ -143,7 +143,7 @@
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.org.xmlunit>2.10.0</version.org.xmlunit>
+    <version.org.xmlunit>2.10.2</version.org.xmlunit>
     <!-- therefore the property is rewritten in that repository parent -->
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
@@ -192,7 +192,7 @@
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
-    <version.org.postgresql>42.7.5</version.org.postgresql>
+    <version.org.postgresql>42.7.7</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.3.0</version.io.smallrye.jandex>
