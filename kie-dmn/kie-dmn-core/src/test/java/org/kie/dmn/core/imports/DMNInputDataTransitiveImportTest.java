@@ -132,4 +132,36 @@ public class DMNInputDataTransitiveImportTest {
         assertThat(result.getDecisionResultByName("Imported.DB").getResult()).isEqualTo(false);
         assertThat(result.getDecisionResultByName("DC").getResult()).isEqualTo(false);
     }
+
+    @Test
+    void testInputDataWithInvalidModel() throws IOException {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/InputDataModel.dmn"),
+                ResourceFactory.newClassPathResource("invalid_models/DMNv1_6/InvalidModel.dmn"),
+                ResourceFactory.newClassPathResource("invalid_models/DMNv1_6/ImportInvalidModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_22506F59-EDB3-455F-A2B5-70E6F7C33ACB", "ImportInvalidModel");
+
+        assertThat(model).isNotNull();
+        Map<String, Object> person = new HashMap<>();
+        person.put("Name", "Klaus");
+        person.put("Age", 15);
+
+        DMNContext context = dmnRuntime.newContext();
+        Map<String, Object> InputData = new HashMap<>();
+        InputData.put("Person", person);
+
+        Map<String, Object> invalidModel = new HashMap<>();
+        invalidModel.put("InputData", InputData);
+
+        context.set("Invalid", invalidModel);
+        context.set("InputData", InputData);
+        DMNResult result = dmnRuntime.evaluateAll(model, context);
+
+        assertThat(result.hasErrors()).isTrue();
+        assertThat(result.getDecisionResultByName("Invalid.InvalidDecision").getResult()).isNull();
+        assertThat(result.getDecisionResultByName("New Decision").getResult()).isNull();
+    }
 }
