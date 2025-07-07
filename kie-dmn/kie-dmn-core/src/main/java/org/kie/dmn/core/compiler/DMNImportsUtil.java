@@ -371,8 +371,15 @@ public class DMNImportsUtil {
      * @throws IllegalStateException if the file can not be found
      */
     static String getPmmlFileContent(String pmmlFileName, ClassLoader classLoader) {
-        return getPmmlFileContentFromClasspath(pmmlFileName).or(() -> getPmmlFileContentFromClassloader(pmmlFileName, classLoader))
+        return getPmmlFileContentFromContextStorage(pmmlFileName)
+                .or(() -> getPmmlFileContentFromClasspath(pmmlFileName))
+                .or(() -> getPmmlFileContentFromClassloader(pmmlFileName, classLoader))
                 .orElseThrow(() -> new IllegalStateException("Could not find PMML file: " + pmmlFileName));
+    }
+
+    static Optional<String> getPmmlFileContentFromContextStorage(String pmmlFileName) {
+        ModelLocalUriId sourceLocalUriId = EfestoPMMLUtils.getPmmlModelLocalUriId(pmmlFileName, "source");
+        return Optional.ofNullable( EfestoPMMLUtils.getPmmlSourceFromContextStorage(sourceLocalUriId));
     }
 
     static Optional<String> getPmmlFileContentFromClasspath(String pmmlFileName) {
