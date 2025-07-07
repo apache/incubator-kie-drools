@@ -69,7 +69,7 @@ public class DateAndTimeFunction
 
     static TemporalAccessor getValidDate(TemporalAccessor date) {
         if (date == null) {
-            throw new NoSuchElementException("Parameter 'date' is missing or invalid.");
+            throw new IllegalArgumentException("Parameter 'date' is missing or invalid.");
         }
         if (date instanceof LocalDate) {
             return date;
@@ -80,24 +80,24 @@ public class DateAndTimeFunction
         if (date != null) {
             return date;
         }
-        throw new NoSuchElementException("Parameter 'date' is missing or invalid.");
+        throw new IllegalArgumentException("Parameter 'date' is missing or invalid.");
     }
 
     static TemporalAccessor getValidTime(TemporalAccessor time) {
         if (time == null || !(time instanceof LocalTime || (time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null))) {
-            throw new NoSuchElementException("Parameter 'time' is missing or invalid.");
+            throw new IllegalArgumentException("Parameter 'time' is missing or invalid.");
         }
         return time;
     }
 
     static ZoneId getValidTimeZone(String timeZone) {
         if (timeZone == null || timeZone.isEmpty()) {
-            throw new NoSuchElementException("Parameter 'timezone' is missing or invalid.");
+            throw new IllegalArgumentException("Parameter 'timezone' is missing or invalid.");
         }
         try {
             return ZoneId.of(timeZone);
         } catch (DateTimeException ex) {
-            throw new NoSuchElementException("Parameter 'timezone' is missing or invalid.");
+            throw new IllegalArgumentException("Parameter 'timezone' is missing or invalid.");
         }
     }
 
@@ -115,7 +115,7 @@ public class DateAndTimeFunction
                 return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId != null ? zoneId : ZoneId.from(validatedTime)));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
-        } catch (NoSuchElementException e) {
+        } catch (IllegalArgumentException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "Invalid Input", e.getMessage()));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
@@ -212,7 +212,7 @@ public class DateAndTimeFunction
         try {
             ZoneId zoneId = getValidTimeZone(timeZone);
             return generateDateTimeAndTimezone(date, time, zoneId);
-        } catch (NoSuchElementException e) {
+        } catch (IllegalArgumentException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "Invalid Input", e.getMessage()));
         }
     }

@@ -209,37 +209,37 @@ class DateAndTimeFunctionTest {
     @Test
     void testValidateNullDate() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidDate(null))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'date' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'date' is missing or invalid.");
     }
 
     @Test
     void testValidateNullTime() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidTime(null))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'time' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'time' is missing or invalid.");
     }
 
     @Test
     void testValidateNullTimeZone() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidTimeZone(null))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
     }
 
     @Test
     void testInvalidDate() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidDate(DayOfWeek.MONDAY))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'date' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'date' is missing or invalid.");
     }
 
     @Test
     void testInvalidTime() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidTime(DayOfWeek.MONDAY))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'time' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'time' is missing or invalid.");
     }
 
     @Test
     void testInvalidTimeZone() {
         assertThatThrownBy(() -> DateAndTimeFunction.getValidTimeZone("Foo/Bar"))
-                .isInstanceOf(NoSuchElementException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
+                .isInstanceOf(IllegalArgumentException.class).hasMessage("Parameter 'timezone' is missing or invalid.");
     }
 
     @Test
