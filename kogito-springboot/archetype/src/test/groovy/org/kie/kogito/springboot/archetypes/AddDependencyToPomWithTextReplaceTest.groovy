@@ -19,6 +19,7 @@
 package org.kie.kogito.springboot.archetypes
 
 import spock.lang.Specification
+import groovy.xml.XmlParser
 
 import java.nio.charset.StandardCharsets
 
@@ -46,7 +47,7 @@ class AddDependencyToPomWithTextReplaceTest extends Specification {
 
         then:
         Node pomXml = new XmlParser().parseText(pomFile)
-        pomXml.depthFirst().dependencies.dependency.size() == 8
+        pomXml.depthFirst().dependencies.dependency.size() == 9
     }
 
 }

@@ -79,7 +79,7 @@
     <!-- plugin versions -->
     <version.antapacheregexp>1.8.2</version.antapacheregexp>
     <version.antrun.plugin>1.8</version.antrun.plugin>
-    <version.archetype.plugin>3.2.1</version.archetype.plugin>
+    <version.archetype.plugin>3.4.0</version.archetype.plugin>
     <version.asciidoctor.plugin>1.5.2.1</version.asciidoctor.plugin>
     <version.build.helper.plugin>3.0.0</version.build.helper.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
