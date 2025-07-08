@@ -22,7 +22,6 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.Range;
 
 import java.math.BigDecimal;
 import java.util.List;
