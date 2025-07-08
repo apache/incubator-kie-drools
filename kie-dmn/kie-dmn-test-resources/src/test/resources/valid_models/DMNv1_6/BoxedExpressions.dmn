@@ -27,13 +27,13 @@
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
              xmlns:kie="https://kie.org/dmn/extensions/1.0">
    <decision name="boxedFilter" id="_5A28DB0B-556A-4B37-8301-93EA4EF77170">
-      <variable name="boxedFilter" id="_F2C7743C-F89C-42D1-89DA-689DFF6E11DA" />
+      <variable name="boxedFilter" id="_F2C7743C-F89C-42D1-89DA-689DFF6E11DA" typeRef="list" />
       <literalExpression id="_D1A0071B-116D-4902-A28F-B4974EB6886F" typeRef="list" label="boxedFilter">
          <text>&quot;Mango&quot;[item = &quot;Mango&quot;]</text>
       </literalExpression>
    </decision>
    <decision name="boxedIterator" id="_9B19C9AC-B4D8-4F24-9B35-BD4C948A5F82">
-      <variable name="boxedIterator" id="_CABFAFAB-3829-46C9-9584-EF093B904CBA" />
+      <variable name="boxedIterator" id="_CABFAFAB-3829-46C9-9584-EF093B904CBA" typeRef="list" />
       <literalExpression id="_10CE1858-4186-4895-A898-480470D2EEF0" typeRef="list" label="boxedIterator">
          <text>for x in 5 return x * 2
          </text>

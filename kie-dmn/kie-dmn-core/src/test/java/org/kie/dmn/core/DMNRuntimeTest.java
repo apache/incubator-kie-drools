@@ -466,7 +466,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @MethodSource("params")
     void boxedExpressions(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BoxedExpressions.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedExpressions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
                 "https://kie.org/dmn/_DD8CA20C-A4CE-4317-A012-3A7B11F69235",
                 "DMN_62B43D6C-D304-414F-A0EC-9360AF8431B0"
