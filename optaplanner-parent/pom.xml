@@ -148,7 +148,6 @@
         </property>
       </activation>
       <modules>
-        <module>optaplanner-docs</module>
         <module>build/optaplanner-javadoc</module>
         <module>build/optaplanner-distribution-internal</module>
       </modules>
