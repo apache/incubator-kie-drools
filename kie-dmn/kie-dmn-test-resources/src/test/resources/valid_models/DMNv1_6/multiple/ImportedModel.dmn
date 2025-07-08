@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_C1C3315B-AE8F-445A-BD91-AABA022783E9" id="_5B4B6163-513E-4B5A-833C-F0E6BEBF5A6E" name="ImportedModel" xmlns:included0="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <import id="_D5D8393C-E2F1-486E-88C7-F81B235297E1" name="InputData" importType="https://www.omg.org/spec/DMN/20240513/MODEL/" namespace="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" locationURI="./InputDataModel.dmn" />
+  <decision name="DB" id="_C68277F3-B12D-46C7-8CF5-AE9AFB0F2CF9">
+    <variable name="DB" id="_B2C9906D-95DF-414F-9D4C-84FBCF342C7C" typeRef="boolean" />
+    <informationRequirement id="_637ECF1A-35AE-4000-B890-D64F7889DCC6">
+      <requiredInput href="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554#_D93251BA-B455-4041-9148-4491E3FBFC76" />
+    </informationRequirement>
+    <literalExpression id="_93D32333-852B-4B86-BBDE-13ABC4B2B379" typeRef="boolean" label="DB">
+      <text>InputData.Person.Age&gt;=18</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_CB22AE27-D5B2-4C29-BB6B-44749A524FEA" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_93D32333-852B-4B86-BBDE-13ABC4B2B379">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_184D7F19-A817-4622-A83C-F002AF0643A9" dmnElementRef="_C68277F3-B12D-46C7-8CF5-AE9AFB0F2CF9" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="560" y="80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_B43B345B-048F-487E-90F8-89048CBC13C9" dmnElementRef="included0:_D93251BA-B455-4041-9148-4491E3FBFC76">
+        <dc:Bounds x="560" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_2694CDE2-395B-40A9-851E-13F38E34274D" dmnElementRef="_637ECF1A-35AE-4000-B890-D64F7889DCC6" sourceElement="_B43B345B-048F-487E-90F8-89048CBC13C9" targetElement="_184D7F19-A817-4622-A83C-F002AF0643A9">
+        <di:waypoint x="640" y="300" />
+        <di:waypoint x="640" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -35,10 +35,12 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -504,6 +506,47 @@ public class DMNCompilerTest extends BaseVariantTest {
         final DMNModel dmnModel = runtime.getModel(
                 nameSpace,
                 "DMN_9DEB9645-7512-4F0F-B799-53E2F0FC9182");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithDefaultMode(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithLenientMode(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements.dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.LENIENT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void errorHandlingWithStrictMode(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements.dmn", this.getClass());
+        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
     }
