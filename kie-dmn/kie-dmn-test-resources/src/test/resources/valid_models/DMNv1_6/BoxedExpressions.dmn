@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+             expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
+             namespace="https://kie.org/dmn/_DD8CA20C-A4CE-4317-A012-3A7B11F69235"
+             id="_DEE8013D-16B1-4080-A401-2E9C3047E31A"
+             name="DMN_62B43D6C-D304-414F-A0EC-9360AF8431B0"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0">
+   <decision name="boxedFilter" id="_5A28DB0B-556A-4B37-8301-93EA4EF77170">
+      <variable name="boxedFilter" id="_F2C7743C-F89C-42D1-89DA-689DFF6E11DA" />
+      <literalExpression id="_D1A0071B-116D-4902-A28F-B4974EB6886F" typeRef="list" label="boxedFilter">
+         <text>&quot;Mango&quot;[item = &quot;Mango&quot;]</text>
+      </literalExpression>
+   </decision>
+   <decision name="boxedIterator" id="_9B19C9AC-B4D8-4F24-9B35-BD4C948A5F82">
+      <variable name="boxedIterator" id="_CABFAFAB-3829-46C9-9584-EF093B904CBA" />
+      <literalExpression id="_10CE1858-4186-4895-A898-480470D2EEF0" typeRef="list" label="boxedIterator">
+         <text>for x in 5 return x * 2
+         </text>
+      </literalExpression>
+   </decision>
+   <dmndi:DMNDI>
+      <dmndi:DMNDiagram id="_B1F45FCF-170D-410D-BA0A-1F0B134CBB34" name="Default DRD" useAlternativeInputDataShape="false">
+         <di:extension>
+            <kie:ComponentsWidthsExtension>
+               <kie:ComponentWidths dmnElementRef="_D1A0071B-116D-4902-A28F-B4974EB6886F">
+                  <kie:width>190</kie:width>
+               </kie:ComponentWidths>
+            </kie:ComponentsWidthsExtension>
+         </di:extension>
+         <dmndi:DMNShape id="_6CF0D79B-1BB4-4CB2-BF9A-29F15D2D6984" dmnElementRef="_5A28DB0B-556A-4B37-8301-93EA4EF77170" isCollapsed="false" isListedInputData="false">
+            <dc:Bounds x="440" y="0" width="160" height="80" />
+         </dmndi:DMNShape>
+         <dmndi:DMNShape id="_850E53C1-010B-4C1C-AE96-811BFDAF580C" dmnElementRef="_9B19C9AC-B4D8-4F24-9B35-BD4C948A5F82" isCollapsed="false" isListedInputData="false">
+            <dc:Bounds x="180" y="160" width="160" height="80" />
+         </dmndi:DMNShape>
+      </dmndi:DMNDiagram>
+   </dmndi:DMNDI>
+</definitions>
