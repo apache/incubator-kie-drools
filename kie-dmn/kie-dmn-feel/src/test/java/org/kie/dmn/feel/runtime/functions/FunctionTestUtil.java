@@ -22,6 +22,7 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.Range;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -59,7 +60,7 @@ public final class FunctionTestUtil {
             assertThat(resultList).containsAll((Iterable<? extends T>) expectedResult);
         }
     }
-    
+
     public static <T> void assertPredicateOnResult(final FEELFnResult<?> result, final Class<T> clazz, final Predicate<T> assertion) {
         assertResultNotError(result);
         final T resultValue = result.cata(left -> null, clazz::cast);
