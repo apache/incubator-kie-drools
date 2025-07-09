@@ -23,9 +23,12 @@ import java.util.Objects;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.kie.kogito.index.model.CancelType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -47,6 +50,8 @@ public class NodeInstanceEntity extends AbstractEntity {
     private String definitionId;
     private Boolean retrigger;
     private String errorMessage;
+    @Enumerated(EnumType.STRING)
+    private CancelType cancelType;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -132,6 +137,14 @@ public class NodeInstanceEntity extends AbstractEntity {
 
     public void setSlaDueDate(ZonedDateTime slaDueDate) {
         this.slaDueDate = slaDueDate;
+    }
+
+    public CancelType getCancelType() {
+        return cancelType;
+    }
+
+    public void setCancelType(final CancelType cancelType) {
+        this.cancelType = cancelType;
     }
 
     public ProcessInstanceEntity getProcessInstance() {

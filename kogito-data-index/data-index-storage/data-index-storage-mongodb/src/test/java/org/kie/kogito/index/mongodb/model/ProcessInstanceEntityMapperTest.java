@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.model.CancelType;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -53,6 +54,7 @@ class ProcessInstanceEntityMapperTest {
         String nodeInstanceNodeId = "testNodeInstanceNodeId";
         String nodeInstanceType = "testNodeInstanceType";
         String nodeInstanceDefinitionId = "testNodeInstanceDefinitionId";
+        CancelType cancelType = CancelType.ABORTED;
 
         String processInstanceErrorMessage = "testProcessInstanceErrorMessage";
         String processInstanceErrorNodeDefinitionId = "testProcessInstanceErrorNodeDefinitionId";
@@ -86,6 +88,7 @@ class ProcessInstanceEntityMapperTest {
         nodeInstance.setType(nodeInstanceType);
         nodeInstance.setNodeId(nodeInstanceNodeId);
         nodeInstance.setName(nodeInstanceName);
+        nodeInstance.setCancelType(cancelType);
 
         ProcessInstanceError processInstanceError = new ProcessInstanceError();
         processInstanceError.setMessage(processInstanceErrorMessage);
@@ -126,6 +129,7 @@ class ProcessInstanceEntityMapperTest {
         nodeInstanceEntity.setName(nodeInstanceName);
         nodeInstanceEntity.setNodeId(nodeInstanceNodeId);
         nodeInstanceEntity.setType(nodeInstanceType);
+        nodeInstanceEntity.setCancelType(cancelType);
 
         ProcessInstanceEntity.ProcessInstanceErrorEntity processInstanceErrorEntity = new ProcessInstanceEntity.ProcessInstanceErrorEntity();
         processInstanceErrorEntity.setMessage(processInstanceErrorMessage);

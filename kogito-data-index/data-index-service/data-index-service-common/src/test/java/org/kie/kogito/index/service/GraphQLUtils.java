@@ -267,7 +267,7 @@ public class GraphQLUtils {
     }
 
     private static Stream<Field> getAllFieldsList(Class clazz) {
-        return FieldUtils.getAllFieldsList(clazz).stream().filter(getSoourcePredicate().or(getSoourcePredicate()));
+        return FieldUtils.getAllFieldsList(clazz).stream().filter(getSourcePredicate().or(getSourcePredicate()));
     }
 
     private static Function<Field, String> getFieldName() {
@@ -288,7 +288,7 @@ public class GraphQLUtils {
                 }
             }
 
-            if (field.getType().getName().startsWith("org.kie.kogito.index.model")) {
+            if (field.getType().getName().startsWith("org.kie.kogito.index.model") && !field.getType().isEnum()) {
                 return field.getName() + " { " + getAllFieldsList(field.getType()).map(f -> getFieldName().apply(f)).collect(joining(", ")) + " }";
             }
 
@@ -301,7 +301,7 @@ public class GraphQLUtils {
         return field -> !field.getName().equals("$jacocoData");
     }
 
-    private static Predicate<Field> getSoourcePredicate() {
+    private static Predicate<Field> getSourcePredicate() {
         return field -> !(field.getDeclaringClass().equals(ProcessDefinition.class) && (field.getName().equals("source") || field.getName().equals("nodes")));
     }
 }

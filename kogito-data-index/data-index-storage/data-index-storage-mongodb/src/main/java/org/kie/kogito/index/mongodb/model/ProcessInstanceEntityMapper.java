@@ -155,6 +155,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
         instance.setRetrigger(entity.isRetrigger());
         instance.setErrorMessage(entity.getErrorMessage());
+        instance.setCancelType(entity.getCancelType());
         return instance;
     }
 
@@ -174,6 +175,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
         entity.setRetrigger(instance.isRetrigger());
         entity.setErrorMessage(instance.getErrorMessage());
+        entity.setCancelType(instance.getCancelType());
         return entity;
     }
 

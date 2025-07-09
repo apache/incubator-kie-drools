@@ -45,6 +45,7 @@ import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
 import org.kie.kogito.index.json.JsonUtils;
+import org.kie.kogito.index.model.CancelType;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
@@ -56,8 +57,12 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ERROR;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
@@ -150,13 +155,25 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         errorEntity.setNodeDefinitionId(error.getNodeDefinitionId());
         errorEntity.setNodeInstanceId(error.getNodeInstanceId());
         pi.setState(CommonUtils.ERROR_STATE);
-        pi.getNodes().stream().filter(n -> n.getId().equals(error.getNodeInstanceId())).findAny().ifPresent(n -> n.setErrorMessage(error.getErrorMessage()));
+        pi.getNodes().stream()
+                .filter(n -> n.getId().equals(error.getNodeInstanceId()))
+                .findAny()
+                .ifPresent(n -> {
+                    n.setErrorMessage(error.getErrorMessage());
+                    n.setCancelType(CancelType.ERROR);
+                });
     }
 
     private void indexNode(ProcessInstanceEntity pi, ProcessInstanceNodeEventBody data) {
-        pi.getNodes().stream().filter(n -> n.getId().equals(data.getNodeInstanceId())).findAny().ifPresentOrElse(n -> updateNode(n, data), () -> createNode(pi, data));
+        pi.getNodes().stream()
+                .filter(n -> n.getId().equals(data.getNodeInstanceId()))
+                .findAny()
+                .ifPresentOrElse(n -> updateNode(n, data), () -> createNode(pi, data));
         if ("MilestoneNode".equals(data.getNodeType())) {
-            pi.getMilestones().stream().filter(n -> n.getId().equals(data.getNodeInstanceId())).findAny().ifPresentOrElse(n -> updateMilestone(n, data), () -> createMilestone(pi, data));
+            pi.getMilestones().stream()
+                    .filter(n -> n.getId().equals(data.getNodeInstanceId()))
+                    .findAny()
+                    .ifPresentOrElse(n -> updateMilestone(n, data), () -> createMilestone(pi, data));
         }
     }
 
@@ -194,6 +211,12 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         }
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {
+            case EVENT_TYPE_ABORTED:
+            case EVENT_TYPE_SKIPPED:
+            case EVENT_TYPE_OBSOLETE:
+            case EVENT_TYPE_ERROR:
+                nodeInstance.setCancelType(CancelType.fromEventType(body.getEventType()));
+                break;
             case EVENT_TYPE_ENTER:
                 nodeInstance.setEnter(eventDate);
                 break;
@@ -247,6 +270,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         // SLA does nothing for now
     }
 
+    @Override
     public Set<StorageServiceCapability> capabilities() {
         return EnumSet.of(StorageServiceCapability.COUNT);
     }

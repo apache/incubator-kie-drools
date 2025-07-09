@@ -22,6 +22,7 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
 import org.kie.kogito.index.CommonUtils;
+import org.kie.kogito.index.model.CancelType;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 
@@ -42,7 +43,13 @@ public class ProcessInstanceErrorDataEventMerger extends ProcessInstanceEventMer
         pi.setError(error);
         pi.setState(CommonUtils.ERROR_STATE);
         if (pi.getNodes() != null) {
-            pi.getNodes().stream().filter(n -> n.getId().equals(error.getNodeInstanceId())).findAny().ifPresent(n -> n.setErrorMessage(data.getErrorMessage()));
+            pi.getNodes().stream()
+                    .filter(n -> n.getId().equals(error.getNodeInstanceId()))
+                    .findAny()
+                    .ifPresent(n -> {
+                        n.setErrorMessage(data.getErrorMessage());
+                        n.setCancelType(CancelType.ERROR);
+                    });
         }
         return pi;
     }
