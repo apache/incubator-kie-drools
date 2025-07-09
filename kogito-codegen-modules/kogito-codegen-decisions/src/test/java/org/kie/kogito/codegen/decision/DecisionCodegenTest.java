@@ -288,17 +288,33 @@ public class DecisionCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void getEnableRuntimeTypeCheckOption(KogitoBuildContext.Builder contextBuilder) {
+        System.getProperties().remove(RuntimeTypeCheckOption.PROPERTY_NAME);
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, new Properties());
+        boolean retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isFalse();
+        System.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "false");
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isFalse();
+        System.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void getEnableRuntimeTypeCheckOptionFromProperties(KogitoBuildContext.Builder contextBuilder) {
+        System.getProperties().remove(RuntimeTypeCheckOption.PROPERTY_NAME);
         Properties properties = new Properties();
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
-        boolean retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        boolean retrieved = codeGenerator.getEnableRuntimeTypeCheckOptionFromProperties();
         assertThat(retrieved).isFalse();
         properties.put(RuntimeTypeCheckOption.PROPERTY_NAME, "false");
         codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
-        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOptionFromProperties();
         assertThat(retrieved).isFalse();
         properties.put(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
         codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
-        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOptionFromProperties();
         assertThat(retrieved).isTrue();
     }
 

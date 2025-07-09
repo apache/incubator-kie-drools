@@ -30,6 +30,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.codegen.common.GeneratedFile;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.openapi.spi.OASFactoryResolver;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -163,6 +166,22 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     boolean getEnableRuntimeTypeCheckOption() {
+        Config config = null;
+        try {
+            config = ConfigProvider.getConfig();
+        } catch (IllegalStateException e) {
+            LOGGER.warn("Failed to instantiate a Config from ConfigProvider, reading {} from Properties", RuntimeTypeCheckOption.PROPERTY_NAME);
+        }
+        return config != null ? getEnableRuntimeTypeCheckOptionFromConfig(config) : getEnableRuntimeTypeCheckOptionFromProperties();
+    }
+
+    boolean getEnableRuntimeTypeCheckOptionFromConfig(Config config) {
+        ConfigValue configValue = config.getConfigValue(RuntimeTypeCheckOption.PROPERTY_NAME);
+        return configValue != null && configValue.getValue() != null && !configValue.getValue().isEmpty() ? Boolean.parseBoolean(configValue.getValue())
+                : getEnableRuntimeTypeCheckOptionFromProperties();
+    }
+
+    boolean getEnableRuntimeTypeCheckOptionFromProperties() {
         Map<String, String> propertiesMap = this.context().getPropertiesMap();
         return Boolean.parseBoolean(propertiesMap.getOrDefault(RuntimeTypeCheckOption.PROPERTY_NAME, "false"));
     }
