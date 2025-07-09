@@ -52,30 +52,45 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
         String feelNamespace = feelNS();
         Map<String, DMNType> feelTypes = new HashMap<>(  );
         types.put( feelNamespace, feelTypes );
+        DMNType unknownType = unknown();
+        this.feelTypesScope = getScopeImpl(feelNamespace, unknownType, feelTypes);
+    }
 
+    static ScopeImpl getScopeImpl(String feelNamespace, DMNType unknownType, Map<String, DMNType> feelTypes) {
+        ScopeImpl feelTypesScope = new ScopeImpl();
+        //Map<String, DMNType> feelTypes = types.get(feelNamespace); // shall i change types to static
         for (String name : BuiltInType.UNKNOWN.getNames()) {
-            feelTypes.put(name, unknown());
+            feelTypes.put(name, unknownType);
             feelTypesScope.define(new TypeSymbol(name, BuiltInType.UNKNOWN));
         }
 
         for( BuiltInType type : BuiltInType.values() ) {
             for( String name : type.getNames() ) {
-                DMNType feelPrimitiveType;
-                if( type == BuiltInType.UNKNOWN ) {
-                    // already added, skip it
-                    continue;
-                } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, true, null, null, unknown(), type);
-                } else if( type == BuiltInType.CONTEXT ) {
-                    feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
-                } else {
-                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, null, type );
-                }
+                DMNType feelPrimitiveType =  getFeelPrimitiveType(name, type, feelNamespace, unknownType);
                 feelTypes.put( name, feelPrimitiveType );
                 feelTypesScope.define(new TypeSymbol(name, type));
             }
         }
+        return feelTypesScope;
     }
+
+    static DMNType getFeelPrimitiveType(String name, BuiltInType type, String feelNamespace, DMNType unknownType) {
+        DMNType feelPrimitiveType;
+        if( type == BuiltInType.UNKNOWN ) {
+            // already added, skip it
+            return null;
+        }
+        if( type == BuiltInType.LIST ) {
+            feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, true, null, null, unknownType, type);
+        } else if( type == BuiltInType.CONTEXT ) {
+            feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
+        } else {
+            feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, null, type );
+        }
+        return feelPrimitiveType;
+    }
+
+
 
     @Override
     public Scope getItemDefScope(Scope parent) {
