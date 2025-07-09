@@ -561,7 +561,7 @@ class RangeFunctionTest {
                 {"date and time(\"1978-09-12T00:00:00\")", "@\"1980-01-02T00:00:00\""},
                 {"@\"1970-01-01T00:00:00\"", "date and time(\"1978-10-13T00:00:00\")"},
                 {"duration(\"P2DT20H14M\")", "duration(\"P3DT20H14M\")"},
-                {"duration(\"P1Y6M\")", "duration(\"P1Y10M\""},
+                {"duration(\"P1Y6M\")", "duration(\"P1Y10M\")"},
                 {"duration(\"P1D\")", "@\"P2D\""},
                 {"@\"P1D\"",  "duration(\"P3D\")"},
         };
