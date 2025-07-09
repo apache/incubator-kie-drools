@@ -59,7 +59,7 @@ public final class FunctionTestUtil {
             assertThat(resultList).containsAll((Iterable<? extends T>) expectedResult);
         }
     }
-
+    
     public static <T> void assertPredicateOnResult(final FEELFnResult<?> result, final Class<T> clazz, final Predicate<T> assertion) {
         assertResultNotError(result);
         final T resultValue = result.cata(left -> null, clazz::cast);
