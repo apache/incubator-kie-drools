@@ -20,9 +20,14 @@ package org.kie.dmn.feel.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -174,10 +179,19 @@ public class EvalHelper {
                 case "weekday":
                     result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
                     break;
-                case "value":
-                    OffsetDateTime dateTime = (OffsetDateTime) current;
-                    result = dateTime.toEpochSecond();
-                    break;
+//                case "value":
+//                    result = null;
+//                    if (current instanceof LocalTime) {
+//                        result = BigDecimal.valueOf(((LocalTime) current).toSecondOfDay());
+//                    } else if (current instanceof OffsetTime) {
+//                        result = BigDecimal.valueOf(((OffsetTime) current).toLocalTime().toSecondOfDay());
+//                    } else if (current instanceof LocalDate date) {
+//                        ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
+//                        result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
+//                    } else if (current instanceof ZonedDateTime) {
+//                        result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
+//                    }
+//                    break;
                 default:
                     return PropertyValueResult.notDefined();
             }
