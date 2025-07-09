@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
@@ -109,6 +110,9 @@ public class EvalHelper {
                 case "months":
                     result = ((ChronoPeriod) current).get(ChronoUnit.MONTHS) % 12;
                     break;
+                case "value":
+                    result = ((ChronoPeriod) current).get(ChronoUnit.YEARS) * 12 + ((ChronoPeriod) current).get(ChronoUnit.MONTHS);
+                    break;
                 default:
                     return PropertyValueResult.notDefined();
             }
@@ -125,6 +129,9 @@ public class EvalHelper {
                     break;
                 case "seconds":
                     result = ((Duration) current).getSeconds() % 60;
+                    break;
+                case "value":
+                    result = ((Duration) current).getSeconds();
                     break;
                 default:
                     return PropertyValueResult.notDefined();
@@ -166,6 +173,10 @@ public class EvalHelper {
                     }
                 case "weekday":
                     result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
+                    break;
+                case "value":
+                    OffsetDateTime dateTime = (OffsetDateTime) current;
+                    result = dateTime.toEpochSecond();
                     break;
                 default:
                     return PropertyValueResult.notDefined();
