@@ -185,24 +185,7 @@
         <artifactId>openjpa</artifactId>
         <version>${version.org.apache.openjpa}</version>
       </dependency>
-      <!-- optaplanner-operator -->
-      <dependency>
-        <groupId>io.quarkiverse.operatorsdk</groupId>
-        <artifactId>quarkus-operator-sdk</artifactId>
-        <version>${version.io.quarkiverse.operatorsdk}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-
+        
       <!-- OpenRewrite -->
       <dependency>
         <groupId>org.openrewrite.recipe</groupId>

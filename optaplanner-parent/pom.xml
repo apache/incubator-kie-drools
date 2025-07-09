@@ -153,16 +153,5 @@
         <module>build/optaplanner-distribution-internal</module>
       </modules>
     </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>optaplanner-operator</module>
-      </modules>
-    </profile>
   </profiles>
 </project>

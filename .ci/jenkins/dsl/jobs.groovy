@@ -317,21 +317,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
             MAVEN_DEPLOY_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
             MAVEN_REPO_CREDS_ID: "${MAVEN_PR_CHECKS_REPOSITORY_CREDS_ID}",
         ])
-    } else {
-        jobParams.env.putAll([
-            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
-
-            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-
-            MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, jobType.name),
-            MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, jobType.name),
-
-            OPERATOR_IMAGE_NAME: 'optaplanner-operator',
-            MAX_REGISTRY_RETRIES: 3,
-        ])
     }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
