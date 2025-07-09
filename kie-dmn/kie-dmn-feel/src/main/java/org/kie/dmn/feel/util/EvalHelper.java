@@ -179,19 +179,19 @@ public class EvalHelper {
                 case "weekday":
                     result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
                     break;
-//                case "value":
-//                    result = null;
-//                    if (current instanceof LocalTime) {
-//                        result = BigDecimal.valueOf(((LocalTime) current).toSecondOfDay());
-//                    } else if (current instanceof OffsetTime) {
-//                        result = BigDecimal.valueOf(((OffsetTime) current).toLocalTime().toSecondOfDay());
-//                    } else if (current instanceof LocalDate date) {
-//                        ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
-//                        result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
-//                    } else if (current instanceof ZonedDateTime) {
-//                        result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
-//                    }
-//                    break;
+                case "value":
+                    result = null;
+                    if (current instanceof LocalTime) {
+                        result = BigDecimal.valueOf(((LocalTime) current).toSecondOfDay());
+                    } else if (current instanceof OffsetTime) {
+                        result = BigDecimal.valueOf(((OffsetTime) current).toLocalTime().toSecondOfDay());
+                    } else if (current instanceof LocalDate date) {
+                        ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
+                        result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
+                    } else if (current instanceof ZonedDateTime) {
+                        result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
+                    }
+                    break;
                 default:
                     return PropertyValueResult.notDefined();
             }
