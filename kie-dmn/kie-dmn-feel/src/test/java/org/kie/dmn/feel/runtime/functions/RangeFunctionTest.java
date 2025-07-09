@@ -221,12 +221,12 @@ class RangeFunctionTest {
 
     @Test
     void invoke_WithOneFunctionNode() {
-        String from = "[duration(\"P1D\")..@\"P2D\"]";   //it was "[number(\"1\", \",\", \".\")\"..2]";
+        String from = "[duration(\"P1D\")..@\"P2D\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("PT24H"), Duration.parse("PT48H")
                                               , Range.RangeBoundary.CLOSED),
                                       from);
-        from = "[@\"1970-01-01T00:00:00\"..date and time(\"1970-01-02T00:00:00\")]";  //it was "["a"..lower case("Z")]"
+        from = "[@\"1970-01-01T00:00:00\"..date and time(\"1970-01-02T00:00:00\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED,
                                               LocalDateTime.of(1970, 1, 1, 0, 0),
@@ -477,7 +477,9 @@ class RangeFunctionTest {
     void evaluateWithInvalidFunctionInvocationNode() {
         Object[][] data = invalidFunctionInvocationNodeData();
         Arrays.stream(data).forEach(objects -> {
-            String expression = String.format("[%1$s..%1$s]", objects[0]);
+            Object firstEndPoint = objects[0];
+            Object secondEndPoint = objects.length == 2 ? objects[1] : objects[0];
+            String expression = String.format("[%1$s..%2$s]", firstEndPoint, secondEndPoint);
             FEELFnResult<Range> retrieved = rangeFunction.invoke(expression);
             assertThat(retrieved.isLeft())
                     .withFailMessage(() -> String.format("Expected 'retrieved.isLeft()' from, %s", expression))
@@ -543,7 +545,6 @@ class RangeFunctionTest {
     // number, string, date time, date and time, or duration.
     private static Object[][] validFunctionInvocationNodeData() {
         return new Object[][]{
-                // constants
                 {1, 3},
                 {"a", "z"},
                 {"@\"1970-01-01\"", "@\"1970-01-02\""},
@@ -564,6 +565,7 @@ class RangeFunctionTest {
                 {"duration(\"P1Y6M\")", "duration(\"P2Y6M\""},
                 {"duration(\"P1D\")", "@\"P2D\""},
                 {"@\"P1D\"",  "duration(\"P3D\")"},
+                {null,  null},
         };
     }
 
@@ -572,107 +574,82 @@ class RangeFunctionTest {
     private static Object[][] invalidFunctionInvocationNodeData() {
         // Subset of FEELFunctionsTest.data
         return new Object[][]{
-                // constants
-                {"contains(\"foobar\", \"ob\")", Boolean.TRUE},
-                {"contains(\"foobar\", \"of\")", Boolean.FALSE},
-                {"starts with(\"foobar\", \"of\")", Boolean.FALSE},
-                {"starts with(\"foobar\", \"fo\")", Boolean.TRUE},
-                {"ends with(\"foobar\", \"of\")", Boolean.FALSE},
-                {"ends with(\"foobar\", \"bar\")", Boolean.TRUE},
-                {"matches(\"foo\", \"[a-z]{3}\")", Boolean.TRUE},
-                {"matches(\"banana\", \"[a-z]{3}\")", Boolean.TRUE},
-                {"matches(\"two \\n lines\", \"two.*lines\")", Boolean.FALSE},
-                {"matches(\"two \\n lines\", \"two.*lines\", \"s\")", Boolean.TRUE}, // DOT_ALL flag set by "s"
-                {"matches(\"one\\ntwo\\nthree\", \"^two$\")", Boolean.FALSE},
-                {"matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")", Boolean.TRUE}, // MULTILINE flag set by "m"
-                {"matches(\"FoO\", \"foo\")", Boolean.FALSE},
-                {"matches(\"FoO\", \"foo\", \"i\")", Boolean.TRUE}, // CASE_INSENSITIVE flag set by "i"
-                {"list contains([1, 2, 3], 2)", Boolean.TRUE},
-                {"list contains([1, 2, 3], 5)", Boolean.FALSE},
-                {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Collections.singletonList(BigDecimal.valueOf(4))},
-                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                     BigDecimal.valueOf(3))},
-                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                    BigDecimal.valueOf(3))},
-                {"append( [1, 2], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                         BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"append( [], 3, 4 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"append( [1, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"append( [1, 2], null, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
-                                                            BigDecimal.valueOf(4))},
-                {"append( 0, 1, 2 )", Arrays.asList(BigDecimal.valueOf(0), BigDecimal.valueOf(1),
-                                                    BigDecimal.valueOf(2))},
-                {"concatenate( [1, 2], [3] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                             BigDecimal.valueOf(3))},
-                {"concatenate( [1, 2], 3, [4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"insert before( [1, 2, 3], 1, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
-                                                                   BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                   BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, null )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                      null, BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -3, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
-                                                                    BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -1, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                    BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
-                {"remove( [1, 2, 3], 1 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"remove( [1, 2, 3], 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"remove( [1, 2, 3], -1 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"remove( [1, 2, 3], -3 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"reverse( [1, 2, 3] )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2),
-                                                       BigDecimal.valueOf(1))},
-                {"index of( [1, 2, 3, 2], 2 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4))},
-                {"index of( [1, 2, null, null], null )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"index of( [1, 2, null, null], 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                   BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"union( [1, 2, null], 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
-                                                           BigDecimal.valueOf(4))},
-                {"union( null, 4 )", Arrays.asList(null, BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, 3, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                     BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, null, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                        null, BigDecimal.valueOf(4))},
-                {"distinct values( 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList(BigDecimal.valueOf(1),
-                                                                               BigDecimal.valueOf(2),
-                                                                               BigDecimal.valueOf(3),
-                                                                               BigDecimal.valueOf(4),
-                                                                               BigDecimal.valueOf(5))},
-                {"sort( [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                          BigDecimal.valueOf(3),
-                                                          BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( list : [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                 BigDecimal.valueOf(3),
-                                                                 BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList("a", "b", "c", "d"
-                        , "e")},
-                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList(
-                        "a", "b", "c", "d", "e")},
-                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList(
-                        "a", "b", "c", "d", "e")},
-                {"all( true )", true},
-                {"all( false )", false},
-                {"all( [true] )", true},
-                {"all( [false] )", false},
-                {"all( true, false )", false},
-                {"all( true, true )", true},
-                {"all( [true, false] )", false},
-                {"all( [true, true] )", true},
-                {"all( [false,null,true] )", false},
-                {"all( [] )", true},
-                {"any( true )", true},
-                {"any( false )", false},
-                {"any( [true] )", true},
-                {"any( [false] )", false},
-                {"any( true, false )", true},
-                {"any( true, true )", true},
-                {"any( [true, false] )", true},
-                {"any( [true, true] )", true},
-                {"any( [false,null,true] )", true},
-                {"any( [] )", false},
+                {"number(\"1\")", 2},
+                {"a", "lower case(\"Z\")"},
+                {"string(\"11.1\")"},
+                {"duration(string(\"P1D\"))"},
+                {"contains(\"foobar\", \"ob\")"},
+                {"contains(\"foobar\", \"of\")"},
+                {"starts with(\"foobar\", \"of\")"},
+                {"starts with(\"foobar\", \"fo\")"},
+                {"ends with(\"foobar\", \"of\")"},
+                {"ends with(\"foobar\", \"bar\")"},
+                {"matches(\"foo\", \"[a-z]{3}\")"},
+                {"matches(\"banana\", \"[a-z]{3}\")"},
+                {"matches(\"two \\n lines\", \"two.*lines\")"},
+                {"matches(\"two \\n lines\", \"two.*lines\", \"s\")"}, // DOT_ALL flag set by "s"
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\")"},
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")"}, // MULTILINE flag set by "m"
+                {"matches(\"FoO\", \"foo\")"},
+                {"matches(\"FoO\", \"foo\", \"i\")"}, // CASE_INSENSITIVE flag set by "i"
+                {"list contains([1, 2, 3], 2)"},
+                {"list contains([1, 2, 3], 5)"},
+                {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )"},
+                {"append( [1, 2], 3, 4 )"},
+                {"append( [], 3, 4 )"},
+                {"append( [1, 2] )"},
+                {"append( [1, 2], null, 4 )"},
+                {"append( 0, 1, 2 )"},
+                {"concatenate( [1, 2], [3] )"},
+                {"concatenate( [1, 2], 3, [4] )"},
+                {"insert before( [1, 2, 3], 1, 4 )"},
+                {"insert before( [1, 2, 3], 3, 4 )"},
+                {"insert before( [1, 2, 3], 3, null )"},
+                {"insert before( [1, 2, 3], -3, 4 )"},
+                {"insert before( [1, 2, 3], -1, 4 )"},
+                {"remove( [1, 2, 3], 1 )"},
+                {"remove( [1, 2, 3], 3 )"},
+                {"remove( [1, 2, 3], -1 )"},
+                {"remove( [1, 2, 3], -3 )"},
+                {"reverse( [1, 2, 3] )"},
+                {"index of( [1, 2, 3, 2], 2 )"},
+                {"index of( [1, 2, null, null], null )"},
+                {"index of( [1, 2, null, null], 1 )"},
+                {"union( [1, 2, 1], [2, 3], 2, 4 )"},
+                {"union( [1, 2, null], 4 )"},
+                {"union( null, 4 )"},
+                {"distinct values( [1, 2, 3, 2, 4] )"},
+                {"distinct values( [1, 2, null, 2, 4] )"},
+                {"distinct values( 1 )"},
+                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )"},
+                {"sort( [3, 1, 4, 5, 2] )"},
+                {"sort( list : [3, 1, 4, 5, 2] )"},
+                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )"},
+                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )"},
+                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )"},
+                {"all( true )"},
+                {"all( false )"},
+                {"all( [true] )"},
+                {"all( [false] )"},
+                {"all( true, false )"},
+                {"all( true, true )"},
+                {"all( [true, false] )"},
+                {"all( [true, true] )"},
+                {"all( [false,null,true] )"},
+                {"all( [] )"},
+                {"any( true )"},
+                {"any( false )"},
+                {"any( [true] )"},
+                {"any( [false] )"},
+                {"any( true, false )"},
+                {"any( true, true )"},
+                {"any( [true, false] )"},
+                {"any( [true, true] )"},
+                {"any( [false,null,true] )"},
+                {"any( [] )"},
         };
     }
 }
