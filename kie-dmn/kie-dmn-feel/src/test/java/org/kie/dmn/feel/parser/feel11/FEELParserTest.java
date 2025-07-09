@@ -1123,7 +1123,7 @@ public class FEELParserTest {
 
     @Test
     void descendantExpression() {
-        String inputExpression = "{a: { b: { b: 1 } } }...b";
+        String inputExpression = "{a: { b: { b: 1 } } }...c";
         BaseNode descendantBaseNode = parse( inputExpression );
 
         assertThat(descendantBaseNode).isInstanceOf(DescendantExpressionNode.class);
@@ -1133,7 +1133,7 @@ public class FEELParserTest {
         assertThat(descendantExpressionNode.getExpression()).isInstanceOf(ContextNode.class);
         assertThat(descendantExpressionNode.getExpression().getText()).isEqualTo( "{a: { b: { b: 1 } } }");
         assertThat(descendantExpressionNode.getName()).isInstanceOf(NameRefNode.class);
-        assertThat( descendantExpressionNode.getName().getText()).isEqualTo( "b");
+        assertThat( descendantExpressionNode.getName().getText()).isEqualTo( "c");
     }
 
     @Test
