@@ -27,10 +27,9 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -61,13 +60,16 @@ public class RangeFunction extends BaseFEELFunction {
     private static EvaluationContext STUBBED;
     private static final Range DEFAULT_VALUE = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN);
 
-    private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
-            baseNode -> baseNode instanceof NumberNode,
-            baseNode -> baseNode instanceof StringNode,
-            baseNode -> baseNode instanceof AtLiteralNode,
-            baseNode -> baseNode instanceof FunctionInvocationNode);
+    private static final Set<String> ALLOWED_FUNCTIONS = Set.of("date", "time", "date and time", "duration");
 
-    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(
+    private static final Set<Predicate<BaseNode>> ALLOWED_NODES = Set.of(
+            AtLiteralNode.class::isInstance,
+            NumberNode.class::isInstance,
+            NullNode.class::isInstance,
+            RangeFunction::isAllowedFunctionInvocationNode,
+            StringNode.class::isInstance);
+
+    private static final Set<Predicate<Object>> ALLOWED_TYPES = Set.of(
             ChronoPeriod.class::isInstance,
             Duration.class::isInstance,
             LocalDate.class::isInstance,
@@ -171,6 +173,24 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     /**
+    * Checks if the function invocation node is allowed as a range endpoint.
+     * From DMN 1.6 specification:
+     * 67. range endpoint = numeric literal | string literal | date time literal
+     * 60. date time literal = at literal | function invocation
+     * In rule 60 ("date time literal"), for the "function invocation" alternative,
+     * the only permitted functions are the
+     * builtins date, time, date and time, and duration.
+     *
+     * @param baseNode the base node to check
+     * @return true if the function invocation node is allowed, false otherwise
+     */
+    static boolean isAllowedFunctionInvocationNode(BaseNode baseNode) {
+        return baseNode instanceof FunctionInvocationNode functionInvocationNode &&
+                ALLOWED_FUNCTIONS.contains(functionInvocationNode.getName().getText()) &&
+                functionInvocationNode.getParams().getElements().stream().noneMatch(FunctionInvocationNode.class::isInstance);
+    }
+
+    /**
      * @param leftObject
      * @param rightObject
      * @return
@@ -190,13 +210,13 @@ public class RangeFunction extends BaseFEELFunction {
     /**
      * @param leftValue
      * @param rightValue
-     * @return It checks if the leftValueis lower or equals to rightValue, false otherwise. If one of the endpoints is null,
+     * @return It checks if the leftValue is lower or equals to rightValue, false otherwise. If one of the endpoints is null,
      * or undefined, the endpoint range is considered as an ascending interval.
      */
     @SuppressWarnings("unchecked")
     protected boolean nodesValuesRangeAreAscending(Object leftValue, Object rightValue) {
-        boolean atLeastOneEndpointIsNullOrUndefined = leftValue == null || rightValue == null;
-        return atLeastOneEndpointIsNullOrUndefined ||
+        boolean atLeastOneEndpointIsNull = leftValue == null || rightValue == null;
+        return atLeastOneEndpointIsNull ||
                 ((Comparable<Object>) leftValue).compareTo(rightValue) <= 0;
     }
 
@@ -212,8 +232,7 @@ public class RangeFunction extends BaseFEELFunction {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
         ParseTree tree = parser.expression();
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
-        BaseNode expr = v.visit(tree);
-        return expr;
+        return v.visit(tree);
     }
 
     private EvaluationContext getStubbed() {
