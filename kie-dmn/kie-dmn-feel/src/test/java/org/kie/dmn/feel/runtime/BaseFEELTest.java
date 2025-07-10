@@ -19,8 +19,10 @@
 package org.kie.dmn.feel.runtime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -93,6 +95,10 @@ public abstract class BaseFEELTest {
         	assertion.isNull();
         } else if( expected instanceof Class<?> ) {
         	assertion.isInstanceOf((Class<?>) expected);
+        } else if (expected instanceof Collection<?> collection) {
+            assertion.asInstanceOf(InstanceOfAssertFactories.collection(Object.class))
+                    .hasSameSizeAs(collection)
+                    .containsExactlyInAnyOrderElementsOf(collection);
         } else {
         	assertion.isEqualTo(expected);
         }
