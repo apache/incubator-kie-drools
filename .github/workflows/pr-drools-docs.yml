@@ -8,6 +8,7 @@ on:
 
 jobs:
   drools-build:
+    if: false
     concurrency:
       group: pr-drools_docs_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
