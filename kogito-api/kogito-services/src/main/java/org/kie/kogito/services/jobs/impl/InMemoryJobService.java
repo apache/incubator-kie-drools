@@ -66,24 +66,15 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     @Override
     public String scheduleJob(JobDescription jobDescription) {
         LOGGER.debug("ScheduleProcessJob: {}", jobDescription);
-        ScheduledFuture<?> future;
-        long delay = calculateDelay(jobDescription);
-        Long interval = jobDescription.expirationTime().repeatInterval();
-        Optional<JobExecutorFactory> jobExecutorFactoryFound = findJobExecutorFactory(jobDescription);
-
-        if (jobExecutorFactoryFound.isEmpty()) {
-            throw new IllegalArgumentException("Could not schedule " + jobDescription + ". No job executor factory provided");
-        }
-
-        JobExecutorFactory jobExecutorFactory = jobExecutorFactoryFound.get();
-
-        if (interval != null) {
-            future = scheduler.scheduleAtFixedRate(jobExecutorFactory.createNewRepeteableRunnable(this, jobDescription), delay, interval, TimeUnit.MILLISECONDS);
-        } else {
-            future = scheduler.schedule(jobExecutorFactory.createNewRunnable(this, jobDescription), delay, TimeUnit.MILLISECONDS);
-        }
-        scheduledJobs.put(jobDescription.id(), future);
-        return jobDescription.id();
+        return findJobExecutorFactory(jobDescription).map(jobExecutorFactory -> {
+            long delay = calculateDelay(jobDescription);
+            Long interval = jobDescription.expirationTime().repeatInterval();
+            String jobId = jobDescription.id();
+            scheduledJobs.put(jobId,
+                    interval != null ? scheduler.scheduleAtFixedRate(jobExecutorFactory.createNewRepeteableRunnable(this, jobDescription), delay, interval, TimeUnit.MILLISECONDS)
+                            : scheduler.schedule(jobExecutorFactory.createNewRunnable(this, jobDescription), delay, TimeUnit.MILLISECONDS));
+            return jobId;
+        }).orElseThrow(() -> new IllegalArgumentException("Could not schedule ProcessInstanceJobDescription " + jobDescription + ". No job executor factory provided"));
     }
 
     private Optional<JobExecutorFactory> findJobExecutorFactory(JobDescription jobDescription) {
@@ -97,13 +88,8 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
 
     public boolean cancelJob(String id, boolean force) {
         LOGGER.debug("Cancel Job: {}", id);
-        if (scheduledJobs.containsKey(id)) {
-            ScheduledFuture<?> future = scheduledJobs.remove(id);
-            if (!future.isDone()) {
-                return future.cancel(force);
-            }
-        }
-        return false;
+        ScheduledFuture<?> future = scheduledJobs.remove(id);
+        return future != null && !future.isDone() && future.cancel(force);
     }
 
     @Override
@@ -117,18 +103,15 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
 
     protected long calculateDelay(JobDescription description) {
         long delay = Duration.between(ZonedDateTime.now(), description.expirationTime().get()).toMillis();
-        if (delay <= 0) {
-            return 1;
-        }
-        return delay;
+        return delay <= 0 ? 1 : delay;
     }
 
     @Override
     public void close() throws Exception {
         LOGGER.info("closing in memory job service");
-        scheduledJobs.clear();
-        scheduledJobs.forEach((k, v) -> v.cancel(true));
         scheduler.shutdownNow();
+        scheduledJobs.values().forEach(v -> v.cancel(true));
+        scheduledJobs.clear();
     }
 
     public void clearJobExecutorFactories() {

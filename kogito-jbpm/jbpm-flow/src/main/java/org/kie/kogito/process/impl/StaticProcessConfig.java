@@ -61,7 +61,15 @@ public class StaticProcessConfig implements ProcessConfig {
             WorkItemHandlerConfig workItemHandlerConfig,
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager) {
-        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, staticJobService(), null, new NoOpIdentityProvider(), null);
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, staticJobService());
+    }
+
+    public StaticProcessConfig(
+            WorkItemHandlerConfig workItemHandlerConfig,
+            ProcessEventListenerConfig processEventListenerConfig,
+            UnitOfWorkManager unitOfWorkManager,
+            JobsService jobsService) {
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, jobsService, null, new NoOpIdentityProvider(), null);
     }
 
     public StaticProcessConfig(

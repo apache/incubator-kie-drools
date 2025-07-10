@@ -20,12 +20,11 @@ package org.kie.kogito.services.jobs.impl;
 
 public class StaticJobService {
 
-    private static InMemoryJobService INSTANCE;
+    private static class InstanceHolder {
+        private static InMemoryJobService INSTANCE = new InMemoryJobService();
+    }
 
     public static InMemoryJobService staticJobService() {
-        if (INSTANCE == null) {
-            INSTANCE = new InMemoryJobService();
-        }
-        return INSTANCE;
+        return InstanceHolder.INSTANCE;
     }
 }
