@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.DescendantExpressionNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
@@ -119,6 +120,12 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     @Override
     public BlockStmt visit(DashNode n) {
+        LOGGER.trace("visit {}", n);
+        return compilerHelper.add(n);
+    }
+
+    @Override
+    public BlockStmt visit(DescendantExpressionNode n) {
         LOGGER.trace("visit {}", n);
         return compilerHelper.add(n);
     }

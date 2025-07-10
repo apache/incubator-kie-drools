@@ -33,6 +33,7 @@ import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.DescendantExpressionNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
@@ -1118,6 +1119,21 @@ public class FEELParserTest {
         assertThat( filter.getExpression().getText()).isEqualTo( "{x:1, y:2}, {x:2, y:3}");
         assertThat( filter.getFilter()).isInstanceOf(InfixOpNode.class);
         assertThat( filter.getFilter().getText()).isEqualTo( "x=1");
+    }
+
+    @Test
+    void descendantExpression() {
+        String inputExpression = "{a: { b: { b: 1 } } }...c";
+        BaseNode descendantBaseNode = parse( inputExpression );
+
+        assertThat(descendantBaseNode).isInstanceOf(DescendantExpressionNode.class);
+        assertThat(descendantBaseNode.getText()).isEqualTo(inputExpression);
+
+        DescendantExpressionNode descendantExpressionNode = (DescendantExpressionNode) descendantBaseNode;
+        assertThat(descendantExpressionNode.getExpression()).isInstanceOf(ContextNode.class);
+        assertThat(descendantExpressionNode.getExpression().getText()).isEqualTo( "{a: { b: { b: 1 } } }");
+        assertThat(descendantExpressionNode.getName()).isInstanceOf(NameRefNode.class);
+        assertThat( descendantExpressionNode.getName().getText()).isEqualTo( "c");
     }
 
     @Test
