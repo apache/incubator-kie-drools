@@ -23,7 +23,15 @@ import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.EvalHelper.getDefinedValue;
 
 class EvalHelperTest {
 
@@ -43,4 +51,47 @@ class EvalHelperTest {
             return null;
         }
     }
+
+    @Test
+    void testValueForLocalTime() {
+        LocalTime localTime = LocalTime.of(1, 1, 1);
+        EvalHelper.PropertyValueResult value = getDefinedValue(localTime, "value");
+        Optional<Object> right = value.getValueResult().getRight();
+        long secondsToAdd = 0L;
+        if (right.isPresent()) {
+            Object result = right.get();
+            secondsToAdd = ((BigDecimal) result).longValue();
+        }
+        LocalTime roundTripTime = LocalTime.of(0, 0, 0).plusSeconds(secondsToAdd);
+        assertThat(localTime).isEqualTo(roundTripTime);
+    }
+
+    @Test
+    void testValueForZonedDateTime() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z"));
+        EvalHelper.PropertyValueResult value = getDefinedValue(zonedDateTime, "value");
+        Optional<Object> right = value.getValueResult().getRight();
+        long secondsToAdd = 0L;
+        if (right.isPresent()) {
+            Object result = right.get();
+            secondsToAdd = ((BigDecimal) result).longValue();
+        }
+        ZonedDateTime roundTrip = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd);
+        assertThat(roundTrip).isEqualTo(zonedDateTime);
+    }
+
+    @Test
+    void testValueForDate() {
+        LocalDate localDate = LocalDate.of(2025, 7, 3);
+        EvalHelper.PropertyValueResult value = getDefinedValue(localDate, "value");
+        Optional<Object> right = value.getValueResult().getRight();
+        long secondsToAdd = 0L;
+        if (right.isPresent()) {
+            Object result = right.get();
+            secondsToAdd = ((BigDecimal) result).longValue();
+        }
+        LocalDate roundTrip = LocalDate.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd));
+        assertThat(roundTrip).isEqualTo(localDate);
+    }
+
 }
