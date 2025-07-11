@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+                xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                xmlns:kie="https://kie.org/dmn/extensions/1.0"
+                expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
+                namespace="https://kie.org/dmn/_42BAF435-BAF7-460A-8C5D-351ABB98403C"
+                id="_3AC6172C-DFA4-4A63-A74A-2F44CD4874FC"
+                name="DMN_DFD7A647-6D67-4014-834B-E7559668C4B5">
+   <decision name="BoxedFilter" id="_8594A31A-A112-424E-B7DA-16A50FF9F126">
+      <variable name="BoxedFilter" id="_1FE53B3D-7EC4-48AF-9C09-CC1814FFFB1A" typeRef="list" />
+      <informationRequirement id="_7DF29C72-BDF0-4360-8B7F-9C7948E299D3">
+         <requiredInput href="#_6469745D-B5A7-439E-8893-584F5F69EDF1" />
+      </informationRequirement>
+      <literalExpression id="_03F7B046-C322-42B3-92C2-765AE21388E9" typeRef="list" label="BoxedFilter">
+         <text>[fruit][item = &quot;Mango&quot;]</text>
+      </literalExpression>
+   </decision>
+   <inputData name="fruit" id="_6469745D-B5A7-439E-8893-584F5F69EDF1">
+      <variable name="fruit" id="_35AC7E18-9978-4077-856E-456ADCEEDB5B" typeRef="string" />
+   </inputData>
+   <dmndi:DMNDI>
+      <dmndi:DMNDiagram id="_F2A74F0B-D336-40DC-84CC-CFBE768F10CF" name="Default DRD" useAlternativeInputDataShape="false">
+         <di:extension>
+            <kie:ComponentsWidthsExtension>
+               <kie:ComponentWidths dmnElementRef="_03F7B046-C322-42B3-92C2-765AE21388E9">
+                  <kie:width>190</kie:width>
+               </kie:ComponentWidths>
+            </kie:ComponentsWidthsExtension>
+         </di:extension>
+         <dmndi:DMNShape id="_714E9689-AF7C-4F9F-890D-E875702283A4" dmnElementRef="_8594A31A-A112-424E-B7DA-16A50FF9F126" isCollapsed="false" isListedInputData="false">
+            <dc:Bounds x="340" y="60" width="160" height="80" />
+         </dmndi:DMNShape>
+         <dmndi:DMNShape id="_510E6D99-11A8-475B-9D76-D9C7D3096EEA" dmnElementRef="_6469745D-B5A7-439E-8893-584F5F69EDF1" isCollapsed="false" isListedInputData="false">
+            <dc:Bounds x="340" y="280" width="160" height="80" />
+         </dmndi:DMNShape>
+         <dmndi:DMNEdge id="_885D05BB-D421-47C4-91AB-25AD654D5A5C" dmnElementRef="_7DF29C72-BDF0-4360-8B7F-9C7948E299D3" sourceElement="_510E6D99-11A8-475B-9D76-D9C7D3096EEA" targetElement="_714E9689-AF7C-4F9F-890D-E875702283A4">
+            <di:waypoint x="420" y="320" />
+            <di:waypoint x="420" y="140" />
+         </dmndi:DMNEdge>
+      </dmndi:DMNDiagram>
+   </dmndi:DMNDI>
+</definitions>

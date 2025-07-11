@@ -46,35 +46,42 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
     protected ScopeImpl feelTypesScope = new ScopeImpl(); // no parent scope, intentional.
     protected Map<TupleIdentifier, ScopeImpl> feelTypesScopeChildLU = new HashMap<>();
 
-
     public DMNTypeRegistryAbstract(Map<TupleIdentifier, QName> aliases) {
         this.aliases = aliases;
         String feelNamespace = feelNS();
-        Map<String, DMNType> feelTypes = new HashMap<>(  );
+        Map<String, DMNType> feelTypes = new HashMap<>();
         types.put( feelNamespace, feelTypes );
+        DMNType unknownType = unknown();
+        this.feelTypesScope = getScopeImpl(feelNamespace, unknownType, feelTypes);
+    }
 
-        for (String name : BuiltInType.UNKNOWN.getNames()) {
-            feelTypes.put(name, unknown());
-            feelTypesScope.define(new TypeSymbol(name, BuiltInType.UNKNOWN));
-        }
-
+    static ScopeImpl getScopeImpl(String feelNamespace, DMNType unknownType, Map<String, DMNType> feelTypes) {
+        ScopeImpl feelTypesScope = new ScopeImpl();
         for( BuiltInType type : BuiltInType.values() ) {
+            boolean isUnknown = type == BuiltInType.UNKNOWN;
             for( String name : type.getNames() ) {
-                DMNType feelPrimitiveType;
-                if( type == BuiltInType.UNKNOWN ) {
-                    // already added, skip it
-                    continue;
-                } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, false, null, null, unknown(), type);
-                } else if( type == BuiltInType.CONTEXT ) {
-                    feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
-                } else {
-                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, null, type );
-                }
-                feelTypes.put( name, feelPrimitiveType );
-                feelTypesScope.define(new TypeSymbol(name, type));
+                manageAllTypes(isUnknown, unknownType, name, type, feelNamespace, feelTypes, feelTypesScope );
             }
         }
+        return feelTypesScope;
+    }
+
+    static void manageAllTypes(boolean isUnknown, DMNType unknownType, String name, BuiltInType type, String feelNamespace, Map<String, DMNType> feelTypes, ScopeImpl feelTypesScope  ) {
+        DMNType feelPrimitiveType = isUnknown ? unknownType : getFeelPrimitiveType(name, type, feelNamespace, unknownType);
+        feelTypes.put( name, feelPrimitiveType );
+        feelTypesScope.define(new TypeSymbol(name, type));
+    }
+
+    static DMNType getFeelPrimitiveType(String name, BuiltInType type, String feelNamespace, DMNType unknownType) {
+        DMNType feelPrimitiveType;
+        if( type == BuiltInType.LIST ) {
+            feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, true, null, null, unknownType, type);
+        } else if( type == BuiltInType.CONTEXT ) {
+            feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
+        } else {
+            feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, null, type );
+        }
+        return feelPrimitiveType;
     }
 
     @Override
