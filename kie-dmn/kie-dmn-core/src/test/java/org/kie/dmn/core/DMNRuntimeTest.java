@@ -526,7 +526,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void boxedFilterInvalidConditionWithInvalidInput(boolean useExecModelCompiler) {
+    void boxedIteratorInvalidConditionWithInvalidInput(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedIterator.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
@@ -542,13 +542,13 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult).isNotNull();
         assertThat(dmnResult.hasErrors()).isTrue();
-        assertThat(dmnResult.getContext().get("BoxedFilter")).isNull();
+        assertThat(dmnResult.getContext().get("BoxedIterator")).isNull();
         assertThat(dmnResult.getMessages(Severity.ERROR).get(0).getMessageType()).isEqualTo(DMNMessageType.ERROR_EVAL_NODE);
     }
 
     @ParameterizedTest
     @MethodSource("params")
-    void boxedFilterInvalidConditionWithNonNumeric(boolean useExecModelCompiler) {
+    void boxedIteratorInvalidConditionWithNonNumeric(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedIterator.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
@@ -564,7 +564,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult).isNotNull();
         assertThat(dmnResult.hasErrors()).isTrue();
-        assertThat(dmnResult.getContext().get("BoxedFilter")).isNull();
+        assertThat(dmnResult.getContext().get("BoxedIterator")).isNull();
         assertThat(dmnResult.getMessages(Severity.ERROR).get(0).getMessageType()).isEqualTo(DMNMessageType.ERROR_EVAL_NODE);
     }
 
