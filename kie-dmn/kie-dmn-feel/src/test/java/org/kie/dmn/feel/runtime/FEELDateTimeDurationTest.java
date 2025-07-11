@@ -271,6 +271,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date( 2016, 8, 2 ).day", BigDecimal.valueOf( 2 ) , null},
                 { "date( 2017, 11, 8 ).weekday", BigDecimal.valueOf( 3 ), null},
                 { "date( 2025, 7, 3 ).value", BigDecimal.valueOf(1751500800), null},
+                { "date( 1970, 1, 1 ) + duration(\"PT1751500800S\")", LocalDate.of(2025,7,3), null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").year", BigDecimal.valueOf( 2016 ) , null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").month", BigDecimal.valueOf( 7 ) , null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").day", BigDecimal.valueOf( 29 ) , null},
