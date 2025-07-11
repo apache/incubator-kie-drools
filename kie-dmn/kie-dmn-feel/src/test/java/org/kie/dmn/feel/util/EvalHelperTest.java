@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -81,16 +82,16 @@ class EvalHelperTest {
 
     @Test
     void testValueForDate() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(2025, 7, 3, 0, 0, 0, 0, ZoneId.of("Z"));
-        EvalHelper.PropertyValueResult value = getDefinedValue(zonedDateTime, "value");
+        LocalDate localDate = LocalDate.of(2025, 7, 3);
+        EvalHelper.PropertyValueResult value = getDefinedValue(localDate, "value");
         Optional<Object> right = value.getValueResult().getRight();
         long secondsToAdd = 0L;
         if (right.isPresent()) {
             Object result = right.get();
             secondsToAdd = ((BigDecimal) result).longValue();
         }
-        ZonedDateTime roundTrip = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd);
-        assertThat(roundTrip).isEqualTo(zonedDateTime);
+        LocalDate roundTrip = LocalDate.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd));
+        assertThat(roundTrip).isEqualTo(localDate);
     }
 
 }
