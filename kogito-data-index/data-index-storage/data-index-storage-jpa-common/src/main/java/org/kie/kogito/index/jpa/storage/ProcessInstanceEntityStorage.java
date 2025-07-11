@@ -237,6 +237,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
     }
 
     private void indexState(ProcessInstanceEntity pi, ProcessInstanceStateEventBody data, Set<String> addons, String endpoint) {
+        pi.setProcessId(data.getProcessId());
         pi.setVersion(data.getProcessVersion());
         pi.setProcessName(data.getProcessName());
         pi.setRootProcessInstanceId(data.getRootProcessInstanceId());
