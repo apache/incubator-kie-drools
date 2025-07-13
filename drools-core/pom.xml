@@ -59,7 +59,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-api</artifactId>
+      <artifactId>drools-util</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -67,11 +67,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-static</artifactId>
+      <artifactId>drools-wiring-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-io</artifactId>
+      <artifactId>drools-wiring-static</artifactId>
     </dependency>
 
     <dependency>
@@ -127,12 +127,6 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
