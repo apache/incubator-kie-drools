@@ -252,6 +252,40 @@ abstract class AbstractProcessInstancesIT {
     }
 
     @Test
+    void testMigrateTaskFlow() {
+        BpmnProcess processV1 = createProcess(getDataSource(), lock(), "BPMN2-UserTask.bpmn2");
+        BpmnProcess processV2 = createProcess(getDataSource(), lock(), "BPMN2-UserTask-v2.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance = processV1.createInstance(BpmnVariables.create(singletonMap("test", "test")));
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
+
+        JDBCProcessInstances processInstancesV1 = (JDBCProcessInstances) processV1.instances();
+        assertThat(processInstancesV1.exists(processInstance.id())).isTrue();
+        verify(processInstancesV1).create(any(), any());
+
+        assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
+
+        processV1.instances().migrateProcessInstances("BPMN2_UserTask", "2.0", processInstance.id());
+
+        JDBCProcessInstances processInstancesV2 = (JDBCProcessInstances) processV2.instances();
+        assertThat(processInstancesV2.exists(processInstance.id())).isTrue();
+
+        processInstance = (ProcessInstance<BpmnVariables>) processInstancesV2.findById(processInstance.id()).get();
+        WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameters()).containsEntry("ActorId", "john");
+
+        processInstance.completeWorkItem(workItem.getId(), null, securityPolicy);
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
+
+        processInstancesV2 = (JDBCProcessInstances) processV2.instances();
+        verify(processInstancesV2, times(1)).remove(processInstance.id());
+        assertEmpty(processV2.instances());
+    }
+
+    @Test
     public void testRemove() {
         BpmnProcess process = createProcess(getDataSource(), lock(), "BPMN2-UserTask.bpmn2");
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
