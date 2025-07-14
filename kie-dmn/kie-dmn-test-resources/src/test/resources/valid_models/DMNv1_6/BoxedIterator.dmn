@@ -17,12 +17,12 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
              xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
              xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
              xmlns:kie="https://kie.org/dmn/extensions/1.0"
-             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+             expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
              namespace="https://kie.org/dmn/_60C30701-AFB7-49C5-9B23-A0167DDC6795"
              id="_84B669EF-2509-46B3-8DD0-BD8F85F2F391"
              name="DMN_A15DEB5A-841F-4AC0-8C09-2403F5707373">
