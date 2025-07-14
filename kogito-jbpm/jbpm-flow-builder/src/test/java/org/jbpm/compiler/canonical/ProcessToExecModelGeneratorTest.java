@@ -162,4 +162,41 @@ public class ProcessToExecModelGeneratorTest {
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
         assertThat(processMetadata).as("Dumper should return non null class for process").isNotNull();
     }
+
+    @Test
+    public void testScriptsWithTrailingComment() {
+
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("demo.orders");
+        factory
+                .variable("order", new ObjectDataType("com.myspace.demo.Order"))
+                .variable("approver", new StringDataType(), "john", Collections.singletonMap("customTags", null))
+                .variable("age", new IntegerDataType(), "1", Collections.singletonMap("customTags", null))
+                .name("orders")
+                .packageName("com.myspace.demo")
+                .dynamic(false)
+                .version("1.0")
+                .actionNode(one)
+                .name("Dump order")
+                .action("java", "System.out.println();\n// this is a comment")
+                .done()
+                .stateNode(two)
+                .name("OnEntry")
+                .onEntryAction("java", "System.out.println();\n// this is a comment")
+                .done()
+                .endNode(three)
+                .name("end")
+                .terminate(false)
+                .done()
+                .startNode(four)
+                .name("start")
+                .done()
+                .connection(two, one)
+                .connection(four, two)
+                .connection(one, three);
+
+        WorkflowProcess process = factory.validate().getProcess();
+
+        ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
+        assertThat(processMetadata).as("Dumper should return non null class for process").isNotNull();
+    }
 }

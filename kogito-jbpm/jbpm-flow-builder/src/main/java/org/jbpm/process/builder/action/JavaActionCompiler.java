@@ -57,7 +57,7 @@ public class JavaActionCompiler implements ActionCompiler {
     @Override
     public Expression buildAction(NodeImpl nodeImpl, String script) {
         BlockStmt newDroolsConsequenceActionExpression = new BlockStmt();
-        newDroolsConsequenceActionExpression = StaticJavaParser.parseBlock("{" + script + "}");
+        newDroolsConsequenceActionExpression = StaticJavaParser.parseBlock("{" + script + "\n}");
         Set<NameExpr> identifiers = new HashSet<>(newDroolsConsequenceActionExpression.findAll(NameExpr.class));
         for (NameExpr identifier : identifiers) {
             VariableScope scope = (VariableScope) nodeImpl.resolveContext(VariableScope.VARIABLE_SCOPE, identifier.getNameAsString());

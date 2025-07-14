@@ -103,7 +103,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
                             .map(ActionNodeVisitor::makeAssignment)
                             .forEach(actionBody::addStatement);
 
-                    BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
+                    BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "\n}");
                     blockStmt.getStatements().forEach(actionBody::addStatement);
                 }
                 LambdaExpr lambda = new LambdaExpr(
