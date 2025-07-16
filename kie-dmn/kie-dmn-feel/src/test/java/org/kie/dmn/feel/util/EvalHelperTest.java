@@ -60,12 +60,9 @@ class EvalHelperTest {
     void testValueForLocalTime() {
         LocalTime localTime = LocalTime.of(1, 1, 1);
         EvalHelper.PropertyValueResult value = getDefinedValue(localTime, "value");
-        Optional<Object> right = value.getValueResult().getRight();
-        long secondsToAdd = 0L;
-        if (right.isPresent()) {
-            Object result = right.get();
-            secondsToAdd = ((BigDecimal) result).longValue();
-        }
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for localTime: " + localTime))).longValue();
         LocalTime roundTripTime = LocalTime.of(0, 0, 0).plusSeconds(secondsToAdd);
         assertThat(localTime).isEqualTo(roundTripTime);
     }
@@ -74,12 +71,9 @@ class EvalHelperTest {
     void testValueForZonedDateTime() {
         ZonedDateTime zonedDateTime = ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z"));
         EvalHelper.PropertyValueResult value = getDefinedValue(zonedDateTime, "value");
-        Optional<Object> right = value.getValueResult().getRight();
-        long secondsToAdd = 0L;
-        if (right.isPresent()) {
-            Object result = right.get();
-            secondsToAdd = ((BigDecimal) result).longValue();
-        }
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for zonedDateTime: " + zonedDateTime))).longValue();
         ZonedDateTime roundTrip = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd);
         assertThat(roundTrip).isEqualTo(zonedDateTime);
     }
@@ -88,12 +82,9 @@ class EvalHelperTest {
     void testValueForDate() {
         LocalDate localDate = LocalDate.of(2025, 7, 3);
         EvalHelper.PropertyValueResult value = getDefinedValue(localDate, "value");
-        Optional<Object> right = value.getValueResult().getRight();
-        long secondsToAdd = 0L;
-        if (right.isPresent()) {
-            Object result = right.get();
-            secondsToAdd = ((BigDecimal) result).longValue();
-        }
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for duration: " + localDate))).longValue();
         LocalDate roundTrip = LocalDate.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd));
         assertThat(roundTrip).isEqualTo(localDate);
     }
@@ -102,12 +93,9 @@ class EvalHelperTest {
     void testValueForDuration() {
         Duration duration = Duration.of(1, ChronoUnit.DAYS).plusHours(1);
         EvalHelper.PropertyValueResult value = getDefinedValue(duration, "value");
-        Optional<Object> right = value.getValueResult().getRight();
-        long secondsToAdd = 0L;
-        if (right.isPresent()) {
-            Object result = right.get();
-            secondsToAdd = ((BigDecimal) result).longValue();
-        }
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for duration: " + duration))).longValue();
         Duration roundTrip = Duration.of(0, ChronoUnit.HOURS).plusSeconds(secondsToAdd);
         assertThat(roundTrip).isEqualTo(duration);
     }
@@ -116,12 +104,9 @@ class EvalHelperTest {
     void testValueForDurationYears() {
         ChronoPeriod period  = Period.parse("P2Y1M");
         EvalHelper.PropertyValueResult value = getDefinedValue(period, "value");
-        Optional<Object> right = value.getValueResult().getRight();
-        long durationToAdd = 0L;
-        if (right.isPresent()) {
-            Object result = right.get();
-            durationToAdd = ((BigDecimal) result).longValue();
-        }
+        Optional<Object> result = value.getValueResult().getRight();
+        long durationToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for period: " + period))).longValue();
         Period roundTrip = Period.ofYears(0).plusMonths(durationToAdd);
         assertThat(roundTrip.normalized()).isEqualTo(period);
     }
