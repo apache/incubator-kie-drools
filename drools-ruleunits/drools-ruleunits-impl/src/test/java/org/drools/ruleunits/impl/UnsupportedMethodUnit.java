@@ -26,23 +26,19 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.impl.domain.Person;
 
-public class UpdateNoDSTestUnit implements RuleUnitData {
-    private final List<String> results = new ArrayList<>();
+public class UnsupportedMethodUnit implements RuleUnitData {
+
     private final DataStore<Person> persons;
 
-    public UpdateNoDSTestUnit() {
+    public UnsupportedMethodUnit() {
         this(DataSource.createStore());
     }
 
-    public UpdateNoDSTestUnit(DataStore<Person> persons) {
+    public UnsupportedMethodUnit(DataStore<Person> persons) {
         this.persons = persons;
     }
 
     public DataStore<Person> getPersons() {
         return persons;
-    }
-
-    public List<String> getResults() {
-        return results;
     }
 }

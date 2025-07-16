@@ -58,6 +58,7 @@ import org.drools.model.codegen.execmodel.errors.CompilationProblemErrorResult;
 import org.drools.model.codegen.execmodel.errors.ConsequenceRewriteException;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
+import org.drools.model.codegen.execmodel.errors.UnsupportedMethodError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.MvelCompilerException;
@@ -91,6 +92,7 @@ public class Consequence {
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
+    public static final Set<String> defaultEntryPointMethods = new HashSet<>();
 
     public static final Set<String> dataStoreMethods = new HashSet<>();
 
@@ -107,6 +109,10 @@ public class Consequence {
         implicitDroolsMethods.add("delete");
         implicitDroolsMethods.add("retract");
         implicitDroolsMethods.add("update");
+
+        defaultEntryPointMethods.add("insert");
+        defaultEntryPointMethods.add("insertLogical");
+        defaultEntryPointMethods.add("insertAsync");
 
         knowledgeHelperMethods.add("getWorkingMemory");
         knowledgeHelperMethods.add("getRule");
@@ -357,6 +363,10 @@ public class Consequence {
                 }
             }
         } else if ( implicitDroolsMethods.contains(methodCallExpr.getNameAsString()) ) {
+            if (defaultEntryPointMethods.contains(methodCallExpr.getNameAsString()) && context.getRuleUnitDescr() != null) {
+                context.addCompilationError(new UnsupportedMethodError("'" + methodCallExpr.getNameAsString() +
+                                                                               "' is not supported with RuleUnit. Please use methods from DataStore or DataStream instead."));
+            }
             if ( methodCallExpr.getNameAsString().equals("insertLogical") && !TruthMaintenanceSystemFactory.present() ) {
                 context.addCompilationError(new MissingDependencyError(TruthMaintenanceSystemFactory.NO_TMS));
             }

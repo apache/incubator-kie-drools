@@ -18,31 +18,26 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.api.DataStore;
-import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.impl.domain.Person;
+import org.junit.jupiter.api.Test;
+import org.kie.api.builder.CompilationErrorsException;
 
-public class UpdateNoDSTestUnit implements RuleUnitData {
-    private final List<String> results = new ArrayList<>();
-    private final DataStore<Person> persons;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    public UpdateNoDSTestUnit() {
-        this(DataSource.createStore());
-    }
+public class UnsupportedMethodTest {
 
-    public UpdateNoDSTestUnit(DataStore<Person> persons) {
-        this.persons = persons;
-    }
+    @Test
+    public void insert_shouldBuildError() {
+        UnsupportedMethodUnit unit = new UnsupportedMethodUnit();
+        unit.getPersons().add(new Person("John", 30));
 
-    public DataStore<Person> getPersons() {
-        return persons;
-    }
+        CompilationErrorsException exception = assertThrows(CompilationErrorsException.class,
+                                                            () -> RuleUnitProvider.get().createRuleUnitInstance(unit));
 
-    public List<String> getResults() {
-        return results;
+        assertThat(exception.getErrorMessages()).hasSize(2);
+        assertThat(exception.getErrorMessages())
+                .allSatisfy(error -> assertThat(error.getText()).contains("is not supported with RuleUnit"));
     }
 }
