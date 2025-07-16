@@ -116,7 +116,7 @@ public class EvalHelper {
                     result = ((ChronoPeriod) current).get(ChronoUnit.MONTHS) % 12;
                     break;
                 case "value":
-                    result = (((ChronoPeriod) current).get(ChronoUnit.YEARS)) * 12 + ((ChronoPeriod) current).get(ChronoUnit.MONTHS);
+                    result = (((ChronoPeriod) current).get(ChronoUnit.YEARS) * 12) + ((ChronoPeriod) current).get(ChronoUnit.MONTHS);
                     break;
                 default:
                     return PropertyValueResult.notDefined();
