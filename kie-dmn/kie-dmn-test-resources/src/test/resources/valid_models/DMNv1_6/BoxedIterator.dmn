@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
+             namespace="https://kie.org/dmn/_60C30701-AFB7-49C5-9B23-A0167DDC6795"
+             id="_84B669EF-2509-46B3-8DD0-BD8F85F2F391"
+             name="DMN_A15DEB5A-841F-4AC0-8C09-2403F5707373">
+    <decision name="BoxedIterator" id="_F1D4C42F-0773-40CB-A00F-364F0FE64711">
+        <variable name="BoxedIterator" id="_2BAE0C1E-8FD4-48D2-BC8E-9E608655AED0" typeRef="list" />
+        <informationRequirement id="_76DC365E-2C89-4AE4-9B76-83D723618967">
+            <requiredInput href="#_2EA9C640-68A1-40F9-8821-2672CE5246A8" />
+        </informationRequirement>
+        <literalExpression id="_7625D3F8-9265-4A4D-AD38-0D50F5E169B6" typeRef="list" label="BoxedIterator">
+            <text>for x in [singleNumber] return x * 6</text>
+        </literalExpression>
+    </decision>
+    <inputData name="singleNumber" id="_2EA9C640-68A1-40F9-8821-2672CE5246A8">
+        <variable name="singleNumber" id="_83BA9A62-F23F-41DA-8A87-6C9A31CC40E7" typeRef="number" />
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_283671AD-E04D-4FFA-B2FF-3A9DAE25AF5B" name="Default DRD" useAlternativeInputDataShape="false">
+            <di:extension>
+                <kie:ComponentsWidthsExtension>
+                    <kie:ComponentWidths dmnElementRef="_7625D3F8-9265-4A4D-AD38-0D50F5E169B6">
+                        <kie:width>190</kie:width>
+                    </kie:ComponentWidths>
+                </kie:ComponentsWidthsExtension>
+            </di:extension>
+            <dmndi:DMNShape id="_AA7E494B-C709-47DD-8589-B447D1A744AE" dmnElementRef="_F1D4C42F-0773-40CB-A00F-364F0FE64711" isCollapsed="false" isListedInputData="false">
+                <dc:Bounds x="320" y="60" width="160" height="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_DDE3929A-748C-4DBA-8EEA-B2592B9AF96D" dmnElementRef="_2EA9C640-68A1-40F9-8821-2672CE5246A8" isCollapsed="false" isListedInputData="false">
+                <dc:Bounds x="320" y="220" width="160" height="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_8DCD192A-C91D-4FBE-A471-A4E0FDE9953B" dmnElementRef="_76DC365E-2C89-4AE4-9B76-83D723618967" sourceElement="_DDE3929A-748C-4DBA-8EEA-B2592B9AF96D" targetElement="_AA7E494B-C709-47DD-8589-B447D1A744AE">
+                <di:waypoint x="400" y="260" />
+                <di:waypoint x="400" y="140" />
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
