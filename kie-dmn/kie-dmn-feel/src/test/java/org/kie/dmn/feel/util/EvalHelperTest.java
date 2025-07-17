@@ -23,7 +23,19 @@ import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.EvalHelper.getDefinedValue;
 
 class EvalHelperTest {
 
@@ -43,4 +55,60 @@ class EvalHelperTest {
             return null;
         }
     }
+
+    @Test
+    void testValueForLocalTime() {
+        LocalTime localTime = LocalTime.of(1, 1, 1);
+        EvalHelper.PropertyValueResult value = getDefinedValue(localTime, "value");
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for localTime: " + localTime))).longValue();
+        LocalTime roundTripTime = LocalTime.of(0, 0, 0).plusSeconds(secondsToAdd);
+        assertThat(localTime).isEqualTo(roundTripTime);
+    }
+
+    @Test
+    void testValueForZonedDateTime() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z"));
+        EvalHelper.PropertyValueResult value = getDefinedValue(zonedDateTime, "value");
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for zonedDateTime: " + zonedDateTime))).longValue();
+        ZonedDateTime roundTrip = ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd);
+        assertThat(roundTrip).isEqualTo(zonedDateTime);
+    }
+
+    @Test
+    void testValueForDate() {
+        LocalDate localDate = LocalDate.of(2025, 7, 3);
+        EvalHelper.PropertyValueResult value = getDefinedValue(localDate, "value");
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for duration: " + localDate))).longValue();
+        LocalDate roundTrip = LocalDate.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneId.of("Z")).plusSeconds(secondsToAdd));
+        assertThat(roundTrip).isEqualTo(localDate);
+    }
+
+    @Test
+    void testValueForDuration() {
+        Duration duration = Duration.of(1, ChronoUnit.DAYS).plusHours(1);
+        EvalHelper.PropertyValueResult value = getDefinedValue(duration, "value");
+        Optional<Object> result = value.getValueResult().getRight();
+        long secondsToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for duration: " + duration))).longValue();
+        Duration roundTrip = Duration.of(0, ChronoUnit.HOURS).plusSeconds(secondsToAdd);
+        assertThat(roundTrip).isEqualTo(duration);
+    }
+
+    @Test
+    void testValueForDurationYears() {
+        ChronoPeriod period  = Period.parse("P2Y1M");
+        EvalHelper.PropertyValueResult value = getDefinedValue(period, "value");
+        Optional<Object> result = value.getValueResult().getRight();
+        long durationToAdd = ((BigDecimal) result.orElseThrow(
+                () -> new AssertionError("Missing result for period: " + period))).longValue();
+        Period roundTrip = Period.ofYears(0).plusMonths(durationToAdd);
+        assertThat(roundTrip.normalized()).isEqualTo(period);
+    }
+
 }
