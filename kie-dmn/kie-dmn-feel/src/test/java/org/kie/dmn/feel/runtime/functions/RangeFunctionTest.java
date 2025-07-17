@@ -221,14 +221,16 @@ class RangeFunctionTest {
 
     @Test
     void invoke_WithOneFunctionNode() {
-        String from = "[number(\"1\", \",\", \".\")\"..2]";
+        String from = "[duration(\"P1D\")..@\"P2D\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("PT24H"), Duration.parse("PT48H")
                                               , Range.RangeBoundary.CLOSED),
                                       from);
-        from = "[\"a\"..lower case(\"Z\")]";
+        from = "[@\"1970-01-01T00:00:00\"..date and time(\"1970-01-02T00:00:00\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED,
+                                              LocalDateTime.of(1970, 1, 1, 0, 0),
+                                              LocalDateTime.of(1970, 1, 2, 0, 0), Range.RangeBoundary.CLOSED),
                                       from);
     }
 
@@ -254,7 +256,9 @@ class RangeFunctionTest {
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
         node = getAtLiteralNode();
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
-        node = getFunctionInvocationNodeA();
+        node = getFunctionInvocationNodeA("duration(\"P2DT20H14M\")");
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
+        node = getFunctionInvocationNodeA("date(\"1982-04-04\")");
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
     }
 
@@ -266,6 +270,12 @@ class RangeFunctionTest {
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
         node = rangeFunction.getNullNode();
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.CLOSED)).withFailMessage(node.getText()).isFalse();
+        node = getFunctionInvocationNodeA("string(\"\")");
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
+        node = getFunctionInvocationNodeA("duration(string(\"P1D\"))");
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
+        node = getFunctionInvocationNodeA("date(string(\"1982-04-04\"))");
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
     }
 
     @Test
@@ -456,7 +466,7 @@ class RangeFunctionTest {
     void evaluateWithValidFunctionInvocationNode() {
         Object[][] data = validFunctionInvocationNodeData();
         Arrays.stream(data).forEach(objects -> {
-            String expression = String.format("[%1$s..%1$s]", objects[0]);
+            String expression = String.format("[%1$s..%2$s]", objects[0], objects[1]);
             FEELFnResult<Range> retrieved = rangeFunction.invoke(expression);
             assertThat(retrieved.isRight())
                     .withFailMessage(() -> String.format("Expected 'retrieved.isRight()' from, %s", expression))
@@ -468,7 +478,9 @@ class RangeFunctionTest {
     void evaluateWithInvalidFunctionInvocationNode() {
         Object[][] data = invalidFunctionInvocationNodeData();
         Arrays.stream(data).forEach(objects -> {
-            String expression = String.format("[%1$s..%1$s]", objects[0]);
+            Object firstEndPoint = objects[0];
+            Object secondEndPoint = objects.length == 2 ? objects[1] : objects[0];
+            String expression = String.format("[%1$s..%2$s]", firstEndPoint, secondEndPoint);
             FEELFnResult<Range> retrieved = rangeFunction.invoke(expression);
             assertThat(retrieved.isLeft())
                     .withFailMessage(() -> String.format("Expected 'retrieved.isLeft()' from, %s", expression))
@@ -526,208 +538,116 @@ class RangeFunctionTest {
         return (AtLiteralNode) rangeFunction.parse("@\"2019-01-01\"");
     }
 
-    private FunctionInvocationNode getFunctionInvocationNodeA() {
-        return (FunctionInvocationNode) rangeFunction.parse("duration(\"P2DT20H14M\")");
+    private FunctionInvocationNode getFunctionInvocationNodeA(String input) {
+        return (FunctionInvocationNode) rangeFunction.parse(input);
     }
 
-    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date,
-    // time, date and
-    //time, or duration.
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types:
+    // number, string, date time, date and time, or duration.
     private static Object[][] validFunctionInvocationNodeData() {
-        // Subset of FEELFunctionsTest.data
         return new Object[][]{
-                // constants
-                {"string(1.1)", "1.1"},
-                {"replace( \"  foo   bar zed  \", \"^(\\s)+|(\\s)+$|\\s+(?=\\s)\", \"\" )", "foo bar zed"},
-                {"string(null)", null},
-                {"string(date(\"2016-08-14\"))", "2016-08-14"},
-                {"string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!"},
-                {"number(null, \",\", \".\")", null},
-                {"number(\"1,000.05\", \",\", \".\")", new BigDecimal("1000.05")},
-                {"number(\"1.000,05\", \".\", \",\")", new BigDecimal("1000.05")},
-                {"number(\"1000,05\", null, \",\")", new BigDecimal("1000.05")},
-                {"number(\"1,000.05e+12\", \",\", \".\")", new BigDecimal("1000.05e+12")},
-                {"number(\"1.000,05e+12\", \".\", \",\")", new BigDecimal("1000.05e+12")},
-                {"number(\"1000,05e+12\", null, \",\")", new BigDecimal("1000.05e+12")},
-                {"substring(\"foobar\", 3)", "obar"},
-                {"substring(\"foobar\", 3, 3)", "oba"},
-                {"substring(\"foobar\", -2, 1)", "a"},
-                {"substring(\"foobar\", -2, 5)", "ar"},
-                {"substring(\"foobar\", 15, 5)", null},
-                {"string length(\"foobar\")", BigDecimal.valueOf(6)},
-                {"string length(null)", null},
-                {"upper case(\"aBc4\")", "ABC4"},
-                {"upper case(null)", null},
-                {"lower case(\"aBc4\")", "abc4"},
-                {"lower case(null)", null},
-                {"substring before( \"foobar\", \"bar\")", "foo"},
-                {"substring before( \"foobar\", \"xyz\")", ""},
-                {"substring before( \"foobar\", \"foo\")", ""},
-                {"substring after( \"foobar\", \"foo\")", "bar"},
-                {"substring after( \"foobar\", \"xyz\")", ""},
-                {"substring after( \"foobar\", \"bar\")", ""},
-                {"replace(\"banana\",\"a\",\"o\")", "bonono"},
-                {"replace(\"banana\",\"(an)+\", \"**\")", "b**a"},
-                {"replace(\"banana\",\"[aeiouy]\",\"[$0]\")", "b[a]n[a]n[a]"},
-                {"replace(\"0123456789\",\"(\\d{3})(\\d{3})(\\d{4})\",\"($1) $2-$3\")", "(012) 345-6789"},
-                {"count([1, 2, 3])", BigDecimal.valueOf(3)},
-                {"count( 1, 2, 3 )", BigDecimal.valueOf(3)},
-                {"min( \"a\", \"b\", \"c\" )", "a"},
-                {"min([ \"a\", \"b\", \"c\" ])", "a"},
-                {"max( 1, 2, 3 )", BigDecimal.valueOf(3)},
-                {"max([ 1, 2, 3 ])", BigDecimal.valueOf(3)},
-                {"max(duration(\"PT1H6M\"), duration(\"PT1H5M\"))", Duration.parse("PT1H6M")},
-                {"max(duration(\"P6Y\"), duration(\"P5Y\"))", ComparablePeriod.parse("P6Y")},
-                {"sum( 1, 2, 3 )", BigDecimal.valueOf(6)},
-                {"sum([ 1, 2, 3 ])", BigDecimal.valueOf(6)},
-                {"sum([])", null},
-                {"product( 2, 3, 4 )", BigDecimal.valueOf(24)},
-                {"product([ 2, 3, 4 ])", BigDecimal.valueOf(24)},
-                {"product([])", null},
-                {"mean( 1, 2, 3 )", BigDecimal.valueOf(2)},
-                {"mean([ 1, 2, 3 ])", BigDecimal.valueOf(2)},
-                {"decimal( 1/3, 2 )", new BigDecimal("0.33")},
-                {"decimal( 1.5, 0 )", new BigDecimal("2")},
-                {"decimal( 2.5, 0 )", new BigDecimal("2")},
-                {"decimal( null, 0 )", null},
-                {"floor( 1.5 )", new BigDecimal("1")},
-                {"floor( -1.5 )", new BigDecimal("-2")},
-                {"floor( null )", null},
-                {"ceiling( 1.5 )", new BigDecimal("2")},
-                {"ceiling( -1.5 )", new BigDecimal("-1")},
-                {"ceiling( null )", null},
-                {"ceiling( n : 1.5 )", new BigDecimal("2")},
-                {"abs( 10 )", new BigDecimal("10")},
-                {"abs( -10 )", new BigDecimal("10")},
-                {"abs( n: -10 )", new BigDecimal("10")},
-                {"abs(@\"PT5H\")", Duration.parse("PT5H")},
-                {"abs(@\"-PT5H\")", Duration.parse("PT5H")},
-                {"abs(n: @\"-PT5H\")", Duration.parse("PT5H")},
-                {"abs(duration(\"P1Y\"))", ComparablePeriod.parse("P1Y")},
-                {"abs(duration(\"-P1Y\"))", ComparablePeriod.parse("P1Y")},
-
-                {"day of year( date(2019, 9, 17) )", BigDecimal.valueOf(260)},
-                {"day of week( date(2019, 9, 17) )", "Tuesday"},
-                {"month of year( date(2019, 9, 17) )", "September"},
-                {"week of year( date(2019, 9, 17) )", BigDecimal.valueOf(38)},
-                {"week of year( date(2003, 12, 29) )", BigDecimal.valueOf(1)}, // ISO defs.
-                {"week of year( date(2004, 1, 4) )", BigDecimal.valueOf(1)},
-                {"week of year( date(2005, 1, 3) )", BigDecimal.valueOf(1)},
-                {"week of year( date(2005, 1, 9) )", BigDecimal.valueOf(1)},
-                {"week of year( date(2005, 1, 1) )", BigDecimal.valueOf(53)},
-                {"median( 8, 2, 5, 3, 4 )", new BigDecimal("4")},
-                {"median( [6, 1, 2, 3] )", new BigDecimal("2.5")},
-                {"median( [ ] ) ", null}, // DMN spec, Table 69: Semantics of list functions
+                {"@\"1970-01-01\"", "@\"1970-01-02\""},
+                {"@\"1970-01-01T00:00:00\"", "@\"1970-01-02T00:00:00\""},
+                {"@\"00:00:00\"", "@\"00:00:00\""},
+                {"@\"P1D\"", "@\"P2D\""},
+                {"@\"P1Y\"", "@\"P2Y\""},
+                {"date(\"1978-09-12\")", "date(\"1978-10-13\")"},
+                {"date(\"1978-09-12\")", "@\"1980-01-01\""},
+                {"@\"1978-01-01\"", "date(\"1978-09-12\")"},
+                {"time(\"00:00:00\")", "time(\"23:00:00\")"},
+                {"time(\"00:00:00\")", "@\"23:00:00\""},
+                {"@\"00:00:00\"", "time(\"23:00:00\")"},
+                {"date and time(\"1978-09-12T00:00:00\")", "date and time(\"1978-10-13T00:00:00\")"},
+                {"date and time(\"1978-09-12T00:00:00\")", "@\"1980-01-02T00:00:00\""},
+                {"@\"1970-01-01T00:00:00\"", "date and time(\"1978-10-13T00:00:00\")"},
+                {"duration(\"P2DT20H14M\")", "duration(\"P3DT20H14M\")"},
+                {"duration(\"P1Y6M\")", "duration(\"P1Y10M\")"},
+                {"duration(\"P1D\")", "@\"P2D\""},
+                {"@\"P1D\"",  "duration(\"P3D\")"},
         };
     }
 
-    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date,
-    // time, date and
-    //time, or duration.
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types:
+    // number, string, date time, date and time, or duration.
     private static Object[][] invalidFunctionInvocationNodeData() {
         // Subset of FEELFunctionsTest.data
         return new Object[][]{
-                // constants
-                {"contains(\"foobar\", \"ob\")", Boolean.TRUE},
-                {"contains(\"foobar\", \"of\")", Boolean.FALSE},
-                {"starts with(\"foobar\", \"of\")", Boolean.FALSE},
-                {"starts with(\"foobar\", \"fo\")", Boolean.TRUE},
-                {"ends with(\"foobar\", \"of\")", Boolean.FALSE},
-                {"ends with(\"foobar\", \"bar\")", Boolean.TRUE},
-                {"matches(\"foo\", \"[a-z]{3}\")", Boolean.TRUE},
-                {"matches(\"banana\", \"[a-z]{3}\")", Boolean.TRUE},
-                {"matches(\"two \\n lines\", \"two.*lines\")", Boolean.FALSE},
-                {"matches(\"two \\n lines\", \"two.*lines\", \"s\")", Boolean.TRUE}, // DOT_ALL flag set by "s"
-                {"matches(\"one\\ntwo\\nthree\", \"^two$\")", Boolean.FALSE},
-                {"matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")", Boolean.TRUE}, // MULTILINE flag set by "m"
-                {"matches(\"FoO\", \"foo\")", Boolean.FALSE},
-                {"matches(\"FoO\", \"foo\", \"i\")", Boolean.TRUE}, // CASE_INSENSITIVE flag set by "i"
-                {"list contains([1, 2, 3], 2)", Boolean.TRUE},
-                {"list contains([1, 2, 3], 5)", Boolean.FALSE},
-                {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Collections.singletonList(BigDecimal.valueOf(4))},
-                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                     BigDecimal.valueOf(3))},
-                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                    BigDecimal.valueOf(3))},
-                {"append( [1, 2], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                         BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"append( [], 3, 4 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"append( [1, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"append( [1, 2], null, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
-                                                            BigDecimal.valueOf(4))},
-                {"append( 0, 1, 2 )", Arrays.asList(BigDecimal.valueOf(0), BigDecimal.valueOf(1),
-                                                    BigDecimal.valueOf(2))},
-                {"concatenate( [1, 2], [3] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                             BigDecimal.valueOf(3))},
-                {"concatenate( [1, 2], 3, [4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"insert before( [1, 2, 3], 1, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
-                                                                   BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                   BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, null )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                      null, BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -3, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
-                                                                    BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -1, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                    BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
-                {"remove( [1, 2, 3], 1 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"remove( [1, 2, 3], 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"remove( [1, 2, 3], -1 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"remove( [1, 2, 3], -3 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"reverse( [1, 2, 3] )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2),
-                                                       BigDecimal.valueOf(1))},
-                {"index of( [1, 2, 3, 2], 2 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4))},
-                {"index of( [1, 2, null, null], null )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"index of( [1, 2, null, null], 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                   BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"union( [1, 2, null], 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
-                                                           BigDecimal.valueOf(4))},
-                {"union( null, 4 )", Arrays.asList(null, BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, 3, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                     BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, null, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                        null, BigDecimal.valueOf(4))},
-                {"distinct values( 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList(BigDecimal.valueOf(1),
-                                                                               BigDecimal.valueOf(2),
-                                                                               BigDecimal.valueOf(3),
-                                                                               BigDecimal.valueOf(4),
-                                                                               BigDecimal.valueOf(5))},
-                {"sort( [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                          BigDecimal.valueOf(3),
-                                                          BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( list : [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
-                                                                 BigDecimal.valueOf(3),
-                                                                 BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList("a", "b", "c", "d"
-                        , "e")},
-                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList(
-                        "a", "b", "c", "d", "e")},
-                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList(
-                        "a", "b", "c", "d", "e")},
-                {"all( true )", true},
-                {"all( false )", false},
-                {"all( [true] )", true},
-                {"all( [false] )", false},
-                {"all( true, false )", false},
-                {"all( true, true )", true},
-                {"all( [true, false] )", false},
-                {"all( [true, true] )", true},
-                {"all( [false,null,true] )", false},
-                {"all( [] )", true},
-                {"any( true )", true},
-                {"any( false )", false},
-                {"any( [true] )", true},
-                {"any( [false] )", false},
-                {"any( true, false )", true},
-                {"any( true, true )", true},
-                {"any( [true, false] )", true},
-                {"any( [true, true] )", true},
-                {"any( [false,null,true] )", true},
-                {"any( [] )", false},
+                {"number(\"1\")", 2},
+                {"a", "lower case(\"Z\")"},
+                {"string(\"11.1\")"},
+                {"duration(string(\"P1D\"))"},
+                {"contains(\"foobar\", \"ob\")"},
+                {"contains(\"foobar\", \"of\")"},
+                {"starts with(\"foobar\", \"of\")"},
+                {"starts with(\"foobar\", \"fo\")"},
+                {"ends with(\"foobar\", \"of\")"},
+                {"ends with(\"foobar\", \"bar\")"},
+                {"matches(\"foo\", \"[a-z]{3}\")"},
+                {"matches(\"banana\", \"[a-z]{3}\")"},
+                {"matches(\"two \\n lines\", \"two.*lines\")"},
+                {"matches(\"two \\n lines\", \"two.*lines\", \"s\")"}, // DOT_ALL flag set by "s"
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\")"},
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")"}, // MULTILINE flag set by "m"
+                {"matches(\"FoO\", \"foo\")"},
+                {"matches(\"FoO\", \"foo\", \"i\")"}, // CASE_INSENSITIVE flag set by "i"
+                {"list contains([1, 2, 3], 2)"},
+                {"list contains([1, 2, 3], 5)"},
+                {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )"},
+                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )"},
+                {"append( [1, 2], 3, 4 )"},
+                {"append( [], 3, 4 )"},
+                {"append( [1, 2] )"},
+                {"append( [1, 2], null, 4 )"},
+                {"append( 0, 1, 2 )"},
+                {"concatenate( [1, 2], [3] )"},
+                {"concatenate( [1, 2], 3, [4] )"},
+                {"insert before( [1, 2, 3], 1, 4 )"},
+                {"insert before( [1, 2, 3], 3, 4 )"},
+                {"insert before( [1, 2, 3], 3, null )"},
+                {"insert before( [1, 2, 3], -3, 4 )"},
+                {"insert before( [1, 2, 3], -1, 4 )"},
+                {"remove( [1, 2, 3], 1 )"},
+                {"remove( [1, 2, 3], 3 )"},
+                {"remove( [1, 2, 3], -1 )"},
+                {"remove( [1, 2, 3], -3 )"},
+                {"reverse( [1, 2, 3] )"},
+                {"index of( [1, 2, 3, 2], 2 )"},
+                {"index of( [1, 2, null, null], null )"},
+                {"index of( [1, 2, null, null], 1 )"},
+                {"union( [1, 2, 1], [2, 3], 2, 4 )"},
+                {"union( [1, 2, null], 4 )"},
+                {"union( null, 4 )"},
+                {"distinct values( [1, 2, 3, 2, 4] )"},
+                {"distinct values( [1, 2, null, 2, 4] )"},
+                {"distinct values( 1 )"},
+                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )"},
+                {"sort( [3, 1, 4, 5, 2] )"},
+                {"sort( list : [3, 1, 4, 5, 2] )"},
+                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )"},
+                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )"},
+                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )"},
+                {"all( true )"},
+                {"all( false )"},
+                {"all( [true] )"},
+                {"all( [false] )"},
+                {"all( true, false )"},
+                {"all( true, true )"},
+                {"all( [true, false] )"},
+                {"all( [true, true] )"},
+                {"all( [false,null,true] )"},
+                {"all( [] )"},
+                {"any( true )"},
+                {"any( false )"},
+                {"any( [true] )"},
+                {"any( [false] )"},
+                {"any( true, false )"},
+                {"any( true, true )"},
+                {"any( [true, false] )"},
+                {"any( [true, true] )"},
+                {"any( [false,null,true] )"},
+                {"any( [] )"},
         };
     }
 }
