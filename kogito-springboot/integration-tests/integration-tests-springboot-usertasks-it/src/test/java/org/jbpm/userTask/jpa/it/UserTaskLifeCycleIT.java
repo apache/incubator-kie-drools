@@ -287,4 +287,111 @@ public class UserTaskLifeCycleIT extends BaseUserTaskIT {
                 .hasFieldOrPropertyWithValue("source", expectedSource)
                 .hasFieldOrPropertyWithValue("target", expectedTarget);
     }
+
+    @Test
+    public void testUserTaskReassignment() {
+        var traveller = new Traveller("John", "Doe", "john.doe@example.com", "American", new Address("main street", "Boston", "10005", "US"));
+        var pid = startProcessInstance(traveller);
+
+        String taskId = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "department-managers")
+                .get(USER_TASKS_ENDPOINT)
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .extract()
+                .path("[0].id");
+
+        // Complete First Line Approval
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "department-managers")
+                .body(new TransitionInfo("complete", Map.of("approved", true)))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Completed"))
+                .body("status.terminate", equalTo("COMPLETED"))
+                .body("outputs.approved", equalTo(true));
+
+        taskId = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "john")
+                .queryParam("group", "managers")
+                .get(USER_TASKS_ENDPOINT)
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .body("[0].id", not(taskId))
+                .extract()
+                .path("[0].id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "john")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("claim"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Reserved"))
+                .body("actualOwner", equalTo("john"));
+
+        // Reassign Second Line Approval
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "john")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("reassign"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Ready"))
+                .body("actualOwner", equalTo(null));
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "jdoe")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("claim"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Reserved"))
+                .body("actualOwner", equalTo("jdoe"));
+
+        // Complete Second Line Approval
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "jdoe")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("complete", Map.of("approved", true)))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Completed"))
+                .body("status.terminate", equalTo("COMPLETED"))
+                .body("outputs.approved", equalTo(true))
+                .body("actualOwner", equalTo("jdoe"));
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/{processId}/{id}", PROCESS_ID, pid)
+                .then()
+                .statusCode(404);
+    }
 }

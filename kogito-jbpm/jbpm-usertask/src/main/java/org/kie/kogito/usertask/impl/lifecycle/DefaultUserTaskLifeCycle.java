@@ -146,6 +146,7 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
         if (user != null) {
             return Optional.of(newTransitionToken(CLAIM, ACTIVE, Map.of(PARAMETER_USER, user)));
         }
+        userTaskInstance.setActualOwner(null);
         userTaskInstance.startNotStartedDeadlines();
         userTaskInstance.startNotStartedReassignments();
         return Optional.empty();
