@@ -47,6 +47,7 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
+        withUrlParam("stringtype", "unspecified"); // temporary workaround to overcome problems with JPA and JsonB columns
 
         /*
          * Overriding default waitStrategy (LogMessageWaitStrategy) added by the parent to also wait for the mapped port to be available. This ensures that the PostgreSQLContainer is running

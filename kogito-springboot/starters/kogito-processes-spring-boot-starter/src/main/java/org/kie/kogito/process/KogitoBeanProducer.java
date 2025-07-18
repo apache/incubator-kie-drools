@@ -85,7 +85,7 @@ public class KogitoBeanProducer {
     }
 
     @Bean
-    @ConditionalOnMissingBean(WebClientOptions.class)
+    @ConditionalOnMissingBean(Vertx.class)
     Vertx vertx() {
         return Vertx.vertx();
     }
