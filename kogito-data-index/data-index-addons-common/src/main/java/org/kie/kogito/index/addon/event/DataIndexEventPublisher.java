@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.addon;
+package org.kie.kogito.index.addon.event;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -44,8 +44,12 @@ public class DataIndexEventPublisher implements EventPublisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexEventPublisher.class);
 
+    private final IndexingService indexingService;
+
     @Inject
-    IndexingService indexingService;
+    public DataIndexEventPublisher(IndexingService indexingService) {
+        this.indexingService = indexingService;
+    }
 
     @Override
     @Transactional
@@ -85,11 +89,8 @@ public class DataIndexEventPublisher implements EventPublisher {
     }
 
     @Override
+    @Transactional
     public void publish(Collection<DataEvent<?>> events) {
         events.forEach(this::publish);
-    }
-
-    protected void setIndexingService(IndexingService indexingService) {
-        this.indexingService = indexingService;
     }
 }

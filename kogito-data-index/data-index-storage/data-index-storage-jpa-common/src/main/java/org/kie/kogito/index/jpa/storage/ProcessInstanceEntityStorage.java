@@ -64,6 +64,7 @@ import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TY
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
+import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 
 @ApplicationScoped
 public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<String, ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
@@ -72,8 +73,13 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
     }
 
     @Inject
-    public ProcessInstanceEntityStorage(EntityManager em, ProcessInstanceEntityMapper mapper, Instance<JsonPredicateBuilder> jsonPredicateBuilder) {
-        super(em, ProcessInstanceEntity.class, mapper::mapToModel, Optional.ofNullable(jsonPredicateBuilder.stream().findAny().orElse(null)));
+    public ProcessInstanceEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> jsonPredicateBuilder) {
+        this(em, jsonPredicateBuilder, ProcessInstanceEntityMapper.INSTANCE);
+    }
+
+    public ProcessInstanceEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> jsonPredicateBuilder, ProcessInstanceEntityMapper mapper) {
+        super(em, ProcessInstanceEntity.class, mapper::mapToModel, Optional.ofNullable(getInstance(jsonPredicateBuilder)));
+
     }
 
     @Override

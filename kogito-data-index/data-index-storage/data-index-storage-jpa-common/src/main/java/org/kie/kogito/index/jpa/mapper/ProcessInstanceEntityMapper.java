@@ -26,9 +26,12 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
+@Mapper(suppressTimestampInGenerated = true)
 public interface ProcessInstanceEntityMapper {
+
+    ProcessInstanceEntityMapper INSTANCE = Mappers.getMapper(ProcessInstanceEntityMapper.class);
 
     MilestoneEntity mapMilestoneToEntity(Milestone mi);
 

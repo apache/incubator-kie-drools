@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.index.addon.event.DataIndexEventPublisher;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.service.IndexingService;
 import org.mockito.ArgumentCaptor;
@@ -65,8 +66,7 @@ public class DataIndexEventPublisherTest {
 
     @BeforeEach
     public void setup() {
-        dataIndexEventPublisher = new DataIndexEventPublisher();
-        dataIndexEventPublisher.setIndexingService(indexingService);
+        dataIndexEventPublisher = new DataIndexEventPublisher(indexingService);
     }
 
     @Test

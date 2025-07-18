@@ -66,8 +66,8 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
     }
 
     @Inject
-    public UserTaskInstanceEntityStorage(EntityManager em, UserTaskInstanceEntityMapper mapper) {
-        super(em, UserTaskInstanceEntity.class, mapper::mapToModel);
+    public UserTaskInstanceEntityStorage(EntityManager em) {
+        super(em, UserTaskInstanceEntity.class, UserTaskInstanceEntityMapper.INSTANCE::mapToModel);
     }
 
     @Override

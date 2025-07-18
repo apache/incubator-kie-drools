@@ -37,17 +37,22 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class JPADataIndexStorageService implements DataIndexStorageService {
 
-    @Inject
     ProcessDefinitionEntityStorage definitionStorage;
 
-    @Inject
     JobEntityStorage jobsStorage;
 
-    @Inject
     ProcessInstanceStorage processInstanceStorage;
 
-    @Inject
     UserTaskInstanceStorage userTaskInstanceStorage;
+
+    @Inject
+    public JPADataIndexStorageService(ProcessDefinitionEntityStorage definitionStorage, JobEntityStorage jobsStorage, ProcessInstanceStorage processInstanceStorage,
+            UserTaskInstanceStorage userTaskInstanceStorage) {
+        this.definitionStorage = definitionStorage;
+        this.jobsStorage = jobsStorage;
+        this.processInstanceStorage = processInstanceStorage;
+        this.userTaskInstanceStorage = userTaskInstanceStorage;
+    }
 
     @Override
     public Storage<ProcessDefinitionKey, ProcessDefinition> getProcessDefinitionStorage() {

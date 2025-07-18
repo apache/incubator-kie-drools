@@ -25,15 +25,9 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.model.JobEntity;
 import org.kie.kogito.index.model.Job;
 
-import jakarta.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractJobEntityMapperIT {
-
-    @Inject
-    JobEntityMapper mapper;
-
     Job job = new Job();
 
     JobEntity jobEntity = new JobEntity();
@@ -90,13 +84,13 @@ public abstract class AbstractJobEntityMapperIT {
 
     @Test
     void testMapToEntity() {
-        JobEntity result = mapper.mapToEntity(job);
+        JobEntity result = JobEntityMapper.INSTANCE.mapToEntity(job);
         assertThat(result).isEqualToIgnoringGivenFields(jobEntity, "$$_hibernate_tracker");
     }
 
     @Test
     void testMapToModel() {
-        Job result = mapper.mapToModel(jobEntity);
+        Job result = JobEntityMapper.INSTANCE.mapToModel(jobEntity);
         assertThat(result).isEqualToComparingFieldByField(job);
     }
 }

@@ -41,7 +41,9 @@
     <module>data-index-graphql</module>
     <module>data-index-service</module>
     <module>data-index-mutations</module>
+    <module>data-index-addons-common</module>
     <module>data-index-quarkus</module>
+    <module>data-index-springboot</module>
   </modules>
 
 </project>

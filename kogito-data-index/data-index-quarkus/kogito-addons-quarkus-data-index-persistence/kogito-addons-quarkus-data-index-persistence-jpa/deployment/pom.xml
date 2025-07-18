@@ -44,7 +44,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache-deployment</artifactId>
+      <artifactId>quarkus-hibernate-orm-deployment</artifactId>
     </dependency>
   </dependencies>
   <build>

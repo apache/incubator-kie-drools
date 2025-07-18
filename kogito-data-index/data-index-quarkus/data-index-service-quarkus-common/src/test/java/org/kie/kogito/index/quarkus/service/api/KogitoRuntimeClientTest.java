@@ -35,6 +35,8 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.service.KogitoRuntimeCommonClient;
+import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.usertask.model.CommentInfo;
@@ -44,8 +46,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.quarkus.security.credential.TokenCredential;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -100,9 +100,7 @@ public class KogitoRuntimeClientTest {
     public Vertx vertx;
 
     @Mock
-    private SecurityIdentity identityMock;
-
-    private TokenCredential tokenCredential;
+    private DataIndexAuthTokenReader authTokenReader;
 
     private KogitoRuntimeClientImpl client;
 
@@ -114,11 +112,9 @@ public class KogitoRuntimeClientTest {
 
     @BeforeEach
     public void setup() {
-        client = spy(new KogitoRuntimeClientImpl());
+        client = spy(new KogitoRuntimeClientImpl(Optional.empty(), authTokenReader, vertx));
         client.setGatewayTargetUrl(Optional.empty());
         client.addServiceWebClient(SERVICE_URL, webClientMock);
-        client.setVertx(vertx);
-        client.setIdentity(identityMock);
     }
 
     @Test
@@ -616,15 +612,13 @@ public class KogitoRuntimeClientTest {
 
     @Test
     public void testGetAuthHeader() {
-        tokenCredential = mock(TokenCredential.class);
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
-        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
 
         String token = client.getAuthHeader();
-        verify(identityMock, times(2)).getCredential(TokenCredential.class);
+        verify(authTokenReader, times(1)).readToken();
         assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
 
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(null);
+        when(authTokenReader.readToken()).thenReturn(null);
         token = client.getAuthHeader();
         assertThat(token).isEqualTo("");
     }
@@ -665,9 +659,8 @@ public class KogitoRuntimeClientTest {
     }
 
     protected void setupIdentityMock() {
-        tokenCredential = mock(TokenCredential.class);
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
-        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
+
         when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
     }
 

@@ -49,9 +49,6 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
     @Inject
     ObjectMapper jsonMapper;
 
-    @Inject
-    UserTaskInstanceEntityMapper mapper;
-
     @BeforeEach
     void setup() {
         String testId = "testId";
@@ -155,13 +152,13 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
 
     @Test
     void testMapToEntity() {
-        UserTaskInstanceEntity result = mapper.mapToEntity(userTaskInstance);
+        UserTaskInstanceEntity result = UserTaskInstanceEntityMapper.INSTANCE.mapToEntity(userTaskInstance);
         assertThat(result).isEqualToIgnoringGivenFields(userTaskInstanceEntity, "$$_hibernate_tracker");
     }
 
     @Test
     void testMapToModel() {
-        UserTaskInstance result = mapper.mapToModel(userTaskInstanceEntity);
+        UserTaskInstance result = UserTaskInstanceEntityMapper.INSTANCE.mapToModel(userTaskInstanceEntity);
         assertThat(result).isEqualToComparingFieldByField(userTaskInstance);
     }
 }

@@ -37,8 +37,6 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import jakarta.inject.Inject;
-
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,9 +46,6 @@ public abstract class AbstractProcessInstanceEntityMapperIT {
     ObjectMapper jsonMapper = new ObjectMapper();
     ProcessInstance processInstance = new ProcessInstance();
     ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
-
-    @Inject
-    ProcessInstanceEntityMapper mapper;
 
     @BeforeEach
     void setup() {
@@ -173,13 +168,13 @@ public abstract class AbstractProcessInstanceEntityMapperIT {
 
     @Test
     void testMapToEntity() {
-        ProcessInstanceEntity result = mapper.mapToEntity(processInstance);
+        ProcessInstanceEntity result = ProcessInstanceEntityMapper.INSTANCE.mapToEntity(processInstance);
         assertThat(result).usingRecursiveComparison().ignoringFieldsMatchingRegexes(".*\\$\\$_hibernate_tracker").isEqualTo(processInstanceEntity);
     }
 
     @Test
     void testMapToModel() {
-        ProcessInstance result = mapper.mapToModel(processInstanceEntity);
+        ProcessInstance result = ProcessInstanceEntityMapper.INSTANCE.mapToModel(processInstanceEntity);
         assertThat(result).usingRecursiveComparison().isEqualTo(processInstance);
     }
 

@@ -34,7 +34,7 @@ public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> {
     }
 
     @Inject
-    public JobEntityStorage(EntityManager em, JobEntityMapper mapper) {
-        super(em, Job.class, JobEntity.class, mapper::mapToModel, mapper::mapToEntity, AbstractEntity::getId);
+    public JobEntityStorage(EntityManager em) {
+        super(em, Job.class, JobEntity.class, JobEntityMapper.INSTANCE::mapToModel, JobEntityMapper.INSTANCE::mapToEntity, AbstractEntity::getId);
     }
 }

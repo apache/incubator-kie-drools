@@ -21,13 +21,17 @@ package org.kie.kogito.index.quarkus.service.api;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.CommonUtils;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.model.*;
 import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.service.KogitoRuntimeCommonClient;
+import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.kie.kogito.usertask.model.CommentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
@@ -43,6 +48,7 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 
 import static java.lang.String.format;
@@ -77,6 +83,15 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public static final String DELETE_USER_TASK_INSTANCE_ATTACHMENT_PATH = "/usertasks/instance/%s/attachments/%s";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
+
+    KogitoRuntimeClientImpl() {
+        this(null, null, null);
+    }
+
+    @Inject
+    public KogitoRuntimeClientImpl(@ConfigProperty(name = "kogito.dataindex.gateway.url") Optional<String> gatewayTargetUrl, DataIndexAuthTokenReader authTokenReader, Vertx vertx) {
+        super(gatewayTargetUrl, authTokenReader, vertx);
+    }
 
     @Override
     public CompletableFuture<JsonNode> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {

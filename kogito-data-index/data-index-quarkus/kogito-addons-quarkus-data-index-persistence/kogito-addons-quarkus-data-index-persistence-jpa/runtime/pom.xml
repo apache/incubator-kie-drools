@@ -42,6 +42,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-storage-jpa</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

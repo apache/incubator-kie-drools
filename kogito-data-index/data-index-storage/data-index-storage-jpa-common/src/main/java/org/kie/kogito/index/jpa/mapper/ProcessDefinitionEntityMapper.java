@@ -27,12 +27,15 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
+@Mapper(suppressTimestampInGenerated = true)
 public interface ProcessDefinitionEntityMapper {
+
+    ProcessDefinitionEntityMapper INSTANCE = Mappers.getMapper(ProcessDefinitionEntityMapper.class);
 
     ProcessDefinitionEntity mapToEntity(ProcessDefinition pd);
 

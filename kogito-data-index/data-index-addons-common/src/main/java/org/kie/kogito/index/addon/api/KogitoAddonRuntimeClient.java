@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.index.api.ExecuteArgs;
@@ -38,8 +38,9 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.Timer;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.quarkus.service.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.service.KogitoRuntimeCommonClient;
+import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.Process;
@@ -52,17 +53,15 @@ import org.kie.kogito.svg.ProcessSvgService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
+import io.vertx.core.Vertx;
 
 import static java.util.stream.Collectors.toMap;
+import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
 import static org.kie.kogito.jackson.utils.JsonObjectUtils.convertValue;
 import static org.kie.kogito.jackson.utils.JsonObjectUtils.fromString;
 import static org.kie.kogito.jackson.utils.JsonObjectUtils.fromValue;
 
-@ApplicationScoped
-public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient implements KogitoRuntimeClient {
+public class KogitoAddonRuntimeClient extends KogitoRuntimeCommonClient implements KogitoRuntimeClient {
 
     private static String SUCCESSFULLY_OPERATION_MESSAGE = "Successfully performed: %s";
 
@@ -74,19 +73,23 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
 
     private Application application;
 
-    @Inject
-    public KogitoAddonRuntimeClientImpl(Instance<ProcessSvgService> processSvgService,
-            SourceFilesProvider sourceFilesProvider,
-            Instance<Processes> processesInstance,
-            Instance<Application> application) {
-        this.processSvgService = processSvgService.isResolvable() ? processSvgService.get() : null;
-        this.sourceFilesProvider = sourceFilesProvider;
-        this.processes = processesInstance.isResolvable() ? processesInstance.get() : null;
-        this.application = application.isResolvable() ? application.get() : null;
-    }
+    private Executor managedExecutor;
 
-    @Inject
-    ManagedExecutor managedExecutor;
+    public KogitoAddonRuntimeClient(Optional<String> gatewayUrl,
+            DataIndexAuthTokenReader authTokenReader,
+            Vertx vertx,
+            Iterable<ProcessSvgService> processSvgServices,
+            Iterable<SourceFilesProvider> sourceFilesProviders,
+            Iterable<Processes> processesInstance,
+            Iterable<Application> application,
+            Executor managedExecutor) {
+        super(gatewayUrl, authTokenReader, vertx);
+        this.processSvgService = getInstance(processSvgServices);
+        this.sourceFilesProvider = getInstance(sourceFilesProviders);
+        this.processes = getInstance(processesInstance);
+        this.application = getInstance(application);
+        this.managedExecutor = managedExecutor;
+    }
 
     static <T> CompletableFuture<T> throwUnsupportedException() {
         return CompletableFuture.failedFuture(new UnsupportedOperationException("Unsupported operation using Data Index addon"));
@@ -162,6 +165,9 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
 
     @Override
     public CompletableFuture<String> getProcessDefinitionSourceFileContent(String serviceURL, String processId) {
+        if (sourceFilesProvider == null) {
+            return CompletableFuture.completedFuture(null);
+        }
         return CompletableFuture.supplyAsync(() -> sourceFilesProvider.getProcessSourceFile(processId)
                 .map(sourceFile -> {
                     try {

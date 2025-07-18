@@ -30,6 +30,8 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
+import static org.kie.kogito.index.DependencyInjectionUtils.getInstance;
+
 @ApplicationScoped
 public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefinitionKey, ProcessDefinitionEntity, ProcessDefinition> {
 
@@ -37,9 +39,13 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
     }
 
     @Inject
-    public ProcessDefinitionEntityStorage(EntityManager em, ProcessDefinitionEntityMapper mapper, Instance<JsonPredicateBuilder> predicateBuilder) {
-        super(em, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
-                e.getVersion()), Optional.ofNullable(predicateBuilder.stream().findAny().orElse(null)));
+    public ProcessDefinitionEntityStorage(EntityManager em, Instance<JsonPredicateBuilder> predicateBuilder) {
+        this(em, predicateBuilder, ProcessDefinitionEntityMapper.INSTANCE);
+    }
+
+    public ProcessDefinitionEntityStorage(EntityManager em, Iterable<JsonPredicateBuilder> predicateBuilder, ProcessDefinitionEntityMapper mapper) {
+        super(em, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper.INSTANCE::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
+                e.getVersion()), Optional.ofNullable(getInstance(predicateBuilder)));
     }
 
 }

@@ -27,8 +27,6 @@ import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
 
-import jakarta.inject.Inject;
-
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -38,9 +36,6 @@ public abstract class AbstractProcessDefinitionEntityMapperIT {
 
     ProcessDefinition pd = new ProcessDefinition();
     ProcessDefinitionEntity entity = new ProcessDefinitionEntity();
-
-    @Inject
-    ProcessDefinitionEntityMapper mapper;
 
     @BeforeEach
     void setup() {
@@ -88,13 +83,13 @@ public abstract class AbstractProcessDefinitionEntityMapperIT {
 
     @Test
     void testMapToEntity() {
-        ProcessDefinitionEntity result = mapper.mapToEntity(pd);
+        ProcessDefinitionEntity result = ProcessDefinitionEntityMapper.INSTANCE.mapToEntity(pd);
         assertThat(result).usingRecursiveComparison().ignoringFieldsMatchingRegexes(".*\\$\\$_hibernate_tracker").isEqualTo(entity);
     }
 
     @Test
     void testMapToModel() {
-        ProcessDefinition result = mapper.mapToModel(entity);
+        ProcessDefinition result = ProcessDefinitionEntityMapper.INSTANCE.mapToModel(entity);
         assertThat(result).usingRecursiveComparison().isEqualTo(pd);
     }
 

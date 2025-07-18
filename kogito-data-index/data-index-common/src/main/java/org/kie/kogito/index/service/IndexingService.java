@@ -69,8 +69,12 @@ public class IndexingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
 
-    @Inject
     DataIndexStorageService manager;
+
+    @Inject
+    public IndexingService(DataIndexStorageService manager) {
+        this.manager = manager;
+    }
 
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
         ProcessInstanceStorage storage = manager.getProcessInstanceStorage();

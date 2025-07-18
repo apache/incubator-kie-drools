@@ -19,10 +19,12 @@
 package org.kie.kogito.index.addon.api;
 
 import java.nio.Buffer;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +32,9 @@ import org.kie.kogito.Application;
 import org.kie.kogito.index.addon.api.models.TestModel;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.model.*;
-import org.kie.kogito.index.quarkus.service.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.service.KogitoRuntimeCommonClient;
+import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.ProcessError;
@@ -51,8 +54,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.quarkus.security.credential.TokenCredential;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -61,8 +62,6 @@ import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
-
-import jakarta.enterprise.inject.Instance;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,9 +85,7 @@ public class KogitoAddonRuntimeClientImplTest {
     public Vertx vertx;
 
     @Mock
-    private SecurityIdentity identityMock;
-
-    private TokenCredential tokenCredential;
+    private DataIndexAuthTokenReader authTokenReader;
 
     @Mock
     private WebClient webClientMock;
@@ -98,19 +95,13 @@ public class KogitoAddonRuntimeClientImplTest {
 
     public static final String NODE_ID_ERROR = "processInstanceIdError";
 
-    private KogitoAddonRuntimeClientImpl client;
-
-    @Mock
-    Instance<ProcessSvgService> processSvgServiceInstance;
+    private KogitoAddonRuntimeClient client;
 
     @Mock
     private ProcessSvgService processSvgService;
 
     @Mock
     private SourceFilesProvider sourceFilesProvider;
-
-    @Mock
-    Instance<Processes> processesInstance;
 
     @Mock
     private Processes processes;
@@ -127,9 +118,6 @@ public class KogitoAddonRuntimeClientImplTest {
     @Mock
     private ProcessError error;
 
-    @Mock
-    Instance<Application> applicationInstance;
-
     TestModel model;
 
     @Mock
@@ -138,10 +126,6 @@ public class KogitoAddonRuntimeClientImplTest {
     @BeforeEach
     public void setup() {
         model = spy(new TestModel());
-        lenient().when(processSvgServiceInstance.isResolvable()).thenReturn(true);
-        lenient().when(processSvgServiceInstance.get()).thenReturn(processSvgService);
-        lenient().when(processesInstance.isResolvable()).thenReturn(true);
-        lenient().when(processesInstance.get()).thenReturn(processes);
         lenient().when(processes.processById(anyString())).thenReturn(process);
         lenient().when(process.createModel()).thenReturn(model);
         lenient().when(process.createInstance(model)).thenReturn(processInstance);
@@ -155,15 +139,10 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(error.failedNodeId()).thenReturn(NODE_ID_ERROR);
         lenient().when(error.errorMessage()).thenReturn("Test error message");
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
-        lenient().when(applicationInstance.isResolvable()).thenReturn(true);
-        lenient().when(applicationInstance.get()).thenReturn(application);
-        //lenient().when(model.toMap()).thenReturn(Map.of("name", "javierito"));
 
-        client = spy(new KogitoAddonRuntimeClientImpl(processSvgServiceInstance, sourceFilesProvider, processesInstance, applicationInstance));
-        client.setGatewayTargetUrl(Optional.empty());
+        client = spy(new KogitoAddonRuntimeClient(Optional.empty(), authTokenReader, Vertx.vertx(), List.of(processSvgService), List.of(sourceFilesProvider), List.of(processes), List.of(application),
+                ManagedExecutor.builder().build()));
         client.addServiceWebClient(SERVICE_URL, webClientMock);
-        client.setVertx(vertx);
-        client.setIdentity(identityMock);
     }
 
     private org.kie.kogito.process.ProcessInstance mockProcessInstanceStatusActive() {
@@ -346,15 +325,13 @@ public class KogitoAddonRuntimeClientImplTest {
 
     @Test
     public void testGetAuthHeader() {
-        tokenCredential = mock(TokenCredential.class);
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
-        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
 
         String token = client.getAuthHeader();
-        verify(identityMock, times(2)).getCredential(TokenCredential.class);
+        verify(authTokenReader, times(1)).readToken();
         assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
 
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(null);
+        when(authTokenReader.readToken()).thenReturn(null);
         token = client.getAuthHeader();
         assertThat(token).isEqualTo("");
     }
@@ -425,9 +402,7 @@ public class KogitoAddonRuntimeClientImplTest {
     }
 
     protected void setupIdentityMock() {
-        tokenCredential = mock(TokenCredential.class);
-        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
-        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
         when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
     }
 }

@@ -22,9 +22,12 @@ import org.kie.kogito.index.jpa.model.JobEntity;
 import org.kie.kogito.index.model.Job;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
+@Mapper(suppressTimestampInGenerated = true)
 public interface JobEntityMapper {
+
+    JobEntityMapper INSTANCE = Mappers.getMapper(JobEntityMapper.class);
 
     JobEntity mapToEntity(Job job);
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.quarkus.service.api;
+package org.kie.kogito.index.service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,14 +26,11 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.security.credential.TokenCredential;
-import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -42,11 +39,9 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
-import jakarta.inject.Inject;
-
 import static java.lang.String.format;
 
-public class KogitoRuntimeCommonClient {
+public abstract class KogitoRuntimeCommonClient {
 
     public static final String CANCEL_JOB_PATH = "/jobs/%s";
     public static final String RESCHEDULE_JOB_PATH = "/jobs/%s";
@@ -57,12 +52,19 @@ public class KogitoRuntimeCommonClient {
 
     protected Vertx vertx;
 
-    protected SecurityIdentity identity;
+    protected DataIndexAuthTokenReader authTokenReader;
 
     protected Map<String, WebClient> serviceWebClientMap = new HashMap<>();
 
-    @ConfigProperty(name = "kogito.dataindex.gateway.url")
     protected Optional<String> gatewayTargetUrl;
+
+    public KogitoRuntimeCommonClient(Optional<String> gatewayTargetUrl,
+            DataIndexAuthTokenReader authTokenReader,
+            Vertx vertx) {
+        this.gatewayTargetUrl = gatewayTargetUrl;
+        this.authTokenReader = authTokenReader;
+        this.vertx = vertx;
+    }
 
     public void setGatewayTargetUrl(Optional<String> gatewayTargetUrl) {
         this.gatewayTargetUrl = gatewayTargetUrl;
@@ -152,20 +154,12 @@ public class KogitoRuntimeCommonClient {
     }
 
     public String getAuthHeader() {
-        if (identity != null && identity.getCredential(TokenCredential.class) != null) {
-            return "Bearer " + identity.getCredential(TokenCredential.class).getToken();
+        String authToken = authTokenReader.readToken();
+
+        if (authToken == null) {
+            return "";
         }
-        return "";
-    }
 
-    @Inject
-    public void setIdentity(SecurityIdentity identity) {
-        this.identity = identity;
+        return "Bearer " + authToken;
     }
-
-    @Inject
-    public void setVertx(Vertx vertx) {
-        this.vertx = vertx;
-    }
-
 }
