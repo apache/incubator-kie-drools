@@ -77,6 +77,7 @@
     <version.io.netty>4.1.122.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.10</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
+    <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
@@ -1221,6 +1222,12 @@
         <artifactId>archunit-junit5</artifactId>
         <version>${version.archunit.junit5}</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${version.org.apache.kafka}</version>
       </dependency>
     </dependencies>
 
