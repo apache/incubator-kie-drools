@@ -18,6 +18,8 @@
  */
 package io.quarkus.restclient.runtime;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -30,8 +32,11 @@ import io.quarkus.arc.InstanceHandle;
 
 public class RestClientBuilderFactory extends RestClientBase {
 
+    private String configKey;
+
     public RestClientBuilderFactory(Class<?> proxyType, String baseUriFromAnnotation, String configKey) {
         super(proxyType, baseUriFromAnnotation, configKey, new Class[0]);
+        this.configKey = configKey;
     }
 
     public static RestClientBuilder build(Class<?> restClass) {
@@ -63,4 +68,32 @@ public class RestClientBuilderFactory extends RestClientBase {
         return builder;
     }
 
+    private final static String URL_PROPERTY_QUOTES = "quarkus.rest-client.\"%s\".url";
+    private final static String URL_PROPERTY = "quarkus.rest-client.%s.url";
+
+    private static Optional<String> getProperty(String property, String configKey) {
+        return ConfigProvider.getConfig().getOptionalValue(String.format(property, configKey), String.class);
+    }
+
+    @Override
+    protected void configureBaseUrl(RestClientBuilder builder) {
+        oneOf(getProperty(URL_PROPERTY_QUOTES, configKey), getProperty(URL_PROPERTY, configKey))
+                .ifPresentOrElse(baseUrl -> {
+                    try {
+                        builder.baseUrl(new URL(baseUrl));
+                    } catch (MalformedURLException e) {
+                        throw new IllegalArgumentException("The value of URL property was invalid " + baseUrl, e);
+                    }
+                }, () -> super.configureBaseUrl(builder));
+    }
+
+    @SafeVarargs
+    private static <T> Optional<T> oneOf(Optional<T>... optionals) {
+        for (Optional<T> o : optionals) {
+            if (o.isPresent()) {
+                return o;
+            }
+        }
+        return Optional.empty();
+    }
 }
