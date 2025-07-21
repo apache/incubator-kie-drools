@@ -38,7 +38,7 @@
     <version.io.quarkus>3.20.1</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>3.4.7</version.org.springframework.boot>
-    <version.org.apache.kafka>3.9.0</version.org.apache.kafka>
+    <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
     <version.org.bouncycastle.bc.jdk18on>1.80</version.org.bouncycastle.bc.jdk18on>
 

@@ -44,8 +44,19 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-messaging-kafka</artifactId>
+      <exclusions>
+        <!-- Overriding kafka-clients to fix a vulnerability.
+             This exclusion can be removed when Quarkus will contain kafka-clients in at least version 3.9.1. -->
+        <exclusion>
+          <groupId>org.apache.kafka</groupId>
+          <artifactId>kafka-clients</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+    </dependency>
     <!-- Needed to trick DevServices into running a PostgreSQL instance for TrustyService -->
     <!-- This dependency handles starting up Databases for DevServices in DevMode -->
     <dependency>
