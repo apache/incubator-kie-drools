@@ -93,7 +93,7 @@ class JavaRuleFlowProcessValidator extends RuleFlowProcessValidator {
                 .parse("import org.kie.kogito.internal.process.runtime.KogitoProcessContext;\n" +
                         "import org.jbpm.process.instance.impl.Action;\n" +
                         " class Test {\n" +
-                        "    Action action = kcontext -> {" + droolsAction.getConsequence() + "};\n" +
+                        "    Action action = kcontext -> {" + droolsAction.getConsequence() + "\n};\n" +
                         "}");
         if (parse.isSuccessful()) {
             CompilationUnit unit = parse.getResult().orElseThrow();

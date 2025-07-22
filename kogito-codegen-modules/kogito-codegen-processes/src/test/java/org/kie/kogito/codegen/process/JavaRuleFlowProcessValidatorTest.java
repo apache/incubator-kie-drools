@@ -27,6 +27,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -34,6 +35,7 @@ import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.validation.ValidationException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 public class JavaRuleFlowProcessValidatorTest {
 
@@ -100,4 +102,34 @@ public class JavaRuleFlowProcessValidatorTest {
                 .isThrownBy(() -> validator.validate(process))
                 .withMessageContaining(message);
     }
+
+    @Test
+    public void testScriptWithTrailingCommentLine() {
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("demo.orders");
+        factory
+                .variable("order", new ObjectDataType("com.myspace.demo.Order"))
+                .variable("approver", new ObjectDataType("String"))
+                .name("orders")
+                .packageName("com.myspace.demo")
+                .dynamic(false)
+                .version("1.0")
+                .startNode(one)
+                .name("start")
+                .done()
+                .actionNode(two)
+                .name("Dump order 1")
+                .action("java", "System.out.println(\"test\");\n// this is a comment")
+                .done()
+                .endNode(three)
+                .name("end")
+                .terminate(false)
+                .done()
+                .connection(one, two)
+                .connection(two, three);
+        RuleFlowProcess process = factory.getProcess();
+        ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, null);
+        assertThatNoException()
+                .isThrownBy(() -> validator.validate(process));
+    }
+
 }
