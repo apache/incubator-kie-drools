@@ -29,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.runtime.process.EventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.signal.ProcessInstanceResolver;
 import org.kie.kogito.signal.SignalManagerHub;
@@ -54,9 +55,13 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
         // we signal memory first
         List<String> idList = new ArrayList<>();
         listeners.getOrDefault(eventType, emptyList()).forEach(eventListener -> {
-            eventListener.signalEvent(eventType, payload);
             if (eventListener instanceof KogitoProcessInstance kogitoProcessInstance) {
                 idList.add(kogitoProcessInstance.getId());
+                ProcessInstance<?> processInstance = kogitoProcessInstance.unwrap();
+                // this will enforce access to the lock mechanism logic.
+                processInstance.send(SignalFactory.of(eventType, processInstance));
+            } else {
+                eventListener.signalEvent(eventType, payload);
             }
         });
 
