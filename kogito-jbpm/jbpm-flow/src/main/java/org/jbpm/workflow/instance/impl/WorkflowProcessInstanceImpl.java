@@ -213,10 +213,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public void removeNodeInstance(final NodeInstance nodeInstance) {
-        if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
-            getKnowledgeRuntime().delete(
-                    getKnowledgeRuntime().getFactHandle(nodeInstance));
-        }
         this.nodeInstances.remove(nodeInstance);
     }
 
@@ -341,9 +337,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: "
                     + node.getClass());
-        }
-        if (nodeInstance.isInversionOfControl()) {
-            getKnowledgeRuntime().insert(nodeInstance);
         }
         return nodeInstance;
     }

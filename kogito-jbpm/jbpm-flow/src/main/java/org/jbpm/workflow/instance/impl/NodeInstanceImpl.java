@@ -180,10 +180,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
 
-    public boolean isInversionOfControl() {
-        return false;
-    }
-
     @Override
     public CancelType getCancelType() {
         return cancelType;

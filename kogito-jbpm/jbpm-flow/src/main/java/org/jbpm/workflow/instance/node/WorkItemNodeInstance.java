@@ -54,7 +54,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.WorkItem;
@@ -127,12 +126,6 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         this.workItem.setNodeInstance(this);
     }
 
-    @Override
-    public boolean isInversionOfControl() {
-        // TODO WorkItemNodeInstance.isInversionOfControl
-        return false;
-    }
-
     public void internalRegisterWorkItem() {
         ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
     }
@@ -174,25 +167,20 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     private void processWorkItemHandler(Runnable handler) {
-        if (isInversionOfControl()) {
-            ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
-                    .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
-        } else {
-            try {
-                handler.run();
-            } catch (KogitoWorkItemHandlerNotFoundException wihnfe) {
-                getProcessInstance().setState(STATE_ABORTED);
-                throw wihnfe;
-            } catch (ProcessWorkItemHandlerException handlerException) {
-                if (triggerCount++ < handlerException.getRetries() + 1) {
-                    this.workItemId = workItem.getStringId();
-                    handleWorkItemHandlerException(handlerException, workItem);
-                } else {
-                    throw handlerException;
-                }
-            } catch (Exception e) {
-                handleException(e);
+        try {
+            handler.run();
+        } catch (KogitoWorkItemHandlerNotFoundException wihnfe) {
+            getProcessInstance().setState(STATE_ABORTED);
+            throw wihnfe;
+        } catch (ProcessWorkItemHandlerException handlerException) {
+            if (triggerCount++ < handlerException.getRetries() + 1) {
+                this.workItemId = workItem.getStringId();
+                handleWorkItemHandlerException(handlerException, workItem);
+            } else {
+                throw handlerException;
             }
+        } catch (Exception e) {
+            handleException(e);
         }
     }
 
@@ -287,12 +275,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
 
         internalRemoveWorkItem();
-        if (isInversionOfControl()) {
-            KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-            kruntime.update(kruntime.getFactHandle(this), this);
-        } else {
-            triggerCompleted();
-        }
+        triggerCompleted();
+
     }
 
     @Override
