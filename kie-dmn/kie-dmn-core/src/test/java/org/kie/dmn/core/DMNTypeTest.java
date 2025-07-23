@@ -33,7 +33,8 @@ import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;

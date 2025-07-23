@@ -126,7 +126,7 @@ public class JavadocTest extends BaseVariantTest {
         assertJavadoc(cu, "Day", "DMNType{ https://www.omg.org/spec/DMN/20240513/FEEL/ : number }");
         assertJavadoc(cu, "Hour", "DMNType{ https://www.omg.org/spec/DMN/20240513/FEEL/ : number }");
         assertJavadoc(cu, "Minute", "DMNType{ https://www.omg.org/spec/DMN/20240513/FEEL/ : number }");
-        assertJavadoc(cu, "Second", "DMNType{ https://www.omg.org/spec/DMN/20240513\\\\\\\\\\/FEEL/ : number }");
+        assertJavadoc(cu, "Second", "DMNType{ https://www.omg.org/spec/DMN/20240513/FEEL/ : number }");
     }
 
     private void assertJavadoc(CompilationUnit cu, String field, String expectedJavadocComment) {
