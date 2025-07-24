@@ -24,7 +24,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+
 import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
 
@@ -53,6 +57,13 @@ public class RestWorkItemHandlerUtils {
         } else {
             return param instanceof Collection ? ((Collection<?>) param).stream().filter(Objects::nonNull).map(p -> getClassParam(p, clazz, instances)).collect(Collectors.toList())
                     : Collections.singletonList(getClassParam(param, clazz, instances));
+        }
+    }
+
+    public static void checkStatusCode(HttpResponse<Buffer> response) {
+        int statusCode = response.statusCode();
+        if (statusCode < 200 || statusCode >= 300) {
+            throw new WorkItemExecutionException(Integer.toString(statusCode), "Request failed with message: " + response.statusMessage());
         }
     }
 

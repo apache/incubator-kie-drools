@@ -41,7 +41,6 @@ import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
-import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
@@ -187,11 +186,6 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)
                 ? sendJson(request, bodyBuilder.apply(parameters), requestTimeout)
                 : send(request, requestTimeout);
-        int statusCode = response.statusCode();
-        if (statusCode < 200 || statusCode >= 300) {
-            throw new WorkItemExecutionException(Integer.toString(statusCode), "Request for endpoint " + endPoint + " failed with message: " + response.statusMessage());
-        }
-
         return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo))));
     }
 

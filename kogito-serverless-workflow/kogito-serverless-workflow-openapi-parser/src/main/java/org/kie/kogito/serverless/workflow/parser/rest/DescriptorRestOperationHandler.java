@@ -98,7 +98,8 @@ public class DescriptorRestOperationHandler extends OpenAPITypeHandler {
                                         new MethodCallExpr(ConversionUtils.class.getCanonicalName() + ".concatPaths")
                                                 .addArgument(new NameExpr("calculatedKey")).addArgument(new StringLiteralExpr(openAPIDescriptor.getPath()))))))
                 .workParameter(RestWorkItemHandler.METHOD, openAPIDescriptor.getMethod())
-                .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()));
+                .workParameter(RestWorkItemHandler.PARAMS_DECORATOR, new CollectionParamsDecoratorSupplier(openAPIDescriptor.getHeaderParams(), openAPIDescriptor.getQueryParams()))
+                .workParameter(RestWorkItemHandler.RESULT_HANDLER, new JsonNodeResultHandlerSupplier());
 
     }
 

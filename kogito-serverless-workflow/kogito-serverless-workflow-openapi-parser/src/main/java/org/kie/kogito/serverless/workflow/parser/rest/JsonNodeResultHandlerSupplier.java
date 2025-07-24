@@ -16,29 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process.dynamic;
+package org.kie.kogito.serverless.workflow.parser.rest;
 
-import java.util.Map;
+import java.util.function.Supplier;
 
-import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
+import org.kogito.workitem.rest.resulthandlers.JsonNodeResultHandler;
 
-import io.vertx.mutiny.core.buffer.Buffer;
-import io.vertx.mutiny.ext.web.client.HttpResponse;
+import com.github.javaparser.ast.expr.Expression;
 
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
+import static org.jbpm.compiler.canonical.descriptors.ExpressionUtils.getObjectCreationExpr;
 
-public class WorkItemHandlerResultHolder implements RestWorkItemHandlerResult {
+public class JsonNodeResultHandlerSupplier extends JsonNodeResultHandler implements Supplier<Expression> {
 
-    private Map<String, Object> result;
+    private final Expression expression = getObjectCreationExpr(JsonNodeResultHandler.class);
 
     @Override
-    public Object apply(HttpResponse<Buffer> buffer, Class<?> clazz) {
-        checkStatusCode(buffer);
-        result = buffer.bodyAsJson(Map.class);
-        return result;
-    }
-
-    public Map<String, Object> getResult() {
-        return result;
+    public Expression get() {
+        return expression;
     }
 }

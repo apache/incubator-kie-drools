@@ -23,10 +23,13 @@ import java.util.Map;
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
+
 public class DefaultRestWorkItemHandlerResult implements RestWorkItemHandlerResult {
 
     @Override
     public Object apply(HttpResponse<Buffer> response, Class<?> target) {
+        checkStatusCode(response);
         return target == null ? response.bodyAsJson(Map.class) : response.bodyAsJson(target);
     }
 }

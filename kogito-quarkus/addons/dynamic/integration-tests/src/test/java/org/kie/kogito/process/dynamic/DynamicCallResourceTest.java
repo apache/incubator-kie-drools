@@ -136,7 +136,7 @@ public class DynamicCallResourceTest {
                 .post("/_dynamic/dynamicWait/" + id + "/rest")
                 .then()
                 .statusCode(404)
-                .body("message", containsString("endpoint invalid-endpoint-format failed"));
+                .body("message", containsString("failed"));
     }
 
     @Test

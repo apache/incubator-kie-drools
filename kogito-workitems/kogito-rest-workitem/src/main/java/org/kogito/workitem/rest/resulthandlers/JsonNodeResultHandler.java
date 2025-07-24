@@ -16,29 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process.dynamic;
+package org.kogito.workitem.rest.resulthandlers;
 
-import java.util.Map;
-
-import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 
-import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
-
-public class WorkItemHandlerResultHolder implements RestWorkItemHandlerResult {
-
-    private Map<String, Object> result;
-
+public class JsonNodeResultHandler implements RestWorkItemHandlerResult {
     @Override
-    public Object apply(HttpResponse<Buffer> buffer, Class<?> clazz) {
-        checkStatusCode(buffer);
-        result = buffer.bodyAsJson(Map.class);
-        return result;
-    }
-
-    public Map<String, Object> getResult() {
-        return result;
+    public Object apply(HttpResponse<Buffer> t, Class<?> u) {
+        return u == null ? t.bodyAsJson(JsonNode.class) : t.bodyAsJson(u);
     }
 }
