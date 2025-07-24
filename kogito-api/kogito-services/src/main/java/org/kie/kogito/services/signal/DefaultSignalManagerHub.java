@@ -59,7 +59,7 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
                 idList.add(kogitoProcessInstance.getId());
                 ProcessInstance<?> processInstance = kogitoProcessInstance.unwrap();
                 // this will enforce access to the lock mechanism logic.
-                processInstance.send(SignalFactory.of(eventType, processInstance));
+                processInstance.send(SignalFactory.of(eventType, payload));
             } else {
                 eventListener.signalEvent(eventType, payload);
             }
