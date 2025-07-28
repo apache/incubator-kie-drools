@@ -28,8 +28,8 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>data-index-addons-common-springboot</artifactId>
-  <name>Kogito Apps :: Data Index Add-Ons SpringBoot Common</name>
+  <artifactId>data-index-common-addons-springboot</artifactId>
+  <name>Kogito Apps :: Kogito Data Index SpringBoot Add-Ons Common</name>
 
   <properties>
     <java.module.name>org.kie.kogito.index.springboot.addons.common</java.module.name>
@@ -42,7 +42,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-addons-common</artifactId>
+      <artifactId>data-index-common-addons</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

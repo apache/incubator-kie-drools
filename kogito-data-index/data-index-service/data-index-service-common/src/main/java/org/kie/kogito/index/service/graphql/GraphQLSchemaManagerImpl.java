@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.json.DataIndexParsingException;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.DataIndexServiceException;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.StorageFetcher;
 import org.reactivestreams.Publisher;
 
@@ -36,15 +38,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.scalars.ExtendedScalars;
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.GraphQLInputObjectType;
-import graphql.schema.GraphQLSchema;
+import graphql.schema.*;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -60,6 +60,17 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     private static final String JOB_UPDATED = "JobUpdated";
     private static final String JOB_ADDED = "JobAdded";
 
+    GraphQLSchemaManagerImpl() {
+        this(null, null, null);
+        // Test constructor
+    }
+
+    @Inject
+    public GraphQLSchemaManagerImpl(DataIndexStorageService cacheService, GraphQLScalarType dateTimeScalarType,
+            KogitoRuntimeClient dataIndexApiExecutor) {
+        super(cacheService, dateTimeScalarType, dataIndexApiExecutor);
+    }
+
     @Override
     @PostConstruct
     public void setup() {
@@ -72,7 +83,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     @Override
     public GraphQLSchema createSchema() {
         TypeDefinitionRegistry typeDefinitionRegistry = new TypeDefinitionRegistry();
-        typeDefinitionRegistry.merge(loadSchemaDefinitionFile("basic.schema.graphqls"));
+        typeDefinitionRegistry.merge(loadSchemaDefinitionFile("graphql/basic.schema.graphqls"));
         typeDefinitionRegistry.merge(loadSchemaDefinitionFile("domain.schema.graphqls"));
         addCountQueries(typeDefinitionRegistry);
         addJsonQueries(typeDefinitionRegistry);

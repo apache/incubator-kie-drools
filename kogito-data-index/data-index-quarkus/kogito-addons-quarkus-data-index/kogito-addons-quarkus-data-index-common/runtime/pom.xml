@@ -43,6 +43,10 @@
           <groupId>org.kie.kogito</groupId>
           <artifactId>data-index-graphql-quarkus</artifactId>
          </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>data-index-graphql-addons</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -33,8 +33,12 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class GraphQLInstrumentation extends SimpleInstrumentation {
 
-    @Inject
     GraphQLSchemaManager manager;
+
+    @Inject
+    public GraphQLInstrumentation(GraphQLSchemaManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters, InstrumentationState instrumentationState) {

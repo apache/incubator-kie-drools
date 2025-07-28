@@ -19,22 +19,27 @@
     under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>data-index-springboot</artifactId>
-    <version>999-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>data-index</artifactId>
+        <groupId>org.kie.kogito</groupId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie</groupId>
-  <artifactId>kogito-addons-springboot-data-index-persistence</artifactId>
-  <name>Kogito Apps :: Kogito Addons SpringBoot Data Index Persistence (Parent)</name>
-  <packaging>pom</packaging>
+    <artifactId>data-index-graphql-addons</artifactId>
+    <name>Kogito Apps :: Data Index Add-ons GraphQL</name>
 
-  <modules>
-    <module>kogito-addons-springboot-data-index-persistence-jpa-parent</module>
-  </modules>
+    <properties>
+        <java.module.name>org.kie.kogito.index.addons.graphql</java.module.name>
+    </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>data-index-graphql</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -52,7 +52,7 @@ import static org.kie.kogito.jobs.service.events.JobDataEvent.JOB_EVENT_TYPE;
 @Alternative
 public class EventPublisherJobStreams implements JobEventPublisher {
 
-    public static final String DATA_INDEX_EVENT_PUBLISHER = "org.kie.kogito.index.addon.DataIndexEventPublisher";
+    public static final String DATA_INDEX_EVENT_PUBLISHER = "org.kie.kogito.index.addon.event.DataIndexEventPublisher";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventPublisherJobStreams.class);
 

@@ -75,7 +75,7 @@ public abstract class AbstractKogitoAddonsQuarkusDataIndexProcessor extends OneO
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
     public void nativeResources(BuildProducer<NativeImageResourceBuildItem> resource,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass) {
-        resource.produce(new NativeImageResourceBuildItem("basic.schema.graphqls"));
+        resource.produce(new NativeImageResourceBuildItem("graphql/basic.schema.graphqls"));
         resource.produce(new NativeImageResourceBuildItem("io/vertx/ext/web/handler/graphiql/index.html"));
         reflectiveHierarchy(Node.class, reflectiveHierarchyClass);
         reflectiveHierarchy(ProcessDefinition.class, reflectiveHierarchyClass);

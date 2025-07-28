@@ -32,13 +32,13 @@
   <name>Kogito Apps :: Kogito Addons SpringBoot Data Index Persistence JPA</name>
 
   <properties>
-    <java.module.name>org.kie.kogito.index.springboot.data.index.persistence.jpa</java.module.name>
+    <java.module.name>org.kie.kogito.index.springboot.addon.data.index.persistence.jpa</java.module.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-addons-common-springboot</artifactId>
+      <artifactId>data-index-common-addons-springboot</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

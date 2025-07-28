@@ -32,8 +32,10 @@
   <packaging>pom</packaging>
   <modules>
     <module>data-index-common-springboot</module>
-    <module>data-index-addons-common-springboot</module>
+    <module>data-index-common-addons-springboot</module>
     <module>data-index-storage-jpa-springboot</module>
+    <module>data-index-graphql-addons-springboot</module>
     <module>kogito-addons-springboot-data-index-persistence</module>
+    <module>kogito-addons-springboot-data-index</module>
   </modules>
 </project>

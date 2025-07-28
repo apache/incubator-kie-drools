@@ -18,22 +18,37 @@
  */
 package org.kie.kogito.index.addon.graphql;
 
+import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
 import org.kie.kogito.index.model.ProcessInstanceState;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 
 import graphql.scalars.ExtendedScalars;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager {
 
+    GraphQLAddonSchemaManagerImpl() {
+        this(null, null, null);
+        // CDI
+    }
+
+    @Inject
+    public GraphQLAddonSchemaManagerImpl(DataIndexStorageService cacheService, GraphQLScalarType dateTimeScalarType,
+            KogitoRuntimeClient dataIndexApiExecutor) {
+        super(cacheService, dateTimeScalarType, dataIndexApiExecutor);
+    }
+
     public GraphQLSchema createSchema() {
         TypeDefinitionRegistry typeDefinitionRegistry = new TypeDefinitionRegistry();
-        typeDefinitionRegistry.merge(loadSchemaDefinitionFile("basic.schema.graphqls"));
+        typeDefinitionRegistry.merge(loadSchemaDefinitionFile("graphql/basic.schema.graphqls"));
         addCountQueries(typeDefinitionRegistry);
         addJsonQueries(typeDefinitionRegistry);
         loadAdditionalMutations(typeDefinitionRegistry);
