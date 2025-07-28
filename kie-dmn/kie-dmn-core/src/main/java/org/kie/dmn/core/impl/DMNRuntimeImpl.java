@@ -91,6 +91,35 @@ public class DMNRuntimeImpl
         }
     }
 
+    static Map<String, Object> populateContextUsingAliases(DMNModelImpl model, Map<String, Object> context, Map<String, Object> baseInputs) {
+        if (baseInputs.isEmpty()) {
+            return context;
+        }
+        Map<String, Object> filteredInputs = model.getInputs().stream().distinct()
+                .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
+                .collect(Collectors.toMap(Function.identity(), baseInputs::get, (v1, v2) -> v1 ));
+        if (filteredInputs.isEmpty()) {
+            return context;
+        }
+        List<List<String>> importChainAliases = model.getImportChainAliases().values().stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
+        return retrieveContext(importChainAliases, context, filteredInputs);
+    }
+
+    @SuppressWarnings("unchecked")
+    static Map<String, Object> retrieveContext(List<List<String>> importChainAliases, Map<String, Object> context, Map<String, Object> filteredInputs) {
+        System.out.println(importChainAliases);
+        System.out.println(context);
+        System.out.println(filteredInputs);
+        for (List<String> chain : importChainAliases) {
+            Map<String, Object> current = context;
+            for (int i = 0; i < chain.size() - 1; i++) {
+                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
+            }
+            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>())).putAll(filteredInputs);
+        }
+        return context;
+    }
+
     @Override
     public List<DMNModel> getModels() {
         return runtimeKB.getModels();
@@ -251,31 +280,9 @@ public class DMNRuntimeImpl
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
         Map<String, Object> baseInputs = new HashMap<>(context.getAll());
-        populateContextUsingAliases((DMNModelImpl) model, context.getAll(), baseInputs);
-        result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
+        Map<String, Object> updatedContext = populateContextUsingAliases((DMNModelImpl) model, context.getAll(), baseInputs);
+        result.setContext(new DMNContextImpl(updatedContext));
         return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void populateContextUsingAliases(DMNModelImpl model, Map<String, Object> context, Map<String, Object> baseInputs) {
-        if (baseInputs.isEmpty()) {
-            return;
-        }
-        Map<String, Object> subcontext = model.getInputs().stream()
-                .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
-                .collect(Collectors.toMap(Function.identity(), baseInputs::get));
-        if (subcontext.isEmpty()) {
-            return;
-        }
-
-        List<List<String>> importChainAliases = model.getImportChainAliases().values().stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
-        for (List<String> chain : importChainAliases) {
-            Map<String, Object> current = context;
-            for (int i = 0; i < chain.size() - 1; i++) {
-                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
-            }
-            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>())).putAll(subcontext);
-        }
     }
 
     public void setDMNResultImplFactory(DMNResultImplFactory dmnResultFactory) {
