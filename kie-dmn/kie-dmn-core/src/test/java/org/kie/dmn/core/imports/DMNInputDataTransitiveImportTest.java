@@ -164,4 +164,52 @@ public class DMNInputDataTransitiveImportTest {
         assertThat(result.getDecisionResultByName("Invalid.InvalidDecision").getResult()).isNull();
         assertThat(result.getDecisionResultByName("New Decision").getResult()).isNull();
     }
+
+    @Test
+    void testTransitiveImportWithInputData() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/0089-nested-inputdata-imports.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B2.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Say_hello_1ID1D.dmn")
+        );
+
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "0089-nested-inputdata-imports");
+        assertThat(model).isNotNull();
+
+        DMNContext context = dmnRuntime.newContext();
+        context.set("Person name", "Klaus");
+
+        DMNResult result = dmnRuntime.evaluateByName(model, context, "Model C Decision based on Bs");
+        assertThat(result.hasErrors()).isFalse();
+    }
+
+    @Test
+    void testTransitiveImport()  {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/0089-nested-inputdata-imports.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B2.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Say_hello_1ID1D.dmn")
+        );
+
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "0089-nested-inputdata-imports");
+        assertThat(model).isNotNull();
+
+        DMNContext context = dmnRuntime.newContext();
+        Map<String, Object> modelA = new HashMap<>();
+        modelA.put("Person name", "Klaus");
+        context.set("modelA", modelA);
+        Map<String, Object> modelB = new HashMap<>();
+        modelB.put("modelA", modelA);
+        Map<String, Object> modelB2 = new HashMap<>();
+        modelB2.put("modelA", modelA);
+        context.set("Model B", modelB);
+        context.set("Model B2", modelB2);
+
+        DMNResult result = dmnRuntime.evaluateByName(model, context, "Model C Decision based on Bs");
+        assertThat(result.hasErrors()).isFalse();
+    }
 }

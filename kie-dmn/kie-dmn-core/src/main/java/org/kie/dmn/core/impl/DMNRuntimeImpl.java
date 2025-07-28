@@ -21,12 +21,14 @@ package org.kie.dmn.core.impl;
 import javax.xml.namespace.QName;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.dmn.api.core.DMNContext;
@@ -248,8 +250,33 @@ public class DMNRuntimeImpl
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
+        Map<String, Object> baseInputs = new HashMap<>(context.getAll());
+        populateContextUsingAliases((DMNModelImpl) model, context.getAll(), baseInputs);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
+        System.out.println(context);
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void populateContextUsingAliases(DMNModelImpl model, Map<String, Object> context, Map<String, Object> baseInputs) {
+        if (baseInputs.isEmpty()) {
+            return;
+        }
+        Map<String, Object> subcontext = model.getInputs().stream()
+                .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
+                .collect(Collectors.toMap(Function.identity(), baseInputs::get));
+        if (subcontext.isEmpty()) {
+            return;
+        }
+
+        List<List<String>> importChainAliases = model.getImportChainAliases().values().stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
+        for (List<String> chain : importChainAliases) {
+            Map<String, Object> current = context;
+            for (int i = 0; i < chain.size() - 1; i++) {
+                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
+            }
+            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>())).putAll(subcontext);
+        }
     }
 
     public void setDMNResultImplFactory(DMNResultImplFactory dmnResultFactory) {
