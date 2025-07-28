@@ -253,7 +253,6 @@ public class DMNRuntimeImpl
         Map<String, Object> baseInputs = new HashMap<>(context.getAll());
         populateContextUsingAliases((DMNModelImpl) model, context.getAll(), baseInputs);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
-        System.out.println(context);
         return result;
     }
 
