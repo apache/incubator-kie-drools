@@ -26,25 +26,24 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV16;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.core.util.DMNTestUtil.getLatestDMNTypeRegistry;
+import static org.kie.dmn.core.util.DMNTestUtil.getLatestFeelReflectively;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 class DMNTypeTest {
 
-    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV16(Collections.emptyMap());
-    private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
-    private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
+    private static final DMNTypeRegistry typeRegistry = getLatestDMNTypeRegistry();
+    private static final DMNType FEEL_STRING = typeRegistry.resolveType(getLatestFeelReflectively(), "string");
+    private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(getLatestFeelReflectively(), "number");
 
     private static final FEEL feel = FEELBuilder.builder().build();
 
