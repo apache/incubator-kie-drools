@@ -284,7 +284,8 @@ public class DMNRuntimeImpl
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
         Map<String, Object> baseInputs = new HashMap<>(context.getAll());
         Map<String, Object> updatedContext = populateContextUsingAliases(model.getInputs(), ((DMNModelImpl) model).getImportChainAliases().values(), context.getAll(), baseInputs);
-        result.setContext(new DMNContextImpl(updatedContext));
+        context.getAll().putAll(updatedContext);
+        result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
         return result;
     }
 
