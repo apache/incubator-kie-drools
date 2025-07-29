@@ -51,7 +51,7 @@ public enum DMNVersion {
         return latest;
     }
 
-    public static String getLatestString() {
+    public static String getLatestDmnVersionString() {
         return getLatest().dmnVersionString;
 
     }

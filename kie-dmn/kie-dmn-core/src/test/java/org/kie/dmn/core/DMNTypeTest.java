@@ -42,8 +42,9 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 class DMNTypeTest {
 
     private static final DMNTypeRegistry typeRegistry = getLatestDMNTypeRegistry();
-    private static final DMNType FEEL_STRING = typeRegistry.resolveType(getLatestFeelReflectively(), "string");
-    private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(getLatestFeelReflectively(), "number");
+    public static final String FEEL = getLatestFeelReflectively();
+    private static final DMNType FEEL_STRING = typeRegistry.resolveType(FEEL, "string");
+    private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(FEEL, "number");
 
     private static final FEEL feel = FEELBuilder.builder().build();
 

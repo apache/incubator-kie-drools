@@ -65,7 +65,7 @@ public class DMNVersionUtil {
         try {
             String kieDMNModelInstrumentedBaseClassName = String.format("org.kie.dmn.model.%s" +
                             ".KieDMNModelInstrumentedBase",
-                    DMNVersion.getLatestString());
+                    DMNVersion.getLatestDmnVersionString());
             Class<? extends DMNModelInstrumentedBase> kieDMNModelInstrumentedBaseClass = (Class<?
                     extends DMNModelInstrumentedBase>) Class.forName(kieDMNModelInstrumentedBaseClassName);
             Field uriFeelField = kieDMNModelInstrumentedBaseClass.getField("URI_FEEL");
