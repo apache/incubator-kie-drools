@@ -57,12 +57,12 @@ public class DMNFunctionDefinitionEvaluator
     private final String name;
     private final FunctionDefinition functionDefinition;
     private final DMNNode originatorNode;
-    private final List<FormalParameter> parameters = new ArrayList<>();
+    private List<FormalParameter> parameters = new ArrayList<>(  );
     private DMNExpressionEvaluator evaluator;
 
-    public DMNFunctionDefinitionEvaluator(DMNNode originatorNode, FunctionDefinition functionDefinition) {
+    public DMNFunctionDefinitionEvaluator(DMNNode originatorNode, FunctionDefinition fdef) {
         this.name = originatorNode.getName();
-        this.functionDefinition = functionDefinition;
+        this.functionDefinition = fdef;
         this.originatorNode = originatorNode;
     }
 
@@ -76,11 +76,11 @@ public class DMNFunctionDefinitionEvaluator
     }
 
     public List<List<String>> getParameterNames() {
-        return Collections.singletonList(parameters.stream().map( p -> p.name ).toList());
+        return Collections.singletonList( parameters.stream().map( p -> p.name ).collect( Collectors.toList()) );
     }
 
     public List<List<DMNType>> getParameterTypes() {
-        return Collections.singletonList(parameters.stream().map( p -> p.type ).toList());
+        return Collections.singletonList( parameters.stream().map( p -> p.type ).collect( Collectors.toList()) );
     }
 
     public void addParameter(String name, DMNType dmnType) {
@@ -96,8 +96,8 @@ public class DMNFunctionDefinitionEvaluator
     }
 
     @Override
-    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnResult) {
-        DMNResultImpl result = (DMNResultImpl) dmnResult;
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
         DMNFunction function = new DMNFunction( name, originatorNode, parameters, functionDefinition, evaluator, eventManager, result );
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
@@ -144,7 +144,6 @@ public class DMNFunctionDefinitionEvaluator
             performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
-        @Override
         public Object invoke(EvaluationContext ctx, Object[] params) {
             DMNContext previousContext = resultContext.getContext();
             // we could be more strict and only set the parameters and the dependencies as values in the new
@@ -153,8 +152,8 @@ public class DMNFunctionDefinitionEvaluator
             dmnContext.enterFrame();
             Object invocationResult = null;
             try {
-                if (originatorNode instanceof BusinessKnowledgeModelNode businessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, businessKnowledgeModelNode, resultContext, Arrays.asList(params));
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext, Arrays.asList(params));
                 }
                 if( evaluator != null ) {
                     closureContext.getAll().forEach(dmnContext::set);
@@ -207,8 +206,8 @@ public class DMNFunctionDefinitionEvaluator
                                        getName() );
                 return null;
             } finally {
-                if (originatorNode instanceof BusinessKnowledgeModelNode businessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, businessKnowledgeModelNode, resultContext, invocationResult);
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext, invocationResult);
                 }
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();
@@ -222,11 +221,11 @@ public class DMNFunctionDefinitionEvaluator
 
         @Override
         public List<List<Param>> getParameters() {
-            return Collections.singletonList(parameters.stream().map(FormalParameter::asFEELParam).toList());
+            return Collections.singletonList(parameters.stream().map(FormalParameter::asFEELParam).collect(Collectors.toList()));
         }
 
         public List<List<DMNType>> getParameterTypes() {
-            return Collections.singletonList( parameters.stream().map( p -> p.type ).toList());
+            return Collections.singletonList( parameters.stream().map( p -> p.type ).collect( Collectors.toList()) );
         }
 
         public String toString() {
