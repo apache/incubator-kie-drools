@@ -19,20 +19,104 @@
 package org.kie.dmn.core.impl;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
-import org.kie.internal.io.ResourceFactory;
+import org.kie.dmn.api.core.ast.InputDataNode;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DMNRuntimeImplTest {
+
+
+    @Test
+    void testPopulateContextUsingAliases() {
+        Collection<Collection<List<String>>> importChainValues = Arrays.asList(
+                List.of(Arrays.asList("Model B", "modelA")),
+                List.of(List.of("Model B")));
+
+        InputDataNode node1 = mock(InputDataNode.class);
+        when(node1.getName()).thenReturn("Person name");
+        Set<InputDataNode> inputs = new HashSet<>();
+        inputs.add(node1);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("Person name", "Klaus");
+        Map<String, Object> baseInputs = new HashMap<>();
+        baseInputs.put("Person name", "Klaus");
+        Map<String, Object> expectedContext = new HashMap<>();
+        Map<String, Object> modelA = new HashMap<>();
+        modelA.put("Person name", "Klaus");
+        expectedContext.put("Person name", "Klaus");
+        Map<String, Object> modelB = new HashMap<>();
+        modelB.put("modelA", modelA);
+        expectedContext.put("Model B", modelB);
+
+        Map<String, Object> updatedContext = DMNRuntimeImpl.populateContextUsingAliases(inputs, importChainValues, context, baseInputs);
+        assertThat(updatedContext).isEqualTo(expectedContext);
+    }
+
+    @Test
+    void testGetFilteredInputs() {
+        InputDataNode node1 = mock(InputDataNode.class);
+        when(node1.getName()).thenReturn("Person name");
+        Set<InputDataNode> inputs = new HashSet<>();
+        inputs.add(node1);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("Person name", "Klaus");
+        Map<String, Object> baseInputs = new HashMap<>();
+        baseInputs.put("Person name", "Klaus");
+
+        Map<String, Object> expected = Map.of("Person name", "Klaus");
+        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, context, baseInputs);
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void testGetFilteredInputsMultipleValue() {
+        InputDataNode node1 = mock(InputDataNode.class);
+        when(node1.getName()).thenReturn("Person age");
+        Set<InputDataNode> inputs = new HashSet<>();
+        inputs.add(node1);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("Person name", "Klaus");
+        context.put("Person age", 27);
+        context.put("Person phone", 1234567899);
+        Map<String, Object> baseInputs = new HashMap<>();
+        baseInputs.put("Person name", "Klaus");
+        baseInputs.put("Person age", 27);
+        baseInputs.put("Person phone", 1234567899);
+
+        Map<String, Object> expected = Map.of("Person age", 27);
+        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, context, baseInputs);
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void testGetFilteredInputsWithEmptyBaseInput() {
+        InputDataNode node1 = mock(InputDataNode.class);
+        when(node1.getName()).thenReturn("Person age");
+        Set<InputDataNode> inputs = new HashSet<>();
+        inputs.add(node1);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("Person name", "Klaus");
+        context.put("Person age", 27);
+        context.put("Person phone", 1234567899);
+        Map<String, Object> baseInputs = new HashMap<>();
+
+        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, context, baseInputs);
+        assertThat(result).isEqualTo(context);
+    }
 
     @Test
     void testRetrieveContext() {
@@ -54,34 +138,4 @@ class DMNRuntimeImplTest {
         Map<String, Object> updatedContext = DMNRuntimeImpl.retrieveContext(importChainAliases, context, filteredInputs);
         assertThat(updatedContext).isEqualTo(expectedContext);
     }
-
-    @Test
-    void testPopulateContextUsingAliases() {
-        List<Resource> resources = Arrays.asList(
-                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/TransitiveInputs.dmn"),
-                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B.dmn"),
-                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Model_B2.dmn"),
-                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Say_hello_1ID1D.dmn")
-        );
-
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_E543B95F-4E02-40D4-956A-3F1EE8500EA9", "DMN_21F7093C-EEE5-4DB9-95CE-088789DC1CBF");
-        assertThat(model).isNotNull();
-
-        Map<String, Object> context = new HashMap<>();
-        context.put("Person name", "Klaus");
-        Map<String, Object> baseInputs = new HashMap<>();
-        baseInputs.put("Person name", "Klaus");
-        Map<String, Object> expectedContext = new HashMap<>();
-        Map<String, Object> modelA = new HashMap<>();
-        modelA.put("Person name", "Klaus");
-        expectedContext.put("Person name", "Klaus");
-        Map<String, Object> modelB = new HashMap<>();
-        modelB.put("modelA", modelA);
-        expectedContext.put("Model B", modelB);
-
-        Map<String, Object> updatedContext = DMNRuntimeImpl.populateContextUsingAliases((DMNModelImpl) model, context, baseInputs);
-        assertThat(updatedContext).isEqualTo(expectedContext);
-    }
-
 }

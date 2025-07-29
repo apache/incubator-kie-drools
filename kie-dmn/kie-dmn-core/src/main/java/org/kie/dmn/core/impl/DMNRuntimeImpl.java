@@ -91,25 +91,28 @@ public class DMNRuntimeImpl
         }
     }
 
-    static Map<String, Object> populateContextUsingAliases(DMNModelImpl model, Map<String, Object> context, Map<String, Object> baseInputs) {
+    static Map<String, Object> populateContextUsingAliases(Set<InputDataNode> inputs, Collection<Collection<List<String>>> importChainValues, Map<String, Object> context, Map<String, Object> baseInputs) {
+        Map<String, Object> filteredInputs = getFilteredInputs(inputs, context, baseInputs);
+        //chain.size() > 1 ensures only nested import paths are processed, preventing top-level keys from being duplicated in the context.
+        List<List<String>> importChainAliases = importChainValues.stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
+        return retrieveContext(importChainAliases, context, filteredInputs);
+    }
+
+    static Map<String, Object> getFilteredInputs(Set<InputDataNode> inputs, Map<String, Object> context, Map<String, Object> baseInputs) {
         if (baseInputs.isEmpty()) {
             return context;
         }
-        Map<String, Object> filteredInputs = model.getInputs().stream().distinct()
+        Map<String, Object> filteredInputs = inputs.stream()
                 .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
                 .collect(Collectors.toMap(Function.identity(), baseInputs::get, (v1, v2) -> v1 ));
         if (filteredInputs.isEmpty()) {
             return context;
         }
-        List<List<String>> importChainAliases = model.getImportChainAliases().values().stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
-        return retrieveContext(importChainAliases, context, filteredInputs);
+        return filteredInputs;
     }
 
     @SuppressWarnings("unchecked")
     static Map<String, Object> retrieveContext(List<List<String>> importChainAliases, Map<String, Object> context, Map<String, Object> filteredInputs) {
-        System.out.println(importChainAliases);
-        System.out.println(context);
-        System.out.println(filteredInputs);
         for (List<String> chain : importChainAliases) {
             Map<String, Object> current = context;
             for (int i = 0; i < chain.size() - 1; i++) {
@@ -280,7 +283,7 @@ public class DMNRuntimeImpl
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
         Map<String, Object> baseInputs = new HashMap<>(context.getAll());
-        Map<String, Object> updatedContext = populateContextUsingAliases((DMNModelImpl) model, context.getAll(), baseInputs);
+        Map<String, Object> updatedContext = populateContextUsingAliases(model.getInputs(), ((DMNModelImpl) model).getImportChainAliases().values(), context.getAll(), baseInputs);
         result.setContext(new DMNContextImpl(updatedContext));
         return result;
     }
