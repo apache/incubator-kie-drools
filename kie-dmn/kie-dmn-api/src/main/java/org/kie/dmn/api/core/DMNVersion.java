@@ -19,22 +19,22 @@
 package org.kie.dmn.api.core;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public enum DMNVersion {
 
-    v1_1(11),
-    v1_2(12),
-    v1_3(13),
-    v1_4(14),
-    v1_5(15),
-    v1_6(16);
+    V1_1(11, "v1_1"),
+    V1_2(12, "v1_2"),
+    V1_3(13, "v1_3"),
+    V1_4(14, "v1_4"),
+    V1_5(15, "v1_5"),
+    V1_6(16, "v1_6");
 
     private final int dmnVersion;
+    private final String dmnVersionString;
 
-
-    DMNVersion(int dmnVersion) {
+    DMNVersion(int dmnVersion, String dmnVersionString) {
         this.dmnVersion = dmnVersion;
+        this.dmnVersionString = dmnVersionString;
     }
 
     public int getDmnVersion() {
@@ -51,25 +51,25 @@ public enum DMNVersion {
         return latest;
     }
 
-    public static String getLatestVersion() {
-        return Optional.ofNullable(getLatest()).map(DMNVersion::toString).orElse("No version available");
+    public static String getLatestString() {
+        return getLatest().dmnVersionString;
 
     }
 
     public static DMNVersion inferDMNVersion(Collection<String> nsContextValues) {
         DMNVersion toReturn = DMNVersion.getLatest();
         if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_6;
+            toReturn = DMNVersion.V1_6;
         }else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_5;
+            toReturn = DMNVersion.V1_5;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_4;
+            toReturn = DMNVersion.V1_4;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_3;
+            toReturn = DMNVersion.V1_3;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_2;
+            toReturn = DMNVersion.V1_2;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.v1_1;
+            toReturn = DMNVersion.V1_1;
         }
         return toReturn;
     }
