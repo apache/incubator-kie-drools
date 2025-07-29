@@ -455,7 +455,7 @@ public class DMNRuntimeImpl
         if (!typeCheck) {
             return result;
         }
-        if (type.isAssignableValue(result)) {
+        if (type.isAssignableValue(value)) {
             return result;
         } else {
             nullCallback.accept(value, type);
