@@ -19,15 +19,16 @@
 package org.kie.dmn.api.core;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public enum DMNVersion {
 
-    V1_1(11),
-    V1_2(12),
-    V1_3(13),
-    V1_4(14),
-    V1_5(15),
-    V1_6(16);
+    v1_1(11),
+    v1_2(12),
+    v1_3(13),
+    v1_4(14),
+    v1_5(15),
+    v1_6(16);
 
     private final int dmnVersion;
 
@@ -50,20 +51,25 @@ public enum DMNVersion {
         return latest;
     }
 
+    public static String getLatestVersion() {
+        return Optional.ofNullable(getLatest()).map(DMNVersion::toString).orElse("No version available");
+
+    }
+
     public static DMNVersion inferDMNVersion(Collection<String> nsContextValues) {
         DMNVersion toReturn = DMNVersion.getLatest();
         if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_6;
+            toReturn = DMNVersion.v1_6;
         }else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_5;
+            toReturn = DMNVersion.v1_5;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_4;
+            toReturn = DMNVersion.v1_4;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_3;
+            toReturn = DMNVersion.v1_3;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_2;
+            toReturn = DMNVersion.v1_2;
         } else if (nsContextValues.stream().anyMatch(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
-            toReturn = DMNVersion.V1_1;
+            toReturn = DMNVersion.v1_1;
         }
         return toReturn;
     }

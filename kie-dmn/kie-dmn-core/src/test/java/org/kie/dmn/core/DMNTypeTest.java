@@ -34,8 +34,8 @@ import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.util.DMNTestUtil.getLatestDMNTypeRegistry;
-import static org.kie.dmn.core.util.DMNTestUtil.getLatestFeelReflectively;
+import static org.kie.dmn.core.util.DMNVersionUtil.getLatestDMNTypeRegistry;
+import static org.kie.dmn.core.util.DMNVersionUtil.getLatestFeelReflectively;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
