@@ -27,7 +27,6 @@ import org.kie.dmn.api.core.DMNRuntime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNTestUtil {
-
     private DMNTestUtil() {
         // No constructor for util class.
     }
