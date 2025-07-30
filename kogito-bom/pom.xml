@@ -1262,6 +1262,17 @@
 
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-addons-source-files</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-source-files</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-addons-quarkus-source-files</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1279,6 +1290,17 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-addons-quarkus-source-files-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-source-files</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-source-files</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

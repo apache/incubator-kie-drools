@@ -68,6 +68,7 @@ import org.xml.sax.SAXException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
+import static com.github.javaparser.StaticJavaParser.parse;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_PATH;
@@ -75,6 +76,7 @@ import static org.kie.kogito.codegen.process.util.BusinessCalendarUtil.condition
 import static org.kie.kogito.codegen.process.util.CodegenUtil.generatorProperty;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.isFaultToleranceEnabled;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.isTransactionEnabled;
+import static org.kie.kogito.codegen.process.util.SourceFilesProviderProducerUtil.addSourceFilesToProvider;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
@@ -100,6 +102,8 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final String GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/global-operational-dashboard-template.json";
     private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
     public static final String BUSINESS_CALENDAR_PRODUCER_TEMPLATE = "BusinessCalendarProducer";
+    public static final String SOURCE_FILE_PROVIDER_PRODUCER = "SourceFilesProviderProducer";
+
     private static final String IS_BUSINESS_CALENDAR_PRESENT = "isBusinessCalendarPresent";
 
     static {
@@ -455,6 +459,8 @@ public class ProcessCodegen extends AbstractGenerator {
 
         generateBusinessCalendarProducer();
 
+        generateSourceFileProviderProducer();
+
         if (CodegenUtil.isTransactionEnabled(this, context()) && !isServerless) {
             String template = "ExceptionHandlerTransaction";
             TemplatedGenerator generator = TemplatedGenerator.builder()
@@ -600,5 +606,21 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         storeFile(PRODUCER_TYPE, generator.generatedFilePath(), compilationUnit.toString());
+    }
+
+    private void generateSourceFileProviderProducer() {
+
+        if (!context().getAddonsConfig().useSourceFiles()) {
+            return;
+        }
+
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/producer/" + SOURCE_FILE_PROVIDER_PRODUCER + "Template.java"));
+        compilationUnit.setPackageDeclaration(context().getPackageName());
+
+        addSourceFilesToProvider(compilationUnit, processes, context());
+
+        String generatedPath = context().getPackageName().replace(".", "/") + "/" + SOURCE_FILE_PROVIDER_PRODUCER + ".java";
+
+        storeFile(PRODUCER_TYPE, generatedPath, compilationUnit.toString());
     }
 }

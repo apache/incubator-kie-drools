@@ -42,6 +42,8 @@ public class AddonsConfigDiscovery {
     private static final String SPRING_PROCESS_SVG = "org.kie.kogito.svg.service.SpringBootProcessSvgService";
     private static final String EVENT_DRIVEN_DECISIONS_CLASS = "org.kie.kogito.eventdriven.decision.EventDrivenDecisionController";
     private static final String EVENT_DRIVEN_RULES_CLASS = "org.kie.kogito.eventdriven.rules.EventDrivenRulesController";
+    private static final String QUARKUS_SOURCE_FILES_CLASS = "org.kie.kogito.addon.source.files.SourceFilesResource";
+    private static final String SPRING_SOURCE_FILES_CLASS = "org.kie.kogito.addon.source.files.SourceFilesRestController";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddonsConfigDiscovery.class);
 
@@ -63,6 +65,7 @@ public class AddonsConfigDiscovery {
         boolean useProcessSVG = classAvailabilityResolver.test(QUARKUS_PROCESS_SVG) || classAvailabilityResolver.test(SPRING_PROCESS_SVG);
         boolean useEventDrivenDecisions = classAvailabilityResolver.test(EVENT_DRIVEN_DECISIONS_CLASS);
         boolean useEventDrivenRules = classAvailabilityResolver.test(EVENT_DRIVEN_RULES_CLASS);
+        boolean useSourceFiles = classAvailabilityResolver.test(QUARKUS_SOURCE_FILES_CLASS) || classAvailabilityResolver.test(SPRING_SOURCE_FILES_CLASS);
 
         AddonsConfig addonsConfig = AddonsConfig.builder()
                 .withPersistence(usePersistence)
@@ -74,6 +77,7 @@ public class AddonsConfigDiscovery {
                 .withProcessSVG(useProcessSVG)
                 .withEventDrivenDecisions(useEventDrivenDecisions)
                 .withEventDrivenRules(useEventDrivenRules)
+                .withSourceFiles(useSourceFiles)
                 .build();
 
         LOGGER.info("Performed addonsConfig discovery, found: {}", addonsConfig);

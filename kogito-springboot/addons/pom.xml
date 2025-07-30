@@ -52,6 +52,7 @@
     <module>flyway</module>
     <module>persistence</module>
     <module>jbpm-usertask-storage-jpa</module>
+    <module>source-files</module>
   </modules>
 
   <dependencyManagement>

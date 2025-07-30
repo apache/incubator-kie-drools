@@ -39,9 +39,10 @@ public class AddonsConfig {
     private final boolean useProcessSVG;
     private final boolean useEventDrivenDecisions;
     private final boolean useEventDrivenRules;
+    private final boolean useSourceFiles;
 
     private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useCloudEvents,
-            boolean useExplainability, boolean useProcessSVG, boolean useEventDrivenDecisions, boolean useEventDrivenRules) {
+            boolean useExplainability, boolean useProcessSVG, boolean useEventDrivenDecisions, boolean useEventDrivenRules, boolean useSourceFiles) {
         this.usePersistence = usePersistence;
         this.useTracing = useTracing;
         this.useMonitoring = useMonitoring;
@@ -51,6 +52,7 @@ public class AddonsConfig {
         this.useProcessSVG = useProcessSVG;
         this.useEventDrivenDecisions = useEventDrivenDecisions;
         this.useEventDrivenRules = useEventDrivenRules;
+        this.useSourceFiles = useSourceFiles;
     }
 
     public static AddonsConfigBuilder builder() {
@@ -93,6 +95,10 @@ public class AddonsConfig {
         return useEventDrivenRules;
     }
 
+    public boolean useSourceFiles() {
+        return useSourceFiles;
+    }
+
     @Override
     public String toString() {
         return "AddonsConfig{" +
@@ -105,6 +111,7 @@ public class AddonsConfig {
                 ", useProcessSVG=" + useProcessSVG +
                 ", useEventDrivenDecisions=" + useEventDrivenDecisions +
                 ", useEventDrivenRules=" + useEventDrivenRules +
+                ", useProcessSources=" + useSourceFiles +
                 '}';
     }
 
@@ -119,6 +126,7 @@ public class AddonsConfig {
         private boolean useProcessSVG;
         private boolean useEventDrivenDecisions;
         private boolean useEventDrivenRules;
+        private boolean useSourceFiles;
 
         private AddonsConfigBuilder() {
         }
@@ -168,8 +176,14 @@ public class AddonsConfig {
             return this;
         }
 
+        public AddonsConfigBuilder withSourceFiles(boolean useSourceFiles) {
+            this.useSourceFiles = useSourceFiles;
+            return this;
+        }
+
         public AddonsConfig build() {
-            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability, useProcessSVG, useEventDrivenDecisions, useEventDrivenRules);
+            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability, useProcessSVG, useEventDrivenDecisions, useEventDrivenRules,
+                    useSourceFiles);
         }
     }
 }

@@ -26,18 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.kie.kogito.addon.source.files.SourceFilesProviderProducer;
-import org.kie.kogito.addon.source.files.SourceFilesRecorder;
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 
-import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.ExecutionTime;
-import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 
@@ -52,29 +46,6 @@ class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcesso
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
-    }
-
-    @BuildStep
-    AdditionalBeanBuildItem sourceFilesProviderProducer() {
-        return new AdditionalBeanBuildItem(SourceFilesProviderProducer.class);
-    }
-
-    @BuildStep
-    @Record(ExecutionTime.RUNTIME_INIT)
-    void addSourceFileProcessBindListener(KogitoBuildContextBuildItem ctxBuildItem,
-            SourceFilesRecorder sourceFilesRecorder) {
-        KogitoBuildContext kogitoBuildContext = ctxBuildItem.getKogitoBuildContext();
-
-        SourceFileProcessBindListenerImpl processListener = new SourceFileProcessBindListenerImpl(
-                kogitoBuildContext.getAppPaths().getResourceFiles(),
-                sourceFilesRecorder);
-
-        SourceFileServerlessWorkflowBindListenerImpl serverlessWorkflowListener = new SourceFileServerlessWorkflowBindListenerImpl(
-                kogitoBuildContext.getAppPaths().getResourceFiles(),
-                sourceFilesRecorder);
-
-        kogitoBuildContext.getSourceFileCodegenBindNotifier()
-                .ifPresent(notifier -> notifier.addListeners(processListener, serverlessWorkflowListener));
     }
 
     @BuildStep

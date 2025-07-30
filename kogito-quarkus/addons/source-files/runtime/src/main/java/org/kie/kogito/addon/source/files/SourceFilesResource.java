@@ -19,70 +19,64 @@
 package org.kie.kogito.addon.source.files;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.Optional;
 
 import org.kie.kogito.source.files.SourceFile;
 import org.kie.kogito.source.files.SourceFilesProvider;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@ApplicationScoped
 @Path("/management/processes/")
-public final class SourceFilesResource {
+public class SourceFilesResource extends BaseSourceFilesResource<Response> {
 
-    SourceFilesProvider sourceFilesProvider;
+    public SourceFilesResource() {
+        this(null);
+        // CDI
+    }
+
+    @Inject
+    public SourceFilesResource(SourceFilesProvider sourceFilesProvider) {
+        super(sourceFilesProvider);
+    }
 
     @GET
     @Path("sources")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getSourceFileByUri(@QueryParam("uri") String uri) throws Exception {
-        Optional<SourceFile> sourceFile = sourceFilesProvider.getSourceFilesByUri(uri);
-
-        if (sourceFile.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        try (InputStream file = new ByteArrayInputStream(sourceFile.get().readContents())) {
-            return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                    .header("Content-Disposition", "inline; filename=\"" + java.nio.file.Path.of(sourceFile.get().getUri()).getFileName() + "\"")
-                    .build();
-        }
-
+        return super.getSourceFileByUri(uri);
     }
 
     @GET
     @Path("{processId}/sources")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<SourceFile> getSourceFilesByProcessId(@PathParam("processId") String processId) {
-        return sourceFilesProvider.getProcessSourceFiles(processId);
+        return super.getSourceFilesByProcessId(processId);
     }
 
     @GET
     @Path("{processId}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getSourceFileByProcessId(@PathParam("processId") String processId) throws Exception {
-        Optional<SourceFile> sourceFile = sourceFilesProvider.getProcessSourceFile(processId);
-
-        if (sourceFile.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        return Response.ok(sourceFile.get().readContents()).build();
-
+        return super.getSourceFileByProcessId(processId);
     }
 
-    @Inject
-    void setSourceFilesProvider(SourceFilesProvider sourceFilesProvider) {
-        this.sourceFilesProvider = sourceFilesProvider;
+    @Override
+    protected Response buildPlainResponse(byte[] content) {
+        return Response.ok(content).build();
+    }
+
+    @Override
+    protected Response buildStreamResponse(byte[] content, String fileName) {
+        return Response.ok(new ByteArrayInputStream(content), MediaType.APPLICATION_OCTET_STREAM)
+                .header("Content-Disposition", "inline; filename=\"" + fileName + "\"")
+                .build();
+    }
+
+    @Override
+    protected Response buildNotFoundResponse() {
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }

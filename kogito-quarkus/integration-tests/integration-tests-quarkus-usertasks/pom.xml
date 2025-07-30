@@ -27,7 +27,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>integration-tests-quarkus-usertasks</artifactId>
-    <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Source Files</name>
+    <name>Kogito :: Integration Tests :: Quarkus :: User Tasks</name>
 
     <properties>
         <java.module.name>org.jbpm.usertask.storage.jpa.quarkus.it</java.module.name>

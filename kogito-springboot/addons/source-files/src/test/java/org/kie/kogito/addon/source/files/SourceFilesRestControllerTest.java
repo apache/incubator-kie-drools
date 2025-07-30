@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.kie.kogito.addon.source.files;
 
 import java.util.Optional;
@@ -27,44 +28,44 @@ import org.kie.kogito.source.files.SourceFile;
 import org.kie.kogito.source.files.SourceFilesProvider;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import jakarta.ws.rs.core.Response;
+import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SourceFilesResourceTest {
+public class SourceFilesRestControllerTest {
+
     private static final String PROCESS_ID = "processId";
 
-    private SourceFilesResource sourceFilesTestResource;
+    private SourceFilesRestController sourceFilesRestController;
 
     @Mock
     private SourceFilesProvider mockSourceFileProvider;
 
     @BeforeEach
     void setup() {
-        sourceFilesTestResource = new SourceFilesResource(mockSourceFileProvider);
+        sourceFilesRestController = new SourceFilesRestController(mockSourceFileProvider);
     }
 
     @Test
     void getSourceFilesByProcessIdTest() {
-        sourceFilesTestResource.getSourceFilesByProcessId(PROCESS_ID);
+        sourceFilesRestController.getSourceFilesByProcessId(PROCESS_ID);
         verify(mockSourceFileProvider).getProcessSourceFiles(PROCESS_ID);
     }
 
     @Test
     void getEmptySourceFileByProcessIdTest() throws Exception {
         when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.empty());
-        assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        assertThat(sourceFilesRestController.getSourceFileByProcessId(PROCESS_ID).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }
 
     @Test
     void getValidSourceFileByProcessIdTest() throws Exception {
         when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of(new SourceFile("petstore.sw.json")));
-        assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        assertThat(sourceFilesRestController.getSourceFileByProcessId(PROCESS_ID).getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }
 }

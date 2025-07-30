@@ -36,6 +36,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.model.codegen.project.RuleCodegen;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.Generator;
+import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
@@ -82,6 +83,7 @@ public class CodeGenManagerUtil {
                 .withClassLoader(projectClassLoader)
                 .withAppPaths(appPaths)
                 .withGAV(kogitoGAV)
+                .withSourceFileProcessBindNotifier(new SourceFileCodegenBindNotifier())
                 .build();
 
         additionalProperties(context, projectParameters);

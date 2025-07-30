@@ -56,15 +56,21 @@ public class ProcessGenerationUtils {
         return processExecutableModelGenerators;
     }
 
-    private static List<Process> parseProcesses(Collection<File> processFiles) {
+    public static List<Process> parseProcesses(Collection<File> processFiles) {
         List<Process> processes = new ArrayList<>();
         for (File processSourceFile : processFiles) {
             try {
                 FileSystemResource r = new FileSystemResource(processSourceFile);
                 if (SupportedExtensions.getBPMNExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
-                    processes.addAll(ProcessCodegen.parseProcessFile(r));
+                    ProcessCodegen.parseProcessFile(r)
+                            .forEach(process -> {
+                                process.setResource(r);
+                                processes.add(process);
+                            });
                 } else if (SupportedExtensions.getSWFExtensions().stream().anyMatch(processSourceFile.getPath()::endsWith)) {
-                    processes.add(ProcessCodegen.parseWorkflowFile(r, JavaKogitoBuildContext.builder().build()).info());
+                    KogitoWorkflowProcess swfWorkflow = ProcessCodegen.parseWorkflowFile(r, JavaKogitoBuildContext.builder().build()).info();
+                    swfWorkflow.setResource(r);
+                    processes.add(swfWorkflow);
                 }
                 if (processes.isEmpty()) {
                     throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);

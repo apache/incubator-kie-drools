@@ -16,19 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addon.source.files;
+
+package $Package$;
 
 import org.kie.kogito.source.files.SourceFile;
+import org.kie.kogito.source.files.SourceFilesProvider;
 import org.kie.kogito.source.files.SourceFilesProviderImpl;
 
-import io.quarkus.runtime.annotations.Recorder;
+public class SourceFilesProviderProducer {
 
-import jakarta.enterprise.inject.spi.CDI;
+    private static final SourceFilesProviderImpl INSTANCE = new SourceFilesProviderImpl();
 
-@Recorder
-public class SourceFilesRecorder {
+    static {
+        INSTANCE.addSourceFile("$processId$", new SourceFile("$sourcePath$"));
+    }
 
-    public void addSourceFile(String id, SourceFile sourceFile) {
-        CDI.current().select(SourceFilesProviderImpl.class).get().addSourceFile(id, sourceFile);
+    public SourceFilesProvider getSourceFilesProvider() {
+        return INSTANCE;
     }
 }

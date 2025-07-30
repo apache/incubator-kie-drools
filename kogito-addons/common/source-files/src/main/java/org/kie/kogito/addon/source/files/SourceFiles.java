@@ -16,24 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.kie.kogito.addon.source.files;
 
-import org.kie.kogito.source.files.SourceFilesProviderImpl;
+import java.util.Collection;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Produces;
+import org.kie.kogito.source.files.SourceFile;
 
-@ApplicationScoped
-public final class SourceFilesProviderProducer {
+public interface SourceFiles<T> {
 
-    SourceFilesProviderProducer() {
-    }
+    T getSourceFileByUri(String uri) throws Exception;
 
-    @Produces
-    @Default
-    @ApplicationScoped
-    public SourceFilesProviderImpl sourceFilesProvider() {
-        return new SourceFilesProviderImpl();
-    }
+    Collection<SourceFile> getSourceFilesByProcessId(String processId);
+
+    T getSourceFileByProcessId(String processId) throws Exception;
 }
