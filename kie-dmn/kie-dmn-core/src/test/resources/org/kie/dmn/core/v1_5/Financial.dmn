@@ -1,0 +1,65 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<semantic:definitions
+        xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+        xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+        xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+        xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+        xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+        xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"
+        xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+        xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+        xmlns="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514"
+        id="_5e8e877a-af87-434b-9c36-ed51c8d6b514"
+        name="Financial"
+        namespace="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514"
+        exporter="DMN Modeler" exporterVersion="6.2.2.1" triso:logoChoice="None">
+    <semantic:decisionService id="_5e8e877a-af87-434b-9c36-ed51c8d6b514_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_7510044d-9f94-4b5a-a172-bb5412031a86" typeRef="Any"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_78d4b1b3-d780-407d-b8ba-b7c28c334551_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_077c39ab-7b07-490e-bd40-bdc6d7bb0a48" typeRef="Any"/>
+    </semantic:decisionService>
+    <semantic:businessKnowledgeModel id="_a30c75ec-7d81-4606-802c-b31ea308392d" name="PMT">
+        <semantic:description>&lt;p&gt;&lt;span lang="JA"&gt;Standard calculation of monthly installment&amp;nbsp;&lt;/span&gt;from Rate, Term and Amount.&lt;/p&gt;</semantic:description>
+        <semantic:variable name="PMT" id="_702e93e8-7d03-4400-aae4-a21543a4d631" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_7fafdbd9-083f-43f5-bc0a-57c9ea0cf943" kind="FEEL" typeRef="Any" triso:expressionId="_3e686571-acdc-46c2-8fe0-8e399ee6a570">
+            <semantic:formalParameter name="Rate" typeRef="number" id="_1787cf94-5e76-4926-ac24-5b4096b28dca"/>
+            <semantic:formalParameter name="Term" typeRef="number" id="_0d037df5-8942-473f-9feb-2e16d6d7d631"/>
+            <semantic:formalParameter name="Amount" typeRef="number" id="_deb10bf3-97f0-4f6b-8ae4-5cbfd44debac"/>
+            <semantic:literalExpression id="_4d149dbb-89da-498e-853f-2c33f4e9b834">
+                <semantic:text>(Amount *Rate/12) / (1 - (1 + Rate/12)**-Term)</semantic:text>
+            </semantic:literalExpression>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_78d4b1b3-d780-407d-b8ba-b7c28c334551" triso:modelElementRef="_78d4b1b3-d780-407d-b8ba-b7c28c334551" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_f3441ebe-15cd-435b-9451-206c147a6985" dmnElementRef="_a30c75ec-7d81-4606-802c-b31ea308392d">
+                <dc:Bounds x="274.5" y="213.5" width="152" height="59"/>
+                <dmndi:DMNLabel sharedStyle="LS_5e8e877a-af87-434b-9c36-ed51c8d6b514_0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_5e8e877a-af87-434b-9c36-ed51c8d6b514_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
