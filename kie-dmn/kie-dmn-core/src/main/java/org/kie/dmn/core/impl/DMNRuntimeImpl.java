@@ -91,37 +91,31 @@ public class DMNRuntimeImpl
         }
     }
 
-    static Map<String, Object> populateContextUsingAliases(Set<InputDataNode> inputs, Collection<Collection<List<String>>> importChainValues, Map<String, Object> context, Map<String, Object> baseInputs) {
-        Map<String, Object> filteredInputs = getFilteredInputs(inputs, context, baseInputs);
-        //chain.size() > 1 ensures only nested import paths are processed, preventing top-level keys from being duplicated in the context.
-        List<List<String>> importChainAliases = importChainValues.stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
-        return retrieveContext(importChainAliases, context, filteredInputs);
-    }
-
-    static Map<String, Object> getFilteredInputs(Set<InputDataNode> inputs, Map<String, Object> context, Map<String, Object> baseInputs) {
-        if (baseInputs.isEmpty()) {
-            return context;
-        }
-        Map<String, Object> filteredInputs = inputs.stream()
-                .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
-                .collect(Collectors.toMap(Function.identity(), baseInputs::get, (v1, v2) -> v1 ));
-        if (filteredInputs.isEmpty()) {
-            return context;
-        }
-        return filteredInputs;
-    }
-
-    @SuppressWarnings("unchecked")
-    static Map<String, Object> retrieveContext(List<List<String>> importChainAliases, Map<String, Object> context, Map<String, Object> filteredInputs) {
-        for (List<String> chain : importChainAliases) {
-            Map<String, Object> current = context;
-            for (int i = 0; i < chain.size() - 1; i++) {
-                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
-            }
-            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>())).putAll(filteredInputs);
-        }
-        return context;
-    }
+//    static Map<String, Object> retrieveContext(Set<InputDataNode> inputs, Collection<Collection<List<String>>> importChainValues, Map<String, Object> context, Map<String, Object> baseInputs) {
+//        Map<String, Object> filteredInputs = getFilteredInputs(inputs, baseInputs);
+//        //chain.size() > 1 ensures only nested import paths are processed, preventing top-level keys from being duplicated in the context.
+//        List<List<String>> importChainAliases = importChainValues.stream().flatMap(Collection::stream).filter(chain -> chain.size() > 1).toList();
+//        return retrieveContext(importChainAliases, context, filteredInputs);
+//    }
+//
+//    static Map<String, Object> getFilteredInputs(Set<InputDataNode> inputs, Map<String, Object> baseInputs) {
+//        return inputs.stream()
+//            .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) != null)
+//            .collect(Collectors.toMap(Function.identity(), baseInputs::get, (v1, v2) -> v1));
+//}
+//
+//    @SuppressWarnings("unchecked")
+//    static Map<String, Object> retrieveContext(List<List<String>> importChainAliases, Map<String, Object> context, Map<String, Object> filteredInputs) {
+//        System.out.println("importChainAliases " + importChainAliases);
+//        for (List<String> chain : importChainAliases) {
+//            Map<String, Object> current = context;
+//            for (int i = 0; i < chain.size() - 1; i++) {
+//                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
+//            }
+//            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>())).putAll(filteredInputs);
+//        }
+//        return context;
+//    }
 
     @Override
     public List<DMNModel> getModels() {
@@ -282,9 +276,9 @@ public class DMNRuntimeImpl
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
-        Map<String, Object> baseInputs = new HashMap<>(context.getAll());
-        Map<String, Object> updatedContext = populateContextUsingAliases(model.getInputs(), ((DMNModelImpl) model).getImportChainAliases().values(), context.getAll(), baseInputs);
-        context.getAll().putAll(updatedContext);
+//        Map<String, Object> baseInputs = new HashMap<>(context.getAll());
+//        Map<String, Object> updatedContext = retrieveContext(model.getInputs(), ((DMNModelImpl) model).getImportChainAliases().values(), context.getAll(), baseInputs);
+//        context.getAll().putAll(updatedContext);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
         return result;
     }
@@ -502,7 +496,10 @@ public class DMNRuntimeImpl
 
     private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
         if (node.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel().getNamespace()))) {
-            return result.getContext().isDefined(node.getName());
+            if (!(result.getContext().isDefined(node.getName()))) {
+                Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
+                return importAlias.isPresent();
+            }
         }  else if (isInUnnamedImport(node, (DMNModelImpl) result.getModel())) {
             // the node is an unnamed import
             return result.getContext().isDefined(node.getName());
@@ -517,6 +514,7 @@ public class DMNRuntimeImpl
             }
             return false;
         }
+        return false;
     }
 
     private boolean walkIntoImportScopeInternalDecisionInvocation(DMNResultImpl result, DMNModel dmnModel, DMNNode destinationNode) {
