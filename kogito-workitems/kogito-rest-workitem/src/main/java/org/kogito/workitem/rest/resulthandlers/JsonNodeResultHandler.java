@@ -18,12 +18,37 @@
  */
 package org.kogito.workitem.rest.resulthandlers;
 
+import java.util.Map;
+
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
+
 public class JsonNodeResultHandler implements RestWorkItemHandlerResult {
+    @Override
+    public Object apply(HttpResponse<Buffer> t, Class<?> u, KogitoProcessContext context) {
+        Map<String, Object> metadata = context.getNodeInstance().getNode().getMetaData();
+        if (metadata == null || toBoolean(metadata.getOrDefault("failOnStatusCode", Boolean.TRUE))) {
+            checkStatusCode(t);
+        }
+        return apply(t, u);
+    }
+
+    private boolean toBoolean(Object potentialBoolean) {
+        if (potentialBoolean instanceof Boolean bool) {
+            return bool.booleanValue();
+        } else if (potentialBoolean instanceof CharSequence literal) {
+            return Boolean.parseBoolean(literal.toString());
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public Object apply(HttpResponse<Buffer> t, Class<?> u) {
         return u == null ? t.bodyAsJson(JsonNode.class) : t.bodyAsJson(u);

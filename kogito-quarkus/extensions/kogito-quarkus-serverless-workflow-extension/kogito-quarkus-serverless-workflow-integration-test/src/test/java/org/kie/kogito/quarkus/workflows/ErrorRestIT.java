@@ -37,6 +37,19 @@ public class ErrorRestIT {
     }
 
     @Test
+    public void testErrorRestIgnoring() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"workflowdata\" : {\"number\" : 1}}").when()
+                .post("/errorIgnoring")
+                .then()
+                .statusCode(201)
+                .body("workflowdata.numberType", is("odd"))
+                .body("workflowdata.perfect", is(false));
+    }
+
+    @Test
     public void testErrorGenericRest() {
         innerErrorRest("errorGeneric");
     }

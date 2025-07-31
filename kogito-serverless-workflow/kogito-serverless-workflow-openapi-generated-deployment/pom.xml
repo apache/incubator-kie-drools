@@ -18,34 +18,22 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-serverless-workflow</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-
-  <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
-  <name>Kogito :: Serverless Workflow :: OpenAPI :: Generated</name>
-  <description>Kogito Serverless Workflow OpenAPI generated</description>
-
-  <properties>
-      <java.module.name>org.kie.kogito.serverless.workflow.openapi.generated</java.module.name>
+<properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.openapi.generated.deployment</java.module.name>
   </properties>
-
+  <artifactId>kogito-serverless-workflow-openapi-generated-deployment</artifactId>
+  <name>Kogito :: Serverless Workflow :: OpenAPI :: Generated:: Deployment</name>
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-openapi-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-openapi-generated-deployment</artifactId>
+      <artifactId>kogito-serverless-workflow-builder</artifactId>
     </dependency>
   </dependencies>
-
 </project>

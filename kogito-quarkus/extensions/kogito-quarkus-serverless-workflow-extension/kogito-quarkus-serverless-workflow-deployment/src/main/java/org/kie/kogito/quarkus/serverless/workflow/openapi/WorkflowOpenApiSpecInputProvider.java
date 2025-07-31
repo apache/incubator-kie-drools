@@ -27,11 +27,13 @@ import java.util.stream.Stream;
 
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowOperationResource;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIWorkflowUtils;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiSpecInputProvider;
 import io.quarkiverse.openapi.generator.deployment.codegen.SpecInputModel;
 import io.quarkus.deployment.CodeGenContext;
+import io.serverlessworkflow.api.functions.FunctionDefinition;
+import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
 public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvider {
 
@@ -44,13 +46,18 @@ public class WorkflowOpenApiSpecInputProvider implements OpenApiSpecInputProvide
             inputDir = inputDir.getParent();
         }
         try (Stream<Path> openApiFilesPaths = Files.walk(inputDir)) {
-            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, OpenAPIWorkflowUtils::isOpenApiOperation, context).map(this::getSpecInput).collect(Collectors.toList());
+            return WorkflowCodeGenUtils.operationResources(openApiFilesPaths, WorkflowOpenApiSpecInputProvider::isOpenApiOperation, context).map(WorkflowOpenApiSpecInputProvider::getSpecInput)
+                    .collect(Collectors.toList());
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }
     }
 
-    private SpecInputModel getSpecInput(WorkflowOperationResource resource) {
+    private static boolean isOpenApiOperation(FunctionDefinition function) {
+        return function.getType() == Type.REST && function.getOperation() != null && function.getOperation().contains(ServerlessWorkflowUtils.OPERATION_SEPARATOR);
+    }
+
+    private static SpecInputModel getSpecInput(WorkflowOperationResource resource) {
         return new SpecInputModel(resource.getOperationId().getFileName(), resource.getContentLoader().getInputStream(), KOGITO_PACKAGE_PREFIX + resource.getOperationId().getPackageName());
     }
 }

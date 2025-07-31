@@ -2155,7 +2155,7 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-       <dependency>
+      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
         <version>${project.version}</version>
@@ -2163,6 +2163,17 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-openapi-generated-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-serverless-workflow-openapi-generated-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

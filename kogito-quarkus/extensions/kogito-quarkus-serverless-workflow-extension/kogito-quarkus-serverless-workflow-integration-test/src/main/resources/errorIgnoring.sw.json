@@ -1,0 +1,126 @@
+{
+  "id": "errorIgnoring",
+  "version": "1.0",
+  "expressionLang": "jsonpath",
+  "name": "Workflow Error example",
+  "description": "An example of how to handle an exception thrown by a service",
+  "start": "checkEven",
+  "errors": [
+    {
+      "name": "odd number",
+      "code": "Odd situation"
+     },
+     {
+      "name": "bad request",
+      "code": "HTTP:400"
+     }
+  ],
+  "functions": [
+    {
+      "name": "isEven",
+      "type": "custom",
+      "operation": "service:java:org.kie.kogito.workflows.services.EvenService::isEven"
+    },
+    {
+      "name": "publishPerfectSquare",
+      "type": "custom",
+      "operation": "rest:post:/publish/{type}/{number}",
+      "metadata" : 
+      {
+        "failOnStatusCode": false
+       }
+    },
+    {
+      "name": "printMessage",
+      "type": "custom",
+       "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "checkEven",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "checkEvenAction",
+          "functionRef": {
+            "refName": "isEven",
+            "arguments": {
+              "number": "$.number"
+            }
+          }
+        }
+      ],
+      "transition": "even",
+      "onErrors": [
+        {
+          "errorRef": "odd number",
+          "transition": "odd"
+        }
+      ]
+    },
+    {
+      "name": "even",
+      "type": "inject",
+      "data": {
+        "numberType": "even"
+      },
+      "transition": "print"
+    },
+    {
+      "name": "odd",
+      "type": "inject",
+      "data": {
+        "numberType": "odd"
+      },
+      "transition": "print"
+    },
+    {
+      "name": "print",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printAction",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": "$.numberType"
+            }
+          }
+        }
+      ],
+      "transition": "publish"
+    },
+    {
+      "name": "publish",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "publishAction",
+          "functionRef" : {
+            "refName": "publishPerfectSquare",
+            "arguments": {
+              "type": "$.numberType",
+              "number": "$.number"
+          }
+          }
+        }
+      ],
+      "end": true,
+      "onErrors": [
+        {
+          "errorRef": "bad request",
+          "transition": "setError"
+        }
+      ]
+    },
+    {
+      "name": "setError",
+      "type": "inject",
+      "data": {
+        "perfect": "Error invoking publishPerfectSquare"
+       },
+      "end": true
+     } 
+  ]
+}

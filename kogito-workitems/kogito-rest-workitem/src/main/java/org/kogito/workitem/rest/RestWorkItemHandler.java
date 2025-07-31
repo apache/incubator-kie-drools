@@ -35,6 +35,7 @@ import java.util.stream.StreamSupport;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -186,7 +187,8 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)
                 ? sendJson(request, bodyBuilder.apply(parameters), requestTimeout)
                 : send(request, requestTimeout);
-        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo))));
+        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(),
+                Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo, ContextFactory.fromItem(workItem)))));
     }
 
     private static HttpResponse<Buffer> sendJson(HttpRequest<Buffer> request, Object body, Duration requestTimeout) {

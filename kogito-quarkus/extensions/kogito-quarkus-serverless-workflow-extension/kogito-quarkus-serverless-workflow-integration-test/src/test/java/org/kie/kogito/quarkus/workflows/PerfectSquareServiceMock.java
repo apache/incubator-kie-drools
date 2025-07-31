@@ -47,7 +47,7 @@ public class PerfectSquareServiceMock implements QuarkusTestResourceLifecycleMan
 
         // mock a successful invocation
         stubFor(post("/publish/odd/1")
-                .willReturn(badRequest()));
+                .willReturn(badRequest().withBody("{\"perfect\":false}")));
 
         stubFor(post("/publish/even/4")
                 .willReturn(aResponse().withBody("{\"perfect\":true}")));

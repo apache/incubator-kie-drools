@@ -58,6 +58,7 @@
     <module>kogito-serverless-workflow-dmn-parser</module>
     <module>kogito-serverless-workflow-dmn</module>
     <module>kogito-serverless-workflow-monitoring</module>
+    <module>kogito-serverless-workflow-openapi-generated-deployment</module>
   </modules>
 
   <profiles>

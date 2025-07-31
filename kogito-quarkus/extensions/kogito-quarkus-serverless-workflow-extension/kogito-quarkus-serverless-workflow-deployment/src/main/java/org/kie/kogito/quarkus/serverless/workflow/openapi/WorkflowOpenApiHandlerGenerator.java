@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.util.StringUtils;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -32,8 +33,8 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
+import org.kie.kogito.serverless.workflow.generated.OpenAPIWorkflowUtils;
 import org.kie.kogito.serverless.workflow.openapi.OpenApiWorkItemHandler;
-import org.kie.kogito.serverless.workflow.utils.OpenAPIWorkflowUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -56,6 +57,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.getValidIdentifier;
+import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.removeExt;
 
 public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandlerGenerator {
 
@@ -77,9 +80,13 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         return classInfo.methods().stream().filter(m -> m.hasAnnotation(generatedMethod)).map(m -> generateHandler(context, classInfo, fileName, m));
     }
 
+    private static String getOpenApiClassName(String fileName, String methodName) {
+        return StringUtils.ucFirst(getValidIdentifier(removeExt(fileName.toLowerCase())) + '_' + methodName);
+    }
+
     private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, ClassInfo classInfo, String fileName, MethodInfo m) {
         final String packageName = context.getPackageName();
-        final String className = OpenAPIWorkflowUtils.getOpenApiClassName(fileName, m.name());
+        final String className = getOpenApiClassName(fileName, m.name());
         final ClassOrInterfaceType classNameType = parseClassOrInterfaceType(classInfo.name().toString());
         CompilationUnit unit = new CompilationUnit(packageName);
         ClassOrInterfaceDeclaration clazz = unit.addClass(className);

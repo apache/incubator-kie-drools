@@ -102,6 +102,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
     </dependency>
     <dependency>
