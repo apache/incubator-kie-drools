@@ -447,19 +447,35 @@ public class DMNRuntimeImpl
     }
 
     public static Object coerceUsingType(Object value, DMNType type, boolean typeCheck, BiConsumer<Object, DMNType> nullCallback) {
-        Object result = value;
+        if (typeCheck) {
+            if (type.isAssignableValue(value)) {
+                return coerceSingleItemCollectionToValue(value, type);
+            } else {
+                nullCallback.accept(value, type);
+                return null;
+            }
+        } else {
+            return coerceSingleItemCollectionToValue(value, type);
+        }
+    }
+
+    /**
+     * Checks a type and if it is not a collection type, checks if the specified value is a collection
+     * that contains only a single value and if yes, coerces the collection to the single item itself.
+     * E.g. [1] becomes 1. Basically it unwraps the single item from a collection, if it is required.
+     *
+     * @param value Value that is checked and potentially coerced to a single item.
+     * @param type Required type. Based on this type, it is determined, if the coercion happens.
+     *             If the requirement is for a non-collection type and the value is a single item collection,
+     *             the coercion happens.
+     * @return If all requirements are met, returns coerced value. Otherwise returns the original value.
+     */
+    private static Object coerceSingleItemCollectionToValue(Object value, DMNType type) {
         if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
             // as per Decision evaluation result.
-            result = ((Collection<?>) value).toArray()[0];
-        }
-        if (!typeCheck) {
-            return result;
-        }
-        if (type.isAssignableValue(result)) {
-            return result;
+            return ((Collection<?>) value).toArray()[0];
         } else {
-            nullCallback.accept(value, type);
-            return null;
+            return value;
         }
     }
 
