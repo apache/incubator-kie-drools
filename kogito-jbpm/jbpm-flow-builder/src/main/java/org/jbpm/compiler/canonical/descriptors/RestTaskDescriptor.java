@@ -19,6 +19,7 @@
 package org.jbpm.compiler.canonical.descriptors;
 
 import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -48,7 +49,7 @@ public class RestTaskDescriptor implements TaskDescriptor {
 
     @Override
     public String getName() {
-        return processMetadata.getProcessId() + "RestWorkItemHandler";
+        return ConversionUtils.sanitizeClassName(processMetadata.getProcessId()) + "RestWorkItemHandler";
     }
 
     @Override
