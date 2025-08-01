@@ -330,7 +330,7 @@
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-storage-jpa-common</artifactId>
                 <version>${project.version}</version>
-                <classifier>test-jar</classifier>
+                <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
