@@ -22,18 +22,19 @@ import java.util.Collection;
 
 public enum DMNVersion {
 
-    V1_1(11),
-    V1_2(12),
-    V1_3(13),
-    V1_4(14),
-    V1_5(15),
-    V1_6(16);
+    V1_1(11, "v1_1"),
+    V1_2(12, "v1_2"),
+    V1_3(13, "v1_3"),
+    V1_4(14, "v1_4"),
+    V1_5(15, "v1_5"),
+    V1_6(16, "v1_6");
 
     private final int dmnVersion;
+    private final String dmnVersionString;
 
-
-    DMNVersion(int dmnVersion) {
+    DMNVersion(int dmnVersion, String dmnVersionString) {
         this.dmnVersion = dmnVersion;
+        this.dmnVersionString = dmnVersionString;
     }
 
     public int getDmnVersion() {
@@ -48,6 +49,11 @@ public enum DMNVersion {
             }
         }
         return latest;
+    }
+
+    public static String getLatestDmnVersionString() {
+        return getLatest().dmnVersionString;
+
     }
 
     public static DMNVersion inferDMNVersion(Collection<String> nsContextValues) {

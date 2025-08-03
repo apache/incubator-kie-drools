@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<semantic:definitions
+        xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+        xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+        xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+        xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+        xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+        xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"
+        xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+        xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+        xmlns:drools="http://www.drools.org/kie/dmn/1.5"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:openapi="https://openapis.org/omg/extension/1.0"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0"
+        xmlns="http://www.trisotech.com/definitions/_d9232146-7aaa-49a9-8668-261a01844ace"
+        id="_d9232146-7aaa-49a9-8668-261a01844ace" name="Drawing 1"
+        namespace="http://www.trisotech.com/definitions/_d9232146-7aaa-49a9-8668-261a01844ace"
+        exporter="Decision Modeler" exporterVersion="7.13.2" xml:lang="en" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_d9232146-7aaa-49a9-8668-261a01844ace_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_d9232146-7aaa-49a9-8668-261a01844ace_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_1a740b0b-2881-413a-9385-07691441a3ba"/>
+        <semantic:inputData href="#_7df6a67d-ac3a-47ec-951f-9b004aee6b87"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_33d949b3-fbc7-4720-a3e0-6aebe30eba5f_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_33d949b3-fbc7-4720-a3e0-6aebe30eba5f_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_1a740b0b-2881-413a-9385-07691441a3ba"/>
+        <semantic:inputData href="#_7df6a67d-ac3a-47ec-951f-9b004aee6b87"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_7df6a67d-ac3a-47ec-951f-9b004aee6b87" name="name">
+        <semantic:variable name="name" id="_fa4dbcc7-8572-413e-9bca-63d4ef3c188d" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:decision id="_1a740b0b-2881-413a-9385-07691441a3ba" name="greet">
+        <semantic:variable name="greet" id="_cb997d69-f5ce-4ffb-820d-1a6026081cce" typeRef="string"/>
+        <semantic:informationRequirement id="_82335681-68dc-4d1b-af28-6a88c1d0f11a">
+            <semantic:requiredInput href="#_7df6a67d-ac3a-47ec-951f-9b004aee6b87"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_5f447c61-d11c-4a6e-958a-1f5c574ef6ff" triso:descriptionVisible="false" typeRef="string" triso:expressionId="_3cabadae-d4df-49e5-aeb6-a94e4f9fbd58">
+            <semantic:text>"Hello, "+name</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_33d949b3-fbc7-4720-a3e0-6aebe30eba5f" triso:modelElementRef="_d2ce6a11-8202-4db2-ba09-e03216c5958e" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_24497348-0cd6-4968-bf64-1dcf32ce37b9" dmnElementRef="_7df6a67d-ac3a-47ec-951f-9b004aee6b87">
+                <dc:Bounds x="282.2588291168213" y="221.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_d9232146-7aaa-49a9-8668-261a01844ace_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_ecc1a62c-7238-49c5-bb49-0bbacb5fff56" dmnElementRef="_1a740b0b-2881-413a-9385-07691441a3ba">
+                <dc:Bounds x="469.5" y="222" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_d9232146-7aaa-49a9-8668-261a01844ace_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_bb820de1-d9e5-4b2c-bdc7-d7be372116df" dmnElementRef="_82335681-68dc-4d1b-af28-6a88c1d0f11a">
+                <di:waypoint x="418.4968013763428" y="251.99999618530273"/>
+                <di:waypoint x="469.5" y="252"/>
+                <dmndi:DMNLabel sharedStyle="LS_d9232146-7aaa-49a9-8668-261a01844ace_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_d9232146-7aaa-49a9-8668-261a01844ace_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
