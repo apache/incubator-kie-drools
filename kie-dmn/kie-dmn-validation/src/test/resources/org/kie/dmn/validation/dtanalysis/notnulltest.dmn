@@ -18,8 +18,8 @@
   under the License.
   -->
 
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" id="_5B689874-CFE0-41A6-9811-F084C515EC00"
-                 name="Untitled" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" id="_5B689874-CFE0-41A6-9811-F084C515EC00"
+                 name="Untitled" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
                  namespace="https://kiegroup.org/dmn/_7C6C0AAE-946B-42C8-9CE0-D39E485976FC">
   <dmn:extensionElements/>
   <dmn:decision id="_07F58DC1-3BC1-451C-893C-EE04774D8760" name="hassomerule">

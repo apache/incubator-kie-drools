@@ -53,6 +53,7 @@ import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.core.util.DMNVersionUtil.getLatestFeelReflectively;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -532,7 +533,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         // DROOLS-1569
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
         final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
-        final String FEEL_NAMESPACE = org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_FEEL;
+        final String FEEL_NAMESPACE = getLatestFeelReflectively();
         final DMNModel dmnModel = runtime.getModel(MODEL_NAMESPACE, "DMNInputDataNodeTypeTest");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();

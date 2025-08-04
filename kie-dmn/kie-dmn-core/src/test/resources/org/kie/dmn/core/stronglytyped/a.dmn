@@ -18,7 +18,7 @@
   under the License.
   -->
 
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" id="_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" name="Drawing 1" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10">
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" id="_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" name="Drawing 1" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10">
   <dmn:extensionElements/>
   <dmn:itemDefinition id="_3655528E-DD1E-44A0-ABA2-9FBB940387AC" name="tAddress" isCollection="false">
     <dmn:itemComponent id="_8AA4C9B6-0742-4843-BF28-84037EBBFC00" name="streetName" isCollection="false">

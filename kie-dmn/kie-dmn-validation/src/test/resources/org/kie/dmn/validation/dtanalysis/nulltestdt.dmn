@@ -18,9 +18,9 @@
   under the License.
   -->
 
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" id="nulltestdt"
-                 name="nulltestdt" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-                 typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" id="nulltestdt"
+                 name="nulltestdt" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
+                 typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
                  namespace="xls2dmn_92b164ff-760a-48b0-968c-b6bfff43477a">
   <dmn:extensionElements/>
   <dmn:decision id="d_status_32BT" name="resultstatus">
