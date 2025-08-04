@@ -32,18 +32,18 @@
                       xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  
                       xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  
                       xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
-                      id="_9d46ece4-a96c-4cb0-abc0-0ca121ac3768" name="Model_B2"
-                      namespace="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+                      id="_2a1d771a-a899-4fef-abd6-fc894332337c" name="Child_A"
+                      namespace="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337A" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
     <import namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" 
-            name="modelA" 
-            importType="https://www.omg.org/spec/DMN/20240513/MODEL/" />
-    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e23" name="Evaluating B2 Say Hello" triso:useOutputTypeAsAnswer="false">
-        <variable name="Evaluating B2 Say Hello" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
-        <informationRequirement id="_3eb95d84-08de-4497-9827-5dcd5cb5927e">
+                     name="parentModel"
+                     importType="https://www.omg.org/spec/DMN/20240513/MODEL/" />
+    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e2A" name="Evaluating Say Hello" triso:useOutputTypeAsAnswer="false">
+        <variable name="Evaluating Say Hello" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
+        <informationRequirement id="_d3627327-056c-4117-b167-df7029d21511">
             <requiredDecision href="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5"/>
         </informationRequirement>
-        <literalExpression typeRef="string" id="_026e05fb-6c07-4046-9c52-716ba5619a69" triso:expressionId="_8ff85959-661b-4674-8a9a-f20ca598f7b1">
-            <text>"Evaluating Say Hello to: "+modelA.Greet the Person</text>
+        <literalExpression typeRef="string" id="_026e05fb-6c07-4046-9c52-716ba5619a69" triso:expressionId="_5d8ea0f4-1c32-450d-a141-60df64654436">
+            <text>"Evaluating Say Hello to: "+parentModel.Greet the Person</text>
         </literalExpression>
     </decision>
 </definitions>
