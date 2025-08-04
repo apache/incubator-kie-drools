@@ -44,3 +44,5 @@ target/
 
 # Apache RAT check excludes file
 !.rat-excludes
+
+quarkus/integration-tests/integration-tests-quarkus-gradle/integration-tests-quarkus-gradle-project/**

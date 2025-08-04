@@ -1,0 +1,117 @@
+{
+  "id": "token_exchange",
+  "version": "1.0",
+  "name": "Token exchange SW",
+  "description": "Executes different endpoint using different security scheme",
+  "start": "WithExchange",
+  "errors": [
+    {
+      "name": "execution_error",
+      "code": "jakarta.ws.rs.ProcessingException"
+    }
+  ],
+  "functions": [
+    {
+      "name": "executeQueryWithExchange",
+      "type": "rest",
+      "operation": "specs/token-exchange-external-service.yaml#withExchange"
+    },
+    {
+      "name": "executeQueryWithoutExchange",
+      "type": "rest",
+      "operation": "specs/token-exchange-external-service.yaml#withoutExchange"
+    },
+    {
+      "name": "executeQueryWithExchangeAndWithPropagation",
+      "type": "rest",
+      "operation": "specs/token-exchange-external-service.yaml#withExchangeAndPropagation"
+    }
+  ],
+  "states": [
+    {
+      "name": "WithExchange",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQueryWithExchangeAction",
+          "functionRef": {
+            "refName": "executeQueryWithExchange",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "WithoutExchange",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "WithoutExchange",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQueryWithoutExchangeAction",
+          "functionRef": {
+            "refName": "executeQueryWithoutExchange",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "WithExchangeAndWithPropagation",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "WithExchangeAndWithPropagation",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQueryWithExchangeAndWithPropagationAction",
+          "functionRef": {
+            "refName": "executeQueryWithExchangeAndWithPropagation",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "End",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "EndWithError",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Service execution failed"
+      },
+      "transition": "End"
+    },
+    {
+      "name": "End",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Service execution successful"
+      },
+      "end": true
+    }
+  ]
+}

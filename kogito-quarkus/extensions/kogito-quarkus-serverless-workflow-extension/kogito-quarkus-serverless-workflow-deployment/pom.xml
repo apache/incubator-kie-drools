@@ -118,6 +118,16 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-grpc-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc-client-deployment</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc-common-deployment</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
