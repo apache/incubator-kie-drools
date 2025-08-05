@@ -65,7 +65,6 @@ public class UnnamedImportUtils {
         // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original one,
         // Here we try to put all the definitions from the "imported" model inside the parent one
         parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
-
         addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService());
         addIfNotPresent(parentDefinitions.getBusinessContextElement(), mergedDefinitions.getBusinessContextElement());
         addIfNotPresent(parentDefinitions.getDrgElement(), mergedDefinitions.getDrgElement());
@@ -80,6 +79,9 @@ public class UnnamedImportUtils {
 
     static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source) {
         if (target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()))) {
+            target.add(source);
+        }
+        if (target.stream().anyMatch(namedElement -> namedElement.getName().isEmpty() && source.getName().isEmpty() && namedElement instanceof Import)) {
             target.add(source);
         }
     }
