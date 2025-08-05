@@ -81,7 +81,8 @@ public class UnnamedImportUtils {
         if (target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()))) {
             target.add(source);
         }
-        if (target.stream().anyMatch(namedElement -> namedElement.getName().isEmpty() && source.getName().isEmpty() && namedElement instanceof Import)) {
+        if (target.stream().anyMatch(namedElement -> namedElement instanceof Import && namedElement.getName() != null &&
+                source.getName() != null && namedElement.getName().isEmpty() && source.getName().isEmpty() )) {
             target.add(source);
         }
     }
