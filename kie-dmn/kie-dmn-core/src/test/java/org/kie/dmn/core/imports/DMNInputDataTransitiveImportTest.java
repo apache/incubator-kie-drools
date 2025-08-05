@@ -18,6 +18,10 @@
  */
 package org.kie.dmn.core.imports;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
@@ -27,11 +31,6 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,8 +44,10 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/ImportingModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9",
+                                             "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -77,8 +78,10 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/ImportingModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9",
+                                             "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -109,8 +112,10 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/multiple/ImportingModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9", "ImportingModel");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_161859A8-6836-427A-A55E-D4F271EEE6B9",
+                                             "ImportingModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -141,8 +146,10 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("invalid_models/DMNv1_6/ImportInvalidModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_22506F59-EDB3-455F-A2B5-70E6F7C33ACB", "ImportInvalidModel");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("https://kie.org/dmn/_22506F59-EDB3-455F-A2B5-70E6F7C33ACB",
+                                             "ImportInvalidModel");
 
         assertThat(model).isNotNull();
         Map<String, Object> person = new HashMap<>();
@@ -166,7 +173,7 @@ class DMNInputDataTransitiveImportTest {
     }
 
     @Test
-    void testTransitiveImportWithInputData() {
+    void testTransitiveImportWithInputDataVerticalPropagation() {
         List<Resource> resources = Arrays.asList(
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
@@ -174,21 +181,37 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "ImportingNestedInputData");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                                                     "-49dd554a0928", "ImportingNestedInputData");
         assertThat(model).isNotNull();
 
         DMNContext context = dmnRuntime.newContext();
         context.set("Person name", "Klaus");
+//        Map<String, Object> parentModel = new HashMap<>();
+//        parentModel.put("Person name", "Klaus");
+//
+////        Map <String, Object> childA = new HashMap<>();
+////        childA.put("parentModel", parentModel);
+//        Map<String, Object> childB = new HashMap<>();
+//        childB.put("parentModel", parentModel);
+////        context.set("Child A", childA);
+//        context.set("Child B", childB);
 
         DMNResult result = dmnRuntime.evaluateByName(model, context, "Decision based on A and B");
         result.getMessages(DMNMessage.Severity.ERROR).forEach(System.out::println);
         assertThat(result.hasErrors()).isFalse();
-
+        assertThat(result.getDecisionResultByName("Decision based on A and B").getResult()).isEqualTo("A: Evaluating " +
+                                                                                                              "Say " +
+                                                                                                              "Hello " +
+                                                                                                              "to: " +
+                                                                                                              "Hello," +
+                                                                                                              " Klaus; B: Evaluating Say Hello to: Hello, Klaus");
     }
 
     @Test
-    void testTransitiveImport()  {
+    void testTransitiveImportNoHorizontalPropagationMissingData() {
         List<Resource> resources = Arrays.asList(
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
@@ -196,22 +219,17 @@ class DMNInputDataTransitiveImportTest {
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
         );
 
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
-        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928", "ImportingNestedInputData");
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                                                     "-49dd554a0928", "ImportingNestedInputData");
         assertThat(model).isNotNull();
 
         DMNContext context = dmnRuntime.newContext();
-        Map<String, Object> modelA = new HashMap<>();
-        modelA.put("Person name", "Klaus");
-        context.set("modelA", modelA);
-//        Map<String, Object> modelB = new HashMap<>();
-//        modelB.put("modelA", modelA);
-//        Map<String, Object> modelB2 = new HashMap<>();
-//        modelB2.put("modelA", modelA);
-//        context.set("Model B", modelB);
-//        context.set("Model B2", modelB2);
-
+        Map<String, Object> childA = new HashMap<>();
+        childA.put("Person name", "Klaus");
+        context.set("Child A", childA);
         DMNResult result = dmnRuntime.evaluateByName(model, context, "Decision based on A and B");
-        assertThat(result.hasErrors()).isFalse();
+        assertThat(result.hasErrors()).isTrue();
     }
 }

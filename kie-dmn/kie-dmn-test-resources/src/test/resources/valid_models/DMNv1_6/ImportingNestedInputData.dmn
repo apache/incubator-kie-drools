@@ -50,7 +50,7 @@
             <requiredDecision href="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac376B#_96df766e-23e1-4aa6-9d5d-545fbe2f1e2B"/>
         </informationRequirement>
         <literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe32" typeRef="Any" triso:expressionId="_66b680ec-9fc3-497d-831b-39708a930a1b">
-            <text>"A: " + Child A.Evaluating Say Hello + "; B: " + Child B.Evaluating Say Hello</text>
+            <text>"A: " + Child A.Evaluating Say Hello A + "; B: " + Child B.Evaluating Say Hello B</text>
         </literalExpression>
     </decision>
 </definitions>

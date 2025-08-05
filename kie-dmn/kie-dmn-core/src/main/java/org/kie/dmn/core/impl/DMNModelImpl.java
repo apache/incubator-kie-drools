@@ -35,6 +35,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -527,6 +528,69 @@ public class DMNModelImpl
                 .stream().collect(Collectors.toMap(tupleIdentifierQNameEntry -> tupleIdentifierQNameEntry.getKey().getName(),
                                                    Entry::getValue));
 
+    }
+
+    /**
+     * This method returns the collection of topmost imported parents, if there is a populated ImportChain, otherwise returns an Optional.empty
+     * @return a <code>Set</code> to avoid duplicated elements
+     */
+    public Optional<Set<ModelImportTuple>> getTopmostParents() {
+        Set<ModelImportTuple> toPopulate = null;
+        if (importChain != null && !importChain.children.isEmpty()) {
+            toPopulate = new HashSet<>();
+            List<DMNModel> importChainDirectChildModels = importChain.getImportChainDirectChildModels();
+            populateTopmostParentsCollection(toPopulate, importChainDirectChildModels, this);
+        }
+        return Optional.ofNullable(toPopulate);
+    }
+
+    private void populateTopmostParentsCollection(Set<ModelImportTuple> toPopulate, List<DMNModel> importChainDirectChildModels, DMNModelImpl importingModel) {
+        for (DMNModel imported : importChainDirectChildModels) {
+            DMNModelImpl importedModelImpl = (DMNModelImpl) imported;
+           ImportChain importChain =  importedModelImpl.importChain;
+           if (importChain != null && !importChain.children.isEmpty()) {
+               List<DMNModel> nestedImportChainDirectChildModels = importChain.getImportChainDirectChildModels();
+               populateTopmostParentsCollection(toPopulate, nestedImportChainDirectChildModels, importedModelImpl);
+           } else {
+               String importName = getImportName(importedModelImpl, importingModel);
+               toPopulate.add(new ModelImportTuple(importName, importedModelImpl));
+           }
+        }
+    }
+
+    private String getImportName(DMNModelImpl importedModel, DMNModelImpl importingModel) {
+        return importingModel.getImportAliasFor(importedModel.getNamespace(), importedModel.getName()).orElseThrow(() -> new IllegalStateException(String.format("Missing import alias for model %s : %s inside model %s : %s", importedModel.getNamespace(), importedModel.getName(), importingModel.getNamespace(), importingModel.getName())));
+    }
+
+    public static class ModelImportTuple {
+        private final String importName;
+        private final DMNModelImpl model;
+
+        public ModelImportTuple(String importName, DMNModelImpl model) {
+            this.importName = importName;
+            this.model = model;
+        }
+
+        public String getImportName() {
+            return importName;
+        }
+
+        public DMNModelImpl getModel() {
+            return model;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ModelImportTuple that)) {
+                return false;
+            }
+            return Objects.equals(importName, that.importName) && Objects.equals(model, that.model);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(importName, model);
+        }
     }
 
     private static class ImportChain {

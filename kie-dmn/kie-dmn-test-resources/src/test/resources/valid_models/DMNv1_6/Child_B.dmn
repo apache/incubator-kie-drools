@@ -37,8 +37,8 @@
     <import namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" 
             name="parentModel"
             importType="https://www.omg.org/spec/DMN/20240513/MODEL/" />
-    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e2B" name="Evaluating Say Hello" triso:useOutputTypeAsAnswer="false">
-        <variable name="Evaluating Say Hello" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
+    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e2B" name="Evaluating Say Hello B" triso:useOutputTypeAsAnswer="false">
+        <variable name="Evaluating Say Hello B" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
         <informationRequirement id="_3eb95d84-08de-4497-9827-5dcd5cb5927e">
             <requiredDecision href="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5"/>
         </informationRequirement>

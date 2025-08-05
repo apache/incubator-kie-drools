@@ -21,6 +21,7 @@ package org.kie.dmn.core.impl;
 import javax.xml.namespace.QName;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -293,7 +294,65 @@ public class DMNRuntimeImpl
 //        .getImportChainAliases().values(), context.getAll(), baseInputs);
 //        context.getAll().putAll(updatedContext);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
+        populateResultContextWithTopmostParentsValues(result, (DMNModelImpl) model);
         return result;
+    }
+
+    private void populateResultContextWithTopmostParentsValues(DMNResultImpl result, DMNModelImpl model) {
+        Optional<Set<DMNModelImpl.ModelImportTuple>> optionalTopmostModels = getTopmostModel(model);
+        if (optionalTopmostModels.isPresent()) {
+            Set<DMNModelImpl.ModelImportTuple> topmostModels = optionalTopmostModels.get();
+            for (DMNModelImpl.ModelImportTuple topmostModelTuple : topmostModels) {
+                DMNModelImpl topmostModel = topmostModelTuple.getModel();
+                topmostModel.getInputs().forEach(topmostInput -> {
+                    Object storedValue = result.getContext().get(topmostInput.getName());
+                    if (storedValue != null) {
+                        Object parentData = result.getContext().get(topmostModelTuple.getImportName());
+                        if (parentData instanceof Map mappedData) {
+                            try {
+                                mappedData.put(topmostInput.getName(), storedValue);
+                            } catch (Exception e) {
+                                logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
+                            }
+                        } else if (parentData == null) {
+                            Map mappedData = new HashMap<>();
+                            mappedData.put(topmostInput.getName(), storedValue);
+                            populateContextWithInheritedData(result.getContext(), mappedData,
+                                                             topmostModelTuple.getImportName(),
+                                                             topmostModelTuple.getModel().getNamespace(),
+                                                             model);
+                        }
+                    }
+                });
+            }
+        }
+
+    }
+
+    private void populateContextWithInheritedData(DMNContext toPopulate, Map toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
+       for (List<String> chainedModels : importingModel.getImportChainAliases().get(topmostNamespace)) {
+           // The order is: first one -> importing model; last one -> parent model
+           for (String chainedModel : chainedModels) {
+               if (chainedModel.equals(importName)) {
+                   continue;
+               }
+               if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map alreadyMapped) {
+                   try {
+                       alreadyMapped.put(importName, toStore);
+                   } catch (Exception e) {
+                       logger.warn("Failed to add {} to map {} ", toStore, alreadyMapped, e);
+                   }
+               } else {
+                   Map chainedMap = new HashMap();
+                   chainedMap.put(importName, toStore);
+                   toPopulate.set(chainedModel, chainedMap);
+               }
+           }
+       }
+    }
+
+    private Optional<Set<DMNModelImpl.ModelImportTuple>> getTopmostModel(DMNModelImpl model) {
+        return model.getTopmostParents();
     }
 
     public void setDMNResultImplFactory(DMNResultImplFactory dmnResultFactory) {
@@ -408,17 +467,17 @@ public class DMNRuntimeImpl
         }
     }
 
-    private void evaluateInputDataNode(DMNContext context, DMNResultImpl result, InputDataNode d,
-                                       boolean typeCheck) {
-        if (isNodeValueDefined(result, d, d)) {
-            // already resolved
-            return;
-        }
-        Object storedValue =  context.get(d.getName());
-        if (storedValue != null) {
-            result.getContext().set(d.getName(), storedValue);
-        }
-    }
+//    private void evaluateInputDataNode(DMNContext context, DMNResultImpl result, InputDataNode d,
+//                                       boolean typeCheck) {
+//        if (isNodeValueDefined(result, d, d)) {
+//            // already resolved
+//            return;
+//        }
+//        Object storedValue =  context.get(d.getName());
+//        if (storedValue != null) {
+//            result.getContext().set(d.getName(), storedValue);
+//        }
+//    }
 
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b,
                              boolean typeCheck) {
@@ -542,26 +601,23 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
-        if (node.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel()
-        .getNamespace()))) {
-            //return result.getContext().isDefined(node.getName());
-            boolean toReturn = result.getContext().isDefined(node.getName());
-            logger.info("isNodeValueDefined for node {}, result {}", node.getName(), toReturn);
-            System.out.println(String.format("isNodeValueDefined for node %s, result %s", node.getName(), toReturn));
+    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode calledNode) {
+        if (calledNode.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel()
+                                                                                                .getNamespace()))) {
+            boolean toReturn = result.getContext().isDefined(calledNode.getName());
+            logger.info("isNodeValueDefined for node {}, result {}", calledNode.getName(), toReturn);
+            System.out.println(String.format("isNodeValueDefined for node %s, result %s", calledNode.getName(), toReturn));
             return toReturn;
-
-        }  else if (isInUnnamedImport(node, (DMNModelImpl) result.getModel())) {
+        }  else if (isInUnnamedImport(calledNode, (DMNModelImpl) result.getModel())) {
             // the node is an unnamed import
-            return result.getContext().isDefined(node.getName());
+            return result.getContext().isDefined(calledNode.getName());
         } else {
-            Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node
+            Optional<String> importAlias = callerNode.getModelImportAliasFor(calledNode.getModelNamespace(), calledNode
             .getModelName());
             if (importAlias.isPresent()) {
                 Object aliasContext = result.getContext().get(importAlias.get());
-                if ((aliasContext instanceof Map<?, ?>)) {
-                    Map<?, ?> map = (Map<?, ?>) aliasContext;
-                    return map.containsKey(node.getName());
+                if (aliasContext instanceof Map<?, ?> mappedContext) {
+                    return mappedContext.containsKey(calledNode.getName());
                 }
             }
             return false;
@@ -847,8 +903,8 @@ public class DMNRuntimeImpl
                     evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
                 } else if (dep instanceof DecisionServiceNode) {
                     evaluateDecisionService(context, result, (DecisionServiceNode) dep, typeCheck);
-                } else if (dep instanceof InputDataNode) {
-                    evaluateInputDataNode(context, result, (InputDataNode) dep, typeCheck);
+//                } else if (dep instanceof InputDataNode) {
+//                    evaluateInputDataNode(context, result, (InputDataNode) dep, typeCheck);
                 } else {
                     toReturn = true;
                     DMNMessage message = MsgUtil.reportMessage(logger,
