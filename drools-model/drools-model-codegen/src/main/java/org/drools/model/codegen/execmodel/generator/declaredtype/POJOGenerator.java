@@ -153,7 +153,25 @@ public class POJOGenerator implements CompilationPhase {
                                                                                    MARKER_INTERFACES)
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
-        addTypeMetadata(typeDescr.getTypeName());
+        
+        // Add type metadata including custom annotations
+        String fullTypeName = pkg.getName() + "." + typeDescr.getTypeName();
+        MethodCallExpr typeMetaDataCall = registerTypeMetaData(fullTypeName);
+        
+        // Add custom metadata from non-defined annotations
+        Map<String, Object> classMetaData = descrDeclaredTypeDefinition.getClassMetaData();
+        for (Map.Entry<String, Object> entry : classMetaData.entrySet()) {
+            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
+            typeMetaDataCall.addArgument(toStringLiteral(entry.getKey()));
+            if (entry.getValue() != null) {
+                MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
+                annotationValueCall.addArgument(toStringLiteral("value"));
+                annotationValueCall.addArgument(quote(entry.getValue().toString()));
+                typeMetaDataCall.addArgument(annotationValueCall);
+            }
+        }
+        
+        packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
     private void addTypeMetadata(String typeName) {

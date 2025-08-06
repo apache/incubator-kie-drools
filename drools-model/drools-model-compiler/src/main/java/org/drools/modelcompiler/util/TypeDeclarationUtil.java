@@ -65,9 +65,14 @@ public class TypeDeclarationUtil {
     }
 
     private static void wireMetaTypeAnnotations( TypeMetaData metaType, TypeDeclaration typeDeclaration ) {
+        ClassDefinition classDef = typeDeclaration.getTypeClassDef();
         for (Map.Entry<String, AnnotationValue[]> ann : metaType.getAnnotations().entrySet()) {
-            switch (ann.getKey()) {
+            String annotationName = ann.getKey();
+            boolean isKnownAnnotation = false;
+            
+            switch (annotationName) {
                 case "role":
+                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
                             typeDeclaration.setRole( Role.Type.EVENT );
@@ -75,6 +80,7 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "duration":
+                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
@@ -82,6 +88,7 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "timestamp":
+                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
@@ -89,6 +96,7 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "expires":
+                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
@@ -100,11 +108,26 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "propertyReactive":
+                    isKnownAnnotation = true;
                     typeDeclaration.setPropertyReactive( true );
                     break;
                 case "classReactive":
+                    isKnownAnnotation = true;
                     typeDeclaration.setPropertyReactive( false );
                     break;
+            }
+            
+            // For non-defined custom annotations, add them as metadata to the ClassDefinition
+            if (!isKnownAnnotation && classDef != null) {
+                // Get the value from the annotation values
+                Object value = null;
+                for (AnnotationValue annVal : ann.getValue()) {
+                    if (annVal.getKey().equals("value")) {
+                        value = annVal.getValue();
+                        break;
+                    }
+                }
+                classDef.addMetaData(annotationName, value);
             }
         }
     }

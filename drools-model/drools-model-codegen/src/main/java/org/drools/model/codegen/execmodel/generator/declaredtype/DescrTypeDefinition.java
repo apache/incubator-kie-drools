@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,6 +64,7 @@ public class DescrTypeDefinition implements TypeDefinition {
     private final TypeResolver typeResolver;
 
     private List<DroolsError> errors = new ArrayList<>();
+    private Map<String, Object> classMetaData = new HashMap<>();
 
     private Optional<String> superTypeName = Optional.empty();
     private Optional<Class<?>> abstractClass = Optional.empty();
@@ -109,10 +112,36 @@ public class DescrTypeDefinition implements TypeDefinition {
             }
             try {
                 annotations.add(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
-            } catch (UnkownAnnotationClassException | UnknownKeysInAnnotation e) {
-                // Do not do anything
+            } catch (UnkownAnnotationClassException e) {
+                // Store non-defined custom annotations as metadata
+                // Similar to ClassDefinitionFactory.wireAnnotationDefs() behavior
+                if (!isKieBuiltInAnnotation(ann.getName())) {
+                    classMetaData.put(ann.getName(), ann.getSingleValue());
+                }
+            } catch (UnknownKeysInAnnotation e) {
+                // For annotations with unknown keys, still try to store as metadata
+                if (!isKieBuiltInAnnotation(ann.getName())) {
+                    classMetaData.put(ann.getName(), ann.getSingleValue());
+                }
             }
         }
+    }
+    
+    private boolean isKieBuiltInAnnotation(String annotationName) {
+        // Check if it's a KIE built-in annotation that should be handled differently
+        // These are typically processed elsewhere in the system
+        return annotationName != null && (
+                annotationName.equals("key") ||
+                annotationName.equals("position") ||
+                annotationName.equals("Position") ||
+                annotationName.equals("role") ||
+                annotationName.equals("timestamp") ||
+                annotationName.equals("duration") ||
+                annotationName.equals("expires") ||
+                annotationName.equals("typesafe") ||
+                annotationName.equals("propertyChangeSupport") ||
+                annotationName.equals("propertyReactive")
+        );
     }
 
     @Override
@@ -332,5 +361,8 @@ public class DescrTypeDefinition implements TypeDefinition {
         return methods;
     }
 
+    public Map<String, Object> getClassMetaData() {
+        return classMetaData;
+    }
 
 }
