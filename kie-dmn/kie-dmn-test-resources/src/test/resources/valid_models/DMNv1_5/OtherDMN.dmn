@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+             namespace="https://kie.org/dmn/_3F761E07-7832-47D2-A99E-C1750AD19447"
+             id="_64648FB7-829E-4275-9D39-F41234C2F6F2"
+             name="DMN_03CFD66D-F67B-48BB-9E8A-6766FE6EB74C"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_73483D3A-D9F3-40D8-8C15-0245E3E7096F" name="myNumber" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>number</typeRef>
+    <typeConstraint id="_AC4CE241-A0E2-46A8-B42C-1641C065209E" kie:constraintType="expression">
+      <text>&gt;= 0</text>
+    </typeConstraint>
+  </itemDefinition>
+</definitions>

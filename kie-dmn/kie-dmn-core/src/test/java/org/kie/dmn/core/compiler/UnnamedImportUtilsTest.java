@@ -38,6 +38,7 @@ import org.kie.dmn.model.api.NamedElement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.addIfNotPresent;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isAlreadyNotPresent;
 
 class UnnamedImportUtilsTest {
 
@@ -100,6 +101,31 @@ class UnnamedImportUtilsTest {
                                     "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
+    @Test
+    void isAlreadyNotPresentWithEmptyName() throws IOException {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/ModelB.dmn",
+                this.getClass(),
+                "valid_models/DMNv1_5/ModelA.dmn", "valid_models/DMNv1_5/OtherDMN.dmn");
+        final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("https://kie.org/dmn/_9C879571-FD18-4DA9-895E-12DFB0755C5C",
+                "DMN_EF1B0B84-EAF4-4A13-87F9-0662C668D862");
+        assertThat(importingModel).isNotNull();
+
+        Definitions importingDefinitions = importingModel.getDefinitions();
+        URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
+                "valid_models/DMNv1_5/ModelA.dmn");
+        assertThat(importedModelFileResource).isNotNull();
+        try (InputStream is = importedModelFileResource.openStream()) {
+            String importedXml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            Definitions importedDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(importedXml);
+
+            assertThat(importedDefinitions.getDecisionService()).noneMatch(definition -> isNotPresent(importingDefinitions.getDecisionService(), definition));
+            assertThat(importedDefinitions.getBusinessContextElement()).noneMatch(definition -> isNotPresent(importingDefinitions.getBusinessContextElement(), definition));
+            assertThat(importedDefinitions.getDrgElement()).noneMatch(definition -> isNotPresent(importingDefinitions.getDrgElement(), definition));
+            assertThat(importedDefinitions.getImport()).noneMatch(definition -> isNotPresent(importingDefinitions.getImport(), definition));
+            assertThat(importedDefinitions.getItemDefinition()).noneMatch(definition -> isNotPresent(importingDefinitions.getItemDefinition(), definition));
+        }
+    }
+
     private void commonIsInUnnamedImportTrue(String importingModelRef, String importedModelRef) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelRef,
                                                                                        this.getClass(),
@@ -151,6 +177,10 @@ class UnnamedImportUtilsTest {
     private  <T extends NamedElement> boolean added(Collection<T> target, T source) {
         addIfNotPresent(target, source);
         return target.contains(source);
+    }
+
+    private  <T extends NamedElement> boolean isNotPresent(Collection<T> target, T source) {
+        return isAlreadyNotPresent(target, source);
     }
 
 }

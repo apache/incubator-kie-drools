@@ -20,6 +20,7 @@ package org.kie.dmn.core.compiler;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -78,12 +79,23 @@ public class UnnamedImportUtils {
     }
 
     static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source) {
-        if (target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()))) {
-            target.add(source);
-        }
-        if (target.stream().anyMatch(namedElement -> namedElement instanceof Import && namedElement.getName() != null &&
-                source.getName() != null && namedElement.getName().isEmpty() && source.getName().isEmpty() )) {
+        if (isAlreadyNotPresent(target, source)) {
             target.add(source);
         }
     }
+
+    static <T extends NamedElement> boolean isAlreadyNotPresent(Collection<T> target, T source) {
+        for (T namedElement : target) {
+            if (Objects.equals(namedElement.getName(), source.getName())) {
+                if (!(namedElement instanceof Import &&
+                        namedElement.getName() != null &&
+                        namedElement.getName().isEmpty())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
 }
