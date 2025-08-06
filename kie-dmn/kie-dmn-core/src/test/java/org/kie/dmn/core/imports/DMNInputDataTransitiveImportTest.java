@@ -236,10 +236,10 @@ class DMNInputDataTransitiveImportTest {
     @Test
     void testTransitiveImportWithChildDecisionsWithSameName() {
         List<Resource> resources = Arrays.asList(
-                ResourceFactory.newClassPathResource("ImportingNestedInputData.dmn"),
-                ResourceFactory.newClassPathResource("Child_A.dmn"),
-                ResourceFactory.newClassPathResource("Child_B.dmn"),
-                ResourceFactory.newClassPathResource("ParentModel.dmn")
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/ParentModel.dmn")
         );
 
         DMNRuntime dmnRuntime =
