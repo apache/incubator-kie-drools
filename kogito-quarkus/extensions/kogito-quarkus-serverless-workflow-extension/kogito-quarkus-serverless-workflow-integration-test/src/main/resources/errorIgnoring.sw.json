@@ -1,7 +1,6 @@
 {
   "id": "errorIgnoring",
   "version": "1.0",
-  "expressionLang": "jsonpath",
   "name": "Workflow Error example",
   "description": "An example of how to handle an exception thrown by a service",
   "start": "checkEven",
@@ -9,10 +8,6 @@
     {
       "name": "odd number",
       "code": "Odd situation"
-     },
-     {
-      "name": "bad request",
-      "code": "HTTP:400"
      }
   ],
   "functions": [
@@ -46,7 +41,7 @@
           "functionRef": {
             "refName": "isEven",
             "arguments": {
-              "number": "$.number"
+              "number": ".number"
             }
           }
         }
@@ -84,7 +79,7 @@
           "functionRef": {
             "refName": "printMessage",
             "arguments": {
-              "message": "$.numberType"
+              "message": ".numberType"
             }
           }
         }
@@ -100,25 +95,32 @@
           "functionRef" : {
             "refName": "publishPerfectSquare",
             "arguments": {
-              "type": "$.numberType",
-              "number": "$.number"
+              "type": ".numberType",
+              "number": ".number"
           }
           }
         }
       ],
-      "end": true,
-      "onErrors": [
-        {
-          "errorRef": "bad request",
-          "transition": "setError"
-        }
-      ]
+      "transition" : "customErrorHandling"
+    },
+    {
+       "name": "customErrorHandling",
+          "type": "switch",
+          "dataConditions": [
+            {
+              "condition": "$WORKFLOW.statusCode == 400",
+              "transition": "setError"
+            }
+          ],
+          "defaultCondition": {
+            "end": true
+          }
     },
     {
       "name": "setError",
       "type": "inject",
       "data": {
-        "perfect": "Error invoking publishPerfectSquare"
+        "error": "Error invoking publishPerfectSquare"
        },
       "end": true
      } 

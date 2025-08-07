@@ -16,22 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.serverless.workflow.suppliers;
+package org.kie.kogito.serverless.workflow.rest;
 
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.function.Function;
 
-import org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler;
+import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolverExtension;
 
-import com.github.javaparser.ast.expr.Expression;
+import static org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler.STATUS_CODE;
+import static org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler.STATUS_MESSAGE;
 
-import static org.jbpm.compiler.canonical.descriptors.ExpressionUtils.getObjectCreationExpr;
-
-public class JsonNodeResultHandlerSupplier extends JsonNodeResultHandler implements Supplier<Expression> {
-
-    private final Expression expression = getObjectCreationExpr(JsonNodeResultHandler.class);
-
+public class RestKogitoProcessContextResolver implements KogitoProcessContextResolverExtension {
     @Override
-    public Expression get() {
-        return expression;
+    public Map<String, Function<KogitoProcessContext, Object>> getKogitoProcessContextResolver() {
+        return Map.of(JsonNodeResultHandler.STATUS_CODE, k -> k.getVariable(STATUS_CODE),
+                JsonNodeResultHandler.STATUS_MESSAGE, k -> k.getVariable(STATUS_MESSAGE));
     }
 }

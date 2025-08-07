@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kogito.workitem.rest.resulthandlers;
+package org.kie.kogito.serverless.workflow.rest;
 
 import java.util.Map;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,11 +31,18 @@ import io.vertx.mutiny.ext.web.client.HttpResponse;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
 
 public class JsonNodeResultHandler implements RestWorkItemHandlerResult {
+
+    static final String STATUS_CODE = "statusCode";
+    static final String STATUS_MESSAGE = "statusMessage";
+
     @Override
     public Object apply(HttpResponse<Buffer> t, Class<?> u, KogitoProcessContext context) {
         Map<String, Object> metadata = context.getNodeInstance().getNode().getMetaData();
         if (metadata == null || toBoolean(metadata.getOrDefault("failOnStatusCode", Boolean.TRUE))) {
             checkStatusCode(t);
+        } else {
+            context.setVariable(STATUS_CODE, t.statusCode());
+            context.setVariable(STATUS_MESSAGE, t.statusMessage());
         }
         return apply(t, u);
     }

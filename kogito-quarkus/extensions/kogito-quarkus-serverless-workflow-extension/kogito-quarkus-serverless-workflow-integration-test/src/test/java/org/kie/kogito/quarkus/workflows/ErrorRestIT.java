@@ -46,7 +46,8 @@ public class ErrorRestIT {
                 .then()
                 .statusCode(201)
                 .body("workflowdata.numberType", is("odd"))
-                .body("workflowdata.perfect", is(false));
+                .body("workflowdata.perfect", is(false))
+                .body("workflowdata.error", is("Error invoking publishPerfectSquare"));
     }
 
     @Test
