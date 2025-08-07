@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,7 @@ public class DeadlineHelper {
 
     private static final Pattern deadLineSeparatorPattern = Pattern.compile("\\^");
     private static final Pattern listSeparatorPattern = Pattern.compile(",");
+    private static final Pattern shorthandDurationPattern = Pattern.compile("^(\\d+)(\\w+)$");
 
     public static ExpirationTime getExpirationTime(ScheduleInfo info) {
         ExpirationTime expirationTime;
@@ -172,8 +174,18 @@ public class DeadlineHelper {
             // not repeatable duration
             scheduleInfo.setDuration(parseDuration(dateComponents[0]));
         } else {
-            // not repeatable exact date
-            scheduleInfo.setEndDate(ZonedDateTime.parse(dateComponents[0]));
+            Duration shorthandDuration = parseShorthandDuration(dateComponents[0]);
+            if (shorthandDuration != null) {
+                //  Support shorthand durations like "1m" or "2h"
+                scheduleInfo.setDuration(shorthandDuration);
+            } else {
+                // not repeatable exact date
+                try {
+                    scheduleInfo.setEndDate(ZonedDateTime.parse(dateComponents[0]));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Invalid time format: " + timeStr, e);
+                }
+            }
         }
         return scheduleInfo;
     }
@@ -236,5 +248,75 @@ public class DeadlineHelper {
             throw new IllegalArgumentException("Missing duration specification for " + info);
         }
         return info.getDuration().toMillis();
+    }
+
+    private static Duration parseShorthandDuration(String timeStr) {
+        Matcher matcher = shorthandDurationPattern.matcher(timeStr);
+        if (matcher.matches()) {
+            long value = Long.parseLong(matcher.group(1));
+            String unitInput = matcher.group(2).toLowerCase();
+            DurationUnit unit = DurationUnit.fromString(unitInput);
+            if (unit == null) {
+                throw new IllegalArgumentException("Unknown shorthand duration unit: " + unitInput);
+            }
+            return unit.toDuration(value);
+        }
+        return null;
+    }
+
+    private enum DurationUnit {
+        SECONDS("s") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofSeconds(value);
+            }
+        },
+        MINUTES("m") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofMinutes(value);
+            }
+        },
+        HOURS("h") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofHours(value);
+            }
+        },
+        DAYS("d") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofDays(value);
+            }
+        },
+        WEEKS("w") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofDays(value * 7);
+            }
+        },
+        YEARS("y") {
+            @Override
+            Duration toDuration(long value) {
+                return Duration.ofDays(value * 365);
+            }
+        };
+
+        private final String alias;
+
+        DurationUnit(String alias) {
+            this.alias = alias;
+        }
+
+        abstract Duration toDuration(long value);
+
+        static DurationUnit fromString(String input) {
+            for (DurationUnit unit : values()) {
+                if (unit.alias.equals(input)) {
+                    return unit;
+                }
+            }
+            return null;
+        }
     }
 }

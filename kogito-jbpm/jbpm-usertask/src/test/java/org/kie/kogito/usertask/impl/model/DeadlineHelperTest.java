@@ -32,6 +32,7 @@ import org.kie.kogito.usertask.model.Reassignment;
 import org.kie.kogito.usertask.model.ScheduleInfo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeadlineHelperTest {
@@ -251,4 +252,59 @@ public class DeadlineHelperTest {
     private void assertEqualsDate(ZonedDateTime expectedDate, ZonedDateTime calculatedDate) {
         assertThat(calculatedDate.toInstant().getEpochSecond()).isEqualTo(expectedDate.toInstant().getEpochSecond());
     }
+
+    @Test
+    public void testStandaloneShorthandDuration() {
+        Collection<DeadlineInfo<Notification>> deadlines = DeadlineHelper.parseDeadlines(
+                "[subject:1 minute shorthand]@[1m]");
+        assertThat(deadlines).hasSize(1);
+        DeadlineInfo<Notification> deadlineInfo = deadlines.iterator().next();
+        assertThat(deadlineInfo.getNotification().getData()).containsEntry("subject", "1 minute shorthand");
+        Collection<ScheduleInfo> scheduling = deadlineInfo.getScheduleInfo();
+        assertThat(scheduling).hasSize(1);
+        ScheduleInfo scheduleInfo = scheduling.iterator().next();
+        assertThat(scheduleInfo.getDuration()).isEqualTo(Duration.ofMinutes(1));
+        assertThat(scheduleInfo.getNumRepetitions()).isZero();
+        assertThat(scheduleInfo.getEndDate()).isNull();
+        assertThat(scheduleInfo.getStartDate()).isNull();
+
+        ExpirationTime time = DeadlineHelper.getExpirationTime(scheduleInfo);
+        assertThat(time.repeatInterval()).isNull();
+        assertThat(time.repeatLimit()).isZero();
+        assertThat(ZonedDateTime.now().plus(Duration.ofMinutes(1)).isAfter(time.get())).isTrue();
+    }
+
+    @Test
+    public void testMultipleStandaloneShorthandDurations() {
+        Collection<DeadlineInfo<Notification>> deadlines = DeadlineHelper.parseDeadlines(
+                "[subject:1 min and 2 hours]@[1m,2h]");
+        assertThat(deadlines).hasSize(1);
+        DeadlineInfo<Notification> deadlineInfo = deadlines.iterator().next();
+        assertThat(deadlineInfo.getNotification().getData()).containsEntry("subject", "1 min and 2 hours");
+        Collection<ScheduleInfo> scheduling = deadlineInfo.getScheduleInfo();
+        assertThat(scheduling).hasSize(2);
+        assertThat(scheduling.stream().map(ScheduleInfo::getDuration))
+                .containsExactlyInAnyOrder(Duration.ofMinutes(1), Duration.ofHours(2));
+    }
+
+    @Test
+    public void testInvalidShorthandDuration() {
+        assertThatThrownBy(() -> DeadlineHelper.parseDeadlines("[subject:Invalid unit]@[1x]"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Unknown shorthand duration unit: x");
+    }
+
+    @Test
+    public void testZeroShorthandDuration() {
+        Collection<DeadlineInfo<Notification>> deadlines = DeadlineHelper.parseDeadlines(
+                "[subject:Zero seconds]@[0s]");
+        assertThat(deadlines).hasSize(1);
+        DeadlineInfo<Notification> deadlineInfo = deadlines.iterator().next();
+        assertThat(deadlineInfo.getNotification().getData()).containsEntry("subject", "Zero seconds");
+        Collection<ScheduleInfo> scheduling = deadlineInfo.getScheduleInfo();
+        assertThat(scheduling).hasSize(1);
+        ScheduleInfo scheduleInfo = scheduling.iterator().next();
+        assertThat(scheduleInfo.getDuration()).isEqualTo(Duration.ZERO);
+    }
+
 }
