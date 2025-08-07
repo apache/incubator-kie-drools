@@ -91,38 +91,6 @@ public class DMNRuntimeImpl
         }
     }
 
-//    static Map<String, Object> retrieveContext(Set<InputDataNode> inputs, Collection<Collection<List<String>>>
-//    importChainValues, Map<String, Object> context, Map<String, Object> baseInputs) {
-//        Map<String, Object> filteredInputs = getFilteredInputs(inputs, baseInputs);
-//        //chain.size() > 1 ensures only nested import paths are processed, preventing top-level keys from being
-//        duplicated in the context.
-//        List<List<String>> importChainAliases = importChainValues.stream().flatMap(Collection::stream).filter(chain
-//        -> chain.size() > 1).toList();
-//        return retrieveContext(importChainAliases, context, filteredInputs);
-//    }
-//
-//    static Map<String, Object> getFilteredInputs(Set<InputDataNode> inputs, Map<String, Object> baseInputs) {
-//        return inputs.stream()
-//            .map(InputDataNode::getName).filter(baseInputs::containsKey).filter(input -> baseInputs.get(input) !=
-//            null)
-//            .collect(Collectors.toMap(Function.identity(), baseInputs::get, (v1, v2) -> v1));
-//}
-//
-//    @SuppressWarnings("unchecked")
-//    static Map<String, Object> retrieveContext(List<List<String>> importChainAliases, Map<String, Object> context,
-//    Map<String, Object> filteredInputs) {
-//        System.out.println("importChainAliases " + importChainAliases);
-//        for (List<String> chain : importChainAliases) {
-//            Map<String, Object> current = context;
-//            for (int i = 0; i < chain.size() - 1; i++) {
-//                current = (Map<String, Object>) current.computeIfAbsent(chain.get(i), k -> new HashMap<>());
-//            }
-//            ((Map<String, Object>) current.computeIfAbsent(chain.get(chain.size() - 1), k -> new HashMap<>()))
-//            .putAll(filteredInputs);
-//        }
-//        return context;
-//    }
-
     @Override
     public List<DMNModel> getModels() {
         return runtimeKB.getModels();
@@ -150,10 +118,9 @@ public class DMNRuntimeImpl
         boolean strictMode = this.runtimeModeOption.equals(RuntimeModeOption.MODE.STRICT);
         DMNResultImpl result = createResult(model, context);
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll(eventManager, model, result);
-        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision
-        // explicitly.
-        Set<DecisionNode> decisions =
-                model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
+        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
+        Set<DecisionNode> decisions = model.getDecisions().stream()
+                .filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
         for (DecisionNode decision : decisions) {
             evaluateDecision(context, result, decision, performRuntimeTypeCheck, strictMode);
         }
@@ -289,16 +256,12 @@ public class DMNRuntimeImpl
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
-//        Map<String, Object> baseInputs = new HashMap<>(context.getAll());
-//        Map<String, Object> updatedContext = retrieveContext(model.getInputs(), ((DMNModelImpl) model)
-//        .getImportChainAliases().values(), context.getAll(), baseInputs);
-//        context.getAll().putAll(updatedContext);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
         populateResultContextWithTopmostParentsValues(result, (DMNModelImpl) model);
         return result;
     }
 
-    private void populateResultContextWithTopmostParentsValues(DMNResultImpl result, DMNModelImpl model) {
+    static void populateResultContextWithTopmostParentsValues(DMNResultImpl result, DMNModelImpl model) {
         Optional<Set<DMNModelImpl.ModelImportTuple>> optionalTopmostModels = getTopmostModel(model);
         if (optionalTopmostModels.isPresent()) {
             Set<DMNModelImpl.ModelImportTuple> topmostModels = optionalTopmostModels.get();
@@ -329,7 +292,7 @@ public class DMNRuntimeImpl
 
     }
 
-    private void populateContextWithInheritedData(DMNContext toPopulate, Map toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
+    static void populateContextWithInheritedData(DMNContext toPopulate, Map toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
        for (List<String> chainedModels : importingModel.getImportChainAliases().get(topmostNamespace)) {
            // The order is: first one -> importing model; last one -> parent model
            for (String chainedModel : chainedModels) {
@@ -351,7 +314,7 @@ public class DMNRuntimeImpl
        }
     }
 
-    private Optional<Set<DMNModelImpl.ModelImportTuple>> getTopmostModel(DMNModelImpl model) {
+    static Optional<Set<DMNModelImpl.ModelImportTuple>> getTopmostModel(DMNModelImpl model) {
         return model.getTopmostParents();
     }
 
@@ -363,8 +326,7 @@ public class DMNRuntimeImpl
     public DMNResult evaluateDecisionService(DMNModel model, DMNContext context, String decisionServiceName) {
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
-        Objects.requireNonNull(decisionServiceName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL,
-                                                                                "decisionServiceName"));
+        Objects.requireNonNull(decisionServiceName, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionServiceName"));
         boolean typeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = createResultImpl(model, context);
 
@@ -466,18 +428,6 @@ public class DMNRuntimeImpl
                                   t.getMessage());
         }
     }
-
-//    private void evaluateInputDataNode(DMNContext context, DMNResultImpl result, InputDataNode d,
-//                                       boolean typeCheck) {
-//        if (isNodeValueDefined(result, d, d)) {
-//            // already resolved
-//            return;
-//        }
-//        Object storedValue =  context.get(d.getName());
-//        if (storedValue != null) {
-//            result.getContext().set(d.getName(), storedValue);
-//        }
-//    }
 
     private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b,
                              boolean typeCheck) {
@@ -604,10 +554,7 @@ public class DMNRuntimeImpl
     private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode calledNode) {
         if (calledNode.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel()
                                                                                                 .getNamespace()))) {
-            boolean toReturn = result.getContext().isDefined(calledNode.getName());
-            logger.info("isNodeValueDefined for node {}, result {}", calledNode.getName(), toReturn);
-            System.out.println(String.format("isNodeValueDefined for node %s, result %s", calledNode.getName(), toReturn));
-            return toReturn;
+            return result.getContext().isDefined(calledNode.getName());
         }  else if (isInUnnamedImport(calledNode, (DMNModelImpl) result.getModel())) {
             // the node is an unnamed import
             return result.getContext().isDefined(calledNode.getName());
@@ -624,46 +571,13 @@ public class DMNRuntimeImpl
         }
     }
 
-//    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
-//        if (node.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel().getNamespace()))) {
-//            boolean toReturn = result.getContext().isDefined(node.getName());
-//            if (!toReturn) {
-//                Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(),
-//                                                                                 node.getModelName());
-//                if (importAlias.isPresent()) {
-//                    String aliasedName = importAlias.get() + "." + node.getName();
-//                    toReturn = result.getContext().isDefined(aliasedName);
-//                    logger.debug("toReturn {}", toReturn);
-//                }
-//            }
-//            System.out.printf("isNodeValueDefined for node %s, result %s%n", node.getName(), toReturn);
-//            return toReturn;
-//        } else if (isInUnnamedImport(node, (DMNModelImpl) result.getModel())) {
-//            // the node is an unnamed import
-//            return result.getContext().isDefined(node.getName());
-//        } else {
-//            Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(),
-//                                                                             node.getModelName());
-//            if (importAlias.isPresent()) {
-//                Object aliasContext = result.getContext().get(importAlias.get());
-//                if ((aliasContext instanceof Map<?, ?>)) {
-//                    Map<?, ?> map = (Map<?, ?>) aliasContext;
-//                    return map.containsKey(node.getName());
-//                }
-//            }
-//            return false;
-//        }
-//        //return false;
-//    }
-
     private boolean walkIntoImportScopeInternalDecisionInvocation(DMNResultImpl result, DMNModel dmnModel,
                                                                   DMNNode destinationNode) {
         if (destinationNode.getModelNamespace().equals(dmnModel.getNamespace())) {
             return false;
         } else {
             DMNModelImpl model = (DMNModelImpl) dmnModel;
-            Optional<String> importAlias = model.getImportAliasFor(destinationNode.getModelNamespace(),
-                                                                   destinationNode.getModelName());
+            Optional<String> importAlias = model.getImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
             if (importAlias.isPresent()) {
                 result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
                 return true;
@@ -690,8 +604,7 @@ public class DMNRuntimeImpl
                 // the destinationNode is an unnamed import
                 return false;
             } else {
-                Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(),
-                                                                                 destinationNode.getModelName());
+                Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
                 if (importAlias.isPresent()) {
                     result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
                     return true;
@@ -703,8 +616,7 @@ public class DMNRuntimeImpl
                                           null,
                                           null,
                                           Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
-                                          new QName(destinationNode.getModelNamespace(),
-                                                    destinationNode.getModelName()),
+                                          new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
                                           callerNode.getName()
                     );
                     return false;
@@ -727,8 +639,7 @@ public class DMNRuntimeImpl
                                           null,
                                           null,
                                           Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
-                                          new QName(destinationNode.getModelNamespace(),
-                                                    destinationNode.getModelName()),
+                                          new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
                                           callerNode.getName());
                     return false;
                 }
@@ -746,19 +657,16 @@ public class DMNRuntimeImpl
             return true;
         } else {
             // check if the decision was already evaluated before and returned error
-            DMNDecisionResult.DecisionEvaluationStatus status =
-                    Optional.ofNullable(result.getDecisionResultById(decisionId))
+            DMNDecisionResult.DecisionEvaluationStatus status = Optional.ofNullable(result.getDecisionResultById(decisionId))
                     .map(DMNDecisionResult::getEvaluationStatus)
-                    .orElse(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED); // it might be an imported
-            // Decision.
+                    .orElse(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED); // it might be an imported Decision.
             if (FAILED == status || SKIPPED == status || EVALUATING == status) {
                 return false;
             }
         }
         BeforeEvaluateDecisionEvent beforeEvaluateDecisionEvent = null;
         try {
-            beforeEvaluateDecisionEvent = DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision(eventManager,
-                                                                                                 decision, result);
+            beforeEvaluateDecisionEvent = DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision(eventManager, decision, result);
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
             if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
                 String decisionResultName = d.getName();
@@ -768,8 +676,7 @@ public class DMNRuntimeImpl
                     decisionResultName = importAliasFor.get() + "." + d.getName();
                 }
                 dr = new DMNDecisionResultImpl(decisionId, decisionResultName);
-                if (importAliasFor.isPresent()) { // otherwise is a transitive, skipped and not to be added to the
-                    // results:
+                if (importAliasFor.isPresent()) { // otherwise is a transitive, skipped and not to be added to the results:
                     result.addDecisionResult(dr);
                 }
             }
@@ -903,8 +810,6 @@ public class DMNRuntimeImpl
                     evaluateBKM(context, result, (BusinessKnowledgeModelNode) dep, typeCheck);
                 } else if (dep instanceof DecisionServiceNode) {
                     evaluateDecisionService(context, result, (DecisionServiceNode) dep, typeCheck);
-//                } else if (dep instanceof InputDataNode) {
-//                    evaluateInputDataNode(context, result, (InputDataNode) dep, typeCheck);
                 } else {
                     toReturn = true;
                     DMNMessage message = MsgUtil.reportMessage(logger,

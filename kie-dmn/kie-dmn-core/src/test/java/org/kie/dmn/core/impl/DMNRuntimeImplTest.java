@@ -1,131 +1,107 @@
-///*
-// * Licensed to the Apache Software Foundation (ASF) under one
-// * or more contributor license agreements.  See the NOTICE file
-// * distributed with this work for additional information
-// * regarding copyright ownership.  The ASF licenses this file
-// * to you under the Apache License, Version 2.0 (the
-// * "License"); you may not use this file except in compliance
-// * with the License.  You may obtain a copy of the License at
-// *
-// * http://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing,
-// * software distributed under the License is distributed on an
-// * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// * KIND, either express or implied.  See the License for the
-// * specific language governing permissions and limitations
-// * under the License.
-// */
-//package org.kie.dmn.core.impl;
-//
-//import org.junit.jupiter.api.Test;
-//import org.kie.dmn.api.core.ast.InputDataNode;
-//
-//import java.util.Arrays;
-//import java.util.Collection;
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.Set;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.when;
-//
-//class DMNRuntimeImplTest {
-//
-//
-//    @Test
-//    void testPopulateContextUsingAliases() {
-//        Collection<Collection<List<String>>> importChainValues = Arrays.asList(
-//                List.of(Arrays.asList("Model B", "modelA")),
-//                List.of(List.of("Model B")));
-//
-//        InputDataNode node1 = mock(InputDataNode.class);
-//        when(node1.getName()).thenReturn("Person name");
-//        Set<InputDataNode> inputs = new HashSet<>();
-//        inputs.add(node1);
-//
-//        Map<String, Object> context = new HashMap<>();
-//        context.put("Person name", "Klaus");
-//        Map<String, Object> baseInputs = new HashMap<>();
-//        baseInputs.put("Person name", "Klaus");
-//        Map<String, Object> expectedContext = new HashMap<>();
-//        Map<String, Object> modelA = new HashMap<>();
-//        modelA.put("Person name", "Klaus");
-//        expectedContext.put("Person name", "Klaus");
-//        Map<String, Object> modelB = new HashMap<>();
-//        modelB.put("modelA", modelA);
-//        expectedContext.put("Model B", modelB);
-//
-//        Map<String, Object> updatedContext = DMNRuntimeImpl.retrieveContext(inputs, importChainValues, context, baseInputs);
-//        assertThat(updatedContext).isEqualTo(expectedContext);
-//    }
-//
-//    @Test
-//    void testGetFilteredInputs() {
-//        InputDataNode node1 = mock(InputDataNode.class);
-//        when(node1.getName()).thenReturn("Person name");
-//        Set<InputDataNode> inputs = new HashSet<>();
-//        inputs.add(node1);
-//
-//        Map<String, Object> baseInputs = new HashMap<>();
-//        baseInputs.put("Person name", "Klaus");
-//
-//        Map<String, Object> expected = Map.of("Person name", "Klaus");
-//        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, baseInputs);
-//        assertThat(result).isEqualTo(expected);
-//    }
-//
-//    @Test
-//    void testGetFilteredInputsMultipleValue() {
-//        InputDataNode node1 = mock(InputDataNode.class);
-//        when(node1.getName()).thenReturn("Person age");
-//        Set<InputDataNode> inputs = new HashSet<>();
-//        inputs.add(node1);
-//
-//        Map<String, Object> baseInputs = new HashMap<>();
-//        baseInputs.put("Person name", "Klaus");
-//        baseInputs.put("Person age", 27);
-//        baseInputs.put("Person phone", 1234567899);
-//
-//        Map<String, Object> expected = Map.of("Person age", 27);
-//        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, baseInputs);
-//        assertThat(result).isEqualTo(expected);
-//    }
-//
-//    @Test
-//    void testGetFilteredInputsWithEmptyBaseInput() {
-//        InputDataNode node1 = mock(InputDataNode.class);
-//        when(node1.getName()).thenReturn("Person age");
-//        Set<InputDataNode> inputs = new HashSet<>();
-//        inputs.add(node1);
-//
-//        Map<String, Object> baseInputs = new HashMap<>();
-//
-//        Map<String, Object> result = DMNRuntimeImpl.getFilteredInputs(inputs, baseInputs);
-//        assertThat(result).isEmpty();
-//    }
-//
-//    @Test
-//    void testRetrieveContext() {
-//        List<List<String>> importChainAliases = List.of(List.of("Model B", "modelA"));
-//
-//        Map<String, Object> context = new HashMap<>();
-//        context.put("Person name", "Klaus");
-//        Map<String, Object> filteredInputs = new HashMap<>();
-//        filteredInputs.put("Person name", "Klaus");
-//
-//        Map<String, Object> expectedContext = new HashMap<>();
-//        Map<String, Object> modelA = new HashMap<>();
-//        modelA.put("Person name", "Klaus");
-//        expectedContext.put("Person name", "Klaus");
-//        Map<String, Object> modelB = new HashMap<>();
-//        modelB.put("modelA", modelA);
-//        expectedContext.put("Model B", modelB);
-//
-//        Map<String, Object> updatedContext = DMNRuntimeImpl.retrieveContext(importChainAliases, context, filteredInputs);
-//        assertThat(updatedContext).isEqualTo(expectedContext);
-//    }
-//}
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.kie.dmn.core.impl;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.internal.io.ResourceFactory;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class DMNRuntimeImplTest {
+
+
+    @Test
+    void testGetTopmostModel() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                "-49dd554a0928", "ImportingNestedInputData");
+        Optional<Set<DMNModelImpl.ModelImportTuple>> topmostModel = DMNRuntimeImpl.getTopmostModel((DMNModelImpl) model);
+        topmostModel.ifPresent(set ->
+                assertThat(set)
+                        .extracting(DMNModelImpl.ModelImportTuple::getImportName)
+                        .containsOnly("parentModel")
+        );
+    }
+
+    @Test
+    void testPopulateContextWithInheritedData() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                "-49dd554a0928", "ImportingNestedInputData");
+        DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
+        DMNContext context = dmnRuntime.newContext();
+        context.set("Person name", "Klaus");
+        DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
+        result.setContext(context);
+        DMNRuntimeImpl.populateResultContextWithTopmostParentsValues(result, (DMNModelImpl) model);
+
+        DMNContext context2 = dmnRuntime.newContext();
+        context2.set("Person", Map.of("name", "Klaus"));
+
+        Map<String, Object> parentModel = Map.of("Person", Map.of("name", "Klaus"));
+        Map<String, Object> childA = Map.of("parentModel", parentModel);
+        Map<String, Object> childB = Map.of("parentModel", parentModel);
+        context2.set("Child A", childA);
+        context2.set("Child B", childB);
+
+        assertThat(result.getContext()).isEqualTo(context2);
+
+    }
+}

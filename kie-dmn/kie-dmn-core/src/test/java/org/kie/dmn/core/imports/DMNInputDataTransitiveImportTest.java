@@ -189,17 +189,9 @@ class DMNInputDataTransitiveImportTest {
 
         DMNContext context = dmnRuntime.newContext();
         context.set("Person name", "Klaus");
-//        Map<String, Object> parentModel = new HashMap<>();
-//        parentModel.put("Person name", "Klaus");
-//
-////        Map <String, Object> childA = new HashMap<>();
-////        childA.put("parentModel", parentModel);
-//        Map<String, Object> childB = new HashMap<>();
-//        childB.put("parentModel", parentModel);
-////        context.set("Child A", childA);
-//        context.set("Child B", childB);
 
         DMNResult result = dmnRuntime.evaluateByName(model, context, "Decision based on A and B");
+        System.out.println(result.getContext());
         result.getMessages(DMNMessage.Severity.ERROR).forEach(System.out::println);
         assertThat(result.hasErrors()).isFalse();
         assertThat(result.getDecisionResultByName("Decision based on A and B").getResult()).isEqualTo("A: Evaluating " +

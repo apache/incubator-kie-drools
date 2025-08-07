@@ -28,8 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.xml.namespace.QName;
@@ -187,14 +185,14 @@ public class DMNImportsUtil {
                                                                                   (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
         DMNModelImpl located = (DMNModelImpl) resolvedResult.cata(msg -> {
             MsgUtil.reportMessage(LOGGER,
-                                  DMNMessage.Severity.ERROR,
-                                  i,
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.IMPORT_NOT_FOUND_FOR_NODE,
-                                  msg,
-                                  i);
+                    DMNMessage.Severity.ERROR,
+                    i,
+                    model,
+                    null,
+                    null,
+                    Msg.IMPORT_NOT_FOUND_FOR_NODE,
+                    msg,
+                    i);
             return null;
         }, Function.identity());
         checkLocatedDMNModel(i, located, model, toMerge);
@@ -218,14 +216,6 @@ public class DMNImportsUtil {
             // because otherwise we would have to deal with clashing name aliases, or similar issues
             if (importAlias != null && !importAlias.isEmpty()) {
                 model.setImportAliasForNS(importAlias, located.getNamespace(), located.getName());
-//                located.getImportAliasesForNS().forEach(new BiConsumer<String, QName>() {
-//                    @Override
-//                    public void accept(String iAlias, QName value) {
-//                        String iNS = value.getNamespaceURI();
-//                        String iModelName = value.getLocalPart();
-//                        model.setImportAliasForNS(iAlias, iNS, iModelName);
-//                    }
-//                });
                 importFromModel(model, located, importAlias);
             } else {
                 toMerge.add(located);
@@ -304,8 +294,7 @@ public class DMNImportsUtil {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
             String pmmlFileName =
-                    ((LocalUri.LocalUriPathComponent) pmmlModelLocalUriId.asLocalUri().parent()).getComponent() +
-                            ".pmml";
+                    ((LocalUri.LocalUriPathComponent) pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
             toReturn = getPmmlFileContent(pmmlFileName, classLoader);
             EfestoPMMLUtils.setPmmlSourceToContextStorage(pmmlModelLocalUriId, toReturn);
         }
@@ -319,13 +308,13 @@ public class DMNImportsUtil {
      */
     static void logErrorMessage(DMNModelImpl model, String importType) {
         MsgUtil.reportMessage(LOGGER,
-                              DMNMessage.Severity.ERROR,
-                              null,
-                              model,
-                              null,
-                              null,
-                              Msg.IMPORT_TYPE_UNKNOWN,
-                              importType);
+                DMNMessage.Severity.ERROR,
+                null,
+                model,
+                null,
+                null,
+                Msg.IMPORT_TYPE_UNKNOWN,
+                importType);
     }
 
     /**
