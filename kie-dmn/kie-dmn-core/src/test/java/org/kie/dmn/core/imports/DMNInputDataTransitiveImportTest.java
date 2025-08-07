@@ -224,4 +224,29 @@ class DMNInputDataTransitiveImportTest {
         DMNResult result = dmnRuntime.evaluateByName(model, context, "Decision based on A and B");
         assertThat(result.hasErrors()).isTrue();
     }
+
+    @Test
+    void testTransitiveImportWithChildDecisionsWithSameName() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/imports/transitive-import-same-decision-name/ParentModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel(
+                "https://www.apache.org/customnamespace/_10435dcd-8774-4575-a338-49dd554a0928",
+                "ImportingNestedInputData");
+        assertThat(model).isNotNull();
+
+        DMNContext context = dmnRuntime.newContext();
+        context.set("Person name", "Klaus");
+        DMNResult result = dmnRuntime.evaluateByName(model, context, "Decision based on A and B");
+        result.getMessages(DMNMessage.Severity.ERROR).forEach(System.out::println);
+        assertThat(result.hasErrors()).isFalse();
+        assertThat(result.getDecisionResultByName("Decision based on A and B").getResult()).isEqualTo(
+                "A: Evaluating Say Hello to: Hello, Klaus; B: Evaluating Say Hello to: Hello, Klaus");
+    }
 }
