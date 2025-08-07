@@ -79,13 +79,16 @@ public class UnnamedImportUtils {
     }
 
     static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source) {
-        if (isAlreadyNotPresent(target, source)) {
+        if (checkIfNotPresent(target, source)) {
             target.add(source);
         }
     }
 
-    static <T extends NamedElement> boolean isAlreadyNotPresent(Collection<T> target, T source) {
+    static <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source) {
         for (T namedElement : target) {
+            if(!namedElement.getClass().equals(source.getClass())) {
+                throw new IllegalArgumentException("type mismatch" + "Expected " + source.getClass().getName() + ", but found " + namedElement.getClass().getName());
+            }
             if (Objects.equals(namedElement.getName(), source.getName())) {
                 if (!(namedElement instanceof Import &&
                         namedElement.getName() != null &&

@@ -25,6 +25,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
@@ -34,11 +35,14 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.v1_5.TImport;
+import org.kie.dmn.model.v1_5.TInputData;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.addIfNotPresent;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
-import static org.kie.dmn.core.compiler.UnnamedImportUtils.isAlreadyNotPresent;
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.checkIfNotPresent;
 
 class UnnamedImportUtilsTest {
 
@@ -102,29 +106,56 @@ class UnnamedImportUtilsTest {
     }
 
     @Test
-    void isAlreadyNotPresentWithEmptyName() throws IOException {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/ModelB.dmn",
-                this.getClass(),
-                "valid_models/DMNv1_5/ModelA.dmn", "valid_models/DMNv1_5/OtherDMN.dmn");
-        final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("https://kie.org/dmn/_9C879571-FD18-4DA9-895E-12DFB0755C5C",
-                "DMN_EF1B0B84-EAF4-4A13-87F9-0662C668D862");
-        assertThat(importingModel).isNotNull();
-
-        Definitions importingDefinitions = importingModel.getDefinitions();
-        URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
-                "valid_models/DMNv1_5/ModelA.dmn");
-        assertThat(importedModelFileResource).isNotNull();
-        try (InputStream is = importedModelFileResource.openStream()) {
-            String importedXml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            Definitions importedDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(importedXml);
-
-            assertThat(importedDefinitions.getDecisionService()).noneMatch(definition -> isNotPresent(importingDefinitions.getDecisionService(), definition));
-            assertThat(importedDefinitions.getBusinessContextElement()).noneMatch(definition -> isNotPresent(importingDefinitions.getBusinessContextElement(), definition));
-            assertThat(importedDefinitions.getDrgElement()).noneMatch(definition -> isNotPresent(importingDefinitions.getDrgElement(), definition));
-            assertThat(importedDefinitions.getImport()).noneMatch(definition -> isNotPresent(importingDefinitions.getImport(), definition));
-            assertThat(importedDefinitions.getItemDefinition()).noneMatch(definition -> isNotPresent(importingDefinitions.getItemDefinition(), definition));
-        }
+    void checkIfNotPresentWithMatchingName() {
+        TInputData targetElement = new TInputData();
+        targetElement.setName("modelName");
+        TInputData sourceElement = new TInputData();
+        sourceElement.setName("modelName");
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement);
+        assertThat(result).isFalse();
     }
+
+    @Test
+    void checkIfNotPresentWithNonMatchingName() {
+        TInputData targetElement = new TInputData();
+        targetElement.setName("targetName");
+        TInputData sourceElement = new TInputData();
+        sourceElement.setName("sourceName");
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void checkIfNotPresentWithNamedImport() {
+        TImport unnamedImport = new TImport();
+        unnamedImport.setName("targetName");
+        TImport source = new TImport();
+        source.setName("sourceName");
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void checkIfNotPresentWithEmptyNamedImport() {
+        TImport unnamedImport = new TImport();
+        unnamedImport.setName("");
+        TImport source = new TImport();
+        source.setName("");
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void checkIfNotPresentWithDifferentTargetClass() {
+        TInputData targetElement = new TInputData();
+        targetElement.setName("modelName");
+        TImport source = new TImport();
+        source.setName("modelName");
+        assertThatThrownBy(() -> UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), source))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("type mismatch");
+    }
+
 
     private void commonIsInUnnamedImportTrue(String importingModelRef, String importedModelRef) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelRef,
@@ -179,8 +210,8 @@ class UnnamedImportUtilsTest {
         return target.contains(source);
     }
 
-    private  <T extends NamedElement> boolean isNotPresent(Collection<T> target, T source) {
-        return isAlreadyNotPresent(target, source);
+    private  <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source) {
+        return UnnamedImportUtils.checkIfNotPresent(target, source);
     }
 
 }
