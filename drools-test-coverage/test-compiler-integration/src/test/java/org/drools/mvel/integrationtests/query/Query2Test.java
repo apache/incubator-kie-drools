@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.integrationtests;
+package org.drools.mvel.integrationtests.query;
 
 import java.util.stream.Stream;
 
