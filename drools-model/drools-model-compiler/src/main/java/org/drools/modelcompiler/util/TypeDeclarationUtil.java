@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.factmodel.AccessibleFact;
 import org.drools.base.factmodel.AnnotationDefinition;
@@ -49,6 +50,10 @@ import static org.drools.base.rule.TypeDeclaration.createTypeDeclarationForBean;
 
 public class TypeDeclarationUtil {
 
+    private static final Set<String> KNOWN_ANNOTATIONS = Set.of(
+        "role", "duration", "timestamp", "expires", "propertyReactive", "classReactive"
+    );
+
     public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption, TypeResolver typeResolver) {
         Class<?> typeClass = metaType.getType();
 
@@ -68,11 +73,10 @@ public class TypeDeclarationUtil {
         ClassDefinition classDef = typeDeclaration.getTypeClassDef();
         for (Map.Entry<String, AnnotationValue[]> ann : metaType.getAnnotations().entrySet()) {
             String annotationName = ann.getKey();
-            boolean isKnownAnnotation = false;
+            boolean isKnownAnnotation = KNOWN_ANNOTATIONS.contains(annotationName);
             
             switch (annotationName) {
                 case "role":
-                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
                             typeDeclaration.setRole( Role.Type.EVENT );
@@ -80,7 +84,6 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "duration":
-                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             wireDurationAccessor( annVal.getValue().toString(), typeDeclaration );
@@ -88,7 +91,6 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "timestamp":
-                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             wireTimestampAccessor( annVal.getValue().toString(), typeDeclaration );
@@ -96,7 +98,6 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "expires":
-                    isKnownAnnotation = true;
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" )) {
                             long offset = TimeIntervalParser.parseSingle( annVal.getValue().toString() );
@@ -108,11 +109,9 @@ public class TypeDeclarationUtil {
                     }
                     break;
                 case "propertyReactive":
-                    isKnownAnnotation = true;
                     typeDeclaration.setPropertyReactive( true );
                     break;
                 case "classReactive":
-                    isKnownAnnotation = true;
                     typeDeclaration.setPropertyReactive( false );
                     break;
             }
@@ -128,6 +127,28 @@ public class TypeDeclarationUtil {
                     }
                 }
                 classDef.addMetaData(annotationName, value);
+            }
+        }
+
+        // Process field metadata from TypeMetaData
+        if (classDef != null) {
+            for (TypeMetaData.FieldMetaData fieldMetaData : metaType.getFields()) {
+                String fieldName = fieldMetaData.getFieldName();
+                FieldDefinition fieldDef = classDef.getField(fieldName);
+
+                if (fieldDef != null) {
+                    // Add field metadata to the FieldDefinition
+                    for (Map.Entry<String, AnnotationValue[]> fieldAnn : fieldMetaData.getAnnotations().entrySet()) {
+                        Object value = null;
+                        for (AnnotationValue annVal : fieldAnn.getValue()) {
+                            if (annVal.getKey().equals("value")) {
+                                value = annVal.getValue();
+                                break;
+                            }
+                        }
+                        fieldDef.addMetaData(fieldAnn.getKey(), value);
+                    }
+                }
             }
         }
     }

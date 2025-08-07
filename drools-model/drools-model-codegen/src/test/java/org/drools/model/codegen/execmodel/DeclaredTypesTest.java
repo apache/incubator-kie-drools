@@ -26,7 +26,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -34,18 +33,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.drools.base.rule.IndexableConstraint;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.base.rule.IndexableConstraint;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -600,14 +601,14 @@ public class DeclaredTypesTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testNonDefinedCustomAnnotation(RUN_TYPE runType) {
+    void testNonDefinedCustomAnnotation(RUN_TYPE runType) {
         String str = "package org.example.custom; \n" +
                 "import " + Date.class.getCanonicalName() + ";\n" +
                 "import " + Address.class.getCanonicalName() + ";\n" +
                 "\n" +
                 "declare Person\n" +
                 "    @xxxAuthor( Bob )\n" +
-                "    @xxxDateOfCreation( 01-Feb-2009 )\n" +
+                "    @role(event)\n" + // @role is a built-in annotation
                 "\n" +
                 "    name : String @key @xxxMaxLength( 30 )\n" + // @key is a built-in annotation
                 "    dateOfBirth : Date\n" +
@@ -620,24 +621,22 @@ public class DeclaredTypesTest extends BaseModelTest {
         FactType person = kBase.getFactType( "org.example.custom", "Person" );
 
         Map<String, Object> classMetaData = person.getMetaData();
-        System.out.println("== Class Meta Data ==");
-        System.out.println(classMetaData);
         assertThat(classMetaData).isNotNull();
         assertThat(classMetaData.get("xxxAuthor")).isEqualTo("Bob");
-        assertThat(classMetaData.get("xxxDateOfCreation")).isEqualTo("01-Feb-2009");
+        assertThat(classMetaData.containsKey("role")).isTrue();
+        assertThat(classMetaData.get("event")).isNull();
 
         FactField field = person.getField("name" );
         Map<String, Object> fieldMetaData = field.getMetaData();
-        System.out.println("== Field Meta Data ==");
-        System.out.println(fieldMetaData);
         assertThat(fieldMetaData).isNotNull();
         assertThat(fieldMetaData.get("xxxMaxLength")).isEqualTo("30");
+        assertThat(fieldMetaData.containsKey("key")).isTrue();
         assertThat(fieldMetaData.get("key")).isNull();
     }
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testDefinedCustomAnnotation(RUN_TYPE runType) throws Exception {
+    void testDefinedCustomAnnotation(RUN_TYPE runType) throws Exception {
         String str = "package org.example.custom; \n" +
                 "import " + Date.class.getCanonicalName() + ";\n" +
                 "import " + Address.class.getCanonicalName() + ";\n" +
@@ -658,22 +657,21 @@ public class DeclaredTypesTest extends BaseModelTest {
         FactType person = kBase.getFactType( "org.example.custom", "Person" );
 
         Class<?> factClass = person.getFactClass();
-        System.out.println("== Person Fact Class ==");
-        System.out.println(factClass.getName());
-        System.out.println(Arrays.stream(factClass.getAnnotations()).toList());
+        MyAuthor classAnnotation = factClass.getAnnotation(MyAuthor.class);
+        assertThat(classAnnotation).isNotNull();
+        assertThat(classAnnotation.value()).isEqualTo("Bob");
+
         Field factField = factClass.getDeclaredField("name");
-        System.out.println("  name : " + Arrays.toString(factField.getAnnotations()));
+        MyMaxLength fieldAnnotation = factField.getAnnotation(MyMaxLength.class);
+        assertThat(fieldAnnotation).isNotNull();
+        assertThat(fieldAnnotation.value()).isEqualTo(30);
 
         Map<String, Object> classMetaData = person.getMetaData();
-        System.out.println("== Class Meta Data ==");
-        System.out.println(classMetaData);
-        assertThat(classMetaData).as("Defined Annotation should not be stored in metaData").isNull();
+        assertThat(classMetaData).as("Defined custom annotation should not be stored in metaData").isNull();
 
         FactField field = person.getField("name" );
         Map<String, Object> fieldMetaData = field.getMetaData();
-        System.out.println("== Field Meta Data ==");
-        System.out.println(fieldMetaData);
-        assertThat(fieldMetaData).as("Defined Annotation should not be stored in metaData").isNull();
+        assertThat(fieldMetaData).as("Defined custom annotation should not be stored in metaData").isNull();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -686,5 +684,31 @@ public class DeclaredTypesTest extends BaseModelTest {
     @Target({ElementType.FIELD})
     public @interface MyMaxLength {
         int value();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testDefinedCustomAnnotationWithUnknownProperty(RUN_TYPE runType) {
+        String str = "package org.example.custom; \n" +
+                "import " + Date.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "import " + MyAuthor.class.getCanonicalName() + ";\n" +
+                "import " + MyMaxLength.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "declare Person\n" +
+                "    @MyAuthor( yyy = \"Bob\" )\n" +
+                "\n" +
+                "    name : String @MyMaxLength( zzz = 30 )\n" +
+                "    dateOfBirth : Date\n" +
+                "    address : Address\n" +
+                "end";
+
+        Results results = createKieBuilder(runType, str).getResults();
+
+        assertThat(results.getMessages(Message.Level.ERROR))
+                .hasSize(2)
+                .extracting(Message::getText)
+                .containsExactlyInAnyOrder("Unknown annotation property yyy",
+                                           "Unknown annotation property zzz");
     }
 }

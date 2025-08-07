@@ -163,11 +163,24 @@ public class POJOGenerator implements CompilationPhase {
         for (Map.Entry<String, Object> entry : classMetaData.entrySet()) {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
             typeMetaDataCall.addArgument(toStringLiteral(entry.getKey()));
-            if (entry.getValue() != null) {
-                MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
-                annotationValueCall.addArgument(toStringLiteral("value"));
-                annotationValueCall.addArgument(quote(entry.getValue().toString()));
-                typeMetaDataCall.addArgument(annotationValueCall);
+            addAnnotationValueIfNotNull(typeMetaDataCall, entry.getValue());
+        }
+
+        // Add field metadata
+        for (DescrFieldDefinition field : descrDeclaredTypeDefinition.getFields()) {
+            Map<String, Object> fieldMetaData = field.getFieldMetaData();
+            if (!fieldMetaData.isEmpty()) {
+                // First, add the field to the TypeMetaData
+                typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "withField");
+                typeMetaDataCall.addArgument(toStringLiteral(field.getFieldName()));
+
+                // Then add each annotation as field metadata
+                for (Map.Entry<String, Object> entry : fieldMetaData.entrySet()) {
+                    typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "withFieldAnnotation");
+                    typeMetaDataCall.addArgument(toStringLiteral(field.getFieldName()));
+                    typeMetaDataCall.addArgument(toStringLiteral(entry.getKey()));
+                    addAnnotationValueIfNotNull(typeMetaDataCall, entry.getValue());
+                }
             }
         }
         
@@ -209,6 +222,15 @@ public class POJOGenerator implements CompilationPhase {
         MethodCallExpr typeMetaDataCall = createDslTopLevelMethod(TYPE_META_DATA_CALL);
         typeMetaDataCall.addArgument(className + ".class");
         return typeMetaDataCall;
+    }
+
+    private static void addAnnotationValueIfNotNull(MethodCallExpr typeMetaDataCall, Object value) {
+        if (value != null) {
+            MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
+            annotationValueCall.addArgument(toStringLiteral("value"));
+            annotationValueCall.addArgument(quote(value.toString()));
+            typeMetaDataCall.addArgument(annotationValueCall);
+        }
     }
 
     public static String quote(String str) {

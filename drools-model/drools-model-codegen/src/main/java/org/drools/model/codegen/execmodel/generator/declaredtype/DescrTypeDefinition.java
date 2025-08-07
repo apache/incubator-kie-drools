@@ -48,6 +48,7 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+import static org.drools.model.codegen.execmodel.generator.declaredtype.DescrAnnotationDefinition.BUILTIN_ANNOTATION_PACKAGE;
 import static org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator.quote;
 import static org.drools.util.StreamUtils.optionalToStream;
 
@@ -114,34 +115,19 @@ public class DescrTypeDefinition implements TypeDefinition {
                 annotations.add(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
             } catch (UnkownAnnotationClassException e) {
                 // Store non-defined custom annotations as metadata
-                // Similar to ClassDefinitionFactory.wireAnnotationDefs() behavior
-                if (!isKieBuiltInAnnotation(ann.getName())) {
-                    classMetaData.put(ann.getName(), ann.getSingleValue());
-                }
+                // class level built-in annotations are not added here. Rather added in TypeDeclarationUtil at the later phase
+                classMetaData.put(ann.getName(), ann.getSingleValue());
             } catch (UnknownKeysInAnnotation e) {
-                // For annotations with unknown keys, still try to store as metadata
-                if (!isKieBuiltInAnnotation(ann.getName())) {
-                    classMetaData.put(ann.getName(), ann.getSingleValue());
-                }
+                // Add build errors for unknown annotation properties
+                e.getValues().stream()
+                        .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
+                        .forEach(errors::add);
             }
         }
     }
     
-    private boolean isKieBuiltInAnnotation(String annotationName) {
-        // Check if it's a KIE built-in annotation that should be handled differently
-        // These are typically processed elsewhere in the system
-        return annotationName != null && (
-                annotationName.equals("key") ||
-                annotationName.equals("position") ||
-                annotationName.equals("Position") ||
-                annotationName.equals("role") ||
-                annotationName.equals("timestamp") ||
-                annotationName.equals("duration") ||
-                annotationName.equals("expires") ||
-                annotationName.equals("typesafe") ||
-                annotationName.equals("propertyChangeSupport") ||
-                annotationName.equals("propertyReactive")
-        );
+    private boolean isBuiltInAnnotation(DescrAnnotationDefinition descrAnnotationDefinition) {
+        return descrAnnotationDefinition.getName().startsWith(BUILTIN_ANNOTATION_PACKAGE);
     }
 
     @Override
@@ -272,15 +258,33 @@ public class DescrTypeDefinition implements TypeDefinition {
     private ProcessedTypeField processTypeField(int position, TypeFieldDescr typeFieldDescr) {
         DescrFieldDefinition typeField = new DescrFieldDefinition(typeFieldDescr);
 
-        List<DescrAnnotationDefinition> parsedAnnotations = typeFieldDescr.getAnnotations().stream()
-                .map(this::createAnnotationDefinition)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
+        // Create a map of successfully parsed annotations, keyed by original annotation name
+        Map<String, DescrAnnotationDefinition> parsedAnnotations = new HashMap<>();
+        for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+            Optional<DescrAnnotationDefinition> parsed = createAnnotationDefinition(ann);
+            if (parsed.isPresent()) {
+                parsedAnnotations.put(ann.getName(), parsed.get());
+            }
+        }
 
-        parsedAnnotations.stream().filter(a -> !a.isPosition()).forEach(a -> processDefinitions(typeField, a));
+        parsedAnnotations.values().stream().filter(a -> !a.isPosition()).forEach(a -> processDefinitions(typeField, a));
 
-        int currentFieldPosition = setFieldPosition(position, typeField, parsedAnnotations);
+        // Add built-in annotations and non-defined custom annotations as field metadata
+        for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+            DescrAnnotationDefinition parsed = parsedAnnotations.get(ann.getName());
+            if (parsed != null) {
+                // This annotation was successfully parsed - check if it's built-in
+                if (isBuiltInAnnotation(parsed)) {
+                    Object value = ann.getSingleValue();
+                    typeField.addFieldMetaData(ann.getName(), value);
+                }
+            } else {
+                // This annotation failed to parse - it's a non-defined custom annotation
+                typeField.addFieldMetaData(ann.getName(), ann.getSingleValue());
+            }
+        }
+
+        int currentFieldPosition = setFieldPosition(position, typeField, parsedAnnotations.values());
 
         return new ProcessedTypeField(typeField, currentFieldPosition);
     }
@@ -297,7 +301,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         }
     }
 
-    private int setFieldPosition(int initialPosition, DescrFieldDefinition typeField, List<DescrAnnotationDefinition> allAnnotations) {
+    private int setFieldPosition(int initialPosition, DescrFieldDefinition typeField, Collection<DescrAnnotationDefinition> allAnnotations) {
         int currentFieldPosition = initialPosition;
         Optional<DescrAnnotationDefinition> positionAnnotation = allAnnotations
                 .stream()
