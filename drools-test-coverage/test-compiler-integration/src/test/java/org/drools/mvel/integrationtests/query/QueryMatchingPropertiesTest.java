@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.integrationtests;
+package org.drools.mvel.integrationtests.query;
 
 
 import java.util.Map;
@@ -70,6 +70,8 @@ public class QueryMatchingPropertiesTest {
 
 
 	private KieSession kieSession;
+
+	private int counter;
 	
 	@AfterEach
 	public void tearDown() {
@@ -101,7 +103,7 @@ public class QueryMatchingPropertiesTest {
 
         Foo foo = foo("x");
 	    kieSession.insert(foo);
-	    Bar bar = bar(foo.id + "x");
+	    Bar bar = bar(differentIdFrom(foo.id));
 	    kieSession.insert(bar);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFooWithBarOnId");
@@ -119,7 +121,7 @@ public class QueryMatchingPropertiesTest {
 		Bar bar = bar(foo.id);
 		FactHandle handleForBar = kieSession.insert(bar);
 
-		Bar changedBar = bar(foo.id + "1");
+		Bar changedBar = bar(differentIdFrom(foo.id));
 		kieSession.update(handleForBar, changedBar);
 		
 		QueryResults queryResults = kieSession.getQueryResults("MatchFooWithBarOnId");
@@ -167,7 +169,7 @@ public class QueryMatchingPropertiesTest {
 
         Foo foo = foo("x");
 	    kieSession.insert(foo);
-        Foo foo2 = foo(foo.id + "2");
+        Foo foo2 = foo(differentIdFrom(foo.id));
 	    kieSession.insert(foo2);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFooWithFooOnId");
@@ -208,7 +210,7 @@ public class QueryMatchingPropertiesTest {
         Foo foo2 = foo(foo.id);
 	    FactHandle handleForFoo2 = kieSession.insert(foo2);
 	    
-	    Foo changedFoo2 = foo(foo.id + "3");
+	    Foo changedFoo2 = foo(differentIdFrom(foo.id));
 	    kieSession.update(handleForFoo2, changedFoo2);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFooWithFooOnId");
@@ -225,7 +227,7 @@ public class QueryMatchingPropertiesTest {
 
         Foo foo = foo("x");
 	    kieSession.insert(foo);
-        Foo foo2 = foo(foo.id + "3");
+        Foo foo2 = foo(differentIdFrom(foo.id));
 	    FactHandle handleForFoo2 = kieSession.insert(foo2);
 	    
 	    Foo changedFoo2 = foo(foo.id);
@@ -267,7 +269,7 @@ public class QueryMatchingPropertiesTest {
         
         Foo foo = foo("x");
 		kieSession.insert(foo);
-        SuperFoo superFoo = superFoo(foo.id + "1");
+        SuperFoo superFoo = superFoo(differentIdFrom(foo.id));
 		kieSession.insert(superFoo);
 
 		QueryResults queryResults = kieSession.getQueryResults("MatchFooWithSuperFooOnId");
@@ -284,7 +286,7 @@ public class QueryMatchingPropertiesTest {
         
         Foo foo = foo("x");
 		kieSession.insert(foo);
-        SuperFoo superFoo = superFoo(foo.id + "1");
+        SuperFoo superFoo = superFoo(differentIdFrom(foo.id));
 		FactHandle handleForSuperFoo = kieSession.insert(superFoo);
 		
 		SuperFoo changedSuperFoo = superFoo(foo.id);
@@ -315,7 +317,8 @@ public class QueryMatchingPropertiesTest {
 		
 	    assertThat(queryResults.toList()).hasSize(2).containsExactlyInAnyOrder(
 	    		fooSuperFoo(foo, superFoo), 
-	    		fooSuperFoo(superFoo, superFoo));        }
+	    		fooSuperFoo(superFoo, superFoo));        
+    }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
@@ -390,6 +393,11 @@ public class QueryMatchingPropertiesTest {
         return knowledgeBase.newKieSession();
     }
 
+    private String differentIdFrom(String id) {
+    	counter++;
+    	return id + counter; 
+    }
+    
     private static Bar bar(String id) {
     	Bar bar = new Bar();
     	bar.setId(id);
