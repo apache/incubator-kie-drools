@@ -138,6 +138,7 @@ public class FieldConstraintDescrVisitor {
 
         restriction.setPatternIsNot(pattern.isPatternNot());
         restriction.setFieldPath(field.getPath());
+        restriction.setFieldName(field.getName());
         restriction.setOperator(Operator.determineOperator(descr.getEvaluator(),
                 descr.isNegated()));
         restriction.setOrderNumber(orderNumber);

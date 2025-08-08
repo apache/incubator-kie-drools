@@ -49,6 +49,7 @@ public class VerifierComponentType
     public static final VerifierComponentType ENTRY_POINT_DESCR = new VerifierComponentType("entryPointDescr");
     public static final VerifierComponentType WORKING_MEMORY = new VerifierComponentType("workingMemory");
     public static final VerifierComponentType IMPORT = new VerifierComponentType("import");
+    public static final VerifierComponentType DEFINITION = new VerifierComponentType("definition");
     public static final VerifierComponentType FIELD_LEVEL_VARIABLE = new VerifierComponentType("fieldLevelVariable");
 
     private final String type;
