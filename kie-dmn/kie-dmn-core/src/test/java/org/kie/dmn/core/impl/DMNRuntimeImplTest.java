@@ -19,23 +19,14 @@
 package org.kie.dmn.core.impl;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
-import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.io.ResourceFactory;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.kie.dmn.core.impl.DMNRuntimeImpl.getTopmostModel;
 
 class DMNRuntimeImplTest {
 
@@ -64,7 +52,7 @@ class DMNRuntimeImplTest {
                 DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
         DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
                 "-49dd554a0928", "ImportingNestedInputData");
-        Optional<Set<DMNModelImpl.ModelImportTuple>> topmostModel = DMNRuntimeImpl.getTopmostModel((DMNModelImpl) model);
+        Optional<Set<DMNModelImpl.ModelImportTuple>> topmostModel = getTopmostModel((DMNModelImpl) model);
         topmostModel.ifPresent(set ->
                 assertThat(set)
                         .extracting(DMNModelImpl.ModelImportTuple::getImportName)
@@ -73,7 +61,7 @@ class DMNRuntimeImplTest {
     }
 
     @Test
-    void testPopulateContextWithInheritedData() {
+    void testPopulateResultContextWithTopmostParentsValues() {
         List<Resource> resources = Arrays.asList(
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
                 ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
@@ -93,15 +81,85 @@ class DMNRuntimeImplTest {
         DMNRuntimeImpl.populateResultContextWithTopmostParentsValues(result, (DMNModelImpl) model);
 
         DMNContext context2 = dmnRuntime.newContext();
-        context2.set("Person", Map.of("name", "Klaus"));
-
-        Map<String, Object> parentModel = Map.of("Person", Map.of("name", "Klaus"));
+        Map<String, Object> parentModel = Map.of("Person name", "Klaus");
         Map<String, Object> childA = Map.of("parentModel", parentModel);
         Map<String, Object> childB = Map.of("parentModel", parentModel);
+        context2.set("Person name", "Klaus");
         context2.set("Child A", childA);
         context2.set("Child B", childB);
 
-        assertThat(result.getContext()).isEqualTo(context2);
-
+        assertThat(result.getContext()).usingRecursiveComparison().isEqualTo(context2);
     }
+
+    @Test
+    void testPopulateInputsFromTopmostModel() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel importingModel = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                "-49dd554a0928", "ImportingNestedInputData");
+        DMNModel dmnModel = dmnRuntime.getModel("http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "ParentModel");
+
+        Set<DMNModelImpl.ModelImportTuple> topmostModels = new HashSet<>();
+        DMNModelImpl.ModelImportTuple topmostModelTuple = new DMNModelImpl.ModelImportTuple("parentModel", (DMNModelImpl) dmnModel);
+        topmostModels.add(topmostModelTuple);
+
+        DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
+        DMNContext context = dmnRuntime.newContext();
+        context.set("Person name", "Klaus");
+        DMNResultImpl result = dmnResultFactory.newDMNResultImpl(importingModel);
+        result.setContext(context);
+
+        DMNContext context2 = dmnRuntime.newContext();
+        Map<String, Object> parentModel = Map.of("Person name", "Klaus");
+        Map<String, Object> childA = Map.of("parentModel", parentModel);
+        Map<String, Object> childB = Map.of("parentModel", parentModel);
+        context2.set("Person name", "Klaus");
+        context2.set("Child A", childA);
+        context2.set("Child B", childB);
+
+        DMNRuntimeImpl.populateInputsFromTopmostModel(result, (DMNModelImpl) importingModel, topmostModels);
+        System.out.println(result.getContext());
+        assertThat(result.getContext()).usingRecursiveComparison().isEqualTo(context2);
+    }
+
+    @Test
+    void testPopulateContextWithInheritedData() {
+        List<Resource> resources = Arrays.asList(
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ImportingNestedInputData.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_A.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/Child_B.dmn"),
+                ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ParentModel.dmn")
+        );
+
+        DMNRuntime dmnRuntime =
+                DMNRuntimeBuilder.fromDefaults().buildConfiguration().fromResources(resources).getOrElseThrow(RuntimeException::new);
+        DMNModel model = dmnRuntime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338" +
+                "-49dd554a0928", "ImportingNestedInputData");
+
+        DMNContext context = dmnRuntime.newContext();
+        Map<String, Object> parentModel = Map.of("Person name", "Klaus");
+        Map<String, Object> childA = Map.of("parentModel", parentModel);
+        Map<String, Object> childB = Map.of("parentModel", parentModel);
+        context.set("Person name", "Klaus");
+        context.set("Child A", childA);
+        context.set("Child B", childB);
+
+        DMNContext toPopulate = dmnRuntime.newContext();
+        toPopulate.set("Person name", "Klaus");
+
+        Map mappedData = Map.of("Person name", "Klaus");
+        String importName = "parentModel";
+        String topmostNamespace = "http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9";
+
+        DMNRuntimeImpl.populateContextWithInheritedData(toPopulate, mappedData, importName, topmostNamespace, (DMNModelImpl) model);
+        assertThat(toPopulate).usingRecursiveComparison().isEqualTo(context);
+    }
+
 }

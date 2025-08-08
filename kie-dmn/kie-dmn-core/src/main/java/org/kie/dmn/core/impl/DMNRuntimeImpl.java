@@ -265,31 +265,34 @@ public class DMNRuntimeImpl
         Optional<Set<DMNModelImpl.ModelImportTuple>> optionalTopmostModels = getTopmostModel(model);
         if (optionalTopmostModels.isPresent()) {
             Set<DMNModelImpl.ModelImportTuple> topmostModels = optionalTopmostModels.get();
-            for (DMNModelImpl.ModelImportTuple topmostModelTuple : topmostModels) {
-                DMNModelImpl topmostModel = topmostModelTuple.getModel();
-                topmostModel.getInputs().forEach(topmostInput -> {
-                    Object storedValue = result.getContext().get(topmostInput.getName());
-                    if (storedValue != null) {
-                        Object parentData = result.getContext().get(topmostModelTuple.getImportName());
-                        if (parentData instanceof Map mappedData) {
-                            try {
-                                mappedData.put(topmostInput.getName(), storedValue);
-                            } catch (Exception e) {
-                                logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
-                            }
-                        } else if (parentData == null) {
-                            Map mappedData = new HashMap<>();
-                            mappedData.put(topmostInput.getName(), storedValue);
-                            populateContextWithInheritedData(result.getContext(), mappedData,
-                                                             topmostModelTuple.getImportName(),
-                                                             topmostModelTuple.getModel().getNamespace(),
-                                                             model);
-                        }
-                    }
-                });
-            }
+            populateInputsFromTopmostModel(result, model, topmostModels);
         }
+    }
 
+    static void populateInputsFromTopmostModel(DMNResultImpl result, DMNModelImpl model, Set<DMNModelImpl.ModelImportTuple> topmostModels) {
+        for (DMNModelImpl.ModelImportTuple topmostModelTuple : topmostModels) {
+            DMNModelImpl topmostModel = topmostModelTuple.getModel();
+            topmostModel.getInputs().forEach(topmostInput -> {
+                Object storedValue = result.getContext().get(topmostInput.getName());
+                if (storedValue != null) {
+                    Object parentData = result.getContext().get(topmostModelTuple.getImportName());
+                    if (parentData instanceof Map mappedData) {
+                        try {
+                            mappedData.put(topmostInput.getName(), storedValue);
+                        } catch (Exception e) {
+                            logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
+                        }
+                    } else if (parentData == null) {
+                        Map mappedData = new HashMap<>();
+                        mappedData.put(topmostInput.getName(), storedValue);
+                        populateContextWithInheritedData(result.getContext(), mappedData,
+                                topmostModelTuple.getImportName(),
+                                topmostModelTuple.getModel().getNamespace(),
+                                model);
+                    }
+                }
+            });
+        }
     }
 
     static void populateContextWithInheritedData(DMNContext toPopulate, Map toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
