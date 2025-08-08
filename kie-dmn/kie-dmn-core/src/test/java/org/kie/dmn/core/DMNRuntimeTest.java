@@ -3681,32 +3681,4 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
     }
 
-//    @ParameterizedTest
-//    @MethodSource("params")
-//    void testValidModel(boolean useExecModelCompiler) {
-//        init(useExecModelCompiler);
-//        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("multiple/ImportedModel.dmn", this.getClass());
-//        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_6B0AD797-1CA7-45BD-8942-791F36526A89", "DMN_CA451E6C-14B2-4CA6-B8C4-C5BBCBD2FB40");
-//        assertThat(dmnModel).isNotNull();
-//        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
-//    }
-//
-//
-//    @ParameterizedTest
-//    @MethodSource("params")
-//    void testModel(boolean useExecModelCompiler) {
-//        init(useExecModelCompiler);
-//        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("multiple/ImportingModel.dmn", this.getClass(), "multiple/ImportedModel.dmn");
-//        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_7CBF2741-CA67-4979-A383-49D787FB3642", "DMN_5AE0999E-35B2-45C1-9B02-B9413CA3442C");
-//        assertThat(dmnModel).isNotNull();
-//        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
-//
-////        DMNContext context = DMNFactory.newContext();
-////        context.set("a input", 7);
-////
-////        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-////        assertThat(dmnResult.hasErrors()).isFalse();
-//
-//    }
-
 }
