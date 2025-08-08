@@ -59,7 +59,7 @@ public class PackageDescrVisitor {
 
         visitImports(descr.getImports());
 
-        TypeDeclarationDescrVisitor typeDeclarationDescrVisitor = new TypeDeclarationDescrVisitor(data);
+        TypeDeclarationDescrVisitor typeDeclarationDescrVisitor = new TypeDeclarationDescrVisitor(data, rulePackage);
         typeDeclarationDescrVisitor.visit(descr.getTypeDeclarations());
 
         visitRules(descr.getRules());
