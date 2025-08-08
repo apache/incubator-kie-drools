@@ -20,9 +20,11 @@ package org.drools.verifier.visitor;
 
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.verifier.components.Definition;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.data.VerifierData;
 
 import java.util.List;
@@ -31,13 +33,18 @@ import java.util.Map;
 public class TypeDeclarationDescrVisitor {
 
     private final VerifierData data;
+    private final RulePackage rulePackage;
 
-    public TypeDeclarationDescrVisitor(VerifierData data) {
+    public TypeDeclarationDescrVisitor(VerifierData data, RulePackage rulePackage) {
         this.data = data;
+        this.rulePackage = rulePackage;
     }
 
     public void visit(List<TypeDeclarationDescr> typeDeclarationDescrs) {
         for (TypeDeclarationDescr typeDeclaration : typeDeclarationDescrs) {
+            // Create Definition component for DRL type definitions
+            Definition definition = new Definition(typeDeclaration, rulePackage);
+            data.add(definition);
             Import objectImport = data.getImportByName(typeDeclaration.getTypeName());
             String objectTypeName;
             if (objectImport == null) {
@@ -71,6 +78,7 @@ public class TypeDeclarationDescrVisitor {
                 Map<String, Object> values = typeDeclaration.getAnnotation(annDescr.getName()).getValueMap();
                 for (String value : values.keySet()) {
                     objectType.getMetadata().put(annDescr.getName(), value);
+                    definition.getMetadata().put(annDescr.getName(), values.get(value));
                 }
             }
         }
