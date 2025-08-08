@@ -21,24 +21,38 @@ package org.drools.verifier.components;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Definition extends PackageComponent<TypeDeclarationDescr> {
 
     private String typeName;
     private String superTypeName;
     private Map<String, Object> metadata = new HashMap<>();
+    private Map<String, String> declaredFields = new HashMap<>();
 
     public Definition(TypeDeclarationDescr descr, RulePackage rulePackage) {
         super(descr, rulePackage);
         this.typeName = descr.getTypeName();
         this.superTypeName = descr.getSuperTypeName();
+        initializeDeclaredFields(descr);
     }
 
     protected Definition(TypeDeclarationDescr descr, String packageName) {
         super(descr, packageName);
         this.typeName = descr.getTypeName();
         this.superTypeName = descr.getSuperTypeName();
+        initializeDeclaredFields(descr);
+    }
+
+    private void initializeDeclaredFields(TypeDeclarationDescr descr) {
+        if (descr.getFields() != null) {
+            for (String fieldName : descr.getFields().keySet()) {
+                String fieldType = descr.getFields().get(fieldName).getPattern().getObjectType();
+                this.declaredFields.put(fieldName, fieldType);
+            }
+        }
     }
 
     @Override
@@ -77,12 +91,33 @@ public class Definition extends PackageComponent<TypeDeclarationDescr> {
         this.metadata = metadata;
     }
 
+    public Map<String, String> getDeclaredFields() {
+        return declaredFields;
+    }
+
+    public void setDeclaredFields(Map<String, String> declaredFields) {
+        this.declaredFields = declaredFields;
+    }
+
+    public boolean hasField(String fieldName) {
+        return declaredFields.containsKey(fieldName);
+    }
+
+    public String getFieldType(String fieldName) {
+        return declaredFields.get(fieldName);
+    }
+
+    public Set<String> getFieldNames() {
+        return declaredFields.keySet();
+    }
+
     @Override
     public String toString() {
         return "Definition{" +
                 "typeName='" + typeName + '\'' +
                 ", packageName='" + getPackageName() + '\'' +
                 ", superTypeName='" + superTypeName + '\'' +
+                ", declaredFields=" + declaredFields +
                 '}';
     }
 }

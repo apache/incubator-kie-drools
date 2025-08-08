@@ -226,6 +226,19 @@ public class DefinitionValidationTest extends TestBase {
         }
 
         assertThat(definitionNames).containsExactlyInAnyOrder("Person", "Address", "Vehicle");
+        
+        // Verify that definitions track their declared fields
+        for (VerifierComponent component : definitions) {
+            Definition definition = (Definition) component;
+            assertThat(definition.getDeclaredFields()).isNotEmpty();
+            
+            if ("Person".equals(definition.getTypeName())) {
+                assertThat(definition.hasField("name")).isTrue();
+                assertThat(definition.hasField("age")).isTrue();
+                assertThat(definition.hasField("address")).isTrue();
+                assertThat(definition.getFieldNames()).containsExactlyInAnyOrder("name", "age", "address");
+            }
+        }
     }
 
     @Test
