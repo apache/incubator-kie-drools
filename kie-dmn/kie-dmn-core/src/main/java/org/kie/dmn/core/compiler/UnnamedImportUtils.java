@@ -24,9 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.Import;
-import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.api.*;
 
 /**
  * Class meant to provide helper methods to deal with unnamed model imports
@@ -66,28 +64,34 @@ public class UnnamedImportUtils {
         // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original one,
         // Here we try to put all the definitions from the "imported" model inside the parent one
         parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
-        addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService());
-        addIfNotPresent(parentDefinitions.getBusinessContextElement(), mergedDefinitions.getBusinessContextElement());
-        addIfNotPresent(parentDefinitions.getDrgElement(), mergedDefinitions.getDrgElement());
-        addIfNotPresent(parentDefinitions.getImport(), mergedDefinitions.getImport());
-        addIfNotPresent(parentDefinitions.getItemDefinition(), mergedDefinitions.getItemDefinition());
+        addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService(), DecisionService.class);
+        addIfNotPresent(parentDefinitions.getBusinessContextElement(), mergedDefinitions.getBusinessContextElement(), BusinessContextElement.class);
+        addIfNotPresent(parentDefinitions.getDrgElement(), mergedDefinitions.getDrgElement(), DRGElement.class);
+        addIfNotPresent(parentDefinitions.getImport(), mergedDefinitions.getImport(), Import.class);
+        addIfNotPresent(parentDefinitions.getItemDefinition(), mergedDefinitions.getItemDefinition(), ItemDefinition.class);
         mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
     }
 
-    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, Collection<T> source) {
-        source.forEach(sourceElement -> addIfNotPresent(target, sourceElement));
+    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, Collection<T> source, Class expectedClass) {
+        source.forEach(sourceElement -> {
+            if(!expectedClass.isAssignableFrom(sourceElement.getClass())) {
+                throw new IllegalStateException("type mismatch : " + "Expected " + expectedClass.getName() + ", but found " + sourceElement.getClass().getName());
+            }
+            addIfNotPresent(target, sourceElement, expectedClass);
+        });
+
     }
 
-    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source) {
-        if (checkIfNotPresent(target, source)) {
+    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source, Class expectedClass) {
+        if (checkIfNotPresent(target, source, expectedClass)) {
             target.add(source);
         }
     }
 
-    static <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source) {
+    static <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source, Class expectedClass) {
         for (T namedElement : target) {
-            if(!namedElement.getClass().equals(source.getClass())) {
-                throw new IllegalArgumentException("type mismatch" + "Expected " + source.getClass().getName() + ", but found " + namedElement.getClass().getName());
+            if(!expectedClass.isAssignableFrom(namedElement.getClass()) ) {
+                throw new IllegalStateException("type mismatch : " + "Expected " + expectedClass.getName() + ", but found " + namedElement.getClass().getName());
             }
             if (Objects.equals(namedElement.getName(), source.getName())) {
                 if (!(namedElement instanceof Import &&

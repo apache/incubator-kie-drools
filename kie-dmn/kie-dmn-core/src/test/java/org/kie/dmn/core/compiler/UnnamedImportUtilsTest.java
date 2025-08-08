@@ -33,8 +33,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.api.*;
 import org.kie.dmn.model.v1_5.TImport;
 import org.kie.dmn.model.v1_5.TInputData;
 
@@ -85,11 +84,11 @@ class UnnamedImportUtilsTest {
         try (InputStream is = importedModelFileResource.openStream()) {
             String xml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Definitions definitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(xml);
-            assertThat(definitions.getDecisionService()).allMatch(this::added);
-            assertThat(definitions.getBusinessContextElement()).allMatch(this::added);
-            assertThat(definitions.getDrgElement()).allMatch(this::added);
-            assertThat(definitions.getImport()).allMatch(this::added);
-            assertThat(definitions.getItemDefinition()).allMatch(this::added);
+            assertThat(definitions.getDecisionService()).allMatch(source -> added(source, DecisionService.class));
+            assertThat(definitions.getBusinessContextElement()).allMatch(source -> added(source, BusinessContextElement.class));
+            assertThat(definitions.getDrgElement()).allMatch(source -> added(source, DRGElement.class));
+            assertThat(definitions.getImport()).allMatch(source -> added(source, Import.class));
+            assertThat(definitions.getItemDefinition()).allMatch(source -> added(source, ItemDefinition.class));
         }
     }
 
@@ -111,7 +110,7 @@ class UnnamedImportUtilsTest {
         targetElement.setName("modelName");
         TInputData sourceElement = new TInputData();
         sourceElement.setName("modelName");
-        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement);
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement, TInputData.class);
         assertThat(result).isFalse();
     }
 
@@ -121,7 +120,7 @@ class UnnamedImportUtilsTest {
         targetElement.setName("targetName");
         TInputData sourceElement = new TInputData();
         sourceElement.setName("sourceName");
-        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement);
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), sourceElement, TInputData.class);
         assertThat(result).isTrue();
     }
 
@@ -131,7 +130,7 @@ class UnnamedImportUtilsTest {
         unnamedImport.setName("targetName");
         TImport source = new TImport();
         source.setName("sourceName");
-        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source);
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source, TImport.class);
         assertThat(result).isTrue();
     }
 
@@ -141,7 +140,7 @@ class UnnamedImportUtilsTest {
         unnamedImport.setName("");
         TImport source = new TImport();
         source.setName("");
-        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source);
+        boolean result = UnnamedImportUtils.checkIfNotPresent(List.of(unnamedImport), source, TImport.class);
         assertThat(result).isTrue();
     }
 
@@ -151,8 +150,8 @@ class UnnamedImportUtilsTest {
         targetElement.setName("modelName");
         TImport source = new TImport();
         source.setName("modelName");
-        assertThatThrownBy(() -> UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), source))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> UnnamedImportUtils.checkIfNotPresent(List.of(targetElement), source, DecisionService.class))
+                .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("type mismatch");
     }
 
@@ -193,25 +192,25 @@ class UnnamedImportUtilsTest {
         try (InputStream is = importedModelFileResource.openStream()) {
             String importedXml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Definitions importedDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(importedXml);
-            assertThat(importedDefinitions.getDecisionService()).noneMatch(definition -> added(importingDefinitions.getDecisionService(), definition));
-            assertThat(importedDefinitions.getBusinessContextElement()).noneMatch(definition -> added(importingDefinitions.getBusinessContextElement(), definition));
-            assertThat(importedDefinitions.getDrgElement()).noneMatch(definition -> added(importingDefinitions.getDrgElement(), definition));
-            assertThat(importedDefinitions.getImport()).noneMatch(definition -> added(importingDefinitions.getImport(), definition));
-            assertThat(importedDefinitions.getItemDefinition()).noneMatch(definition -> added(importingDefinitions.getItemDefinition(), definition));
+            assertThat(importedDefinitions.getDecisionService()).noneMatch(definition -> added(importingDefinitions.getDecisionService(), definition, DecisionService.class));
+            assertThat(importedDefinitions.getBusinessContextElement()).noneMatch(definition -> added(importingDefinitions.getBusinessContextElement(), definition, BusinessContextElement.class));
+            assertThat(importedDefinitions.getDrgElement()).noneMatch(definition -> added(importingDefinitions.getDrgElement(), definition, DRGElement.class));
+            assertThat(importedDefinitions.getImport()).noneMatch(definition -> added(importingDefinitions.getImport(), definition, Import.class));
+            assertThat(importedDefinitions.getItemDefinition()).noneMatch(definition -> added(importingDefinitions.getItemDefinition(), definition, ItemDefinition.class));
         }
     }
 
-    private  <T extends NamedElement> boolean added(T source) {
-        return added(new ArrayList<>(), source);
+    private  <T extends NamedElement> boolean added(T source, Class expectedClass) {
+        return added(new ArrayList<>(), source, expectedClass);
     }
 
-    private  <T extends NamedElement> boolean added(Collection<T> target, T source) {
-        addIfNotPresent(target, source);
+    private  <T extends NamedElement> boolean added(Collection<T> target, T source, Class expectedClass) {
+        addIfNotPresent(target, source, expectedClass);
         return target.contains(source);
     }
 
-    private  <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source) {
-        return UnnamedImportUtils.checkIfNotPresent(target, source);
+    private  <T extends NamedElement> boolean checkIfNotPresent(Collection<T> target, T source, Class expectedClass) {
+        return UnnamedImportUtils.checkIfNotPresent(target, source, expectedClass);
     }
 
 }
