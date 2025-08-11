@@ -34,8 +34,6 @@
 
   <properties>
     <java.module.name>org.kie.ci.test.jar.with.dep</java.module.name>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
   </properties>
 
   <dependencies>
