@@ -87,9 +87,7 @@
 
     <!-- Plugin configuration properties -->
     <maven.min.version>3.8.1</maven.min.version>
-    <maven.compiler.release>11</maven.compiler.release>
-    <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
