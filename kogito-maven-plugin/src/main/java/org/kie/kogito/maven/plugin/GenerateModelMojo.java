@@ -81,10 +81,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(defaultValue = "3.10.2", property = "version.compiler.plugin")
     private String compilerPluginVersion;
 
-    @Parameter(defaultValue = "17", property = "maven.compiler.source")
+    @Parameter(defaultValue = "17", property = "maven.compiler.release")
     private String compilerSourceJavaVersion;
 
-    @Parameter(defaultValue = "17", property = "maven.compiler.target")
+    @Parameter(defaultValue = "17", property = "maven.compiler.release")
     private String compilerTargetJavaVersion;
 
     @Component

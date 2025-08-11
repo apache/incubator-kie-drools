@@ -27,13 +27,11 @@
     <artifactId>springboot</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
+
   <artifactId>kogito-spring-boot-archetype</artifactId>
   <packaging>maven-archetype</packaging>
   <name>Kogito :: Spring Boot :: Maven Archetype</name>
   <description>Kogito based on Spring Boot runtime Archetype</description>
-
-
-
 
   <dependencyManagement>
     <dependencies>
