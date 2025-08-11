@@ -125,7 +125,6 @@ class DMNRuntimeImplTest {
         context2.set("Child B", childB);
 
         DMNRuntimeImpl.populateInputsFromTopmostModel(result, (DMNModelImpl) importingModel, topmostModels);
-        System.out.println(result.getContext());
         assertThat(result.getContext()).usingRecursiveComparison().isEqualTo(context2);
     }
 
