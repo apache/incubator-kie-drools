@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,6 +48,7 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+import static org.drools.model.codegen.execmodel.generator.declaredtype.DescrAnnotationDefinition.BUILTIN_ANNOTATION_PACKAGE;
 import static org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator.quote;
 import static org.drools.util.StreamUtils.optionalToStream;
 
@@ -62,6 +65,7 @@ public class DescrTypeDefinition implements TypeDefinition {
     private final TypeResolver typeResolver;
 
     private List<DroolsError> errors = new ArrayList<>();
+    private Map<String, Object> classMetaData = new HashMap<>();
 
     private Optional<String> superTypeName = Optional.empty();
     private Optional<Class<?>> abstractClass = Optional.empty();
@@ -109,10 +113,21 @@ public class DescrTypeDefinition implements TypeDefinition {
             }
             try {
                 annotations.add(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
-            } catch (UnkownAnnotationClassException | UnknownKeysInAnnotation e) {
-                // Do not do anything
+            } catch (UnkownAnnotationClassException e) {
+                // Store non-defined custom annotations as metadata
+                // Class level built-in annotations are not added here; they are added in TypeDeclarationUtil at a later phase.
+                classMetaData.put(ann.getName(), ann.getSingleValue());
+            } catch (UnknownKeysInAnnotation e) {
+                // Add build errors for unknown annotation properties
+                e.getValues().stream()
+                        .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
+                        .forEach(errors::add);
             }
         }
+    }
+    
+    private boolean isBuiltInAnnotation(DescrAnnotationDefinition descrAnnotationDefinition) {
+        return descrAnnotationDefinition.getName().startsWith(BUILTIN_ANNOTATION_PACKAGE);
     }
 
     @Override
@@ -243,15 +258,38 @@ public class DescrTypeDefinition implements TypeDefinition {
     private ProcessedTypeField processTypeField(int position, TypeFieldDescr typeFieldDescr) {
         DescrFieldDefinition typeField = new DescrFieldDefinition(typeFieldDescr);
 
-        List<DescrAnnotationDefinition> parsedAnnotations = typeFieldDescr.getAnnotations().stream()
-                .map(this::createAnnotationDefinition)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
+        // Create a map of successfully parsed annotations, keyed by original annotation name
+        Map<String, DescrAnnotationDefinition> parsedAnnotations = new HashMap<>();
+        Map<String, Boolean> unknownClassAnnotations = new HashMap<>();  // Track which annotations had unknown class
 
-        parsedAnnotations.stream().filter(a -> !a.isPosition()).forEach(a -> processDefinitions(typeField, a));
+        for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+            try {
+                DescrAnnotationDefinition parsed = DescrAnnotationDefinition.fromDescr(typeResolver, ann);
+                parsedAnnotations.put(ann.getName(), parsed);
+            } catch (UnkownAnnotationClassException e) {
+                unknownClassAnnotations.put(ann.getName(), true);
+            } catch (UnknownKeysInAnnotation e) {
+                e.getValues().stream()
+                        .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
+                        .forEach(errors::add);
+            }
+        }
 
-        int currentFieldPosition = setFieldPosition(position, typeField, parsedAnnotations);
+        parsedAnnotations.values().stream().filter(a -> !a.isPosition()).forEach(a -> processDefinitions(typeField, a));
+
+        // Add built-in annotations and non-defined custom annotations as field metadata
+        for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+            DescrAnnotationDefinition parsed = parsedAnnotations.get(ann.getName());
+            if (parsed != null && isBuiltInAnnotation(parsed)) {
+                // Built-in annotation - add to metadata
+                typeField.addFieldMetaData(ann.getName(), ann.getSingleValue());
+            } else if (unknownClassAnnotations.containsKey(ann.getName())) {
+                // Non-defined custom annotation - add to metadata
+                typeField.addFieldMetaData(ann.getName(), ann.getSingleValue());
+            }
+        }
+
+        int currentFieldPosition = setFieldPosition(position, typeField, parsedAnnotations.values());
 
         return new ProcessedTypeField(typeField, currentFieldPosition);
     }
@@ -268,7 +306,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         }
     }
 
-    private int setFieldPosition(int initialPosition, DescrFieldDefinition typeField, List<DescrAnnotationDefinition> allAnnotations) {
+    private int setFieldPosition(int initialPosition, DescrFieldDefinition typeField, Collection<DescrAnnotationDefinition> allAnnotations) {
         int currentFieldPosition = initialPosition;
         Optional<DescrAnnotationDefinition> positionAnnotation = allAnnotations
                 .stream()
@@ -284,19 +322,6 @@ public class DescrTypeDefinition implements TypeDefinition {
         return currentFieldPosition;
     }
 
-    private Optional<DescrAnnotationDefinition> createAnnotationDefinition(AnnotationDescr ann) {
-        try {
-            return of(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
-        } catch (UnknownKeysInAnnotation e) {
-            e.getValues().stream()
-                    .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
-                    .forEach(errors::add);
-            return empty();
-        } catch (UnkownAnnotationClassException e) {
-            // Do not add annotation and silently fail
-            return empty();
-        }
-    }
 
     public List<DroolsError> getErrors() {
         return errors;
@@ -332,5 +357,8 @@ public class DescrTypeDefinition implements TypeDefinition {
         return methods;
     }
 
+    public Map<String, Object> getClassMetaData() {
+        return classMetaData;
+    }
 
 }
