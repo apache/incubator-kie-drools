@@ -119,7 +119,28 @@ public class ProcessCodegen extends AbstractGenerator {
         Map<String, byte[]> processSVGMap = new HashMap<>();
         Map<String, Throwable> processesErrors = new HashMap<>();
         boolean useSvgAddon = context.getAddonsConfig().useProcessSVG();
-        final List<GeneratedInfo<KogitoWorkflowProcess>> processes = resources.stream()
+        final List<GeneratedInfo<KogitoWorkflowProcess>> processes = getGeneratedInfoForProcesses(context, resources,
+                useSvgAddon,
+                processSVGMap,
+                processesErrors);
+        if (processes.isEmpty() && context.getAddonsConfig().useSourceFiles()) { // Temporary hack for incubator-kie-issues#2060 */
+            processes.add(new GeneratedInfo<>(new DummyProcess()));
+        }
+        if (useSvgAddon) {
+            context.addContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, processSVGMap);
+        }
+        context.addContextAttribute(IS_BUSINESS_CALENDAR_PRESENT, resources.stream().anyMatch(resource -> resource.resource().getSourcePath().endsWith(BUSINESS_CALENDAR_PATH)));
+
+        handleValidation(context, processesErrors);
+
+        return ofProcesses(context, processes);
+    }
+
+    private static List<GeneratedInfo<KogitoWorkflowProcess>> getGeneratedInfoForProcesses(KogitoBuildContext context, Collection<CollectedResource> resources,
+            boolean useSvgAddon,
+            Map<String, byte[]> processSVGMap,
+            Map<String, Throwable> processesErrors) {
+        return resources.stream()
                 .map(CollectedResource::resource)
                 .flatMap(resource -> {
                     try {
@@ -145,15 +166,6 @@ public class ProcessCodegen extends AbstractGenerator {
                 //Validate parsed processes
                 .map(processInfo -> validate(processInfo, processesErrors))
                 .collect(toList());
-
-        if (useSvgAddon) {
-            context.addContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, processSVGMap);
-        }
-        context.addContextAttribute(IS_BUSINESS_CALENDAR_PRESENT, resources.stream().anyMatch(resource -> resource.resource().getSourcePath().endsWith(BUSINESS_CALENDAR_PATH)));
-
-        handleValidation(context, processesErrors);
-
-        return ofProcesses(context, processes);
     }
 
     private static GeneratedInfo<KogitoWorkflowProcess> addResource(GeneratedInfo<KogitoWorkflowProcess> info, Resource r) {
@@ -299,6 +311,9 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
+            if (workFlowProcess instanceof DummyProcess) {
+                continue; // Temporary hack for incubator-kie-issues#2060
+            }
             // transaction is disabled by default for SW types
             boolean defaultTransactionEnabled = !KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType());
             if (isTransactionEnabled(this, context(), defaultTransactionEnabled)) {
@@ -319,6 +334,9 @@ public class ProcessCodegen extends AbstractGenerator {
         boolean isServerless = false;
         // then we generate work items task inputs and outputs if any
         for (WorkflowProcess workFlowProcess : processes.values()) {
+            if (workFlowProcess instanceof DummyProcess) {
+                continue; // Temporary hack for incubator-kie-issues#2060
+            }
             isServerless |= KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType());
             if (KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType())) {
                 continue;
@@ -334,6 +352,9 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // collect all process descriptors (exec model)
         for (KogitoWorkflowProcess workFlowProcess : processes.values()) {
+            if (workFlowProcess instanceof DummyProcess) {
+                continue; // Temporary hack for incubator-kie-issues#2060
+            }
             ProcessExecutableModelGenerator execModelGen =
                     new ProcessExecutableModelGenerator(workFlowProcess, execModelGenerator);
             String packageName = workFlowProcess.getPackageName();

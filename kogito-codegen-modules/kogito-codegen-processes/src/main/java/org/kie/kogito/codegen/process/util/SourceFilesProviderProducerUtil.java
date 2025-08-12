@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.kie.api.io.Resource;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.process.DummyProcess;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
@@ -61,7 +62,7 @@ public class SourceFilesProviderProducerUtil {
                 .findFirst()
                 .orElseThrow(() -> new ProcessCodegenException("SourceFileProviderProducerTemplate does not contain a class declaration"));
 
-        if (workflows.isEmpty()) {
+        if (workflows.isEmpty() || workflows.values().stream().allMatch(DummyProcess.class::isInstance)) { // Temporary hack for incubator-kie-issues#2060
             producerClass.remove(staticInitDeclaration);
         } else {
             registerWorkflows(staticInitDeclaration, workflows, context);
