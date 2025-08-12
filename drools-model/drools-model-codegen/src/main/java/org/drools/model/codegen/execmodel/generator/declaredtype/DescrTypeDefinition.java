@@ -260,10 +260,18 @@ public class DescrTypeDefinition implements TypeDefinition {
 
         // Create a map of successfully parsed annotations, keyed by original annotation name
         Map<String, DescrAnnotationDefinition> parsedAnnotations = new HashMap<>();
+        Map<String, Boolean> unknownClassAnnotations = new HashMap<>();  // Track which annotations had unknown class
+
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-            Optional<DescrAnnotationDefinition> parsed = createAnnotationDefinition(ann);
-            if (parsed.isPresent()) {
-                parsedAnnotations.put(ann.getName(), parsed.get());
+            try {
+                DescrAnnotationDefinition parsed = DescrAnnotationDefinition.fromDescr(typeResolver, ann);
+                parsedAnnotations.put(ann.getName(), parsed);
+            } catch (UnkownAnnotationClassException e) {
+                unknownClassAnnotations.put(ann.getName(), true);
+            } catch (UnknownKeysInAnnotation e) {
+                e.getValues().stream()
+                        .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
+                        .forEach(errors::add);
             }
         }
 
@@ -272,14 +280,11 @@ public class DescrTypeDefinition implements TypeDefinition {
         // Add built-in annotations and non-defined custom annotations as field metadata
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
             DescrAnnotationDefinition parsed = parsedAnnotations.get(ann.getName());
-            if (parsed != null) {
-                // This annotation was successfully parsed - check if it's built-in
-                if (isBuiltInAnnotation(parsed)) {
-                    Object value = ann.getSingleValue();
-                    typeField.addFieldMetaData(ann.getName(), value);
-                }
-            } else {
-                // This annotation failed to parse - it's a non-defined custom annotation
+            if (parsed != null && isBuiltInAnnotation(parsed)) {
+                // Built-in annotation - add to metadata
+                typeField.addFieldMetaData(ann.getName(), ann.getSingleValue());
+            } else if (unknownClassAnnotations.containsKey(ann.getName())) {
+                // Non-defined custom annotation - add to metadata
                 typeField.addFieldMetaData(ann.getName(), ann.getSingleValue());
             }
         }
@@ -317,19 +322,6 @@ public class DescrTypeDefinition implements TypeDefinition {
         return currentFieldPosition;
     }
 
-    private Optional<DescrAnnotationDefinition> createAnnotationDefinition(AnnotationDescr ann) {
-        try {
-            return of(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
-        } catch (UnknownKeysInAnnotation e) {
-            e.getValues().stream()
-                    .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
-                    .forEach(errors::add);
-            return empty();
-        } catch (UnkownAnnotationClassException e) {
-            // Do not add annotation and silently fail
-            return empty();
-        }
-    }
 
     public List<DroolsError> getErrors() {
         return errors;
