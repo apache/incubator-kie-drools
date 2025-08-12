@@ -115,7 +115,7 @@ public class DescrTypeDefinition implements TypeDefinition {
                 annotations.add(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
             } catch (UnkownAnnotationClassException e) {
                 // Store non-defined custom annotations as metadata
-                // class level built-in annotations are not added here. Rather added in TypeDeclarationUtil at the later phase
+                // Class level built-in annotations are not added here; they are added in TypeDeclarationUtil at a later phase.
                 classMetaData.put(ann.getName(), ann.getSingleValue());
             } catch (UnknownKeysInAnnotation e) {
                 // Add build errors for unknown annotation properties
