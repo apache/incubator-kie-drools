@@ -108,19 +108,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             return null;
         } else {
             Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
-            if (importAlias.isEmpty()) {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ((DMNBaseNode)input).getSource(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
-                                      new QName(input.getModelNamespace(), input.getModelName()),
-                                      ((DMNBaseNode)input).getSource());
-                return null;
-            }
-            return importAlias.get();
+            return importAlias.orElse(null);
         }
     }
 
