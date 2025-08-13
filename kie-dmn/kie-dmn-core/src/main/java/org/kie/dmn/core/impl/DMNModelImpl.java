@@ -136,6 +136,49 @@ public class DMNModelImpl
         messages = new DefaultDMNMessagesManager(resource);
     }
 
+    static Set<ModelImportTuple> populateTopmostParents(List<DMNModel> importChainDirectChildModels, DMNModelImpl importingModel) {
+        Set<ModelImportTuple> result = new HashSet<>();
+
+        for (DMNModel imported : importChainDirectChildModels) {
+            DMNModelImpl importedModelImpl = (DMNModelImpl) imported;
+            result.addAll(processImportedModel(importingModel, importedModelImpl));
+            for (ModelImportTuple set : result) {
+                System.out.println(set.getImportName());
+            }
+        }
+        return result;
+    }
+
+    static Set<ModelImportTuple> processImportedModel(DMNModelImpl importingModel, DMNModelImpl importedModelImpl) {
+        ImportChain importChain = importedModelImpl.importChain;
+        Set<ModelImportTuple> result = new HashSet<>();
+
+        if (importChain != null && !importChain.children.isEmpty()) {
+            List<DMNModel> nestedImportChainDirectChildModels = importChain.getImportChainDirectChildModels();
+            result.addAll(populateTopmostParents(nestedImportChainDirectChildModels, importedModelImpl));
+        } else {
+            String importName = getImportName(importedModelImpl, importingModel);
+            result.add(new ModelImportTuple(importName, importedModelImpl));
+        }
+        return result;
+    }
+
+    static String getImportName(DMNModelImpl importedModel, DMNModelImpl importingModel) {
+        return importingModel.getImportAliasFor(importedModel.getNamespace(), importedModel.getName()).orElseThrow(() -> new IllegalStateException(String.format("Missing import alias for model %s : %s inside model %s : %s", importedModel.getNamespace(), importedModel.getName(), importingModel.getNamespace(), importingModel.getName())));
+    }
+
+    /**
+     * This method returns the collection of topmost imported parents, if there is a populated ImportChain, otherwise returns an Optional.empty
+     * @return a <code>Set</code> to avoid duplicated elements
+     */
+    public Optional<Set<ModelImportTuple>> getTopmostParents() {
+        if (importChain != null && !importChain.children.isEmpty()) {
+            List<DMNModel> importChainDirectChildModels = importChain.getImportChainDirectChildModels();
+            return Optional.of(populateTopmostParents(importChainDirectChildModels, this));
+        }
+        return Optional.empty();
+    }
+
     public FEELDialect getFeelDialect() {
         return feelDialect;
     }
@@ -476,45 +519,6 @@ public class DMNModelImpl
         this.importAliases = compiledModel.importAliases;
     }
 
-    static void populateTopmostParentsCollection(Set<ModelImportTuple> toPopulate, List<DMNModel> importChainDirectChildModels,
-                                                 DMNModelImpl importingModel) {
-        for (DMNModel imported : importChainDirectChildModels) {
-            DMNModelImpl importedModelImpl = (DMNModelImpl) imported;
-            processImportedModel(toPopulate, importingModel, importedModelImpl);
-        }
-    }
-
-    static void processImportedModel(Set<ModelImportTuple> toPopulate, DMNModelImpl importingModel,
-                                     DMNModelImpl importedModelImpl) {
-        ImportChain importChain = importedModelImpl.importChain;
-
-        if (importChain != null && !importChain.children.isEmpty()) {
-            List<DMNModel> nestedImportChainDirectChildModels = importChain.getImportChainDirectChildModels();
-            populateTopmostParentsCollection(toPopulate, nestedImportChainDirectChildModels, importedModelImpl);
-        } else {
-            String importName = getImportName(importedModelImpl, importingModel);
-            toPopulate.add(new ModelImportTuple(importName, importedModelImpl));
-        }
-    }
-
-    static String getImportName(DMNModelImpl importedModel, DMNModelImpl importingModel) {
-        return importingModel.getImportAliasFor(importedModel.getNamespace(), importedModel.getName()).orElseThrow(() -> new IllegalStateException(String.format("Missing import alias for model %s : %s inside model %s : %s", importedModel.getNamespace(), importedModel.getName(), importingModel.getNamespace(), importingModel.getName())));
-    }
-
-    /**
-     * This method returns the collection of topmost imported parents, if there is a populated ImportChain, otherwise returns an Optional.empty
-     * @return a <code>Set</code> to avoid duplicated elements
-     */
-    public Optional<Set<ModelImportTuple>> getTopmostParents() {
-        Set<ModelImportTuple> toPopulate = null;
-        if (importChain != null && !importChain.children.isEmpty()) {
-            toPopulate = new HashSet<>();
-            List<DMNModel> importChainDirectChildModels = importChain.getImportChainDirectChildModels();
-            populateTopmostParentsCollection(toPopulate, importChainDirectChildModels, this);
-        }
-        return Optional.ofNullable(toPopulate);
-    }
-
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
         if (getImportAliasFor(iNS, iModelName).isEmpty()) {
             this.importAliases.put(createTupleIdentifierByName(iAlias), new QName(iNS, iModelName));
@@ -603,7 +607,7 @@ public class DMNModelImpl
     public static class ImportChain {
         private final String alias;
         private final DMNModel node;
-        
+
         private final List<ImportChain> children = new ArrayList<>();
         
         public ImportChain(DMNModel node) {
@@ -644,6 +648,7 @@ public class DMNModelImpl
                 Collection<List<String>> allPrefixesUnderMyNamespace = result.computeIfAbsent(node.getNamespace(), k -> new ArrayList<>());
                 allPrefixesUnderMyNamespace.add(List.of(alias));
             }
+            System.out.println(result);
             return result;
         }
 
