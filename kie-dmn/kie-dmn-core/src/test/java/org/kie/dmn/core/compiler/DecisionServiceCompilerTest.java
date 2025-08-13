@@ -20,27 +20,20 @@ package org.kie.dmn.core.compiler;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.platform.commons.util.ReflectionUtils;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
-import org.kie.dmn.core.ast.DecisionNodeImpl;
-import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
-import org.mockito.Mock;
+import org.kie.dmn.model.api.NamedElement;
 import org.mockito.Mockito;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
 
@@ -79,6 +72,54 @@ public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
         String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo("inputName");
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputQualifiedNamePrefixWithImportAlias() {
+        DMNNode input = mock(DMNNode.class);
+        when(input.getModelNamespace()).thenReturn("nodeNamespace");
+        when(input.getName()).thenReturn("inputName");
+
+        Import imported = mock(Import.class);
+        when(imported.getNamespace()).thenReturn("importedNamespace");
+        Definitions definitions = mock(Definitions.class);
+        when(definitions.getImport()).thenReturn(List.of(imported));
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("modelNamespace");
+        when(model.getDefinitions()).thenReturn(definitions);
+        when(model.getImportAliasFor(Mockito.any(), Mockito.any())).thenReturn(Optional.of("inputName"));
+
+        String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo("inputName");
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputQualifiedNamePrefixWithEmptyImportAlias() {
+        DMNBaseNode input = mock(DMNBaseNode.class);
+        when(input.getModelNamespace()).thenReturn("nodeNamespace");
+        when(input.getName()).thenReturn("inputName");
+        when(input.getModelName()).thenReturn("modelname");
+        when(input.getSource()).thenReturn(mock(NamedElement.class));
+
+        Import imported = mock(Import.class);
+        when(imported.getNamespace()).thenReturn("importedNamespace");
+        Definitions definitions = mock(Definitions.class);
+        when(definitions.getImport()).thenReturn(List.of(imported));
+
+        DMNModelImpl model = mock(DMNModelImpl.class);
+        when(model.getNamespace()).thenReturn("modelNamespace");
+        when(model.getDefinitions()).thenReturn(definitions);
+        when(model.getImportAliasFor(Mockito.any(), Mockito.any())).thenReturn(Optional.empty());
+
+        String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
+        assertThat(result).isNull();
+        verify(model, times(1)).getImportAliasFor(Mockito.any(), Mockito.any());
 
     }
 }
