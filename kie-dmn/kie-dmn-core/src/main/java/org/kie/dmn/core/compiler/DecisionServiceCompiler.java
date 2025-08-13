@@ -53,6 +53,8 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+
 public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DecisionServiceCompiler.class);
@@ -103,13 +105,36 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
      * The qualified name of an element named E that is defined in the same decision model as S is simply E.
      * Otherwise, the qualified name is I.E, where I is the name of the import element that refers to the model where E is defined.
      */
-    private static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
+     static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
         if (input.getModelNamespace().equals(model.getNamespace())) {
             return null;
+        } else if (isInUnnamedImport(input, model)) {
+            return input.getName();
         } else {
-            Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
-            return importAlias.orElse(null);
+            try {
+                return resolveImportAlias(input, model);
+            } catch(IllegalStateException e) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ((DMNBaseNode)input).getSource(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                      new QName(input.getModelNamespace(), input.getModelName()),
+                                      ((DMNBaseNode)input).getSource());
+                return null;
+            }
         }
+     }
+
+    private static String resolveImportAlias(DMNNode input, DMNModelImpl model) {
+        Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
+        if (importAlias.isEmpty()) {
+            throw new IllegalStateException("Missing import alias for model " + input.getModelName() +
+                    "with namespace " + input.getModelNamespace());
+        }
+        return importAlias.get();
     }
 
     @Override
