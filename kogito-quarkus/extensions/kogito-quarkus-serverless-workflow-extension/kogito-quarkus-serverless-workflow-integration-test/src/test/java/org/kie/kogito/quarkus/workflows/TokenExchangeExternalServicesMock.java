@@ -46,7 +46,11 @@ public class TokenExchangeExternalServicesMock implements QuarkusTestResourceLif
 
     public static final String TOKEN_PROPAGATION_EXTERNAL_SERVICE_MOCK_URL = "exchange-external-service-mock.url";
 
-    private WireMockServer wireMockServer;
+    private static WireMockServer wireMockServer;
+
+    public static WireMockServer getInstance() {
+        return wireMockServer;
+    }
 
     @Override
     public Map<String, String> start() {

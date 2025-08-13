@@ -52,6 +52,7 @@
     <module>kogito-quarkus-extension-common</module>
     <module>kogito-quarkus-workflow-extension-common</module>
     <module>kogito-quarkus-serverless-workflow-extension</module>
+    <module>kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension</module>
     <module>kogito-quarkus-extension</module>
     <module>kogito-quarkus-incubation-common</module>
     <module>kogito-quarkus-processes-extension</module>
