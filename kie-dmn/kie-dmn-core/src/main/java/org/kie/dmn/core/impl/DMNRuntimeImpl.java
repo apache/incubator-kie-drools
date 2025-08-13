@@ -98,45 +98,51 @@ public class DMNRuntimeImpl
 
     static void populateInputsFromTopmostModel(DMNResultImpl result, DMNModelImpl model, Set<DMNModelImpl.ModelImportTuple> topmostModels) {
         for (DMNModelImpl.ModelImportTuple topmostModelTuple : topmostModels) {
-            DMNModelImpl topmostModel = topmostModelTuple.getModel();
-            topmostModel.getInputs().forEach(topmostInput -> {
-                Object storedValue = result.getContext().get(topmostInput.getName());
-                if (storedValue != null) {
-                    Object parentData = result.getContext().get(topmostModelTuple.getImportName());
-                    if (parentData instanceof Map mappedData) {
-                        try {
-                            mappedData.put(topmostInput.getName(), storedValue);
-                        } catch (Exception e) {
-                            logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
-                        }
-                    } else if (parentData == null) {
-                        Map mappedData = new HashMap<>();
-                        mappedData.put(topmostInput.getName(), storedValue);
-                        populateContextWithInheritedData(result.getContext(), mappedData,
-                                topmostModelTuple.getImportName(),
-                                topmostModelTuple.getModel().getNamespace(),
-                                model);
-                    }
-                }
-            });
+            processTopmostModelTuple(result, topmostModelTuple, model);
         }
     }
 
-    static void populateContextWithInheritedData(DMNContext toPopulate, Map toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
+    static void processTopmostModelTuple(DMNResultImpl result, DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
+        DMNModelImpl topmostModel = topmostModelTuple.getModel();
+        for (InputDataNode topmostInput : topmostModel.getInputs()) {
+            Object storedValue = result.getContext().get(topmostInput.getName());
+            if (storedValue != null) {
+                Object parentData = result.getContext().get(topmostModelTuple.getImportName());
+                if (parentData instanceof Map mappedData) {
+                    try {
+                        mappedData.put(topmostInput.getName(), storedValue);
+                    } catch (Exception e) {
+                        logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
+                    }
+                } else if (parentData == null) {
+                    updateContextMap(result, model, topmostModelTuple, topmostInput.getName(), storedValue);
+                }
+            }
+        }
+    }
+
+    static void updateContextMap(DMNResultImpl result, DMNModelImpl model, DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName, Object storedValue) {
+        Map mappedData = new HashMap<>();
+        mappedData.put(inputName, storedValue);
+        populateContextWithInheritedData(result.getContext(), mappedData,
+                topmostModelTuple.getImportName(), topmostModelTuple.getModel().getNamespace(), model);
+    }
+
+    static void populateContextWithInheritedData(DMNContext toPopulate, Map<String, Object> toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
         for (List<String> chainedModels : importingModel.getImportChainAliases().get(topmostNamespace)) {
             // The order is: first one -> importing model; last one -> parent model
             for (String chainedModel : chainedModels) {
                 if (chainedModel.equals(importName)) {
                     continue;
                 }
-                if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map alreadyMapped) {
+                if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map<?, ?> alreadyMapped) {
                     try {
-                        alreadyMapped.put(importName, toStore);
+                        ((Map<String, Object>) alreadyMapped).put(importName, toStore);
                     } catch (Exception e) {
                         logger.warn("Failed to add {} to map {} ", toStore, alreadyMapped, e);
                     }
                 } else {
-                    Map chainedMap = new HashMap();
+                    Map<String, Object> chainedMap = new HashMap<>();
                     chainedMap.put(importName, toStore);
                     toPopulate.set(chainedModel, chainedMap);
                 }

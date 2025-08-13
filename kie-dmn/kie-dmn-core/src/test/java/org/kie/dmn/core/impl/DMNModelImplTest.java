@@ -35,6 +35,7 @@ import org.kie.dmn.model.v1_5.TDecision;
 import org.kie.dmn.model.v1_5.TDefinitions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.dmn.core.impl.DMNModelImpl.populateTopmostParents;
 import static org.kie.dmn.core.impl.DMNModelImpl.getImportName;
 import static org.mockito.Mockito.mock;
@@ -176,6 +177,128 @@ class DMNModelImplTest {
                 .satisfies(tuple -> {
                     assertThat(tuple.getImportName()).isEqualTo("ParentModel");
                 });
+    }
+
+    @Test
+    void testPopulateTopmostParent() {
+        DMNModelImpl importingModel = mock(DMNModelImpl.class);
+        DMNModelImpl model = mock(DMNModelImpl.class);
+
+        when(model.getNamespace()).thenReturn("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337A");
+        when(model.getName()).thenReturn("Child_A");
+        when(importingModel.getImportAliasFor("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337A", "Child_A"))
+                .thenReturn(Optional.of("ParentModel"));
+
+        List<DMNModel> importChainDirectChildModels = List.of(model);
+
+        Set<DMNModelImpl.ModelImportTuple> toPopulate = populateTopmostParents(importChainDirectChildModels, importingModel);
+
+        assertThat(toPopulate)
+                .hasSize(1)
+                .first()
+                .satisfies(tuple -> {
+                    assertThat(tuple.getImportName()).isEqualTo("ParentModel");
+                });
+    }
+
+    @Test
+    void testPopulateTopmostParents_emptyImportChain() {
+        DMNModelImpl importingModel = mock(DMNModelImpl.class);
+        List<DMNModel> importChainDirectChildModels = List.of();
+
+        Set<DMNModelImpl.ModelImportTuple> toPopulate = populateTopmostParents(importChainDirectChildModels, importingModel);
+        assertThat(toPopulate).isEmpty();
+    }
+
+    @Test
+    void testPopulateTopmostParents_multipleDirectChildren() {
+        DMNModelImpl importingModel = mock(DMNModelImpl.class);
+        DMNModelImpl childA = mock(DMNModelImpl.class);
+        DMNModelImpl childB = mock(DMNModelImpl.class);
+
+        when(childA.getNamespace()).thenReturn("http://child.a.namespace");
+        when(childA.getName()).thenReturn("ChildA");
+        when(importingModel.getImportAliasFor("http://child.a.namespace", "ChildA"))
+                .thenReturn(Optional.of("aliasA"));
+
+        when(childB.getNamespace()).thenReturn("http://child.b.namespace");
+        when(childB.getName()).thenReturn("ChildB");
+        when(importingModel.getImportAliasFor("http://child.b.namespace", "ChildB"))
+                .thenReturn(Optional.of("aliasB"));
+
+        List<DMNModel> importChainDirectChildModels = List.of(childA, childB);
+
+        Set<DMNModelImpl.ModelImportTuple> result = populateTopmostParents(importChainDirectChildModels, importingModel);
+
+        assertThat(result)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(
+                        new DMNModelImpl.ModelImportTuple("aliasA", childA),
+                        new DMNModelImpl.ModelImportTuple("aliasB", childB)
+                );
+    }
+
+    @Test
+    void testPopulateTopmostParents_missingImportAlias() {
+        DMNModelImpl importingModel = mock(DMNModelImpl.class);
+        DMNModelImpl model = mock(DMNModelImpl.class);
+
+        when(model.getNamespace()).thenReturn("http://missing.alias.namespace");
+        when(model.getName()).thenReturn("MissingAlias");
+        when(importingModel.getImportAliasFor("http://missing.alias.namespace", "MissingAlias"))
+                .thenReturn(Optional.empty());
+
+        List<DMNModel> importChainDirectChildModels = List.of(model);
+
+        assertThatThrownBy(() -> populateTopmostParents(importChainDirectChildModels, importingModel))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Missing import alias for model");
+    }
+
+    @Test
+    void testPopulateTopmostParents_withMixedImports() {
+        Definitions importingDefs = mock(Definitions.class);
+        when(importingDefs.getNamespace()).thenReturn("http://importing.namespace");
+        when(importingDefs.getName()).thenReturn("ImportingModel");
+        DMNModelImpl importingModel = new DMNModelImpl(importingDefs);
+
+        Definitions modelWithChildrenDefs = mock(Definitions.class);
+        when(modelWithChildrenDefs.getNamespace()).thenReturn("http://parent.with.children");
+        when(modelWithChildrenDefs.getName()).thenReturn("ParentWithChildren");
+        DMNModelImpl modelWithChildren = new DMNModelImpl(modelWithChildrenDefs);
+
+        Definitions leafDefs = mock(Definitions.class);
+        when(leafDefs.getNamespace()).thenReturn("http://leaf.namespace");
+        when(leafDefs.getName()).thenReturn("Leaf");
+        DMNModelImpl leafModel = new DMNModelImpl(leafDefs);
+
+        Definitions childDefs = mock(Definitions.class);
+        when(childDefs.getNamespace()).thenReturn("http://child.namespace");
+        when(childDefs.getName()).thenReturn("Child");
+        DMNModelImpl childModel = new DMNModelImpl(childDefs);
+
+        modelWithChildren.setImportAliasForNS("childAlias", "http://child.namespace", "Child");
+        importingModel.setImportAliasForNS("parentAlias", "http://parent.with.children", "ParentWithChildren");
+        importingModel.setImportAliasForNS("leafAlias", "http://leaf.namespace", "Leaf");
+
+        DMNModelImpl.ImportChain childChain = new DMNModelImpl.ImportChain(childModel);
+        modelWithChildren.addImportChainChild(childChain, "childAlias");
+
+        DMNModelImpl.ImportChain modelWithChildrenChain = new DMNModelImpl.ImportChain(modelWithChildren);
+        DMNModelImpl.ImportChain leafModelChain = new DMNModelImpl.ImportChain(leafModel);
+        importingModel.addImportChainChild(modelWithChildrenChain, "parentAlias");
+        importingModel.addImportChainChild(leafModelChain, "leafAlias");
+
+        List<DMNModel> importChainDirectChildModels = List.of(modelWithChildren, leafModel);
+
+        Set<DMNModelImpl.ModelImportTuple> result = populateTopmostParents(importChainDirectChildModels, importingModel);
+
+        assertThat(result)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(
+                        new DMNModelImpl.ModelImportTuple("childAlias", childModel),
+                        new DMNModelImpl.ModelImportTuple("leafAlias", leafModel)
+                );
     }
 
     @Test

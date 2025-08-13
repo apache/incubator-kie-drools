@@ -142,9 +142,6 @@ public class DMNModelImpl
         for (DMNModel imported : importChainDirectChildModels) {
             DMNModelImpl importedModelImpl = (DMNModelImpl) imported;
             result.addAll(processImportedModel(importingModel, importedModelImpl));
-            for (ModelImportTuple set : result) {
-                System.out.println(set.getImportName());
-            }
         }
         return result;
     }
