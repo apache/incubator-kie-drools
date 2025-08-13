@@ -19,8 +19,10 @@
 package org.drools.model.impl;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.model.AnnotationValue;
@@ -34,6 +36,7 @@ public class TypeMetaDataImpl implements TypeMetaData, ModelComponent {
     private final String pkg;
     private final String name;
     private final Map<String, AnnotationValue[]> annotations = new HashMap<>();
+    private final Map<String, FieldMetaData> fields = new HashMap<>();
 
     public TypeMetaDataImpl( Class<?> type ) {
         this.type = type;
@@ -61,10 +64,36 @@ public class TypeMetaDataImpl implements TypeMetaData, ModelComponent {
         return annotations;
     }
 
+    @Override
+    public List<FieldMetaData> getFields() {
+        return new ArrayList<>(fields.values());
+    }
+
     public TypeMetaDataImpl addAnnotation( String name, AnnotationValue... values) {
         annotations.put(name, values);
         return this;
     }
+
+    public TypeMetaDataImpl addField(String fieldName) {
+        fields.computeIfAbsent(fieldName, FieldMetaDataImpl::new);
+        return this;
+    }
+
+    public TypeMetaDataImpl addFieldAnnotation(String fieldName, String annotationName, AnnotationValue... values) {
+        FieldMetaDataImpl fieldMetaData = (FieldMetaDataImpl) fields.computeIfAbsent(fieldName, FieldMetaDataImpl::new);
+        fieldMetaData.addAnnotation(annotationName, values);
+        return this;
+    }
+
+    // DSL-style instance methods for fluent API
+    public TypeMetaDataImpl withField(String fieldName) {
+        return addField(fieldName);
+    }
+
+    public TypeMetaDataImpl withFieldAnnotation(String fieldName, String annotationName, AnnotationValue... values) {
+        return addFieldAnnotation(fieldName, annotationName, values);
+    }
+
 
     @Override
     public boolean isEqualTo( ModelComponent o ) {
@@ -91,5 +120,29 @@ public class TypeMetaDataImpl implements TypeMetaData, ModelComponent {
         }
 
         return true;
+    }
+
+    public static class FieldMetaDataImpl implements FieldMetaData {
+        private final String fieldName;
+        private final Map<String, AnnotationValue[]> annotations = new HashMap<>();
+
+        public FieldMetaDataImpl(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        @Override
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        @Override
+        public Map<String, AnnotationValue[]> getAnnotations() {
+            return annotations;
+        }
+
+        public FieldMetaDataImpl addAnnotation(String name, AnnotationValue... values) {
+            annotations.put(name, values);
+            return this;
+        }
     }
 }

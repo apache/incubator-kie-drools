@@ -42,6 +42,8 @@ import static org.drools.model.codegen.execmodel.generator.declaredtype.POJOGene
 
 public class DescrAnnotationDefinition implements AnnotationDefinition {
 
+    public static final String BUILTIN_ANNOTATION_PACKAGE = "org.kie.api.definition.type.";
+
     static final String VALUE = "value";
 
     private static final Map<String, Class<?>> annotationMapping = new HashMap<>();

@@ -18,9 +18,19 @@
  */
 package org.drools.model;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TypeMetaData extends NamedModelItem {
     Class<?> getType();
     Map<String, AnnotationValue[]> getAnnotations();
+
+    List<FieldMetaData> getFields();
+
+    interface FieldMetaData {
+
+        String getFieldName();
+
+        Map<String, AnnotationValue[]> getAnnotations();
+    }
 }

@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.factmodel.AccessibleFact;
 import org.drools.base.factmodel.AnnotationDefinition;
@@ -49,6 +50,10 @@ import static org.drools.base.rule.TypeDeclaration.createTypeDeclarationForBean;
 
 public class TypeDeclarationUtil {
 
+    private static final Set<String> KNOWN_ANNOTATIONS = Set.of(
+        "role", "duration", "timestamp", "expires", "propertyReactive", "classReactive"
+    );
+
     public static TypeDeclaration createTypeDeclaration(TypeMetaData metaType, PropertySpecificOption propertySpecificOption, TypeResolver typeResolver) {
         Class<?> typeClass = metaType.getType();
 
@@ -65,8 +70,12 @@ public class TypeDeclarationUtil {
     }
 
     private static void wireMetaTypeAnnotations( TypeMetaData metaType, TypeDeclaration typeDeclaration ) {
+        ClassDefinition classDef = typeDeclaration.getTypeClassDef();
         for (Map.Entry<String, AnnotationValue[]> ann : metaType.getAnnotations().entrySet()) {
-            switch (ann.getKey()) {
+            String annotationName = ann.getKey();
+            boolean isKnownAnnotation = KNOWN_ANNOTATIONS.contains(annotationName);
+            
+            switch (annotationName) {
                 case "role":
                     for (AnnotationValue annVal : ann.getValue()) {
                         if (annVal.getKey().equals( "value" ) && annVal.getValue().equals( "event" )) {
@@ -105,6 +114,41 @@ public class TypeDeclarationUtil {
                 case "classReactive":
                     typeDeclaration.setPropertyReactive( false );
                     break;
+            }
+            
+            // For non-defined custom annotations, add them as metadata to the ClassDefinition
+            if (!isKnownAnnotation && classDef != null) {
+                // Get the value from the annotation values
+                Object value = null;
+                for (AnnotationValue annVal : ann.getValue()) {
+                    if (annVal.getKey().equals("value")) {
+                        value = annVal.getValue();
+                        break;
+                    }
+                }
+                classDef.addMetaData(annotationName, value);
+            }
+        }
+
+        // Process field metadata from TypeMetaData
+        if (classDef != null) {
+            for (TypeMetaData.FieldMetaData fieldMetaData : metaType.getFields()) {
+                String fieldName = fieldMetaData.getFieldName();
+                FieldDefinition fieldDef = classDef.getField(fieldName);
+
+                if (fieldDef != null) {
+                    // Add field metadata to the FieldDefinition
+                    for (Map.Entry<String, AnnotationValue[]> fieldAnn : fieldMetaData.getAnnotations().entrySet()) {
+                        Object value = null;
+                        for (AnnotationValue annVal : fieldAnn.getValue()) {
+                            if (annVal.getKey().equals("value")) {
+                                value = annVal.getValue();
+                                break;
+                            }
+                        }
+                        fieldDef.addMetaData(fieldAnn.getKey(), value);
+                    }
+                }
             }
         }
     }
