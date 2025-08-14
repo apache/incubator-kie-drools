@@ -20,20 +20,31 @@ package org.kie.dmn.core.compiler;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamedElement;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 
 public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
 
@@ -89,7 +100,7 @@ public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
         DMNModelImpl model = mock(DMNModelImpl.class);
         when(model.getNamespace()).thenReturn("modelNamespace");
         when(model.getDefinitions()).thenReturn(definitions);
-        when(model.getImportAliasFor(Mockito.any(), Mockito.any())).thenReturn(Optional.of("inputName"));
+        when(model.getImportAliasFor(any(), any())).thenReturn(Optional.of("inputName"));
 
         String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
         assertThat(result).isNotNull();
@@ -104,21 +115,33 @@ public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
         when(input.getModelNamespace()).thenReturn("nodeNamespace");
         when(input.getName()).thenReturn("inputName");
         when(input.getModelName()).thenReturn("modelname");
-        when(input.getSource()).thenReturn(mock(NamedElement.class));
-
-        Import imported = mock(Import.class);
-        when(imported.getNamespace()).thenReturn("importedNamespace");
-        Definitions definitions = mock(Definitions.class);
-        when(definitions.getImport()).thenReturn(List.of(imported));
+        NamedElement source = mock(NamedElement.class);
+        when(input.getSource()).thenReturn(source);
 
         DMNModelImpl model = mock(DMNModelImpl.class);
         when(model.getNamespace()).thenReturn("modelNamespace");
-        when(model.getDefinitions()).thenReturn(definitions);
-        when(model.getImportAliasFor(Mockito.any(), Mockito.any())).thenReturn(Optional.empty());
+        when(model.getImportAliasFor(any(), any())).thenReturn(Optional.empty());
 
-        String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
-        assertThat(result).isNull();
-        verify(model, times(1)).getImportAliasFor(Mockito.any(), Mockito.any());
+        try (MockedStatic<MsgUtil> msgUtilMock = mockStatic(MsgUtil.class)) {
+            try (MockedStatic<UnnamedImportUtils> unnamedImportMock = mockStatic(UnnamedImportUtils.class)) {
+                unnamedImportMock.when(() -> UnnamedImportUtils.isInUnnamedImport(input, model)).thenReturn(false);
+                String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
+                assertThat(result).isNull();
+                // Verify error was reported
+                msgUtilMock.verify(() -> MsgUtil.reportMessage(
+                        any(),
+                        eq(DMNMessage.Severity.ERROR),
+                        eq(source),
+                        eq(model),
+                        isNull(),
+                        isNull(),
+                        eq(Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS),
+                        eq(new QName("nodeNamespace", "modelname")),
+                        eq(source)
+                ));
+            }
+        }
 
     }
+
 }

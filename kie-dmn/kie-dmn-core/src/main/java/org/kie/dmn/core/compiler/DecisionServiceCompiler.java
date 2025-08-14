@@ -110,7 +110,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             return null;
         } else {
             try {
-                return resolveImportAlias(input, model);
+                return getInputNamePrefix(input, model);
             } catch(IllegalStateException e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -126,7 +126,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         }
      }
 
-    private static String resolveImportAlias(DMNNode input, DMNModelImpl model) {
+    private static String getInputNamePrefix(DMNNode input, DMNModelImpl model) {
         Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
         if (importAlias.isEmpty()) {
             throw new IllegalStateException("Missing import alias for model " + input.getModelName() +
@@ -138,64 +138,60 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
     @Override
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
-
         List<DSFormalParameter> parameters = new ArrayList<>();
-        
+        processInputData(ni, model, parameters);
+        processInputDecisions(ni, model, parameters);
+        validateEncapsulatedDecision(ni, model);
+        List<DecisionNode> outputDecisions = getOutputDecisions(ni, model);
+
+        boolean coerceSingleton = ((DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig()).getOption(CoerceDecisionServiceSingletonOutputOption.class).isCoerceSingleton();
+        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters, coerceSingleton);
+        ni.setEvaluator(exprEvaluator);
+
+        if (ni.getType() != null) {
+            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
+        }
+    }
+
+    private void processInputData(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
-            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
+                String inputNamePrefix = inputQualifiedNamePrefix(input, model);
                 ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
                 parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getType()));
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private void processInputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputDecision()) {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
-            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
+                String inputNamePrefix = inputQualifiedNamePrefix(input, model);
                 ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
                 parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getResultType()));
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private void validateEncapsulatedDecision(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
-            if (input != null) {
-                // nothing to do.
-            } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+            if (model.getDecisionById(id) == null) {
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private List<DecisionNode> getOutputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         List<DecisionNode> outputDecisions = new ArrayList<>();
         for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
             String id = DMNCompilerImpl.getId(er);
@@ -203,26 +199,22 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             if (outDecision != null) {
                 outputDecisions.add(outDecision);
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+        return outputDecisions;
+    }
 
-        boolean coerceSingleton = ((DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig()).getOption(CoerceDecisionServiceSingletonOutputOption.class).isCoerceSingleton();
-
-        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters, coerceSingleton);
-        ni.setEvaluator(exprEvaluator);
-
-        if (ni.getType() != null) {
-            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
-        }
+    private void reportReferenceError(DecisionServiceNodeImpl ni, DMNModelImpl model, String id) {
+        MsgUtil.reportMessage(LOG,
+                DMNMessage.Severity.ERROR,
+                ni.getDecisionService(),
+                model,
+                null,
+                null,
+                Msg.REFERENCE_NOT_FOUND_FOR_DS,
+                id,
+                ni.getName());
     }
 
     private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type, List<DecisionNode> outputDecisions) {
