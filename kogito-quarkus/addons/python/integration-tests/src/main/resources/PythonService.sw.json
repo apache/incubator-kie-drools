@@ -5,7 +5,17 @@
     "name" : "factorial",
     "operation" : "service:python:math::factorial",
     "type" : "custom"
-  } ],
+   },
+   {
+     "name" : "module",
+     "operation" : "service:python:math::fmod",
+     "type" : "custom"
+   },
+   {
+     "name" : "isClose",
+     "operation" : "service:python:math::isclose",
+     "type" : "custom"
+   } ],
   "states" : [ {
     "actions" : [ {
       "functionRef" : {
@@ -13,9 +23,27 @@
           "arguments" : ".x"
        },
       "actionDataFilter" : {
-        "toStateData" : ".result"
+        "toStateData" : ".factorial"
       }
-    } ],
+    },
+    {  
+      "functionRef" : {
+          "refName": "module",
+          "arguments" : [".x",".y"]
+      },
+      "actionDataFilter" : {
+        "toStateData" : ".module"
+      }
+    }, 
+    {  
+       "functionRef" : {
+         "refName": "isClose",
+            "arguments" : {"a": ".x", "b":".y", "abs_tol": 2.1}
+       },
+       "actionDataFilter" : {
+         "toStateData" : ".isClose"
+       }
+     }],
     "name" : "operation_1",
     "type" : "operation",
     "end" : true

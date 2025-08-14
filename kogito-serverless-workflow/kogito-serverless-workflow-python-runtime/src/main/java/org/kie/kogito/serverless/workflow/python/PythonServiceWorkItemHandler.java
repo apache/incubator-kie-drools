@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.python;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -49,12 +50,21 @@ public class PythonServiceWorkItemHandler extends ServiceWorkItemHandler {
         // make sure module is imported
         py.exec("import " + moduleName);
         final String funcName = moduleName + "." + methodName;
-        if (parameters instanceof Map) {
-            return py.invoke(funcName, (Map<String, Object>) parameters);
-        }
+        Object result;
+
         if (parameters instanceof JsonNode) {
-            return py.invoke(funcName, JsonObjectUtils.convertValue((JsonNode) parameters, Map.class));
+            parameters = JsonObjectUtils.toJavaValue((JsonNode) parameters);
         }
-        return py.invoke(funcName, parameters);
+        if (parameters instanceof Map) {
+            // keyword args call
+            result = py.invoke(funcName, (Map<String, Object>) parameters);
+        } else if (parameters instanceof Collection) {
+            // multiple unnamed parameters call
+            result = py.invoke(funcName, ((Collection) parameters).toArray());
+        } else {
+            //single parameter call
+            result = py.invoke(funcName, parameters);
+        }
+        return result;
     }
 }
