@@ -67,7 +67,7 @@ public class FunctionBaseJsonNode extends BaseJsonNode {
 
     @Override
     protected JsonNode _at(JsonPointer ptr) {
-        return null;
+        return get(ptr.getMatchingProperty());
     }
 
     @Override
@@ -78,6 +78,11 @@ public class FunctionBaseJsonNode extends BaseJsonNode {
     @Override
     public String asText() {
         return null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     @Override

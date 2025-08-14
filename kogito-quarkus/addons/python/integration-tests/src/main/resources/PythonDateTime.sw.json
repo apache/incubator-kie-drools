@@ -1,0 +1,42 @@
+{
+  "id": "DateTime",
+  "version": "1.0",
+  "name": "Workflow Python DateTime",
+  "start": "runScripts",
+  "functions": [
+    {
+      "name": "python",
+      "type": "custom",
+      "operation": "script:python"
+    }
+  ],
+  "states": [
+    {
+      "name": "runScripts",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "name" : "Imports",
+            "refName": "python",
+            "arguments": {
+              "script": "import datetime"
+            }
+          }
+        },
+        {
+          "functionRef": {
+            "refName": "python",
+            "arguments": {
+              "script": "rng = datetime.datetime.now()"
+            }
+          }
+        } 
+        ],
+        "stateDataFilter" : {
+           "output" : "{year:$WORKFLOW.python.rng.year}"
+        },
+        "end": true
+    }
+  ]
+}

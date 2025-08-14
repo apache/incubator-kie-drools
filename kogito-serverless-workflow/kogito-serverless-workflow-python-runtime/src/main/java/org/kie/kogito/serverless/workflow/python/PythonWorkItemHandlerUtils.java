@@ -24,6 +24,7 @@ import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 
 import jep.Interpreter;
 import jep.SharedInterpreter;
+import jep.python.PyObject;
 
 public class PythonWorkItemHandlerUtils {
 
@@ -59,6 +60,7 @@ public class PythonWorkItemHandlerUtils {
     }
 
     protected static Object getValue(String key) {
-        return interpreter().getValue(key);
+        Object value = interpreter().getValue(key);
+        return value instanceof PyObject ? new PyObject2JsonNode((PyObject) value) : value;
     }
 }
