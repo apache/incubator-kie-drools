@@ -106,10 +106,8 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
      * Otherwise, the qualified name is I.E, where I is the name of the import element that refers to the model where E is defined.
      */
      static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
-        if (input.getModelNamespace().equals(model.getNamespace())) {
+        if (input.getModelNamespace().equals(model.getNamespace()) || isInUnnamedImport(input, model)) {
             return null;
-        } else if (isInUnnamedImport(input, model)) {
-            return input.getName();
         } else {
             try {
                 return resolveImportAlias(input, model);

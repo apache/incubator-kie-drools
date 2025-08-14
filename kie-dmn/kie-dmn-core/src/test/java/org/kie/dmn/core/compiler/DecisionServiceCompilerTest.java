@@ -70,8 +70,7 @@ public class DecisionServiceCompilerTest extends BaseInterpretedVsCompiledTest {
         when(model.getDefinitions()).thenReturn(definitions);
 
         String result = DecisionServiceCompiler.inputQualifiedNamePrefix(input, model);
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo("inputName");
+        assertThat(result).isNull();
 
     }
 
