@@ -84,6 +84,7 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("dataStore", new DataStoreHandler());
         addHandler("association", new AssociationHandler());
         addHandler("documentation", new DocumentationHandler());
+        addHandler("textAnnotation", new TextAnnotationHandler());
 
         // related to correlations
         addHandler("correlationProperty", new CorrelationPropertyHandler());

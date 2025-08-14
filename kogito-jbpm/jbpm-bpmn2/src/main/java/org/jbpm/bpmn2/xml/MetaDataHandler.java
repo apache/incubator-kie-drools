@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
+import org.jbpm.bpmn2.core.TextAnnotation;
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.core.BaseAbstractHandler;
@@ -46,6 +47,7 @@ public class MetaDataHandler extends BaseAbstractHandler
             this.validParents.add(Variable.class);
             this.validParents.add(SequenceFlow.class);
             this.validParents.add(Lane.class);
+            this.validParents.add(TextAnnotation.class);
 
             this.validPeers = new HashSet();
             this.validPeers.add(null);
@@ -105,6 +107,8 @@ public class MetaDataHandler extends BaseAbstractHandler
                 return ((SequenceFlow) parent).getMetaData();
             } else if (parent instanceof Lane) {
                 return ((Lane) parent).getMetaData();
+            } else if (parent instanceof TextAnnotation) {
+                return ((TextAnnotation) parent).getMetaData();
             } else {
                 throw new IllegalArgumentException("Unknown parent " + parent);
             }

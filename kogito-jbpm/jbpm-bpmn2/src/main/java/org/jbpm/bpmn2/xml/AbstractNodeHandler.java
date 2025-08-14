@@ -39,6 +39,7 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.bpmn2.core.Signal;
+import org.jbpm.bpmn2.core.TextAnnotation;
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
@@ -123,6 +124,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         this.validPeers.add(SequenceFlow.class);
         this.validPeers.add(Lane.class);
         this.validPeers.add(Association.class);
+        this.validPeers.add(TextAnnotation.class);
     }
 
     @Override

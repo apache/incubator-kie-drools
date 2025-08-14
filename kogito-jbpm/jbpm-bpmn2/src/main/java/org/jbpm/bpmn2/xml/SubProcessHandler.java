@@ -92,20 +92,20 @@ public class SubProcessHandler extends AbstractNodeHandler {
             // This must be done *after* linkConnections(process, connections)
             //  because it adds hidden connections for compensations
             List<Association> associations = (List<Association>) forEachNode.getMetaData(ProcessHandler.ASSOCIATIONS);
-            ProcessHandler.linkAssociations((Definitions) forEachNode.getMetaData("Definitions"), forEachNode, associations);
+            ProcessHandler.linkAssociations((Definitions) forEachNode.getMetaData("Definitions"), forEachNode, associations, parser);
             applyAsync(node, Boolean.parseBoolean((String) compositeNode.getMetaData().get("customAsync")));
             outcome = forEachNode;
             nodeContainer.addNode(outcome);
         } else {
             nodeContainer.addNode(outcome);
             RuleFlowProcess process = (RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS);
-            handleCompositeContextNode(process, compositeNode);
+            handleCompositeContextNode(process, compositeNode, parser);
         }
 
         return outcome;
     }
 
-    protected void handleCompositeContextNode(RuleFlowProcess process, CompositeContextNode compositeNode) throws SAXException {
+    protected void handleCompositeContextNode(RuleFlowProcess process, CompositeContextNode compositeNode, Parser parser) throws SAXException {
         List<SequenceFlow> connections = (List<SequenceFlow>) compositeNode.getMetaData(ProcessHandler.CONNECTIONS);
 
         List<IntermediateLink> throwLinks = (List<IntermediateLink>) compositeNode.getMetaData(ProcessHandler.LINKS);
@@ -117,7 +117,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
         // This must be done *after* linkConnections(process, connections)
         //  because it adds hidden connections for compensations
         List<Association> associations = (List<Association>) compositeNode.getMetaData(ProcessHandler.ASSOCIATIONS);
-        ProcessHandler.linkAssociations((Definitions) compositeNode.getMetaData("Definitions"), compositeNode, associations);
+        ProcessHandler.linkAssociations((Definitions) compositeNode.getMetaData("Definitions"), compositeNode, associations, parser);
 
     }
 

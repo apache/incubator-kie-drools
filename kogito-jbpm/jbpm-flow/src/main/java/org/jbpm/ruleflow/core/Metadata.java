@@ -85,6 +85,7 @@ public class Metadata {
     public static final String CONSTANTS = "Constants";
     public static final String EVAL_VARIABLE = "evalVariable";
     public static final String PROCESS_DURATION = "processDuration";
+    public static final String TEXT_ANNOTATIONS = "TextAnnotations";
 
     private Metadata() {
     }

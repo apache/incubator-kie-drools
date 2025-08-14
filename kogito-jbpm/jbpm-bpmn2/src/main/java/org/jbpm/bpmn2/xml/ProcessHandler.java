@@ -45,6 +45,7 @@ import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.bpmn2.core.Signal;
+import org.jbpm.bpmn2.core.TextAnnotation;
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
@@ -107,6 +108,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.ruleflow.core.Metadata.TEXT_ANNOTATIONS;
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
 public class ProcessHandler extends BaseAbstractHandler implements Handler {
@@ -216,7 +218,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         // This must be done *after* linkConnections(process, connections)
         //  because it adds hidden connections for compensations
         List<Association> associations = (List<Association>) process.getMetaData(ASSOCIATIONS);
-        linkAssociations((Definitions) process.getMetaData("Definitions"), process, associations);
+        linkAssociations((Definitions) process.getMetaData("Definitions"), process, associations, parser);
 
         List<Lane> lanes = (List<Lane>) process.getMetaData(LaneHandler.LANES);
         assignLanes(process, lanes);
@@ -347,7 +349,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
     }
 
-    private static Object findNodeOrDataStoreByUniqueId(Definitions definitions, NodeContainer nodeContainer, final String nodeRef, String errorMsg) {
+    private static Object findNodeOrDataStoreByUniqueId(Definitions definitions, NodeContainer nodeContainer, final String nodeRef, String errorMsg, Parser parser) {
         if (definitions != null) {
             List<DataStore> dataStores = definitions.getDataStores();
             if (dataStores != null) {
@@ -356,6 +358,16 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         return dataStore;
                     }
                 }
+            }
+        }
+        Map<String, TextAnnotation> annotations =
+                (Map<String, TextAnnotation>) ((ProcessBuildData) parser.getData()).getMetaData(TEXT_ANNOTATIONS);
+
+        if (annotations != null) {
+            TextAnnotation ta = annotations.get(nodeRef);
+            if (ta != null) {
+                logger.debug("Skipping association to TextAnnotation '{}'", nodeRef);
+                return ta;
             }
         }
         return findNodeByIdOrUniqueIdInMetadata(nodeContainer, nodeRef, errorMsg);
@@ -643,14 +655,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
     }
 
-    public static void linkAssociations(Definitions definitions, NodeContainer nodeContainer, List<Association> associations) {
+    public static void linkAssociations(Definitions definitions, NodeContainer nodeContainer, List<Association> associations, Parser parser) {
         if (associations != null) {
             for (Association association : associations) {
                 String sourceRef = association.getSourceRef();
                 Object source = null;
                 try {
                     source = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, sourceRef,
-                            "Could not find source [" + sourceRef + "] for association " + association.getId() + "]");
+                            "Could not find source [" + sourceRef + "] for association " + association.getId() + "]", parser);
                 } catch (IllegalArgumentException e) {
                     // source not found
                 }
@@ -658,12 +670,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 Object target = null;
                 try {
                     target = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, targetRef,
-                            "Could not find target [" + targetRef + "] for association [" + association.getId() + "]");
+                            "Could not find target [" + targetRef + "] for association [" + association.getId() + "]", parser);
                 } catch (IllegalArgumentException e) {
                     // target not found
                 }
                 if (source == null || target == null) {
                     // TODO: ignoring this association for now
+                } else if (target instanceof TextAnnotation) {
+                    //Skipping associations to TextAnnotation
                 } else if (target instanceof DataStore || source instanceof DataStore) {
                     // TODO: ignoring data store associations for now
                 } else if (source instanceof EventNode) {
