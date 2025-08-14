@@ -91,45 +91,60 @@ public class DMNRuntimeImpl
         }
     }
 
-    static void populateResultContextWithTopmostParentsValues(DMNResultImpl result, DMNModelImpl model) {
+    static void populateResultContextWithTopmostParentsValues(DMNContext context, DMNModelImpl model) {
         Optional<Set<DMNModelImpl.ModelImportTuple>> optionalTopmostModels = getTopmostModel(model);
-        optionalTopmostModels.ifPresent(topmostModels -> populateInputsFromTopmostModel(result, model, topmostModels));
+        optionalTopmostModels.ifPresent(topmostModels -> populateInputsFromTopmostModel(context, model, topmostModels));
     }
 
-    static void populateInputsFromTopmostModel(DMNResultImpl result, DMNModelImpl model, Set<DMNModelImpl.ModelImportTuple> topmostModels) {
+    static void populateInputsFromTopmostModel(DMNContext context,DMNModelImpl model, Set<DMNModelImpl.ModelImportTuple> topmostModels) {
         for (DMNModelImpl.ModelImportTuple topmostModelTuple : topmostModels) {
-            processTopmostModelTuple(result, topmostModelTuple, model);
+            processTopmostModelTuple(context, topmostModelTuple, model);
         }
     }
 
-    static void processTopmostModelTuple(DMNResultImpl result, DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
+    static void processTopmostModelTuple(DMNContext context, DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
         DMNModelImpl topmostModel = topmostModelTuple.getModel();
         for (InputDataNode topmostInput : topmostModel.getInputs()) {
-            Object storedValue = result.getContext().get(topmostInput.getName());
-            if (storedValue != null) {
-                Object parentData = result.getContext().get(topmostModelTuple.getImportName());
-                if (parentData instanceof Map mappedData) {
-                    try {
-                        mappedData.put(topmostInput.getName(), storedValue);
-                    } catch (Exception e) {
-                        logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
-                    }
-                } else if (parentData == null) {
-                    updateContextMap(result, model, topmostModelTuple, topmostInput.getName(), storedValue);
-                }
+            processTopmostModelInputDataNode(context, topmostInput.getName(), topmostModelTuple, model);
+        }
+    }
+
+    static void processTopmostModelInputDataNode( DMNContext context, String topmostInputName, DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
+        Object storedValue = context.get(topmostInputName);
+        if (storedValue != null) {
+            Object parentData = context.get(topmostModelTuple.getImportName());
+            if (parentData instanceof Map mappedData) {
+                processTopmostModelMap(mappedData, topmostInputName, storedValue, parentData);
+            } else if (parentData == null) {
+                updateContextMap(context, model.getImportChainAliases(), topmostModelTuple, topmostInputName, storedValue);
             }
         }
     }
 
-    static void updateContextMap(DMNResultImpl result, DMNModelImpl model, DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName, Object storedValue) {
-        Map mappedData = new HashMap<>();
-        mappedData.put(inputName, storedValue);
-        populateContextWithInheritedData(result.getContext(), mappedData,
-                topmostModelTuple.getImportName(), topmostModelTuple.getModel().getNamespace(), model);
+    /**
+     * Depending on how the context has been instantiated, the provided <code>Map</code> could be unmodifiable, which is an expected condition
+     * @param mappedData
+     * @param inputName
+     * @param storedValue
+     * @param parentData
+     */
+    static void processTopmostModelMap(Map mappedData, String inputName, Object storedValue, Object parentData) {
+        try {
+            mappedData.put(inputName, storedValue);
+        } catch (Exception e) {
+            logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
+        }
     }
 
-    static void populateContextWithInheritedData(DMNContext toPopulate, Map<String, Object> toStore, String importName, String topmostNamespace, DMNModelImpl importingModel) {
-        for (List<String> chainedModels : importingModel.getImportChainAliases().get(topmostNamespace)) {
+    static void updateContextMap(DMNContext context, Map<String, Collection<List<String>>>  importChainAliases, DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName, Object storedValue) {
+        Map mappedData = new HashMap<>();
+        mappedData.put(inputName, storedValue);
+        populateContextWithInheritedData(context, mappedData,
+                topmostModelTuple.getImportName(), topmostModelTuple.getModel().getNamespace(), importChainAliases);
+    }
+
+    static void populateContextWithInheritedData(DMNContext toPopulate, Map<String, Object> toStore, String importName, String topmostNamespace,Map<String, Collection<List<String>>> importChainAliases) {
+        for (List<String> chainedModels : importChainAliases.get(topmostNamespace)) {
             // The order is: first one -> importing model; last one -> parent model
             for (String chainedModel : chainedModels) {
                 if (chainedModel.equals(importName)) {
@@ -320,7 +335,7 @@ public class DMNRuntimeImpl
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
         result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
-        populateResultContextWithTopmostParentsValues(result, (DMNModelImpl) model);
+        populateResultContextWithTopmostParentsValues(result.getContext(), (DMNModelImpl) model);
         return result;
     }
 

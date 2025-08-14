@@ -101,12 +101,10 @@ class DMNRuntimeImplTest {
                 Set.of(new DMNModelImpl.ModelImportTuple("parentAlias", parent));
         doReturn(Optional.of(topmostParents)).when(model).getTopmostParents();
 
-        DMNResultImpl result = mock(DMNResultImpl.class, CALLS_REAL_METHODS);
         DMNContext context = new DMNContextImpl();
         Map<String, Object> parentAliasMap = new HashMap<>();
         parentAliasMap.put("inputA", "valueA");
         context.set("parentAlias", parentAliasMap);
-        result.setContext(context);
 
         DMNModelImpl.ModelImportTuple tuple = new DMNModelImpl.ModelImportTuple("parentModel", parent);
         Optional<Set<DMNModelImpl.ModelImportTuple>> optionalTopmostModels = Optional.of(Set.of(tuple));
@@ -116,7 +114,7 @@ class DMNRuntimeImplTest {
         mockImportChainAliases.put("ns2", List.of(List.of("parentAlias")));
         when(model.getImportChainAliases()).thenReturn(mockImportChainAliases);
 
-        populateResultContextWithTopmostParentsValues(result, model);
+        populateResultContextWithTopmostParentsValues(context, model);
 
         DMNContext expectedContext = new DMNContextImpl();
         expectedContext.set("parentAlias",Map.of("inputA", "valueA"));
@@ -129,12 +127,8 @@ class DMNRuntimeImplTest {
     @Test
     void testPopulateInputsFromTopmostModels() {
         DMNModelImpl importingModel = mock(DMNModelImpl.class);
-
-        DMNResultImpl result = mock(DMNResultImpl.class, CALLS_REAL_METHODS);
         DMNContext context = new DMNContextImpl();
         context.set("Person Name", "Klaus");
-
-        when(result.getContext()).thenReturn(context);
 
         InputData mockInputData = mock(InputData.class);
         when(mockInputData.getName()).thenReturn("Person Name");
@@ -156,14 +150,13 @@ class DMNRuntimeImplTest {
 
         Set<DMNModelImpl.ModelImportTuple> topmostModels = Set.of(tupleA);
 
-        populateInputsFromTopmostModel(result, importingModel, topmostModels);
+        populateInputsFromTopmostModel(context, importingModel, topmostModels);
 
         assertThat(context.get("Person Name")).isEqualTo("Klaus");
     }
 
     @Test
     void testPopulateContextWithInheritedData() {
-        DMNModelImpl importingModel = mock(DMNModelImpl.class);
         DMNContext toPopulate = new DMNContextImpl();
         toPopulate.set("Person Name", "Klaus");
 
@@ -179,17 +172,15 @@ class DMNRuntimeImplTest {
         context.set("Child A", childA);
 
         Map<String, Collection<List<String>>> importChainAliases = mock(Map.class);
-        when(importingModel.getImportChainAliases()).thenReturn(importChainAliases);
         when(importChainAliases.get(topMostNamespace)).thenReturn(Collections.singletonList(chainedModels));
 
-        populateContextWithInheritedData(toPopulate, toStore, importName, topMostNamespace, importingModel);
+        populateContextWithInheritedData(toPopulate, toStore, importName, topMostNamespace, importChainAliases);
         assertThat(toPopulate).usingRecursiveComparison().isEqualTo(context);
     }
 
     @Test
     void testProcessTopmostModelTuple() {
         DMNModelImpl model = mock(DMNModelImpl.class);
-        DMNResultImpl result = mock(DMNResultImpl.class, CALLS_REAL_METHODS);
         DMNModelImpl.ModelImportTuple topmostModelTuple = mock(DMNModelImpl.ModelImportTuple.class);
         DMNModelImpl topmostModel = mock(DMNModelImpl.class);
 
@@ -199,7 +190,6 @@ class DMNRuntimeImplTest {
         InputData topmostInput = mock(InputData.class);
         InputDataNodeImpl node = new InputDataNodeImpl(topmostInput);
 
-        when(result.getContext()).thenReturn(context);
         when(topmostModelTuple.getModel()).thenReturn(topmostModel);
         when(topmostModel.getInputs()).thenReturn(Set.of(node));
         when(topmostInput.getName()).thenReturn("Person Name");
@@ -213,40 +203,39 @@ class DMNRuntimeImplTest {
         importChainAliases.put(namespace, Collections.singletonList(chain));
         when(model.getImportChainAliases()).thenReturn(importChainAliases);
 
-        processTopmostModelTuple(result, topmostModelTuple, model);
+        processTopmostModelTuple(context, topmostModelTuple, model);
 
         assertThat(context.get("Person Name")).isEqualTo("Klaus");
     }
 
     @Test
     void testUpdateContextMap() {
-        DMNModelImpl model = mock(DMNModelImpl.class);
         DMNModelImpl topmostModel = mock(DMNModelImpl.class);
         String namespace = "namespace";
+        String topmostModelImportName = "parentModel";
+        String importingModelName = "Child A";
         when(topmostModel.getNamespace()).thenReturn(namespace);
-        when(topmostModel.getName()).thenReturn("parentModel");
+        when(topmostModel.getName()).thenReturn(topmostModelImportName);
 
         String inputName = "Person Name";
         String storedValue = "Klaus";
 
         Map<String, Collection<List<String>>> importChainAliases = new HashMap<>();
-        List<String> chain = Arrays.asList("Child A", "parentModel");
+        // Order is from bottom - i.e. executed model - to topmost - i.e. imported
+        List<String> chain = Arrays.asList(importingModelName, topmostModelImportName);
         importChainAliases.put(namespace, Collections.singletonList(chain));
-        when(model.getImportChainAliases()).thenReturn(importChainAliases);
 
         DMNContextImpl context = new DMNContextImpl();
-        DMNResultImpl result = mock(DMNResultImpl.class, CALLS_REAL_METHODS);
-        when(result.getContext()).thenReturn(context);
 
         DMNModelImpl.ModelImportTuple topmostModelTuple =
-                new DMNModelImpl.ModelImportTuple("parentModel", topmostModel);
+                new DMNModelImpl.ModelImportTuple(topmostModelImportName, topmostModel);
 
-        updateContextMap(result, model, topmostModelTuple, inputName, storedValue);
+        updateContextMap(context, importChainAliases, topmostModelTuple, inputName, storedValue);
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> childA = (Map<String, Object>) context.get("Child A");
+        Map<String, Object> childA = (Map<String, Object>) context.get(importingModelName);
         @SuppressWarnings("unchecked")
-        Map<String, Object> parentMap = (Map<String, Object>) childA.get("parentModel");
+        Map<String, Object> parentMap = (Map<String, Object>) childA.get(topmostModelImportName);
         assertThat(parentMap).containsEntry(inputName, storedValue);
     }
 
