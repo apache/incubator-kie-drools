@@ -854,7 +854,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             for (Entry<String, DMNNode> depEntry : node.getDependencies().entrySet()) { // DROOLS-1663: dependencies
                 // names must be prefixed with "alias." for those not coming from this model but DMN Imports instead.
                 if (depEntry.getValue().getModelNamespace().equals(node.getModelNamespace())) {
-                    parameterNames.add(depEntry.getKey()); // this dependency is from this model, adding parameter
+                    parameterNames.add(depEntry.getValue().getName()); // this dependency is from this model, adding parameter
                     // name as-is.
                 } else {
                     Optional<String> importAlias = model.getImportAliasFor(depEntry.getValue().getModelNamespace(),
@@ -872,7 +872,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                                               node);
                         return null;
                     }
-                    parameterNames.add(importAlias.get() + "." + depEntry.getKey()); // this dependency is from an
+                    parameterNames.add(importAlias.get() + "." + depEntry.getValue().getName()); // this dependency is from an
                     // imported model, need to add parameter with "alias." DMN Import name prefix.
                 }
             }
