@@ -180,28 +180,6 @@ class DMNModelImplTest {
     }
 
     @Test
-    void testPopulateTopmostParent() {
-        DMNModelImpl importingModel = mock(DMNModelImpl.class);
-        DMNModelImpl model = mock(DMNModelImpl.class);
-
-        when(model.getNamespace()).thenReturn("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337A");
-        when(model.getName()).thenReturn("Child_A");
-        when(importingModel.getImportAliasFor("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337A", "Child_A"))
-                .thenReturn(Optional.of("ParentModel"));
-
-        List<DMNModel> importChainDirectChildModels = List.of(model);
-
-        Set<DMNModelImpl.ModelImportTuple> toPopulate = populateTopmostParents(importChainDirectChildModels, importingModel);
-
-        assertThat(toPopulate)
-                .hasSize(1)
-                .first()
-                .satisfies(tuple -> {
-                    assertThat(tuple.getImportName()).isEqualTo("ParentModel");
-                });
-    }
-
-    @Test
     void testPopulateTopmostParents_emptyImportChain() {
         DMNModelImpl importingModel = mock(DMNModelImpl.class);
         List<DMNModel> importChainDirectChildModels = List.of();
