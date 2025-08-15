@@ -44,6 +44,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
@@ -101,6 +102,8 @@ class JavaRuleFlowProcessValidator extends RuleFlowProcessValidator {
                 Set<String> knownVariables = getKnownVariables(actionNode, process);
                 // add local variables
                 unit.findAll(VariableDeclarationExpr.class).stream().flatMap(v -> v.getVariables().stream()).map(VariableDeclarator::getNameAsString).forEach(knownVariables::add);
+                //add Support for lambda expressions
+                unit.findAll(LambdaExpr.class).forEach(le -> le.getParameters().forEach(p -> knownVariables.add(p.getNameAsString())));
                 resolveVariablesType(unit, knownVariables);
             } catch (UnsolvedSymbolException ex) {
                 if (LOGGER.isErrorEnabled()) {
