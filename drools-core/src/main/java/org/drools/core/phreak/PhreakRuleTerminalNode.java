@@ -101,6 +101,7 @@ public class PhreakRuleTerminalNode {
             return;
         }
 
+        // most recent PropagationContext is required to maintain the right recency which triggers the match
         PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
         if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
             return;
