@@ -111,7 +111,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         } else {
             try {
                 return getInputNamePrefix(input, model);
-            } catch(IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ((DMNBaseNode)input).getSource(),
@@ -184,7 +184,6 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
     private void validateEncapsulatedDecision(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
             String id = DMNCompilerImpl.getId(er);
-            DecisionNode input = model.getDecisionById(id);
             if (model.getDecisionById(id) == null) {
                 reportReferenceError(ni, model, id);
             }
