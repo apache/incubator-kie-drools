@@ -45,31 +45,32 @@ public class UnnamedImportUtils {
         return false;
     }
 
-    public static void processMergedModel(DMNModelImpl parentModel, DMNModelImpl mergedModel) {
+    public static void processMergedModel(DMNModelImpl importingModel, DMNModelImpl importedModel) {
         // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
         // Here we try to put all the definitions from the "imported" model inside the parent one
-        Definitions parentDefinitions = parentModel.getDefinitions();
-        Definitions mergedDefinitions = mergedModel.getDefinitions();
+        Definitions importingDefinitions = importingModel.getDefinitions();
+        Definitions importedDefinitions = importedModel.getDefinitions();
 
-        mergeDefinitions(parentDefinitions, mergedDefinitions);
+        mergeDefinitions(importingDefinitions, importedDefinitions);
 
-        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
+        importedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
                                                                  stringDMNTypeMap.values().
-                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
-        mergedModel.getDecisions().forEach(parentModel::addDecision);
-        mergedModel.getImportAliasesForNS().forEach((s, qName) -> parentModel.setImportAliasForNS(s, qName.getNamespaceURI(), qName.getLocalPart()));
+                                                                         forEach(dmnType -> importingModel.getTypeRegistry().registerType(dmnType)));
+        importedModel.getDecisions().forEach(importingModel::addDecision);
+        importedModel.getInputs().forEach(importingModel::addInput);
+        importedModel.getImportAliasesForNS().forEach((s, qName) -> importingModel.setImportAliasForNS(s, qName.getNamespaceURI(), qName.getLocalPart()));
     }
 
-    public static void mergeDefinitions(Definitions parentDefinitions, Definitions mergedDefinitions) {
+    public static void mergeDefinitions(Definitions importingDefinitions, Definitions importedDefinitions) {
         // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original one,
         // Here we try to put all the definitions from the "imported" model inside the parent one
-        parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
-        addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService(), DecisionService.class);
-        addIfNotPresent(parentDefinitions.getBusinessContextElement(), mergedDefinitions.getBusinessContextElement(), BusinessContextElement.class);
-        addIfNotPresent(parentDefinitions.getDrgElement(), mergedDefinitions.getDrgElement(), DRGElement.class);
-        addIfNotPresent(parentDefinitions.getImport(), mergedDefinitions.getImport(), Import.class);
-        addIfNotPresent(parentDefinitions.getItemDefinition(), mergedDefinitions.getItemDefinition(), ItemDefinition.class);
-        mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
+        importingDefinitions.getArtifact().addAll(importedDefinitions.getArtifact());
+        addIfNotPresent(importingDefinitions.getDecisionService(), importedDefinitions.getDecisionService(), DecisionService.class);
+        addIfNotPresent(importingDefinitions.getBusinessContextElement(), importedDefinitions.getBusinessContextElement(), BusinessContextElement.class);
+        addIfNotPresent(importingDefinitions.getDrgElement(), importedDefinitions.getDrgElement(), DRGElement.class);
+        addIfNotPresent(importingDefinitions.getImport(), importedDefinitions.getImport(), Import.class);
+        addIfNotPresent(importingDefinitions.getItemDefinition(), importedDefinitions.getItemDefinition(), ItemDefinition.class);
+        importedDefinitions.getChildren().forEach(importingDefinitions::addChildren);
     }
 
     static <T extends NamedElement> void addIfNotPresent(Collection<T> target, Collection<T> source, Class expectedClass) {

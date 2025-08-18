@@ -465,9 +465,10 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            model,
                                            null,
                                            null,
-                                           Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                           Msg.DETAILED_REQ_INPUT_NOT_FOUND_FOR_NODE,
                                            id,
-                                           node.getName() );
+                                           node.getName(),
+                                           node.getModelNamespace());
                 }
             } else if ( ir.getRequiredDecision() != null ) {
                 String id = getId( ir.getRequiredDecision() );
