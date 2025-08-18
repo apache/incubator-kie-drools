@@ -53,6 +53,8 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+
 public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DecisionServiceCompiler.class);
@@ -103,12 +105,13 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
      * The qualified name of an element named E that is defined in the same decision model as S is simply E.
      * Otherwise, the qualified name is I.E, where I is the name of the import element that refers to the model where E is defined.
      */
-    private static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
-        if (input.getModelNamespace().equals(model.getNamespace())) {
+     static String inputQualifiedNamePrefix(DMNNode input, DMNModelImpl model) {
+        if (input.getModelNamespace().equals(model.getNamespace()) || isInUnnamedImport(input, model)) {
             return null;
         } else {
-            Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
-            if (importAlias.isEmpty()) {
+            try {
+                return getInputNamePrefix(input, model);
+            } catch (IllegalStateException e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ((DMNBaseNode)input).getSource(),
@@ -120,71 +123,74 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       ((DMNBaseNode)input).getSource());
                 return null;
             }
-            return importAlias.get();
         }
+     }
+
+    private static String getInputNamePrefix(DMNNode input, DMNModelImpl model) {
+        Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
+        if (importAlias.isEmpty()) {
+            throw new IllegalStateException("Missing import alias for model " + input.getModelName() +
+                    "with namespace " + input.getModelNamespace());
+        }
+        return importAlias.get();
     }
 
     @Override
     public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
         DecisionServiceNodeImpl ni = (DecisionServiceNodeImpl) node;
-
         List<DSFormalParameter> parameters = new ArrayList<>();
-        
+        processInputData(ni, model, parameters);
+        processInputDecisions(ni, model, parameters);
+        validateEncapsulatedDecision(ni, model);
+        List<DecisionNode> outputDecisions = getOutputDecisions(ni, model);
+
+        boolean coerceSingleton = ((DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig()).getOption(CoerceDecisionServiceSingletonOutputOption.class).isCoerceSingleton();
+        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters, coerceSingleton);
+        ni.setEvaluator(exprEvaluator);
+
+        if (ni.getType() != null) {
+            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
+        }
+    }
+
+    private void processInputData(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
             String id = DMNCompilerImpl.getId(er);
             InputDataNode input = model.getInputById(id);
-            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
+                String inputNamePrefix = inputQualifiedNamePrefix(input, model);
                 ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
                 parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getType()));
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private void processInputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputDecision()) {
             String id = DMNCompilerImpl.getId(er);
             DecisionNode input = model.getDecisionById(id);
-            String inputNamePrefix = inputQualifiedNamePrefix(input, model);
             if (input != null) {
+                String inputNamePrefix = inputQualifiedNamePrefix(input, model);
                 ni.addInputParameter(inputNamePrefix != null ? inputNamePrefix + "." + input.getName() : input.getName(), input);
                 parameters.add(new DSFormalParameter(inputNamePrefix, input.getName(), input.getResultType()));
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private void validateEncapsulatedDecision(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
             String id = DMNCompilerImpl.getId(er);
-            DecisionNode input = model.getDecisionById(id);
-            if (input != null) {
-                // nothing to do.
-            } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+            if (model.getDecisionById(id) == null) {
+                reportReferenceError(ni, model, id);
             }
         }
+    }
+
+    private List<DecisionNode> getOutputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         List<DecisionNode> outputDecisions = new ArrayList<>();
         for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
             String id = DMNCompilerImpl.getId(er);
@@ -192,26 +198,22 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             if (outDecision != null) {
                 outputDecisions.add(outDecision);
             } else {
-                MsgUtil.reportMessage(LOG,
-                                      DMNMessage.Severity.ERROR,
-                                      ni.getDecisionService(),
-                                      model,
-                                      null,
-                                      null,
-                                      Msg.REFERENCE_NOT_FOUND_FOR_DS,
-                                      id,
-                                      node.getName());
+                reportReferenceError(ni, model, id);
             }
         }
+        return outputDecisions;
+    }
 
-        boolean coerceSingleton = ((DMNCompilerConfigurationImpl) compiler.getDmnCompilerConfig()).getOption(CoerceDecisionServiceSingletonOutputOption.class).isCoerceSingleton();
-
-        DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters, coerceSingleton);
-        ni.setEvaluator(exprEvaluator);
-
-        if (ni.getType() != null) {
-            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
-        }
+    private void reportReferenceError(DecisionServiceNodeImpl ni, DMNModelImpl model, String id) {
+        MsgUtil.reportMessage(LOG,
+                DMNMessage.Severity.ERROR,
+                ni.getDecisionService(),
+                model,
+                null,
+                null,
+                Msg.REFERENCE_NOT_FOUND_FOR_DS,
+                id,
+                ni.getName());
     }
 
     private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type, List<DecisionNode> outputDecisions) {
