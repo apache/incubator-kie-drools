@@ -22,6 +22,7 @@ package org.drools.mvel.integrationtests.query;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.jupiter.api.AfterEach;
@@ -40,6 +41,13 @@ public class QueryMatchingPropertiesTest {
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
+    
+    public final static String MATCH_FOO= 			
+			"package org.drools.integrationtests\n" +
+			"import " + QueryMatchingPropertiesTest.Foo.class.getCanonicalName() + "\n" +
+			"query \"MatchFoo\"\n" + 
+			"    foo : Foo();\n" +
+			"end\n";
 
     
     public final static String MATCH_FOO_WITH_FOO_ON_ID = 			
@@ -79,6 +87,25 @@ public class QueryMatchingPropertiesTest {
 			kieSession.dispose();
 		}
 	}
+	
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void oneFooOnly(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        kieSession = createSession(kieBaseTestConfiguration, MATCH_FOO);
+
+        Foo foo = foo("x");
+	    kieSession.insert(foo);
+	    Bar bar = bar(foo.id);
+	    kieSession.insert(bar);
+
+	    QueryResults queryResults = kieSession.getQueryResults("MatchFoo");
+
+	    new ReteDumper().dump(kieSession);
+	    
+	    
+	    assertThat(queryResults).hasSize(1);
+    }
     
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -92,8 +119,14 @@ public class QueryMatchingPropertiesTest {
 	    kieSession.insert(bar);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFooWithBarOnId");
+
+	    QueryResults queryResults2 = kieSession.getQueryResults("MatchFooWithBarOnId");
+
+	    new ReteDumper().dump(kieSession);
+	    
 	    
 	    assertThat(queryResults).hasSize(1);
+	    assertThat(queryResults).isSameAs(queryResults);
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
@@ -367,6 +400,10 @@ public class QueryMatchingPropertiesTest {
         public void setId(String id) {
             this.id = id;
         }
+        
+        public String toString() {
+        	return "Bar [id = " + getId() + " ]";
+        }
 
     }
 
@@ -381,11 +418,18 @@ public class QueryMatchingPropertiesTest {
         public void setId(String id) {
             this.id = id;
         }
+        
+        public String toString() {
+        	return "Foo [id = " + getId() + " ]";
+        }
 
     }
 
     public static class SuperFoo extends Foo {
 
+        public String toString() {
+        	return "SuperFoo [id = " + getId() + " ]";
+        }
     }
     
     private KieSession createSession(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {

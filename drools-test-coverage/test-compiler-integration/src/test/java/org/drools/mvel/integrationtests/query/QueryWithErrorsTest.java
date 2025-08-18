@@ -63,17 +63,19 @@ public class QueryWithErrorsTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithWrongParamNumber(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        String drl = "global java.util.List list; " +
-                     "" +
-                     "query foo( Integer $i ) end " +
-                     "" +
-                     "rule React \n" +
-                     "when\n" +
-                     "  $i : Integer() " +
-                     "  $j : Integer() " +
-                     "  foo( $i, $j ; ) " +
-                    "then\n" +
-                     "end";
+        String drl = """
+        		     global java.util.List list;
+                     query foo( Integer $i ) 
+                     
+                     end
+                     rule React
+        		     when
+                       $i : Integer()
+                       $j : Integer()
+                       foo( $i, $j ; )
+                     then
+                     end
+                     """;
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
