@@ -46,6 +46,38 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
+    void importingOverridedInputDataInInheritedDecision(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/two-input-data-same-name";
+        String dmnMain = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_6B0AD797-1CA7-45BD-8942-791F36526A89",
+                                                        "DMN_CA451E6C-14B2-4CA6-B8C4-C5BBCBD2FB40");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_7CBF2741-CA67-4979-A383-49D787FB3642",
+                                                         "DMN_5AE0999E-35B2-45C1-9B02-B9413CA3442C");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        final DMNContext context = runtime.newContext();
+        context.set("a input", 21);
+
+        final DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("a decision2")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("a decision2").getResult()).isEqualTo(BigDecimal.valueOf(42));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
     void importDependenciesForDTInAContext(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Imported_Model.dmn",
