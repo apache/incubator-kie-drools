@@ -111,7 +111,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         } else {
             try {
                 return getInputNamePrefix(input, model);
-            } catch(IllegalStateException e) {
+            } catch (IllegalStateException e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ((DMNBaseNode)input).getSource(),
