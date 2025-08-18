@@ -57,7 +57,6 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class DMNImportsUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DMNImportsUtil.class);
@@ -72,7 +71,8 @@ public class DMNImportsUtil {
         // No constructor for util class.
     }
 
-    public static <T> Either<String, T> resolveImportDMN(Import importElement, Collection<T> dmns, Function<T, QName> idExtractor) {
+    public static <T> Either<String, T> resolveImportDMN(Import importElement, Collection<T> dmns,
+                                                         Function<T, QName> idExtractor) {
         final String importerDMNNamespace = ((Definitions) importElement.getParent()).getNamespace();
         final String importerDMNName = ((Definitions) importElement.getParent()).getName();
         final String importNamespace = importElement.getNamespace();
@@ -81,8 +81,9 @@ public class DMNImportsUtil {
         final String importModelName = importElement.getAdditionalAttributes().get(TImport.MODELNAME_QNAME);
 
         LOGGER.debug("Resolving an Import in DMN Model with name={} and namespace={}. " +
-                        "Importing a DMN model with namespace={} name={} locationURI={}, modelName={}",
-                importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
+                             "Importing a DMN model with namespace={} name={} locationURI={}, modelName={}",
+                     importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI,
+                     importModelName);
 
         if (dmns.isEmpty()) {
             return Either.ofLeft("Impossible to resolve an import against an empty DMN collection");
@@ -96,17 +97,22 @@ public class DMNImportsUtil {
             // Check if the located DMN Model in the NS, correspond for the import `drools:modelName`. 
             if (importModelName == null || idExtractor.apply(located).getLocalPart().equals(importModelName)) {
                 LOGGER.debug("DMN Model with name={} and namespace={} successfully imported a DMN " +
-                                "with namespace={} name={} locationURI={}, modelName={}",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
+                                     "with namespace={} name={} locationURI={}, modelName={}",
+                             importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI,
+                             importModelName);
                 return Either.ofRight(located);
             } else {
-                LOGGER.error("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
-                                "located within namespace only {} but does not match for the actual modelName",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName, idExtractor.apply(located));
+                LOGGER.error("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, " +
+                                     "modelName={}, " +
+                                     "located within namespace only {} but does not match for the actual modelName",
+                             importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName,
+                             idExtractor.apply(located));
                 return Either.ofLeft(String.format(
-                        "DMN Model with name=%s and namespace=%s can't import a DMN with namespace=%s, name=%s, modelName=%s, " +
+                        "DMN Model with name=%s and namespace=%s can't import a DMN with namespace=%s, name=%s, " +
+                                "modelName=%s, " +
                                 "located within namespace only %s but does not match for the actual modelName",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName, idExtractor.apply(located)));
+                        importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName,
+                        idExtractor.apply(located)));
             }
         } else {
             List<T> usingNSandName = matchingDMNList.stream()
@@ -114,23 +120,33 @@ public class DMNImportsUtil {
                     .toList();
             if (usingNSandName.size() == 1) {
                 LOGGER.debug("DMN Model with name={} and namespace={} successfully imported a DMN " +
-                                "with namespace={} name={} locationURI={}, modelName={}",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
+                                     "with namespace={} name={} locationURI={}, modelName={}",
+                             importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI,
+                             importModelName);
                 return Either.ofRight(usingNSandName.get(0));
             } else if (usingNSandName.isEmpty()) {
-                LOGGER.error("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
+                LOGGER.error("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} " +
+                                     "name={} locationURI={}, modelName={}.",
+                             importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI,
+                             importModelName);
                 return Either.ofLeft(String.format(
-                        "DMN Model with name=%s and namespace=%s failed to import a DMN with namespace=%s name=%s locationURI=%s, modelName=%s. ",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName));
+                        "DMN Model with name=%s and namespace=%s failed to import a DMN with namespace=%s name=%s " +
+                                "locationURI=%s, modelName=%s. ",
+                        importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI,
+                        importModelName));
             } else {
-                LOGGER.error("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
-                        importerDMNName, importerDMNNamespace, usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
+                LOGGER.error("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to " +
+                                     "import a DMN with namespace={} name={} locationURI={}, modelName={}",
+                             importerDMNName, importerDMNNamespace, usingNSandName.size(), importNamespace,
+                             importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
-                        "DMN Model with name=%s and namespace=%s detected a collision trying to import a DMN with %s namespace, " +
-                                "%s name and modelName %s. There are %s DMN files with the same namespace in your project. " +
+                        "DMN Model with name=%s and namespace=%s detected a collision trying to import a DMN with %s " +
+                                "namespace, " +
+                                "%s name and modelName %s. There are %s DMN files with the same namespace in your " +
+                                "project. " +
                                 "Please change the DMN namespaces and make them unique to fix this issue.",
-                        importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName, usingNSandName.size()));
+                        importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName,
+                        usingNSandName.size()));
             }
         }
     }
@@ -163,9 +179,11 @@ public class DMNImportsUtil {
      * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
      * @param toMerge : A list that will hold DMN models to be merged with the current model.
      */
-    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
-        Either<String, DMNModel> resolvedResult = DMNImportsUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
-        DMNModel located = resolvedResult.cata(msg -> {
+    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model,
+                                     List<DMNModel> toMerge) {
+        Either<String, DMNModel> resolvedResult = DMNImportsUtil.resolveImportDMN(i, dmnModels,
+                                                                                  (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
+        DMNModelImpl located = (DMNModelImpl) resolvedResult.cata(msg -> {
             MsgUtil.reportMessage(LOGGER,
                     DMNMessage.Severity.ERROR,
                     i,
@@ -181,13 +199,16 @@ public class DMNImportsUtil {
     }
 
     /**
-     * This method is used to checks if a DMNModel is located and processes it by setting the import alias or merging it with the original model.
-     * @param i : represents an import object, and it has a name (i.getName()). If the name is available, it will be used as the import alias.
+     * This method is used to checks if a DMNModel is located and processes it by setting the import alias or merging
+     * it with the original model.
+     * @param i : represents an import object, and it has a name (i.getName()). If the name is available, it will be
+     * used as the import alias.
      * @param located : it is a DMN model that has been locate.
      * @param model : it is the target DMN model where the import or merge is being applied model.
-     * @param toMerge : This is a list that will hold DMN models that are to be merged later, instead of being directly imported.
+     * @param toMerge : This is a list that will hold DMN models that are to be merged later, instead of being
+     * directly imported.
      */
-    static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
+    static void checkLocatedDMNModel(Import i, DMNModelImpl located, DMNModelImpl model, List<DMNModel> toMerge) {
         if (located != null) {
             String importAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
             // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
@@ -203,49 +224,61 @@ public class DMNImportsUtil {
     }
 
     /**
-     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
-     *
+     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate
+     * external PMML-based resources.
      * @param model : Instance of the DMNModelImpl into which the resolved import will be incorporated.
      * @param anImport : The Import object representing the PMML import to be resolved.
      * @param relativeResolver: FUnction used to retrieve the actual PMML source
-     * @param dmnCompilerConfig: Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
+     * @param dmnCompilerConfig: Instance of the DMNCompilerConfigurationImpl that holds configuration details,
+     * including the root class loader.
      */
-    static void resolvePMMLImportType(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+    static void resolvePMMLImportType(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String,
+            Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         if (relativeResolver != null) {
             resolvePMMLImportTypeFromRelativeResolver(model, dmndefs, anImport, relativeResolver, dmnCompilerConfig);
         } else {
             String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
-            ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport, pmmlModelName, model.getResource());
+            ModelLocalUriId pmmlModelLocalUriId = EfestoPMMLUtils.getRelativePmmlModelLocalUriIdFromImport(anImport,
+                                                                                                           pmmlModelName, model.getResource());
             resolvePMMLImportTypeFromModelLocalUriId(model, anImport, pmmlModelLocalUriId, dmnCompilerConfig);
         }
     }
 
     /**
-     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate external PMML-based resources.
+     * The method is using for handling imports related to PMML models, allowing the DMN model to incorporate
+     * external PMML-based resources.
      * @param model : Represents a DMN model that requires the PMML import resolution.
      * @param anImport : Object that specifies the import details for the PMML resource.
      * @param relativeResolver : A function that resolves relative paths to resources.
-     * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details, including the root class loader.
+     * @param dmnCompilerConfig : Instance of the DMNCompilerConfigurationImpl that holds configuration details,
+     * including the root class loader.
      */
-    static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Definitions dmndefs, Import anImport, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+    static void resolvePMMLImportTypeFromRelativeResolver(DMNModelImpl model, Definitions dmndefs, Import anImport,
+                                                          Function<String, Reader> relativeResolver,
+                                                          DMNCompilerConfigurationImpl dmnCompilerConfig) {
         String pmmlModelName = getPMMLModelName(dmndefs, anImport.getName());
-        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, pmmlModelName, relativeResolver);
+        ModelLocalUriId relativeResource = EfestoPMMLUtils.getPmmlModelLocalUriId(anImport, pmmlModelName,
+                                                                                  relativeResolver);
         resolvePMMLImportTypeFromModelLocalUriId(model, anImport, relativeResource, dmnCompilerConfig);
     }
 
     /**
-     * Resolves the PMML import type for a given DMN model and import, consuming and processing the PMML import information.
-     * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer for appropriate processing.
+     * Resolves the PMML import type for a given DMN model and import, consuming and processing the PMML import
+     * information.
+     * If an error occurs while reading the PMML resource, the exception is handled and passed to the error consumer
+     * for appropriate processing.
      * @param model : represents a DMN model where the PMML import information will be added.
      * @param i : The Import object that specifies the PMML import details.
      * @param pmmlModelLocalUriId : The ModelLocalUriId pointing at the PMML data.
      * @param dmnCompilerConfig : The DMNCompilerConfigurationImpl providing configuration details for the DMN compiler.
      */
-    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i, ModelLocalUriId pmmlModelLocalUriId, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+    static void resolvePMMLImportTypeFromModelLocalUriId(DMNModelImpl model, Import i,
+                                                         ModelLocalUriId pmmlModelLocalUriId,
+                                                         DMNCompilerConfigurationImpl dmnCompilerConfig) {
         String pmmlSource = getPmmlSource(pmmlModelLocalUriId, dmnCompilerConfig.getRootClassLoader());
         try (InputStream pmmlInputStream = new ByteArrayInputStream(pmmlSource.getBytes(StandardCharsets.UTF_8))) {
             DMNImportPMMLInfo.from(pmmlInputStream, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
-                    model::addPMMLImportInfo);
+                                                                                         model::addPMMLImportInfo);
         } catch (IOException e) {
             new DMNCompilerImpl.PMMLImportErrConsumer(model, i).accept(e);
         }
@@ -260,7 +293,8 @@ public class DMNImportsUtil {
     static String getPmmlSource(ModelLocalUriId pmmlModelLocalUriId, ClassLoader classLoader) {
         String toReturn = EfestoPMMLUtils.getPmmlSourceFromContextStorage(pmmlModelLocalUriId);
         if (toReturn == null) {
-            String pmmlFileName = ((LocalUri.LocalUriPathComponent)pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
+            String pmmlFileName =
+                    ((LocalUri.LocalUriPathComponent) pmmlModelLocalUriId.asLocalUri().parent()).getComponent() + ".pmml";
             toReturn = getPmmlFileContent(pmmlFileName, classLoader);
             EfestoPMMLUtils.setPmmlSourceToContextStorage(pmmlModelLocalUriId, toReturn);
         }
@@ -338,7 +372,7 @@ public class DMNImportsUtil {
     static String getModelName(Context context) {
         return context.getContextEntry().stream()
                 .filter(DMNImportsUtil::isModelContextEntry)
-                .map(contextEntry -> ((LiteralExpression)contextEntry.getExpression()).getText().replace("\"", ""))
+                .map(contextEntry -> ((LiteralExpression) contextEntry.getExpression()).getText().replace("\"", ""))
                 .findFirst()
                 .orElse(null);
     }
@@ -379,7 +413,7 @@ public class DMNImportsUtil {
 
     static Optional<String> getPmmlFileContentFromContextStorage(String pmmlFileName) {
         ModelLocalUriId sourceLocalUriId = EfestoPMMLUtils.getPmmlModelLocalUriId(pmmlFileName, "source");
-        return Optional.ofNullable( EfestoPMMLUtils.getPmmlSourceFromContextStorage(sourceLocalUriId));
+        return Optional.ofNullable(EfestoPMMLUtils.getPmmlSourceFromContextStorage(sourceLocalUriId));
     }
 
     static Optional<String> getPmmlFileContentFromClasspath(String pmmlFileName) {

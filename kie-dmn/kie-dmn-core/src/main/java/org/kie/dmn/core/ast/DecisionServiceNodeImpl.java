@@ -84,7 +84,7 @@ public class DecisionServiceNodeImpl extends DMNBaseNode implements DecisionServ
     }
 
     @Override
-    public void addDependency(String name, DMNNode dependency) {
+    public void addDependency(String nameWithModelNamespace, DMNNode dependency) {
         throw new UnsupportedOperationException("A Decision Service has no dependency");
     }
 

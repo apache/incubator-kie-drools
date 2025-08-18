@@ -457,7 +457,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 String id = getId( ir.getRequiredInput() );
                 InputDataNode input = model.getInputById( id );
                 if ( input != null ) {
-                    node.addDependency( input.getName(), input );
+                    node.addDependency( input.getModelNamespace() + "." + input.getName(), input );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -473,7 +473,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 String id = getId( ir.getRequiredDecision() );
                 DecisionNode dn = model.getDecisionById( id );
                 if ( dn != null ) {
-                    node.addDependency( dn.getName(), dn );
+                    node.addDependency( dn.getModelNamespace() + "." + dn.getName(), dn );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -493,9 +493,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
                 DecisionServiceNode dsn = model.getDecisionServiceById(id);
                 if ( bkmn != null ) {
-                    node.addDependency( bkmn.getName(), bkmn );
+                    node.addDependency( bkmn.getModelNamespace() + "." + bkmn.getName(), bkmn );
                 } else if (dsn != null) {
-                    node.addDependency(dsn.getName(), dsn);
+                    node.addDependency(dsn.getModelNamespace() + "." + dsn.getName(), dsn);
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,

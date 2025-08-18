@@ -269,7 +269,7 @@ class DMNImportsUtilTest {
 
         Import input = importingModel.getDefinitions().getImport().get(0);
         DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
-        DMNModel located = new DMNModelImpl(importingModel.getDefinitions(), resource);
+        DMNModelImpl located = new DMNModelImpl(importingModel.getDefinitions(), resource);
         DMNImportsUtil.checkLocatedDMNModel(input, located, model, toMerge);
         assertThat(importingModel).isNotNull();
         assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
@@ -289,7 +289,7 @@ class DMNImportsUtilTest {
 
         Import input = emptyNamedModel.getDefinitions().getImport().get(0);
         DMNModelImpl model = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
-        DMNModel located = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
+        DMNModelImpl located = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
         DMNImportsUtil.checkLocatedDMNModel(input, located, model, toMerge);
         assertThat(emptyNamedModel).isNotNull();
         assertThat(toMerge).isNotEmpty();

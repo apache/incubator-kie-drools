@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.   
+  -->
+<definitions xmlns:semantic="https://www.omg.org/spec/DMN/20240513/MODEL/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20240513/FEEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  
+                      xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+                      id="_10435dcd-8774-4575-a338-49dd554a0928" name="ImportingNestedInputData"
+                      namespace="https://www.apache.org/customnamespace/_10435dcd-8774-4575-a338-49dd554a0928">
+    <import namespace="https://www.apache.org/customnamespace/_2a1d771a-a899-4fef-abd6-fc894332337A"
+                     name="Child A"
+                     importType="https://www.omg.org/spec/DMN/20240513/MODEL/" />
+    <import namespace="https://www.apache.org/customnamespace/_9d46ece4-a96c-4cb0-abc0-0ca121ac376B"
+                     name="Child B"
+                     importType="https://www.omg.org/spec/DMN/20240513/MODEL/" />
+    <decision id="_fc1bff6c-b1ca-4a10-ba9a-23b8f5e86e6a" name="Decision based on A and B">
+        <variable name="Decision based on A and B" id="_2e323310-3d83-4c51-a256-3082e0ccacea" typeRef="Any"/>
+        <informationRequirement id="_e848f84a-25ef-432b-b944-2848f11ea91c">
+            <requiredDecision href="https://www.apache.org/customnamespace/_2a1d771a-a899-4fef-abd6-fc894332337A#_96df766e-23e1-4aa6-9d5d-545fbe2f1e2A"/>
+        </informationRequirement>
+        <informationRequirement id="_dc7aa090-f5ce-4552-a467-2adb36d7e263">
+            <requiredDecision href="https://www.apache.org/customnamespace/_9d46ece4-a96c-4cb0-abc0-0ca121ac376B#_96df766e-23e1-4aa6-9d5d-545fbe2f1e2B"/>
+        </informationRequirement>
+        <literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe32" typeRef="Any">
+            <text>"A: " + Child A.Evaluating Say Hello + "; B: " + Child B.Evaluating Say Hello</text>
+        </literalExpression>
+    </decision>
+</definitions>
