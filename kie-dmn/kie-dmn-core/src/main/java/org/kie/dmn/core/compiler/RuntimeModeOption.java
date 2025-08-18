@@ -60,13 +60,7 @@ public class RuntimeModeOption implements DMNOption {
     private final MODE runtimeMode;
 
     public RuntimeModeOption(String runtimeMode) {
-        MODE toSet = null;
-        try {
-            toSet = MODE.getModeFromString(runtimeMode);
-        } catch (Exception e) {
-            toSet = DEFAULT_VALUE;
-        }
-        this.runtimeMode = toSet;
+        this.runtimeMode = MODE.getModeFromString(runtimeMode);
     }
 
     public RuntimeModeOption(MODE runtimeMode) {
