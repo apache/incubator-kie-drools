@@ -114,6 +114,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -148,6 +149,8 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.base.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.util.ClassUtils.rawType;
+
+
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -249,6 +252,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Consumer<PropagationEntry> workingMemoryActionListener;
 
     private boolean tmsEnabled;
+    
+    private Map<QuerySpecification, QueryResultsImpl> queryCache = new HashMap<>();
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -639,6 +645,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                               arguments,
                                                               getQueryListenerInstance(),
                                                               false );
+            
+            
+            QuerySpecification querySpec = new QuerySpecification(queryName, arguments);
+            
+            
+            if (queryCache.containsKey(querySpec)) {
+            	return queryCache.get(querySpec);
+            }
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
@@ -660,10 +674,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             this.handleFactory.destroyFactHandle( handle);
 
-            return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
+            QueryResultsImpl queryResultsImpl = new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
+            
+            queryCache.put(querySpec, queryResultsImpl);
+			return queryResultsImpl;
         } finally {
             if (!calledFromRHS) {
                 this.lock.unlock();

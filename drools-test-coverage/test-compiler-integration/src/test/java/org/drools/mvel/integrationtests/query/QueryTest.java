@@ -69,6 +69,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class QueryTest {
 
@@ -220,22 +221,6 @@ public class QueryTest {
         Cheese stilton3 = new Cheese( "stilton", 3 );
         Cheese cheddar3 = new Cheese( "cheddar", 3 );
 
-        Set set = new HashSet();
-        List list = new ArrayList();
-        list.add( stilton1 );
-        list.add( cheddar1 );
-        set.add( list );
-
-        list = new ArrayList();
-        list.add( stilton2 );
-        list.add( cheddar2 );
-        set.add( list );
-
-        list = new ArrayList();
-        list.add( stilton3 );
-        list.add( cheddar3 );
-        set.add( list );
-
         session.insert( stilton1 );
         session.insert( stilton2 );
         session.insert( stilton3 );
@@ -244,25 +229,24 @@ public class QueryTest {
         session.insert( cheddar3 );
 
         QueryResults results = getQueryResults(session, "cheeses" );
-        assertThat(results).hasSize(3);
         assertThat(results.getIdentifiers()).hasSize(2);
-
-        Set<Object> newSet = new HashSet<>();
-        for ( QueryResultsRow result : results ) {
-            newSet.add( List.of(result.get( "stilton" ), result.get( "cheddar" ) ));
-        }
-        assertThat(newSet).isEqualTo(set);
+        
+        assertThat(results).hasSize(3);
+        assertThat(results)
+    		.extracting(r->r.get("stilton"), r-> r.get("cheddar"))
+    		.containsExactlyInAnyOrder(
+    			tuple(stilton1, cheddar1),
+    			tuple(stilton2, cheddar2),
+    			tuple(stilton3, cheddar3));
 
         FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
 
-        newSet = new HashSet();
-        for ( QueryResultsRow result : flatResults ) {
-            list = new ArrayList();
-            list.add( result.get( "stilton" ) );
-            list.add( result.get( "cheddar" ) );
-            newSet.add( list );
-        }
-        assertThat(newSet).isEqualTo(set);
+        assertThat(flatResults)
+        	.extracting(r->r.get("stilton"), r-> r.get("cheddar"))
+        	.containsExactlyInAnyOrder(
+        			tuple(stilton1, cheddar1),
+        			tuple(stilton2, cheddar2),
+        			tuple(stilton3, cheddar3));
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -305,9 +289,11 @@ public class QueryTest {
         final Person stilton20 = new Person( "p1", "stilton", 20 );
         stilton20.setStatus( "europe" );
         final FactHandle c1FactHandle = session.insert( stilton20 );
+        
         final Person stilton30 = new Person( "p2", "stilton", 30 );
         stilton30.setStatus( "europe" );
         final FactHandle c2FactHandle = session.insert( stilton30 );
+        
         final Person stilton40 = new Person( "p3", "stilton", 40 );
         stilton40.setStatus( "europe" );
         final FactHandle c3FactHandle = session.insert( stilton40 );
@@ -319,8 +305,6 @@ public class QueryTest {
         // europe=[ 1, 2 ], america=[ 3 ]
         stilton40.setStatus( "america" );
         session.update( c3FactHandle, stilton40 );
-        
-        session.fireAllRules();
         
         results = session.getQueryResults(  "2 persons with the same status" );
         assertThat(results).hasSize(1);
@@ -419,7 +403,7 @@ public class QueryTest {
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
         Iterator<InternalFactHandle> it = droolsQueryNode.getFactHandlesIterator(sessionImpl);
-        assertThat(it.hasNext()).isFalse();
+        assertThat(it).isExhausted();
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -493,8 +477,6 @@ public class QueryTest {
         QueryResults results = ksession.getQueryResults( "queryWithEval" );
         assertThat(results).hasSize(1);
         assertThat(results.iterator().next().get("$do")).isEqualTo(do2);
-
-        ksession.dispose();
     }
 
 
@@ -693,11 +675,9 @@ public class QueryTest {
         ksession.insert(new Person("Mario", 4));
         ksession.fireAllRules();
 
-        System.out.println(list);
         assertThat(list).hasSize(2);
-        for (Person p : list) {
-            assertThat(p.getName().equals("Mark") || p.getName().equals("Edson")).isTrue();
-        }
+        
+        assertThat(list).extracting(p -> p.getName()).containsExactlyInAnyOrder("Mark", "Edson");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -797,7 +777,5 @@ public class QueryTest {
         final List<String> resultList = StreamSupport.stream(queryResults.spliterator(), false)
                 .map(row -> ((Thing) row.get("$y")).getName()).collect(Collectors.toList());
         assertThat(resultList).as("Query does not contain all items").containsAll(itemList);
-
-        ksession.dispose();
     }
 }
