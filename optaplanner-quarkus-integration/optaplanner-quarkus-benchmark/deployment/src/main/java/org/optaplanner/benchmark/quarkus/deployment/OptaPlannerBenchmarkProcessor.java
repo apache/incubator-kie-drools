@@ -52,13 +52,13 @@ class OptaPlannerBenchmarkProcessor {
 
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchSolverBenchmarkConfigXml() {
-        String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml
+        String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml()
                 .orElse(OptaPlannerBenchmarkBuildTimeConfig.DEFAULT_SOLVER_BENCHMARK_CONFIG_URL);
         return new HotDeploymentWatchedFileBuildItem(solverBenchmarkConfigXML);
     }
 
     @BuildStep
-    @Record(ExecutionTime.STATIC_INIT)
+    @Record(ExecutionTime.RUNTIME_INIT)
     void registerAdditionalBeans(BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeans,
             BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
@@ -71,8 +71,8 @@ class OptaPlannerBenchmarkProcessor {
         }
         PlannerBenchmarkConfig benchmarkConfig;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml.isPresent()) {
-            String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml.get();
+        if (optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml().isPresent()) {
+            String solverBenchmarkConfigXML = optaPlannerBenchmarkBuildTimeConfig.solverBenchmarkConfigXml().get();
             if (classLoader.getResource(solverBenchmarkConfigXML) == null) {
                 throw new ConfigurationException("Invalid quarkus.optaplanner.benchmark.solver-benchmark-config-xml property ("
                         + solverBenchmarkConfigXML + "): that classpath resource does not exist.");
@@ -85,6 +85,7 @@ class OptaPlannerBenchmarkProcessor {
             benchmarkConfig = null;
         }
         syntheticBeans.produce(SyntheticBeanBuildItem.configure(PlannerBenchmarkConfig.class)
+                .setRuntimeInit()
                 .supplier(recorder.benchmarkConfigSupplier(benchmarkConfig))
                 .done());
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBenchmarkBeanProvider.class));

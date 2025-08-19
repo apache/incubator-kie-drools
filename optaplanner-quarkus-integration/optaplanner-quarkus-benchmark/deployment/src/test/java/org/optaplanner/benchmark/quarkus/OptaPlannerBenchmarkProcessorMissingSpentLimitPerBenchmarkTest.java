@@ -21,6 +21,8 @@ package org.optaplanner.benchmark.quarkus;
 
 import java.util.concurrent.ExecutionException;
 
+import jakarta.inject.Inject;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Assertions;
@@ -28,10 +30,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
+import org.optaplanner.benchmark.quarkus.config.OptaPlannerBenchmarkRuntimeConfig;
 import org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.benchmark.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
 
+import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.test.QuarkusUnitTest;
 
 class OptaPlannerBenchmarkProcessorMissingSpentLimitPerBenchmarkTest {
@@ -46,12 +50,16 @@ class OptaPlannerBenchmarkProcessorMissingSpentLimitPerBenchmarkTest {
                             TestdataQuarkusSolution.class, TestdataQuarkusConstraintProvider.class)
                     .addAsResource("solverBenchmarkConfigSpentLimitPerBenchmarkNoTermination.xml"));
 
+    @Inject
+    OptaPlannerBenchmarkRuntimeConfig optaPlannerBenchmarkRuntimeConfig;
+
     @Test
     void benchmark() throws ExecutionException, InterruptedException {
         PlannerBenchmarkConfig benchmarkConfig =
                 PlannerBenchmarkConfig.createFromXmlResource("solverBenchmarkConfigSpentLimitPerBenchmarkNoTermination.xml");
         IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
-            new OptaPlannerBenchmarkRecorder().benchmarkConfigSupplier(benchmarkConfig).get();
+            new OptaPlannerBenchmarkRecorder(new RuntimeValue<>(optaPlannerBenchmarkRuntimeConfig))
+                    .benchmarkConfigSupplier(benchmarkConfig).get();
         });
         Assertions.assertEquals(
                 "The following " + SolverBenchmarkConfig.class.getSimpleName() + " do not " +

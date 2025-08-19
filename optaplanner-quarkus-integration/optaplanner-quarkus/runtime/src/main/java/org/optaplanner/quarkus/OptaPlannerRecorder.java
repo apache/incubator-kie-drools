@@ -30,20 +30,23 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 
-import io.quarkus.arc.Arc;
 import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class OptaPlannerRecorder {
 
+    private final RuntimeValue<OptaPlannerRuntimeConfig> optaPlannerRuntimeConfig;
+
+    public OptaPlannerRecorder(RuntimeValue<OptaPlannerRuntimeConfig> optaPlannerRuntimeConfig) {
+        this.optaPlannerRuntimeConfig = optaPlannerRuntimeConfig;
+    }
+
     public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig,
             Map<String, RuntimeValue<MemberAccessor>> generatedGizmoMemberAccessorMap,
             Map<String, RuntimeValue<SolutionCloner>> generatedGizmoSolutionClonerMap) {
         return () -> {
-            OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
-                    Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
-            updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRuntimeConfig);
+            updateSolverConfigWithRuntimeProperties(solverConfig, optaPlannerRuntimeConfig.getValue());
             Map<String, MemberAccessor> memberAccessorMap = new HashMap<>();
             Map<String, SolutionCloner> solutionClonerMap = new HashMap<>();
             generatedGizmoMemberAccessorMap
@@ -59,30 +62,28 @@ public class OptaPlannerRecorder {
 
     public Supplier<SolverManagerConfig> solverManagerConfig(final SolverManagerConfig solverManagerConfig) {
         return () -> {
-            OptaPlannerRuntimeConfig optaPlannerRuntimeConfig =
-                    Arc.container().instance(OptaPlannerRuntimeConfig.class).get();
-            updateSolverManagerConfigWithRuntimeProperties(solverManagerConfig, optaPlannerRuntimeConfig);
+            updateSolverManagerConfigWithRuntimeProperties(solverManagerConfig, optaPlannerRuntimeConfig.getValue());
             return solverManagerConfig;
         };
     }
 
-    private void updateSolverConfigWithRuntimeProperties(SolverConfig solverConfig,
+    private static void updateSolverConfigWithRuntimeProperties(SolverConfig solverConfig,
             OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
         if (terminationConfig == null) {
             terminationConfig = new TerminationConfig();
             solverConfig.setTerminationConfig(terminationConfig);
         }
-        optaPlannerRunTimeConfig.solver.termination.spentLimit.ifPresent(terminationConfig::setSpentLimit);
-        optaPlannerRunTimeConfig.solver.termination.unimprovedSpentLimit
+        optaPlannerRunTimeConfig.solver().termination().spentLimit().ifPresent(terminationConfig::setSpentLimit);
+        optaPlannerRunTimeConfig.solver().termination().unimprovedSpentLimit()
                 .ifPresent(terminationConfig::setUnimprovedSpentLimit);
-        optaPlannerRunTimeConfig.solver.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
-        optaPlannerRunTimeConfig.solver.moveThreadCount.ifPresent(solverConfig::setMoveThreadCount);
+        optaPlannerRunTimeConfig.solver().termination().bestScoreLimit().ifPresent(terminationConfig::setBestScoreLimit);
+        optaPlannerRunTimeConfig.solver().moveThreadCount().ifPresent(solverConfig::setMoveThreadCount);
     }
 
-    private void updateSolverManagerConfigWithRuntimeProperties(SolverManagerConfig solverManagerConfig,
+    private static void updateSolverManagerConfigWithRuntimeProperties(SolverManagerConfig solverManagerConfig,
             OptaPlannerRuntimeConfig optaPlannerRunTimeConfig) {
-        optaPlannerRunTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
+        optaPlannerRunTimeConfig.solverManager().parallelSolverCount().ifPresent(solverManagerConfig::setParallelSolverCount);
     }
 
 }

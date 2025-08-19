@@ -38,21 +38,29 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 import io.quarkus.arc.Arc;
+import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class OptaPlannerBenchmarkRecorder {
+
+    private final RuntimeValue<OptaPlannerBenchmarkRuntimeConfig> optaplannerBenchmarkRuntimeConfig;
+
+    public OptaPlannerBenchmarkRecorder(RuntimeValue<OptaPlannerBenchmarkRuntimeConfig> optaplannerBenchmarkRuntimeConfig) {
+        this.optaplannerBenchmarkRuntimeConfig = optaplannerBenchmarkRuntimeConfig;
+    }
+
     public Supplier<PlannerBenchmarkConfig> benchmarkConfigSupplier(PlannerBenchmarkConfig benchmarkConfig) {
         return () -> {
-            OptaPlannerBenchmarkRuntimeConfig optaPlannerRuntimeConfig =
-                    Arc.container().instance(OptaPlannerBenchmarkRuntimeConfig.class).get();
             SolverConfig solverConfig =
                     Arc.container().instance(SolverConfig.class).get();
-            return updateBenchmarkConfigWithRuntimeProperties(benchmarkConfig, optaPlannerRuntimeConfig, solverConfig);
+            return updateBenchmarkConfigWithRuntimeProperties(benchmarkConfig, optaplannerBenchmarkRuntimeConfig.getValue(),
+                    solverConfig);
         };
     }
 
-    private PlannerBenchmarkConfig updateBenchmarkConfigWithRuntimeProperties(PlannerBenchmarkConfig plannerBenchmarkConfig,
+    private static PlannerBenchmarkConfig updateBenchmarkConfigWithRuntimeProperties(
+            PlannerBenchmarkConfig plannerBenchmarkConfig,
             OptaPlannerBenchmarkRuntimeConfig benchmarkRuntimeConfig,
             SolverConfig solverConfig) {
         if (plannerBenchmarkConfig == null) { // no benchmarkConfig.xml provided
@@ -60,7 +68,7 @@ public class OptaPlannerBenchmarkRecorder {
             plannerBenchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig);
         }
 
-        plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkRuntimeConfig.resultDirectory));
+        plannerBenchmarkConfig.setBenchmarkDirectory(new File(benchmarkRuntimeConfig.resultDirectory()));
         SolverBenchmarkConfig inheritedBenchmarkConfig = plannerBenchmarkConfig.getInheritedSolverBenchmarkConfig();
 
         if (plannerBenchmarkConfig.getSolverBenchmarkBluePrintConfigList() != null) {
@@ -76,10 +84,10 @@ public class OptaPlannerBenchmarkRecorder {
                 inheritedTerminationConfig = new TerminationConfig();
                 inheritedBenchmarkConfig.getSolverConfig().setTerminationConfig(inheritedTerminationConfig);
             }
-            benchmarkRuntimeConfig.termination.spentLimit.ifPresent(inheritedTerminationConfig::setSpentLimit);
-            benchmarkRuntimeConfig.termination.unimprovedSpentLimit
+            benchmarkRuntimeConfig.termination().spentLimit().ifPresent(inheritedTerminationConfig::setSpentLimit);
+            benchmarkRuntimeConfig.termination().unimprovedSpentLimit()
                     .ifPresent(inheritedTerminationConfig::setUnimprovedSpentLimit);
-            benchmarkRuntimeConfig.termination.bestScoreLimit.ifPresent(inheritedTerminationConfig::setBestScoreLimit);
+            benchmarkRuntimeConfig.termination().bestScoreLimit().ifPresent(inheritedTerminationConfig::setBestScoreLimit);
         }
 
         TerminationConfig inheritedTerminationConfig = null;
@@ -112,10 +120,10 @@ public class OptaPlannerBenchmarkRecorder {
                     continue;
                 }
 
-                benchmarkRuntimeConfig.termination.spentLimit.ifPresent(terminationConfig::setSpentLimit);
-                benchmarkRuntimeConfig.termination.unimprovedSpentLimit
+                benchmarkRuntimeConfig.termination().spentLimit().ifPresent(terminationConfig::setSpentLimit);
+                benchmarkRuntimeConfig.termination().unimprovedSpentLimit()
                         .ifPresent(terminationConfig::setUnimprovedSpentLimit);
-                benchmarkRuntimeConfig.termination.bestScoreLimit.ifPresent(terminationConfig::setBestScoreLimit);
+                benchmarkRuntimeConfig.termination().bestScoreLimit().ifPresent(terminationConfig::setBestScoreLimit);
 
                 if (!terminationConfig.isConfigured()) {
                     List<PhaseConfig> phaseConfigList = solverBenchmarkConfig.getSolverConfig().getPhaseConfigList();
@@ -173,7 +181,7 @@ public class OptaPlannerBenchmarkRecorder {
         return plannerBenchmarkConfig;
     }
 
-    private void inheritPropertiesFromSolverConfig(SolverBenchmarkConfig childBenchmarkConfig,
+    private static void inheritPropertiesFromSolverConfig(SolverBenchmarkConfig childBenchmarkConfig,
             SolverBenchmarkConfig inheritedBenchmarkConfig,
             SolverConfig solverConfig) {
         inheritProperty(childBenchmarkConfig, inheritedBenchmarkConfig, solverConfig,
@@ -183,7 +191,7 @@ public class OptaPlannerBenchmarkRecorder {
         inheritScoreCalculation(childBenchmarkConfig, inheritedBenchmarkConfig, solverConfig);
     }
 
-    private <T> void inheritProperty(SolverBenchmarkConfig childBenchmarkConfig,
+    private static <T> void inheritProperty(SolverBenchmarkConfig childBenchmarkConfig,
             SolverBenchmarkConfig inheritedBenchmarkConfig,
             SolverConfig solverConfig,
             Function<SolverConfig, T> getter,
@@ -198,7 +206,7 @@ public class OptaPlannerBenchmarkRecorder {
         setter.accept(childBenchmarkConfig.getSolverConfig(), getter.apply(solverConfig));
     }
 
-    private void inheritScoreCalculation(SolverBenchmarkConfig childBenchmarkConfig,
+    private static void inheritScoreCalculation(SolverBenchmarkConfig childBenchmarkConfig,
             SolverBenchmarkConfig inheritedBenchmarkConfig,
             SolverConfig solverConfig) {
 
@@ -219,7 +227,7 @@ public class OptaPlannerBenchmarkRecorder {
         childScoreDirectorFactoryConfig.inherit(inheritedScoreDirectorFactoryConfig);
     }
 
-    private boolean isScoreCalculationDefined(SolverConfig solverConfig) {
+    private static boolean isScoreCalculationDefined(SolverConfig solverConfig) {
         if (solverConfig == null) {
             return false;
         }

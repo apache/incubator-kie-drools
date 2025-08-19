@@ -19,6 +19,7 @@
 
 package org.optaplanner.quarkus.deployment;
 
+import static io.quarkus.deployment.annotations.ExecutionTime.RUNTIME_INIT;
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
 import java.io.IOException;
@@ -137,7 +138,7 @@ class OptaPlannerProcessor {
 
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchSolverConfigXml() {
-        String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml
+        String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml()
                 .orElse(OptaPlannerBuildTimeConfig.DEFAULT_SOLVER_CONFIG_URL);
         return new HotDeploymentWatchedFileBuildItem(solverConfigXML);
     }
@@ -145,7 +146,7 @@ class OptaPlannerProcessor {
     @BuildStep
     HotDeploymentWatchedFileBuildItem watchConstraintsDrl() {
         String constraintsDrl =
-                optaPlannerBuildTimeConfig.scoreDrl.orElse(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
+                optaPlannerBuildTimeConfig.scoreDrl().orElse(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
         return new HotDeploymentWatchedFileBuildItem(constraintsDrl);
     }
 
@@ -225,9 +226,10 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep
-    @Record(STATIC_INIT)
+    @Record(RUNTIME_INIT)
     SolverConfigBuildItem recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             DetermineIfNativeBuildItem determineIfNative, CombinedIndexBuildItem combinedIndex,
+            OptaPlannerRuntimeConfig optaplannerRuntimeConfig,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -254,8 +256,8 @@ class OptaPlannerProcessor {
         // Internally, OptaPlanner defaults the ClassLoader to getContextClassLoader() too
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         SolverConfig solverConfig;
-        if (optaPlannerBuildTimeConfig.solverConfigXml.isPresent()) {
-            String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml.get();
+        if (optaPlannerBuildTimeConfig.solverConfigXml().isPresent()) {
+            String solverConfigXML = optaPlannerBuildTimeConfig.solverConfigXml().get();
             if (classLoader.getResource(solverConfigXML) == null) {
                 throw new ConfigurationException("Invalid quarkus.optaplanner.solverConfigXML property ("
                         + solverConfigXML + "): that classpath resource does not exist.");
@@ -313,6 +315,7 @@ class OptaPlannerProcessor {
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverConfig.class)
                 .scope(Singleton.class)
                 .defaultBean()
+                .setRuntimeInit()
                 .supplier(recorder.solverConfigSupplier(solverConfig,
                         GizmoMemberAccessorEntityEnhancer.getGeneratedGizmoMemberAccessorMap(recorderContext,
                                 generatedGizmoClasses.generatedGizmoMemberAccessorClassSet),
@@ -323,6 +326,7 @@ class OptaPlannerProcessor {
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
                 .scope(Singleton.class)
                 .defaultBean()
+                .setRuntimeInit()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
 
         additionalBeans.produce(new AdditionalBeanBuildItem(DefaultOptaPlannerBeanProvider.class));
@@ -419,10 +423,10 @@ class OptaPlannerProcessor {
             solverConfig.setEntityClassList(findEntityClassList(indexView));
         }
         applyScoreDirectorFactoryProperties(indexView, solverConfig);
-        optaPlannerBuildTimeConfig.solver.environmentMode.ifPresent(solverConfig::setEnvironmentMode);
-        optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
-        optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
-        optaPlannerBuildTimeConfig.solver.constraintStreamImplType.ifPresent(solverConfig::withConstraintStreamImplType);
+        optaPlannerBuildTimeConfig.solver().environmentMode().ifPresent(solverConfig::setEnvironmentMode);
+        optaPlannerBuildTimeConfig.solver().daemon().ifPresent(solverConfig::setDaemon);
+        optaPlannerBuildTimeConfig.solver().domainAccessType().ifPresent(solverConfig::setDomainAccessType);
+        optaPlannerBuildTimeConfig.solver().constraintStreamImplType().ifPresent(solverConfig::withConstraintStreamImplType);
 
         if (solverConfig.getDomainAccessType() == null) {
             solverConfig.setDomainAccessType(DomainAccessType.GIZMO);
@@ -579,15 +583,15 @@ class OptaPlannerProcessor {
     }
 
     protected Optional<String> constraintsDrl() {
-        if (optaPlannerBuildTimeConfig.scoreDrl.isPresent()) {
-            String constraintsDrl = optaPlannerBuildTimeConfig.scoreDrl.get();
+        if (optaPlannerBuildTimeConfig.scoreDrl().isPresent()) {
+            String constraintsDrl = optaPlannerBuildTimeConfig.scoreDrl().get();
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader.getResource(constraintsDrl) == null) {
                 throw new IllegalStateException("Invalid " + OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY
                         + " property (" + constraintsDrl + "): that classpath resource does not exist.");
             }
         }
-        return optaPlannerBuildTimeConfig.scoreDrl;
+        return optaPlannerBuildTimeConfig.scoreDrl();
     }
 
     protected Optional<String> defaultConstraintsDrl() {

@@ -26,14 +26,15 @@ import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
 
 /**
  * During build time, this is translated into OptaPlanner's Config classes.
  */
-@ConfigRoot(name = "optaplanner")
-public class OptaPlannerBuildTimeConfig {
+@ConfigRoot
+@ConfigMapping(prefix = "quarkus.optaplanner")
+public interface OptaPlannerBuildTimeConfig {
 
     public static final String DEFAULT_SOLVER_CONFIG_URL = "solverConfig.xml";
     public static final String DEFAULT_CONSTRAINTS_DRL_URL = "constraints.drl";
@@ -44,8 +45,7 @@ public class OptaPlannerBuildTimeConfig {
      * Defaults to {@value DEFAULT_SOLVER_CONFIG_URL}.
      * If this property isn't specified, that solverConfig.xml is optional.
      */
-    @ConfigItem
-    public Optional<String> solverConfigXml;
+    Optional<String> solverConfigXml();
 
     /**
      * A classpath resource to read the solver score DRL.
@@ -53,13 +53,11 @@ public class OptaPlannerBuildTimeConfig {
      * Do not define this property when a {@link ConstraintProvider}, {@link EasyScoreCalculator} or
      * {@link IncrementalScoreCalculator} class exists.
      */
-    @ConfigItem
-    public Optional<String> scoreDrl;
+    Optional<String> scoreDrl();
 
     /**
      * Configuration properties that overwrite OptaPlanner's {@link SolverConfig}.
      */
-    @ConfigItem
-    public SolverBuildTimeConfig solver;
+    SolverBuildTimeConfig solver();
 
 }

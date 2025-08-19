@@ -21,24 +21,27 @@ package org.optaplanner.benchmark.quarkus.config;
 
 import org.optaplanner.quarkus.config.TerminationRuntimeConfig;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "optaplanner.benchmark", phase = ConfigPhase.RUN_TIME)
-public class OptaPlannerBenchmarkRuntimeConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "quarkus.optaplanner.benchmark")
+public interface OptaPlannerBenchmarkRuntimeConfig {
     public static final String DEFAULT_BENCHMARK_RESULT_DIRECTORY = "target/benchmarks";
 
     /**
      * Where the benchmark results are written to. Defaults to
      * {@link DEFAULT_BENCHMARK_RESULT_DIRECTORY}.
      */
-    @ConfigItem(defaultValue = DEFAULT_BENCHMARK_RESULT_DIRECTORY)
-    public String resultDirectory;
+    @WithDefault(DEFAULT_BENCHMARK_RESULT_DIRECTORY)
+    String resultDirectory();
 
     /**
      * Termination configuration for the solvers run in the benchmark.
      */
-    @ConfigItem(name = "solver.termination")
-    public TerminationRuntimeConfig termination;
+    @WithName("solver.termination")
+    TerminationRuntimeConfig termination();
 }
