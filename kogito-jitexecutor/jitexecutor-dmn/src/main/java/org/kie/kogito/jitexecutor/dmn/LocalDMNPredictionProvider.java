@@ -52,7 +52,7 @@ public class LocalDMNPredictionProvider implements PredictionProvider {
         List<PredictionOutput> predictionOutputs = new ArrayList<>();
         for (PredictionInput input : inputs) {
             Map<String, Object> contextVariables = (Map<String, Object>) toMap(input.getFeatures()).get(DUMMY_DMN_CONTEXT_KEY);
-            predictionOutputs.add(toPredictionOutput(dmnEvaluator.evaluate(contextVariables)));
+            predictionOutputs.add(toPredictionOutput(dmnEvaluator.evaluate(contextVariables, false)));
         }
         return completedFuture(predictionOutputs);
     }

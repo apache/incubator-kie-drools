@@ -26,11 +26,12 @@ import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
 
 public interface JITDMNService {
 
-    JITDMNResult evaluateModel(String modelXML, Map<String, Object> context);
+    JITDMNResult evaluateModel(String modelXML, Map<String, Object> context, boolean isStrictMode);
 
     JITDMNResult evaluateModel(MultipleResourcesPayload payload, Map<String, Object> context);
 
-    DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context);
+    DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context, boolean isStrictMode);
 
     DMNResultWithExplanation evaluateModelAndExplain(MultipleResourcesPayload payload, Map<String, Object> context);
+
 }

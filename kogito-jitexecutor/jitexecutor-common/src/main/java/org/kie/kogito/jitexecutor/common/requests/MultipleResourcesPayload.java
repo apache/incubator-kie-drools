@@ -20,17 +20,28 @@ package org.kie.kogito.jitexecutor.common.requests;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MultipleResourcesPayload {
 
+    @JsonProperty("mainURI")
     private String mainURI;
+    @JsonProperty("resources")
     private List<ResourceWithURI> resources;
+    @JsonProperty("isStrictMode")
+    private boolean isStrictMode;
 
     public MultipleResourcesPayload() {
     }
 
     public MultipleResourcesPayload(String mainURI, List<ResourceWithURI> resources) {
+        this(mainURI, resources, false);
+    }
+
+    public MultipleResourcesPayload(String mainURI, List<ResourceWithURI> resources, boolean isStrictMode) {
         this.mainURI = mainURI;
         this.resources = resources;
+        this.isStrictMode = isStrictMode;
     }
 
     public String getMainURI() {
@@ -49,11 +60,20 @@ public class MultipleResourcesPayload {
         this.resources = resources;
     }
 
+    public boolean isStrictMode() {
+        return isStrictMode;
+    }
+
+    public void setStrictMode(boolean strictMode) {
+        isStrictMode = strictMode;
+    }
+
     @Override
     public String toString() {
         return "MultipleResourcesPayload{" +
                 "mainURI='" + mainURI + '\'' +
                 ", resources=" + resources +
+                ", isStrictMode =" + isStrictMode +
                 '}';
     }
 }

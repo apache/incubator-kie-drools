@@ -74,33 +74,33 @@ public class JITDMNServiceImpl implements JITDMNService {
     }
 
     @Override
-    public JITDMNResult evaluateModel(String modelXML, Map<String, Object> context) {
+    public JITDMNResult evaluateModel(String modelXML, Map<String, Object> context, boolean isStrictMode) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromXML(modelXML);
-        return dmnEvaluator.evaluate(context);
+        return dmnEvaluator.evaluate(context, isStrictMode);
     }
 
     @Override
     public JITDMNResult evaluateModel(MultipleResourcesPayload payload, Map<String, Object> context) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
-        return dmnEvaluator.evaluate(context);
+        return dmnEvaluator.evaluate(context, payload.isStrictMode());
     }
 
     @Override
-    public DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context) {
+    public DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context, boolean isStrictMode) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromXML(modelXML);
-        return evaluateModelAndExplain(dmnEvaluator, context);
+        return evaluateModelAndExplain(dmnEvaluator, context, isStrictMode);
     }
 
     @Override
     public DMNResultWithExplanation evaluateModelAndExplain(MultipleResourcesPayload payload, Map<String, Object> context) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
-        return evaluateModelAndExplain(dmnEvaluator, context);
+        return evaluateModelAndExplain(dmnEvaluator, context, payload.isStrictMode());
     }
 
-    public DMNResultWithExplanation evaluateModelAndExplain(DMNEvaluator dmnEvaluator, Map<String, Object> context) {
+    public DMNResultWithExplanation evaluateModelAndExplain(DMNEvaluator dmnEvaluator, Map<String, Object> context, boolean isStrictMode) {
         LocalDMNPredictionProvider localDMNPredictionProvider = new LocalDMNPredictionProvider(dmnEvaluator);
 
-        JITDMNResult dmnResult = dmnEvaluator.evaluate(context);
+        JITDMNResult dmnResult = dmnEvaluator.evaluate(context, isStrictMode);
 
         Prediction prediction = new SimplePrediction(LocalDMNPredictionProvider.toPredictionInput(context),
                 LocalDMNPredictionProvider.toPredictionOutput(dmnResult));

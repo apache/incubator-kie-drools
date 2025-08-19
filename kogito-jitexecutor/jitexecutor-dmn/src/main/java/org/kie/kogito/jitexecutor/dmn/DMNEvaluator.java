@@ -36,6 +36,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
@@ -191,9 +192,10 @@ public class DMNEvaluator {
         return dmnRuntime.getModels();
     }
 
-    public JITDMNResult evaluate(Map<String, Object> context) {
+    public JITDMNResult evaluate(Map<String, Object> context, boolean isStrictMode) {
         DMNContext dmnContext =
                 new DynamicDMNContextBuilder(dmnRuntime.newContext(), dmnModel).populateContextWith(context);
+        ((DMNRuntimeImpl) this.dmnRuntime).setOption(new RuntimeModeOption(isStrictMode ? RuntimeModeOption.MODE.STRICT : RuntimeModeOption.MODE.LENIENT));
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
         List<List<String>> invalidElementPaths = retrieveInvalidElementPaths(dmnResult.getMessages(), dmnModel);
         Optional<Map<String, Map<String, Integer>>> decisionEvaluationHitIdsMap = dmnRuntime.getListeners().stream()

@@ -77,7 +77,7 @@ public class JITDMNServiceImplTest {
 
         context.put("id", "_0A185BAC-7692-45FA-B722-7C86C626BD51");
 
-        JITDMNResult dmnResult = jitdmnService.evaluateModel(sampleModel, context);
+        JITDMNResult dmnResult = jitdmnService.evaluateModel(sampleModel, context, true);
         assertThat(dmnResult.getModelName()).isEqualTo("loan_pre_qualification");
         assertThat(dmnResult.getNamespace()).isEqualTo("https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB");
         assertThat(dmnResult.getMessages()).isEmpty();
@@ -103,7 +103,7 @@ public class JITDMNServiceImplTest {
         context.put("FICO Score", 800);
         context.put("DTI Ratio", .1);
         context.put("PITI Ratio", .1);
-        JITDMNResult dmnResult = jitdmnService.evaluateModel(model, context);
+        JITDMNResult dmnResult = jitdmnService.evaluateModel(model, context, false);
         assertThat(dmnResult.getModelName()).isEqualTo("xls2dmn");
         assertThat(dmnResult.getNamespace()).isEqualTo("xls2dmn_741b355c-685c-4827-b13a-833da8321da4");
         assertThat(dmnResult.getMessages()).isEmpty();
@@ -127,7 +127,7 @@ public class JITDMNServiceImplTest {
         context.put("Loan", loan);
         context.put("SupremeDirector", "No");
         context.put("Bribe", 10);
-        JITDMNResult dmnResult = jitdmnService.evaluateModel(decisionTableModel, context);
+        JITDMNResult dmnResult = jitdmnService.evaluateModel(decisionTableModel, context, false);
 
         assertThat(dmnResult.getModelName()).isEqualTo("LoanEligibility");
         assertThat(dmnResult.getNamespace()).isEqualTo("https://github.com/kiegroup/kogito-examples/dmn-quarkus-listener-example");
@@ -147,7 +147,7 @@ public class JITDMNServiceImplTest {
         Map<String, Object> context = new HashMap<>();
         context.put("Credit Score", "Poor");
         context.put("DTI", 33);
-        JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context);
+        JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context, false);
         assertThat(retrieved.getModelName()).isEqualTo("DMN_A77074C1-21FE-4F7E-9753-F84661569AFC");
         assertThat(retrieved.getMessages()).isEmpty();
 
@@ -168,7 +168,7 @@ public class JITDMNServiceImplTest {
         context = new HashMap<>();
         context.put("Credit Score", "Excellent");
         context.put("DTI", 10);
-        retrieved = jitdmnService.evaluateModel(decisionTableModel, context);
+        retrieved = jitdmnService.evaluateModel(decisionTableModel, context, false);
         assertThat(retrieved.getMessages()).isEmpty();
         // Approved decision
         retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("Risk Score");
@@ -198,7 +198,7 @@ public class JITDMNServiceImplTest {
         context.put("Credit Score", "Poor");
         context.put("DTI", 33);
         context.put("World Region", "Asia");
-        JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context);
+        JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context, false);
         assertThat(retrieved.getMessages()).isEmpty();
         // Approved decision
         JITDMNDecisionResult retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("Risk Score");
@@ -211,7 +211,7 @@ public class JITDMNServiceImplTest {
         context.put("Credit Score", "Excellent");
         context.put("DTI", 10);
         context.put("World Region", "Europe");
-        retrieved = jitdmnService.evaluateModel(decisionTableModel, context);
+        retrieved = jitdmnService.evaluateModel(decisionTableModel, context, false);
         assertThat(retrieved.getMessages()).isEmpty();
         // Approved decision
         retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("Risk Score");
@@ -234,7 +234,7 @@ public class JITDMNServiceImplTest {
         numbers.add(BigDecimal.valueOf(1));
         final Map<String, Object> context = new HashMap<>();
         context.put("Numbers", numbers);
-        final JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context);
+        final JITDMNResult retrieved = jitdmnService.evaluateModel(decisionTableModel, context, false);
 
         final List<BigDecimal> expectedStatistcs = new ArrayList<>();
         expectedStatistcs.add(BigDecimal.valueOf(6));
@@ -257,7 +257,7 @@ public class JITDMNServiceImplTest {
         final Map<String, Object> context = new HashMap<>();
         context.put("A", 1);
 
-        JITDMNResult retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context);
+        JITDMNResult retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context, false);
         assertThat(retrieved.getMessages()).isEmpty();
         JITDMNDecisionResult retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("New Decision");
         assertThat(retrievedDecisionResult.getResult()).isEqualTo(BigDecimal.valueOf(10));
@@ -268,7 +268,7 @@ public class JITDMNServiceImplTest {
         //
         context.clear();
         context.put("A", 0);
-        retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context);
+        retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context, false);
         assertThat(retrieved.getMessages()).isEmpty();
         retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("New Decision");
         assertThat(retrievedDecisionResult.getResult()).isEqualTo(BigDecimal.valueOf(-10));
@@ -303,7 +303,7 @@ public class JITDMNServiceImplTest {
         context.put("complexInput", complexInput);
         context.put("listOfComplexInput", Collections.singletonList(complexInput));
 
-        DMNResultWithExplanation response = jitdmnService.evaluateModelAndExplain(allTypesModel, context);
+        DMNResultWithExplanation response = jitdmnService.evaluateModelAndExplain(allTypesModel, context, false);
         assertThat(response.dmnResult).isNotNull();
         assertThat(response.dmnResult.getDecisionResults()).hasSize(1);
 
