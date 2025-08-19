@@ -63,7 +63,7 @@
                 <goal>jar</goal>
               </goals>
               <configuration>
-                <source>${maven.compiler.source}</source>
+                <source>${maven.compiler.release}</source>
               </configuration>
             </execution>
           </executions>

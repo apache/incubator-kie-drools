@@ -40,6 +40,7 @@ public class DescrFieldDefinition implements FieldDefinition {
     private boolean isOverride = false;
 
     private final Map<String, AnnotationDefinition> annotations = new HashMap<>();
+    private final Map<String, Object> fieldMetaData = new HashMap<>();
 
     public DescrFieldDefinition(String fieldName, String objectType, String initExpr) {
         this.fieldName = fieldName;
@@ -135,6 +136,14 @@ public class DescrFieldDefinition implements FieldDefinition {
     public DescrFieldDefinition setOverride( boolean override ) {
         isOverride = override;
         return this;
+    }
+
+    public Map<String, Object> getFieldMetaData() {
+        return fieldMetaData;
+    }
+
+    public void addFieldMetaData(String key, Object value) {
+        fieldMetaData.put(key, value);
     }
 
     @Override

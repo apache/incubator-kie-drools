@@ -35,8 +35,6 @@
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
-    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
     
     <surefire.forkCount>1</surefire.forkCount>
     <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
@@ -2161,7 +2159,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <source>${maven.compiler.source}</source>
+                  <source>${maven.compiler.release}</source>
                 </configuration>
               </execution>
             </executions>

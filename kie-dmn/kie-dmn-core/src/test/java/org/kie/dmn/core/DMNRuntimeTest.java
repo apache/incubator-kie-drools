@@ -3680,4 +3680,5 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages()).hasSize(2);
         assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
     }
+
 }

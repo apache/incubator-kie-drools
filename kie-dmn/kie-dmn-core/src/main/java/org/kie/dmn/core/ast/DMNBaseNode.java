@@ -111,8 +111,8 @@ public abstract class DMNBaseNode implements DMNNode {
         this.dependencies = dependencies;
     }
 
-    public void addDependency(String name, DMNNode dependency) {
-        this.dependencies.put(name, dependency);
+    public void addDependency(String nameWithModelNamespace, DMNNode dependency) {
+        this.dependencies.put(nameWithModelNamespace, dependency);
     }
 
     public List<InformationRequirement> getInformationRequirement() {
