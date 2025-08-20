@@ -21,8 +21,8 @@
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:included1="https://kie.org/dmn/_9B908A38-2808-4AA6-8387-5A0063159BFD"
              xmlns:included0="https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
              namespace="https://kie.org/dmn/_054766E3-2098-4E7B-8F48-576B5373F4EE" id="_EC6DEDC6-F33D-4058-8C6C-7FAF676BB0FF"
-             name="DMN_A0738A91-E039-43A3-B892-0A924B41D549">
-  <import id="_903A7C44-32F0-4453-B0A6-77216FF872D2" name="CLASHING_NAME" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837" locationURI="./Model_A.dmn" />
+             name="ImportingModelSimpleType">
+  <import id="_903A7C44-32F0-4453-B0A6-77216FF872D2" name="CLASHING_NAME" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837" locationURI="./ImportedModel.dmn" />
   <decision name="My Decision" id="_27D3FDE5-2DF4-4BCD-8224-4FB16CC6731E">
     <variable id="_98824C72-1DAC-4C04-84DF-8908AD40910F" name="My Decision" typeRef="string" />
     <informationRequirement id="_46788B87-3143-4D6C-B05C-7C0B6B314256">

@@ -617,8 +617,19 @@ class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    void validateValidModelsWitClashingInheritedImportAndInputName() {
-        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name";
+    void validateValidModelsWitClashingInheritedImportAndInputNameSimpleData() {
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        String[] modelFiles = new String[]{dmnImporting, dmnImported};
+        Resource[] resources = Arrays.stream(modelFiles).map(ClassPathResource::new).toArray(Resource[]::new);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(resources);
+        assertThat(retrieved).isNotNull().isEmpty();
+    }
+
+    @Test
+    void validateValidModelsWitClashingInheritedImportAndInputNameComplexData() {
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_complex_data";
         String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
         String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
         String[] modelFiles = new String[]{dmnImporting, dmnImported};

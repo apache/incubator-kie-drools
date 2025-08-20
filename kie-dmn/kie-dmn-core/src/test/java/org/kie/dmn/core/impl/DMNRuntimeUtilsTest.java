@@ -18,13 +18,6 @@
  */
 package org.kie.dmn.core.impl;
 
-import org.junit.jupiter.api.Test;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.core.ast.InputDataNodeImpl;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.InputData;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,21 +26,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.InputData;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.getTopmostModel;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.populateContextWithInheritedData;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.populateInputsFromTopmostModel;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.populateResultContextWithTopmostParentsValues;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.processTopmostModelTuple;
-import static org.kie.dmn.core.impl.DMNRuntimeImpl.updateContextMap;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.getTopmostModel;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.populateContextWithInheritedData;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.populateInputsFromTopmostModel;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.populateResultContextWithTopmostParentsValues;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.processTopmostModelTuple;
+import static org.kie.dmn.core.impl.DMNRuntimeUtils.updateContextMap;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-class DMNRuntimeImplTest {
+class DMNRuntimeUtilsTest {
 
     @Test
     void testGetTopmostModel() {
