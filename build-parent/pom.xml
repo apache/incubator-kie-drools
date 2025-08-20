@@ -221,7 +221,9 @@
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
-    <archunit.maven.plugin.version>4.0.2</archunit.maven.plugin.version>
+    <!--Added JDK-specific ArchUnit plugin profiles for Java 17 and Java 21.
+    Commented out the global plugin declaration to prevent version mismatch.-->
+    <!--<archunit.maven.plugin.version>3.0.1</archunit.maven.plugin.version>-->
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
   </properties>
 
@@ -1900,11 +1902,6 @@
           <version>${version.com.github.eirslett}</version>
         </plugin>
         <plugin>
-          <groupId>com.societegenerale.commons</groupId>
-          <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
-        </plugin>
-        <plugin>
           <groupId>io.github.download-maven-plugin</groupId>
           <artifactId>download-maven-plugin</artifactId>
           <version>${version.download-maven-plugin}</version>
@@ -2397,6 +2394,54 @@
                 <phase>compile</phase>
                 <goals>
                   <goal>unpack</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>archunit-java17</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <jdk>17</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.societegenerale.commons</groupId>
+            <artifactId>arch-unit-maven-plugin</artifactId>
+            <version>2.9.1</version> <!-- Compatible with Java 17 -->
+            <executions>
+              <execution>
+                <goals>
+                  <goal>arch-test</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Profile for Java 21 -->
+    <profile>
+      <id>archunit-java21</id>
+      <activation>
+        <jdk>21</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.societegenerale.commons</groupId>
+            <artifactId>arch-unit-maven-plugin</artifactId>
+            <version>4.0.2</version> <!-- Compatible with Java 21 -->
+            <executions>
+              <execution>
+                <goals>
+                  <goal>arch-test</goal>
                 </goals>
               </execution>
             </executions>
