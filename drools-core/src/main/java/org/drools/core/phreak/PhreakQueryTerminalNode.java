@@ -76,7 +76,7 @@ public class PhreakQueryTerminalNode {
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(reteEvaluator, activationsManager, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
@@ -105,7 +105,7 @@ public class PhreakQueryTerminalNode {
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(reteEvaluator, activationsManager, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
@@ -136,7 +136,7 @@ public class PhreakQueryTerminalNode {
             dquery.setQuery(qtnNode.getQuery());
 
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(reteEvaluator, activationsManager, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
@@ -150,7 +150,7 @@ public class PhreakQueryTerminalNode {
     }
 
 
-    public static void checkAndTriggerQueryReevaluation(ActivationsManager activationsManager, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQueryImpl dquery) {
+    public static void checkAndTriggerQueryReevaluation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQueryImpl dquery) {
         StackEntry stackEntry = dquery.getStackEntry();
         if (!isAdded(stack, stackEntry)) {
             // Ignore unless stackEntry is not added to stack
@@ -170,7 +170,7 @@ public class PhreakQueryTerminalNode {
                     // reactivity comes form within the query, so need to notify parent rules to evaluate the results
                     for (int i = 0, length = pmems.size(); i < length; i++) {
                         PathMemory pmem = pmems.get(i);
-                        pmem.doLinkRule(activationsManager); // method already ignores is rule is activated and on agenda
+                        pmem.doLinkRule(reteEvaluator); // method already ignores is rule is activated and on agenda
                     }
                 }
             }

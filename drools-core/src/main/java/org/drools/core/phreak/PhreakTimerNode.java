@@ -39,7 +39,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.time.Job;
@@ -188,7 +187,7 @@ public class PhreakTimerNode {
                     // a expire clashes with insert or update, allow it to propagate once, will handle the expire the second time around
                     doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
                     tm.getDeleteLeftTuples().add( leftTuple );
-                    pmem.doLinkRule( activationsManager ); // make sure it's dirty, so it'll evaluate again
+                    pmem.doLinkRule( reteEvaluator ); // make sure it's dirty, so it'll evaluate again
                     if ( log.isTraceEnabled() ) {
                         log.trace( "Timer Postponed Delete {}", leftTuple );
                     }
@@ -422,7 +421,7 @@ public class PhreakTimerNode {
                     continue;
                 }
                 ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
-                pmem.doLinkRule( activationsManager );
+                pmem.doLinkRule( reteEvaluator );
 
                 if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {
                     evaluateAndFireRule( pmem, reteEvaluator, activationsManager );
