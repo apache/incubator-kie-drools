@@ -34,8 +34,6 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
-
 /**
  * Utility class to support <code>DMNRuntimeImpl</code>
  */
@@ -43,9 +41,23 @@ public class DMNRuntimeUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DMNRuntimeUtils.class);
 
-
     private DMNRuntimeUtils() {
         // singleton
+    }
+
+
+    public static Object coerceUsingType(Object value, DMNType type, boolean typeCheck,
+                                         BiConsumer<Object, DMNType> nullCallback) {
+        if (typeCheck) {
+            if (type.isAssignableValue(value)) {
+                return coerceSingleItemCollectionToValue(value, type);
+            } else {
+                nullCallback.accept(value, type);
+                return null;
+            }
+        } else {
+            return coerceSingleItemCollectionToValue(value, type);
+        }
     }
 
     static void populateResultContextWithTopmostParentsValues(DMNContext context, DMNModelImpl model) {
@@ -72,31 +84,33 @@ public class DMNRuntimeUtils {
                                                  DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
         if (Objects.equals(topmostInputName, topmostModelTuple.getImportName())) {
             processTopmostModelInputDataNodeWithClashingNames(context, topmostInputName,
-                                                               topmostModelTuple, model);
+                                                              topmostModelTuple, model);
         } else {
             processTopmostModelInputDataNodeWithoutClashingNames(context, topmostInputName,
-                                                              topmostModelTuple, model);
+                                                                 topmostModelTuple, model);
         }
     }
 
     static void processTopmostModelInputDataNodeWithClashingNames(DMNContext context, String topmostInputName,
-                                                 DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
+                                                                  DMNModelImpl.ModelImportTuple topmostModelTuple,
+                                                                  DMNModelImpl model) {
         Object storedValue = context.get(topmostInputName); // This could be either a raw value, or a map
-        if (storedValue instanceof Map storedMap && storedMap.containsKey(topmostInputName)) { // This is tricky/error prone, since an input data could also be defined as map
+        if (storedValue instanceof Map storedMap && storedMap.containsKey(topmostInputName)) { // THe check is needed to avoid looping reference
             return;
         }
-        // If it is not a Map, we need to create a map with the importing name and populate it with the input data
+        // Eventually, we need to create a map with the importing name and populate it with the input data
         replaceContextMap(context, topmostModelTuple, topmostInputName,
-                         storedValue);
+                          storedValue);
     }
 
     static void processTopmostModelInputDataNodeWithoutClashingNames(DMNContext context, String topmostInputName,
-                                                                  DMNModelImpl.ModelImportTuple topmostModelTuple, DMNModelImpl model) {
+                                                                     DMNModelImpl.ModelImportTuple topmostModelTuple,
+                                                                     DMNModelImpl model) {
         Object storedValue = context.get(topmostInputName);
         if (storedValue != null) {
             Object parentData = context.get(topmostModelTuple.getImportName());
             if (parentData instanceof Map mappedData) {
-                addValueInsideTopmostModelMap(mappedData, topmostInputName, storedValue, parentData);
+                addValueInsideMap(mappedData, topmostInputName, storedValue);
             } else if (parentData == null) {
                 updateContextMap(context, model.getImportChainAliases(), topmostModelTuple, topmostInputName,
                                  storedValue);
@@ -104,26 +118,9 @@ public class DMNRuntimeUtils {
         }
     }
 
-
-    /**
-     * Depending on how the context has been instantiated, the provided <code>Map</code> could be unmodifiable, which
-     * is an expected condition
-     * @param mappedData
-     * @param inputName
-     * @param storedValue
-     * @param parentData
-     */
-    static void addValueInsideTopmostModelMap(Map mappedData, String inputName, Object storedValue, Object parentData) {
-        try {
-            mappedData.put(inputName, storedValue);
-        } catch (Exception e) {
-            logger.warn("Failed to add {} to map {} ", storedValue, parentData, e);
-        }
-    }
-
     static void replaceContextMap(DMNContext context,
-                                 DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName,
-                                 Object storedValue) {
+                                  DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName,
+                                  Object storedValue) {
         Map mappedData = new HashMap<>();
         mappedData.put(inputName, storedValue);
         context.set(topmostModelTuple.getImportName(), mappedData);
@@ -139,6 +136,15 @@ public class DMNRuntimeUtils {
                                          topmostModelTuple.getModel().getNamespace(), importChainAliases);
     }
 
+    /**
+     * This method populate the given <code>DMNContext</code> with a new entry whose key is the import name and whose value is the provided <code>Map</code> <b>toStore</b>,
+     * if those are related with the namespace of the topmost parent
+     * @param toPopulate
+     * @param toStore
+     * @param importName
+     * @param topmostNamespace
+     * @param importChainAliases
+     */
     static void populateContextWithInheritedData(DMNContext toPopulate, Map<String, Object> toStore,
                                                  String importName, String topmostNamespace, Map<String,
                     Collection<List<String>>> importChainAliases) {
@@ -149,36 +155,52 @@ public class DMNRuntimeUtils {
                     continue;
                 }
                 if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map<?, ?> alreadyMapped) {
-                    try {
-                        ((Map<String, Object>) alreadyMapped).put(importName, toStore);
-                    } catch (Exception e) {
-                        logger.warn("Failed to add {} to map {} ", toStore, alreadyMapped, e);
-                    }
+                    addValueInsideMap(alreadyMapped, importName, toStore);
                 } else {
-                    Map<String, Object> chainedMap = new HashMap<>();
-                    chainedMap.put(importName, toStore);
-                    toPopulate.set(chainedModel, chainedMap);
+                    addNewMapToContext(toPopulate, importName, toStore, chainedModel);
                 }
             }
         }
     }
 
-    static Optional<Set<DMNModelImpl.ModelImportTuple>> getTopmostModel(DMNModelImpl model) {
-        return model.getTopmostParents();
+    /**
+     * Create a new <code>Map</code> with the given <code>importName</code> value set to the given <code>Map</code> <b>toStore</b>.
+     * Then, set this newly-created Map in the given <code>DMNContext</code> as <b>chainedModel</b>
+     * @param toPopulate
+     * @param importName
+     * @param toStore
+     * @param chainedModel
+     */
+    static void addNewMapToContext(DMNContext toPopulate, String importName, Map<String, Object> toStore, String chainedModel) {
+        Map<String, Object> chainedMap = new HashMap<>();
+        chainedMap.put(importName, toStore);
+        toPopulate.set(chainedModel, chainedMap);
     }
 
-    public static Object coerceUsingType(Object value, DMNType type, boolean typeCheck,
-                                         BiConsumer<Object, DMNType> nullCallback) {
-        if (typeCheck) {
-            if (type.isAssignableValue(value)) {
-                return coerceSingleItemCollectionToValue(value, type);
-            } else {
-                nullCallback.accept(value, type);
-                return null;
-            }
-        } else {
-            return coerceSingleItemCollectionToValue(value, type);
+    /**
+     * Depending on how the context has been instantiated, the provided <code>Map</code> could be unmodifiable, which
+     * is an expected condition
+     * @param mappedData
+     * @param inputName
+     * @param storedValue
+     */
+    static void addValueInsideMap(Map mappedData, String inputName, Object storedValue) {
+        try {
+            mappedData.put(inputName, storedValue);
+        } catch (Exception e) {
+            logger.warn("Failed to put {} -> {} to map {} ", inputName, storedValue, mappedData, e);
         }
+    }
+
+    /**
+     * Method to return the <b>topmost parents</b> of the given model.
+     * There could be more then one, since a model may import multiple others.
+     * It is a <code>Set</code> to avoid duplicating the same entry
+     * @param model
+     * @return
+     */
+    static Optional<Set<DMNModelImpl.ModelImportTuple>> getTopmostModel(DMNModelImpl model) {
+        return model.getTopmostParents();
     }
 
     /**
@@ -191,32 +213,12 @@ public class DMNRuntimeUtils {
      * the coercion happens.
      * @return If all requirements are met, returns coerced value. Otherwise returns the original value.
      */
-    private static Object coerceSingleItemCollectionToValue(Object value, DMNType type) {
+    static Object coerceSingleItemCollectionToValue(Object value, DMNType type) {
         if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
             // as per Decision evaluation result.
             return ((Collection<?>) value).toArray()[0];
         } else {
             return value;
-        }
-    }
-
-    private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode calledNode) {
-        if (calledNode.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel()
-                                                                                                      .getNamespace()))) {
-            return result.getContext().isDefined(calledNode.getName());
-        } else if (isInUnnamedImport(calledNode, (DMNModelImpl) result.getModel())) {
-            // the node is an unnamed import
-            return result.getContext().isDefined(calledNode.getName());
-        } else {
-            Optional<String> importAlias = callerNode.getModelImportAliasFor(calledNode.getModelNamespace(), calledNode
-                    .getModelName());
-            if (importAlias.isPresent()) {
-                Object aliasContext = result.getContext().get(importAlias.get());
-                if (aliasContext instanceof Map<?, ?> mappedContext) {
-                    return mappedContext.containsKey(calledNode.getName());
-                }
-            }
-            return false;
         }
     }
 
@@ -233,22 +235,42 @@ public class DMNRuntimeUtils {
         }
     }
 
-    static String getIdentifier(DMNNode node) {
-        return node.getName() != null ? node.getName() : node.getId();
-    }
-
-    static String getDependencyIdentifier(DMNNode callerNode, DMNNode node) {
-        if (node.getModelNamespace().equals(callerNode.getModelNamespace())) {
-            return getIdentifier(node);
+    /**
+     * If the given nodes have the same namespace, returns the <code>getIdentifier</code> of the <code>calledNode</code>
+     * Otherwise, returns the <code>getPrefixedIdentifier</code> of the <code>calledNode</code>
+     * @param callerNode
+     * @param calledNode
+     * @return
+     */
+    static String getDependencyIdentifier(DMNNode callerNode, DMNNode calledNode) {
+        if (calledNode.getModelNamespace().equals(callerNode.getModelNamespace())) {
+            return getIdentifier(calledNode);
         } else {
-            Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(),
-                                                                             node.getModelName());
-            String prefix = "{" + node.getModelNamespace() + "}";
-            if (importAlias.isPresent()) {
-                prefix = importAlias.get();
-            }
-            return prefix + "." + getIdentifier(node);
+            return getPrefixedIdentifier(callerNode, calledNode);
         }
     }
 
+    /**
+     * Returns the <code>getIdentifier</code> of the <code>calledNode</code> prefixed.
+     * If the <code>callerNode</code> has an import alias for the <code>calledNode</code>, the prefix is the import
+     * alias, otherwise the prefix is the namespace of the <code>calledNode</code>
+     * @param callerNode
+     * @param calledNode
+     * @return
+     */
+    static String getPrefixedIdentifier(DMNNode callerNode, DMNNode calledNode) {
+        Optional<String> importAlias = callerNode.getModelImportAliasFor(calledNode.getModelNamespace(),
+                                                                         calledNode.getModelName());
+        String prefix = importAlias.orElse(String.format("{%s}", calledNode.getModelNamespace()));
+        return prefix + "." + getIdentifier(calledNode);
+    }
+
+    /**
+     * Returns the name of the node, if set, otherwise the id
+     * @param node
+     * @return
+     */
+    static String getIdentifier(DMNNode node) {
+        return node.getName() != null ? node.getName() : node.getId();
+    }
 }
