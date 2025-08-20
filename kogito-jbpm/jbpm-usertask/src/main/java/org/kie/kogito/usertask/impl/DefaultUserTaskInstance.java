@@ -55,12 +55,15 @@ import org.kie.kogito.usertask.model.ScheduleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import static java.util.Collections.emptyMap;
 import static org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription.newUserTaskInstanceJobDescriptionBuilder;
 import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.WORKFLOW_ENGINE_USER;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class DefaultUserTaskInstance implements UserTaskInstance {
 
     private static Logger LOG = LoggerFactory.getLogger(DefaultUserTaskInstance.class);

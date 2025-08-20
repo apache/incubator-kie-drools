@@ -33,6 +33,9 @@ public class NodeInstanceFactoryRegistry {
     private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
 
     private static final Map<String, NodeInstanceFactoryRegistry> LOADED_NODE_INSTANCE_FACTORY_REGISTRIES = new HashMap<>();
+    static {
+        LOADED_NODE_INSTANCE_FACTORY_REGISTRIES.put(CodegenNodeInstanceFactoryRegistry.class.getName(), new CodegenNodeInstanceFactoryRegistry());
+    }
 
     private final Map<Class<? extends Node>, NodeInstanceFactory> registry;
 
