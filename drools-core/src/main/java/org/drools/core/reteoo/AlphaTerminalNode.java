@@ -54,7 +54,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 activationsManager.getAgendaGroupsManager().setFocus( agendaItem.getAgendaGroup() );
             }
 
-            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );
+            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, reteEvaluator, agendaItem, leftTuple );
         }
     }
 
@@ -85,7 +85,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple = TupleFactory.createLeftTuple( rtn, factHandle, true );
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, reteEvaluator, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
                 }
             }
         }

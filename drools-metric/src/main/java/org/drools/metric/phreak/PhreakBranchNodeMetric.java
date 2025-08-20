@@ -19,6 +19,7 @@
 package org.drools.metric.phreak;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakBranchNode;
 import org.drools.core.phreak.RuleExecutor;
@@ -34,6 +35,7 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
     public void doNode(ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
+                       ReteEvaluator reteEvaluator,
                        ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
@@ -43,7 +45,7 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
         try {
             MetricLogUtils.getInstance().startMetrics(branchNode);
 
-            super.doNode(branchNode, cbm, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            super.doNode(branchNode, cbm, sink, reteEvaluator, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

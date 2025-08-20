@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -41,25 +41,27 @@ import org.drools.core.util.LinkedList;
 */
 public class PhreakQueryTerminalNode {
     public void doNode(QueryTerminalNode qtnNode,
+                       ReteEvaluator reteEvaluator,
                        ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        LinkedList<StackEntry> stack) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftDeletes(qtnNode, reteEvaluator, activationsManager, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftUpdates(qtnNode, reteEvaluator, activationsManager, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftInserts(qtnNode, reteEvaluator, activationsManager, srcLeftTuples, stack);
         }
 
         srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
+                              ReteEvaluator reteEvaluator, 
                               ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
@@ -80,7 +82,7 @@ public class PhreakQueryTerminalNode {
             // Add results to the adapter
             dquery.getQueryResultCollector().rowAdded(qtnNode.getQuery(),
                                                       leftTuple,
-                                                      activationsManager.getReteEvaluator());
+                                                      reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -88,6 +90,7 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
+                              ReteEvaluator reteEvaluator, 
                               ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
@@ -108,7 +111,7 @@ public class PhreakQueryTerminalNode {
             // Add results to the adapter
             dquery.getQueryResultCollector().rowUpdated(qtnNode.getQuery(),
                                                         leftTuple,
-                                                        activationsManager.getReteEvaluator());
+                                                        reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -116,6 +119,7 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
+                              ReteEvaluator reteEvaluator,
                               ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
@@ -138,7 +142,7 @@ public class PhreakQueryTerminalNode {
             // Add results to the adapter
             dquery.getQueryResultCollector().rowRemoved(qtnNode.getQuery(),
                                                         leftTuple,
-                                                        activationsManager.getReteEvaluator());
+                                                        reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;

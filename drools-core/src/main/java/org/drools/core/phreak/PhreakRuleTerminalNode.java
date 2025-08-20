@@ -76,7 +76,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(rtnNode, executor, activationsManager, activationsManager.getReteEvaluator(), ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -93,9 +93,10 @@ public class PhreakRuleTerminalNode {
                ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
     }
     public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
+                                         ActivationsManager activationsManager, 
+                                         ReteEvaluator reteEvaluator,
+                                         RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addActiveTuple(leftTuple);
             return;
@@ -115,7 +116,7 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.createAgendaItem( leftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
+        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, reteEvaluator);
 
         if ( rtnNode.getRule().isLockOnActive() && pctx.getType() != PropagationContext.Type.RULE_ADDITION ) {
             pctx = leftTuple.findMostRecentPropagationContext();

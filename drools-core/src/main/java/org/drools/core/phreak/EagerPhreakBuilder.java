@@ -1238,7 +1238,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 TerminalNode rtn = ( TerminalNode ) node;
                 InternalAgenda agenda = wm.getAgenda();
                 RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem( wm, agenda, rtn, insert );
-                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), agenda, agendaItem, (RuleTerminalNodeLeftTuple) peer );
+                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), agenda, wm, agendaItem, (RuleTerminalNodeLeftTuple) peer );
             }
             return peer;
         }

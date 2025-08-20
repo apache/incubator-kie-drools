@@ -186,7 +186,7 @@ public class RuleNetworkEvaluator {
                           LinkedList<StackEntry> stack,
                           boolean processRian,
                           RuleExecutor executor) {
-        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor);
+        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager.getReteEvaluator(), activationsManager, stack, processRian, executor);
         while (true) {
             // eval
             if (!stack.isEmpty()) {
@@ -248,7 +248,7 @@ public class RuleNetworkEvaluator {
             int offset = getOffset(node);
             log.trace("{} Resume {} {}", indent(offset), node.toString(), trgTuples.toStringSizes());
         }
-        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor);
+        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager.getReteEvaluator(), activationsManager, stack, processRian, executor);
     }
 
     public void innerEval(PathMemory pmem,
@@ -258,6 +258,7 @@ public class RuleNetworkEvaluator {
                           SegmentMemory[] smems,
                           int smemIndex,
                           TupleSets trgTuples,
+                          ReteEvaluator reteEvaluator,
                           ActivationsManager activationsManager,
                           LinkedList<StackEntry> stack,
                           boolean processRian,
@@ -287,7 +288,7 @@ public class RuleNetworkEvaluator {
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
                         if ( smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode()) ) {
-                            RuntimeSegmentUtilities.createChildSegments(activationsManager.getReteEvaluator(), smem, smem.getTipNode().getSinkPropagator());
+                            RuntimeSegmentUtilities.createChildSegments(reteEvaluator, smem, smem.getTipNode().getSinkPropagator());
                         }
                         
                         smem = smems[i];
@@ -335,10 +336,10 @@ public class RuleNetworkEvaluator {
                     pRtNode.doNode((AbstractTerminalNode) node, activationsManager, srcTuples, executor);
                     break;
                 case NodeTypeEnums.QueryTerminalNode:
-                    pQtNode.doNode((QueryTerminalNode) node, activationsManager, srcTuples, stack);
+                    pQtNode.doNode((QueryTerminalNode) node, reteEvaluator, activationsManager, srcTuples, stack);
                     break;
                 case NodeTypeEnums.RightInputAdapterNode:
-                    doRiaNode2(activationsManager.getReteEvaluator(), srcTuples, (RightInputAdapterNode) node);
+                    doRiaNode2(reteEvaluator, srcTuples, (RightInputAdapterNode) node);
                     break;
                 default:
                     terminalNode = false;
@@ -347,10 +348,10 @@ public class RuleNetworkEvaluator {
                 break;
             }
 
-            stagedLeftTuples = getTargetStagedLeftTuples(node, activationsManager.getReteEvaluator(), smem);
+            stagedLeftTuples = getTargetStagedLeftTuples(node, reteEvaluator, smem);
             LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
 
-            trgTuples = evalNode( pmem, node, bit, nodeMem, smems, smemIndex, activationsManager, stack, processRian, executor, srcTuples, smem, stagedLeftTuples, sink );
+            trgTuples = evalNode( pmem, node, bit, nodeMem, smems, smemIndex, reteEvaluator, activationsManager, stack, processRian, executor, srcTuples, smem, stagedLeftTuples, sink );
             if ( trgTuples == null ) {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
             }
@@ -364,7 +365,7 @@ public class RuleNetworkEvaluator {
                 // Reached end of segment, start on new segment.
                 smem.getFirst().getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
-                SegmentPropagator.propagate(smem, trgTuples, activationsManager.getReteEvaluator());
+                SegmentPropagator.propagate(smem, trgTuples, reteEvaluator);
                 bit = 1;
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples().takeAll();
@@ -385,13 +386,12 @@ public class RuleNetworkEvaluator {
     }
 
     public TupleSets evalNode(PathMemory pmem, NetworkNode node, long bit, Memory nodeMem,
-                                         SegmentMemory[] smems, int smemIndex, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
+                                         SegmentMemory[] smems, int smemIndex, ReteEvaluator reteEvaluator, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
                                          boolean processRian, RuleExecutor executor, TupleSets srcTuples, SegmentMemory smem,
                                          TupleSets stagedLeftTuples, LeftTupleSinkNode sink ) {
-    	ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         TupleSets trgTuples = new TupleSetsImpl();
         if ( NodeTypeEnums.isBetaNode( node )) {
-            boolean exitInnerEval = evalBetaNode(pmem, node, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor, srcTuples, stagedLeftTuples, sink);
+            boolean exitInnerEval = evalBetaNode(pmem, node, nodeMem, smems, smemIndex, trgTuples, reteEvaluator, activationsManager, stack, processRian, executor, srcTuples, stagedLeftTuples, sink);
             if ( exitInnerEval ) {
                 return null;
             }
@@ -425,7 +425,7 @@ public class RuleNetworkEvaluator {
                 }
                 case NodeTypeEnums.ConditionalBranchNode: {
                     pBranchNode.doNode((ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem, sink,
-                            activationsManager, srcTuples, trgTuples, stagedLeftTuples, executor);
+                            reteEvaluator, activationsManager, srcTuples, trgTuples, stagedLeftTuples, executor);
                     break;
                 }
                 case NodeTypeEnums.AsyncSendNode: {
@@ -543,7 +543,9 @@ public class RuleNetworkEvaluator {
     }
 
     private boolean evalBetaNode(PathMemory pmem, NetworkNode node, Memory nodeMem,
-                                 SegmentMemory[] smems, int smemIndex, TupleSets trgTuples, ActivationsManager activationsManager,
+                                 SegmentMemory[] smems, int smemIndex, TupleSets trgTuples, 
+                                 ReteEvaluator reteEvaluator,
+                                 ActivationsManager activationsManager,
                                  LinkedList<StackEntry> stack, boolean processRian, RuleExecutor executor,
                                  TupleSets srcTuples, TupleSets stagedLeftTuples, LeftTupleSinkNode sink) {
         BetaNode         betaNode = (BetaNode) node;
@@ -564,7 +566,7 @@ public class RuleNetworkEvaluator {
             return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
 
-        switchOnDoBetaNode(node, trgTuples, activationsManager.getReteEvaluator(), srcTuples, stagedLeftTuples, sink, bm, am);
+        switchOnDoBetaNode(node, trgTuples, reteEvaluator, srcTuples, stagedLeftTuples, sink, bm, am);
 
         return false;
     }
@@ -639,7 +641,7 @@ public class RuleNetworkEvaluator {
         innerEval( pathMem, subSmem.getRootNode(), 1,
                    subSmem.getNodeMemories()[0],
                    subnetworkSmems, subSmem.getPos(),
-                   subLts, activationsManager, stack, true, executor );
+                   subLts, activationsManager.getReteEvaluator(), activationsManager, stack, true, executor );
     }
 
     private void doRiaNode2(ReteEvaluator reteEvaluator,
