@@ -206,6 +206,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
         if (lastTransition.termination().isPresent()) {
 
+            internalRemoveWorkItem(workItem.getStringId());
             if (signal) {
                 switch (lastTransition.termination().get()) {
                     case COMPLETE:
