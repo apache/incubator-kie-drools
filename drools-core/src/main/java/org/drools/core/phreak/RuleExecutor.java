@@ -82,7 +82,7 @@ public class RuleExecutor {
     }
 
     public int evaluateNetworkAndFire( ActivationsManager activationsManager, ReteEvaluator reteEvaluator, AgendaFilter filter, int fireCount, int fireLimit ) {
-        evaluateNetworkIfDirty( activationsManager );
+        evaluateNetworkIfDirty(reteEvaluator, activationsManager );
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             return doDirectFirings(activationsManager, filter, reteEvaluator);
@@ -170,7 +170,7 @@ public class RuleExecutor {
                         break;
                     }
                     if (!reteEvaluator.isSequential()) {
-                        evaluateNetworkIfDirty( activationsManager );
+                        evaluateNetworkIfDirty(reteEvaluator, activationsManager );
                     }
                 }
             }
@@ -221,21 +221,23 @@ public class RuleExecutor {
         }
     }
 
-    public void evaluateNetwork(ActivationsManager activationsManager) {
-        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
+    public void evaluateNetwork(ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
+        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, reteEvaluator, activationsManager );
         setDirty( false );
     }
 
     public void evaluateNetworkIfDirty(ReteEvaluator reteEvaluator) {
-        evaluateNetworkIfDirty(pmem.getActualActivationsManager( reteEvaluator ));
+        if ( isDirty() ) {
+		    evaluateNetwork(reteEvaluator, pmem.getActualActivationsManager( reteEvaluator ));
+		}
     }
 
-    public void evaluateNetworkIfDirty(ActivationsManager activationsManager) {
+    public void evaluateNetworkIfDirty(ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
         if ( isDirty() ) {
-            evaluateNetwork(activationsManager);
+            evaluateNetwork(reteEvaluator, activationsManager);
         }
     }
-
+    
     public RuleAgendaItem getRuleAgendaItem() {
         return ruleAgendaItem;
     }

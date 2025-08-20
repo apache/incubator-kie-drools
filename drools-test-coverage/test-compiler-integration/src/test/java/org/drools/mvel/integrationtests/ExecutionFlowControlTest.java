@@ -486,7 +486,7 @@ public class ExecutionFlowControlTest {
         agenda.getAgendaGroupsManager().setFocus( group1 );
         assertThat(group1.size()).isEqualTo(1);
         RuleAgendaItem ruleItem1 = group1.getActivations().iterator().next();
-        ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        ruleItem1.getRuleExecutor().evaluateNetwork(wm, wm.getAgenda());
         assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
         ruleItem1.getRuleExecutor().fire(wm, agenda);
@@ -495,14 +495,14 @@ public class ExecutionFlowControlTest {
 
         ksession.update( brieHandle, brie );
         assertThat(group1.size()).isEqualTo(1);
-        ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        ruleItem1.getRuleExecutor().evaluateNetwork(wm, wm.getAgenda());
         assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 
         InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
         agenda.getAgendaGroupsManager().setFocus( group2);
         assertThat(group2.size()).isEqualTo(1);
         RuleAgendaItem ruleItem2 = group2.getActivations().iterator().next();
-        ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        ruleItem2.getRuleExecutor().evaluateNetwork(wm, wm.getAgenda());
         assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
         ruleItem2.getRuleExecutor().fire(wm, agenda);

@@ -237,7 +237,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
                 evaluateQueriesForRule( item );
                 RuleExecutor ruleExecutor = item.getRuleExecutor();
-                ruleExecutor.evaluateNetwork( this );
+                ruleExecutor.evaluateNetwork( reteEvaluator, this );
             }
         }
     }
@@ -249,7 +249,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             for (QueryImpl query : rule.getDependingQueries()) {
                 RuleAgendaItem queryAgendaItem = queries.remove(query);
                 if (queryAgendaItem != null) {
-                    queryAgendaItem.getRuleExecutor().evaluateNetwork(this);
+                    queryAgendaItem.getRuleExecutor().evaluateNetwork(reteEvaluator, this);
                 }
             }
         }

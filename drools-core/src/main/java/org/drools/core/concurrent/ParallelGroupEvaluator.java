@@ -62,7 +62,7 @@ public class ParallelGroupEvaluator extends AbstractGroupEvaluator {
         doOnForkJoinPool(() ->
                 partitionedActivations.values().parallelStream()
                         .forEach( items -> items
-                                .forEach( item -> item.getRuleExecutor().evaluateNetworkIfDirty(activationsManager) ) )
+                                .forEach( item -> item.getRuleExecutor().evaluateNetworkIfDirty(reteEvaluator, activationsManager) ) )
         );
     }
 }

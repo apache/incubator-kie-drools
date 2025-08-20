@@ -34,7 +34,7 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
 
     private boolean haltEvaluation;
 
-	private ReteEvaluator reteEvaluator;
+	protected final ReteEvaluator reteEvaluator;
 
     public AbstractGroupEvaluator(ActivationsManager activationsManager, ReteEvaluator reteEvaluator) {
         this.activationsManager = activationsManager;

@@ -108,10 +108,10 @@ public class RuleNetworkEvaluator {
     private RuleNetworkEvaluator() { }
 
     public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, ReteEvaluator reteEvaluator) {
-        evaluateNetwork( pmem, executor, pmem.getActualActivationsManager(reteEvaluator) );
+        evaluateNetwork( pmem, executor, reteEvaluator, pmem.getActualActivationsManager(reteEvaluator) );
     }
 
-    public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, ActivationsManager activationsManager) {
+    public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
 
@@ -144,7 +144,7 @@ public class RuleNetworkEvaluator {
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
-        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, activationsManager.getReteEvaluator(), 
+        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, reteEvaluator, 
         		activationsManager, stack, true, executor);
     }
 
@@ -563,7 +563,7 @@ public class RuleNetworkEvaluator {
         if (processRian && betaNode.isRightInputIsRiaNode()) {
             // if the subnetwork is nested in this segment, it will create srcTuples containing
             // peer LeftTuples, suitable for the node in the main path.
-            doRiaNode( activationsManager, pmem, srcTuples,
+            doRiaNode( reteEvaluator, activationsManager, pmem, srcTuples,
                        betaNode, sink, smems, smemIndex, nodeMem, bm, stack, executor );
             return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
@@ -608,7 +608,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    private void doRiaNode(ActivationsManager activationsManager,
+    private void doRiaNode(ReteEvaluator reteEvaluator, ActivationsManager activationsManager,
                            PathMemory pmem,
                            TupleSets srcTuples,
                            BetaNode betaNode,
@@ -643,7 +643,7 @@ public class RuleNetworkEvaluator {
         innerEval( pathMem, subSmem.getRootNode(), 1,
                    subSmem.getNodeMemories()[0],
                    subnetworkSmems, subSmem.getPos(),
-                   subLts, activationsManager.getReteEvaluator(), activationsManager, stack, true, executor );
+                   subLts, reteEvaluator, activationsManager, stack, true, executor );
     }
 
     private void doRiaNode2(ReteEvaluator reteEvaluator,
