@@ -238,7 +238,7 @@ public class PhreakTimerNode {
                 @Override
                 public void schedule( Trigger t ) {
                     scheduleTimer( timerNode, tm, smem, sink, reteEvaluator, timerService, timestamp, leftTuple, trgLeftTuples, stagedLeftTuples, t );
-                    evaluate( pmem, activationsManager, sink, tm, trgLeftTuples );
+                    evaluate( pmem, reteEvaluator, activationsManager, sink, tm, trgLeftTuples );
                 }
                 @Override
                 public Trigger getTrigger() {
@@ -438,6 +438,7 @@ public class PhreakTimerNode {
     }
 
     private static void evaluate(PathMemory pmem,
+                                 ReteEvaluator reteEvaluator, 
                                  ActivationsManager activationsManager,
                                  LeftTupleSink sink,
                                  TimerNodeMemory tm,
@@ -460,7 +461,7 @@ public class PhreakTimerNode {
 
         RuleNetworkEvaluator.INSTANCE.outerEval(pmem, sink, bit, tm,
                                                 smems, smemIndex, trgLeftTuples,
-                                                activationsManager, new LinkedList<>(), true,
+                                                reteEvaluator, activationsManager, new LinkedList<>(), true,
                                                 pmem.getRuleAgendaItem().getRuleExecutor());
     }
 

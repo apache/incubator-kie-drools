@@ -76,7 +76,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, reteEvaluator, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
                     if (leftTuple.isFullMatch()) {
                         ((InternalMatch) leftTuple).setActive(true);
                     }

@@ -142,7 +142,7 @@ public class PhreakBranchNode {
 
                 } else if (newRtn == oldRtn) {
                     // old and new on same branch, so update
-                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, activationsManager, branchTuples.rtnLeftTuple) ;
+                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, reteEvaluator, activationsManager, branchTuples.rtnLeftTuple) ;
 
                 } else {
                     // old and new on different branches, delete one and insert the other

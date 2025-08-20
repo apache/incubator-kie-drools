@@ -144,7 +144,8 @@ public class RuleNetworkEvaluator {
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
-        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, activationsManager, stack, true, executor);
+        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, activationsManager.getReteEvaluator(), 
+        		activationsManager, stack, true, executor);
     }
 
     public static String indent(int size) {
@@ -182,23 +183,24 @@ public class RuleNetworkEvaluator {
                           SegmentMemory[] smems,
                           int smemIndex,
                           TupleSets trgTuples,
+                          ReteEvaluator reteEvaluator,
                           ActivationsManager activationsManager,
                           LinkedList<StackEntry> stack,
                           boolean processRian,
                           RuleExecutor executor) {
-        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager.getReteEvaluator(), activationsManager, stack, processRian, executor);
+        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, reteEvaluator, activationsManager, stack, processRian, executor);
         while (true) {
             // eval
             if (!stack.isEmpty()) {
                 StackEntry entry = stack.removeLast();
-                evalStackEntry(entry, stack, executor, activationsManager);
+                evalStackEntry(entry, stack, executor, reteEvaluator, activationsManager);
             } else {
                 return; // stack is empty return;
             }
         }
     }
 
-    public void evalStackEntry(StackEntry entry, LinkedList<StackEntry> stack, RuleExecutor executor, ActivationsManager activationsManager) {
+    public void evalStackEntry(StackEntry entry, LinkedList<StackEntry> stack, RuleExecutor executor, ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
         NetworkNode node = entry.getNode();
         Memory nodeMem = entry.getNodeMem();
         TupleSets trgTuples = entry.getTrgTuples();
@@ -235,7 +237,7 @@ public class RuleNetworkEvaluator {
                 // Reached end of segment, start on new segment.
                 SegmentPropagator.propagate(smem,
                                             trgTuples,
-                                            activationsManager.getReteEvaluator());
+                                            reteEvaluator);
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples().takeAll();
                 node = smem.getRootNode();
@@ -248,7 +250,7 @@ public class RuleNetworkEvaluator {
             int offset = getOffset(node);
             log.trace("{} Resume {} {}", indent(offset), node.toString(), trgTuples.toStringSizes());
         }
-        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager.getReteEvaluator(), activationsManager, stack, processRian, executor);
+        innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, reteEvaluator, activationsManager, stack, processRian, executor);
     }
 
     public void innerEval(PathMemory pmem,
@@ -333,7 +335,7 @@ public class RuleNetworkEvaluator {
             boolean terminalNode = true;
             switch (node.getType()) {
                 case NodeTypeEnums.RuleTerminalNode:
-                    pRtNode.doNode((AbstractTerminalNode) node, activationsManager, srcTuples, executor);
+                    pRtNode.doNode((AbstractTerminalNode) node, reteEvaluator, activationsManager, srcTuples, executor);
                     break;
                 case NodeTypeEnums.QueryTerminalNode:
                     pQtNode.doNode((QueryTerminalNode) node, reteEvaluator, activationsManager, srcTuples, stack);
