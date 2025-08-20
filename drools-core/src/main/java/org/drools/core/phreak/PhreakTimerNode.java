@@ -421,15 +421,15 @@ public class PhreakTimerNode {
                 pmem.doLinkRule( activationsManager );
 
                 if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {
-                    evaluateAndFireRule( pmem, activationsManager );
+                    evaluateAndFireRule( pmem, reteEvaluator, activationsManager );
                 }
             }
         }
 
-        private void evaluateAndFireRule(PathMemory pmem, ActivationsManager activationsManager) {
+        private void evaluateAndFireRule(PathMemory pmem, ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
             RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
             ruleExecutor.evaluateNetworkIfDirty( activationsManager );
-            ruleExecutor.fire( activationsManager );
+            ruleExecutor.fire( reteEvaluator, activationsManager );
         }
     }
 

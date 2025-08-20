@@ -17,7 +17,6 @@
  * under the License.
  */
 package org.drools.testcoverage.common.util;
-;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;

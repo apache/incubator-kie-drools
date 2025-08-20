@@ -20,6 +20,7 @@ package org.drools.core.phreak;
 
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
@@ -44,16 +45,17 @@ public class PhreakBranchNode {
                        TupleSets stagedLeftTuples,
                        RuleExecutor executor) {
 
+    	ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            doLeftDeletes(sink, activationsManager, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(branchNode, cbm, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            doLeftUpdates(branchNode, cbm, sink, activationsManager, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(branchNode, cbm, sink, activationsManager, srcLeftTuples, trgLeftTuples, executor);
+            doLeftInserts(branchNode, cbm, sink, activationsManager, reteEvaluator, srcLeftTuples, trgLeftTuples, executor);
         }
 
         srcLeftTuples.resetAll();
@@ -63,6 +65,7 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
+                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               RuleExecutor executor) {
@@ -72,7 +75,7 @@ public class PhreakBranchNode {
             TupleImpl next = leftTuple.getStagedNext();
 
             boolean breaking = false;
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
             boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(branchNode, leftTuple);
 
@@ -101,6 +104,7 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
+                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               TupleSets stagedLeftTuples,
@@ -118,7 +122,7 @@ public class PhreakBranchNode {
                 oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getSink();
             }
 
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
             RuleTerminalNode newRtn = null;
             boolean breaking = false;
@@ -187,7 +191,7 @@ public class PhreakBranchNode {
 
     public void doLeftDeletes(LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets srcLeftTuples,
+                              ReteEvaluator reteEvaluator, TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               TupleSets stagedLeftTuples,
                               RuleExecutor executor) {

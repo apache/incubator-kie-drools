@@ -81,10 +81,9 @@ public class RuleExecutor {
         return fire(reteEvaluator, pmem.getActualActivationsManager( reteEvaluator ), filter, fireCount, fireLimit);
     }
 
-    public int evaluateNetworkAndFire( ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit ) {
+    public int evaluateNetworkAndFire( ActivationsManager activationsManager, ReteEvaluator reteEvaluator, AgendaFilter filter, int fireCount, int fireLimit ) {
         evaluateNetworkIfDirty( activationsManager );
 
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             return doDirectFirings(activationsManager, filter, reteEvaluator);
         }
@@ -108,12 +107,8 @@ public class RuleExecutor {
         return directFirings;
     }
 
-    public void fire(ActivationsManager activationsManager) {
-        fire(activationsManager.getReteEvaluator(), activationsManager, null, 0, Integer.MAX_VALUE);
-    }
-
-    public int fire(ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit) {
-        return fire(activationsManager.getReteEvaluator(), activationsManager, filter, fireCount, fireLimit);
+    public void fire(ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
+        fire(reteEvaluator, activationsManager, null, 0, Integer.MAX_VALUE);
     }
 
     private int fire( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit) {

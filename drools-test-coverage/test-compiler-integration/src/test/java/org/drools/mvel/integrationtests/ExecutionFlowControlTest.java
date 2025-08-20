@@ -489,7 +489,7 @@ public class ExecutionFlowControlTest {
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
-        ruleItem1.getRuleExecutor().fire(agenda);
+        ruleItem1.getRuleExecutor().fire(wm, agenda);
         assertThat(group1.size()).isEqualTo(1);
         assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 
@@ -505,7 +505,7 @@ public class ExecutionFlowControlTest {
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
-        ruleItem2.getRuleExecutor().fire(agenda);
+        ruleItem2.getRuleExecutor().fire(wm, agenda);
         assertThat(group2.size()).isEqualTo(1);
         assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 

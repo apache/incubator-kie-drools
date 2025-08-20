@@ -49,7 +49,7 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
         int loopFireCount = 0;
         while (item != null && !haltEvaluation && (fireLimit < 0 || (fireCount + loopFireCount) < fireLimit)) {
             activationsManager.evaluateQueriesForRule( item );
-            loopFireCount += item.getRuleExecutor().evaluateNetworkAndFire(activationsManager, filter, fireCount, fireLimit);
+            loopFireCount += item.getRuleExecutor().evaluateNetworkAndFire(activationsManager, reteEvaluator, filter, fireCount, fireLimit);
             activationsManager.flushPropagations();
             item = nextActivation(group);
         }
