@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
 
 import static org.drools.base.common.PartitionsManager.MIN_PARALLEL_THRESHOLD;
@@ -33,8 +34,8 @@ import static org.drools.base.common.PartitionsManager.doOnForkJoinPool;
 
 public class ParallelGroupEvaluator extends AbstractGroupEvaluator {
 
-    public ParallelGroupEvaluator(ActivationsManager activationsManager ) {
-        super(activationsManager);
+    public ParallelGroupEvaluator(ActivationsManager activationsManager, ReteEvaluator reteEvaluator ) {
+        super(activationsManager, reteEvaluator);
     }
 
     protected void startEvaluation(InternalAgendaGroup group) {
