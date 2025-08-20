@@ -95,7 +95,7 @@ public class DMNRuntimeUtils {
                                                                   DMNModelImpl.ModelImportTuple topmostModelTuple,
                                                                   DMNModelImpl model) {
         Object storedValue = context.get(topmostInputName); // This could be either a raw value, or a map
-        if (storedValue instanceof Map storedMap && storedMap.containsKey(topmostInputName)) { // THe check is needed to avoid looping reference
+        if (storedValue instanceof Map storedMap && storedMap.containsKey(topmostInputName)) { // The check is needed to avoid looping reference
             return;
         }
         // Eventually, we need to create a map with the importing name and populate it with the input data
@@ -121,7 +121,7 @@ public class DMNRuntimeUtils {
     static void replaceContextMap(DMNContext context,
                                   DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName,
                                   Object storedValue) {
-        Map mappedData = new HashMap<>();
+        Map<String, Object> mappedData = new HashMap<>();
         mappedData.put(inputName, storedValue);
         context.set(topmostModelTuple.getImportName(), mappedData);
     }
@@ -129,7 +129,7 @@ public class DMNRuntimeUtils {
     static void updateContextMap(DMNContext context, Map<String, Collection<List<String>>> importChainAliases,
                                  DMNModelImpl.ModelImportTuple topmostModelTuple, String inputName,
                                  Object storedValue) {
-        Map mappedData = new HashMap<>();
+        Map<String, Object> mappedData = new HashMap<>();
         mappedData.put(inputName, storedValue);
         populateContextWithInheritedData(context, mappedData,
                                          topmostModelTuple.getImportName(),
@@ -154,7 +154,7 @@ public class DMNRuntimeUtils {
                 if (chainedModel.equals(importName)) {
                     continue;
                 }
-                if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map<?, ?> alreadyMapped) {
+                if (toStore.get(chainedModel) != null && toStore.get(chainedModel) instanceof Map alreadyMapped) {
                     addValueInsideMap(alreadyMapped, importName, toStore);
                 } else {
                     addNewMapToContext(toPopulate, importName, toStore, chainedModel);
@@ -184,7 +184,7 @@ public class DMNRuntimeUtils {
      * @param inputName
      * @param storedValue
      */
-    static void addValueInsideMap(Map mappedData, String inputName, Object storedValue) {
+    static void addValueInsideMap(Map<String, Object> mappedData, String inputName, Object storedValue) {
         try {
             mappedData.put(inputName, storedValue);
         } catch (Exception e) {

@@ -617,7 +617,7 @@ class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    void validateValidModelsWitClashingInheritedImportAndInputNameSimpleData() {
+    void validateValidModelsWithClashingInheritedImportAndInputNameSimpleData() {
         String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
         String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
         String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
@@ -628,7 +628,7 @@ class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    void validateValidModelsWitClashingInheritedImportAndInputNameComplexData() {
+    void validateValidModelsWithClashingInheritedImportAndInputNameComplexData() {
         String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_complex_data";
         String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
         String dmnImported = String.format("%s/ImportedModel.dmn", basePath);

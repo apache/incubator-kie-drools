@@ -47,7 +47,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void importingModelsWithSameImportAndInputNameSimpledData(boolean useExecModelCompiler) {
+    void importingModelsWithSameImportAndInputNameSimpleData(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
         String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
