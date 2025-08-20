@@ -845,7 +845,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    for (TupleImpl lt = (TupleImpl)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (TupleImpl) it.next(lt)) {
+                    for (TupleImpl lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (TupleImpl) it.next(lt)) {
                         visitLeftTuple(wm, insert, rule, lt);
                     }
                 }

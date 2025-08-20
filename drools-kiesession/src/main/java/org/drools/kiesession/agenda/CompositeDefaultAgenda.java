@@ -106,11 +106,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public ReteEvaluator getReteEvaluator() {
-        return agendas[0].getWorkingMemory();
-    }
-
-    @Override
     public AgendaGroupsManager getAgendaGroupsManager() {
         return agendas[0].getAgendaGroupsManager();
     }

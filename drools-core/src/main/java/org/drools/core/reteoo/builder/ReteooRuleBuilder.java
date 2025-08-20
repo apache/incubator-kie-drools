@@ -51,7 +51,6 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;

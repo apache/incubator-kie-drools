@@ -93,11 +93,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public ReteEvaluator getReteEvaluator() {
-        return reteEvaluator;
-    }
-
-    @Override
     public AgendaGroupsManager getAgendaGroupsManager() {
         return agendaGroupsManager;
     }
@@ -136,7 +131,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove(item.getRule() );
     }
 
     @Override

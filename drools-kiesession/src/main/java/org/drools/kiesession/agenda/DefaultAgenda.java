@@ -243,7 +243,7 @@ public class DefaultAgenda implements InternalAgenda {
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove(item.getRule() );
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from query evaluation list.", item.getRule().getName() );
         }
@@ -337,11 +337,6 @@ public class DefaultAgenda implements InternalAgenda {
         InternalAgendaGroup agendaGroup = getAgendaGroupsManager().getAgendaGroup( name );
         agendaGroup.setAutoFocusActivator( ctx );
         return getAgendaGroupsManager().setFocus( agendaGroup );
-    }
-
-    @Override
-    public ReteEvaluator getReteEvaluator() {
-        return this.workingMemory;
     }
 
     @Override

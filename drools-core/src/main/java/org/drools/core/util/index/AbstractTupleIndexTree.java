@@ -19,7 +19,6 @@
 package org.drools.core.util.index;
 
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.util.IndexedValueReader;
 import org.drools.core.reteoo.TupleImpl;
 

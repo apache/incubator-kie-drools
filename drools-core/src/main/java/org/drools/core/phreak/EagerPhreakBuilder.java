@@ -1108,7 +1108,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (fm != null) {
                         TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                         FastIterator it = ltm.fullFastIterator();
-                        for (TupleImpl lt = (TupleImpl) ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
+                        for (TupleImpl lt = ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
                             visitChild(lt, insert, wm, tn);
                         }
                     }
