@@ -18,7 +18,9 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.CalcFact;
 import org.drools.model.codegen.execmodel.domain.Overloaded;
@@ -523,7 +525,7 @@ public class EvalTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")
-    public void testModifyEvalAfterJoin(RUN_TYPE runType) {
+    public void testModifyEvalAfterJoinWithEmptyConstraint(RUN_TYPE runType) {
         // DROOLS-7255
         String str =
                 "import " + Dt1.class.getCanonicalName() + ";" +
@@ -562,5 +564,123 @@ public class EvalTest extends BaseModelTest {
         ksession.insert(new Dt2());
 
         assertThat(ksession.fireAllRules()).isEqualTo(3);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyEvalAfterJoinWithNonMatchingAlpha(RUN_TYPE runType) {
+        // incubator-kie-drools/issues/6420
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        String( )\n" +
+                        "        $p : Person( name == \"John\")\n" +
+                        "        eval($p.getAge() == 10)\n" +
+                        "    then\n" +
+                        "        list.add(\"R1 : \" + $p.getName());\n" +
+                        "end\n" +
+                        "rule ModifyingRule\n" +
+                        "    when\n" +
+                        "        String( this == \"go\" )\n" +
+                        "        $p : Person( name == \"Paul\")\n" +
+                        "    then\n" +
+                        "        modify( $p ) {\n" +
+                        "            setAge(10)\n" +
+                        "        }\n" +
+                        "        list.add(\"ModifyingRule\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person paul = new Person("Paul", 20);
+        ksession.insert("go");
+        ksession.insert(paul);
+
+        ksession.fireAllRules();
+        assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyEvalAfterJoinWithMatchingAlpha(RUN_TYPE runType) {
+        // incubator-kie-drools/issues/6420
+        // This test is already successful. Just for coverage.
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        String( )\n" +
+                        "        $p : Person( name == \"Paul\")\n" +
+                        "        eval($p.getAge() == 10)\n" +
+                        "    then\n" +
+                        "        list.add(\"R1 : \" + $p.getName());\n" +
+                        "end\n" +
+                        "rule ModifyingRule\n" +
+                        "    when\n" +
+                        "        String( this == \"go\" )\n" +
+                        "        $p : Person( name == \"Paul\")\n" +
+                        "    then\n" +
+                        "        modify( $p ) {\n" +
+                        "            setAge(10)\n" +
+                        "        }\n" +
+                        "        list.add(\"ModifyingRule\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person paul = new Person("Paul", 20);
+        ksession.insert("go");
+        ksession.insert(paul);
+
+        ksession.fireAllRules();
+        assertThat(list).as("Both rules should fire").containsExactly("ModifyingRule", "R1 : Paul");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyJoinWithNonMatchingAlpha(RUN_TYPE runType) {
+        // incubator-kie-drools/issues/6420
+        // This test is already successful and doesn't include eval. Just for coverage.
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list;\n" +
+
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        String( )\n" +
+                        "        $p : Person( name == \"John\")\n" +
+                        "        Integer( )\n" +
+                        "    then\n" +
+                        "        list.add(\"R1 : \" + $p.getName());\n" +
+                        "end\n" +
+                        "rule ModifyingRule\n" +
+                        "    when\n" +
+                        "        String( this == \"go\" )\n" +
+                        "        $p : Person( name == \"Paul\" )\n" +
+                        "    then\n" +
+                        "        modify( $p ) {\n" +
+                        "            setAge(10)\n" +
+                        "        }\n" +
+                        "        list.add(\"ModifyingRule\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person paul = new Person("Paul", 20);
+        ksession.insert("go");
+        ksession.insert(paul);
+        ksession.insert(0);
+
+        ksession.fireAllRules();
+        assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
     }
 }
