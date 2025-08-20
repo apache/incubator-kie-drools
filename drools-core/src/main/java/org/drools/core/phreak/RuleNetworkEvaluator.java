@@ -388,6 +388,7 @@ public class RuleNetworkEvaluator {
                                          SegmentMemory[] smems, int smemIndex, ActivationsManager activationsManager, LinkedList<StackEntry> stack,
                                          boolean processRian, RuleExecutor executor, TupleSets srcTuples, SegmentMemory smem,
                                          TupleSets stagedLeftTuples, LeftTupleSinkNode sink ) {
+    	ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         TupleSets trgTuples = new TupleSetsImpl();
         if ( NodeTypeEnums.isBetaNode( node )) {
             boolean exitInnerEval = evalBetaNode(pmem, node, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor, srcTuples, stagedLeftTuples, sink);
@@ -399,27 +400,27 @@ public class RuleNetworkEvaluator {
             switch (node.getType()) {
                 case NodeTypeEnums.EvalConditionNode: {
                     pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
-                            activationsManager.getReteEvaluator(), srcTuples, trgTuples, stagedLeftTuples);
+                    		reteEvaluator, srcTuples, trgTuples, stagedLeftTuples);
                     break;
 
                 }
                 case NodeTypeEnums.FromNode: {
                     pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
-                            activationsManager.getReteEvaluator(), srcTuples, trgTuples, stagedLeftTuples);
+                    		reteEvaluator, srcTuples, trgTuples, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ReactiveFromNode: {
                     pReactiveFromNode.doNode((ReactiveFromNode) node, (ReactiveFromNode.ReactiveFromMemory) nodeMem, sink,
-                                             activationsManager.getReteEvaluator(), srcTuples, trgTuples, stagedLeftTuples);
+                                             reteEvaluator, srcTuples, trgTuples, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.QueryElementNode: {
                     exitInnerEval =  evalQueryNode(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples,
-                                                   activationsManager.getReteEvaluator(), stack, srcTuples, sink, stagedLeftTuples);
+                                                   reteEvaluator, stack, srcTuples, sink, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.TimerConditionNode: {
-                    pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, pmem, smem, sink, activationsManager, srcTuples, trgTuples, stagedLeftTuples);
+                    pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, pmem, smem, sink, reteEvaluator, activationsManager, srcTuples, trgTuples, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ConditionalBranchNode: {
@@ -428,11 +429,11 @@ public class RuleNetworkEvaluator {
                     break;
                 }
                 case NodeTypeEnums.AsyncSendNode: {
-                    pSendNode.doNode((AsyncSendNode) node, (AsyncSendMemory) nodeMem, activationsManager.getReteEvaluator(), srcTuples);
+                    pSendNode.doNode((AsyncSendNode) node, (AsyncSendMemory) nodeMem, reteEvaluator, srcTuples);
                     break;
                 }
                 case NodeTypeEnums.AsyncReceiveNode: {
-                    pReceiveNode.doNode( (AsyncReceiveNode) node, (AsyncReceiveMemory) nodeMem, sink, activationsManager.getReteEvaluator(), srcTuples, trgTuples);
+                    pReceiveNode.doNode( (AsyncReceiveNode) node, (AsyncReceiveMemory) nodeMem, sink, reteEvaluator, srcTuples, trgTuples);
                     break;
                 }
             }
