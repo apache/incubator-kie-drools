@@ -221,7 +221,7 @@
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+    <archunit.maven.plugin.version>4.0.2</archunit.maven.plugin.version>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
   </properties>
 
