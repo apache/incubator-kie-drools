@@ -91,39 +91,44 @@ public class UserTasksResource {
         mapper.activateDefaultTypingAsProperty(new SimplePolymorphicTypeValidator(), DefaultTyping.NON_FINAL, "@type");
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserTaskView> list(@RequestParam("user") String user, @RequestParam("group") List<String> groups) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<UserTaskView> list(
+            @RequestParam(value = "user", required = false) String user, 
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.list(identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
-    @GetMapping(value = "/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserTaskView find(@PathVariable("taskId") String taskId, @RequestParam("user") String user, @RequestParam("group") List<String> groups) {
+    @GetMapping(value = "/{taskId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public UserTaskView find(
+            @PathVariable("taskId") String taskId, 
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getUserTaskInstance(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping(value = "/{taskId}/transition")
     public UserTaskView transition(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody TransitionInfo transitionInfo) {
         return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping(value = "/{taskId}/transition", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{taskId}/transition", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<UserTaskTransitionView> transition(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.allowedTransitions(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @PutMapping("/{taskId}/outputs")
     public UserTaskView setOutput(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody String body) throws Exception {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setOutputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -132,38 +137,38 @@ public class UserTasksResource {
     @PutMapping("/{taskId}/inputs")
     public UserTaskView setInputs(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody String body) throws Exception {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setInputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{taskId}/comments")
+    @GetMapping(value = "/{taskId}/comments", consumes = MediaType.ALL_VALUE)
     public Collection<Comment> getComments(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getComments(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @PostMapping("/{taskId}/comments")
     public Comment addComment(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody CommentInfo commentInfo) {
         Comment comment = new Comment(null, user);
         comment.setContent(commentInfo.getComment());
         return userTaskService.addComment(taskId, comment, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{taskId}/comments/{commentId}")
+    @GetMapping(value = "/{taskId}/comments/{commentId}", consumes = MediaType.ALL_VALUE)
     public Comment getComment(
             @PathVariable("taskId") String taskId,
             @PathVariable("commentId") String commentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getComment(taskId, commentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment " + commentId + " not found"));
     }
@@ -172,8 +177,8 @@ public class UserTasksResource {
     public Comment updateComment(
             @PathVariable("taskId") String taskId,
             @PathVariable("commentId") String commentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody CommentInfo commentInfo) {
         Comment comment = new Comment(commentId, user);
         comment.setContent(commentInfo.getComment());
@@ -184,24 +189,24 @@ public class UserTasksResource {
     public Comment deleteComment(
             @PathVariable("taskId") String taskId,
             @PathVariable("commentId") String commentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.removeComment(taskId, commentId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{taskId}/attachments")
+    @GetMapping(value = "/{taskId}/attachments",consumes = MediaType.ALL_VALUE)
     public Collection<Attachment> getAttachments(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getAttachments(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @PostMapping("/{taskId}/attachments")
     public Attachment addAttachment(
             @PathVariable("taskId") String taskId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody AttachmentInfo attachmentInfo) {
         Attachment attachment = new Attachment(null, user);
         attachment.setName(attachmentInfo.getName());
@@ -213,8 +218,8 @@ public class UserTasksResource {
     public Attachment updateAttachment(
             @PathVariable("taskId") String taskId,
             @PathVariable("attachmentId") String attachmentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups,
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody AttachmentInfo attachmentInfo) {
         Attachment attachment = new Attachment(attachmentId, user);
         attachment.setName(attachmentInfo.getName());
@@ -227,17 +232,17 @@ public class UserTasksResource {
     public Attachment deleteAttachment(
             @PathVariable("taskId") String taskId,
             @PathVariable("attachmentId") String attachmentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.removeAttachment(taskId, attachmentId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{taskId}/attachments/{attachmentId}")
+    @GetMapping(value = "/{taskId}/attachments/{attachmentId}", consumes = MediaType.ALL_VALUE)
     public Attachment getAttachment(
             @PathVariable("taskId") String taskId,
             @PathVariable("attachmentId") String attachmentId,
-            @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups) {
+            @RequestParam(value = "user", required = false) String user,
+            @RequestParam(value = "group", required = false) List<String> groups) {
         return userTaskService.getAttachment(taskId, attachmentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Attachment " + attachmentId + " not found"));
     }
