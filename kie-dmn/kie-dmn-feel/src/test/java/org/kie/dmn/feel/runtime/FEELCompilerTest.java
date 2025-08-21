@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -479,6 +480,23 @@ public class FEELCompilerTest {
         assertThat(result).isEqualTo(BigDecimal.valueOf(2016));
     }
 
-    
+    @Test
+    void testValueProperty() {
+        String input1 = "date.value";
+        String input2 = "time.value";
+        Type dateType = BuiltInType.DATE;
+        Type time = BuiltInType.TIME;
+        CompiledFEELExpression qualRef1 = parseInterpreted(input1, mapOf(entry("date", dateType)));
+        CompiledFEELExpression qualRef2 = parseInterpreted(input2, mapOf(entry("time", time)));
+
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
+        context.setValue("date", LocalDate.of(2025, 7, 3));
+        context.setValue("time", LocalTime.of(13, 20, 0));
+        Object result1 = qualRef1.apply(context);
+        Object result2 = qualRef2.apply(context);
+
+        assertThat(result1).isEqualTo(BigDecimal.valueOf(1751500800));
+        assertThat(result2).isEqualTo(BigDecimal.valueOf(1751968800));
+    }
 
 }
