@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -3679,6 +3680,30 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
         assertThat(dmnResult.getMessages()).hasSize(2);
         assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void valueTest(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/TestValueProperty.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_71C6EBC8-58FD-4917-A00D-3CFF5DF1C0D9", "DMN_8092A68F-7F00-44BA-8B59-9831ECE4EB8D");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("InputA", LocalDate.of(2025,7,3));
+        dmnContext.set("InputB", ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z").normalized()));
+        dmnContext.set("InputC", Duration.of(1, ChronoUnit.DAYS).plusHours(1));
+        dmnContext.set("InputD", LocalTime.of(13, 20, 0));
+        dmnContext.set("InputE", Period.parse("P2Y1M"));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
+        assertThat(dmnResult.getDecisionResultByName("TestDateAndTime").getResult()).isEqualTo(BigDecimal.valueOf(1751968800));
+        assertThat(dmnResult.getDecisionResultByName("TestDaysAndTime").getResult()).isEqualTo(BigDecimal.valueOf(90000));
+        assertThat(dmnResult.getDecisionResultByName("TestTime").getResult()).isEqualTo(BigDecimal.valueOf(48000));
+        assertThat(dmnResult.getDecisionResultByName("TestYearsAndMonths").getResult()).isEqualTo(BigDecimal.valueOf(25));
     }
 
 }

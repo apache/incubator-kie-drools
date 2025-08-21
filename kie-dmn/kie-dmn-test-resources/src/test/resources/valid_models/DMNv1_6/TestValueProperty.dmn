@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_71C6EBC8-58FD-4917-A00D-3CFF5DF1C0D9" id="_D3D587FF-E34A-4998-9AD5-5597160112E4" name="DMN_8092A68F-7F00-44BA-8B59-9831ECE4EB8D">
+  <decision name="TestDate" id="_54B0F648-2EDA-405A-A10D-29206784FBDC">
+    <variable id="_3AD50D98-F793-4AD5-8243-18793265F525" typeRef="Any" name="TestDate" />
+    <informationRequirement id="_8962E013-82FA-4E4A-A0A2-93D3F7930530">
+      <requiredInput href="#_D2402391-EC98-402B-B1AD-6F24C6E9C6CF" />
+    </informationRequirement>
+    <literalExpression id="_FEFA4EDB-7614-4B9D-BBBB-3119C258A4EE" typeRef="Any" label="TestDate">
+      <text>InputA.value</text>
+    </literalExpression>
+  </decision>
+  <decision name="TestDateAndTime" id="_A97FCBB0-EC29-422B-A392-0D2E6C71F429">
+    <variable name="TestDateAndTime" id="_DEB96005-D4A4-4DA4-9D94-43072573F94E" typeRef="Any" />
+    <informationRequirement id="_101B675B-A242-499F-844C-E527DA57BB7A">
+      <requiredInput href="#_B0F8398B-FCF0-46A7-9029-037C063BBF53" />
+    </informationRequirement>
+    <literalExpression id="_23ABF4F7-0BAB-4A90-A699-3DB1634C28D4" typeRef="Any" label="TestDateAndTime">
+      <text>InputB.value</text>
+    </literalExpression>
+  </decision>
+  <decision name="TestDaysAndTime" id="_47CE165C-1C88-42DE-B0CD-4E827EA82534">
+    <variable name="TestDaysAndTime" id="_D6C4EB35-AA1F-4794-895C-133E40EA9204" typeRef="Any" />
+    <informationRequirement id="_E75254A9-7986-44DA-BD8A-02AE85AA9DE3">
+      <requiredInput href="#_2ED4B3AB-5B8B-41A6-BA19-0E009DF4A393" />
+    </informationRequirement>
+    <literalExpression id="_B744DDB3-9806-4888-A9EA-13960BA69350" typeRef="Any" label="TestDaysAndTime">
+      <text>InputC.value</text>
+    </literalExpression>
+  </decision>
+  <decision name="TestTime" id="_2FFA85D7-DB4D-4236-B836-4C5D85AB36AD">
+    <variable name="TestTime" id="_425E2B9C-0584-4250-96A9-9B85D411B85F" typeRef="Any" />
+    <informationRequirement id="_04D45FC0-49BA-4CC5-B4CA-5C578D25E23B">
+      <requiredInput href="#_021B9755-9519-455B-AD13-221CF5EAD046" />
+    </informationRequirement>
+    <literalExpression id="_5A1E0BF7-78E0-41C7-8FFF-AB7625D11F82" typeRef="Any" label="TestTime">
+      <text>InputD.value</text>
+    </literalExpression>
+  </decision>
+  <decision name="TestYearsAndMonths" id="_37119B95-3F58-407F-B16E-6032A6D1056C">
+    <variable name="TestYearsAndMonths" id="_B48C33EB-82BD-4B68-9B74-08AEE515A1A2" typeRef="Any" />
+    <informationRequirement id="_F4D6AD89-F803-4C67-BCDF-0835FAA3AB7B">
+      <requiredInput href="#_29330733-A50C-42AC-9945-6EBFDE79E79E" />
+    </informationRequirement>
+    <literalExpression id="_2F277AA7-2B51-4739-9DEA-123EE4F52707" typeRef="Any" label="TestYearsAndMonths">
+      <text>InputE.value</text>
+    </literalExpression>
+  </decision>
+  <inputData name="InputA" id="_D2402391-EC98-402B-B1AD-6F24C6E9C6CF">
+    <variable name="InputA" id="_EA6A8F9D-97CF-49A5-A0F3-086D0E9F9AC6" typeRef="date" />
+  </inputData>
+  <inputData name="InputB" id="_B0F8398B-FCF0-46A7-9029-037C063BBF53">
+    <variable name="InputB" id="_BA66B972-066F-4415-A357-6718DEB156EC" typeRef="date and time" />
+  </inputData>
+  <inputData name="InputC" id="_2ED4B3AB-5B8B-41A6-BA19-0E009DF4A393">
+    <variable name="InputC" id="_6A64B8BB-C69D-42CB-8C11-52E5FD0AAC79" typeRef="days and time duration" />
+  </inputData>
+  <inputData name="InputD" id="_021B9755-9519-455B-AD13-221CF5EAD046">
+    <variable name="InputD" id="_F98755D9-AEE4-4E5F-BA1B-C1C9878CD803" typeRef="time" />
+  </inputData>
+  <inputData name="InputE" id="_29330733-A50C-42AC-9945-6EBFDE79E79E">
+    <variable name="InputE" id="_138C8577-DEDE-46B2-B018-CFDEA97E2BD8" typeRef="years and months duration" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_5342447F-01C4-4656-A097-68B3D9D182E5" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_FEFA4EDB-7614-4B9D-BBBB-3119C258A4EE">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_23ABF4F7-0BAB-4A90-A699-3DB1634C28D4">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_B744DDB3-9806-4888-A9EA-13960BA69350">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_2F277AA7-2B51-4739-9DEA-123EE4F52707">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_5A1E0BF7-78E0-41C7-8FFF-AB7625D11F82">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_B91D1B42-9E04-4DCB-8561-46D8EEB5783D" dmnElementRef="_D2402391-EC98-402B-B1AD-6F24C6E9C6CF" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="120" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A6644419-CAA1-4F5C-BD11-BB56F8B8CB6D" dmnElementRef="_54B0F648-2EDA-405A-A10D-29206784FBDC" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="120" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_945BA525-81E9-4B5B-B5C9-2A61DC1DD076" dmnElementRef="_A97FCBB0-EC29-422B-A392-0D2E6C71F429" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="420" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_00BCA7B2-2B54-4A42-AE1D-07E6A0C4DB7A" dmnElementRef="_47CE165C-1C88-42DE-B0CD-4E827EA82534" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="720" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_AD2BB817-F437-4936-90F1-74163D32AF72" dmnElementRef="_B0F8398B-FCF0-46A7-9029-037C063BBF53" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="420" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_E4FD6072-A074-4971-A8B0-2C22D3452E95" dmnElementRef="_2ED4B3AB-5B8B-41A6-BA19-0E009DF4A393" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="720" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_BEA18ABD-DED6-41FF-B0FE-4B48A339C028" dmnElementRef="_2FFA85D7-DB4D-4236-B836-4C5D85AB36AD" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1000" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_DAF04568-C61B-47A8-9BB2-1AC27729F623" dmnElementRef="_021B9755-9519-455B-AD13-221CF5EAD046" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1000" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_50924656-97FB-4527-8653-D235AFE42688" dmnElementRef="_29330733-A50C-42AC-9945-6EBFDE79E79E" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1280" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_7A04653A-A9EC-449F-8B6B-AE8B714030C8" dmnElementRef="_37119B95-3F58-407F-B16E-6032A6D1056C" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="1280" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_4C645D74-31AC-4EFF-8228-0AE41D07C04D-AUTO-TARGET" dmnElementRef="_8962E013-82FA-4E4A-A0A2-93D3F7930530" sourceElement="_B91D1B42-9E04-4DCB-8561-46D8EEB5783D" targetElement="_A6644419-CAA1-4F5C-BD11-BB56F8B8CB6D">
+        <di:waypoint x="200" y="300" />
+        <di:waypoint x="200" y="80" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_4EFE9FEA-AC27-429E-AF6C-F3BF17FCB999" dmnElementRef="_101B675B-A242-499F-844C-E527DA57BB7A" sourceElement="_AD2BB817-F437-4936-90F1-74163D32AF72" targetElement="_945BA525-81E9-4B5B-B5C9-2A61DC1DD076">
+        <di:waypoint x="500" y="300" />
+        <di:waypoint x="500" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_D088193D-44DD-4DFD-83F4-3D0DFF1BB37E" dmnElementRef="_E75254A9-7986-44DA-BD8A-02AE85AA9DE3" sourceElement="_E4FD6072-A074-4971-A8B0-2C22D3452E95" targetElement="_00BCA7B2-2B54-4A42-AE1D-07E6A0C4DB7A">
+        <di:waypoint x="800" y="300" />
+        <di:waypoint x="800" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_29D439A9-9CE1-4575-98D1-C46ADF8E74C5" dmnElementRef="_04D45FC0-49BA-4CC5-B4CA-5C578D25E23B" sourceElement="_DAF04568-C61B-47A8-9BB2-1AC27729F623" targetElement="_BEA18ABD-DED6-41FF-B0FE-4B48A339C028">
+        <di:waypoint x="1080" y="300" />
+        <di:waypoint x="1080" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_63162C3A-FB38-42D8-8052-BADD8BBE312C" dmnElementRef="_F4D6AD89-F803-4C67-BCDF-0835FAA3AB7B" sourceElement="_50924656-97FB-4527-8653-D235AFE42688" targetElement="_7A04653A-A9EC-449F-8B6B-AE8B714030C8">
+        <di:waypoint x="1360" y="300" />
+        <di:waypoint x="1360" y="120" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
