@@ -3684,7 +3684,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void valueTest(boolean useExecModelCompiler) {
+    void valuePropertyTest(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/TestValueProperty.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_71C6EBC8-58FD-4917-A00D-3CFF5DF1C0D9", "DMN_8092A68F-7F00-44BA-8B59-9831ECE4EB8D");
