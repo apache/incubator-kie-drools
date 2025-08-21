@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             xmlns:included0="https://kie.org/dmn/_9F4C1A60-CF94-41F1-9B9F-8D26FF617670" xmlns:included1="https://kie.org/dmn/_D9035A17-CCDF-4D29-9A4C-005D2BF5EBDC"
+             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837" id="_AF126883-5B66-4112-A49C-FBC9D85E9F4D"
+             name="DMN_C66F78A2-4BD7-4BB7-A200-4C61D82AAFBD">
+  <decision name="Decision A" id="_A98A15BF-9E3E-4DBC-874C-E722A1DF082D">
+    <variable id="_D723085A-ED61-4A87-8933-65B5281A567D" typeRef="number" name="Decision A" />
+    <informationRequirement id="_D4E08E55-7035-420D-9B8F-74EE9EB6B092">
+      <requiredInput href="#_C299FD32-7DA5-44F5-959E-A23470AA4F3F" />
+    </informationRequirement>
+    <literalExpression id="_28293632-A28E-47D8-B25E-A7C934ED4537" typeRef="number" label="Decision A">
+      <text>CLASHING_NAME</text>
+    </literalExpression>
+  </decision>
+  <inputData name="CLASHING_NAME" id="_C299FD32-7DA5-44F5-959E-A23470AA4F3F">
+    <variable name="CLASHING_NAME" id="_6497C8B9-F48A-42D4-B299-534C12E45190" typeRef="number" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_EC7829BB-AA43-4C41-8CBD-02799F8E5CA2" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C7A7A9AA-CB35-4A90-ACCA-BAC1835410AF">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_E706443A-D7B7-4E86-A984-423B02CE91C3">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_AF9208AE-A31D-48C7-953F-D409C5781C4D">
+            <kie:width>512</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_28293632-A28E-47D8-B25E-A7C934ED4537">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_E5978038-2A5F-4BE5-A5F8-83E41802AF47" dmnElementRef="_C299FD32-7DA5-44F5-959E-A23470AA4F3F" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="160" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_B142BA3C-808B-4BF0-98F1-EF003063D1D9" dmnElementRef="included0:_333AB4CE-C1BC-49BD-84B8-E6A2339C9E8D">
+        <dc:Bounds x="460" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_7A990C14-71C7-4405-8EE3-9FCEA81B28B7" dmnElementRef="_A98A15BF-9E3E-4DBC-874C-E722A1DF082D" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="-280" y="60" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_101FB2F5-7F7E-45BC-A4E4-F80FC2CB898E-AUTO-TARGET" dmnElementRef="_D4E08E55-7035-420D-9B8F-74EE9EB6B092" sourceElement="_D7639B3F-D677-4B3E-BBA7-D6D1077782DC" targetElement="_7A990C14-71C7-4405-8EE3-9FCEA81B28B7">
+        <di:waypoint x="-200" y="300" />
+        <di:waypoint x="-200" y="100" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

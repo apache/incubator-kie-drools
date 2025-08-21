@@ -21,6 +21,7 @@ package org.kie.dmn.core.imports;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,6 +44,97 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(ImportsTest.class);
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingModelsWithSameImportAndInputNameSimpleData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnImporting,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837",
+                                                        "DMN_C66F78A2-4BD7-4BB7-A200-4C61D82AAFBD");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_054766E3-2098-4E7B-8F48-576B5373F4EE",
+                                                         "ImportingModelSimpleType");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        DMNContext context = runtime.newContext(); // old syntax
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", mapOf(entry("CLASHING_NAME", 21)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+
+
+        context = runtime.newContext();
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", 21);
+
+        evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingModelsWithSameImportAndInputNameComplexData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_complex_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnImporting,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A78EE",
+                                                        "DMN_C66F78A2-4BD7-4BB7-A200-4C61D82AAFBD");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_054766E3-2098-4E7B-8F48-576B5373F4EE",
+                                                         "ImportingModelComplexType");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        DMNContext context = runtime.newContext(); // old syntax
+        context.set("My Input", "this is my input");
+        Map<String, Object> clashingNameComplexObject =  mapOf(entry("Complex Type Number", 21), entry("Complex Type String", "A string"));
+        context.set("CLASHING_NAME", mapOf(entry("CLASHING_NAME", clashingNameComplexObject)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+
+
+        context = runtime.newContext();
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", mapOf(entry("Complex Type Number", 21), entry("Complex Type String", "A string")));
+
+        evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+    }
 
     @ParameterizedTest
     @MethodSource("params")

@@ -36,6 +36,7 @@ import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.DMNRuntimeUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -156,10 +157,10 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
 
         private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
             DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
-            Object result = DMNRuntimeImpl.coerceUsingType(param,
-                                                           dsFormalParameter.type,
-                                                           typeCheck,
-                                                           (rx, tx) -> MsgUtil.reportMessage(LOG,
+            Object result = DMNRuntimeUtils.coerceUsingType(param,
+                                                            dsFormalParameter.type,
+                                                            typeCheck,
+                                                            (rx, tx) -> MsgUtil.reportMessage(LOG,
                                                                                              DMNMessage.Severity.ERROR,
                                                                                              null,
                                                                                              resultContext,
