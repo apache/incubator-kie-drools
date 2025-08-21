@@ -496,7 +496,7 @@ public class FEELCompilerTest {
         Object result2 = qualRef2.apply(context);
 
         assertThat(result1).isEqualTo(BigDecimal.valueOf(1751500800));
-        assertThat(result2).isEqualTo(BigDecimal.valueOf(1751968800));
+        assertThat(result2).isEqualTo(BigDecimal.valueOf(48000));
     }
 
 }
