@@ -18,10 +18,13 @@
  */
 
 package org.jbpm.usertask.jpa.springboot;
-
+import java.util.List;
+import java.util.Optional;
 import org.jbpm.usertask.jpa.JPAUserTaskInstances;
 import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
+import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.usertask.UserTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +36,35 @@ public class SpringBootJPAUserTaskInstances extends JPAUserTaskInstances {
     @Autowired
     public SpringBootJPAUserTaskInstances(UserTaskInstanceRepository userTaskInstanceRepository, UserTaskInstanceEntityMapper userTaskInstanceEntityMapper) {
         super(userTaskInstanceRepository, userTaskInstanceEntityMapper);
+    }
+
+    @Override
+    public Optional<UserTaskInstance> findById(String userTaskInstanceId) {
+        return super.findById(userTaskInstanceId);
+    }
+
+    @Override
+    public List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider) {
+        return super.findByIdentity(identityProvider);
+    }
+
+    @Override
+    public boolean exists(String userTaskInstanceId) {
+        return super.exists(userTaskInstanceId);
+    }
+
+    @Override
+    public UserTaskInstance create(UserTaskInstance userTaskInstance) {
+        return super.create(userTaskInstance);
+    }
+
+    @Override
+    public UserTaskInstance update(UserTaskInstance userTaskInstance) {
+        return super.update(userTaskInstance);
+    }
+
+    @Override
+    public UserTaskInstance remove(UserTaskInstance userTaskInstance) {
+        return super.remove(userTaskInstance);
     }
 }
