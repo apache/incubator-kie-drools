@@ -19,15 +19,18 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.drools.util.StringUtils;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
@@ -36,6 +39,7 @@ import org.kie.kogito.ProcessInput;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -81,6 +85,13 @@ public class ProcessToExecModelGenerator {
 
     public ProcessMetaData generate(WorkflowProcess process) {
         CompilationUnit parsedClazzFile = parse(TemplateHelper.findTemplate(contextClassLoader, this.classTemplate));
+        if (process instanceof RuleFlowProcess ruleFlowProcess) {
+            List<String> currentImports = parsedClazzFile.getImports().stream().map(e -> e.getNameAsString()).toList();
+            Set<String> processImports = new HashSet<>(ruleFlowProcess.getImports());
+            processImports.removeAll(currentImports);
+            processImports.forEach(i -> parsedClazzFile.addImport(new ImportDeclaration(i, false, false)));
+        }
+
         parsedClazzFile.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processClazzOptional = parsedClazzFile.findFirst(
                 ClassOrInterfaceDeclaration.class,

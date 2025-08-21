@@ -19,10 +19,12 @@
 package org.kie.kogito.codegen.process;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.ContextContainer;
@@ -52,8 +54,18 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.printer.DefaultPrettyPrinterVisitor;
 import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
+import com.github.javaparser.resolution.MethodUsage;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
+import com.github.javaparser.resolution.declarations.ResolvedConstructorDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedTypeParameterDeclaration;
+import com.github.javaparser.resolution.types.ResolvedReferenceType;
+import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.MemoryTypeSolver;
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 
 import static java.lang.String.format;
@@ -90,12 +102,106 @@ class JavaRuleFlowProcessValidator extends RuleFlowProcessValidator {
 
     private void validateJava(ActionNode actionNode, List<ProcessValidationError> errors, RuleFlowProcess process) {
         DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
-        ParseResult<CompilationUnit> parse = new JavaParser(new ParserConfiguration().setSymbolResolver(new JavaSymbolSolver(new ReflectionTypeSolver())))
-                .parse("import org.kie.kogito.internal.process.runtime.KogitoProcessContext;\n" +
+        String imports = process.getImports().stream().map(javaImport -> "import " + javaImport + ";").collect(Collectors.joining("\n"));
+
+        String dummyScript =
+                "import org.kie.kogito.internal.process.runtime.KogitoProcessContext;\n" +
                         "import org.jbpm.process.instance.impl.Action;\n" +
+                        imports + "\n" +
                         " class Test {\n" +
                         "    Action action = kcontext -> {" + droolsAction.getConsequence() + "\n};\n" +
-                        "}");
+                        "}";
+
+        MemoryTypeSolver memoryTypeSolver = new MemoryTypeSolver();
+        for (String fqn : process.getImports()) {
+            int idx = fqn.lastIndexOf(".");
+            String clazz = idx > 0 ? fqn.substring(idx + 1) : fqn;
+            String pakage = idx > 0 ? fqn.substring(0, idx) : "";
+            memoryTypeSolver.addDeclaration(clazz, new ResolvedReferenceTypeDeclaration() {
+
+                @Override
+                public Optional<ResolvedReferenceTypeDeclaration> containerType() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public String getPackageName() {
+                    return pakage;
+                }
+
+                @Override
+                public String getClassName() {
+                    return clazz;
+                }
+
+                @Override
+                public String getQualifiedName() {
+                    return fqn;
+                }
+
+                @Override
+                public String getName() {
+                    return clazz;
+                }
+
+                @Override
+                public List<ResolvedTypeParameterDeclaration> getTypeParameters() {
+                    return Collections.emptyList();
+                }
+
+                @Override
+                public List<ResolvedReferenceType> getAncestors(boolean acceptIncompleteList) {
+                    return Collections.emptyList();
+                }
+
+                @Override
+                public List<ResolvedFieldDeclaration> getAllFields() {
+                    return Collections.emptyList();
+                }
+
+                @Override
+                public Set<ResolvedMethodDeclaration> getDeclaredMethods() {
+                    return Collections.emptySet();
+                }
+
+                @Override
+                public Set<MethodUsage> getAllMethods() {
+                    return Collections.emptySet();
+                }
+
+                @Override
+                public boolean isAssignableBy(ResolvedType type) {
+                    return false;
+                }
+
+                @Override
+                public boolean isAssignableBy(ResolvedReferenceTypeDeclaration other) {
+                    return false;
+                }
+
+                @Override
+                public boolean hasDirectlyAnnotation(String qualifiedName) {
+                    return false;
+                }
+
+                @Override
+                public boolean isFunctionalInterface() {
+                    return false;
+                }
+
+                @Override
+                public List<ResolvedConstructorDeclaration> getConstructors() {
+                    return Collections.emptyList();
+                }
+
+            });
+        }
+
+        ParseResult<CompilationUnit> parse = new JavaParser(new ParserConfiguration()
+                .setSymbolResolver(new JavaSymbolSolver(
+                        new CombinedTypeSolver(new ReflectionTypeSolver(), memoryTypeSolver))))
+                                .parse(dummyScript);
+
         if (parse.isSuccessful()) {
             CompilationUnit unit = parse.getResult().orElseThrow();
             try {
