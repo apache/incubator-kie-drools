@@ -499,9 +499,9 @@ public class FEELCompilerTest {
         Type yearsAndMonths = BuiltInType.DURATION;
         CompiledFEELExpression qualRef1 = parseInterpreted(input1, mapOf(entry("date", dateType)));
         CompiledFEELExpression qualRef2 = parseInterpreted(input2, mapOf(entry("time", time)));
-        CompiledFEELExpression qualRef3 = parseInterpreted(input3, mapOf(entry("time", dateAndTime)));
-        CompiledFEELExpression qualRef4 = parseInterpreted(input4, mapOf(entry("time", daysAndTime)));
-        CompiledFEELExpression qualRef5 = parseInterpreted(input5, mapOf(entry("time", yearsAndMonths)));
+        CompiledFEELExpression qualRef3 = parseInterpreted(input3, mapOf(entry("dateAndTime", dateAndTime)));
+        CompiledFEELExpression qualRef4 = parseInterpreted(input4, mapOf(entry("daysAndTime", daysAndTime)));
+        CompiledFEELExpression qualRef5 = parseInterpreted(input5, mapOf(entry("yearsAndMonths", yearsAndMonths)));
 
         EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("date", LocalDate.of(2025, 7, 3));
