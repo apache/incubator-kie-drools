@@ -34,6 +34,7 @@ import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
+import org.kie.kogito.codegen.data.PersonWithBooleanGetAccessor;
 import org.kie.kogito.codegen.data.PersonWithList;
 import org.kie.kogito.codegen.data.Question;
 import org.kie.kogito.codegen.data.QuestionWithAnnotatedEnum;
@@ -51,6 +52,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kie.kogito.codegen.api.context.ContextAttributesConstants.KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR;
 
 public abstract class AbstractMarshallerGeneratorTest<T> {
 
@@ -88,6 +92,61 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         assertThat(marshallerClass).isPresent();
 
         assertThat(compile(classes).getErrors()).isEmpty();
+    }
+
+    @Test
+    void testPersonWithBooleanIsAccessorMarshallers() throws Exception {
+        context.setApplicationProperty(KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR, "isPrefix");
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(Person.class)).build(null);
+
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test", "import \"kogito-types.proto\";");
+        assertThat(proto).isNotNull();
+        assertThat(proto.getMessages()).hasSize(1);
+
+        MarshallerGenerator marshallerGenerator = withGenerator(Person.class);
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
+        assertThat(classes).isNotNull().hasSize(1);
+
+        Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonMessageMarshaller");
+        assertThat(marshallerClass).isPresent();
+
+        assertThat(compile(classes).getErrors()).isEmpty();
+    }
+
+    @Test
+    void testPersonWithBooleanGetAccessorMarshallers() throws Exception {
+        context.setApplicationProperty(KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR, "javaBeans");
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(PersonWithBooleanGetAccessor.class)).build(null);
+
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test", "import \"kogito-types.proto\";");
+        assertThat(proto).isNotNull();
+        assertThat(proto.getMessages()).hasSize(1);
+
+        MarshallerGenerator marshallerGenerator = withGenerator(PersonWithBooleanGetAccessor.class);
+        List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
+        assertThat(classes).isNotNull().hasSize(1);
+
+        Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonWithBooleanGetAccessorMessageMarshaller");
+        assertThat(marshallerClass).isPresent();
+
+        assertThat(compile(classes).getErrors()).isEmpty();
+    }
+
+    @Test
+    void testInvalidBooleanAccessorThrowsMarshaller() throws Exception {
+        context.setApplicationProperty(KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR, "get");
+        ProtoGenerator generator = protoGeneratorBuilder().withDataClasses(convertTypes(Person.class)).build(null);
+
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test", "import \"kogito-types.proto\";");
+        assertThat(proto).isNotNull();
+        assertThat(proto.getMessages()).hasSize(1);
+
+        MarshallerGenerator marshallerGenerator = withGenerator(PersonWithBooleanGetAccessor.class);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            marshallerGenerator.generate(proto.serialize());
+        });
+        assertEquals("Property " + KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR + " defined but does not contain proper value: expected 'isPrefix' or 'javaBeans'", exception.getMessage());
+
     }
 
     @Test

@@ -29,6 +29,7 @@ public interface ProtoGenerator {
     GeneratedFileType PROTO_TYPE = GeneratedFileType.of("PROTO", GeneratedFileType.Category.STATIC_HTTP_RESOURCE);
     String INDEX_COMMENT = "@Field(index = Index.YES, store = Store.YES) @SortableField";
     String KOGITO_JAVA_CLASS_OPTION = "kogito_java_class";
+    String KOGITO_JAVA_TYPE_BOOLEAN_OBJECT_OPTION = "kogito_java_type_boolean_object";
     String KOGITO_SERIALIZABLE = "kogito.Serializable";
     String ARRAY = "Array";
     String COLLECTION = "Collection";

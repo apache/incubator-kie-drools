@@ -46,6 +46,8 @@ import org.kie.kogito.codegen.data.PersonSubClass;
 import org.kie.kogito.codegen.data.PersonVarInfo;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
+import org.kie.kogito.codegen.data.PersonWithBooleanGetAccessor;
+import org.kie.kogito.codegen.data.PersonWithBooleanObject;
 import org.kie.kogito.codegen.data.PersonWithList;
 import org.kie.kogito.codegen.data.Question;
 import org.kie.kogito.codegen.data.QuestionWithAnnotatedEnum;
@@ -79,7 +81,9 @@ public final class JandexTestUtils {
             Travels.class,
             PersonSubClass.class,
             JacksonData.class,
-            ListWithoutType.class);
+            ListWithoutType.class,
+            PersonWithBooleanObject.class,
+            PersonWithBooleanGetAccessor.class);
 
     private static void indexClass(Indexer indexer, Class<?> toIndex) {
         try {

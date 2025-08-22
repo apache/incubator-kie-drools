@@ -175,6 +175,8 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
                 protoField.setOption(format("[%s = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString.equals(ARRAY) ? pd.type().toString() : pd.type().name().toString()));
+            } else if ("java.lang.Boolean".equals(fieldTypeString)) {
+                protoField.setOption(format("[%s = \"%s\"]", KOGITO_JAVA_TYPE_BOOLEAN_OBJECT_OPTION, fieldTypeString));
             }
         }
         message.setComment(messageComment);

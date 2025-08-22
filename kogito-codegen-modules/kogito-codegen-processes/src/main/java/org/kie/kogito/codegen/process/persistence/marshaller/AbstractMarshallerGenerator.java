@@ -48,6 +48,7 @@ import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
+import org.kie.kogito.codegen.process.util.CodegenUtil;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -79,6 +80,7 @@ import static com.github.javaparser.ast.Modifier.Keyword.PUBLIC;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static java.lang.String.format;
 import static org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator.KOGITO_JAVA_CLASS_OPTION;
+import static org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator.KOGITO_JAVA_TYPE_BOOLEAN_OBJECT_OPTION;
 
 public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenerator {
 
@@ -123,6 +125,7 @@ public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenera
         serializationContext.registerProtoFiles(proto);
 
         Map<String, FileDescriptor> descriptors = serializationContext.getFileDescriptors();
+        String booleanObjectAccessorProperty = CodegenUtil.getBooleanObjectAccessor(context);
 
         for (Entry<String, FileDescriptor> entry : descriptors.entrySet()) {
 
@@ -184,7 +187,10 @@ public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenera
                         // has a mapped type
                         read = new MethodCallExpr(new NameExpr("reader"), "read" + protoStreamMethodType)
                                 .addArgument(new StringLiteralExpr(field.getName()));
-                        String accessor = protoStreamMethodType.equals("Boolean") ? "is" : "get";
+
+                        String accessor =
+                                protoStreamMethodType.equals("Boolean") ? (field.getOptionByName(KOGITO_JAVA_TYPE_BOOLEAN_OBJECT_OPTION) != null ? booleanObjectAccessorProperty : "is") : "get";
+
                         write = new MethodCallExpr(new NameExpr("writer"), "write" + protoStreamMethodType)
                                 .addArgument(new StringLiteralExpr(field.getName()))
                                 .addArgument(new MethodCallExpr(new NameExpr("t"), accessor + StringUtils.ucFirst(field.getName())));

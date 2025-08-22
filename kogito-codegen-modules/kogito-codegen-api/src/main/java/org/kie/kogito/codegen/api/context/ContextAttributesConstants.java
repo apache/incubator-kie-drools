@@ -29,6 +29,8 @@ public final class ContextAttributesConstants {
 
     public static final String KOGITO_FAULT_TOLERANCE_ENABLED = "kogito.faultToleranceEnabled";
 
+    public static final String KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR = "kogito.codegen.booleanObjectAccessorBehaviour";
+
     private ContextAttributesConstants() {
     }
 }
