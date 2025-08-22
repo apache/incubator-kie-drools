@@ -28,7 +28,6 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-springboot-data-audit-jpa</artifactId>
     <name>Kogito Apps :: Data Audit :: JPA :: SpringBoot</name>
 

@@ -26,23 +26,28 @@ import java.util.StringJoiner;
 import org.kie.kogito.timer.Trigger;
 
 /**
- * Represents a Job Instance on the Job Service. This instance may be persisted and loaded at any point in time.
+ * Represents a Job Instance on the Job Service. This instance may be persisted
+ * and loaded at any point in time.
  */
 public class JobDetails {
 
-    private String id;//the unique id internally on the job service
-    private String correlationId; //the job id on the runtimes, for instance
+    private String id;// the unique id internally on the job service
+    private String correlationId; // the job id on the runtimes, for instance
     private JobStatus status;
     private ZonedDateTime lastUpdate;
     private Integer retries;
     private Integer priority;
-    private Integer executionCounter;//number of times the job was executed
-    private String scheduledId;//the execution control on the scheduler (id on vertx.setTimer, quartzId...)
-    private Recipient recipient;//http callback, event topic
-    private Trigger trigger;//when/how it should be executed
+    private Integer executionCounter;// number of times the job was executed
+    private String scheduledId;// the execution control on the scheduler (id on vertx.setTimer, quartzId...)
+    private Recipient recipient;// http callback, event topic
+    private Trigger trigger;// when/how it should be executed
     private Long executionTimeout;
     private ChronoUnit executionTimeoutUnit;
     private ZonedDateTime created;
+
+    public JobDetails() {
+        // do nothing
+    }
 
     @SuppressWarnings("java:S107")
     protected JobDetails(String id, String correlationId, JobStatus status, ZonedDateTime lastUpdate, Integer retries,
@@ -119,6 +124,58 @@ public class JobDetails {
         return new JobDetailsBuilder();
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
+    }
+
+    public void setStatus(JobStatus status) {
+        this.status = status;
+    }
+
+    public void setLastUpdate(ZonedDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public void setRetries(Integer retries) {
+        this.retries = retries;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public void setExecutionCounter(Integer executionCounter) {
+        this.executionCounter = executionCounter;
+    }
+
+    public void setScheduledId(String scheduledId) {
+        this.scheduledId = scheduledId;
+    }
+
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
+    }
+
+    public void setTrigger(Trigger trigger) {
+        this.trigger = trigger;
+    }
+
+    public void setExecutionTimeout(Long executionTimeout) {
+        this.executionTimeout = executionTimeout;
+    }
+
+    public void setExecutionTimeoutUnit(ChronoUnit executionTimeoutUnit) {
+        this.executionTimeoutUnit = executionTimeoutUnit;
+    }
+
+    public void setCreated(ZonedDateTime created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -128,41 +185,34 @@ public class JobDetails {
             return false;
         }
         JobDetails that = (JobDetails) o;
-        return Objects.equals(getId(), that.getId()) &&
-                Objects.equals(getCorrelationId(), that.getCorrelationId()) &&
-                Objects.equals(getStatus(), that.getStatus()) &&
-                (Objects.equals(getLastUpdate(), that.getLastUpdate()) || Objects.isNull(getLastUpdate()) || Objects.isNull(that.getLastUpdate())) &&
-                Objects.equals(getRetries(), that.getRetries()) &&
-                Objects.equals(getExecutionCounter(), that.getExecutionCounter()) &&
-                Objects.equals(getScheduledId(), that.getScheduledId()) &&
-                Objects.equals(getRecipient(), that.getRecipient()) &&
-                Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime()) &&
-                Objects.equals(getExecutionTimeout(), that.getExecutionTimeout()) &&
-                Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit()) &&
-                Objects.equals(getCreated(), that.getCreated());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getCorrelationId(), that.getCorrelationId())
+                && Objects.equals(getStatus(), that.getStatus())
+                && (Objects.equals(getLastUpdate(), that.getLastUpdate()) || Objects.isNull(getLastUpdate())
+                        || Objects.isNull(that.getLastUpdate()))
+                && Objects.equals(getRetries(), that.getRetries())
+                && Objects.equals(getExecutionCounter(), that.getExecutionCounter())
+                && Objects.equals(getScheduledId(), that.getScheduledId())
+                && Objects.equals(getRecipient(), that.getRecipient())
+                && Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime())
+                && Objects.equals(getExecutionTimeout(), that.getExecutionTimeout())
+                && Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit())
+                && Objects.equals(getCreated(), that.getCreated());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getCorrelationId(), getStatus(), getRetries(), getExecutionCounter(),
-                getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit(), getCreated());
+                getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit(),
+                getCreated());
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", JobDetails.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("correlationId='" + correlationId + "'")
-                .add("status=" + status)
-                .add("lastUpdate=" + lastUpdate)
-                .add("retries=" + retries)
-                .add("executionCounter=" + executionCounter)
-                .add("scheduledId='" + scheduledId + "'")
-                .add("recipient=" + recipient)
-                .add("trigger=" + trigger)
-                .add("executionTimeout=" + executionTimeout)
-                .add("executionTimeoutUnit=" + executionTimeoutUnit)
-                .add("created=" + created)
-                .toString();
+        return new StringJoiner(", ", JobDetails.class.getSimpleName() + "[", "]").add("id='" + id + "'")
+                .add("correlationId='" + correlationId + "'").add("status=" + status).add("lastUpdate=" + lastUpdate)
+                .add("retries=" + retries).add("executionCounter=" + executionCounter)
+                .add("scheduledId='" + scheduledId + "'").add("recipient=" + recipient).add("trigger=" + trigger)
+                .add("executionTimeout=" + executionTimeout).add("executionTimeoutUnit=" + executionTimeoutUnit)
+                .add("created=" + created).toString();
     }
 }

@@ -494,6 +494,7 @@ type Job {
 
 enum JobStatus {
     ERROR,
+    RUNNING,
     EXECUTED,
     SCHEDULED,
     RETRY,

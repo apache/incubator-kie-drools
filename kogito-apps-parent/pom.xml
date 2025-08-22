@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
 
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
@@ -18,13 +17,8 @@
     specific language governing permissions and limitations
     under the License.
 
--->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-build-parent</artifactId>
@@ -33,10 +27,8 @@
   </parent>
   <artifactId>kogito-apps</artifactId>
   <packaging>pom</packaging>
-
   <name>Kogito Apps</name>
   <description>Kogito Apps</description>
-
   <organization>
     <name>The Apache Software Foundation</name>
     <url>https://apache.org/</url>
@@ -48,7 +40,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <scm>
     <connection>scm:git:https://github.com/apache/incubator-kie-kogito-apps.git</connection>
     <developerConnection>scm:git:https://github.com/apache/incubator-kie-kogito-apps.git</developerConnection>
@@ -63,7 +54,6 @@
       <organizationUrl>http://apache.org/</organizationUrl>
     </developer>
   </developers>
-
   <mailingLists>
     <mailingList>
       <name>Development List</name>
@@ -87,12 +77,10 @@
       <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
     </mailingList>
   </mailingLists>
-
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
   </properties>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -108,7 +96,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <repositories>
     <!-- useful to resolve parent pom when it is a SNAPSHOT -->
     <repository>
@@ -120,7 +107,6 @@
       <url>https://repository.apache.org/snapshots</url>
     </repository>
   </repositories>
-
   <modules>
     <module>kogito-apps-bom</module>
     <module>kogito-apps-build-parent</module>
@@ -132,8 +118,8 @@
     <module>explainability</module>
     <module>trusty</module>
     <module>jitexecutor</module>
+    <module>jobs</module>
   </modules>
-
   <profiles>
     <profile>
       <id>allSubmodules</id>
@@ -187,15 +173,6 @@
                 <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
                      execution is enabled (by specifying a phase) for full profile builds. -->
                 <phase>validate</phase>
-              </execution>
-              <execution>
-                <id>compare</id>
-                <goals>
-                  <goal>compare</goal>
-                </goals>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
-                     execution is enabled (by specifying a phase) for full profile builds. -->
-                <phase>install</phase>
               </execution>
             </executions>
           </plugin>

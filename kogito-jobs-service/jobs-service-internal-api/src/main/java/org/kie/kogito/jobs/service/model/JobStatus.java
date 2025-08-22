@@ -19,9 +19,20 @@
 package org.kie.kogito.jobs.service.model;
 
 public enum JobStatus {
-    ERROR, //final
-    EXECUTED, //final
-    SCHEDULED, //active
-    RETRY, //active
-    CANCELED//final
+    ERROR(false), //final
+    RUNNING(false),
+    EXECUTED(true), //final
+    SCHEDULED(false), //active
+    RETRY(false), //active
+    CANCELED(true); //final
+
+    private boolean finalStatus;
+
+    JobStatus(boolean finalStatus) {
+        this.finalStatus = finalStatus;
+    }
+
+    public boolean isFinalStatus() {
+        return finalStatus;
+    }
 }

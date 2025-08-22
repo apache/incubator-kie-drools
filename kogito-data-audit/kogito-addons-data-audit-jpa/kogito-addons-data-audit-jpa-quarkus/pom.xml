@@ -28,9 +28,7 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-data-audit-jpa</artifactId>
-
     <name>Kogito Apps :: Data Audit :: JPA :: Quarkus</name>
 
 
