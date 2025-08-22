@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.timer.impl;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -368,5 +369,11 @@ public class CronTrigger
                 this.nextFireTime = getTimeAfter(this.nextFireTime);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CronTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime="
+                + nextFireTime + ", cronEx=" + cronEx + ", calendarNames=" + Arrays.toString(calendarNames) + ", calendars=" + calendars + "]";
     }
 }

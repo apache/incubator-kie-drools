@@ -101,4 +101,10 @@ public class DefaultTimerJobInstance
     public JobContext getJobContext() {
         return ctx;
     }
+
+    @Override
+    public String toString() {
+        return "DefaultTimerJobInstance [trigger=" + trigger + "]";
+    }
+
 }

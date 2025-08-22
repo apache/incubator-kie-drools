@@ -286,4 +286,9 @@ public class SimpleTimerTrigger implements Trigger {
     private long getPeriodInMillis() {
         return periodUnit.getDuration().multipliedBy(period).toMillis();
     }
+
+    @Override
+    public String toString() {
+        return "SimpleTimerTrigger [startTime=" + startTime + ", period=" + period + ", periodUnit=" + periodUnit + ", repeatCount=" + repeatCount + ", endTime=" + endTime + "]";
+    }
 }
