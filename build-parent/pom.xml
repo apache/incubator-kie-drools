@@ -182,7 +182,7 @@
     <!-- replaces findbugs-maven-plugin -->
     <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
 
-    <maven.min.version>3.8.1</maven.min.version>
+    <version.maven.min>3.8.1</version.maven.min>
     <!-- property for productisation to know the last released version -->
     <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
@@ -221,7 +221,7 @@
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+    <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
   </properties>
 
@@ -1900,9 +1900,16 @@
           <version>${version.com.github.eirslett}</version>
         </plugin>
         <plugin>
-          <groupId>com.societegenerale.commons</groupId>
-          <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
+        <groupId>com.societegenerale.commons</groupId>
+        <artifactId>arch-unit-maven-plugin</artifactId>
+        <version>${version.archunit.maven.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>arch-test</goal>
+            </goals>
+          </execution>
+        </executions>
         </plugin>
         <plugin>
           <groupId>io.github.download-maven-plugin</groupId>
@@ -2404,6 +2411,18 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>archunit-java17</id>
+      <activation>
+        <jdk>[17,21)</jdk>
+      </activation>
+      <properties>
+        <version.archunit.maven.plugin>2.9.1</version.archunit.maven.plugin>
+        <version.archunit.junit5>1.2.0</version.archunit.junit5>
+      </properties>
+    </profile>
+
   </profiles>
 
 </project>
