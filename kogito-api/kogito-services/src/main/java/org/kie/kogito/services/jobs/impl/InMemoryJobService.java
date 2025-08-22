@@ -115,6 +115,8 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     }
 
     public void clearJobExecutorFactories() {
+        scheduledJobs.values().forEach(v -> v.cancel(true));
+        scheduledJobs.clear();
         jobExecutorFactories.clear();
     }
 }

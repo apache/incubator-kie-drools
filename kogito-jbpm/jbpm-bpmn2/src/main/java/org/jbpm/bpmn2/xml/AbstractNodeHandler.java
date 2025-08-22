@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 
@@ -614,19 +613,21 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 language = element.getAttribute("language");
             }
             String source = from.get().getTextContent();
+            String sourceId = from.get().getAttribute("id");
             String target = to.get().getTextContent();
+            String targetId = to.get().getAttribute("id");
             if (!language.isEmpty()) {
-                assignments.add(new Assignment(language, toDataExpression(source), toDataExpression(target)));
+                assignments.add(new Assignment(language, toDataExpression(sourceId, source), toDataExpression(targetId, target)));
             } else {
                 source = cleanUp(source);
                 target = cleanUp(target);
-                DataDefinition sourceDataSpec = isExpr(source) ? toDataExpression(source) : sourceResolver.apply(source);
+                DataDefinition sourceDataSpec = isExpr(source) ? toDataExpression(sourceId, source) : sourceResolver.apply(source);
                 if (sourceDataSpec == null) {
-                    sourceDataSpec = toDataExpression(source); // it is constant source
+                    sourceDataSpec = toDataExpression(sourceId, source); // it is constant source
                 }
-                DataDefinition targetDataSpec = isExpr(target) ? toDataExpression(target) : targetResolver.apply(target);
+                DataDefinition targetDataSpec = isExpr(target) ? toDataExpression(targetId, target) : targetResolver.apply(target);
                 if (targetDataSpec == null) {
-                    targetDataSpec = toDataExpression(target);
+                    targetDataSpec = toDataExpression(targetId, target);
                 }
                 logger.debug("No language set for assignment {} to {}. Applying heuristics", sourceDataSpec, targetDataSpec);
                 assignments.add(new Assignment(language.isEmpty() ? null : language, sourceDataSpec, targetDataSpec));
@@ -648,8 +649,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return temp.contains(".") ? expression : temp;
     }
 
-    private DataDefinition toDataExpression(String expression) {
-        DataDefinition dataSpec = new DataDefinition(UUID.randomUUID().toString(), "EXPRESSION (" + expression + ")", (String) null);
+    private DataDefinition toDataExpression(String id, String expression) {
+        DataDefinition dataSpec = new DataDefinition(id, "EXPRESSION (" + expression + ")", (String) null);
         dataSpec.setExpression(expression);
         return dataSpec;
     }

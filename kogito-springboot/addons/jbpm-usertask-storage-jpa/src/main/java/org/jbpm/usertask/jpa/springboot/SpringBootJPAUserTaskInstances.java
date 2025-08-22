@@ -18,8 +18,10 @@
  */
 
 package org.jbpm.usertask.jpa.springboot;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.jbpm.usertask.jpa.JPAUserTaskInstances;
 import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
