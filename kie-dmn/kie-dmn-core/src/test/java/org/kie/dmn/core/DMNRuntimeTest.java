@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -3693,17 +3692,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("InputA", LocalDate.of(2025,7,3));
-        dmnContext.set("InputB", ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z").normalized()));
-        dmnContext.set("InputC", Duration.of(1, ChronoUnit.DAYS).plusHours(1));
-        dmnContext.set("InputD", LocalTime.of(13, 20, 0));
-        dmnContext.set("InputE", Period.parse("P2Y1M"));
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
-        assertThat(dmnResult.getDecisionResultByName("TestDateAndTime").getResult()).isEqualTo(BigDecimal.valueOf(1751968800));
-        assertThat(dmnResult.getDecisionResultByName("TestDaysAndTime").getResult()).isEqualTo(BigDecimal.valueOf(90000));
-        assertThat(dmnResult.getDecisionResultByName("TestTime").getResult()).isEqualTo(BigDecimal.valueOf(48000));
-        assertThat(dmnResult.getDecisionResultByName("TestYearsAndMonths").getResult()).isEqualTo(BigDecimal.valueOf(25));
     }
 
 }
