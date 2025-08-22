@@ -20,6 +20,7 @@ package org.drools.core.concurrent;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -33,9 +34,12 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
 
     private boolean haltEvaluation;
 
-    public AbstractGroupEvaluator(ActivationsManager activationsManager) {
+	protected final ReteEvaluator reteEvaluator;
+
+    public AbstractGroupEvaluator(ActivationsManager activationsManager, ReteEvaluator reteEvaluator) {
         this.activationsManager = activationsManager;
-        this.sequential = activationsManager.getReteEvaluator().getKnowledgeBase().getRuleBaseConfiguration().isSequential();
+		this.reteEvaluator = reteEvaluator;
+        this.sequential = reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().isSequential();
         this.knowledgeHelper = newKnowledgeHelper();
     }
 
@@ -45,7 +49,7 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
         int loopFireCount = 0;
         while (item != null && !haltEvaluation && (fireLimit < 0 || (fireCount + loopFireCount) < fireLimit)) {
             activationsManager.evaluateQueriesForRule( item );
-            loopFireCount += item.getRuleExecutor().evaluateNetworkAndFire(activationsManager, filter, fireCount, fireLimit);
+            loopFireCount += item.getRuleExecutor().evaluateNetworkAndFire(activationsManager, reteEvaluator, filter, fireCount, fireLimit);
             activationsManager.flushPropagations();
             item = nextActivation(group);
         }
@@ -53,7 +57,7 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
     }
 
     private KnowledgeHelper newKnowledgeHelper() {
-        return activationsManager.getReteEvaluator().createKnowledgeHelper();
+        return reteEvaluator.createKnowledgeHelper();
     }
 
     private RuleAgendaItem nextActivation(InternalAgendaGroup group) {

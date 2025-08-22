@@ -125,16 +125,13 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
     }
 
     public void doLinkRule(ReteEvaluator reteEvaluator) {
-        doLinkRule( getActualActivationsManager( reteEvaluator ) );
-    }
-
-    public void doLinkRule(ActivationsManager activationsManager) {
-        TerminalNode rtn = ensureAgendaItemCreated(activationsManager);
-        if (isLogTraceEnabled) {
-            log.trace(" LinkRule name={}", rtn.getRule().getName());
-        }
-
-        queueRuleAgendaItem(activationsManager);
+        ActivationsManager activationsManager = getActualActivationsManager( reteEvaluator );
+		TerminalNode rtn = ensureAgendaItemCreated(activationsManager);
+		if (isLogTraceEnabled) {
+		    log.trace(" LinkRule name={}", rtn.getRule().getName());
+		}
+		
+		queueRuleAgendaItem(activationsManager);
     }
 
     public void doUnlinkRule(ReteEvaluator reteEvaluator) {

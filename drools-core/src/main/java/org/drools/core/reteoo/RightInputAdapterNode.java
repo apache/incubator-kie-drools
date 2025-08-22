@@ -29,8 +29,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;
@@ -322,11 +320,6 @@ public class RightInputAdapterNode extends ObjectSource
         @Override
         public void doLinkRule(ReteEvaluator reteEvaluator) {
             getRightInputAdapterNode().getObjectSinkPropagator().doLinkRiaNode( reteEvaluator );
-        }
-
-        @Override
-        public void doLinkRule(ActivationsManager activationsManager) {
-            doLinkRule(activationsManager.getReteEvaluator());
         }
 
         @Override

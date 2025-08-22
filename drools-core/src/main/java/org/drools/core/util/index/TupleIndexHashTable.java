@@ -150,7 +150,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
 
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        tuple = (TupleImpl) list.getFirst();
+                        tuple = list.getFirst();
                         return tuple;
                     }
                 }
@@ -164,7 +164,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        tuple = (TupleImpl) list.getFirst();
+                        tuple = list.getFirst();
                         return tuple;
                     }
                 }
@@ -223,7 +223,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                 while ( this.list == null ) {
                     if ( this.row < length ) {
                         // iterate while there is no current bucket, trying each array position
-                        this.list = (TupleList) this.table[this.row];
+                        this.list = this.table[this.row];
                         this.row++;
                     } else {
                         // we've scanned the whole table and nothing is left, so return null

@@ -46,7 +46,6 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
-import org.drools.core.util.TupleRBTree.Node;
 import org.kie.api.definition.rule.Rule;
 
 /**

@@ -45,25 +45,27 @@ import org.kie.api.event.rule.MatchCancelledCause;
 */
 public class PhreakRuleTerminalNode {
     public void doNode(TerminalNode rtnNode,
+                       ReteEvaluator reteEvaluator,
                        ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        RuleExecutor executor) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(activationsManager, srcLeftTuples, executor);
+            doLeftDeletes(reteEvaluator, activationsManager, srcLeftTuples, executor);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(rtnNode, activationsManager, srcLeftTuples, executor);
+            doLeftUpdates(rtnNode, reteEvaluator, activationsManager, srcLeftTuples, executor);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(rtnNode, activationsManager, srcLeftTuples, executor);
+            doLeftInserts(rtnNode, reteEvaluator, activationsManager, srcLeftTuples, executor);
         }
 
         srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(TerminalNode rtnNode,
+                              ReteEvaluator reteEvaluator, 
                               ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               RuleExecutor executor) {
@@ -76,7 +78,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(rtnNode, executor, activationsManager, reteEvaluator, ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -93,9 +95,10 @@ public class PhreakRuleTerminalNode {
                ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
     }
     public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
+                                         ActivationsManager activationsManager, 
+                                         ReteEvaluator reteEvaluator,
+                                         RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addActiveTuple(leftTuple);
             return;
@@ -115,7 +118,7 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.createAgendaItem( leftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
+        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, reteEvaluator);
 
         if ( rtnNode.getRule().isLockOnActive() && pctx.getType() != PropagationContext.Type.RULE_ADDITION ) {
             pctx = leftTuple.findMostRecentPropagationContext();
@@ -155,6 +158,7 @@ public class PhreakRuleTerminalNode {
     }
 
     public void doLeftUpdates(TerminalNode rtnNode,
+                              ReteEvaluator reteEvaluator, 
                               ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               RuleExecutor executor) {
@@ -166,7 +170,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleUpdate(rtnNode, executor, activationsManager, leftTuple);
+            doLeftTupleUpdate(rtnNode, executor, reteEvaluator, activationsManager, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -174,8 +178,9 @@ public class PhreakRuleTerminalNode {
     }
 
     public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
+                                         ReteEvaluator reteEvaluator,
+                                         ActivationsManager activationsManager, 
+                                         RuleTerminalNodeLeftTuple leftTuple) {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
@@ -248,7 +253,7 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    public void doLeftDeletes(ActivationsManager activationsManager,
+    public void doLeftDeletes(ReteEvaluator reteEvaluator, ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               RuleExecutor executor) {
 

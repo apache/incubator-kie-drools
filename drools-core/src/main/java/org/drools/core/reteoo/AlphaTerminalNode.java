@@ -54,7 +54,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 activationsManager.getAgendaGroupsManager().setFocus( agendaItem.getAgendaGroup() );
             }
 
-            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );
+            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, reteEvaluator, agendaItem, leftTuple );
         }
     }
 
@@ -76,7 +76,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, reteEvaluator, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
                     if (leftTuple.isFullMatch()) {
                         ((InternalMatch) leftTuple).setActive(true);
                     }
@@ -85,7 +85,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple = TupleFactory.createLeftTuple( rtn, factHandle, true );
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, reteEvaluator, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
                 }
             }
         }
@@ -105,7 +105,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, TerminalNode rtn, boolean linkPmem ) {
         PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
         if (linkPmem) {
-            pathMemory.doLinkRule( activationsManager );
+            pathMemory.doLinkRule( reteEvaluator );
         }
         return pathMemory.getRuleAgendaItem();
     }

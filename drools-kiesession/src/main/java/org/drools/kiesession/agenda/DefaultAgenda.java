@@ -161,8 +161,8 @@ public class DefaultAgenda implements InternalAgenda {
 
          // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
          this.groupEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
-                 new ParallelGroupEvaluator( this ) :
-                 new SequentialGroupEvaluator( this );
+                 new ParallelGroupEvaluator( this, workingMemory ) :
+                 new SequentialGroupEvaluator( this, workingMemory );
 
         this.propagationList = createPropagationList();
     }
@@ -243,7 +243,7 @@ public class DefaultAgenda implements InternalAgenda {
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove(item.getRule() );
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from query evaluation list.", item.getRule().getName() );
         }
@@ -283,7 +283,7 @@ public class DefaultAgenda implements InternalAgenda {
         for ( RuleAgendaItem item : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
             // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
             RuleExecutor ruleExecutor = item.getRuleExecutor();
-            ruleExecutor.evaluateNetwork(this);
+            ruleExecutor.evaluateNetwork(workingMemory, this);
             TupleList list = ruleExecutor.getActiveMatches();
             for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
                 if ( ruleName.equals( lt.getRule().getName() ) && ( lt.checkProcessInstance( workingMemory, processInstanceId ) )) {
@@ -337,11 +337,6 @@ public class DefaultAgenda implements InternalAgenda {
         InternalAgendaGroup agendaGroup = getAgendaGroupsManager().getAgendaGroup( name );
         agendaGroup.setAutoFocusActivator( ctx );
         return getAgendaGroupsManager().setFocus( agendaGroup );
-    }
-
-    @Override
-    public ReteEvaluator getReteEvaluator() {
-        return this.workingMemory;
     }
 
     @Override
@@ -500,7 +495,7 @@ public class DefaultAgenda implements InternalAgenda {
             RuleAgendaItem item = eager.removeFirst();
             if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
                 evaluateQueriesForRule( item );
-                item.getRuleExecutor().evaluateNetwork( this );
+                item.getRuleExecutor().evaluateNetwork(workingMemory, this );
             }
         }
     }
@@ -511,7 +506,7 @@ public class DefaultAgenda implements InternalAgenda {
             for (QueryImpl query : rule.getDependingQueries()) {
                 RuleAgendaItem queryAgendaItem = queries.remove(query);
                 if (queryAgendaItem != null) {
-                    queryAgendaItem.getRuleExecutor().evaluateNetwork(this);
+                    queryAgendaItem.getRuleExecutor().evaluateNetwork(workingMemory, this);
                 }
             }
         }

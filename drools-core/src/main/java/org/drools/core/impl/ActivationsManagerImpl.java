@@ -86,15 +86,10 @@ public class ActivationsManagerImpl implements ActivationsManager {
         this.reteEvaluator = reteEvaluator;
         this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(reteEvaluator);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
-        this.groupEvaluator = new SequentialGroupEvaluator( this );
+        this.groupEvaluator = new SequentialGroupEvaluator( this, reteEvaluator );
         if (reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }
-    }
-
-    @Override
-    public ReteEvaluator getReteEvaluator() {
-        return reteEvaluator;
     }
 
     @Override
@@ -136,7 +131,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove(item.getRule() );
     }
 
     @Override
@@ -237,7 +232,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
                 evaluateQueriesForRule( item );
                 RuleExecutor ruleExecutor = item.getRuleExecutor();
-                ruleExecutor.evaluateNetwork( this );
+                ruleExecutor.evaluateNetwork( reteEvaluator, this );
             }
         }
     }
@@ -249,7 +244,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             for (QueryImpl query : rule.getDependingQueries()) {
                 RuleAgendaItem queryAgendaItem = queries.remove(query);
                 if (queryAgendaItem != null) {
-                    queryAgendaItem.getRuleExecutor().evaluateNetwork(this);
+                    queryAgendaItem.getRuleExecutor().evaluateNetwork(reteEvaluator, this);
                 }
             }
         }

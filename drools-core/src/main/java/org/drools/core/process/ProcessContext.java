@@ -18,8 +18,6 @@
  */
 package org.drools.core.process;
 
-import java.util.Collection;
-
 import org.kie.api.runtime.KieRuntime;
 
 public class ProcessContext extends AbstractProcessContext {

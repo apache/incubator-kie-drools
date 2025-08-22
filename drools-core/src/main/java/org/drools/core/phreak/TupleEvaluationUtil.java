@@ -34,7 +34,6 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.LinkedList;
 
@@ -130,7 +129,7 @@ public class TupleEvaluationUtil {
                 reteEvaluator.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
-        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, activationsManager,
+        RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, reteEvaluator, activationsManager,
                 new LinkedList<>(),
                 true, rtnPmem.getOrCreateRuleAgendaItem(activationsManager).getRuleExecutor());
     }
