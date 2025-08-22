@@ -59,7 +59,7 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
-        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@try-nodejs-env-change
         env:
           BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
           MAVEN_OPTS: "-Dfile.encoding=UTF-8"
