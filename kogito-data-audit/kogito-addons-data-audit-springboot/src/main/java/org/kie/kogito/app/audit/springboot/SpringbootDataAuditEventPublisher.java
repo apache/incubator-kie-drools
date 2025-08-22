@@ -65,7 +65,7 @@ public class SpringbootDataAuditEventPublisher implements EventPublisher {
             proxy.storeUserTaskInstanceDataEvent(dataAuditContextFactory.newDataAuditContext(), (UserTaskInstanceDataEvent<?>) event);
             return;
         } else if (event instanceof JobInstanceDataEvent) {
-            LOGGER.info("Processing job instance event {}", event);
+            LOGGER.debug("Processing job instance event {}", event);
             proxy.storeJobDataEvent(dataAuditContextFactory.newDataAuditContext(), (JobInstanceDataEvent) event);
             return;
         }
