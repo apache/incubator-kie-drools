@@ -51,18 +51,21 @@ public class QuarkusDataIndexClient implements DataIndexClient {
     private Vertx vertx;
     private WebClient client;
     private String dataIndexHttpURL;
+    private String rootPath;
 
     @Inject
     public QuarkusDataIndexClient(@ConfigProperty(name = "kogito.dataindex.http.url", defaultValue = "http://localhost:8180") String dataIndexHttpURL,
+            @ConfigProperty(name = "quarkus.http.root-path", defaultValue = "") String rootPath,
             Vertx vertx) {
         this.dataIndexHttpURL = dataIndexHttpURL;
         this.vertx = vertx;
+        this.rootPath = sanitizeRootPath(rootPath);
     }
 
     @PostConstruct
     protected void setup() throws MalformedURLException {
         client = WebClient.create(vertx, getWebClientToURLOptions(this.dataIndexHttpURL));
-        LOGGER.debug("Creating new instance of web client");
+        LOGGER.debug("Creating new instance of web client with url {} and rootPath {}", dataIndexHttpURL, rootPath);
     }
 
     protected WebClientOptions getWebClientToURLOptions(String targetHttpURL) throws MalformedURLException {
@@ -76,7 +79,7 @@ public class QuarkusDataIndexClient implements DataIndexClient {
     @Override
     public List<NodeInstance> getNodeInstancesFromProcessInstance(String processInstanceId, String authHeader) {
         String query = getNodeInstancesQuery(processInstanceId);
-        Future<List<NodeInstance>> future = client.post("/graphql")
+        Future<List<NodeInstance>> future = client.post(this.rootPath + "/graphql")
                 .putHeader("Authorization", authHeader)
                 .putHeader("content-type", "application/json")
                 .sendJson(JsonObject.mapFrom(singletonMap("query", query)))
@@ -109,4 +112,19 @@ public class QuarkusDataIndexClient implements DataIndexClient {
         }
     }
 
+    private String sanitizeRootPath(String rootPath) {
+        String sanitizedRootPath = rootPath;
+        if (rootPath != null) {
+            // remove empty root path
+            if (rootPath == "/") {
+                sanitizedRootPath = "";
+            }
+            // make sure the root path starts with /
+            if (rootPath.indexOf("/") < 0) {
+                sanitizedRootPath = "/" + rootPath;
+            }
+        }
+        LOGGER.debug("sanitizedRootPath {}", sanitizedRootPath);
+        return sanitizedRootPath;
+    }
 }

@@ -56,7 +56,7 @@ public class QuarkusDataIndexClientTest {
             "  }\n" +
             "}";
 
-    QuarkusDataIndexClient client = new QuarkusDataIndexClient(null, null);
+    QuarkusDataIndexClient client = new QuarkusDataIndexClient(null, null, null);
 
     @Test
     public void testGetNodeInstancesFromResponse() {
@@ -81,7 +81,7 @@ public class QuarkusDataIndexClientTest {
 
     @Test
     public void testSetupMalformedURL() {
-        QuarkusDataIndexClient testClient = new QuarkusDataIndexClient("malformedURL", null);
+        QuarkusDataIndexClient testClient = new QuarkusDataIndexClient("malformedURL", null, null);
         assertThrows(MalformedURLException.class, () -> testClient.setup());
     }
 
