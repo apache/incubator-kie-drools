@@ -19,7 +19,13 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -479,6 +485,41 @@ public class FEELCompilerTest {
         assertThat(result).isEqualTo(BigDecimal.valueOf(2016));
     }
 
-    
+    @Test
+    void testValueProperty() {
+        String input1 = "date.value";
+        String input2 = "time.value";
+        String input3 = "dateAndTime.value";
+        String input4 = "daysAndTime.value";
+        String input5 = "yearsAndMonths.value";
+        Type dateType = BuiltInType.DATE;
+        Type time = BuiltInType.TIME;
+        Type dateAndTime = BuiltInType.DATE_TIME;
+        Type daysAndTime = BuiltInType.DURATION;
+        Type yearsAndMonths = BuiltInType.DURATION;
+        CompiledFEELExpression qualRef1 = parseInterpreted(input1, mapOf(entry("date", dateType)));
+        CompiledFEELExpression qualRef2 = parseInterpreted(input2, mapOf(entry("time", time)));
+        CompiledFEELExpression qualRef3 = parseInterpreted(input3, mapOf(entry("dateAndTime", dateAndTime)));
+        CompiledFEELExpression qualRef4 = parseInterpreted(input4, mapOf(entry("daysAndTime", daysAndTime)));
+        CompiledFEELExpression qualRef5 = parseInterpreted(input5, mapOf(entry("yearsAndMonths", yearsAndMonths)));
+
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
+        context.setValue("date", LocalDate.of(2025, 7, 3));
+        context.setValue("time", LocalTime.of(13, 20, 0));
+        context.setValue("dateAndTime", ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z")));
+        context.setValue("daysAndTime", Duration.of(1, ChronoUnit.DAYS).plusHours(1));
+        context.setValue("yearsAndMonths", Period.parse("P2Y1M"));
+        Object result1 = qualRef1.apply(context);
+        Object result2 = qualRef2.apply(context);
+        Object result3 = qualRef3.apply(context);
+        Object result4 = qualRef4.apply(context);
+        Object result5 = qualRef5.apply(context);
+
+        assertThat(result1).isEqualTo(BigDecimal.valueOf(1751500800));
+        assertThat(result2).isEqualTo(BigDecimal.valueOf(48000));
+        assertThat(result3).isEqualTo(BigDecimal.valueOf(1751968800));
+        assertThat(result4).isEqualTo(BigDecimal.valueOf(90000));
+        assertThat(result5).isEqualTo(BigDecimal.valueOf(25));
+    }
 
 }
