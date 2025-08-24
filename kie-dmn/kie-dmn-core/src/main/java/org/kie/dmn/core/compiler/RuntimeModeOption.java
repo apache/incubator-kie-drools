@@ -19,6 +19,8 @@
 package org.kie.dmn.core.compiler;
 
 import java.io.Serial;
+import java.util.Arrays;
+
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 
 public class RuntimeModeOption implements DMNOption {
@@ -41,6 +43,13 @@ public class RuntimeModeOption implements DMNOption {
         public String getMode() {
             return mode;
         }
+
+        public static MODE getModeFromString(String modeName) {
+            return Arrays.stream(MODE.values())
+                    .filter(value -> value.mode.equals(modeName))
+                    .findFirst().orElse(MODE.LENIENT);
+        }
+
     }
 
     /**
@@ -51,13 +60,7 @@ public class RuntimeModeOption implements DMNOption {
     private final MODE runtimeMode;
 
     public RuntimeModeOption(String runtimeMode) {
-        MODE toSet = null;
-        try {
-            toSet = MODE.valueOf(runtimeMode);
-        } catch (Exception e) {
-            toSet = DEFAULT_VALUE;
-        }
-        this.runtimeMode = toSet;
+        this.runtimeMode = MODE.getModeFromString(runtimeMode);
     }
 
     public RuntimeModeOption(MODE runtimeMode) {
