@@ -29,12 +29,19 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
+import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler.FilterableNodeSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.SetCollectorActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.SetExpressionActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.SetValueActionSupplier;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.OnEvents;
+import io.serverlessworkflow.api.filters.EventDataFilter;
 import io.serverlessworkflow.api.states.EventState;
 
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.startMessageNode;
 
 public class EventHandler extends CompositeContextNodeHandler<EventState> {
@@ -58,6 +65,36 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
                     embeddedContainer.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
             handleErrors(factory, embeddedContainer);
             return new MakeNodeResult(embeddedContainer);
+        }
+    }
+
+    @Override
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, EventDataFilter eventFilter, String varName,
+            FilterableNodeSupplier nodeSupplier) {
+        if (isStartState) {
+            NodeFactory<?, ?> startNode = nodeSupplier.apply(embeddedSubProcess, DEFAULT_WORKFLOW_VAR, varName);
+            NodeFactory<?, ?> currentNode = startNode;
+            if (eventFilter != null) {
+                if (!eventFilter.isUseData()) {
+                    currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
+                            .action(new SetValueActionSupplier(DEFAULT_WORKFLOW_VAR, ObjectMapperFactory.get().createObjectNode())));
+                } else {
+                    String dataExpr = eventFilter.getData();
+                    if (dataExpr != null) {
+                        currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
+                                .action(new SetExpressionActionSupplier(workflow.getExpressionLang(), dataExpr, DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR)));
+                    }
+
+                    String toStateExpr = eventFilter.getToStateData();
+                    if (toStateExpr != null) {
+                        currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
+                                .action(new SetCollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR)));
+                    }
+                }
+            }
+            return new MakeNodeResult(startNode, currentNode);
+        } else {
+            return super.filterAndMergeNode(embeddedSubProcess, eventFilter, varName, nodeSupplier);
         }
     }
 

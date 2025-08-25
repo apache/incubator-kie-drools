@@ -19,18 +19,23 @@
 package org.kie.kogito.serverless.workflow.actions;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
-public class CollectorAction extends BaseExpressionAction {
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class SetCollectorAction extends BaseExpressionAction {
 
     private String outputVar;
 
-    public CollectorAction(String lang, String expr, String modelVar, String outputVar) {
+    public SetCollectorAction(String lang, String expr, String modelVar, String outputVar) {
         super(lang, expr, modelVar);
         this.outputVar = outputVar;
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        expr.assign(ActionUtils.getJsonNode(context, modelVar), ActionUtils.getJsonNode(context, outputVar), context);
+        JsonNode node = ObjectMapperFactory.listenerAware().createObjectNode();
+        expr.assign(node, ActionUtils.getJsonNode(context, outputVar), context);
+        context.setVariable(modelVar, node);
     }
 }

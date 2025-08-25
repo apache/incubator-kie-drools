@@ -68,12 +68,12 @@ public class NodeFactoryUtils {
                 .defaultContext(variableScope);
     }
 
-    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(NodeFactory<T, P> actionNode,
+    public static NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode,
             EventDefinition eventDefinition, String inputVar) {
         return sendEventNode(actionNode, eventDefinition.getName(), eventDefinition.getType(), inputVar);
     }
 
-    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(NodeFactory<T, P> actionNode, String name,
+    public static NodeFactory<?, ?> sendEventNode(NodeFactory<?, ?> actionNode, String name,
             String type, String inputVar) {
         return actionNode
                 .name(name)

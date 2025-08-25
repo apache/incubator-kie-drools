@@ -32,6 +32,7 @@ import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -115,6 +116,22 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
         if (kafkaClient != null) {
             kafkaClient.shutdown();
         }
+    }
+
+    @Test
+    void helloWorldEvent() throws JsonProcessingException, InterruptedException {
+        final String startTopic = "start_event";
+        final String endTopic = "exit_event";
+        String ce = objectMapper.writeValueAsString(CloudEventBuilder.v1()
+                .withId(UUID.randomUUID().toString())
+                .withSource(URI.create(""))
+                .withType(startTopic)
+                .withTime(OffsetDateTime.now())
+                .withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("name", "Javierito")))
+                .build());
+        kafkaClient.produce(ce, startTopic);
+        JsonPath jsonPath = waitForEvent(endTopic, endTopic, 1000L);
+        assertThat(jsonPath.getString("data.originalMessage.name")).isEqualTo("Javierito");
     }
 
     @Test
@@ -252,7 +269,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
         assertDecisionEvent(result, processInstanceId, expectedDecisionEventType, expectedDecision);
     }
 
-    protected JsonPath waitForEvent(String topic, String eventType, long seconds) throws Exception {
+    protected JsonPath waitForEvent(String topic, String eventType, long seconds) throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final AtomicReference<String> cloudEvent = new AtomicReference<>();
         kafkaClient.consume(topic, rawCloudEvent -> {

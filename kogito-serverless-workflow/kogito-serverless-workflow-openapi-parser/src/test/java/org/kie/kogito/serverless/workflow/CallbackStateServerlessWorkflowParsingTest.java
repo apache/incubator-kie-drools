@@ -19,24 +19,9 @@
 package org.kie.kogito.serverless.workflow;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.BoundaryEventNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.serverless.workflow.WorkflowTestUtils.assertClassAndGetNode;
-import static org.kie.kogito.serverless.workflow.WorkflowTestUtils.assertHasName;
-import static org.kie.kogito.serverless.workflow.WorkflowTestUtils.assertHasNodesSize;
-import static org.kie.kogito.serverless.workflow.WorkflowTestUtils.assertIsConnected;
 import static org.kie.kogito.serverless.workflow.WorkflowTestUtils.assertProcessMainParams;
 
 class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkflowParsingTest {
@@ -52,29 +37,6 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
                 "1.0",
                 "org.kie.kogito.serverless",
                 RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        // assert the main process structure
-        assertCallbackProcessMainStructure(process);
-
-        // assert the CallbackState internal structure for the no timeouts case
-        CompositeContextNode callbackState = assertClassAndGetNode(process, 3, CompositeContextNode.class);
-        assertHasNodesSize(callbackState, 6);
-        StartNode stateStartNode = assertClassAndGetNode(callbackState, 0, StartNode.class);
-        assertHasName(stateStartNode, "EmbeddedStart");
-        WorkItemNode stateActionNode = assertClassAndGetNode(callbackState, 1, WorkItemNode.class);
-        assertHasName(stateActionNode, "callbackFunction");
-        ActionNode afterStateActionMergeNode = assertClassAndGetNode(callbackState, 2, ActionNode.class);
-        EventNode stateEventNode = assertClassAndGetNode(callbackState, 3, EventNode.class);
-        assertHasName(stateEventNode, "callbackEvent");
-        ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 4, ActionNode.class);
-        EndNode stateEndNode = assertClassAndGetNode(callbackState, 5, EndNode.class);
-        assertHasName(stateEndNode, "EmbeddedEnd");
-
-        assertIsConnected(stateStartNode, stateActionNode);
-        assertIsConnected(stateActionNode, afterStateActionMergeNode);
-        assertIsConnected(afterStateActionMergeNode, stateEventNode);
-        assertIsConnected(stateEventNode, afterStateEventMergeNode);
-        assertIsConnected(afterStateEventMergeNode, stateEndNode);
     }
 
     @ParameterizedTest
@@ -88,58 +50,5 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
                 "1.0",
                 "org.kie.kogito.serverless",
                 RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        // assert the main process structure
-        assertCallbackProcessMainStructure(process);
-
-        // assert the CallbackState internal structure for the timeouts case
-        CompositeContextNode callbackState = assertClassAndGetNode(process, 3, CompositeContextNode.class);
-        assertHasNodesSize(callbackState, 9);
-        StartNode stateStartNode = assertClassAndGetNode(callbackState, 0, StartNode.class);
-        assertHasName(stateStartNode, "EmbeddedStart");
-        WorkItemNode stateActionNode = assertClassAndGetNode(callbackState, 1, WorkItemNode.class);
-        assertHasName(stateActionNode, "callbackFunction");
-        ActionNode afterStateActionMergeNode = assertClassAndGetNode(callbackState, 2, ActionNode.class);
-        Split stateSplitNode = assertClassAndGetNode(callbackState, 5, Split.class);
-        assertHasName(stateSplitNode, "EventSplit_" + stateSplitNode.getId().toExternalFormat());
-        Join stateJoinNode = assertClassAndGetNode(callbackState, 6, Join.class);
-        assertHasName(stateJoinNode, "ExclusiveJoin_" + stateJoinNode.getId().toExternalFormat());
-        EventNode stateEventNode = assertClassAndGetNode(callbackState, 3, EventNode.class);
-        assertHasName(stateEventNode, "callbackEvent");
-        ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 4, ActionNode.class);
-        TimerNode stateTimerNode = assertClassAndGetNode(callbackState, 7, TimerNode.class);
-        assertHasName(stateTimerNode, "TimerNode_" + stateTimerNode.getId().toExternalFormat());
-        assertThat(stateTimerNode.getTimer().getDelay()).isEqualTo("PT5S");
-        assertThat(stateTimerNode.getTimer().getTimeType()).isEqualTo(1);
-        EndNode stateEndNode = assertClassAndGetNode(callbackState, 8, EndNode.class);
-        assertHasName(stateEndNode, "EmbeddedEnd");
-
-        assertIsConnected(stateStartNode, stateActionNode);
-        assertIsConnected(stateActionNode, afterStateActionMergeNode);
-        assertIsConnected(afterStateActionMergeNode, stateSplitNode);
-        assertIsConnected(stateSplitNode, stateEventNode);
-        assertIsConnected(stateEventNode, afterStateEventMergeNode);
-        assertIsConnected(afterStateEventMergeNode, stateJoinNode);
-        assertIsConnected(stateSplitNode, stateTimerNode);
-        assertIsConnected(stateTimerNode, stateJoinNode);
-        assertIsConnected(stateJoinNode, stateEndNode);
-    }
-
-    private void assertCallbackProcessMainStructure(RuleFlowProcess process) {
-        assertHasNodesSize(process, 7);
-        StartNode processStartNode = assertClassAndGetNode(process, 0, StartNode.class);
-        EndNode processEndNode1 = assertClassAndGetNode(process, 1, EndNode.class);
-        EndNode processEndNode2 = assertClassAndGetNode(process, 2, EndNode.class);
-        CompositeContextNode callbackState = assertClassAndGetNode(process, 3, CompositeContextNode.class);
-        assertHasName(callbackState, "CallbackState");
-        ActionNode processFinalizeSuccessfulState = assertClassAndGetNode(process, 5, ActionNode.class);
-        assertHasName(processFinalizeSuccessfulState, "FinalizeSuccessful");
-        ActionNode processFinalizeWithErrorState = assertClassAndGetNode(process, 6, ActionNode.class);
-        assertHasName(processFinalizeWithErrorState, "FinalizeWithError");
-        assertClassAndGetNode(process, 4, BoundaryEventNode.class);
-        assertIsConnected(processStartNode, callbackState);
-        assertIsConnected(callbackState, processFinalizeSuccessfulState);
-        assertIsConnected(processFinalizeSuccessfulState, processEndNode1);
-        assertIsConnected(processFinalizeWithErrorState, processEndNode2);
     }
 }

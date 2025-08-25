@@ -42,7 +42,7 @@ import io.serverlessworkflow.api.functions.FunctionRef;
 
 public abstract class WorkItemBuilder {
 
-    protected <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addFunctionArgs(Workflow workflow, WorkItemNodeFactory<T> node, FunctionRef functionRef) {
+    protected WorkItemNodeFactory<?> addFunctionArgs(Workflow workflow, WorkItemNodeFactory<?> node, FunctionRef functionRef) {
         JsonNode functionArgs = functionRef.getArguments();
         if (functionArgs != null) {
             processArgs(workflow, node, functionArgs, SWFConstants.MODEL_WORKFLOW_VAR);

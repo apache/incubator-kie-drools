@@ -20,11 +20,11 @@ package org.kie.kogito.serverless.workflow.actions;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-public class CollectorAction extends BaseExpressionAction {
+public class AssignCollectorAction extends BaseExpressionAction {
 
     private String outputVar;
 
-    public CollectorAction(String lang, String expr, String modelVar, String outputVar) {
+    public AssignCollectorAction(String lang, String expr, String modelVar, String outputVar) {
         super(lang, expr, modelVar);
         this.outputVar = outputVar;
     }

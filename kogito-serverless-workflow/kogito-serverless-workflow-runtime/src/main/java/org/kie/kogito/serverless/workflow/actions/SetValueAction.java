@@ -18,19 +18,23 @@
  */
 package org.kie.kogito.serverless.workflow.actions;
 
+import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-public class CollectorAction extends BaseExpressionAction {
+import com.fasterxml.jackson.databind.JsonNode;
 
-    private String outputVar;
+public class SetValueAction implements Action {
 
-    public CollectorAction(String lang, String expr, String modelVar, String outputVar) {
-        super(lang, expr, modelVar);
-        this.outputVar = outputVar;
+    private final String varName;
+    private final JsonNode value;
+
+    public SetValueAction(String varName, JsonNode value) {
+        this.varName = varName;
+        this.value = value;
     }
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        expr.assign(ActionUtils.getJsonNode(context, modelVar), ActionUtils.getJsonNode(context, outputVar), context);
+        context.setVariable(varName, value);
     }
 }

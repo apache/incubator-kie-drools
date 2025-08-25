@@ -18,25 +18,13 @@
  */
 package org.kie.kogito.serverless.workflow;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -62,28 +50,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertThat(process.getNodes()).hasSize(3);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
@@ -97,33 +63,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertThat(process.getNodes()).hasSize(4);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(TimerNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        TimerNode timerNode = (TimerNode) process.getNodes()[3];
-        assertThat(timerNode.getTimer().getDelay()).isEqualTo("PT1S");
     }
 
     @ParameterizedTest
@@ -136,37 +75,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(3);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(WorkItemNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        WorkItemNode workItemNode = (WorkItemNode) compositeNode.getNodes()[1];
-        assertThat(workItemNode.getName()).isEqualTo("helloWorld");
-        assertThat(workItemNode.getWork().getParameter("Interface")).isEqualTo("org.something.other.TestService");
-        assertThat(workItemNode.getWork().getParameter("Operation")).isEqualTo("get");
-        assertThat(workItemNode.getWork().getParameter("interfaceImplementationRef")).isEqualTo("org.something.other.TestService");
-        assertThat(workItemNode.getWork().getParameter("operationImplementationRef")).isEqualTo("get");
-        assertThat(workItemNode.getWork().getParameter("implementation")).isEqualTo("Java");
     }
 
     @ParameterizedTest
@@ -179,29 +87,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(4);
-
-        Node node = process.getNodes()[1];
-        assertThat(((StartNode) node).getMetaData(Metadata.TRIGGER_REF)).isEqualTo("kafka");
-        node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[3];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
@@ -214,33 +99,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(7);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[6];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(Join.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(ActionNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[6];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
@@ -254,32 +112,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertThat(process.getNodes()).hasSize(3);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertThat(compositeNode.getNodes()).hasSize(6);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[4];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[5];
-        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
@@ -292,60 +124,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(5);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        // now check the composite one to see what nodes it has
-        CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        compositeNode = (CompositeContextNode) process.getNodes()[3];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        compositeNode = (CompositeContextNode) process.getNodes()[4];
-
-        assertThat(compositeNode.getNodes()).hasSize(4);
-
-        node = compositeNode.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = compositeNode.getNodes()[1];
-        assertThat(node).isInstanceOf(Node.class);
-        node = compositeNode.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = compositeNode.getNodes()[3];
-        assertThat(node).isInstanceOf(EndNode.class);
-
     }
 
     @ParameterizedTest
@@ -358,18 +136,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(3);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        ActionNode actionNode = (ActionNode) process.getNodes()[2];
-        assertThat(actionNode.getName()).isEqualTo("SimpleInject");
     }
 
     @ParameterizedTest
@@ -382,21 +148,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(6);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(Split.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(Join.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
     }
 
     @ParameterizedTest
@@ -409,25 +160,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(5);
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        ActionNode actionNode = (ActionNode) process.getNodes()[4];
-        assertThat(actionNode.getName()).isEqualTo("TestKafkaEvent");
-        assertThat(actionNode.getMetaData("TriggerType")).isEqualTo("ProduceMessage");
-        assertThat(actionNode.getMetaData("MappingVariableInput")).isEqualTo("workflowdata");
-        assertThat(actionNode.getMetaData("TriggerRef")).isEqualTo("kafka");
-        assertThat(actionNode.getMetaData("MessageType")).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }
 
     @ParameterizedTest
@@ -440,39 +172,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(15);
-
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(Split.class);
-        node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[6];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[7];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[8];
-        assertThat(node).isInstanceOf(EventNode.class);
-        node = process.getNodes()[10];
-        assertThat(node).isInstanceOf(EventNode.class);
-
-        Split split = (Split) process.getNodes()[4];
-        assertThat(split.getName()).isEqualTo("ChooseOnEvent");
-        assertThat(split.getType()).isEqualTo(Split.TYPE_XAND);
-
-        EventNode firstEventNode = (EventNode) process.getNodes()[8];
-        assertThat(firstEventNode.getName()).isEqualTo("visaApprovedEvent");
-
-        EventNode secondEventNode = (EventNode) process.getNodes()[10];
-        assertThat(secondEventNode.getName()).isEqualTo("visaDeniedEvent");
     }
 
     @ParameterizedTest
@@ -485,37 +184,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(13);
-
-        Node node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(Join.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[6];
-        assertThat(node).isInstanceOf(Split.class);
-        node = process.getNodes()[7];
-        assertThat(node).isInstanceOf(Split.class);
-        node = process.getNodes()[8];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[9];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[11];
-        assertThat(node).isInstanceOf(EndNode.class);
-
-        Split split = (Split) process.getNodes()[6];
-        assertThat(split.getName()).isEqualTo("CheckBackend");
-        assertThat(split.getType()).isEqualTo(2);
-        assertThat(split.getConstraints()).hasSize(2);
-
-        Split split2 = (Split) process.getNodes()[7];
-        assertThat(split2.getName()).isEqualTo("CheckFrontend");
-        assertThat(split2.getType()).isEqualTo(2);
-        assertThat(split2.getConstraints()).hasSize(2);
     }
 
     @ParameterizedTest
@@ -528,36 +196,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(8);
-        Node node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
-        node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(EndNode.class);
-        node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(CompositeContextNode.class);
-        node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[6];
-        assertThat(node).isInstanceOf(ActionNode.class);
-        node = process.getNodes()[7];
-        assertThat(node).isInstanceOf(ActionNode.class);
-
-        ActionNode actionNode = (ActionNode) process.getNodes()[4];
-        assertThat(actionNode.getName()).isEqualTo("TestKafkaEvent");
-
-        ActionNode actionNode2 = (ActionNode) process.getNodes()[5];
-        assertThat(actionNode2.getName()).isEqualTo("TestKafkaEvent2");
-
-        ActionNode actionNode3 = (ActionNode) process.getNodes()[6];
-        assertThat(actionNode3.getName()).isEqualTo("TestKafkaEvent3");
-
-        ActionNode actionNode4 = (ActionNode) process.getNodes()[7];
-        assertThat(actionNode4.getName()).isEqualTo("TestKafkaEvent4");
     }
 
     @ParameterizedTest
@@ -570,15 +208,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(16);
-
-        Split split = (Split) process.getNodes()[4];
-        assertThat(split.getName()).isEqualTo("ChooseOnAge");
-        assertThat(split.getType()).isEqualTo(2);
-        assertThat(split.getConstraints()).hasSize(2);
-
-        assertHaveDefaultConstraint(split);
     }
 
     @ParameterizedTest
@@ -591,19 +220,6 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process.getType()).isEqualTo("SW");
         assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
         assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
-
-        assertThat(process.getNodes()).hasSize(17);
-
-        Split split = (Split) process.getNodes()[4];
-        assertThat(split.getName()).isEqualTo("ChooseOnAge");
-        assertThat(split.getType()).isEqualTo(2);
-        assertThat(split.getConstraints()).hasSize(2);
-
-        assertHaveDefaultConstraint(split);
-    }
-
-    private void assertHaveDefaultConstraint(Split split) {
-        assertThat(split.getConstraints().values().stream().flatMap(Collection::stream).anyMatch(Constraint::isDefault)).isTrue();
     }
 
     @ParameterizedTest

@@ -52,7 +52,7 @@ public class ServiceTypeHandler extends WorkItemTypeHandler {
     private static final String LANG_SEPARATOR = ":";
 
     @Override
-    protected <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addFunctionArgs(Workflow workflow, WorkItemNodeFactory<T> node, FunctionRef functionRef) {
+    protected WorkItemNodeFactory<?> addFunctionArgs(Workflow workflow, WorkItemNodeFactory<?> node, FunctionRef functionRef) {
         JsonNode functionArgs = functionRef.getArguments();
         if (functionArgs == null) {
             node.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE);

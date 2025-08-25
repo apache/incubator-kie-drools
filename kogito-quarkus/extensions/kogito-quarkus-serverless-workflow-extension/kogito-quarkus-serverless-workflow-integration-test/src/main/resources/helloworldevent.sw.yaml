@@ -1,0 +1,35 @@
+id: helloworldevent
+version: '1.0'
+name: Hello World Workflow
+start: WaitStartEvent
+events:
+  - name: startEvent
+    source: ''
+    kind: consumed
+    type: start_event
+  - name: exitEvent
+    source: ''
+    kind: produced
+    type: exit_event
+states:
+  - name: WaitStartEvent
+    type: event
+    onEvents:
+      - eventRefs:
+          - startEvent
+        eventDataFilter:
+            toStateData: .originalMessage
+    transition: Inject Hello World
+  - name: Inject Hello World
+    type: inject
+    data:
+      greeting: Hello World
+    transition: Inject Mantra
+  - name: Inject Mantra
+    type: inject
+    data:
+      mantra: Serverless Workflow is awesome!
+    end:
+      terminate: true
+      produceEvents:
+        - eventRef: exitEvent

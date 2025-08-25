@@ -154,6 +154,8 @@ adult.txt
 drl1.txt
 # quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/long-call.sw.yaml
 long-call.sw.yaml
+# quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/helloworldevent.sw.yaml
+helloworldevent.sw.yaml
 # quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
 src_test_resources_application.yml
 # quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
