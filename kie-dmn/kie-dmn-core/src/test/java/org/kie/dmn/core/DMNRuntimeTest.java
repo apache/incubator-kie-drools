@@ -3681,4 +3681,20 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
     }
 
+    @ParameterizedTest
+    @MethodSource("params")
+    void valuePropertyTest(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/TestValueProperty.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_71C6EBC8-58FD-4917-A00D-3CFF5DF1C0D9", "DMN_8092A68F-7F00-44BA-8B59-9831ECE4EB8D");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("InputA", LocalDate.of(2025,7,3));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
+    }
+
 }

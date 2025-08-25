@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.api.DMNMessageManager;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.DMNRuntimeUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -59,10 +59,10 @@ public class DMNFunctionWithReturnType extends BaseFEELFunction {
     @Override
     public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
         Object result = wrapped.invokeReflectively(ctx, params);
-        result = DMNRuntimeImpl.coerceUsingType(result,
-                                                returnType,
-                                                true, // this FN is created when typeCheck==true, hence here always true.
-                                                (r, t) -> MsgUtil.reportMessage(LOG,
+        result = DMNRuntimeUtils.coerceUsingType(result,
+                                                 returnType,
+                                                 true, // this FN is created when typeCheck==true, hence here always true.
+                                                 (r, t) -> MsgUtil.reportMessage(LOG,
                                                                                 DMNMessage.Severity.WARN,
                                                                                 node.getBusinessKnowledModel(),
                                                                                 msgMgr,

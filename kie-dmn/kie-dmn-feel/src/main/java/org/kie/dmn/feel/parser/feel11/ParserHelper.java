@@ -172,6 +172,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         if (isFeatDMN12weekday()) {
                             // Table 60 spec DMN v1.2
                             this.currentScope.define(new VariableSymbol("weekday", BuiltInType.NUMBER));
@@ -183,6 +184,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case DATE_TIME:
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
@@ -197,6 +199,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case DURATION:
                         // TODO might need to distinguish between `years and months duration` and `days and time duration`
@@ -206,6 +209,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "hours", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "minutes", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "seconds", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case RANGE:
                         this.currentScope.define(new VariableSymbol("start included", BuiltInType.BOOLEAN));

@@ -40,6 +40,7 @@ import org.kie.dmn.core.impl.DMNDecisionResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.DMNRuntimeUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
@@ -84,10 +85,10 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         }
         boolean typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         if (typeCheck) {
-            Object c = DMNRuntimeImpl.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
-                                                      dsNode.getResultType(),
-                                                      typeCheck,
-                                                      (rx, tx) -> MsgUtil.reportMessage(LOG,
+            Object c = DMNRuntimeUtils.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
+                                                       dsNode.getResultType(),
+                                                       typeCheck,
+                                                       (rx, tx) -> MsgUtil.reportMessage(LOG,
                                                                                         DMNMessage.Severity.WARN,
                                                                                         dsNode.getDecisionService(),
                                                                                         result,

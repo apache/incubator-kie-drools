@@ -22,10 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +41,16 @@ import org.drools.io.ClassPathResource;
 import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -63,6 +69,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -606,6 +614,42 @@ class ValidatorTest extends AbstractValidatorTest {
                 fail(e.getMessage());
             }
         }
+    }
+
+    @Test
+    void validateValidModelsWithClashingInheritedImportAndInputNameSimpleData() {
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        String[] modelFiles = new String[]{dmnImporting, dmnImported};
+        Resource[] resources = Arrays.stream(modelFiles).map(ClassPathResource::new).toArray(Resource[]::new);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(resources);
+        assertThat(retrieved).isNotNull().isEmpty();
+    }
+
+    @Test
+    void validateValidModelsWithClashingInheritedImportAndInputNameComplexData() {
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_complex_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        String[] modelFiles = new String[]{dmnImporting, dmnImported};
+        Resource[] resources = Arrays.stream(modelFiles).map(ClassPathResource::new).toArray(Resource[]::new);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(resources);
+        assertThat(retrieved).isNotNull().isEmpty();
+    }
+
+    @Test
+    void validateInvalidModelsWithSameImportAndInputName() {
+        String basePath = "invalid_models/DMNv1_6";
+        String dmnImporting = String.format("%s/InvalidModelImportInputDataNameClash.dmn", basePath);
+        String dmnImported = String.format("%s/ParentModel.dmn", basePath);
+        Resource importingResource = new ClassPathResource(dmnImporting);
+        Resource importedResource = new ClassPathResource(dmnImported);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(importingResource, importedResource);
+        assertThat(retrieved).isNotNull()
+                .hasSize(3) // There are other two messages
+                .anyMatch(dmnMessage -> dmnMessage.getLevel().equals(Message.Level.ERROR))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("The referenced name is not unique with its scope"));
     }
 
     @Test
