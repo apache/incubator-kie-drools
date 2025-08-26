@@ -48,7 +48,6 @@ paths:
                   product:
                     format: float
                     type: number
-                    
   /substract:
     post:
       operationId: substract
@@ -67,7 +66,22 @@ paths:
                 properties:
                  difference:
                    format: float
-                   type: number 
+                   type: number
+  /stringResource/reverse: 
+    post: 
+      operationId: reverse,
+      requestBody: 
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        200:
+         description: OK
+         content:
+           text/plain: 
+            schema:
+              type:string
 components:
   schemas:
     MultiplicationOperation:

@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow.rest;
 import java.util.Map;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kogito.workitem.rest.resulthandlers.RestWorkItemHandlerResult;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,6 +60,14 @@ public class JsonNodeResultHandler implements RestWorkItemHandlerResult {
 
     @Override
     public Object apply(HttpResponse<Buffer> t, Class<?> u) {
-        return u == null ? t.bodyAsJson(JsonNode.class) : t.bodyAsJson(u);
+        if (u == null) {
+            return t.bodyAsJson(JsonNode.class);
+        } else if (byte[].class.isAssignableFrom(u)) {
+            return JsonObjectUtils.fromValue(t.body().getBytes());
+        } else if (String.class.isAssignableFrom(u)) {
+            return JsonObjectUtils.fromValue(t.bodyAsString());
+        } else {
+            return t.bodyAsJson(u);
+        }
     }
 }

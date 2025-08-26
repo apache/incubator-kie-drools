@@ -1,0 +1,30 @@
+{
+  "id": "stringResource",
+  "name": "String resource",
+  "version": "v1.0",
+  "start": "doCall",
+  "functions": [
+    {
+      "name": "reverse",
+      "operation": "spec.yaml#reverse"
+    }
+  ],
+  "states": [
+    {
+      "name": "doCall",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "reverse",
+          "functionRef": {
+            "refName": "reverse",
+            "arguments": ".name"
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}

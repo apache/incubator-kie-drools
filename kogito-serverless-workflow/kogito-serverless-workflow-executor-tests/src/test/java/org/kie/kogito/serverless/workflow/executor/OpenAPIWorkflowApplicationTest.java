@@ -30,9 +30,11 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,6 +71,16 @@ class OpenAPIWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             ObjectNode node = (ObjectNode) application.execute(ServerlessWorkflowUtils.getWorkflow(resource), Collections.singletonMap("fahrenheit", fahrenheit)).getWorkflowdata();
             assertThat(node.get("product").asDouble()).isEqualByComparingTo(product);
+        }
+    }
+
+    @Test
+    void stringContentTypeInvocation() throws IOException {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource("stringResource.sw.json");
+        wm.stubFor(post("/stringResource/reverse").withRequestBody(equalTo("redrum")).willReturn(aResponse().withStatus(200).withBody("murder")));
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            ObjectNode node = (ObjectNode) application.execute(ServerlessWorkflowUtils.getWorkflow(resource), Collections.singletonMap("name", "redrum")).getWorkflowdata();
+            assertThat(node.get("response")).isEqualTo(new TextNode("murder"));
         }
     }
 }

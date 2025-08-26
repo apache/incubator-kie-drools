@@ -1,0 +1,37 @@
+{
+  "id": "stringResource",
+  "name": "String resource",
+  "version": "v1.0",
+  "start": "doCall",
+  "extensions" : [ {
+      "extensionid": "workflow-uri-definitions",
+      "definitions": {
+        "stringOperations": "specs/stringResource.json"
+       }
+     }
+  ],
+  "functions": [
+    {
+      "name": "reverse",
+      "operation": "stringOperations#reverse"
+    }
+  ],
+  "states": [
+    {
+      "name": "doCall",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "reverse",
+          "functionRef": {
+            "refName": "reverse",
+            "arguments": ".name"
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}

@@ -34,7 +34,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTestResource(OperationsMockService.class)
 @QuarkusIntegrationTest
-class ConversationFlowIT {
+class StringOpenAPIIT {
 
     @BeforeAll
     static void init() {
@@ -42,38 +42,16 @@ class ConversationFlowIT {
     }
 
     @Test
-    void sanityVerification() {
+    void testReverse() {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(Map.of("fahrenheit", "100", "clusterName", "cluster1"))
-                .post("/fahrenheit_to_celsius")
+                .body(Map.of("name", "redrum"))
+                .post("/stringResource")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
-                .body("workflowdata.fahrenheit", is("100"))
-                .body("workflowdata.celsius", is(37.808f)); //values from mock server
+                .body("workflowdata.response", is("murder"));
     }
 
-    @Test
-    void wrongCluster() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Map.of("fahrenheit", "100", "clusterName", "cluster2"))
-                .post("/fahrenheit_to_celsius")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void wrongData() {
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Map.of("fahrenheit", "100"))
-                .post("/fahrenheit_to_celsius")
-                .then()
-                .statusCode(400);
-    }
 }

@@ -1,0 +1,38 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "String Operations",
+    "version" : "1.0-SNAPSHOT"
+  },
+  "paths" : {
+    "/stringResource/reverse" : {
+      "post" : {
+        "operationId" : "reverse",
+        "requestBody" : {
+          "content" : {
+            "text/plain" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "summary" : "Reverse",
+        "tags" : [ "String Resource" ]
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers.openapi;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import io.swagger.v3.oas.models.Operation;
@@ -35,14 +36,24 @@ public class OpenAPIDescriptor {
     private final Set<String> pathParams = new HashSet<>();
     private final Set<String> queryParams = new HashSet<>();
     private final Set<String> headerParams = new HashSet<>();
+    private final Optional<String> resultType;
 
     OpenAPIDescriptor(HttpMethod method, String path, Operation operation, Collection<SecurityScheme> schemes) {
         this.method = method;
         this.path = path;
         this.schemes = schemes;
+
+        this.resultType = operation.getResponses().entrySet().stream().filter(e -> isValidStatusCode(Integer.parseInt(e.getKey())))
+                .filter(e -> e.getValue().getContent() != null)
+                .flatMap(e -> e.getValue().getContent().keySet().stream()).findFirst();
+
         if (operation.getParameters() != null) {
             operation.getParameters().forEach(this::addParameter);
         }
+    }
+
+    private boolean isValidStatusCode(int statusCode) {
+        return statusCode >= 200 && statusCode < 300;
     }
 
     private void addParameter(Parameter parameter) {
@@ -59,6 +70,10 @@ public class OpenAPIDescriptor {
             default:
                 // all other argument types can be safely ignored
         }
+    }
+
+    public Optional<String> getResultType() {
+        return resultType;
     }
 
     public HttpMethod getMethod() {
