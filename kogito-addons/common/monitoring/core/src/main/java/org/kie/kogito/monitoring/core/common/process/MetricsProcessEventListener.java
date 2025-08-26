@@ -20,8 +20,8 @@ package org.kie.kogito.monitoring.core.common.process;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.LongToDoubleFunction;
 
 import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -131,7 +131,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     }
 
     protected static double millisToSeconds(long millis) {
-        return TimeUnit.MILLISECONDS.toSeconds(millis);
+        return millis / 1000.0;
     }
 
     @Override
@@ -170,19 +170,20 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         final KogitoNodeInstance nodeInstance = (KogitoNodeInstance) event.getNodeInstance();
         if (nodeInstance instanceof KogitoWorkItemNodeInstance) {
             KogitoWorkItemNodeInstance wi = (KogitoWorkItemNodeInstance) nodeInstance;
-            recordNodeDuration(getWorkItemsDurationSummary((String) wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName())), nodeInstance, TimeUnit.SECONDS);
+            recordNodeDuration(getWorkItemsDurationSummary((String) wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName())), nodeInstance,
+                    MetricsProcessEventListener::millisToSeconds);
         }
         String nodeName = (String) nodeInstance.getNode().getMetaData().get(KogitoTags.METRIC_NAME_METADATA);
         if (nodeName != null) {
-            recordNodeDuration(getNodeInstancesDurationSummary(event.getProcessInstance().getProcessId(), nodeName), nodeInstance, TimeUnit.MILLISECONDS);
+            recordNodeDuration(getNodeInstancesDurationSummary(event.getProcessInstance().getProcessId(), nodeName), nodeInstance, l -> l);
         }
     }
 
-    private void recordNodeDuration(DistributionSummary summary, KogitoNodeInstance instance, TimeUnit target) {
+    private void recordNodeDuration(DistributionSummary summary, KogitoNodeInstance instance, LongToDoubleFunction longToDuble) {
         if (instance.getTriggerTime() != null && instance.getLeaveTime() != null) {
-            double duration = target.convert(instance.getLeaveTime().getTime() - instance.getTriggerTime().getTime(), TimeUnit.MILLISECONDS);
+            double duration = longToDuble.applyAsDouble(instance.getLeaveTime().getTime() - instance.getTriggerTime().getTime());
             summary.record(duration);
-            LOGGER.debug("Recorded {} {} because of node {} for summary {}", duration, target, instance.getNode().getName(), summary.getId().getName());
+            LOGGER.debug("Recorded {} because of node {} for summary {}", duration, instance.getNode().getName(), summary.getId().getName());
         }
     }
 
