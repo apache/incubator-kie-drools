@@ -199,27 +199,31 @@ class MongoDBProcessInstancesIT {
                 .map(Document.class::cast)
                 .filter(index -> ((Document) index).get("name").equals(DocumentConstants.PROCESS_INSTANCE_ID_INDEX))
                 .findFirst()).isPresent();
+        assertThat(StreamSupport.stream(mongoDBProcessInstances.getCollection().listIndexes().spliterator(), false)
+                .map(Document.class::cast)
+                .filter(index -> ((Document) index).get("name").equals(DocumentConstants.PROCESS_BUSINESS_KEY_INDEX))
+                .findFirst()).isPresent();
     }
 
     @Test
-    void testFindByIdReadMode() {
+    void testFindByIdAndBusinessKeyReadMode() {
         AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, false) {
         };
 
-        testFindByIdReadMode(transactionManager);
+        testFindByIdAndBusinessKeyReadMode(transactionManager);
     }
 
     @Test
-    void testFindByIdReadModeWithTransaction() {
+    void testFindByIdAndBusinessKeyReadModeWithTransaction() {
         AbstractTransactionManager transactionManager = new AbstractTransactionManager(mongoClient, true) {
         };
 
         transactionManager.onBeforeStartEvent(new UnitOfWorkStartEvent(null));
-        testFindByIdReadMode(transactionManager);
+        testFindByIdAndBusinessKeyReadMode(transactionManager);
         transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
     }
 
-    void testFindByIdReadMode(AbstractTransactionManager transactionManager) {
+    void testFindByIdAndBusinessKeyReadMode(AbstractTransactionManager transactionManager) {
         BpmnProcess process = createProcess(transactionManager, "BPMN2-UserTask-Script.bpmn2");
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess) process.process()).getNodes()) {
@@ -232,7 +236,7 @@ class MongoDBProcessInstancesIT {
             }
         }
 
-        ProcessInstance<BpmnVariables> mutablePi = process.createInstance(BpmnVariables.create(Collections.singletonMap("var", "value")));
+        ProcessInstance<BpmnVariables> mutablePi = process.createInstance("bk-1", BpmnVariables.create(Collections.singletonMap("var", "value")));
         mutablePi.start();
         assertThat(mutablePi.status()).isEqualTo(STATE_ERROR);
         assertThat(mutablePi.error()).hasValueSatisfying(error -> {
@@ -254,6 +258,15 @@ class MongoDBProcessInstancesIT {
         });
         assertThat(readOnlyPi.variables().toMap()).containsExactly(entry("var", "value"));
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> readOnlyPi.abort());
+
+        ProcessInstance<BpmnVariables> readOnlyPiByBk = instances.findByBusinessKey(mutablePi.businessKey(), ProcessInstanceReadMode.READ_ONLY).get();
+        assertThat(readOnlyPiByBk.status()).isEqualTo(STATE_ERROR);
+        assertThat(readOnlyPiByBk.error()).hasValueSatisfying(error -> {
+            assertThat(error.errorMessage()).contains("java.lang.NullPointerException");
+            assertThat(error.failedNodeId()).isEqualTo("ScriptTask_1");
+        });
+        assertThat(readOnlyPiByBk.variables().toMap()).containsExactly(entry("var", "value"));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> readOnlyPiByBk.abort());
 
         instances.findById(mutablePi.id()).get().abort();
         assertEmpty(instances);

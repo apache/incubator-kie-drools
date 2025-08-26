@@ -57,6 +57,8 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.result.UpdateResult;
 
+import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_BUSINESS_KEY;
+import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_BUSINESS_KEY_INDEX;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID_INDEX;
 
@@ -91,9 +93,12 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
-        return find(id).map(piDoc -> {
-            return (AbstractProcessInstance<T>) unmarshall(piDoc, mode);
-        });
+        return find(id, PROCESS_INSTANCE_ID).map(piDoc -> unmarshall(piDoc, mode));
+    }
+
+    @Override
+    public Optional<ProcessInstance<T>> findByBusinessKey(String id, ProcessInstanceReadMode mode) {
+        return find(id, PROCESS_BUSINESS_KEY).map(piDoc -> unmarshall(piDoc, mode));
     }
 
     @Override
@@ -193,14 +198,14 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         }
     }
 
-    private Optional<Document> find(String id) {
+    private Optional<Document> find(String id, String key) {
         ClientSession clientSession = transactionManager.getClientSession();
-        return Optional.ofNullable((clientSession != null ? collection.find(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id)) : collection.find(Filters.eq(PROCESS_INSTANCE_ID, id))).first());
+        return Optional.ofNullable((clientSession != null ? collection.find(clientSession, Filters.eq(key, id)) : collection.find(Filters.eq(key, id))).first());
     }
 
     @Override
     public boolean exists(String id) {
-        return find(id).isPresent();
+        return find(id, PROCESS_INSTANCE_ID).isPresent();
     }
 
     @Override
@@ -216,7 +221,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     private void connectProcessInstance(ProcessInstance<T> instance, String id) {
-        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(() -> find(id).map(reloaded -> {
+        ((AbstractProcessInstance<?>) instance).internalSetReloadSupplier(marshaller.createdReloadFunction(() -> find(id, PROCESS_INSTANCE_ID).map(reloaded -> {
             setVersion(instance, reloaded.getLong(VERSION));
             return reloaded.toJson().getBytes();
         }).orElseThrow(() -> new IllegalArgumentException("process instance id " + id + " does not exists in mongodb"))));
@@ -242,6 +247,8 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         //Index creation (if the index already exists it is a no-op)
         collection.createIndex(Indexes.ascending(PROCESS_INSTANCE_ID),
                 new IndexOptions().unique(true).name(PROCESS_INSTANCE_ID_INDEX).background(true));
+        collection.createIndex(Indexes.ascending(PROCESS_BUSINESS_KEY),
+                new IndexOptions().name(PROCESS_BUSINESS_KEY_INDEX).background(true));
         return collection;
     }
 }
