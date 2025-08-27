@@ -39,7 +39,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.time.Job;

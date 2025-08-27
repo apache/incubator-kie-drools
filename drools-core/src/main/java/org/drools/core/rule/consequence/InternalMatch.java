@@ -36,7 +36,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
