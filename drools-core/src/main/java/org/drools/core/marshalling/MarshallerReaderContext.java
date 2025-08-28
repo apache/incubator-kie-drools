@@ -33,7 +33,6 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
