@@ -23,10 +23,9 @@ import org.kie.kogito.app.jobs.impl.JobDetailsHelper;
 import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.timer.TimerInstance;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 public class ProcessJobExecutor implements JobExecutor {
@@ -51,11 +50,12 @@ public class ProcessJobExecutor implements JobExecutor {
         ProcessJobDescription processJobDescription = (ProcessJobDescription) JobDetailsHelper.extractJobDescription(jobDetails);
 
         UnitOfWorkExecutor.executeInUnitOfWork(uom, () -> {
-            Process<?> processDefinition = processes.processById(processJobDescription.processId());
+            Process processDefinition = processes.processById(processJobDescription.processId());
             if (processDefinition == null) {
                 return null;
             }
-            processDefinition.send(SignalFactory.of(SIGNAL, TimerInstance.with(jobDetails.getId(), jobDetails.getId(), -1)));
+            ProcessInstance pi = processDefinition.createInstance(processDefinition.createModel());
+            pi.start("timer", null);
             return null;
         });
     }
