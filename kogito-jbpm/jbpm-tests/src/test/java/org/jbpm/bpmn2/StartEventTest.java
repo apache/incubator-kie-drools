@@ -271,8 +271,8 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart");
         definition.deactivate();
         definition.send(SignalFactory.of("MySignal", "NewValue"));
-        assertThat(startedProcesses).hasSize(2);
-        assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart", "SignalStart");
+        assertThat(startedProcesses).hasSize(1);
+        assertThat(startedProcesses).extracting(ProcessInstance::getProcessId).containsExactly("SignalStart");
     }
 
     @Test

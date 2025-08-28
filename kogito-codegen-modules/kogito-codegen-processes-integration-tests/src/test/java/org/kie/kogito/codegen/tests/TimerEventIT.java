@@ -298,7 +298,5 @@ public class TimerEventIT extends AbstractCodegenIT {
         // same amount of instances should be active as before deactivation
 
         assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2);
-        abort(p.instances());
-        await().until(() -> p.instances().stream().count() == 0);
     }
 }

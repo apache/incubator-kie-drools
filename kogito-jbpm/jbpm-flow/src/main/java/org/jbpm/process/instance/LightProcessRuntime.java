@@ -82,10 +82,9 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         this.jobService = services.getJobsService();
         this.processEventSupport = services.getEventSupport();
         this.workItemManager = services.getKogitoWorkItemManager();
-        if (isActive()) {
-            initProcessEventListeners();
-            initStartTimers();
-        }
+
+        initProcessEventListeners();
+        initStartTimers();
         initProcessActivationListener();
     }
 
@@ -378,6 +377,8 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
 
     @Override
     public void dispose() {
+        removeProcessEventListeners();
+        initStartTimers();
         this.processEventSupport.reset();
         runtimeContext = null;
     }
@@ -390,11 +391,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     @Override
     public void clearProcessInstancesState() {
         this.processInstanceManager.clearProcessInstancesState();
-    }
-
-    public boolean isActive() {
-        // originally: kruntime.getEnvironment().get("Active")
-        return runtimeContext.isActive();
     }
 
     public class SignalManagerSignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {

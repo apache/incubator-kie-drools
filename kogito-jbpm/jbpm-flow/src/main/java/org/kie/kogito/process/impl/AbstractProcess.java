@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +37,6 @@ import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.Application;
@@ -57,7 +54,6 @@ import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
-import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
@@ -85,8 +81,8 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     protected Application app;
 
     protected boolean activated;
-    protected List<String> startTimerInstances = new ArrayList<>();
     protected KogitoProcessRuntime processRuntime;
+    protected InternalProcessRuntime internalProcessRuntime;
 
     private org.kie.api.definition.process.Process process;
     private Lock processInitLock = new ReentrantLock();
@@ -226,18 +222,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         if (this.activated) {
             return;
         }
+        this.internalProcessRuntime = LightProcessRuntime.of(app, Collections.singletonList(get()), services);
         this.processRuntime = createProcessRuntime().getKogitoProcessRuntime();
-        WorkflowProcessImpl p = (WorkflowProcessImpl) get();
         configure();
-        List<StartNode> startNodes = p.getTimerStart();
-        if (startNodes != null && !startNodes.isEmpty()) {
-            for (StartNode startNode : startNodes) {
-                if (startNode != null && startNode.getTimer() != null) {
-                    String timerId = processRuntime.getJobsService().scheduleJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
-                    startTimerInstances.add(timerId);
-                }
-            }
-        }
         // this belongs to only for the work item handler so we keep within the context of the current process instance loaded in memory
         if (this.services.getSignalManager() instanceof SignalManagerHub signalManagerHub) {
             processInstanceResolver = new ProcessInstanceResolver<T>() {
@@ -273,12 +260,11 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
 
     @Override
     public void deactivate() {
-        for (String startTimerId : startTimerInstances) {
-            this.processRuntime.getJobsService().cancelJob(startTimerId);
-        }
         if (this.services.getSignalManager() instanceof SignalManagerHub signalManagerHub) {
             signalManagerHub.removeProcessInstanceResolver(processInstanceResolver);
         }
+        this.internalProcessRuntime.dispose();
+        this.internalProcessRuntime = null;
         this.activated = false;
     }
 
@@ -328,7 +314,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     protected abstract org.kie.api.definition.process.Process process();
 
     protected InternalProcessRuntime createProcessRuntime() {
-        return LightProcessRuntime.of(app, Collections.singletonList(get()), services);
+        return internalProcessRuntime;
     }
 
     protected boolean isProcessFactorySet() {

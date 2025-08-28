@@ -70,11 +70,6 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
     }
 
     @Override
-    public boolean isActive() {
-        return true;
-    }
-
-    @Override
     public ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey) {
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();

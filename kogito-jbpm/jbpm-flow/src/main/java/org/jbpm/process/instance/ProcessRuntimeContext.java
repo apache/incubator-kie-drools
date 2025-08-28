@@ -41,8 +41,6 @@ public interface ProcessRuntimeContext {
 
     void addEventListener(DefaultAgendaEventListener conditional);
 
-    boolean isActive();
-
     ProcessInstance createProcessInstance(Process process, CorrelationKey correlationKey);
 
     void setupParameters(ProcessInstance pi, Map<String, Object> parameters);

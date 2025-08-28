@@ -77,11 +77,12 @@ public class InMemoryProcessJobExecutorFactory implements JobExecutorFactory {
     }
 
     protected Runnable processJobByDescription(JobsService jobService, InMemoryJobContext jobsConfiguration, ProcessJobDescription description) {
-        return new StartProcessOnExpiredTimer(jobService, jobsConfiguration, description.id(), description.process(), true, -1);
+        return new StartProcessOnExpiredTimer(jobService, jobsConfiguration, description.id(), description.processId(), true, -1);
     }
 
     protected Runnable repeatableJobByDescription(JobsService jobService, InMemoryJobContext jobsConfiguration, ProcessJobDescription description) {
-        return new StartProcessOnExpiredTimer(jobService, jobsConfiguration, description.id(), description.process(), false, description.expirationTime().repeatLimit());
+        return new StartProcessOnExpiredTimer(jobService, jobsConfiguration, description.id(), description.processId(), false,
+                description.expirationTime().repeatLimit());
     }
 
 }
@@ -147,16 +148,16 @@ class StartProcessOnExpiredTimer implements Runnable {
 
     private boolean removeAtExecution;
     @SuppressWarnings("rawtypes")
-    private org.kie.kogito.process.Process process;
+    private String processId;
 
     private Integer limit;
 
     private JobsService jobService;
     private InMemoryJobContext jobsConfiguration;
 
-    public StartProcessOnExpiredTimer(JobsService jobService, InMemoryJobContext jobsConfiguration, String id, org.kie.kogito.process.Process<?> process, boolean removeAtExecution, Integer limit) {
+    public StartProcessOnExpiredTimer(JobsService jobService, InMemoryJobContext jobsConfiguration, String id, String processId, boolean removeAtExecution, Integer limit) {
         this.id = id;
-        this.process = process;
+        this.processId = processId;
         this.removeAtExecution = removeAtExecution;
         this.limit = limit;
         this.jobsConfiguration = jobsConfiguration;
@@ -169,6 +170,7 @@ class StartProcessOnExpiredTimer implements Runnable {
         try {
             LOGGER.debug("Job {} started", id);
             UnitOfWorkExecutor.executeInUnitOfWork(jobsConfiguration.unitOfWorkManager(), () -> {
+                org.kie.kogito.process.Process process = jobsConfiguration.processes().processById(processId);
                 org.kie.kogito.process.ProcessInstance<?> pi = process.createInstance(process.createModel());
                 if (pi != null) {
                     pi.start(TRIGGER, null);
