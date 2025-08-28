@@ -56,4 +56,6 @@ public interface JobSchedulerBuilder {
     JobSchedulerBuilder withNumberOfWorkerThreads(Integer numberOfWorkerThreads);
 
     JobSchedulerBuilder withJobSynchronization(JobSynchronization jobSynchronization);
+
+    JobSchedulerBuilder withJobDescriptorMergers(JobDescriptionMerger... jobDescriptionMergers);
 }

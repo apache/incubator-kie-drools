@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.app.jobs.impl;
 
-import org.kie.kogito.app.jobs.integregations.AbstractJobDescriptionJobInstanceEventAdapter;
+import org.kie.kogito.app.jobs.integrations.AbstractJobDescriptionJobInstanceEventAdapter;
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobDetails;

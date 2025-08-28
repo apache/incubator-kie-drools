@@ -16,13 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.model;
+package org.kie.kogito.app.jobs.impl;
 
-public enum JobStatus {
-    ERROR, //final
-    EXECUTED, //final
-    SCHEDULED, //active
-    RETRY, //active
-    CANCELED, //final
-    RUNNING
+import org.kie.kogito.app.jobs.api.JobDescriptionMerger;
+import org.kie.kogito.app.jobs.integrations.JobDescriptionHelper;
+import org.kie.kogito.jobs.JobDescription;
+import org.kie.kogito.timer.Trigger;
+
+public class TestJobDescriptionMerger implements JobDescriptionMerger {
+
+    @Override
+    public boolean accept(Object instance) {
+        return instance instanceof TestJobDescription;
+    }
+
+    @Override
+    public JobDescription mergeTrigger(JobDescription jobDescription, Trigger trigger) {
+        if (jobDescription instanceof TestJobDescription testJobDescription) {
+            return new TestJobDescription(jobDescription.id(), JobDescriptionHelper.toExpirationTime(trigger));
+        }
+        return null;
+    }
+
 }

@@ -22,7 +22,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.kie.kogito.app.jobs.impl.InVMPayloadData;
-import org.kie.kogito.app.jobs.impl.JobDescriptionHelper;
+import org.kie.kogito.app.jobs.integrations.JobDescriptionHelper;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
 import org.kie.kogito.jobs.JobDescription;

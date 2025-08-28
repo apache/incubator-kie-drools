@@ -34,7 +34,7 @@ At present Addons jobs supports quarkus and spring boot
 The properties supported are:
 * kogito.jobs-service.numberOfWorkerThreads: maximum of number of worker thread to execute timeouts (default is 10)
 * kogito.jobs-service.maxNumberOfRetries: numbers of retry of a failred job. After this number is reached the job will be set to failure. (default is 3 times)
-* kogito.jobs-service.maxIntervalLimitToRetryMillis: interval used to retry the new job (default 60 seconds)
+* kogito.jobs-service.retryMillis: interval used to retry the new job (default 60 seconds)
 * kogito.jobs-service.schedulerChunkInMinutes: max window minutes from actual date to the future to load timers in memory (default is 10 minutes)
 * kogito.service.url: url service is this collocated service. (default is localhost:8080)
 

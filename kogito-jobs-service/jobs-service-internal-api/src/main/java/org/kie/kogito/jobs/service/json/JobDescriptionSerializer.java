@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
 import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -43,7 +44,9 @@ public class JobDescriptionSerializer extends StdSerializer<JobDescription> {
         jgen.writeStringField("id", value.id());
         jgen.writeNumberField("priority", value.priority());
         jgen.writeObjectField("expirationTime", value.expirationTime());
-        if (value instanceof ProcessInstanceJobDescription jobDescription) {
+        if (value instanceof ProcessJobDescription processJobDescription) {
+            jgen.writeStringField("processId", processJobDescription.processId());
+        } else if (value instanceof ProcessInstanceJobDescription jobDescription) {
             jgen.writeStringField("timerId", jobDescription.timerId());
             jgen.writeStringField("processInstanceId", jobDescription.processInstanceId());
             jgen.writeStringField("rootProcessInstanceId", jobDescription.rootProcessInstanceId());

@@ -19,9 +19,9 @@
 package org.kie.kogito.app.jobs.quarkus;
 
 import org.kie.kogito.app.jobs.api.JobExecutor;
-import org.kie.kogito.app.jobs.integregations.ProcessInstanceJobExecutor;
-import org.kie.kogito.app.jobs.integregations.ProcessJobExecutor;
-import org.kie.kogito.app.jobs.integregations.UserTaskInstanceJobExecutor;
+import org.kie.kogito.app.jobs.integrations.ProcessInstanceJobExecutor;
+import org.kie.kogito.app.jobs.integrations.ProcessJobExecutor;
+import org.kie.kogito.app.jobs.integrations.UserTaskInstanceJobExecutor;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
 import org.kie.kogito.app.jobs.spi.memory.MemoryJobContextFactory;

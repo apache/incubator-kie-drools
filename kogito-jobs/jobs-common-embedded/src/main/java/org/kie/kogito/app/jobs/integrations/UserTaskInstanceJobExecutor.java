@@ -16,46 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.integregations;
+package org.kie.kogito.app.jobs.integrations;
 
 import org.kie.kogito.app.jobs.api.JobExecutor;
 import org.kie.kogito.app.jobs.impl.JobDetailsHelper;
-import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.jobs.service.model.JobDetails;
-import org.kie.kogito.process.Process;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.SignalFactory;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.timer.TimerInstance;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTasks;
 
-public class ProcessJobExecutor implements JobExecutor {
+public class UserTaskInstanceJobExecutor implements JobExecutor {
     public static final String SIGNAL = "timerTriggered";
 
-    private Processes processes;
+    private UserTasks userTasks;
 
     private UnitOfWorkManager uom;
 
-    public ProcessJobExecutor(Processes processes, UnitOfWorkManager unitOfWorkManager) {
-        this.processes = processes;
+    public UserTaskInstanceJobExecutor(UserTasks userTasks, UnitOfWorkManager unitOfWorkManager) {
+        this.userTasks = userTasks;
         this.uom = unitOfWorkManager;
     }
 
     @Override
     public boolean accept(JobDetails jobDetails) {
-        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof ProcessJobDescription;
+        return JobDetailsHelper.extractJobDescription(jobDetails) instanceof UserTaskInstanceJobDescription;
     }
 
     @Override
     public void execute(JobDetails jobDetails) {
-        ProcessJobDescription processJobDescription = (ProcessJobDescription) JobDetailsHelper.extractJobDescription(jobDetails);
+        UserTaskInstanceJobDescription userTaskInstanceJobDescription = (UserTaskInstanceJobDescription) JobDetailsHelper.extractJobDescription(jobDetails);
 
         UnitOfWorkExecutor.executeInUnitOfWork(uom, () -> {
-            Process<?> processDefinition = processes.processById(processJobDescription.processId());
-            if (processDefinition == null) {
-                return null;
-            }
-            processDefinition.send(SignalFactory.of(SIGNAL, TimerInstance.with(jobDetails.getId(), jobDetails.getId(), -1)));
+            UserTaskInstance userTaskInstance = userTasks.instances().findById(userTaskInstanceJobDescription.userTaskInstanceId()).get();
+            userTaskInstance.trigger(userTaskInstanceJobDescription);
             return null;
         });
     }

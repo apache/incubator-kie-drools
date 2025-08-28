@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.integregations;
+package org.kie.kogito.app.jobs.integrations;
 
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.api.JobBuilder;

@@ -28,9 +28,9 @@ import org.kie.kogito.app.jobs.api.JobSchedulerBuilder;
 import org.kie.kogito.app.jobs.api.JobSchedulerListener;
 import org.kie.kogito.app.jobs.api.JobSynchronization;
 import org.kie.kogito.app.jobs.api.JobTimeoutInterceptor;
-import org.kie.kogito.app.jobs.integregations.ProcessInstanceJobDescriptionJobInstanceEventAdapter;
-import org.kie.kogito.app.jobs.integregations.ProcessJobDescriptionJobInstanceEventAdapter;
-import org.kie.kogito.app.jobs.integregations.UserTaskInstanceJobDescriptionJobInstanceEventAdapter;
+import org.kie.kogito.app.jobs.integrations.ProcessInstanceJobDescriptionJobInstanceEventAdapter;
+import org.kie.kogito.app.jobs.integrations.ProcessJobDescriptionJobInstanceEventAdapter;
+import org.kie.kogito.app.jobs.integrations.UserTaskInstanceJobDescriptionJobInstanceEventAdapter;
 import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
 import org.kie.kogito.app.jobs.springboot.resource.RestApiConstants;
@@ -76,8 +76,8 @@ public class SpringbootJobsService implements JobsService {
     @Value("${kogito.jobs-service.maxNumberOfRetries:3}")
     protected Integer maxNumberOfRetries;
 
-    @Value("${kogito.jobs-service.maxIntervalLimitToRetryMillis:60000}")
-    protected Long maxIntervalLimitToRetryMillis;
+    @Value("${kogito.jobs-service.retryMillis:100}")
+    protected Long retryMillis;
 
     @Value("${kogito.jobs-service.schedulerChunkInMinutes:10}")
     protected Long maxRefreshJobsIntervalWindow;
@@ -123,7 +123,7 @@ public class SpringbootJobsService implements JobsService {
                         new UserTaskInstanceJobDescriptionJobInstanceEventAdapter(serviceURL + RestApiConstants.JOBS_PATH))
                 .withJobExecutors(ofNullable(jobExecutors).toArray(JobExecutor[]::new))
                 .withMaxRefreshJobsIntervalWindow(maxRefreshJobsIntervalWindow * 60 * 1000L)
-                .withRetryInterval(maxIntervalLimitToRetryMillis)
+                .withRetryInterval(retryMillis)
                 .withMaxNumberOfRetries(maxNumberOfRetries)
                 .withRefreshJobsInterval(maxRefreshJobsIntervalWindow * 60 * 1000L)
                 .withTimeoutInterceptor(txInterceptor)
