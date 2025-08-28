@@ -47,6 +47,13 @@ public class ProcessJobDescription implements JobDescription {
         this.processId = requireNonNull(processId);
     }
 
+    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId, String id) {
+        this.id = id;
+        this.expirationTime = requireNonNull(expirationTime);
+        this.priority = requireNonNull(priority);
+        this.processId = requireNonNull(processId);
+    }
+
     public ProcessJobDescription(ExpirationTime expirationTime, Integer priority, Process<?> process) {
         this.id = UUID.randomUUID().toString();
         this.expirationTime = requireNonNull(expirationTime);
@@ -65,6 +72,11 @@ public class ProcessJobDescription implements JobDescription {
     public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId) {
 
         return new ProcessJobDescription(expirationTime, priority, processId);
+    }
+
+    public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId, String id) {
+
+        return new ProcessJobDescription(expirationTime, priority, processId, id);
     }
 
     @Override
