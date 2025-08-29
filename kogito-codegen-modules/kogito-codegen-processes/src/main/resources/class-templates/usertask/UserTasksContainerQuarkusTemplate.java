@@ -60,7 +60,7 @@ public class UserTasks implements org.kie.kogito.usertask.UserTasks {
         userTaskInstances.setReconnectUserTaskInstance(this::connect);
         for (UserTask userTask : userTasks) {
             mappedUserTask.put(userTask.id(), userTask);
-            LOG.info("Registering user task {} with task name {}", userTask.id(), userTask.getTaskName());
+            LOG.debug("Registering user task {} with task name {}", userTask.id(), userTask.getTaskName());
         }
         JobsService jobsService = application.config().get(UserTaskConfig.class).jobsService();
         UnitOfWorkManager unitOfWorkManager = application.config().get(UserTaskConfig.class).unitOfWorkManager();
