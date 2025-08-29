@@ -51,7 +51,7 @@ public class TaskInputsEntityMapperTest {
 
     @Test
     public void testMapInputsFromInstanceToEntity() {
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         mapper.mapInstanceToEntity(instance, entity);
@@ -89,7 +89,7 @@ public class TaskInputsEntityMapperTest {
     public void testMapInputsFromEntityToInstance() {
         final String stringValue = "This is the input value";
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         TaskInputEntity input = new TaskInputEntity();
@@ -116,7 +116,7 @@ public class TaskInputsEntityMapperTest {
     @Test
     public void testMappingRoundCircle() {
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         mapper.mapInstanceToEntity(instance, entity);

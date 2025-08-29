@@ -158,7 +158,7 @@ public class JPAUserTaskInstancesTest {
 
     @Test
     public void testSuccessfulCreate() {
-        jpaUserTaskInstances.create(TestUtils.createUserTaskInstance());
+        jpaUserTaskInstances.create(TestUtils.createCompletedUserTaskInstance());
 
         verify(userTaskInstanceRepository, times(1)).persist(any());
         verify(userTaskInstanceEntityMapper, times(1)).mapTaskInstanceToEntity(any(), any());
@@ -170,7 +170,7 @@ public class JPAUserTaskInstancesTest {
         Optional<UserTaskInstanceEntity> result = Optional.of(TestUtils.createUserTaskInstanceEntity());
         when(userTaskInstanceRepository.findById(any())).thenReturn(result);
 
-        jpaUserTaskInstances.update(TestUtils.createUserTaskInstance());
+        jpaUserTaskInstances.update(TestUtils.createCompletedUserTaskInstance());
 
         verify(userTaskInstanceRepository, times(1)).update(any());
         verify(userTaskInstanceEntityMapper, times(1)).mapTaskInstanceToEntity(any(), any());
@@ -181,7 +181,7 @@ public class JPAUserTaskInstancesTest {
         when(userTaskInstanceRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> {
-            jpaUserTaskInstances.update(TestUtils.createUserTaskInstance());
+            jpaUserTaskInstances.update(TestUtils.createCompletedUserTaskInstance());
         }).hasMessageContaining("Could not find userTaskInstance with id ");
 
         verify(userTaskInstanceRepository, never()).persist(any());
@@ -193,7 +193,7 @@ public class JPAUserTaskInstancesTest {
         Optional<UserTaskInstanceEntity> result = Optional.of(TestUtils.createUserTaskInstanceEntity());
         when(userTaskInstanceRepository.findById(any())).thenReturn(result);
 
-        jpaUserTaskInstances.remove(TestUtils.createUserTaskInstance());
+        jpaUserTaskInstances.remove(TestUtils.createCompletedUserTaskInstance());
 
         verify(userTaskInstanceRepository, times(1)).delete(any());
         verify(disconnectUserTaskInstance, times(1)).apply(any());
@@ -204,7 +204,7 @@ public class JPAUserTaskInstancesTest {
         when(userTaskInstanceRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> {
-            jpaUserTaskInstances.remove(TestUtils.createUserTaskInstance());
+            jpaUserTaskInstances.remove(TestUtils.createCompletedUserTaskInstance());
         }).hasMessageContaining("Could not remove userTaskInstance with id");
 
         verify(userTaskInstanceRepository, never()).persist(any());

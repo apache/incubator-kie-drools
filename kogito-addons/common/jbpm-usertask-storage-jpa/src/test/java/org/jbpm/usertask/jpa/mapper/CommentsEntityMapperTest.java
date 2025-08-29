@@ -50,7 +50,7 @@ public class CommentsEntityMapperTest {
 
     @Test
     public void testMapCommentsFromInstanceToEntity() {
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         Comment comment = new Comment("1", "John");
@@ -96,7 +96,7 @@ public class CommentsEntityMapperTest {
 
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
 
         CommentEntity comment = new CommentEntity();
         comment.setId("1");

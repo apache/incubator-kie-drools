@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.usertask.jpa.JPAUserTaskInstances;
-import org.jbpm.usertask.jpa.mapper.utils.TestUtils;
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
 import org.jbpm.usertask.jpa.quarkus.repository.QuarkusUserTaskJPAContext;
 import org.jbpm.usertask.jpa.repository.*;
@@ -42,6 +41,8 @@ import org.mockito.Mockito;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityExistsException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.jbpm.usertask.jpa.mapper.utils.TestUtils.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -79,12 +80,12 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
     @Test
     public void testCreateUserTask() {
-        DefaultUserTaskInstance instance = createUserTaskInstance();
+        UserTaskInstance instance = createCompletedUserTaskInstance();
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
 
-        Assertions.assertThat(userTaskInstances.findById(instance.getId()))
+        assertThat(userTaskInstances.findById(instance.getId()))
                 .isNotNull()
                 .isEmpty();
 
@@ -94,7 +95,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         Optional<UserTaskInstanceEntity> entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional)
+        assertThat(entityOptional)
                 .isNotNull()
                 .isPresent();
 
@@ -104,7 +105,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         Optional<UserTaskInstance> persistedInstanceOptional = userTaskInstances.findById(instance.getId());
 
-        Assertions.assertThat(persistedInstanceOptional)
+        assertThat(persistedInstanceOptional)
                 .isNotNull()
                 .isPresent();
 
@@ -113,9 +114,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
     @Test
     public void testCreateExistingTask() {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         Assertions.assertThatThrownBy(() -> userTaskInstances.create(instance))
                 .isInstanceOf(EntityExistsException.class);
@@ -124,22 +123,20 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
     @Test
     public void testEditTaskInputOutputs() {
 
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         Optional<UserTaskInstanceEntity> entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional)
+        assertThat(entityOptional)
                 .isNotNull()
                 .isPresent();
 
         UserTaskInstanceEntity entity = entityOptional.get();
 
-        Assertions.assertThat(entity.getInputs())
+        assertThat(entity.getInputs())
                 .hasSize(instance.getInputs().size());
 
-        Assertions.assertThat(entity.getOutputs())
+        assertThat(entity.getOutputs())
                 .hasSize(instance.getOutputs().size());
 
         instance.getInputs().clear();
@@ -152,18 +149,18 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         entity = userTaskInstanceRepository.findById(instance.getId()).get();
 
-        Assertions.assertThat(entity.getInputs())
+        assertThat(entity.getInputs())
                 .hasSize(1);
 
-        Assertions.assertThat(entity.getOutputs())
+        assertThat(entity.getOutputs())
                 .hasSize(1);
 
-        TestUtils.assertUserTaskEntityInputs(entity, instance);
-        TestUtils.assertUserTaskEntityOutputs(entity, instance);
+        assertUserTaskEntityInputs(entity, instance);
+        assertUserTaskEntityOutputs(entity, instance);
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
 
     }
@@ -171,161 +168,191 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
     @Test
     public void testFindByIdentityByActualOwner() {
 
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Homer", "Group"));
 
-        Assertions.assertThat(result)
+        assertThat(result)
                 .hasSize(1);
 
         verify(connect, times(2)).apply(any(UserTaskInstance.class));
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
-    public void testFindByIdentityByPotentialOwners() {
-        UserTaskInstance instance = createUserTaskInstance();
+    public void testFindByIdentityByPotentialUsers() {
+        UserTaskInstance reservedTaskInstance = getReservedUserTaskInstance();
+        UserTaskInstance activeUserTaskInstance = getActiveUserTaskInstance();
 
-        userTaskInstances.create(instance);
+        List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Liza"));
 
-        List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Liza", "Group"));
-
-        Assertions.assertThat(result)
-                .hasSize(1);
-
-        verify(connect, times(2)).apply(any(UserTaskInstance.class));
-
-        List<UserTaskInstance> result2 = userTaskInstances.findByIdentity(IdentityProviders.of("Bart", "Simpson"));
-
-        Assertions.assertThat(result2)
-                .hasSize(1);
+        assertThat(result)
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("id", activeUserTaskInstance.getId());
 
         verify(connect, times(3)).apply(any(UserTaskInstance.class));
 
-        userTaskInstances.remove(instance);
+        result = userTaskInstances.findByIdentity(IdentityProviders.of("Maggie", "Simpson"));
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(result)
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("id", activeUserTaskInstance.getId());
+
+        verify(connect, times(4)).apply(any(UserTaskInstance.class));
+
+        result = userTaskInstances.findByIdentity(IdentityProviders.of("Liza", "Group"));
+
+        assertThat(result)
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("id", activeUserTaskInstance.getId());
+
+        verify(connect, times(5)).apply(any(UserTaskInstance.class));
+
+        userTaskInstances.remove(activeUserTaskInstance);
+        userTaskInstances.remove(reservedTaskInstance);
+
+        assertThat(userTaskInstances.exists(activeUserTaskInstance.getId()))
+                .isFalse();
+        assertThat(userTaskInstances.exists(reservedTaskInstance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testFindByIdentityByPotentialGroups() {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance reservedTaskInstance = getReservedUserTaskInstance();
+        UserTaskInstance activeUserTaskInstance = getActiveUserTaskInstance();
 
         List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham", "Admin", "Simpson"));
 
-        Assertions.assertThat(result)
-                .hasSize(1);
+        assertThat(result)
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("id", activeUserTaskInstance.getId());
 
-        verify(connect, times(2)).apply(any(UserTaskInstance.class));
+        verify(connect, times(3)).apply(any(UserTaskInstance.class));
 
-        userTaskInstances.remove(instance);
+        userTaskInstances.remove(activeUserTaskInstance);
+        userTaskInstances.remove(reservedTaskInstance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(activeUserTaskInstance.getId()))
+                .isFalse();
+        assertThat(userTaskInstances.exists(reservedTaskInstance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testFindByIdentityByAdminUsers() {
-
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Seymour", "Group"));
 
-        Assertions.assertThat(result)
+        assertThat(result)
                 .hasSize(1);
 
         verify(connect, times(2)).apply(any(UserTaskInstance.class));
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testFindByIdentityByAdminGroups() {
-        UserTaskInstance instance = createUserTaskInstance();
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
-        userTaskInstances.create(instance);
+        List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham"));
 
-        List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham", "Administrator", "Managers"));
+        assertThat(result)
+                .hasSize(0);
 
-        Assertions.assertThat(result)
+        verify(connect, times(1)).apply(any(UserTaskInstance.class));
+
+        result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham", "Administrators", "IT"));
+
+        assertThat(result)
                 .hasSize(1);
 
         verify(connect, times(2)).apply(any(UserTaskInstance.class));
 
+        result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham", "Managers", "IT"));
+
+        assertThat(result)
+                .hasSize(1);
+
+        verify(connect, times(3)).apply(any(UserTaskInstance.class));
+
+        assertThat(result)
+                .hasSize(1);
+
+        result = userTaskInstances.findByIdentity(IdentityProviders.of("Abraham", "Administrators", "Managers", "IT"));
+
+        assertThat(result)
+                .hasSize(1);
+
+        verify(connect, times(4)).apply(any(UserTaskInstance.class));
+
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testFindByIdentityByExcludedUser() {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getActiveUserTaskInstance();
 
         List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Ned"));
 
-        Assertions.assertThat(result)
+        assertThat(result)
                 .hasSize(0);
 
         verify(connect, times(1)).apply(any(UserTaskInstance.class));
 
         result = userTaskInstances.findByIdentity(IdentityProviders.of("Bart"));
 
-        Assertions.assertThat(result)
+        assertThat(result)
                 .hasSize(0);
 
         verify(connect, times(1)).apply(any(UserTaskInstance.class));
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testFindByIdentityByUnknownUser() {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getActiveUserTaskInstance();
 
         List<UserTaskInstance> result = userTaskInstances.findByIdentity(IdentityProviders.of("Someone", "Group"));
 
-        Assertions.assertThat(result)
+        assertThat(result)
                 .hasSize(0);
 
         verify(connect, times(1)).apply(any(UserTaskInstance.class));
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testAttachments() throws URISyntaxException {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         Optional<UserTaskInstanceEntity> entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional)
+        assertThat(entityOptional)
                 .isNotNull()
                 .isPresent();
 
@@ -340,7 +367,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        TestUtils.assertUserTaskEntityAttachments(entityOptional.get().getAttachments(), instance.getAttachments());
+        assertUserTaskEntityAttachments(entityOptional.get().getAttachments(), instance.getAttachments());
 
         Attachment attachment2 = new Attachment("2", "Admin");
         attachment2.setName("attachment 2");
@@ -350,7 +377,7 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
         instance.addAttachment(attachment2);
 
         entityOptional = userTaskInstanceRepository.findById(instance.getId());
-        TestUtils.assertUserTaskEntityAttachments(entityOptional.get().getAttachments(), instance.getAttachments());
+        assertUserTaskEntityAttachments(entityOptional.get().getAttachments(), instance.getAttachments());
 
         instance.removeAttachment(attachment);
         instance.removeAttachment(attachment2);
@@ -359,27 +386,25 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional.get().getAttachments())
+        assertThat(entityOptional.get().getAttachments())
                 .isEmpty();
 
-        Assertions.assertThat(attachmentRepository.findAll())
+        assertThat(attachmentRepository.findAll())
                 .isEmpty();
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     @Test
     public void testComments() {
-        UserTaskInstance instance = createUserTaskInstance();
-
-        userTaskInstances.create(instance);
+        UserTaskInstance instance = getReservedUserTaskInstance();
 
         Optional<UserTaskInstanceEntity> entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional)
+        assertThat(entityOptional)
                 .isNotNull()
                 .isPresent();
 
@@ -395,10 +420,10 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         UserTaskInstanceEntity userTaskInstanceEntity = entityOptional.get();
 
-        Assertions.assertThat(userTaskInstanceEntity.getComments())
+        assertThat(userTaskInstanceEntity.getComments())
                 .hasSize(1);
 
-        TestUtils.assertUserTaskEntityComments(entityOptional.get().getComments(), instance.getComments());
+        assertUserTaskEntityComments(entityOptional.get().getComments(), instance.getComments());
 
         Comment comment2 = new Comment("2", "Admin");
         comment2.setContent("This the comment 2");
@@ -410,47 +435,57 @@ public abstract class BaseQuarkusJPAUserTaskInstancesTest {
 
         userTaskInstanceEntity = entityOptional.get();
 
-        Assertions.assertThat(userTaskInstanceEntity.getComments())
+        assertThat(userTaskInstanceEntity.getComments())
                 .hasSize(2);
 
-        TestUtils.assertUserTaskEntityComments(userTaskInstanceEntity.getComments(), instance.getComments());
+        assertUserTaskEntityComments(userTaskInstanceEntity.getComments(), instance.getComments());
 
         instance.removeComment(comment);
         instance.removeComment(comment2);
 
         entityOptional = userTaskInstanceRepository.findById(instance.getId());
 
-        Assertions.assertThat(entityOptional.get().getComments())
+        assertThat(entityOptional.get().getComments())
                 .isEmpty();
 
-        Assertions.assertThat(commentRepository.findAll())
+        assertThat(commentRepository.findAll())
                 .isEmpty();
 
         userTaskInstances.remove(instance);
 
-        Assertions.assertThat(userTaskInstances.exists(instance.getId()))
+        assertThat(userTaskInstances.exists(instance.getId()))
                 .isFalse();
     }
 
     private void assertEntityAndInstance(UserTaskInstanceEntity entity, UserTaskInstance instance) {
-        TestUtils.assertUserTaskEntityData(entity, instance);
+        assertUserTaskEntityData(entity, instance);
 
-        TestUtils.assertUserTaskEntityPotentialUserAndGroups(entity, instance);
-        TestUtils.assertUserTaskEntityAdminUserAndGroups(entity, instance);
-        TestUtils.assertUserTaskEntityExcludedUsers(entity, instance);
+        assertUserTaskEntityPotentialUserAndGroups(entity, instance);
+        assertUserTaskEntityAdminUserAndGroups(entity, instance);
+        assertUserTaskEntityExcludedUsers(entity, instance);
 
-        TestUtils.assertUserTaskEntityInputs(entity, instance);
-        TestUtils.assertUserTaskEntityOutputs(entity, instance);
+        assertUserTaskEntityInputs(entity, instance);
+        assertUserTaskEntityOutputs(entity, instance);
 
-        TestUtils.assertUserTaskEntityAttachments(entity.getAttachments(), instance.getAttachments());
-        TestUtils.assertUserTaskEntityComments(entity.getComments(), instance.getComments());
-        TestUtils.assertUserTaskEntityMetadata(entity, instance);
+        assertUserTaskEntityAttachments(entity.getAttachments(), instance.getAttachments());
+        assertUserTaskEntityComments(entity.getComments(), instance.getComments());
+        assertUserTaskEntityMetadata(entity, instance);
     }
 
-    private DefaultUserTaskInstance createUserTaskInstance() {
-        DefaultUserTaskInstance instance = TestUtils.createUserTaskInstance();
+    private UserTaskInstance getReservedUserTaskInstance() {
+        DefaultUserTaskInstance instance = createReservedUserTaskInstance();
 
         instance.setInstances(userTaskInstances);
+        userTaskInstances.create(instance);
+
+        return instance;
+    }
+
+    private UserTaskInstance getActiveUserTaskInstance() {
+        DefaultUserTaskInstance instance = createActiveUserTaskInstance();
+
+        instance.setInstances(userTaskInstances);
+        userTaskInstances.create(instance);
 
         return instance;
     }

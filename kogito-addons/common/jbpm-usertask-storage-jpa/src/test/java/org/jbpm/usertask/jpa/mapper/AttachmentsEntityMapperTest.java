@@ -51,7 +51,7 @@ public class AttachmentsEntityMapperTest {
 
     @Test
     public void testMapAttachmentsFromInstanceToEntity() {
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         Attachment attachment = new Attachment("1", "John");
@@ -98,7 +98,7 @@ public class AttachmentsEntityMapperTest {
 
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
 
         AttachmentEntity attachment = new AttachmentEntity();
         attachment.setId("1");

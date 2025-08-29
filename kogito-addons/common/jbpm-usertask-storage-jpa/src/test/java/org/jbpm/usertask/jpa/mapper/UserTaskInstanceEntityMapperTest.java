@@ -57,7 +57,7 @@ public class UserTaskInstanceEntityMapperTest {
 
     @Test
     public void testUserTaskInstanceToUserTaskEntityMapper() {
-        UserTaskInstance userTaskInstance = TestUtils.createUserTaskInstance();
+        UserTaskInstance userTaskInstance = TestUtils.createCompletedUserTaskInstance();
 
         UserTaskInstanceEntity userTaskInstanceEntity = new UserTaskInstanceEntity();
 

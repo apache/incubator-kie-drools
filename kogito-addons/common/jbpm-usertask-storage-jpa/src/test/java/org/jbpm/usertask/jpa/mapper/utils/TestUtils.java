@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.assertj.core.api.Assertions;
 import org.jbpm.usertask.jpa.mapper.models.Person;
 import org.jbpm.usertask.jpa.model.AttachmentEntity;
 import org.jbpm.usertask.jpa.model.CommentEntity;
@@ -41,22 +40,28 @@ import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class TestUtils {
 
     private TestUtils() {
     }
 
     public static void assertUserTaskEntityData(UserTaskInstanceEntity userTaskInstanceEntity, UserTaskInstance userTaskInstance) {
-        Assertions.assertThat(userTaskInstanceEntity)
+        assertThat(userTaskInstanceEntity)
                 .hasFieldOrPropertyWithValue("id", userTaskInstance.getId())
                 .hasFieldOrPropertyWithValue("userTaskId", userTaskInstance.getUserTaskId())
                 .hasFieldOrPropertyWithValue("taskName", userTaskInstance.getTaskName())
                 .hasFieldOrPropertyWithValue("taskDescription", userTaskInstance.getTaskDescription())
                 .hasFieldOrPropertyWithValue("taskPriority", userTaskInstance.getTaskPriority())
                 .hasFieldOrPropertyWithValue("status", userTaskInstance.getStatus().getName())
-                .hasFieldOrPropertyWithValue("terminationType", userTaskInstance.getStatus().getTerminate().toString())
                 .hasFieldOrPropertyWithValue("externalReferenceId", userTaskInstance.getExternalReferenceId())
                 .hasFieldOrPropertyWithValue("actualOwner", userTaskInstance.getActualOwner());
+
+        if (userTaskInstanceEntity.getTerminationType() != null) {
+            assertThat(userTaskInstanceEntity.getTerminationType())
+                    .isEqualTo(userTaskInstance.getStatus().getTerminate().toString());
+        }
     }
 
     public static void assertUserTaskInstanceData(UserTaskInstance userTaskInstance, UserTaskInstanceEntity userTaskInstanceEntity) {
@@ -64,7 +69,7 @@ public class TestUtils {
                 Objects.isNull(userTaskInstanceEntity.getTerminationType()) ? null : UserTaskState.TerminationType.valueOf(userTaskInstanceEntity.getTerminationType());
         UserTaskState state = UserTaskState.of(userTaskInstanceEntity.getStatus(), terminationType);
 
-        Assertions.assertThat(userTaskInstance)
+        assertThat(userTaskInstance)
                 .hasFieldOrPropertyWithValue("id", userTaskInstanceEntity.getId())
                 .hasFieldOrPropertyWithValue("userTaskId", userTaskInstanceEntity.getUserTaskId())
                 .hasFieldOrPropertyWithValue("taskName", userTaskInstanceEntity.getTaskName())
@@ -104,13 +109,13 @@ public class TestUtils {
     }
 
     private static void assertUserOrGroupsAssignments(Collection<String> entityAssignments, Collection<String> instanceAssignments) {
-        Assertions.assertThat(entityAssignments)
+        assertThat(entityAssignments)
                 .hasSize(instanceAssignments.size())
                 .containsExactlyInAnyOrder(instanceAssignments.toArray(new String[0]));
     }
 
     public static void assertUserTaskEntityComments(Collection<CommentEntity> entityComments, Collection<Comment> instanceComments) {
-        Assertions.assertThat(entityComments)
+        assertThat(entityComments)
                 .hasSize(instanceComments.size());
 
         entityComments.forEach(entityComment -> {
@@ -118,12 +123,12 @@ public class TestUtils {
                     .filter(instanceComment -> instanceComment.getId().equals(entityComment.getId()))
                     .findFirst();
 
-            Assertions.assertThat(optional)
+            assertThat(optional)
                     .isPresent();
 
             Comment instanceComment = optional.get();
 
-            Assertions.assertThat(entityComment)
+            assertThat(entityComment)
                     .hasFieldOrPropertyWithValue("id", instanceComment.getId())
                     .hasFieldOrPropertyWithValue("comment", instanceComment.getContent())
                     .hasFieldOrPropertyWithValue("updatedBy", instanceComment.getUpdatedBy())
@@ -132,7 +137,7 @@ public class TestUtils {
     }
 
     public static void assertUserTaskInstanceComments(Collection<Comment> instanceComments, Collection<CommentEntity> entityComments) {
-        Assertions.assertThat(instanceComments)
+        assertThat(instanceComments)
                 .hasSize(instanceComments.size());
 
         instanceComments.forEach(instanceComment -> {
@@ -140,12 +145,12 @@ public class TestUtils {
                     .filter(entityComment -> entityComment.getId().equals(instanceComment.getId()))
                     .findFirst();
 
-            Assertions.assertThat(optional)
+            assertThat(optional)
                     .isPresent();
 
             CommentEntity entityComment = optional.get();
 
-            Assertions.assertThat(instanceComment)
+            assertThat(instanceComment)
                     .hasFieldOrPropertyWithValue("id", entityComment.getId())
                     .hasFieldOrPropertyWithValue("content", entityComment.getComment())
                     .hasFieldOrPropertyWithValue("updatedBy", entityComment.getUpdatedBy())
@@ -154,7 +159,7 @@ public class TestUtils {
     }
 
     public static void assertUserTaskEntityAttachments(Collection<AttachmentEntity> entityAttachments, Collection<Attachment> instanceAttachments) {
-        Assertions.assertThat(entityAttachments)
+        assertThat(entityAttachments)
                 .hasSize(instanceAttachments.size());
 
         entityAttachments.forEach(entityAttachment -> {
@@ -162,12 +167,12 @@ public class TestUtils {
                     .filter(instanceAttachment -> instanceAttachment.getId().equals(entityAttachment.getId()))
                     .findFirst();
 
-            Assertions.assertThat(optional)
+            assertThat(optional)
                     .isPresent();
 
             Attachment instanceAttachment = optional.get();
 
-            Assertions.assertThat(entityAttachment)
+            assertThat(entityAttachment)
                     .hasFieldOrPropertyWithValue("id", instanceAttachment.getId())
                     .hasFieldOrPropertyWithValue("name", instanceAttachment.getName())
                     .hasFieldOrPropertyWithValue("updatedBy", instanceAttachment.getUpdatedBy())
@@ -177,7 +182,7 @@ public class TestUtils {
     }
 
     public static void assertUserTaskInstanceAttachments(Collection<Attachment> instanceAttachments, Collection<AttachmentEntity> entityAttachments) {
-        Assertions.assertThat(instanceAttachments)
+        assertThat(instanceAttachments)
                 .hasSize(instanceAttachments.size());
 
         instanceAttachments.forEach(instanceAttachment -> {
@@ -185,12 +190,12 @@ public class TestUtils {
                     .filter(entityAttachment -> entityAttachment.getId().equals(instanceAttachment.getId()))
                     .findFirst();
 
-            Assertions.assertThat(optional)
+            assertThat(optional)
                     .isPresent();
 
             AttachmentEntity entityAttachment = optional.get();
 
-            Assertions.assertThat(instanceAttachment)
+            assertThat(instanceAttachment)
                     .hasFieldOrPropertyWithValue("id", entityAttachment.getId())
                     .hasFieldOrPropertyWithValue("name", entityAttachment.getName())
                     .hasFieldOrPropertyWithValue("updatedBy", entityAttachment.getUpdatedBy())
@@ -212,12 +217,12 @@ public class TestUtils {
     }
 
     private static void assertUserTaskEntityMapData(Collection<? extends TaskNamedDataEntity> entityData, Map<String, Object> instanceData) {
-        Assertions.assertThat(entityData.size())
+        assertThat(entityData.size())
                 .isEqualTo(instanceData.size());
 
         entityData.stream().forEach(entity -> {
             Object value = instanceData.get(entity.getName());
-            Assertions.assertThat(entity)
+            assertThat(entity)
                     .isNotNull()
                     .matches(e -> instanceData.containsKey(e.getName()))
                     .matches(e -> Objects.isNull(e.getValue()) ? Objects.isNull(value) : e.getJavaType().equals(value.getClass().getName()));
@@ -237,34 +242,32 @@ public class TestUtils {
     }
 
     private static void assertUserTaskInstanceMapData(Map<String, Object> instanceData, Collection<? extends TaskNamedDataEntity> entityData) {
-        Assertions.assertThat(instanceData.size())
+        assertThat(instanceData.size())
                 .isEqualTo(entityData.size());
 
         instanceData.forEach((key, value) -> {
             Optional<? extends TaskNamedDataEntity> optional = entityData.stream().filter(data -> data.getName().equals(key)).findFirst();
 
-            Assertions.assertThat(optional)
+            assertThat(optional)
                     .isPresent();
 
             if (Objects.nonNull(value)) {
                 TaskNamedDataEntity data = optional.get();
-                Assertions.assertThat(value.getClass().getName())
+                assertThat(value.getClass().getName())
                         .isEqualTo(data.getJavaType());
             }
         });
     }
 
-    public static DefaultUserTaskInstance createUserTaskInstance() {
+    private static DefaultUserTaskInstance createUserTaskInstance() {
         DefaultUserTaskInstance instance = new DefaultUserTaskInstance();
         instance.setId(UUID.randomUUID().toString());
         instance.setUserTaskId("user-task-id");
         instance.setTaskName("test-task");
         instance.setTaskDescription("this is a test task description");
         instance.setTaskPriority("1");
-        instance.setStatus(UserTaskState.of("Complete", UserTaskState.TerminationType.COMPLETED));
 
-        instance.setActualOwner("Homer");
-        instance.setPotentialUsers(Set.of("Bart", "Liza"));
+        instance.setPotentialUsers(Set.of("Bart", "Liza", "Maggie"));
         instance.setPotentialGroups(Set.of("Simpson", "Family"));
         instance.setAdminUsers(Set.of("Seymour"));
         instance.setAdminGroups(Set.of("Administrators", "Managers"));
@@ -310,6 +313,27 @@ public class TestUtils {
         instance.setOutput("out_person", new Person("Jon", "Snow", 17));
         instance.setOutput("out_null", null);
 
+        return instance;
+    }
+
+    public static DefaultUserTaskInstance createActiveUserTaskInstance() {
+        DefaultUserTaskInstance instance = createUserTaskInstance();
+        instance.setActualOwner(null);
+        instance.setStatus(UserTaskState.of("Ready"));
+        return instance;
+    }
+
+    public static DefaultUserTaskInstance createReservedUserTaskInstance() {
+        DefaultUserTaskInstance instance = createUserTaskInstance();
+        instance.setStatus(UserTaskState.of("Reserved"));
+        instance.setActualOwner("Homer");
+        return instance;
+    }
+
+    public static DefaultUserTaskInstance createCompletedUserTaskInstance() {
+        DefaultUserTaskInstance instance = createUserTaskInstance();
+        instance.setStatus(UserTaskState.of("Complete", UserTaskState.TerminationType.COMPLETED));
+        instance.setActualOwner("Homer");
         return instance;
     }
 

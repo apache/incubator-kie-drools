@@ -49,7 +49,7 @@ public class TaskMetadataEntityMapperTest {
 
     @Test
     public void testMapMetadataFromInstanceToEntity() {
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         mapper.mapInstanceToEntity(instance, entity);
@@ -85,7 +85,7 @@ public class TaskMetadataEntityMapperTest {
     @Test
     public void testMapMetadataFromEntityToInstance() {
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         TaskMetadataEntity metadata = new TaskMetadataEntity();
@@ -117,7 +117,7 @@ public class TaskMetadataEntityMapperTest {
     @Test
     public void testFullMappingCircle() {
 
-        UserTaskInstance instance = TestUtils.createUserTaskInstance();
+        UserTaskInstance instance = TestUtils.createCompletedUserTaskInstance();
         UserTaskInstanceEntity entity = new UserTaskInstanceEntity();
 
         mapper.mapInstanceToEntity(instance, entity);
