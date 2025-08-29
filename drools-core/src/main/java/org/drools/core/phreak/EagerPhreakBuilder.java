@@ -147,7 +147,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(tn);
             if (pmem != null) {
                 List<LeftTupleNode> splits = exclBranchRoots.stream().map( pair -> pair.parent).filter(Objects::nonNull).collect(Collectors.toList());
-                LazyPhreakBuilder.flushStagedTuples(tn, pmem, splits, wm);
+                LazyPhreakBuilder.flushStagedTuples(wm, tn, pmem, splits);
             }
         }
 
