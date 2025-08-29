@@ -1441,7 +1441,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                getOrCreateSegmentMemory( (LeftTupleSource) node, reteEvaluator );
+                                getOrCreateSegmentMemory( reteEvaluator, (LeftTupleSource) node );
                             }
                         }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
@@ -1580,7 +1580,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         bm.setSegmentMemory(smem);
 
         if (betaNode.isRightInputIsRiaNode()) {
-            RightInputAdapterNode riaNode = createRiaSegmentMemory( betaNode, reteEvaluator );
+            RightInputAdapterNode riaNode = createRiaSegmentMemory( reteEvaluator, betaNode );
 
             PathMemory riaMem = reteEvaluator.getNodeMemory(riaNode);
             bm.setRiaRuleMemory((RiaPathMemory) riaMem);
@@ -1641,7 +1641,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                getOrCreateSegmentMemory( (LeftTupleSource) node, reteEvaluator );
+                                getOrCreateSegmentMemory( reteEvaluator, (LeftTupleSource) node );
                             }
                         }
                     }
@@ -1705,7 +1705,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
                 !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
                 !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
-            getOrCreateSegmentMemory(lt, reteEvaluator);
+            getOrCreateSegmentMemory(reteEvaluator, lt);
         }
     }
 }

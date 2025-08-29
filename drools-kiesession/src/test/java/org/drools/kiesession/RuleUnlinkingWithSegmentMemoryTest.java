@@ -223,12 +223,12 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         PathMemory rtn3Rs = wm.getNodeMemory( rtn3 );
 
         // lian
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(lian, wm);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, lian);
         LeftInputAdapterNode.LiaNodeMemory lmem = wm.getNodeMemory( lian );
         assertThat(lmem.getNodePosMaskBit()).isEqualTo(1);
 
         // n1
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(n1, wm);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, n1);
         bm = (BetaMemory) wm.getNodeMemory(n1);
         assertThat(bm.getNodePosMaskBit()).isEqualTo(2);
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
@@ -262,7 +262,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         assertThat(list.contains(rtn3Rs)).isTrue();           
         
         // n4
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(n4, wm);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, n4);
         bm = (BetaMemory) wm.getNodeMemory(n4);
         assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);
@@ -283,7 +283,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         assertThat(list.contains(rtn3Rs)).isTrue();
         
         // n6
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(n6, wm);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, n6);
         bm = (BetaMemory) wm.getNodeMemory(n6);
         assertThat(bm.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(7);

@@ -47,14 +47,14 @@ public class RuntimeSegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentMemory getOrCreateSegmentMemory(LeftTupleNode node, ReteEvaluator reteEvaluator) {
-        return getOrCreateSegmentMemory(reteEvaluator.getNodeMemory((MemoryFactory<? extends Memory>) node), node, reteEvaluator);
+    public static SegmentMemory getOrCreateSegmentMemory(ReteEvaluator reteEvaluator, LeftTupleNode node) {
+        return getOrCreateSegmentMemory(reteEvaluator, node, reteEvaluator.getNodeMemory((MemoryFactory<? extends Memory>) node));
     }
 
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentMemory getOrCreateSegmentMemory(Memory memory, LeftTupleNode node, ReteEvaluator reteEvaluator) {
+    public static SegmentMemory getOrCreateSegmentMemory(ReteEvaluator reteEvaluator, LeftTupleNode node, Memory memory) {
         SegmentMemory smem = memory.getSegmentMemory();
         if ( smem != null ) {
             return smem;
@@ -66,7 +66,7 @@ public class RuntimeSegmentUtilities {
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {
             if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.isRightInputIsRiaNode()) {
-                createRiaSegmentMemory((BetaNode) segmentRoot, reteEvaluator);
+                createRiaSegmentMemory(reteEvaluator, (BetaNode) segmentRoot);
             }
             return smem;
         }
@@ -99,23 +99,23 @@ public class RuntimeSegmentUtilities {
 
         SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
 
-        updateRiaAndTerminalMemory(smem, proto, reteEvaluator);
+        updateRiaAndTerminalMemory(reteEvaluator, smem, proto);
 
         return smem;
     }
 
     public static SegmentMemory getQuerySegmentMemory(ReteEvaluator reteEvaluator, QueryElementNode queryNode) {
         ObjectTypeNode queryOtn = reteEvaluator.getDefaultEntryPoint().getEntryPointNode().getQueryNode();
-        LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), queryOtn);
+        LeftInputAdapterNode liaNode = getQueryLiaNode(queryOtn, queryNode.getQueryElement().getQueryName());
         LiaNodeMemory liam = reteEvaluator.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
-            querySmem = getOrCreateSegmentMemory(liam, liaNode, reteEvaluator);
+            querySmem = getOrCreateSegmentMemory(reteEvaluator, liaNode, liam);
         }
         return querySmem;
     }
 
-    static RightInputAdapterNode createRiaSegmentMemory( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
+    static RightInputAdapterNode createRiaSegmentMemory( ReteEvaluator reteEvaluator, BetaNode betaNode ) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
 
         LeftTupleSource subnetworkLts = riaNode.getStartTupleSource();
@@ -124,12 +124,12 @@ public class RuntimeSegmentUtilities {
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
-            getOrCreateSegmentMemory(rootSubNetwokrMem, subnetworkLts, reteEvaluator);
+            getOrCreateSegmentMemory(reteEvaluator, subnetworkLts, rootSubNetwokrMem);
         }
         return riaNode;
     }
 
-    public static void createChildSegments(ReteEvaluator reteEvaluator, SegmentMemory smem, LeftTupleSinkPropagator sinkProp) {
+    public static void createChildSegments(ReteEvaluator reteEvaluator, LeftTupleSinkPropagator sinkProp, SegmentMemory smem) {
         if ( !smem.isEmpty() ) {
               return; // this can happen when multiple threads are trying to initialize the segment
         }
@@ -144,7 +144,7 @@ public class RuntimeSegmentUtilities {
     public static SegmentMemory createChildSegment(ReteEvaluator reteEvaluator, LeftTupleNode node) {
         Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) node);
         if (memory.getSegmentMemory() == null) {
-            getOrCreateSegmentMemory(memory, node, reteEvaluator);
+            getOrCreateSegmentMemory(reteEvaluator, node, memory);
         }
         return memory.getSegmentMemory();
     }
@@ -157,9 +157,9 @@ public class RuntimeSegmentUtilities {
      * This is because the rianode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
      */
-    private static void updateRiaAndTerminalMemory(SegmentMemory smem,
-                                                   SegmentPrototype proto,
-                                                   ReteEvaluator reteEvaluator) {
+    private static void updateRiaAndTerminalMemory(ReteEvaluator reteEvaluator,
+                                                   SegmentMemory smem,
+                                                   SegmentPrototype proto) {
         for (PathEndNode endNode : proto.getPathEndNodes()) {
             if (!isInsideSubnetwork(endNode, proto)) {
                 // While SegmentPrototypes are added for entire path, for traversal reasons.
@@ -202,13 +202,13 @@ public class RuntimeSegmentUtilities {
         if (pathEndNode.getEagerSegmentPrototypes() != null) {
             for (SegmentPrototype eager : pathEndNode.getEagerSegmentPrototypes()) {
                 if ( pmem.getSegmentMemories()[eager.getPos()] == null) {
-                    getOrCreateSegmentMemory(eager.getRootNode(), reteEvaluator);
+                    getOrCreateSegmentMemory(reteEvaluator, eager.getRootNode());
                 }
             }
         }
     }
 
-    private static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
+    private static LeftInputAdapterNode getQueryLiaNode(ObjectTypeNode queryOtn, String queryName) {
         for (ObjectSink sink : queryOtn.getObjectSinkPropagator().getSinks()) {
             AlphaNode alphaNode = (AlphaNode) sink;
             QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
