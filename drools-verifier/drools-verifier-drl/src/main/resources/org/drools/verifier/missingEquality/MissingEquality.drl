@@ -22,7 +22,6 @@ package org.drools.verifier.missingEquality
 
 //list any import classes here.
 import org.drools.drl.parser.impl.Operator;
-import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.LiteralRestriction;
@@ -81,25 +80,25 @@ rule "Missing restriction in LiteralRestrictions"
         //
         ) or (
                 $r :LiteralRestriction(
-                    operator == MatchesEvaluatorsDefinition.MATCHES,
+                    operator == Operator.determineOperator("matches", false),
                     valueAsString == $r.valueAsString
                 )
             and
                 not LiteralRestriction(
                     fieldPath == $r.fieldPath,
-                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
+                    operator == Operator.determineOperator("matches", true),
                     patternIsNot == $r.patternIsNot,
                     valueAsString == $r.valueAsString
                 )
         ) or (
                 $r :LiteralRestriction(
-                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
+                    operator == Operator.determineOperator("matches", true),
                     valueAsString == $r.valueAsString
                 )
             and
                 not LiteralRestriction(
                     fieldPath == $r.fieldPath,
-                    operator == MatchesEvaluatorsDefinition.MATCHES,
+                    operator == Operator.determineOperator("matches", false),
                     patternIsNot == $r.patternIsNot,
                     valueAsString == $r.valueAsString
                 )

@@ -23,7 +23,6 @@ import java.util.List;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;

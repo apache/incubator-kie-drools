@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
@@ -44,7 +43,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.time.TemporalDependencyMatrix;
-import org.kie.api.definition.rule.Rule;
 
 /**
  * Utility functions for reteoo build
