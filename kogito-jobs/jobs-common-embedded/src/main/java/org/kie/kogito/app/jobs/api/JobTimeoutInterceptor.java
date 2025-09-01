@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 
 public interface JobTimeoutInterceptor extends Comparable<JobTimeoutInterceptor> {
 
-    Callable<Void> chainIntercept(Callable<Void> callable);
+    Callable<JobTimeoutExecution> chainIntercept(Callable<JobTimeoutExecution> callable);
 
     default Integer priority() {
         return 10;

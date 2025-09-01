@@ -23,6 +23,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.JobsService;
@@ -43,9 +45,20 @@ public class QuarkusJPAJobStoreTest {
     @Inject
     TestJobSchedulerListener listener;
 
+    @Inject
+    TestJobExecutor testJobExecutor;
+
+    @Inject
+    TestExceptionHandler exceptionHandler;
+
+    @BeforeEach
+    public void init() {
+        testJobExecutor.reset();
+        exceptionHandler.reset();
+    }
+
     @Test
     public void testBasicPersistence() throws Exception {
-
         ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("1", "-1",
                 ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
                 "processInstanceId", null, "processId", null, "nodeInstanceId");
@@ -55,6 +68,19 @@ public class QuarkusJPAJobStoreTest {
 
         assertThat(listener.await(5, TimeUnit.SECONDS)).isTrue();
 
+    }
+
+    @Test
+    public void testBasicError() throws Exception {
+        testJobExecutor.setNumberOfFailures(4);
+        ProcessInstanceJobDescription jobDescription = new ProcessInstanceJobDescription("1", "-1",
+                ExactExpirationTime.of(Instant.now().plus(Duration.ofSeconds(2)).atZone(ZoneId.of("UTC"))), 5,
+                "processInstanceId", null, "processId", null, "nodeInstanceId");
+
+        listener.setCount(4);
+        jobsService.scheduleJob(jobDescription);
+
+        Awaitility.await().atMost(Duration.ofSeconds(5L)).untilAsserted(() -> assertThat(exceptionHandler.isError()).isTrue());
     }
 
 }

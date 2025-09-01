@@ -16,36 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.springboot;
+package org.kie.kogito.app.jobs.api;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import org.kie.kogito.app.jobs.api.JobSchedulerListener;
 import org.kie.kogito.jobs.service.model.JobDetails;
-import org.springframework.stereotype.Component;
 
-@Component
-public class TestJobSchedulerListener implements JobSchedulerListener {
+public class JobTimeoutExecution {
 
-    private CountDownLatch latch;
+    private JobDetails jobDetails;
+    private Exception exception;
 
-    void setCount(Integer count) {
-        latch = new CountDownLatch(count);
+    public JobTimeoutExecution(JobDetails jobDetails) {
+        this(jobDetails, null);
     }
 
-    public boolean await(long timeout, TimeUnit unit) throws Exception {
-        return latch.await(timeout, unit);
+    public JobTimeoutExecution(JobDetails jobDetails, Exception exception) {
+        this.jobDetails = jobDetails;
+        this.exception = exception;
     }
 
-    @Override
-    public void onFailure(JobDetails jobDetails) {
-        latch.countDown();
+    public Exception getException() {
+        return exception;
     }
 
-    @Override
-    public void onExecution(JobDetails jobDetails) {
-        latch.countDown();
+    public JobDetails getJobDetails() {
+        return jobDetails;
     }
-
 }

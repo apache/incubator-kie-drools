@@ -16,36 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.springboot;
+package org.kie.kogito.app.jobs.quarkus;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
 
-import org.kie.kogito.app.jobs.api.JobSchedulerListener;
-import org.kie.kogito.jobs.service.model.JobDetails;
-import org.springframework.stereotype.Component;
+import org.kie.kogito.app.jobs.api.JobTimeoutExecution;
+import org.kie.kogito.app.jobs.api.JobTimeoutInterceptor;
 
-@Component
-public class TestJobSchedulerListener implements JobSchedulerListener {
+import io.quarkus.narayana.jta.QuarkusTransaction;
 
-    private CountDownLatch latch;
-
-    void setCount(Integer count) {
-        latch = new CountDownLatch(count);
-    }
-
-    public boolean await(long timeout, TimeUnit unit) throws Exception {
-        return latch.await(timeout, unit);
-    }
+public class TransactionJobTimeoutInterceptor implements JobTimeoutInterceptor {
 
     @Override
-    public void onFailure(JobDetails jobDetails) {
-        latch.countDown();
-    }
+    public Callable<JobTimeoutExecution> chainIntercept(Callable<JobTimeoutExecution> callable) {
+        return new Callable<JobTimeoutExecution>() {
 
-    @Override
-    public void onExecution(JobDetails jobDetails) {
-        latch.countDown();
-    }
+            @Override
+            public JobTimeoutExecution call() throws Exception {
+                return QuarkusTransaction.requiringNew().call(callable);
+            }
 
+        };
+    }
 }

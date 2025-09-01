@@ -20,14 +20,13 @@ package org.kie.kogito.app.jobs.springboot;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.kie.kogito.app.jobs.api.JobExecutor;
 import org.kie.kogito.app.jobs.api.JobScheduler;
 import org.kie.kogito.app.jobs.api.JobSchedulerBuilder;
 import org.kie.kogito.app.jobs.api.JobSchedulerListener;
 import org.kie.kogito.app.jobs.api.JobSynchronization;
-import org.kie.kogito.app.jobs.api.JobTimeoutInterceptor;
+import org.kie.kogito.app.jobs.integrations.ErrorHandlingJobTimeoutInterceptor;
 import org.kie.kogito.app.jobs.integrations.ProcessInstanceJobDescriptionJobInstanceEventAdapter;
 import org.kie.kogito.app.jobs.integrations.ProcessJobDescriptionJobInstanceEventAdapter;
 import org.kie.kogito.app.jobs.integrations.UserTaskInstanceJobDescriptionJobInstanceEventAdapter;
@@ -35,6 +34,7 @@ import org.kie.kogito.app.jobs.spi.JobContextFactory;
 import org.kie.kogito.app.jobs.spi.JobStore;
 import org.kie.kogito.app.jobs.springboot.resource.RestApiConstants;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.handler.ExceptionHandler;
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -86,32 +85,13 @@ public class SpringbootJobsService implements JobsService {
     protected String serviceURL;
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    protected PlatformTransactionManager transactionManager;
+
+    @Autowired(required = false)
+    protected List<ExceptionHandler> exceptionHandlers;
 
     @PostConstruct
     public void init() {
-        JobTimeoutInterceptor txInterceptor = new JobTimeoutInterceptor() {
-
-            @Override
-            public Callable<Void> chainIntercept(Callable<Void> callable) {
-                TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-                return new Callable<Void>() {
-
-                    @Override
-                    public Void call() throws Exception {
-                        return transactionTemplate.execute(status -> {
-                            try {
-                                return callable.call();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
-                    }
-
-                };
-            }
-        };
-
         this.jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
                 .withEventPublishers(ofNullable(eventPublisher).toArray(EventPublisher[]::new))
                 .withJobSchedulerListeners(ofNullable(jobSchedulerListeners).stream().toArray(JobSchedulerListener[]::new))
@@ -126,7 +106,9 @@ public class SpringbootJobsService implements JobsService {
                 .withRetryInterval(retryMillis)
                 .withMaxNumberOfRetries(maxNumberOfRetries)
                 .withRefreshJobsInterval(maxRefreshJobsIntervalWindow * 60 * 1000L)
-                .withTimeoutInterceptor(txInterceptor)
+                .withTimeoutInterceptor(
+                        new TransactionJobTimeoutInterceptor(transactionManager),
+                        new ErrorHandlingJobTimeoutInterceptor(ofNullable(exceptionHandlers).stream().toList()))
                 .withNumberOfWorkerThreads(numberOfWorkerThreads)
                 .withJobSynchronization(new JobSynchronization() {
 

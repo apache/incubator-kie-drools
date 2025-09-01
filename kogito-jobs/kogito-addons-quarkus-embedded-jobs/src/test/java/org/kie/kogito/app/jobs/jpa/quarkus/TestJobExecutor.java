@@ -16,36 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.springboot;
+package org.kie.kogito.app.jobs.jpa.quarkus;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import org.kie.kogito.app.jobs.api.JobSchedulerListener;
+import org.kie.kogito.app.jobs.api.JobExecutor;
 import org.kie.kogito.jobs.service.model.JobDetails;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Component
-public class TestJobSchedulerListener implements JobSchedulerListener {
+import jakarta.inject.Singleton;
 
-    private CountDownLatch latch;
+@Singleton
+public class TestJobExecutor implements JobExecutor {
 
-    void setCount(Integer count) {
-        latch = new CountDownLatch(count);
-    }
+    private Logger LOG = LoggerFactory.getLogger(TestJobExecutor.class);
+    private int numberOfFailures;
 
-    public boolean await(long timeout, TimeUnit unit) throws Exception {
-        return latch.await(timeout, unit);
+    @Override
+    public boolean accept(JobDetails jobDescription) {
+        return true;
     }
 
     @Override
-    public void onFailure(JobDetails jobDetails) {
-        latch.countDown();
+    public void execute(JobDetails jobDescription) {
+        LOG.info("executing {}", jobDescription);
+        if (numberOfFailures > 0) {
+            --numberOfFailures;
+            throw new RuntimeException();
+        }
     }
 
-    @Override
-    public void onExecution(JobDetails jobDetails) {
-        latch.countDown();
+    public void setNumberOfFailures(int numberOfFailures) {
+        this.numberOfFailures = numberOfFailures;
+    }
+
+    public void reset() {
+        numberOfFailures = 0;
     }
 
 }

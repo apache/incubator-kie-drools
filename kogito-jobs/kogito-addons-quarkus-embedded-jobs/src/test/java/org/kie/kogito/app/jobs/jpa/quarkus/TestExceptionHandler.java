@@ -16,36 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.jobs.springboot;
+package org.kie.kogito.app.jobs.jpa.quarkus;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import org.kie.kogito.handler.ExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.kie.kogito.app.jobs.api.JobSchedulerListener;
-import org.kie.kogito.jobs.service.model.JobDetails;
-import org.springframework.stereotype.Component;
+import jakarta.inject.Singleton;
 
-@Component
-public class TestJobSchedulerListener implements JobSchedulerListener {
+@Singleton
+public class TestExceptionHandler implements ExceptionHandler {
 
-    private CountDownLatch latch;
+    private static final Logger LOG = LoggerFactory.getLogger(TestExceptionHandler.class);
 
-    void setCount(Integer count) {
-        latch = new CountDownLatch(count);
-    }
-
-    public boolean await(long timeout, TimeUnit unit) throws Exception {
-        return latch.await(timeout, unit);
-    }
+    private boolean error;
 
     @Override
-    public void onFailure(JobDetails jobDetails) {
-        latch.countDown();
+    public void handle(Exception th) {
+        LOG.info("error", th);
+        error = true;
     }
 
-    @Override
-    public void onExecution(JobDetails jobDetails) {
-        latch.countDown();
+    public void reset() {
+        error = false;
+    }
+
+    public boolean isError() {
+        return error;
     }
 
 }

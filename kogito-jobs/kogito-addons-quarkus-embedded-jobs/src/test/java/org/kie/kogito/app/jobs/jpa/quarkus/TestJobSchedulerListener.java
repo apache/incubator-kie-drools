@@ -40,6 +40,11 @@ public class TestJobSchedulerListener implements JobSchedulerListener {
     }
 
     @Override
+    public void onFailure(JobDetails jobDetails) {
+        latch.countDown();
+    }
+
+    @Override
     public void onExecution(JobDetails jobDetails) {
         latch.countDown();
     }
