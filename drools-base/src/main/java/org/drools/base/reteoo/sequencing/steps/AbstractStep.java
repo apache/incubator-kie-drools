@@ -51,7 +51,7 @@ public abstract class AbstractStep implements Step {
         public void onFail(Step step, SequenceMemory sequenceMemory, ValueResolver valueResolver) {
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             step.deactivate(sequenceMemory, valueResolver);
-            step.getSequence().fail(sequencerMemory.getSequenceMemory(step.getSequence()), valueResolver);
+            sequencerMemory.getSequencer().stop(sequenceMemory, valueResolver);
         }
     }
 }

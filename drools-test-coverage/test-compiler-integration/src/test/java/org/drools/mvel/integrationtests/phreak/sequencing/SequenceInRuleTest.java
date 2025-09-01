@@ -2,6 +2,7 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.sequencing.Sequence;
@@ -11,6 +12,8 @@ import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.rule.Pattern;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.CoreComponentFactory;
@@ -91,6 +94,17 @@ public class SequenceInRuleTest {
         Sequence seq = new Sequence(0, Step.of(circuit1));
         seq.setFilters(new Pattern[]{bpattern, cpattern});
         rule.addSequence(seq);
+        rule.setConsequence(new Consequence() {
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public void evaluate(ConsequenceContext knowledgeHelper, ValueResolver valueResolver) throws Exception {
+                System.out.println( "hello" );
+            }
+        });
 
         rbase.addPackage(pkg);
 

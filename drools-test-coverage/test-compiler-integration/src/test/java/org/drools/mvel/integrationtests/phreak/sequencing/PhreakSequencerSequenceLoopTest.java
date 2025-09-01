@@ -69,7 +69,6 @@ public class PhreakSequencerSequenceLoopTest extends AbstractPhreakSequencerSubs
 
         createSession();
 
-
         assertThat(sequencerMemory.getSequenceMemory(seq0).getCount()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         assertThat(sequencerMemory.getSequenceMemory(seq0).getCount()).isEqualTo(0);

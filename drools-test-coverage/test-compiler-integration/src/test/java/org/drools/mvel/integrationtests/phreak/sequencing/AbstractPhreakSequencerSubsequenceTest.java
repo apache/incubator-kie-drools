@@ -5,6 +5,11 @@ import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.base.reteoo.sequencing.steps.ParallelStep;
+import org.drools.base.reteoo.sequencing.steps.Step;
+import org.drools.base.reteoo.sequencing.steps.Step.StepType;
+import org.drools.base.reteoo.sequencing.steps.SubsequenceStep;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.consequence.Consequence;
@@ -16,6 +21,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SequenceNode;
 import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
@@ -34,11 +40,14 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class AbstractPhreakSequencerSubsequenceTest {
     StatefulKnowledgeSessionImpl session;
     SequenceNodeMemory nodeMemory;
+    PathMemory         pmem;
     SequencerMemory    sequencerMemory;
     BuildContext       buildContext;
     Sequence           seq0;
@@ -147,6 +156,43 @@ public class AbstractPhreakSequencerSubsequenceTest {
         InternalFactHandle fhA0 = (InternalFactHandle) session.insert(new A(0));
         session.fireAllRules();
         nodeMemory = session.getNodeMemory(snode);
+        pmem = nodeMemory.getSegmentMemory().getPathMemories().get(0);
         sequencerMemory = (SequencerMemory) fhA0.getFirstLeftTuple().getContextObject();
+    }
+
+    public int getCurrentStep(SequencerMemory sqncrMemory) {
+        SequenceMemory sqncMemory = sqncrMemory.getChildSequenceMemory();
+
+        List<SequenceMemory> leafSequences = new ArrayList<>();
+        getLeafSequences(sqncrMemory, sqncMemory, leafSequences);
+
+        if (leafSequences.isEmpty()) {
+            return -1;
+        }
+        return leafSequences.get(0).getStep();
+    }
+
+    public void getLeafSequences(SequencerMemory sqncrMemory, SequenceMemory sqncMemory, List<SequenceMemory> leafSequences) {
+        int sqncStep = sqncMemory.getStep();
+
+        Sequence sqnc = sqncMemory.getSequence();
+        if (sqncMemory.getStep() >= sqnc.getSteps().length ) {
+            return;
+        }
+        Step step = sqnc.getSteps()[sqncMemory.getStep()];
+        if (step.getType() == StepType.SUB_SEQUENCE) {
+            SubsequenceStep subsequenceStep = (SubsequenceStep) step;
+            SequenceMemory  subSqncMemory   = sqncrMemory.getSequenceMemory(subsequenceStep.getSubsequence());
+            getLeafSequences(sqncrMemory, subSqncMemory, leafSequences);
+        } else if (step.getType() == StepType.PARALLEL) {
+            ParallelStep parallelStep = (ParallelStep) step;
+            for (int i = 0; i < parallelStep.getSubsequenceSteps().length; i++ ) {
+                SubsequenceStep subsequenceStep = parallelStep.getSubsequenceSteps()[i];
+                SequenceMemory subSqncMemory = sqncrMemory.getSequenceMemory(subsequenceStep.getSequence());
+                getLeafSequences(sqncrMemory, subSqncMemory, leafSequences);
+            }
+        } else {
+            leafSequences.add(sqncMemory);
+        }
     }
 }

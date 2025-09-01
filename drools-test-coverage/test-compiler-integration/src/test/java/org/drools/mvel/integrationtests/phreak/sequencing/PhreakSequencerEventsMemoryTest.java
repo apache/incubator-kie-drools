@@ -48,8 +48,9 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
         LogicCircuit circuit6 = getLogicCircuit();
 
         seq1 = new Sequence(1, Step.of(circuit2));
-        seq2 = new Sequence(2, Step.of(circuit4), Step.of(circuit5));
-
+        seq2 = new Sequence(2, Step.of(circuit4), Step.of(circuit5),
+                            Step.of(m -> m.getData().set(m.getData().size() - m.getEventsStartPosition()-1, "x")));
+        seq2.setOutputSize(1);
         seq0 = new Sequence(0, Step.of(circuit1), Step.of(seq1), Step.of(circuit3), Step.of(seq2), Step.of(circuit6));
 
         seq0.setFilters(new Pattern[]{bpattern});
@@ -68,6 +69,7 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
 
     private static LogicGate get1InputLogicGate() {
         LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 0,
+
                                         new int[]{0}, // B
                                         new int[]{0}, //
                                         0);
@@ -76,40 +78,44 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
 
     @Test
     public void testSequenceEventsMemory() {
-        CircularArrayList<Object> events = sequencerMemory.getEvents();
+        CircularArrayList<Object> events = sequencerMemory.getData();
         assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0});
+        assertThat(to(events)).isEqualTo(new Object[] {0, sequencerMemory.getSequenceMemory(seq1)});
 
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
         assertThat(to(events)).isEqualTo(new Object[] {0}); // It's 0, because the subsequence of 1 input finished and it rewound.
 
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0, 2});
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, null, sequencerMemory.getSequenceMemory(seq2)});
 
         InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(3, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 3}); // This subsequence has two inputs, so its still in the subsequence.
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, null, sequencerMemory.getSequenceMemory(seq2), 3}); // This subsequence has two inputs, so its still in the subsequence.
 
         InternalFactHandle fhB4 = (InternalFactHandle) session.insert(new B(4, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0, 2}); // The subsequence has finished and it's rewound.
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, "x"}); // The subsequence has finished and it's rewound.
 
         InternalFactHandle fhB5 = (InternalFactHandle) session.insert(new B(5, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 5}); // everything has finished and it's added the last input
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, "x", 5}); // everything has finished and it's added the last input
 
         InternalFactHandle fhB6 = (InternalFactHandle) session.insert(new B(6, "b"));
-        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 5}); // nothing is added as the sequence is finished.
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, "x", 5}); // nothing is added as the sequence is finished.
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
     }
 
     public Object[] to(CircularArrayList<Object> events) {
-        Object[] facts = events.toArray();
-        Object[] objs = new Object[facts.length];
-        for(int i = 0; i < facts.length; i++) {
-            if (facts[i] == null) {
+        Object[] data = events.toArray();
+        Object[] objs = new Object[data.length];
+        for(int i = 0; i < data.length; i++) {
+            if (data[i] == null) {
                 continue; // there are null entries sub sequence steps
             }
-            objs[i] = ((B)((FactHandle)facts[i]).getObject()).getObject();
+            if (data[i] instanceof FactHandle) {
+                objs[i] = ((B) ((FactHandle) data[i]).getObject()).getObject();
+            } else {
+                objs[i] = data[i];
+            }
         }
 
         return  objs;

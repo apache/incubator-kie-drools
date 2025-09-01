@@ -286,6 +286,18 @@ public class TupleSetsImpl implements TupleSets {
         return clone;
     }
 
+    @Override
+    public void clearInsert() {
+        clear( getInsertFirst() );
+    }
+
+
+    @Override
+    public void clearDelete() {
+        clear( getDeleteFirst() );
+    }
+
+    @Override
     public void clear() {
         clear( getInsertFirst() );
         clear( getDeleteFirst() );

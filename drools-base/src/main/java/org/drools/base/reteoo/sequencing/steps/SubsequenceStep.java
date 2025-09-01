@@ -24,11 +24,10 @@ public class SubsequenceStep extends AbstractStep implements Step {
             // Also in the future it could be used to optional collect and hold nested array of subevents for later reference.
             CircularArrayList<Object> data = sequenceMemory.getData();
 
-
-            SequenceMemory subSequenceMemory = sequenceMemory.getSequencerMemory().getOrCreateSequenceMemory(sequenceMemory, subsequence, false);
+            SequenceMemory subSequenceMemory = sequenceMemory.getSequencerMemory().getOrCreateSequenceMemory(sequenceMemory, subsequence, data);
             data.addEmpty(subSequenceMemory.getSequence().getOutputSize());
-            data.add(sequenceMemory);
             subSequenceMemory.setEventsStartPosition(sequenceMemory.getData().size());
+            data.add(subSequenceMemory);
         }
         SequenceMemory subSequenceMemory = sequenceMemory.getSequencerMemory().getSequenceMemory(subsequence);
 
@@ -39,8 +38,8 @@ public class SubsequenceStep extends AbstractStep implements Step {
     public void deactivate(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         if (sequence != null) {
             SequenceMemory            subSequenceMemory = sequenceMemory.getSequencerMemory().getSequenceMemory(subsequence);
-            CircularArrayList<Object> events            = sequenceMemory.getSequencerMemory().getEvents();
-            events.resetHeadByOffset(events.size() - subSequenceMemory.getEventsStartPosition() - 1); // -1 due to the added sequenceMemory
+            CircularArrayList<Object> events            = sequenceMemory.getData();
+            events.resetHeadByOffset(events.size() - subSequenceMemory.getEventsStartPosition());
         }
     }
 }

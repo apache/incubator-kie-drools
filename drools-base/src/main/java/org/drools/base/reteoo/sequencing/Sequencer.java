@@ -2,6 +2,7 @@ package org.drools.base.reteoo.sequencing;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.base.reteoo.sequencing.steps.ParallelStep;
 import org.drools.base.reteoo.sequencing.steps.SubsequenceStep;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.util.CircularArrayList;
@@ -25,6 +26,10 @@ public class Sequencer {
         for (Step step  : sequence.getSteps()) {
             if (step instanceof SubsequenceStep) {
                 populateSequences(((SubsequenceStep)step).getSubsequence(), list);
+            } else if (step instanceof ParallelStep) {
+                for (SubsequenceStep subseqStep : ((ParallelStep)step).getSubsequenceSteps()) {
+                    populateSequences(subseqStep.getSubsequence(), list);
+                }
             }
         }
 
@@ -36,7 +41,7 @@ public class Sequencer {
     }
 
     public void start(SequencerMemory memory, ValueResolver valueResolver) {
-        SequenceMemory sequenceMemory = memory.getOrCreateSequenceMemory(null, sequence, true);
+        SequenceMemory sequenceMemory = memory.getOrCreateSequenceMemory(null, sequence, memory.getData());
         memory.setChildSequenceMemory(sequenceMemory);
         sequence.start(sequenceMemory, valueResolver);
     }

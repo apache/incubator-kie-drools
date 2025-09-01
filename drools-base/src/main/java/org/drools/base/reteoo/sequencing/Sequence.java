@@ -37,7 +37,7 @@ public class Sequence implements RuleConditionElement {
 
     private final SubsequenceStep parentStep;
 
-    //private Step step;
+    //private Step;
     private Parent parent;
 
     private Pattern[] filters;
@@ -193,7 +193,7 @@ public class Sequence implements RuleConditionElement {
 
     private void restart(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         sequenceMemory.setStep(0);
-        sequenceMemory.getSequencerMemory().getEvents().resetHeadByOffset(sequenceMemory.getSequencerMemory().getEvents().size() - sequenceMemory.getEventsStartPosition());
+        sequenceMemory.getData().resetHeadByOffset(sequenceMemory.getSequencerMemory().getData().size() - sequenceMemory.getEventsStartPosition());
         getSteps()[0].activate(sequenceMemory, valueResolver);
     }
 
@@ -262,7 +262,7 @@ public class Sequence implements RuleConditionElement {
         }
     }
 
-    public static class LoopController implements SequenceController {
+    public static class LoopController extends DefaultController implements SequenceController {
         private final Predicate<SequenceMemory> predicate;
 
         private final SequenceController defaultController = DefaultController.getINSTANCE();
@@ -270,6 +270,15 @@ public class Sequence implements RuleConditionElement {
         public LoopController(Predicate<SequenceMemory> predicate) {
             this.predicate = predicate;
         }
+
+
+//        public void restart(SequenceMemory memory, ValueResolver valueResolver) {
+//            defaultController.restart(memory, valueResolver);
+//        }
+//
+//        public void next(SequenceMemory memory, ValueResolver valueResolver) {
+//            defaultController.next(memory, valueResolver);
+//        }
 
         @Override
         public void end(SequenceMemory sequenceMemory, ValueResolver valueResolver)  {

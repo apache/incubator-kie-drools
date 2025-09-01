@@ -57,7 +57,7 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         seq1.setController(new LoopController(m -> m.getCount() < 2));
 
         Consumer<SequenceMemory> aggregator = memory -> {
-            CircularArrayList<Object> events = memory.getSequencerMemory().getEvents();
+            CircularArrayList<Object> events = memory.getData();
             int outputStartPosition = memory.getOutputStartPosition();
 
             List<Object> r = (List<Object>) events.get(outputStartPosition);
@@ -68,7 +68,11 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
 
             int end = events.size();
             for (int i = memory.getEventsStartPosition(); i < end; i++) {
-                r.add(((FactHandle)(events.get(i))).getObject());
+                if ( events.get(i) instanceof  FactHandle) {
+                    r.add(((FactHandle) (events.get(i))).getObject());
+                } else {
+                    r.add(events.get(i));
+                }
             }
         };
 
@@ -98,28 +102,28 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
 
     @Test
     public void testSequenceEventsMemory() {
-        CircularArrayList<Object> events = sequencerMemory.getEvents();
+        CircularArrayList<Object> events = sequencerMemory.getData();
         assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(b(0));
         assertThat(recorder.isEmpty()).isTrue();
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(b(1));
         assertThat(recorder.isEmpty()).isTrue();
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(b(2));
-        assertThat(recorder).containsExactly(b(1, 2));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2));
         InternalFactHandle fhB3 = (InternalFactHandle) session.insert(b(3));
-        assertThat(recorder).containsExactly(b(1, 2));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2));
         InternalFactHandle fhB4 = (InternalFactHandle) session.insert(b(4));
-        assertThat(recorder).containsExactly(b(1, 2, 3, 4));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2, 3, 4));
         InternalFactHandle fhB5 = (InternalFactHandle) session.insert(b(5));
-        assertThat(recorder).containsExactly(b(1, 2, 3, 4));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2, 3, 4));
         InternalFactHandle fhB6 = (InternalFactHandle) session.insert(b(6));
-        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2, 3, 4, 5, 6));
         InternalFactHandle fhB7 = (InternalFactHandle) session.insert(b(7));
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2, 3, 4, 5, 6));
         InternalFactHandle fhB8 = (InternalFactHandle) session.insert(b(8));
-        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
+        assertThat(recorder).containsExactly(b(smem(seq1), 1, 2, 3, 4, 5, 6));
 
         assertThat(events.size()).isEqualTo(3);
         assertThat(((FactHandle)events.get(0)).getObject()).isEqualTo(b(0));
@@ -127,17 +131,25 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         assertThat(((FactHandle)events.get(2)).getObject()).isEqualTo(b(7));
     }
 
+    private Object smem(Sequence seq) {
+        return sequencerMemory.getSequenceMemory(seq);
+    }
+
     public B b(int i) {
         return new B(i, "b");
     }
 
-    public B[] b(int... nums) {
-        B[] bs = new B[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            bs[i] = new B(nums[i], "b");
+    public Object[] b(Object... inObjects) {
+        Object[] outObjects = new Object[inObjects.length];
+        for (int i = 0; i < inObjects.length; i++) {
+            if ( inObjects[i] instanceof Number) {
+                outObjects[i] = new B(inObjects[i], "b");
+            } else {
+                outObjects[i] = inObjects[i];
+            }
         }
 
-        return bs;
+        return outObjects;
     }
 
     public Object[] to(CircularArrayList<FactHandle> events) {

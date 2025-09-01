@@ -34,6 +34,7 @@ public class CircularArrayList<E> {
     }
 
     public void addEmpty(int size) {
+        Arrays.fill(array, head, head+size, null);
         head = head + size;
     }
 

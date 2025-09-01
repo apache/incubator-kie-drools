@@ -76,7 +76,8 @@ public class TestMemories extends AbstractPhreakSequencerSubsequenceTest {
         nodeMemory.getLeftTupleMemory().add(lt);
         sequencerMemory = (SequencerMemory) lt.getContextObject();
 
-        SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq0);
+        SequenceMemory sequenceMemory = sequencerMemory.getOrCreateSequenceMemory(null, seq0, null);
+        sequencerMemory.setChildSequenceMemory(sequenceMemory);
 
         // make sure these are empty
         assertThat(nodeMemory.getFilters()).usingRecursiveComparison().isEqualTo(new DynamicFilter[3]);
@@ -84,6 +85,7 @@ public class TestMemories extends AbstractPhreakSequencerSubsequenceTest {
         assertThat(nodeMemory.getActiveFilters()).usingRecursiveComparison().isEqualTo(new LinkedList[3]);
         assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
         assertThat(sequenceMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // sequence not yet started
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
     }
+
 }

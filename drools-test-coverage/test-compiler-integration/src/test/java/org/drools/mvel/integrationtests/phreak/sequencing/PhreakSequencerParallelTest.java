@@ -79,7 +79,7 @@ public class PhreakSequencerParallelTest extends AbstractPhreakSequencerSubseque
         seq2.setFilters(new Pattern[]{bpattern, cpattern, dpattern, epattern});
         seq2.setOutputSize(2);
 
-        seq3 = new Sequence(2, Step.of(circuit1), Step.of(circuit4));
+        seq3 = new Sequence(3, Step.of(circuit1), Step.of(circuit4));
         seq3.setFilters(new Pattern[]{bpattern, cpattern, dpattern, epattern});
         seq3.setOutputSize(3);
 

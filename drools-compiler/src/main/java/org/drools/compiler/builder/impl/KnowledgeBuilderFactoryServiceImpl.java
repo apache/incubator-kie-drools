@@ -38,7 +38,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
 
         ChainedProperties chained = ChainedProperties.getChainedProperties(projClassLoader);
 
-        return new CompositeBuilderConfiguration(chained, projClassLoader,
+        return new  CompositeBuilderConfiguration(chained, projClassLoader,
                                                  KnowledgeBuilderConfigurationFactories.baseConf,
                                                  KnowledgeBuilderConfigurationFactories.ruleConf,
                                                  KnowledgeBuilderConfigurationFactories.flowConf);

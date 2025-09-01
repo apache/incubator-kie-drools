@@ -32,7 +32,9 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.reteoo.sequencing.Sequencer;
@@ -84,7 +86,6 @@ public class SequenceNode extends LeftTupleSource
 
         hashcode = calculateHashCode();
         setStreamMode(true);
-        //this.processor = new AnyNotAllInputProcessor(this); // hard coded for now. Inject the processor here, conditional on the behaviour you want.
     }
 
     public AlphaAdapter[] getAlphaAdapters() {
@@ -217,7 +218,7 @@ public class SequenceNode extends LeftTupleSource
 
         private TupleMemory       leftTupleMemory;
 
-        private TupleList         stagedChildTuples;
+        private TupleSets         stagedChildTuples;
         
         private SegmentMemory     memory;
 
@@ -231,8 +232,8 @@ public class SequenceNode extends LeftTupleSource
 
         public SequenceNodeMemory(SequenceNode node, LinkedList<DynamicFilter>[] activeFilters, DynamicFilter[] filters) {
             this.node = node;
-            stagedChildTuples = new TupleList();
-            leftTupleMemory = new TupleList();
+            this.stagedChildTuples = new TupleSetsImpl();
+            this.leftTupleMemory = new TupleList();
             this.activeFilters = activeFilters;
             this.filters = filters;
         }
@@ -268,7 +269,7 @@ public class SequenceNode extends LeftTupleSource
             return leftTupleMemory;
         }
 
-        public TupleList getStagedChildTuples() {
+        public TupleSets getStagedChildTuples() {
             return stagedChildTuples;
         }
 
@@ -452,7 +453,6 @@ public class SequenceNode extends LeftTupleSource
                            TupleSets srcLeftTuples,
                            TupleSets trgLeftTuples,
                            TupleSets stagedLeftTuples) {
-
             if (srcLeftTuples.getDeleteFirst() != null) {
                 doLeftDeletes(node, srcLeftTuples, trgLeftTuples, stagedLeftTuples, reteEvaluator);
             }
@@ -466,13 +466,37 @@ public class SequenceNode extends LeftTupleSource
             }
             
             srcLeftTuples.resetAll();
+
+            if (memory.getStagedChildTuples().getInsertFirst() != null) {
+                for (TupleImpl tuple = memory.getStagedChildTuples().getInsertFirst(); tuple != null; ) {
+                    TupleImpl next = tuple.getStagedNext();
+                    trgLeftTuples.addInsert(tuple);
+                    tuple.clearStaged();
+                    tuple = next;
+                }
+                memory.getStagedChildTuples().clearInsert();
+            }
+
+            memory.getSegmentMemory().updateCleanNodeMask(memory.getNodePosMaskBit());
         }
 
-        private void doLeftUpdates(SequenceNode node, TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples, ReteEvaluator reteEvaluator) {}
+        private void doLeftUpdates(SequenceNode node, TupleSets srcLeftTuples, TupleSets trgLeftTuples,
+                                   TupleSets stagedLeftTuples, ReteEvaluator reteEvaluator) {
+            for (TupleImpl leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+                TupleImpl next = leftTuple.getStagedNext();
 
-//        public void doNode(SequenceNode node, SequenceNodeMemory nodeMem, PathMemory pmem, SegmentMemory smem, LeftTupleSinkNode sink, ActivationsManager activationsManager, TupleSets srcTuples, TupleSets trgTuples, TupleSets stagedLeftTuples) {
-//
-//        }
+                SequencerMemory sequencerMemory = (SequencerMemory) leftTuple.getContextObject();
+                SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(sequencerMemory.getSequencer().getSequence());
+                node.getSequencer().stop(sequenceMemory, reteEvaluator);
+                deleteChildren(trgLeftTuples, leftTuple);
+
+                node.getSequencer().start(sequencerMemory, reteEvaluator);
+                leftTuple.getMemory().removeAdd(leftTuple);
+
+                leftTuple.clearStaged();
+                leftTuple = next;
+            }
+        }
 
         private void doLeftDeletes(SequenceNode node,
                                    TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples,
@@ -485,10 +509,23 @@ public class SequenceNode extends LeftTupleSource
                 node.getSequencer().stop(sequenceMemory, evaluator);
                 leftTuple.getMemory().remove(leftTuple);
                 leftTuple.setContextObject(null);
-                // TODO add code here to propagate deletion of child LT (mdp)
+
+                deleteChildren(trgLeftTuples, leftTuple);
 
                 leftTuple.clearStaged();
                 leftTuple = next;
+            }
+        }
+
+        private static void deleteChildren(TupleSets trgLeftTuples, TupleImpl leftTuple) {
+            if (leftTuple.getFirstChild() != null) {
+                TupleImpl childLeftTuple = leftTuple.getFirstChild();
+                while (childLeftTuple != null) {
+                    TupleImpl nextChild = childLeftTuple.getHandleNext();
+                    childLeftTuple.unlinkFromLeftParent();
+                    trgLeftTuples.addDelete(childLeftTuple);
+                    childLeftTuple = nextChild;
+                }
             }
         }
 

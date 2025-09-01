@@ -60,20 +60,20 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         kbase.addPackage(pkg);
 
         createSession();
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
 
         // reverse B and C
         createSession();
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
     }
 
     @Test
@@ -93,17 +93,17 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         kbase.addPackage(pkg);
 
         createSession();
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
 
         // reverse B and C
         createSession();
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
     }
 
 
@@ -132,28 +132,28 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         // D last
         createSession();
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
 
         // now it'll transition
         InternalFactHandle fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
 
         // change order, D first
         createSession();
         fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
 
         // now it'll transition
         fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
     }
 
 }

@@ -30,6 +30,7 @@ import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.base.reteoo.sequencing.signalprocessors.SignalIndex;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
+import org.drools.core.util.index.TupleList;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
 import org.drools.mvel.integrationtests.phreak.D;
@@ -67,54 +68,59 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 
         createSession();
 
+        TupleList activeMatches = pmem.getRuleAgendaItem().getRuleExecutor().getActiveMatches();
+
         assertThat(sequencerMemory.getSequenceMemory(seq).getStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
 
+        assertThat(activeMatches.isEmpty()).isTrue();
+
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 
+        assertThat(activeMatches.size()).isEqualTo(1);
         session.fireAllRules();
     }
-//
-//    @Test
-//    public void testEventCountLessThan() {
-//        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
-//                                        new int[] {0, 1}, // B, C
-//                                        new int[] {0, 1},
-//                                        0);
-//
-//        gate1.setOutput(TerminatingSignalProcessor.get());
-//
-//        ConditionalSignalCounter counter = new ConditionalSignalCounter(0, 0, c -> c < 3);
-//        counter.setOutput(gate1);
-//        gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter });
-//
-//        LogicCircuit circuit1 = new LogicCircuit(gate1);
-//
-//        Sequence seq = new Sequence(0, Step.of(circuit1));
-//        seq.setFilters(new Pattern[]{bpattern, cpattern});
-//        rule.addSequence(seq);
-//        kbase.addPackage(pkg);
-//
-//        createSession();
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
-//        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-//
-//        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
-//
-//        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-//
-//        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
-//
-//        createSession(); // fail
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
-//        fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-//
-//        fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
-//
-//        fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
-//    }
+
+    @Test
+    public void testEventCountLessThan() {
+        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
+                                        new int[] {0, 1}, // B, C
+                                        new int[] {0, 1},
+                                        0);
+
+        gate1.setOutput(TerminatingSignalProcessor.get());
+
+        ConditionalSignalCounter counter = new ConditionalSignalCounter(0, 0, c -> c < 3);
+        counter.setOutput(gate1);
+        gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter });
+
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
+
+        Sequence seq = new Sequence(0, Step.of(circuit1));
+        seq.setFilters(new Pattern[]{bpattern, cpattern});
+        rule.addSequence(seq);
+        kbase.addPackage(pkg);
+
+        createSession();
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
+        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
+
+        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
+
+        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
+
+        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
+
+        createSession(); // fail
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
+        fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
+
+        fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
+
+        fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
+    }
 //
 //
 //    @Test
@@ -139,7 +145,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 //
 //        createSession(); // pass
 //
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 //
 //        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
@@ -149,7 +155,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 //        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 //
 //        createSession(); // fail
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 //
 //        fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
@@ -179,19 +185,19 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 //
 //        SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq);
 //
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(0);
 //        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 //        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
 //        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 //
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(1);
 //        InternalFactHandle fhC1 = (InternalFactHandle) session.insert(new C(0, "c"));
 //        InternalFactHandle fhC2 = (InternalFactHandle) session.insert(new C(0, "c"));
 //        InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(1, "b"));
 //
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(2);
 //        InternalFactHandle fhB4 = (InternalFactHandle) session.insert(new B(0, "b"));
 //        InternalFactHandle fhB5 = (InternalFactHandle) session.insert(new B(1, "b"));
@@ -199,7 +205,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 //
 //        // now attempts next step, which is finished
 //        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(3);
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
 //    }
 //
 //    @Test
@@ -258,10 +264,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 //        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(1);
 //
 //        // Needs a final D to terminate
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0);
 //        InternalFactHandle fhD1 = (InternalFactHandle) session.insert(new D(0, "d"));
 //        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(0);
 //        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(2);
-//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+//        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // terminated
 //    }
 }

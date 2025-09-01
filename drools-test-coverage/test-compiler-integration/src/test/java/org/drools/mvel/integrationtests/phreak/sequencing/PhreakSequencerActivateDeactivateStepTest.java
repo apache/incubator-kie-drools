@@ -18,6 +18,10 @@
  */
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
+import org.drools.base.reteoo.sequencing.SequencerMemory;
+import org.drools.base.reteoo.sequencing.steps.ParallelStep;
+import org.drools.base.reteoo.sequencing.steps.Step.StepType;
+import org.drools.base.reteoo.sequencing.steps.SubsequenceStep;
 import org.drools.base.rule.Pattern;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.DynamicFilter;
@@ -34,6 +38,9 @@ import org.drools.mvel.integrationtests.phreak.C;
 import org.drools.mvel.integrationtests.phreak.D;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -103,11 +110,11 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
         SignalAdapter signal1 = sequenceMemory.getSignalAdapters()[1];
 
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // still step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // still step 0
 
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
         // Next step, check everything was for LogicCircuit was de-activated and LogicCircuit1 was activated;
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1); // Now step 1
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(1); // Now step 1
 
         DynamicFilter filter2 = nodeMemory.getFilters()[2]; // D was created from its Proto
 
@@ -132,14 +139,14 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
 
     @Test
     public void testDeactivateAfterEndStep() {
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1); // step 1
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(1); // step 1
         InternalFactHandle fhC1 = (InternalFactHandle) session.insert(new C(0, "c"));
         InternalFactHandle fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // Now step -1, which means it's finished.
+        assertThat(getCurrentStep(sequencerMemory)).isEqualTo(-1); // Now step -1, which means it's finished.
 
         // make sure there are no active SignalAapters or active Filters.
         assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {null, null, null, null }); // 0 and 1 are no longer active

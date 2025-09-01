@@ -52,10 +52,10 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
 
         seq0 = new Sequence(0,
                             Step.of(circuit1),
-                            Step.of( m -> recorder.add(((FactHandle)m.getSequencerMemory().getEvents().getHead()).getObject())),
+                            Step.of( m -> recorder.add(((FactHandle)m.getData().getHead()).getObject())),
                             Step.of(circuit2),
                             Step.of( m -> recorder.add("spacer")),
-                            Step.of( m -> recorder.add(((FactHandle)m.getSequencerMemory().getEvents().getHead()).getObject())));
+                            Step.of( m -> recorder.add(((FactHandle)m.getData().getHead()).getObject())));
 
         seq0.setFilters(new Pattern[]{bpattern});
         rule.addSequence(seq0);
@@ -81,7 +81,7 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
 
     @Test
     public void testAction() {
-        CircularArrayList<Object> events = sequencerMemory.getEvents();
+        CircularArrayList<Object> events = sequencerMemory.getData();
         assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(b(0));
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(b(1));

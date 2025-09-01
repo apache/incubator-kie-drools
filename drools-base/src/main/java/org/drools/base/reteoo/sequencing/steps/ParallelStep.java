@@ -24,6 +24,14 @@ public class ParallelStep extends AbstractStep implements Step {
         });
     }
 
+    public SubsequenceStep[] getSubsequenceSteps() {
+        return subsequenceSteps;
+    }
+
+    public int getOutputSize() {
+        return outputSize;
+    }
+
     @Override
     public void activate(SequenceMemory seqMem, ValueResolver valueResolver) {
         CircularArrayList<Object> data = seqMem.getData();
@@ -35,7 +43,7 @@ public class ParallelStep extends AbstractStep implements Step {
 
         // make space for each
         for (int i = 0; i < this.subsequenceSteps.length; i++) {
-            SequenceMemory subSequenceMemory = seqrMemory.getOrCreateSequenceMemory(seqMem, subsequenceSteps[i].getSubsequence(), i == 0);
+            SequenceMemory subSequenceMemory = seqrMemory.getOrCreateSequenceMemory(seqMem, subsequenceSteps[i].getSubsequence(), i == 0 ? seqMem.getData() : null);
             data.set(memStartPos+i, subSequenceMemory);
 
             CircularArrayList<Object> subSeqData = subSequenceMemory.getData();
@@ -45,7 +53,7 @@ public class ParallelStep extends AbstractStep implements Step {
         }
 
         for (int i = 0; i < this.subsequenceSteps.length; i++) {
-            subsequenceSteps[i].getSubsequence().start(seqrMemory.getSequenceMemory(subsequenceSteps[i].getSequence()), valueResolver);
+            subsequenceSteps[i].getSubsequence().start(seqrMemory.getSequenceMemory(subsequenceSteps[i].getSubsequence()), valueResolver);
         }
     }
 

@@ -7,12 +7,10 @@ import org.drools.base.reteoo.Sink;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.base.util.CircularArrayList;
 
-import java.util.ArrayList;
-
 public interface SequencerMemory {
     BaseTuple getLeftTuple();
 
-    CircularArrayList<Object> getEvents();
+    CircularArrayList<Object> getData();
 
     Sink getSink();
 
@@ -22,17 +20,7 @@ public interface SequencerMemory {
 
     void setChildSequenceMemory(SequenceMemory childSequenceMemory);
 
-//    SequenceMemory getCurrentSequence();
-//
-//    SequenceMemory popSequence();
-//
-//    void pushSequence(SequenceMemory sequenceMemory);
-//
-    int getCurrentStep();
-//
-//    ArrayList<SequenceMemory> getSequenceStack();
-
-    SequenceMemory getOrCreateSequenceMemory(SequenceMemory parent, Sequence sequence, boolean newData);
+    SequenceMemory getOrCreateSequenceMemory(SequenceMemory parent, Sequence sequence, CircularArrayList<Object> newData);
 
     SequenceMemory getSequenceMemory(Sequence sequence);
 
