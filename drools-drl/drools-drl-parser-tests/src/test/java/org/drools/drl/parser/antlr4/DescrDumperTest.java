@@ -24,8 +24,6 @@ import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
-import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -39,10 +37,6 @@ public class DescrDumperTest {
 
     @BeforeEach
     void setUp() {
-        // configure operators
-        new SetEvaluatorsDefinition();
-        new MatchesEvaluatorsDefinition();
-
         dumper = new DescrDumper();
     }
 

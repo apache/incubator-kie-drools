@@ -30,7 +30,6 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;

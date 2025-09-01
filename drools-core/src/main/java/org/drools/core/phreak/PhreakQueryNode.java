@@ -25,12 +25,10 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.index.TupleList;
 
 public class PhreakQueryNode {
     public void doNode(QueryElementNode queryNode,

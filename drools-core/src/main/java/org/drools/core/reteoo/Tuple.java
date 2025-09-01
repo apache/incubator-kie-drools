@@ -20,7 +20,6 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
-import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;

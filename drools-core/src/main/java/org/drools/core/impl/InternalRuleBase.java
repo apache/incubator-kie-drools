@@ -27,8 +27,6 @@ import java.util.Set;
 import org.drools.base.RuleBase;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.rule.InvalidPatternException;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.KieBaseConfigurationImpl;
