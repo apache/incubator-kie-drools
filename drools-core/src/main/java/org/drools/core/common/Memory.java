@@ -35,7 +35,7 @@ public interface Memory extends DoubleLinkedEntry<Memory> {
     default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, ReteEvaluator reteEvaluator ) {
         SegmentMemory smem = getSegmentMemory();
         if (smem == null) {
-            smem = RuntimeSegmentUtilities.getOrCreateSegmentMemory(this, tupleSource, reteEvaluator);
+            smem = RuntimeSegmentUtilities.getOrCreateSegmentMemory(reteEvaluator, tupleSource, this);
         }
         return smem;
     }
