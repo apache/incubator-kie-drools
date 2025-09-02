@@ -20,7 +20,6 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,8 +27,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActivationGroupDualFactMatchTest extends BaseModelTest {
 
@@ -102,7 +100,6 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
                 when
                     $d: FactWrapper(id matches "dynamic-\\\\d+", flag == false)
                 then
-                    System.out.println(">>> Fired Setup Rule with fact: " + $d);
                     modify($d) { setFlag(true) };
                     ksession.getAgenda().getAgendaGroup("GroupB").setFocus();
                 end
@@ -116,7 +113,6 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
                     DynamicFact: FactWrapper(id matches "dynamic-.*", flag == true)
                     StaticFact: FactWrapper(id == "static", flag == true)
                 then
-                    System.out.println(">>> [ERROR] Rule A fired with facts: " + StaticFact + " and " + DynamicFact);
                 end
             
             rule "Rule B - GroupB"
@@ -125,17 +121,12 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
                 when
                     DynamicFact: FactWrapper(id matches "dynamic-.*", flag == true)
                 then
-                    System.out.println(">>> Rule B fired in GroupB with fact: " + DynamicFact);
                 end
             """.formatted(ActivationGroupDualFactMatchTest.class.getName());
 
-    public static Stream<RUN_TYPE> parameters() {
-        return Stream.of(RUN_TYPE.STANDARD_FROM_DRL);
-    }
-
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testRuleAMatchingTwoFactsButNeverFires(RUN_TYPE runType) {
+    void testRuleAMatchingTwoFactsButNeverFires(RUN_TYPE runType) {
         // === PHASE 1: Rule Compilation and Knowledge Base Setup ===
 
         final KieSession kSession = getKieSession(runType, DRL);
@@ -177,16 +168,12 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
         // Set initial agenda focus to GroupA where Setup Rule and Rule A reside
         kSession.getAgenda().getAgendaGroup("GroupA").setFocus();
 
-        System.out.println(">>> Firing all rules...");
-
         // Execute all rules - this is where the complex interaction happens:
         // 1. Setup Rule fires for each dynamic fact (3 times)
         // 2. Each Setup Rule execution modifies a dynamic fact and switches to GroupB
         // 3. Rule B fires in GroupB for each modified dynamic fact (3 times)
         // 4. Rule A never fires despite having matching conditions (activation group prevents it)
-        final int fired = kSession.fireAllRules();
-
-        System.out.println(">>> Total rules fired: " + fired);
+        kSession.fireAllRules();
 
         // === PHASE 5: Validation - Verify Expected Behavior ===
 
@@ -195,9 +182,9 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
         final long setupFires = firedRules.stream().filter(r -> r.equals("Setup Rule - GroupA")).count();
 
         // Validate the expected execution pattern
-        assertEquals(3, setupFires, "Setup rule should fire 3 times (once per dynamic fact).");
-        assertEquals(3, ruleBFires, "Rule B should fire 3 times (once per setup cycle).");
-        assertFalse(ruleAFired, "Rule A should NOT have fired due to activation group mutual exclusion.");
+        assertThat(setupFires).as("Setup rule should fire 3 times (once per dynamic fact).").isEqualTo(3);
+        assertThat(ruleBFires).as("Rule B should fire 3 times (once per setup cycle).").isEqualTo(3);
+        assertThat(ruleAFired).as("Rule A should NOT have fired due to activation group mutual exclusion.").isFalse();
 
         // Clean up resources
         kSession.dispose();
