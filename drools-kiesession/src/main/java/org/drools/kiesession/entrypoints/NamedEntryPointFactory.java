@@ -20,17 +20,18 @@ package org.drools.kiesession.entrypoints;
 
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.base.rule.EntryPointId;
 
 public class NamedEntryPointFactory implements EntryPointFactory {
 
     @Override
-    public NamedEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
-        return new NamedEntryPoint(id, addedNode, reteEvaluator);
+    public NamedEntryPoint createEntryPoint(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, EntryPointId id, EntryPointNode addedNode) {
+        return new NamedEntryPoint(ruleBase, reteEvaluator, id, addedNode);
     }
 
-    public NamedEntryPointsManager createEntryPointsManager(ReteEvaluator reteEvaluator) {
-        return new NamedEntryPointsManager(reteEvaluator);
+    public NamedEntryPointsManager createEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
+        return new NamedEntryPointsManager(ruleBase, reteEvaluator);
     }
 }

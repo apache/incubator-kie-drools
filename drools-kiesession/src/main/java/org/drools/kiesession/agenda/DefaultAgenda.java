@@ -159,8 +159,8 @@ public class DefaultAgenda implements InternalAgenda {
 
          // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
          this.groupEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
-                 new ParallelGroupEvaluator( this ) :
-                 new SequentialGroupEvaluator( this );
+                 new ParallelGroupEvaluator( kieBase, this ) :
+                 new SequentialGroupEvaluator( kieBase, this );
 
         this.propagationList = createPropagationList();
     }

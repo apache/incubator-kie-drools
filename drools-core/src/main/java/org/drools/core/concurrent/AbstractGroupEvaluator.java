@@ -20,6 +20,7 @@ package org.drools.core.concurrent;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -33,9 +34,12 @@ public abstract class AbstractGroupEvaluator implements GroupEvaluator {
 
     private boolean haltEvaluation;
 
-    public AbstractGroupEvaluator(ActivationsManager activationsManager) {
-        this.activationsManager = activationsManager;
-        this.sequential = activationsManager.getReteEvaluator().getKnowledgeBase().getRuleBaseConfiguration().isSequential();
+	private InternalRuleBase ruleBase;
+
+    public AbstractGroupEvaluator(InternalRuleBase ruleBase, ActivationsManager activationsManager) {
+        this.ruleBase = ruleBase;
+		this.activationsManager = activationsManager;
+        this.sequential = ruleBase.getRuleBaseConfiguration().isSequential();
         this.knowledgeHelper = newKnowledgeHelper();
     }
 

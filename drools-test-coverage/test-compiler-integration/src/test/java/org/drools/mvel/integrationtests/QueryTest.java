@@ -24,6 +24,7 @@ import org.drools.base.base.ObjectType;
 import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
@@ -421,7 +422,7 @@ public class QueryTest {
 
         StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 
-        Collection<EntryPointNode> entryPointNodes = sessionImpl.getKnowledgeBase().getRete().getEntryPointNodes().values();
+        Collection<EntryPointNode> entryPointNodes = ((InternalRuleBase)kbase).getRete().getEntryPointNodes().values();
 
         EntryPointNode defaultEntryPointNode = null;
         for ( EntryPointNode epNode : entryPointNodes ) {

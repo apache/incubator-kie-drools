@@ -86,7 +86,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
         this.reteEvaluator = reteEvaluator;
         this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(ruleBase, reteEvaluator);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
-        this.groupEvaluator = new SequentialGroupEvaluator( this );
+        this.groupEvaluator = new SequentialGroupEvaluator( ruleBase, this );
         if (ruleBase.getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }

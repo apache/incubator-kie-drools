@@ -40,9 +40,9 @@ public class NamedEntryPointsManager implements EntryPointsManager {
 
     private final Map<String, WorkingMemoryEntryPoint> entryPoints = new ConcurrentHashMap<>();
 
-    public NamedEntryPointsManager(ReteEvaluator reteEvaluator) {
+    public NamedEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
-        this.ruleBase = reteEvaluator.getKnowledgeBase();
+        this.ruleBase = ruleBase;
         initDefaultEntryPoint();
         updateEntryPointsCache();
     }
@@ -60,7 +60,7 @@ public class NamedEntryPointsManager implements EntryPointsManager {
     }
 
     private InternalWorkingMemoryEntryPoint createNamedEntryPoint(EntryPointNode addedNode) {
-        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(addedNode, addedNode.getEntryPoint(), reteEvaluator);
+        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(ruleBase, reteEvaluator, addedNode.getEntryPoint(), addedNode);
     }
 
     public void updateEntryPointsCache() {
