@@ -18,8 +18,9 @@
  */
 package org.drools.core.common;
 
+import org.drools.core.impl.InternalRuleBase;
 
 public interface AgendaFactory {
 
-    InternalAgenda createAgenda(InternalWorkingMemory workingMemory);
+    InternalAgenda createAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory);
 }

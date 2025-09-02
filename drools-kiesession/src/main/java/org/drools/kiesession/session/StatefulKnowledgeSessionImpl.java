@@ -339,7 +339,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(this);
+        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase, this);
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
 

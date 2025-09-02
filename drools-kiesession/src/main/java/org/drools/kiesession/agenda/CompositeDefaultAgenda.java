@@ -70,11 +70,10 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalWorkingMemory workingMemory) {
-        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
-        this.agendas = new DefaultAgenda[kBase.getParallelEvaluationSlotsCount()];
+    public CompositeDefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
+        this.agendas = new DefaultAgenda[kieBase.getParallelEvaluationSlotsCount()];
         for ( int i = 0; i < this.agendas.length; i++ ) {
-            agendas[i] = new PartitionedDefaultAgenda(workingMemory, executionStateMachine, i);
+            agendas[i] = new PartitionedDefaultAgenda(kieBase, workingMemory, executionStateMachine, i);
         }
         // this composite agenda and the first partitioned one share the same propagation list
         this.propagationList = agendas[0].getPropagationList();
