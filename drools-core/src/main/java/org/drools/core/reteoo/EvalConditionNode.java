@@ -91,6 +91,7 @@ public class EvalConditionNode extends LeftTupleSource
     @Override
     protected void initInferredMask(LeftTupleSource leftInput) {
         super.initInferredMask( leftInput );
+//        if (NodeTypeEnums.isBetaNode(leftInput) && ((BetaNode)leftInput).getRightInferredMask().isEmpty()) {
         if (NodeTypeEnums.isBetaNode(leftInput)) {
             ((BetaNode)leftInput).disablePropertyReactivity();
         }

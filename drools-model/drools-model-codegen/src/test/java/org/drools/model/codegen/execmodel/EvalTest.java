@@ -558,6 +558,8 @@ public class EvalTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(runType, str);
 
+        ReteDumper.dumpRete(ksession);
+
         Dt1 dt1 = new Dt1();
         dt1.setA(1);
         ksession.insert(dt1);
@@ -593,6 +595,9 @@ public class EvalTest extends BaseModelTest {
                         "end\n";
 
         KieSession ksession = getKieSession(runType, str);
+
+        ReteDumper.dumpRete(ksession);
+
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
@@ -616,7 +621,7 @@ public class EvalTest extends BaseModelTest {
                         "    when\n" +
                         "        String( )\n" +
                         "        $p : Person( name == \"Paul\")\n" +
-                        "        eval($p.getAge() == 10)\n" +
+                        "        eval($p.getAge() == 10) \n" +
                         "    then\n" +
                         "        list.add(\"R1 : \" + $p.getName());\n" +
                         "end\n" +
@@ -632,6 +637,9 @@ public class EvalTest extends BaseModelTest {
                         "end\n";
 
         KieSession ksession = getKieSession(runType, str);
+
+        ReteDumper.dumpRete(ksession);
+
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
@@ -672,6 +680,9 @@ public class EvalTest extends BaseModelTest {
                         "end\n";
 
         KieSession ksession = getKieSession(runType, str);
+
+        ReteDumper.dumpRete(ksession);
+
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
