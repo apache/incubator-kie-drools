@@ -256,9 +256,11 @@ public interface AgendaGroupsManager extends Externalizable {
             this.kieBase = kieBase;
             // stacked agenda groups are supported only for InternalWorkingMemory
             this.workingMemory = workingMemory;
-            this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kieBase);
-			this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
-			this.focusStack.add( this.mainAgendaGroup );
+            if (this.mainAgendaGroup == null) {
+                this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kieBase);
+				this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
+				this.focusStack.add( this.mainAgendaGroup );
+            }
             this.mainAgendaGroup.setReteEvaluator( workingMemory );
         }
 
