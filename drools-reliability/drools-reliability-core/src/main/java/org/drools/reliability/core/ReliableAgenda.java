@@ -22,14 +22,15 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Storage;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationList;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.agenda.DefaultAgenda;
 
 import static org.drools.reliability.core.ReliablePropagationList.PROPAGATION_LIST;
 
 public class ReliableAgenda extends DefaultAgenda {
 
-    public ReliableAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
-        super( kieBase, workingMemory );
+    public ReliableAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, FactHandleFactory factHandleFactory) {
+        super( kieBase, workingMemory, factHandleFactory );
     }
 
     @Override

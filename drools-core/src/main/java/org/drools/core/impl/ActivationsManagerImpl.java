@@ -52,6 +52,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -81,10 +82,12 @@ public class ActivationsManagerImpl implements ActivationsManager {
     private final Map<QueryImpl, RuleAgendaItem> queries = new ConcurrentHashMap<>();
 
     private List<PropagationContext> expirationContexts;
+	private FactHandleFactory factHandleFactory;
 
-    public ActivationsManagerImpl(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
+    public ActivationsManagerImpl(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory) {
         this.reteEvaluator = reteEvaluator;
-        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(ruleBase, reteEvaluator);
+		this.factHandleFactory = factHandleFactory;
+        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(ruleBase, reteEvaluator, factHandleFactory);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
         this.groupEvaluator = new SequentialGroupEvaluator( ruleBase, this );
         if (ruleBase.getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
@@ -156,7 +159,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void clearAndCancelActivationGroup(final InternalActivationGroup activationGroup) {
-        activationGroup.setTriggeredForRecency( this.reteEvaluator.getFactHandleFactory().getRecency() );
+        activationGroup.setTriggeredForRecency(factHandleFactory.getRecency() );
 
         for (final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();
