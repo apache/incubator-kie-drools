@@ -23,23 +23,23 @@ import org.kie.kogito.services.registry.ProcessDefinitionEventRegistry;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnBean(Processes.class)
 public class ProcessDefinitionRegistration implements InitializingBean {
     Processes processes;
     ProcessDefinitionEventRegistry processDefinitionRegistry;
 
     @Autowired
-    public ProcessDefinitionRegistration(Application application, @Value("kogito.service.url") String serviceUrl, @Autowired(required = false) Processes processes) {
+    public ProcessDefinitionRegistration(Application application, @Value("${kogito.service.url:#{null}}") String serviceUrl, @Autowired Processes processes) {
         this.processes = processes;
         this.processDefinitionRegistry = new ProcessDefinitionEventRegistry(application, serviceUrl);
     }
 
     @Override
     public void afterPropertiesSet() {
-        if (processes != null) {
-            processDefinitionRegistry.register(processes);
-        }
+        processDefinitionRegistry.register(processes);
     }
 }
