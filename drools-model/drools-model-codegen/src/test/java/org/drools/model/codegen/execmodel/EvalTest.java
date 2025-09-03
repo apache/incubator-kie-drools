@@ -525,45 +525,67 @@ public class EvalTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")
-    public void testModifyEvalAfterJoinWithEmptyConstraint(RUN_TYPE runType) {
+    public void testModifyEvalAfterJoinWithEmptyConstraint_withoutWatch_shouldNotFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithEmptyConstraint(runType, "", false);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testModifyEvalAfterJoinWithEmptyConstraint_withWatch_shouldFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithEmptyConstraint(runType, "@watch( t )", true);
+    }
+
+    private void testModifyEvalAfterJoinWithEmptyConstraint(RUN_TYPE runType, String watchAnnotation, boolean shouldFireR1) {
         // DROOLS-7255
         String str =
                 "import " + Dt1.class.getCanonicalName() + ";" +
-                "import " + Dt2.class.getCanonicalName() + ";" +
-                "\n" +
-                "rule \"b_1\"\n" +
-                "    when\n" +
-                "        dt1 : Dt1( )\n" +
-                "        dt2 : Dt2( )\n" +
-                "        eval(dt2.getT()==\"YES\")\n" +
-                "    then\n" +
-                "end\n" +
-                "\n" +
-                "rule \"b_2\"\n" +
-                "    when\n" +
-                "        dt2 : Dt2(  )\n" +
-                "        eval(dt2.getT()==\"YES\")\n" +
-                "    then\n" +
-                "end\n" +
-                "\n" +
-                "rule \"modify dt2 rule\"\n" +
-                "    when\n" +
-                "        dt1 : Dt1(a == 1)\n" +
-                "        dt2 : Dt2( )\n" +
-                "    then\n" +
-                "        modify( dt2 ) {\n" +
-                "            setT(\"YES\")\n" +
-                "        }\n" +
-                "end\n";
+                        "import " + Dt2.class.getCanonicalName() + ";" +
+                        "\n" +
+                        "global java.util.List list;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        dt1 : Dt1( )\n" +
+                        "        dt2 : Dt2( ) " + watchAnnotation + "\n" + // without watch, JoinNode doesn't proceed on modify
+                        "        eval(dt2.getT()==\"YES\")\n" +
+                        "    then\n" +
+                        "        list.add(\"R1\");\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R2\n" +
+                        "    when\n" +
+                        "        dt2 : Dt2(  )\n" +
+                        "        eval(dt2.getT()==\"YES\")\n" + // There is no JoinNode here, so this rule fires on modify
+                        "    then\n" +
+                        "        list.add(\"R2\");\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule ModifyingRule\n" +
+                        "    when\n" +
+                        "        dt1 : Dt1(a == 1)\n" +
+                        "        dt2 : Dt2( )\n" +
+                        "    then\n" +
+                        "        list.add(\"ModifyingRule\");\n" +
+                        "        modify( dt2 ) {\n" +
+                        "            setT(\"YES\")\n" +
+                        "        }\n" +
+                        "end\n";
 
         KieSession ksession = getKieSession(runType, str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
 
         Dt1 dt1 = new Dt1();
         dt1.setA(1);
         ksession.insert(dt1);
         ksession.insert(new Dt2());
 
-        assertThat(ksession.fireAllRules()).isEqualTo(3);
+        ksession.fireAllRules();
+
+        if (shouldFireR1) {
+            assertThat(list).as("All rules should fire").containsExactlyInAnyOrder("ModifyingRule", "R1", "R2");
+        } else {
+            assertThat(list).as("R1 should not fire").containsExactlyInAnyOrder("ModifyingRule", "R2");
+        }
     }
 
     @ParameterizedTest
@@ -576,7 +598,7 @@ public class EvalTest extends BaseModelTest {
                         "rule R1\n" +
                         "    when\n" +
                         "        String( )\n" +
-                        "        $p : Person( name == \"John\")\n" +
+                        "        $p : Person( name == \"John\")\n" + // obviously non-matching
                         "        eval($p.getAge() == 10)\n" +
                         "    then\n" +
                         "        list.add(\"R1 : \" + $p.getName());\n" +
@@ -593,6 +615,7 @@ public class EvalTest extends BaseModelTest {
                         "end\n";
 
         KieSession ksession = getKieSession(runType, str);
+
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
@@ -606,7 +629,17 @@ public class EvalTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    void testModifyEvalAfterJoinWithMatchingAlpha(RUN_TYPE runType) {
+    void testModifyEvalAfterJoinWithMatchingAlpha_withoutWatch_shouldNotFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithMatchingAlpha(runType, "", false);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyEvalAfterJoinWithMatchingAlpha_withWatch_shouldFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithMatchingAlpha(runType, "@watch( age )", true);
+    }
+
+    private void testModifyEvalAfterJoinWithMatchingAlpha(RUN_TYPE runType, String watchAnnotation, boolean shouldFireR1) {
         // incubator-kie-drools/issues/6420
         // This test is already successful. Just for coverage.
         String str =
@@ -615,7 +648,7 @@ public class EvalTest extends BaseModelTest {
                         "rule R1\n" +
                         "    when\n" +
                         "        String( )\n" +
-                        "        $p : Person( name == \"Paul\")\n" +
+                        "        $p : Person( name == \"Paul\") " + watchAnnotation + "\n" + // without watch, JoinNode doesn't proceed on modify
                         "        eval($p.getAge() == 10)\n" +
                         "    then\n" +
                         "        list.add(\"R1 : \" + $p.getName());\n" +
@@ -640,14 +673,18 @@ public class EvalTest extends BaseModelTest {
         ksession.insert(paul);
 
         ksession.fireAllRules();
-        assertThat(list).as("Both rules should fire").containsExactly("ModifyingRule", "R1 : Paul");
+
+        if (shouldFireR1) {
+            assertThat(list).as("Both rules should fire").containsExactly("ModifyingRule", "R1 : Paul");
+        } else {
+            assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
+        }
     }
 
     @ParameterizedTest
     @MethodSource("parameters")
     void testModifyJoinWithNonMatchingAlpha(RUN_TYPE runType) {
-        // incubator-kie-drools/issues/6420
-        // This test is already successful and doesn't include eval. Just for coverage.
+        // This test doesn't include eval. But added here for coverage.
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                         "global java.util.List list;\n" +
@@ -682,5 +719,60 @@ public class EvalTest extends BaseModelTest {
 
         ksession.fireAllRules();
         assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyEvalAfterJoinWithMatchingAlphaSharingJoin_withoutWatch_shouldNotFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithMatchingAlphaSharingJoin(runType, "", false);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void testModifyEvalAfterJoinWithMatchingAlphaSharingJoin_withWatch_shouldFire(RUN_TYPE runType) {
+        testModifyEvalAfterJoinWithMatchingAlphaSharingJoin(runType, "@watch( age )", true);
+    }
+
+    private void testModifyEvalAfterJoinWithMatchingAlphaSharingJoin(RUN_TYPE runType, String watchAnnotation, boolean shouldFireR1) {
+        // This rule is similar to testModifyEvalAfterJoinWithMatchingAlpha, but sharing JoinNode
+        // If AlphaNode or JoinNode disables property reactive, this rule would cause an infinite loop
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "global java.util.List list;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        String( this == \"go\" )\n" +
+                        "        $p : Person( name == \"Paul\") " + watchAnnotation + "\n" + // without watch, JoinNode doesn't proceed on modify
+                        "        eval($p.getAge() == 10) \n" +
+                        "    then\n" +
+                        "        list.add(\"R1 : \" + $p.getName());\n" +
+                        "end\n" +
+                        "rule ModifyingRule\n" +
+                        "    when\n" +
+                        "        String( this == \"go\" )\n" +
+                        "        $p : Person( name == \"Paul\")\n" +
+                        "    then\n" +
+                        "        modify( $p ) {\n" +
+                        "            setAge(10)\n" +
+                        "        }\n" +
+                        "        list.add(\"ModifyingRule\");\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person paul = new Person("Paul", 20);
+        ksession.insert("go");
+        ksession.insert(paul);
+        ksession.insert(0);
+
+        ksession.fireAllRules(10); // avoid infinite loop
+
+        if (shouldFireR1) {
+            assertThat(list).as("Both rules should fire").containsExactly("ModifyingRule", "R1 : Paul");
+        } else {
+            assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
+        }
     }
 }
