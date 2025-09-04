@@ -88,6 +88,25 @@ class DMNEvaluatorCompilerTest {
     }
 
     @Test
+    void getFEELDialectAdaptedFEELNoExpressionLanguageDefault() {
+        String expressionLanguage = null;
+        LiteralExpression expression = getLiteralExpression(expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
+    }
+
+    @Test
+    void getFEELDialectAdaptedFEELNoExpressionLanguageBFEEL() {
+        String expressionLanguage = null;
+        LiteralExpression expression = getLiteralExpression(expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(B_FEEL_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(B_FEEL_DIALECT);
+    }
+
+
+    @Test
     void getFEELDialectAdaptedFEELFEELURIExpressionLanguage() {
         LiteralExpression expression = getLiteralExpression(null);
         String expressionLanguage = expression.getURIFEEL();
