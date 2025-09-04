@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.model.api;
 
-public interface LiteralExpression extends Expression {
+public interface LiteralExpression extends Expression, HasExpressionLanguage {
 
     String getText();
 
@@ -27,9 +27,5 @@ public interface LiteralExpression extends Expression {
     ImportedValues getImportedValues();
 
     void setImportedValues(ImportedValues value);
-
-    String getExpressionLanguage();
-
-    void setExpressionLanguage(String value);
 
 }

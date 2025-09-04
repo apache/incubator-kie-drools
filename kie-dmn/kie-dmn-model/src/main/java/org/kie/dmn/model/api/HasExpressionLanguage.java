@@ -18,10 +18,14 @@
  */
 package org.kie.dmn.model.api;
 
-public interface ImportedValues extends Import, HasExpressionLanguage {
+public interface HasExpressionLanguage {
 
-    String getImportedElement();
+    /**
+     * This is the <b>expressionLanguage</b> attribute
+     * @return
+     */
+    String getExpressionLanguage();
 
-    void setImportedElement(String value);
+    void setExpressionLanguage(String value);
 
 }
