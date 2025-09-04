@@ -715,7 +715,7 @@ public class EvalTest extends BaseModelTest {
         Person paul = new Person("Paul", 20);
         ksession.insert("go");
         ksession.insert(paul);
-        ksession.insert(0);
+        ksession.insert(0); // any Integer matches
 
         ksession.fireAllRules();
         assertThat(list).as("R1 should not fire").containsExactly("ModifyingRule");
@@ -767,7 +767,7 @@ public class EvalTest extends BaseModelTest {
         ksession.insert(paul);
         ksession.insert(0);
 
-        ksession.fireAllRules(10); // avoid infinite loop
+        ksession.fireAllRules(10); // 10 doesn't affect the test execution, but just to avoid an unexpected loop for the future.
 
         if (shouldFireR1) {
             assertThat(list).as("Both rules should fire").containsExactly("ModifyingRule", "R1 : Paul");
