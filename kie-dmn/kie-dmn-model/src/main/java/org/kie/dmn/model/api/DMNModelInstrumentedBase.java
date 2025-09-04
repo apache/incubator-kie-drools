@@ -52,6 +52,11 @@ public interface DMNModelInstrumentedBase {
 
     String getIdentifierString();
 
+    /**
+     * Returns the FEEL namespace mapped to the DMN version of the current <code>DMNModelInstrumentedBase</code>,
+     * e.g. any v1.6 concrete class will return the FEEL namespace used by DMN 1.6
+     * @return
+     */
     String getURIFEEL();
 
     void setLocation(Location location);

@@ -54,18 +54,22 @@ import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.getEvaluatorIdentif
 class DMNEvaluatorCompilerTest {
 
     private static final FEELDialect DEFAULT_FEEL_DIALECT = FEELDialect.FEEL;
+    private static final FEELDialect B_FEEL_DIALECT = FEELDialect.BFEEL;
     private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
     private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
     private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
-    private static DMNCompilerContext DMN_COMPILER_CONTEXT;
+    private static DMNCompilerContext DEFAULT_DMN_COMPILER_CONTEXT;
+    private static DMNCompilerContext B_FEEL_DMN_COMPILER_CONTEXT;
     private static DMNEvaluatorCompiler dmnEvaluatorCompiler;
-    private static DMNFEELHelper DMN_FEEL_HELPER;
+    private static DMNFEELHelper DEFAULT_DMN_FEEL_HELPER;
+    private static DMNFEELHelper B_FEEL_DMN_FEEL_HELPER;
 
     @BeforeAll
     static void setUp() {
-        DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT, DMNVersion.getLatest());
-        DMN_COMPILER_CONTEXT = new DMNCompilerContext(DMN_FEEL_HELPER);
-
+        DEFAULT_DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT, DMNVersion.getLatest());
+        DEFAULT_DMN_COMPILER_CONTEXT = new DMNCompilerContext(DEFAULT_DMN_FEEL_HELPER);
+        B_FEEL_DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), B_FEEL_DIALECT, DMNVersion.getLatest());
+        B_FEEL_DMN_COMPILER_CONTEXT = new DMNCompilerContext(B_FEEL_DMN_FEEL_HELPER);
         DMNCompilerImpl compiler = new DMNCompilerImpl();
         dmnEvaluatorCompiler = new DMNEvaluatorCompiler(compiler);
     }
@@ -74,16 +78,39 @@ class DMNEvaluatorCompilerTest {
     void getFEELDialectAdaptedFEELNoExpressionLanguage() {
         String expressionLanguage = null;
         LiteralExpression expression = getLiteralExpression(expressionLanguage);
-        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
+        //
+        retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(B_FEEL_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(B_FEEL_DIALECT);
+    }
+
+    @Test
+    void getFEELDialectAdaptedFEELNoExpressionLanguageDefault() {
+        String expressionLanguage = null;
+        LiteralExpression expression = getLiteralExpression(expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
         assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
     }
 
     @Test
+    void getFEELDialectAdaptedFEELNoExpressionLanguageBFEEL() {
+        String expressionLanguage = null;
+        LiteralExpression expression = getLiteralExpression(expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(B_FEEL_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(B_FEEL_DIALECT);
+    }
+
+
+    @Test
     void getFEELDialectAdaptedFEELFEELURIExpressionLanguage() {
         LiteralExpression expression = getLiteralExpression(null);
         String expressionLanguage = expression.getURIFEEL();
-        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
         assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
     }
@@ -92,9 +119,18 @@ class DMNEvaluatorCompilerTest {
     void getFEELDialectAdaptedFEELBFEELExpressionLanguage() {
         String expressionLanguage = FEELDialect.BFEEL.getNamespace();
         LiteralExpression expression = getLiteralExpression(expressionLanguage);
-        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
         assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
+    }
+
+    @Test
+    void getFEELDialectAdaptedFEELSFEELExpressionLanguage() {
+        String expressionLanguage = "https://www.omg.org/spec/DMN/20230324/FEEL/";
+        LiteralExpression expression = getLiteralExpression(expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(B_FEEL_DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(FEELDialect.FEEL);
     }
 
     @Test
@@ -102,7 +138,7 @@ class DMNEvaluatorCompilerTest {
         String expressionLanguage = "something-else";
         LiteralExpression expression = getLiteralExpression(expressionLanguage);
         String expectedMessage = String.format("Unsupported FEEL language '%s'; allowed values are `null`, %s, %s", expressionLanguage, expression.getURIFEEL(), FEELDialect.BFEEL.getNamespace());
-        assertThatThrownBy(() -> DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage))
+        assertThatThrownBy(() -> DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DEFAULT_DMN_COMPILER_CONTEXT, expression, expressionLanguage))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(expectedMessage);
     }
@@ -129,7 +165,7 @@ class DMNEvaluatorCompilerTest {
         Conditional expr = (Conditional) retrieved;
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
         DMNType numType = dmnBaseNode.getType();
-        DMNCompilerContext compilerContext = new DMNCompilerContext(DMN_FEEL_HELPER);;
+        DMNCompilerContext compilerContext = new DMNCompilerContext(DEFAULT_DMN_FEEL_HELPER);;
         compilerContext.setVariable("num", numType);
         DMNExpressionEvaluator ifEvaluator = dmnEvaluatorCompiler.compileExpression(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, ifExprName, expr.getIf().getExpression());
         DMNExpressionEvaluator thenEvaluator = dmnEvaluatorCompiler.compileExpression(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, thenExprName, expr.getThen().getExpression());
@@ -171,7 +207,7 @@ class DMNEvaluatorCompilerTest {
         assertThat(retrieved).isNotNull();
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
         DMNType numType = dmnBaseNode.getType();
-        DMNCompilerContext compilerContext = new DMNCompilerContext(DMN_FEEL_HELPER);
+        DMNCompilerContext compilerContext = new DMNCompilerContext(DEFAULT_DMN_FEEL_HELPER);
         compilerContext.setVariable("num", numType);
         DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, (Conditional) retrieved);
         assertThat(result).isNotNull();
