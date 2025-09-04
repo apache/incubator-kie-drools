@@ -19,36 +19,28 @@
 
 package org.kie.kogito.index.springboot.service.auth;
 
-import java.util.List;
+import java.util.Optional;
 
+import org.kie.addons.springboot.auth.SpringBootAuthTokenHelper;
 import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SpringBootDataIndexAuthTokenReader implements DataIndexAuthTokenReader {
 
-    private final List<PrincipalAuthTokenReader> authTokenReaders;
+    private final Optional<SpringBootAuthTokenHelper> authTokenHelper;
 
     @Autowired
-    public SpringBootDataIndexAuthTokenReader(List<PrincipalAuthTokenReader> authTokenReaders) {
-        this.authTokenReaders = authTokenReaders;
+    public SpringBootDataIndexAuthTokenReader(Optional<SpringBootAuthTokenHelper> authTokenHelper) {
+        this.authTokenHelper = authTokenHelper;
     }
 
     @Override
     public String readToken() {
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-
-        if (securityContext == null || securityContext.getAuthentication() == null) {
-            return null;
+        if (authTokenHelper.isPresent()) {
+            return authTokenHelper.get().getAuthToken().orElse(null);
         }
-
-        Object principal = securityContext.getAuthentication().getPrincipal();
-
-        return this.authTokenReaders.stream().filter(reader -> reader.acceptsPrincipal(principal)).findFirst()
-                .map(reader -> reader.readAuthToken(principal)).orElse(null);
+        return null;
     }
 }

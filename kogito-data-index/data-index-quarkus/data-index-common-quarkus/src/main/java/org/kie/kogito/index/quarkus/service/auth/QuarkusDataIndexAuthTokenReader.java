@@ -45,6 +45,6 @@ public class QuarkusDataIndexAuthTokenReader implements DataIndexAuthTokenReader
         if (identity == null || identity.getCredential(TokenCredential.class) == null) {
             return null;
         }
-        return identity.getCredential(TokenCredential.class).getToken();
+        return "Bearer " + identity.getCredential(TokenCredential.class).getToken();
     }
 }

@@ -79,7 +79,7 @@ public class KogitoAddonRuntimeClientImplTest {
     private static final String NODE_ID = "nodeId";
     private static String TASK_ID = "taskId";
     private static String JOB_ID = "jobId";
-    private static String AUTHORIZED_TOKEN = "authToken";
+    private static String AUTHORIZED_TOKEN = "Bearer authToken";
 
     @Mock
     public Vertx vertx;
@@ -279,7 +279,7 @@ public class KogitoAddonRuntimeClientImplTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(newJobData);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        verify(httpRequestMock).putHeader("Authorization", "Bearer " + AUTHORIZED_TOKEN);
+        verify(httpRequestMock).putHeader("Authorization", AUTHORIZED_TOKEN);
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -329,7 +329,7 @@ public class KogitoAddonRuntimeClientImplTest {
 
         String token = client.getAuthHeader();
         verify(authTokenReader, times(1)).readToken();
-        assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
+        assertThat(token).isEqualTo(AUTHORIZED_TOKEN);
 
         when(authTokenReader.readToken()).thenReturn(null);
         token = client.getAuthHeader();
@@ -403,6 +403,6 @@ public class KogitoAddonRuntimeClientImplTest {
 
     protected void setupIdentityMock() {
         when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
-        when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
     }
 }

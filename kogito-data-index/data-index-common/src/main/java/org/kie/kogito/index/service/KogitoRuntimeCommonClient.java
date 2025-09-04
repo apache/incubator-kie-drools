@@ -154,12 +154,6 @@ public abstract class KogitoRuntimeCommonClient {
     }
 
     public String getAuthHeader() {
-        String authToken = authTokenReader.readToken();
-
-        if (authToken == null) {
-            return "";
-        }
-
-        return "Bearer " + authToken;
+        return Optional.ofNullable(authTokenReader.readToken()).orElse("");
     }
 }

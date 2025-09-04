@@ -94,7 +94,7 @@ public class KogitoRuntimeClientTest {
     private static String TASK_ID = "taskId";
     private static String JOB_ID = "jobId";
 
-    private static String AUTHORIZED_TOKEN = "authToken";
+    private static String AUTHORIZED_TOKEN = "Bearer authToken";
 
     @Mock
     public Vertx vertx;
@@ -144,7 +144,7 @@ public class KogitoRuntimeClientTest {
                 "ABORT ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -160,7 +160,7 @@ public class KogitoRuntimeClientTest {
                 "RETRY ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -177,7 +177,7 @@ public class KogitoRuntimeClientTest {
                 "SKIP ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -289,7 +289,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(newJobData);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        verify(httpRequestMock).putHeader("Authorization", "Bearer " + AUTHORIZED_TOKEN);
+        verify(httpRequestMock).putHeader("Authorization", AUTHORIZED_TOKEN);
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -307,7 +307,7 @@ public class KogitoRuntimeClientTest {
                 null);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -325,7 +325,7 @@ public class KogitoRuntimeClientTest {
                 List.class);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -354,7 +354,7 @@ public class KogitoRuntimeClientTest {
                 null);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -421,7 +421,7 @@ public class KogitoRuntimeClientTest {
                 eq("Get User Task schema for task:TaskName with id: " + taskInstance.getId()), isNull());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -444,7 +444,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(taskInfo);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -616,7 +616,7 @@ public class KogitoRuntimeClientTest {
 
         String token = client.getAuthHeader();
         verify(authTokenReader, times(1)).readToken();
-        assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
+        assertThat(token).isEqualTo(AUTHORIZED_TOKEN);
 
         when(authTokenReader.readToken()).thenReturn(null);
         token = client.getAuthHeader();
@@ -661,7 +661,7 @@ public class KogitoRuntimeClientTest {
     protected void setupIdentityMock() {
         when(authTokenReader.readToken()).thenReturn(AUTHORIZED_TOKEN);
 
-        when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(eq("Authorization"), eq(AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
     }
 
 }
