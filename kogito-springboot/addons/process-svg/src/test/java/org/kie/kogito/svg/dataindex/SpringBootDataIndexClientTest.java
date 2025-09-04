@@ -24,20 +24,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.addons.springboot.auth.SpringBootAuthTokenHelper;
 import org.kie.kogito.svg.ProcessSVGException;
-import org.kie.kogito.svg.auth.SpringBootAuthHelper;
-import org.kie.kogito.svg.auth.impl.JwtPrincipalAuthTokenReader;
-import org.kie.kogito.svg.auth.impl.OIDCPrincipalAuthTokenReader;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -88,7 +80,7 @@ public class SpringBootDataIndexClientTest {
         client = buildClient(Optional.empty());
     }
 
-    private SpringBootDataIndexClient buildClient(Optional<SpringBootAuthHelper> authHelper) {
+    private SpringBootDataIndexClient buildClient(Optional<SpringBootAuthTokenHelper> authHelper) {
         return new SpringBootDataIndexClient("data-indexURL", restTemplate, objectMapper, authHelper);
     }
 
@@ -126,43 +118,23 @@ public class SpringBootDataIndexClientTest {
     }
 
     @Test
-    public void testAuthHeaderWithSecurityContextOidcUserPrincipal() {
+    public void testReadAuthHeader() {
         String token = "testToken";
-        SecurityContext securityContextMock = mock(SecurityContext.class);
-        Authentication authenticationMock = mock(Authentication.class);
-        OidcUser principalMock = mock(OidcUser.class);
-        OidcIdToken tokenMock = mock(OidcIdToken.class);
 
-        when(securityContextMock.getAuthentication()).thenReturn(authenticationMock);
-        when(authenticationMock.getPrincipal()).thenReturn(principalMock);
-        when(principalMock.getIdToken()).thenReturn(tokenMock);
-        when(tokenMock.getTokenValue()).thenReturn(token);
+        SpringBootAuthTokenHelper authTokenHelper = mock(SpringBootAuthTokenHelper.class);
+        when(authTokenHelper.getAuthToken()).thenReturn(Optional.of(token));
 
-        SecurityContextHolder.setContext(securityContextMock);
-        client = buildClient(Optional.of(new SpringBootAuthHelper(List.of(new OIDCPrincipalAuthTokenReader(), new JwtPrincipalAuthTokenReader()))));
-        assertThat(client.getAuthHeader("")).isEqualTo("Bearer " + token);
-    }
-
-    @Test
-    public void testAuthHeaderWithSecurityContextJwtPrincipal() {
-        String token = "testToken";
-        SecurityContext securityContextMock = mock(SecurityContext.class);
-        Authentication authenticationMock = mock(Authentication.class);
-        Jwt principalMock = mock(Jwt.class);
-
-        when(securityContextMock.getAuthentication()).thenReturn(authenticationMock);
-        when(authenticationMock.getPrincipal()).thenReturn(principalMock);
-        when(principalMock.getTokenValue()).thenReturn(token);
-
-        SecurityContextHolder.setContext(securityContextMock);
-        client = buildClient(Optional.of(new SpringBootAuthHelper(List.of(new OIDCPrincipalAuthTokenReader(), new JwtPrincipalAuthTokenReader()))));
-        assertThat(client.getAuthHeader("")).isEqualTo("Bearer " + token);
+        client = buildClient(Optional.of(authTokenHelper));
+        assertThat(client.getAuthHeader("")).isEqualTo(token);
     }
 
     @Test
     public void testAuthHeaderWithoutSecurityContext() {
         String authHeader = "Bearer testToken";
-        client = buildClient(Optional.of(new SpringBootAuthHelper(List.of(new OIDCPrincipalAuthTokenReader(), new JwtPrincipalAuthTokenReader()))));
+
+        SpringBootAuthTokenHelper authTokenHelper = mock(SpringBootAuthTokenHelper.class);
+
+        client = buildClient(Optional.of(authTokenHelper));
         assertThat(client.getAuthHeader(authHeader)).isEqualTo(authHeader);
     }
 }

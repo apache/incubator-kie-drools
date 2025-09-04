@@ -16,24 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.svg.auth.impl;
+package org.kie.addons.springboot.auth;
 
-import org.kie.kogito.svg.auth.PrincipalAuthTokenReader;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Component;
+public interface PrincipalAuthTokenReader<T> {
 
-@Component
-@ConditionalOnClass(Jwt.class)
-public class JwtPrincipalAuthTokenReader implements PrincipalAuthTokenReader<Jwt> {
+    Class<T> getPrincipalType();
 
-    @Override
-    public boolean acceptsPrincipal(Object principal) {
-        return principal instanceof Jwt;
-    }
+    String readToken(T principal);
 
-    @Override
-    public String readToken(Jwt principal) {
-        return principal.getTokenValue();
+    default boolean acceptsPrincipal(Object principal) {
+        return getPrincipalType().isAssignableFrom(principal.getClass());
     }
 }

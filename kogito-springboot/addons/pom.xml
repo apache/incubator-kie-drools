@@ -36,6 +36,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>common</module>
     <module>events</module>
     <module>messaging</module>
     <module>monitoring</module>

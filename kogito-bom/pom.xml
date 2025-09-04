@@ -1498,6 +1498,17 @@
       <!-- Process SVG addon     -->
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-common-auth</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-common-auth</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-addons-process-svg</artifactId>
         <version>${project.version}</version>
       </dependency>

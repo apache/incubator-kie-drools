@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.svg.auth;
+package org.kie.addons.springboot.auth;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,28 +29,28 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnClass({ SecurityContextHolder.class })
-public class SpringBootAuthHelper {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class SpringBootAuthTokenHelper {
 
-    private List<PrincipalAuthTokenReader> authTokenReaders;
+    public static final String BEARER_TOKEN_TEMPLATE = "Bearer %s";
 
-    public SpringBootAuthHelper(@Autowired List<PrincipalAuthTokenReader> authTokenReaders) {
+    private final List<PrincipalAuthTokenReader> authTokenReaders;
+
+    public SpringBootAuthTokenHelper(@Autowired List<PrincipalAuthTokenReader> authTokenReaders) {
         this.authTokenReaders = authTokenReaders;
     }
 
     public Optional<String> getAuthToken() {
-        return Optional.ofNullable(getToken());
-    }
-
-    private String getToken() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
 
         if (securityContext == null || securityContext.getAuthentication() == null) {
-            return null;
+            return Optional.empty();
         }
 
         Object principal = securityContext.getAuthentication().getPrincipal();
 
-        return this.authTokenReaders.stream().filter(reader -> reader.acceptsPrincipal(principal)).findFirst()
-                .map(reader -> "Bearer " + reader.readToken(principal)).orElse(null);
+        return this.authTokenReaders.stream()
+                .filter(reader -> reader.acceptsPrincipal(principal)).findFirst()
+                .map(reader -> BEARER_TOKEN_TEMPLATE.formatted(reader.readToken(principal)));
     }
 }

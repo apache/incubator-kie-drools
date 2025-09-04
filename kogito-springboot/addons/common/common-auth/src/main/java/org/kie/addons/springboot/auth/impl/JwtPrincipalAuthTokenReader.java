@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.svg.auth.impl;
+package org.kie.addons.springboot.auth.impl;
 
-import org.kie.kogito.svg.auth.PrincipalAuthTokenReader;
+import org.kie.addons.springboot.auth.PrincipalAuthTokenReader;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnClass({ OidcUser.class })
-public class OIDCPrincipalAuthTokenReader implements PrincipalAuthTokenReader<OidcUser> {
+@ConditionalOnClass(Jwt.class)
+public class JwtPrincipalAuthTokenReader implements PrincipalAuthTokenReader<Jwt> {
 
     @Override
-    public boolean acceptsPrincipal(Object principal) {
-        return principal instanceof OidcUser;
+    public Class<Jwt> getPrincipalType() {
+        return Jwt.class;
     }
 
     @Override
-    public String readToken(OidcUser principal) {
-        return principal.getIdToken().getTokenValue();
+    public String readToken(Jwt principal) {
+        return principal.getTokenValue();
     }
 }

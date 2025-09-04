@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.addons.springboot.auth.SpringBootAuthTokenHelper;
 import org.kie.kogito.svg.ProcessSVGException;
-import org.kie.kogito.svg.auth.SpringBootAuthHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,18 +53,18 @@ public class SpringBootDataIndexClient implements DataIndexClient {
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
 
-    private Optional<SpringBootAuthHelper> authHelper;
+    private Optional<SpringBootAuthTokenHelper> authTokenHelper;
 
     @Autowired
     public SpringBootDataIndexClient(
             @Value("${kogito.dataindex.http.url:http://localhost:8180}") String dataIndexHttpURL,
             @Autowired(required = false) RestTemplate restTemplate,
             @Autowired ObjectMapper objectMapper,
-            @Autowired Optional<SpringBootAuthHelper> authHelper) {
+            @Autowired Optional<SpringBootAuthTokenHelper> authTokenHelper) {
         this.dataIndexHttpURL = dataIndexHttpURL;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.authHelper = authHelper;
+        this.authTokenHelper = authTokenHelper;
     }
 
     @PostConstruct
@@ -107,8 +107,8 @@ public class SpringBootDataIndexClient implements DataIndexClient {
     }
 
     protected String getAuthHeader(String authHeader) {
-        if (authHelper.isPresent()) {
-            return authHelper.get().getAuthToken().orElse(authHeader);
+        if (authTokenHelper.isPresent()) {
+            return authTokenHelper.get().getAuthToken().orElse(authHeader);
         }
         return authHeader;
     }
