@@ -79,9 +79,8 @@ public interface AgendaGroupsManager extends Externalizable {
 
     InternalAgendaGroup getMainAgendaGroup();
 
-    static AgendaGroupsManager create(InternalWorkingMemory workingMemory) {
-        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
-        return kBase.hasMultipleAgendaGroups() || !kBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(workingMemory) : new SimpleAgendaGroupsManager(workingMemory);
+    static AgendaGroupsManager create(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
+        return kieBase.hasMultipleAgendaGroups() || !kieBase.getProcesses().isEmpty() ? new StackedAgendaGroupsManager(kieBase, workingMemory) : new SimpleAgendaGroupsManager(kieBase, workingMemory);
     }
 
     class SimpleAgendaGroupsManager implements AgendaGroupsManager {
@@ -90,9 +89,9 @@ public interface AgendaGroupsManager extends Externalizable {
 
         public SimpleAgendaGroupsManager() { }
 
-        public SimpleAgendaGroupsManager(ReteEvaluator reteEvaluator) {
+        public SimpleAgendaGroupsManager(InternalRuleBase kieBase, ReteEvaluator reteEvaluator) {
             this.reteEvaluator = reteEvaluator;
-            this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, reteEvaluator.getKnowledgeBase());
+            this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, kieBase);
             this.mainAgendaGroup.setReteEvaluator(reteEvaluator);
         }
 
@@ -248,15 +247,19 @@ public interface AgendaGroupsManager extends Externalizable {
         private Deque<InternalAgendaGroup> focusStack = new ArrayDeque<>();
         private InternalAgendaGroup mainAgendaGroup;
         private InternalWorkingMemory workingMemory;
+		private InternalRuleBase kieBase;
 
         public StackedAgendaGroupsManager() { }
 
-        public StackedAgendaGroupsManager(InternalWorkingMemory workingMemory) {
+        public StackedAgendaGroupsManager(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
             this.agendaGroupFactory = RuntimeComponentFactory.get().getAgendaGroupFactory();
+            this.kieBase = kieBase;
             // stacked agenda groups are supported only for InternalWorkingMemory
             this.workingMemory = workingMemory;
             if (this.mainAgendaGroup == null) {
-                initMainAgendaGroup(workingMemory.getKnowledgeBase());
+                this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kieBase);
+				this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
+				this.focusStack.add( this.mainAgendaGroup );
             }
             this.mainAgendaGroup.setReteEvaluator( workingMemory );
         }
@@ -264,12 +267,6 @@ public interface AgendaGroupsManager extends Externalizable {
         @Override
         public InternalAgendaGroup getMainAgendaGroup() {
             return mainAgendaGroup;
-        }
-
-        private void initMainAgendaGroup(InternalRuleBase kBase) {
-            this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( InternalAgendaGroup.MAIN, kBase);
-            this.agendaGroups.put( InternalAgendaGroup.MAIN, this.mainAgendaGroup );
-            this.focusStack.add( this.mainAgendaGroup );
         }
 
         private boolean isEmpty() {
@@ -401,7 +398,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
         @Override
         public InternalAgendaGroup getAgendaGroup(final String name) {
-            return getAgendaGroup( name, workingMemory == null ? null : workingMemory.getKnowledgeBase() );
+            return getAgendaGroup( name, workingMemory == null ? null : kieBase);
         }
 
         @Override

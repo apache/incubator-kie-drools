@@ -82,12 +82,12 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     private List<PropagationContext> expirationContexts;
 
-    public ActivationsManagerImpl(ReteEvaluator reteEvaluator) {
+    public ActivationsManagerImpl(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
-        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(reteEvaluator);
+        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(ruleBase, reteEvaluator);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
-        this.groupEvaluator = new SequentialGroupEvaluator( this );
-        if (reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
+        this.groupEvaluator = new SequentialGroupEvaluator( ruleBase, this );
+        if (ruleBase.getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }
     }

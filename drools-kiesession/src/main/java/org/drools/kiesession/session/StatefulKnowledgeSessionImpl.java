@@ -339,9 +339,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(this);
+        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase, this);
 
-        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
+        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this);
 
         this.sequential = conf.isSequential();
 
@@ -713,7 +713,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     private QueryTerminalNode[] evalQuery(final String queryName, final DroolsQueryImpl queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( kBase, queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
     }

@@ -127,14 +127,14 @@ public class DefaultAgenda implements InternalAgenda {
     // Constructors
     // ------------------------------------------------------------
 
-    public DefaultAgenda(InternalWorkingMemory workingMemory) {
-        this(workingMemory, null);
+    public DefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
+        this(kieBase, workingMemory, null);
     }
 
-    DefaultAgenda(InternalWorkingMemory workingMemory, ExecutionStateMachine executionStateMachine) {
+    DefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, ExecutionStateMachine executionStateMachine) {
 
         this.workingMemory = workingMemory;
-        this.agendaGroupsManager = AgendaGroupsManager.create(workingMemory);
+        this.agendaGroupsManager = AgendaGroupsManager.create(kieBase, workingMemory);
         this.activationGroups = new HashMap<>();
 
         if (executionStateMachine != null) {
@@ -144,9 +144,7 @@ public class DefaultAgenda implements InternalAgenda {
                     new ConcurrentExecutionStateMachine() :
                     new UnsafeExecutionStateMachine();
         }
-
-        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
-        RuleBaseConfiguration ruleBaseConf = kBase.getRuleBaseConfiguration();
+        RuleBaseConfiguration ruleBaseConf = kieBase.getRuleBaseConfiguration();
         Object object = ComponentsFactory.createConsequenceExceptionHandler( ruleBaseConf.getConsequenceExceptionHandler(),
                                                                              ruleBaseConf.getClassLoader() );
         if ( object instanceof ConsequenceExceptionHandler ) {
@@ -161,8 +159,8 @@ public class DefaultAgenda implements InternalAgenda {
 
          // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
          this.groupEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
-                 new ParallelGroupEvaluator( this ) :
-                 new SequentialGroupEvaluator( this );
+                 new ParallelGroupEvaluator( kieBase, this ) :
+                 new SequentialGroupEvaluator( kieBase, this );
 
         this.propagationList = createPropagationList();
     }

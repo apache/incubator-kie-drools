@@ -20,11 +20,12 @@ package org.drools.core.common;
 
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.EntryPointsManager;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 
 public interface EntryPointFactory {
 
-    InternalWorkingMemoryEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator);
+    InternalWorkingMemoryEntryPoint createEntryPoint(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, EntryPointId id, EntryPointNode addedNode);
 
-    EntryPointsManager createEntryPointsManager(ReteEvaluator reteEvaluator);
+    EntryPointsManager createEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator);
 }

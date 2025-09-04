@@ -27,6 +27,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.CoreComponentFactory;
@@ -70,7 +71,7 @@ public class FactHandleMarshallingTest {
         return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
     
-    private InternalFactHandle createEventFactHandle(StatefulKnowledgeSessionImpl wm, InternalKnowledgeBase kBase) {
+    private InternalFactHandle createEventFactHandle(StatefulKnowledgeSessionImpl wm, InternalRuleBase kBase) {
         // EntryPointNode
         Rete rete = kBase.getRete();
 
@@ -78,7 +79,7 @@ public class FactHandleMarshallingTest {
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, rete , EntryPointId.DEFAULT);
-        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
+        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(kBase, wm, EntryPointId.DEFAULT, entryPointNode);
 
         DefaultEventHandle factHandle = new DefaultEventHandle(1, new Person(), 0, (new Date()).getTime(), 0, wmEntryPoint);
         
