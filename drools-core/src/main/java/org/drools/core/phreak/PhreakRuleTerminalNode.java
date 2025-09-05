@@ -101,14 +101,10 @@ public class PhreakRuleTerminalNode {
             return;
         }
 
-        PropagationContext pctx;
-        if ( rtnNode.getRule().isNoLoop() ) {
-            pctx = leftTuple.findMostRecentPropagationContext();
-            if ( sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
-                return;
-            }
-        } else {
-            pctx = leftTuple.getPropagationContext();
+        // most recent PropagationContext is required to maintain the right recency which triggers the match
+        PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
+        if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
+            return;
         }
 
         int salienceInt = getSalienceValue(rtnNode, ruleAgendaItem, leftTuple, reteEvaluator);
@@ -117,8 +113,8 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
 
-        if ( rtnNode.getRule().isLockOnActive() && pctx.getType() != PropagationContext.Type.RULE_ADDITION ) {
-            pctx = leftTuple.findMostRecentPropagationContext();
+        if (  rtnNode.getRule().isLockOnActive() &&
+                leftTuple.getPropagationContext().getType() != PropagationContext.Type.RULE_ADDITION ) {
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
             if (blockedByLockOnActive(rtnNode.getRule(), pctx, agendaGroup)) {
                 activationsManager.getAgendaEventSupport().fireActivationCancelled(leftTuple, reteEvaluator, MatchCancelledCause.FILTER );
