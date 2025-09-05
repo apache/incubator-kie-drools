@@ -86,14 +86,6 @@ public class EvalConditionNode extends LeftTupleSource
         this.leftInput.networkUpdated(updateContext);
     }
 
-    @Override
-    protected void initInferredMask(LeftTupleSource leftInput) {
-        super.initInferredMask( leftInput );
-        if (NodeTypeEnums.isBetaNode(leftInput)) {
-            ((BetaNode)leftInput).disablePropertyReactivity();
-        }
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
