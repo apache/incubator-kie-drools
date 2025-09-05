@@ -29,9 +29,8 @@ import java.util.stream.Stream;
 import org.drools.mvel.integrationtests.facts.BeanA;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,7 +39,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
     public static Stream<Arguments> parameters() {
