@@ -79,7 +79,7 @@ public class FactHandleMarshallingTest {
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, rete , EntryPointId.DEFAULT);
-        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(kBase, wm, EntryPointId.DEFAULT, entryPointNode);
+        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(kBase, wm, wm.getFactHandleFactory(), EntryPointId.DEFAULT, entryPointNode);
 
         DefaultEventHandle factHandle = new DefaultEventHandle(1, new Person(), 0, (new Date()).getTime(), 0, wmEntryPoint);
         

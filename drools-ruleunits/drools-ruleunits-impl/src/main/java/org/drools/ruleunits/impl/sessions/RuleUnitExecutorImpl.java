@@ -130,16 +130,16 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.handleFactory = knowledgeBase.newFactHandleFactory();
         this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
-        this.activationsManager = new ActivationsManagerImpl(ruleBase, this);
-        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this);
+        this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
+        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
         this.timerService = sessionConfiguration.createTimerService();
 
-        initInitialFact(ruleBase);
+        initInitialFact();
     }
 
-    private void initInitialFact(InternalRuleBase kBase) {
+    private void initInitialFact() {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
+        InternalFactHandle handle = handleFactory.newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {

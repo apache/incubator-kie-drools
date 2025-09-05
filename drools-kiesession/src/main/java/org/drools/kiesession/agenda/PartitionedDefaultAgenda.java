@@ -23,6 +23,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class PartitionedDefaultAgenda extends DefaultAgenda {
 
@@ -30,9 +31,10 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
 
     PartitionedDefaultAgenda(InternalRuleBase kieBase, 
     		InternalWorkingMemory workingMemory,
-                             ExecutionStateMachine executionStateMachine,
-                             int partition) {
-        super(kieBase, workingMemory, executionStateMachine);
+    		FactHandleFactory factHandleFactory,
+    		ExecutionStateMachine executionStateMachine,
+    		int partition) {
+        super(kieBase, workingMemory, factHandleFactory, executionStateMachine);
         this.partition = partition;
     }
 

@@ -38,6 +38,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.CompositeIterator;
@@ -70,10 +71,10 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory) {
+    public CompositeDefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, FactHandleFactory factHandleFactory) {
         this.agendas = new DefaultAgenda[kieBase.getParallelEvaluationSlotsCount()];
         for ( int i = 0; i < this.agendas.length; i++ ) {
-            agendas[i] = new PartitionedDefaultAgenda(kieBase, workingMemory, executionStateMachine, i);
+            agendas[i] = new PartitionedDefaultAgenda(kieBase, workingMemory, factHandleFactory, executionStateMachine, i);
         }
         // this composite agenda and the first partitioned one share the same propagation list
         this.propagationList = agendas[0].getPropagationList();

@@ -339,9 +339,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase, this);
+        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase, this, handleFactory);
 
-        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this);
+        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this, handleFactory);
 
         this.sequential = conf.isSequential();
 
@@ -589,7 +589,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public InternalFactHandle initInitialFact(MarshallerReaderContext context) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
+        InternalFactHandle handle = handleFactory.newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -753,7 +753,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
             }
 
-            getFactHandleFactory().destroyFactHandle( factHandle );
+            handleFactory.destroyFactHandle( factHandle );
             done(null);
         }
     }

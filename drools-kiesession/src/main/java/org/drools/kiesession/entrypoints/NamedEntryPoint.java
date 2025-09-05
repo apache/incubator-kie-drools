@@ -89,7 +89,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
     protected ReteEvaluator reteEvaluator;
 
-    protected FactHandleFactory         handleFactory;
+    protected FactHandleFactory         factHandleFactory;
     protected PropagationContextFactory pctxFactory;
 
     protected ReentrantLock lock;
@@ -105,6 +105,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
     public NamedEntryPoint(InternalRuleBase ruleBase, 
             ReteEvaluator reteEvaluator,
+            FactHandleFactory factHandleFactory,
             EntryPointId entryPoint,
             EntryPointNode entryPointNode) {
         this.ruleBase = ruleBase;
@@ -112,7 +113,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
         this.lock = reteEvaluator.getRuleSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
-        this.handleFactory = this.reteEvaluator.getFactHandleFactory();
+        this.factHandleFactory = factHandleFactory;
 
         RuleBaseConfiguration conf = this.ruleBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
@@ -156,7 +157,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     }
 
     public FactHandleFactory getHandleFactory() {
-        return handleFactory;
+        return factHandleFactory;
     }
 
     /**
@@ -370,7 +371,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                     this.objectStore.updateHandle(handle, object);
                 }
 
-                this.handleFactory.increaseFactHandleRecency(handle);
+                this.factHandleFactory.increaseFactHandleRecency(handle);
 
                 final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                    internalMatch == null ? null : internalMatch.getRule(),
@@ -487,7 +488,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
         deleteFromTMS( handle, key, typeConf, propagationContext );
 
-        this.handleFactory.destroyFactHandle( handle );
+        this.factHandleFactory.destroyFactHandle( handle );
     }
 
     protected void beforeDestroy(RuleImpl rule, TerminalNode terminalNode, InternalFactHandle handle) {
@@ -662,7 +663,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
     private InternalFactHandle createHandle(final Object object,
                                             ObjectTypeConf typeConf) {
-        return this.handleFactory.newFactHandle( object, typeConf, this.reteEvaluator, this );
+        return this.factHandleFactory.newFactHandle( object, typeConf, this.reteEvaluator, this );
     }
 
     public void propertyChange(final PropertyChangeEvent event) {

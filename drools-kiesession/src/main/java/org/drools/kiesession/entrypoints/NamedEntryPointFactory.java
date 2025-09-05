@@ -22,16 +22,17 @@ import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.base.rule.EntryPointId;
 
 public class NamedEntryPointFactory implements EntryPointFactory {
 
     @Override
-    public NamedEntryPoint createEntryPoint(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, EntryPointId id, EntryPointNode addedNode) {
-        return new NamedEntryPoint(ruleBase, reteEvaluator, id, addedNode);
+    public NamedEntryPoint createEntryPoint(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory, EntryPointId id, EntryPointNode addedNode) {
+        return new NamedEntryPoint(ruleBase, reteEvaluator, factHandleFactory, id, addedNode);
     }
 
-    public NamedEntryPointsManager createEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
-        return new NamedEntryPointsManager(ruleBase, reteEvaluator);
+    public NamedEntryPointsManager createEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory) {
+        return new NamedEntryPointsManager(ruleBase, reteEvaluator, factHandleFactory);
     }
 }
