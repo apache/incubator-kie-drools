@@ -130,16 +130,16 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.handleFactory = knowledgeBase.newFactHandleFactory();
         this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
-        this.activationsManager = new ActivationsManagerImpl(this);
-        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
+        this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
+        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
         this.timerService = sessionConfiguration.createTimerService();
 
-        initInitialFact(ruleBase);
+        initInitialFact();
     }
 
-    private void initInitialFact(InternalRuleBase kBase) {
+    private void initInitialFact() {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
+        InternalFactHandle handle = handleFactory.newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -317,7 +317,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         final PropagationContext pCtx = new PhreakPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION, null, null, handle, getDefaultEntryPointId());
 
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, false);
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( ruleBase, queryName, queryObject, handle, pCtx, false);
         addPropagation( executeQuery );
         TerminalNode[] terminalNodes = executeQuery.getResult();
 
@@ -354,6 +354,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         return tmsEnabled;
     }
 
+	@Override
+	public boolean isSequential() {
+		return ruleBase.getRuleBaseConfiguration().isSequential();
+	}
+    
     @Override
     public KnowledgeHelper createKnowledgeHelper() {
         return new RuleUnitKnowledgeHelper((DefaultKnowledgeHelper) ReteEvaluator.super.createKnowledgeHelper(), this);

@@ -114,9 +114,7 @@ public interface ReteEvaluator extends ValueResolver {
 
     SessionClock getSessionClock();
 
-    default boolean isSequential() {
-        return getKnowledgeBase().getRuleBaseConfiguration().isSequential();
-    }
+    boolean isSequential();
 
     default void startOperation(InternalOperationType operationType) { }
     default void endOperation(InternalOperationType operationType) { }

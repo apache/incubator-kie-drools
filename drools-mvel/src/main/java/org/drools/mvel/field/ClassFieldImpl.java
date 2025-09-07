@@ -66,15 +66,6 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
         return type;
     }
 
-    public Object resolve( InternalWorkingMemory workingMemory ) {
-        try {
-            type = workingMemory.getKnowledgeBase().getRootClassLoader().loadClass( className );
-        } catch (Exception e) {
-
-        }
-        return type;
-    }
-
     @Override
     public int hashCode() {
         return className.hashCode();

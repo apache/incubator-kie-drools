@@ -61,6 +61,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -123,18 +124,20 @@ public class DefaultAgenda implements InternalAgenda {
 
     private final AgendaGroupsManager agendaGroupsManager;
 
+	private FactHandleFactory factHandleFactory;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
-    public DefaultAgenda(InternalWorkingMemory workingMemory) {
-        this(workingMemory, null);
+    public DefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, FactHandleFactory factHandleFactory) {
+        this(kieBase, workingMemory, factHandleFactory, null);
     }
 
-    DefaultAgenda(InternalWorkingMemory workingMemory, ExecutionStateMachine executionStateMachine) {
-
+    DefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, FactHandleFactory factHandleFactory, ExecutionStateMachine executionStateMachine) {
         this.workingMemory = workingMemory;
-        this.agendaGroupsManager = AgendaGroupsManager.create(workingMemory);
+		this.factHandleFactory = factHandleFactory;
+        this.agendaGroupsManager = AgendaGroupsManager.create(kieBase, workingMemory, factHandleFactory);
         this.activationGroups = new HashMap<>();
 
         if (executionStateMachine != null) {
@@ -144,9 +147,7 @@ public class DefaultAgenda implements InternalAgenda {
                     new ConcurrentExecutionStateMachine() :
                     new UnsafeExecutionStateMachine();
         }
-
-        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
-        RuleBaseConfiguration ruleBaseConf = kBase.getRuleBaseConfiguration();
+        RuleBaseConfiguration ruleBaseConf = kieBase.getRuleBaseConfiguration();
         Object object = ComponentsFactory.createConsequenceExceptionHandler( ruleBaseConf.getConsequenceExceptionHandler(),
                                                                              ruleBaseConf.getClassLoader() );
         if ( object instanceof ConsequenceExceptionHandler ) {
@@ -161,8 +162,8 @@ public class DefaultAgenda implements InternalAgenda {
 
          // for fully parallel execution the parallelism is implemented at the level of CompositeDefaultAgenda
          this.groupEvaluator = ruleBaseConf.isParallelEvaluation() && !ruleBaseConf.isParallelExecution() ?
-                 new ParallelGroupEvaluator( this ) :
-                 new SequentialGroupEvaluator( this );
+                 new ParallelGroupEvaluator( kieBase, this ) :
+                 new SequentialGroupEvaluator( kieBase, this );
 
         this.propagationList = createPropagationList();
     }
@@ -384,7 +385,7 @@ public class DefaultAgenda implements InternalAgenda {
     }
 
     public void activateRuleFlowGroup(final InternalRuleFlowGroup group, Object processInstanceId, String nodeInstanceId) {
-        this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
+        workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, workingMemory );
         group.setActive( true );
         group.hasRuleFlowListener(true);
         if ( !StringUtils.isEmpty( nodeInstanceId ) ) {
@@ -392,7 +393,7 @@ public class DefaultAgenda implements InternalAgenda {
             group.setActive( true );
         }
         group.setFocus();
-        this.workingMemory.getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group, this.workingMemory );
+        workingMemory.getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group, workingMemory );
         propagationList.notifyWaitOnRest();
     }
 
@@ -402,7 +403,7 @@ public class DefaultAgenda implements InternalAgenda {
 
         // reset all activation groups.
         for ( InternalActivationGroup group : this.activationGroups.values() ) {
-            group.setTriggeredForRecency(this.workingMemory.getFactHandleFactory().getRecency());
+            group.setTriggeredForRecency(factHandleFactory.getRecency());
             group.reset();
         }
         propagationList.reset();
@@ -419,7 +420,7 @@ public class DefaultAgenda implements InternalAgenda {
 
         // reset all activation groups.
         for ( InternalActivationGroup group : this.activationGroups.values() ) {
-            group.setTriggeredForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+            group.setTriggeredForRecency(factHandleFactory.getRecency() );
             group.reset();
         }
 
@@ -472,7 +473,7 @@ public class DefaultAgenda implements InternalAgenda {
     public void clearAndCancelActivationGroup(final InternalActivationGroup activationGroup) {
         final EventSupport eventsupport = this.workingMemory;
 
-        activationGroup.setTriggeredForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+        activationGroup.setTriggeredForRecency(factHandleFactory.getRecency() );
 
         for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();

@@ -23,11 +23,13 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.base.rule.EntryPointId;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.traits.core.base.TraitHelperImpl;
@@ -39,8 +41,10 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
 
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
-                                ReteEvaluator reteEvaluator) {
-        super(entryPoint, entryPointNode, reteEvaluator);
+                                InternalRuleBase ruleBase, 
+                                ReteEvaluator reteEvaluator,
+                                FactHandleFactory factHandleFactory) {
+        super(ruleBase, reteEvaluator, factHandleFactory, entryPoint, entryPointNode);
         this.traitHelper = new TraitHelperImpl((InternalWorkingMemoryActions) reteEvaluator, this);
     }
 

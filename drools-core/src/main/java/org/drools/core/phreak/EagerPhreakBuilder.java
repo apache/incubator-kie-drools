@@ -147,7 +147,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(tn);
             if (pmem != null) {
                 List<LeftTupleNode> splits = exclBranchRoots.stream().map( pair -> pair.parent).filter(Objects::nonNull).collect(Collectors.toList());
-                LazyPhreakBuilder.flushStagedTuples(tn, pmem, splits, wm);
+                LazyPhreakBuilder.flushStagedTuples(wm, tn, pmem, splits);
             }
         }
 
@@ -849,12 +849,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             if ( sm1 == null) {
                 // To be able to merge sm1 must exist
-                sm1 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(proto1.getRootNode(), wm);
+                sm1 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto1.getRootNode());
             }
 
             if ( sm2 == null) {
                 // To be able to merge sm2 must exist
-                sm2 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(proto2.getRootNode(), wm);
+                sm2 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto2.getRootNode());
             }
 
             // merge the memories and reassign back to sm1

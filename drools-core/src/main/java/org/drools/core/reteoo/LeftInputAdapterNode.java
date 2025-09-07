@@ -176,8 +176,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // liaNode in its own segment and child segments not yet created
             if ( sm.isEmpty() ) {
                 RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
+                                                            liaNode.getSinkPropagator(),
+                                                            sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -268,8 +268,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
                 RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
+                                                            liaNode.getSinkPropagator(),
+                                                            sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -328,8 +328,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
                 RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
+                                                            liaNode.getSinkPropagator(),
+                                                            sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }

@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.dmndi.DMNDI;
 
-public interface Definitions extends NamedElement {
+public interface Definitions extends NamedElement, HasExpressionLanguage {
 
     List<Import> getImport();
 
@@ -55,10 +55,6 @@ public interface Definitions extends NamedElement {
             processQNameURIs(itemDefinition, this.getNamespace());
         }
     }
-
-    String getExpressionLanguage();
-
-    void setExpressionLanguage(String value);
 
     String getTypeLanguage();
 

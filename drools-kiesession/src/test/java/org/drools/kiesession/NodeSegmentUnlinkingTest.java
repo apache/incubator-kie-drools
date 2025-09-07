@@ -272,7 +272,7 @@ public class NodeSegmentUnlinkingTest {
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, ksession);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(ksession, liaNode);
         liaNode.assertObject((InternalFactHandle) ksession.insert("str"), context, ksession);
         
 
@@ -305,7 +305,7 @@ public class NodeSegmentUnlinkingTest {
         // Initialise from lian
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, ksession);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(ksession, liaNode);
         
         InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( "str1" );
         n1.assertObject( fh1, context, ksession );
@@ -497,7 +497,7 @@ public class NodeSegmentUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory(node);
         if ( betaMemory.getSegmentMemory() == null ) {
-            RuntimeSegmentUtilities.getOrCreateSegmentMemory(node, wm);
+            RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, node);
         }
         return betaMemory;
 
