@@ -88,4 +88,5 @@ public class SpringbootJobServiceConfiguration {
     public JobExecutor produceUserTaskInstanceJobExecutor() {
         return new UserTaskInstanceJobExecutor(userTasks, unitOfWorkManager);
     }
+
 }

@@ -42,7 +42,7 @@ public class JobDescriptionDeserializer extends StdDeserializer<JobDescription> 
     private static final long serialVersionUID = -8307549297456060422L;
 
     public JobDescriptionDeserializer() {
-        super(ProcessInstanceJobDescription.class);
+        super(JobDescription.class);
     }
 
     @Override

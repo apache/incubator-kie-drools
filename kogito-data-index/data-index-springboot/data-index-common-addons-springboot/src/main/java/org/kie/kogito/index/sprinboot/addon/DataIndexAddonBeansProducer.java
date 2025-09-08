@@ -42,7 +42,7 @@ import io.vertx.core.Vertx;
 public class DataIndexAddonBeansProducer {
 
     @Bean
-    public KogitoRuntimeClient createKogitoRuntimeClient(@Value("${kogito.dataindex.gateway.url:null}") Optional<String> gatewayUrl,
+    public KogitoRuntimeClient createKogitoRuntimeClient(@Value("${kogito.dataindex.gateway.url:#{null}}") Optional<String> gatewayUrl,
             DataIndexAuthTokenReader authTokenReader,
             List<ProcessSvgService> processSvgService,
             List<SourceFilesProvider> sourceFilesProvider,
