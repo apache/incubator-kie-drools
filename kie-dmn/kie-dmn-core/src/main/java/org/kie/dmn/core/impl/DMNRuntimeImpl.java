@@ -629,6 +629,16 @@ public class DMNRuntimeImpl
                 // if result messages contains errors && runtime mode = strict -> stop execution and return null
                 if (strictMode && result.hasErrors()) {
                     logger.warn("Immediately return due to strict mode");
+                    DMNMessage message = MsgUtil.reportMessage(logger,
+                                                               DMNMessage.Severity.ERROR,
+                                                               decision.getSource(),
+                                                               result,
+                                                               null,
+                                                               null,
+                                                               Msg.ERROR_EVAL_DECISION_NODE_STRICT_MODE,
+                                                               getIdentifier(decision),
+                                                               decision.getResultType());
+                    reportFailure(dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED);
                     return false;
                 } else if (er.getResultType() == EvaluatorResult.ResultType.SUCCESS ||
                         (((DMNModelImpl) result.getModel()).getFeelDialect().equals(FEELDialect.BFEEL) && er.getResult() != null)) {
