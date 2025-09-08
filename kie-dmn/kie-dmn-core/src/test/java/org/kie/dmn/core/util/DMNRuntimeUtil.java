@@ -44,6 +44,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -96,7 +97,7 @@ public final class DMNRuntimeUtil {
                                                    .filter(DMNMessage.class::isInstance)
                                                    .map(DMNMessage.class::cast)
                                                    .collect(Collectors.toList());
-        assertThat(dmnMessages).isNotEmpty();;
+        assertThat(dmnMessages).isNotEmpty();
         return dmnMessages;
     }
 
@@ -137,6 +138,8 @@ public final class DMNRuntimeUtil {
     public static DMNRuntime typeSafeGetKieRuntime(final KieContainer kieContainer) {
         DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         ((DMNRuntimeImpl) dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
+        String runtimeMode = System.getProperty(RuntimeModeOption.PROPERTY_NAME, RuntimeModeOption.MODE.LENIENT.getMode());
+        ((DMNRuntimeImpl)dmnRuntime).setOption(new RuntimeModeOption(runtimeMode));
         return dmnRuntime;
     }
     
