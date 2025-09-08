@@ -890,9 +890,10 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
      * @return
      */
     static FEEL getFEELDialectAdaptedFEEL(DMNCompilerContext ctx, LiteralExpression expression, String expressionLanguage) {
-        if (expressionLanguage == null ||
-                expressionLanguage.equals(expression.getURIFEEL())) {
+        if (expressionLanguage == null) {
             return ctx.getFeelHelper().newFEELInstance();
+        } else if (expressionLanguage.equals(expression.getURIFEEL())) {
+            return ctx.getFeelHelper().newFEELInstance(FEELDialect.FEEL);
         } else if (expressionLanguage.equals(FEELDialect.BFEEL.getNamespace())) {
             return ctx.getFeelHelper().newFEELInstance(FEELDialect.BFEEL);
         } else {

@@ -30,6 +30,7 @@ import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -156,9 +157,11 @@ public interface PropagationEntry {
         private final InternalFactHandle handle;
         private final PropagationContext pCtx;
         private final boolean calledFromRHS;
+		private InternalRuleBase ruleBase;
 
-        public ExecuteQuery(String queryName, DroolsQueryImpl queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS) {
-            this.queryName = queryName;
+        public ExecuteQuery(InternalRuleBase ruleBase, String queryName, DroolsQueryImpl queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS) {
+            this.ruleBase = ruleBase;
+			this.queryName = queryName;
             this.queryObject = queryObject;
             this.handle = handle;
             this.pCtx = pCtx;
@@ -167,7 +170,7 @@ public interface PropagationEntry {
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            QueryTerminalNode[] tnodes = reteEvaluator.getKnowledgeBase().getReteooBuilder().getTerminalNodesForQuery( queryName );
+            QueryTerminalNode[] tnodes = ruleBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist" );
             }
@@ -186,7 +189,7 @@ public interface PropagationEntry {
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
             LeftInputAdapterNode.LiaNodeMemory lmem = reteEvaluator.getNodeMemory( lian );
             if ( lmem.getSegmentMemory() == null ) {
-                RuntimeSegmentUtilities.getOrCreateSegmentMemory(lmem, lts, reteEvaluator);
+                RuntimeSegmentUtilities.getOrCreateSegmentMemory(reteEvaluator, lts, lmem);
             }
 
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, reteEvaluator, lmem, false, queryObject.isOpen() );

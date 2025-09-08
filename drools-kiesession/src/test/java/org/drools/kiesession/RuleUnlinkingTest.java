@@ -321,7 +321,7 @@ public class RuleUnlinkingTest {
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, wm);
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, liaNode);
         liaNode.assertObject( f1, context, wm );
         n1.assertObject( f1, context, wm );
         n3.assertObject( f1, context, wm );
@@ -382,7 +382,7 @@ public class RuleUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory(node);
         if ( betaMemory.getSegmentMemory() == null ) {
-            RuntimeSegmentUtilities.getOrCreateSegmentMemory(node, wm);
+            RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, node);
         }
         return betaMemory;
 
