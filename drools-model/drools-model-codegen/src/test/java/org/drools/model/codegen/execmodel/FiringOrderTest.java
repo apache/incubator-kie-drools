@@ -23,14 +23,9 @@ import java.util.List;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.AgendaGroupPoppedEvent;
-import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,53 +106,13 @@ public class FiringOrderTest extends BaseModelTest {
         final KieSession kieSession = getKieSession(runType, DRL_INSERT_FACT);
 
         try {
-            final List<String> activationOrder = new ArrayList<>();
             final List<String> firingOrder = new ArrayList<>();
 
-            // Listener to capture activation order for B and C
+            // Listener to capture firing order for B and C
             final AgendaEventListener listener = new DefaultAgendaEventListener() {
                 @Override
-                public void matchCreated(MatchCreatedEvent event) {
-                    final String name = event.getMatch().getRule().getName();
-                    if ("A".equals(name) || "B".equals(name) || "C".equals(name)) {
-                        activationOrder.add(name);
-                        log.info("Activating: {}", name);
-                    }
-                }
-
-                @Override
                 public void beforeMatchFired(BeforeMatchFiredEvent event) {
-                    final String name = event.getMatch().getRule().getName();
-                    if ("A".equals(name) || "B".equals(name) || "C".equals(name)) {
-                        firingOrder.add(name);
-                        log.info("Firing: {}", name);
-                    }
-                }
-
-                @Override
-                public void matchCancelled(MatchCancelledEvent event) {
-                    final String name = event.getMatch().getRule().getName();
-                    if ("A".equals(name) || "B".equals(name) || "C".equals(name)) {
-                        log.info("Cancelled: {}", name);
-                    }
-                }
-
-                @Override
-                public void afterMatchFired(AfterMatchFiredEvent event) {
-                    final String name = event.getMatch().getRule().getName();
-                    if ("A".equals(name) || "B".equals(name) || "C".equals(name)) {
-                        log.info("Fired: {}", name);
-                    }
-                }
-
-                @Override
-                public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                    log.info("Agenda group popped: {}", event.getAgendaGroup().getName());
-                }
-
-                @Override
-                public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                    log.info("Agenda group pushed: {}", event.getAgendaGroup().getName());
+                    firingOrder.add(event.getMatch().getRule().getName());
                 }
             };
             kieSession.addEventListener(listener);
