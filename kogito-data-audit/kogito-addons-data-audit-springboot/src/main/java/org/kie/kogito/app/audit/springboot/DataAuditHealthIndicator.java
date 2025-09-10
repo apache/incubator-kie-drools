@@ -16,20 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.api;
+package org.kie.kogito.app.audit.springboot;
 
-public final class SubsystemConstants {
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
 
-    private SubsystemConstants() {
-        // do nothing
+@Component
+public class DataAuditHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        return Health.up().build();
     }
 
-    public static final String DATA_AUDIT_NAME = "Data Audit";
-    public static final String DATA_AUDIT_PATH = "/data-audit";
-    public static final String DATA_AUDIT_QUERY_PATH = DATA_AUDIT_PATH + "/q";
-    public static final String DATA_AUDIT_REGISTRY_PATH = DATA_AUDIT_PATH + "/r";
-
-    public static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
-    public static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
-    public static final String KOGITO_JOBS_EVENTS = "kogito-jobs-events";
 }

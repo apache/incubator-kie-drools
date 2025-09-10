@@ -56,12 +56,10 @@
             <groupId>org.kie</groupId>
             <artifactId>jobs-common-embedded</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-events-core</artifactId>
         </dependency>
-
         <!--runtime -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -112,6 +110,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <profiles>
         <profile>
             <id>jpa</id>

@@ -19,40 +19,56 @@
     under the License.
 
 -->
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>data-index-springboot</artifactId>
-    <version>999-SNAPSHOT</version>
-  </parent>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>data-index-springboot</artifactId>
+        <version>999-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>data-index-common-addons-springboot</artifactId>
-  <name>Kogito Apps :: Kogito Data Index SpringBoot Add-Ons Common</name>
+    <artifactId>data-index-common-addons-springboot</artifactId>
+    <name>Kogito Apps :: Kogito Data Index SpringBoot Add-Ons Common</name>
 
-  <properties>
-    <java.module.name>org.kie.kogito.index.springboot.addons.common</java.module.name>
-  </properties>
+    <properties>
+        <java.module.name>org.kie.kogito.index.springboot.addons.common</java.module.name>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-common-springboot</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-common-addons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-addons-process-svg</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-      <version>${version.org.springframework.boot}</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>data-index-common-springboot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>data-index-common-addons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-process-svg</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
+    </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-spring-boot-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
