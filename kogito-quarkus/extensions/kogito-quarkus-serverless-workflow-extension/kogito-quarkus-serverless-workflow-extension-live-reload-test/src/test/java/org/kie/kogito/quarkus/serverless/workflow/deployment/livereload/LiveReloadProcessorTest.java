@@ -95,7 +95,8 @@ public class LiveReloadProcessorTest {
                 "quarkus.grpc.server.port=" + PORT,
                 "quarkus.grpc.server.test-port=" + PORT,
                 "quarkus.devservices.enabled=false",
-                "quarkus.smallrye-openapi.management.enabled=true")
+                "quarkus.smallrye-openapi.management.enabled=true",
+                "quarkus.smallrye-health.management.enabled=true")
                 .collect(Collectors.joining(System.lineSeparator()));
     }
 

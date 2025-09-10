@@ -82,8 +82,11 @@
       <artifactId>efesto-dependencies</artifactId>
     </dependency>
 
-
-    <!-- Test -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-quarkus-common</artifactId>
+        </dependency>
+        <!-- Test -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>

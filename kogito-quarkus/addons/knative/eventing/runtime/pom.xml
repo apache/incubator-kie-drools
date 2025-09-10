@@ -50,16 +50,6 @@
       <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>
     </dependency>
-    <!-- must be optional, see: https://quarkus.io/guides/writing-extensions#extension-health-check -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-health</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-health</artifactId>
-    </dependency>
     <!-- Testing dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>

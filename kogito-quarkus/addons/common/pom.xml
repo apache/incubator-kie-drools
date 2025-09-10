@@ -37,9 +37,6 @@
   <modules>
     <module>deployment</module>
     <module>reactive-messaging</module>
-    <module>kogito-addons-quarkus-common-health</module>
-    <module>kogito-addons-quarkus-data-index-health</module>
-    <module>kogito-addons-quarkus-jobs-service-health</module>
   </modules>
 
 </project>

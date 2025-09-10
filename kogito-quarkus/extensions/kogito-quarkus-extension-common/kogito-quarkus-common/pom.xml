@@ -20,8 +20,8 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>kogito-quarkus-extension-common</artifactId>
         <groupId>org.kie.kogito</groupId>
@@ -32,9 +32,9 @@
     <artifactId>kogito-quarkus-common</artifactId>
     <name>Kogito :: Quarkus Extension Common :: Runtime</name>
 
-  <properties>
-    <java.module.name>org.kie.kogito.quarkus.common</java.module.name>
-  </properties>
+    <properties>
+        <java.module.name>org.kie.kogito.quarkus.common</java.module.name>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -63,6 +63,10 @@
 
         <!-- quarkus -->
         <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-core</artifactId>
         </dependency>
@@ -82,16 +86,16 @@
             <groupId>io.quarkus.arc</groupId>
             <artifactId>arc-processor</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+
 
         <!-- kogito -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
     </dependencies>
 
