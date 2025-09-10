@@ -32,8 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FiringOrderTest extends BaseModelTest {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FiringOrderTest.class);
-
     public static class State {
 
         private int value;
@@ -100,10 +98,56 @@ public class FiringOrderTest extends BaseModelTest {
                                       end
                                       """.formatted(FiringOrderTest.class.getName());
 
+    private static final String DRL_UPDATE_FACT = """
+                                      package com.example.drools
+                                      
+                                      import %s.State;
+                                      
+                                      global java.util.List firingOrder;
+                                      
+                                      // Rule A: in ruleflow-group XGroup. It modifies State so that B and C become eligible.
+                                      rule "A"
+                                          ruleflow-group "XGroup"
+                                      when
+                                          $s : State(aFired == false, value == 0)
+                                      then
+                                          // Mark A as fired and set value to 1 so that B condition is met
+                                          modify($s) { setAFired(true), setValue(1) };
+                                      end
+                                      
+                                      // Rule B: in ruleflow-group XGroup (same as A).
+                                      rule "B"
+                                          ruleflow-group "XGroup"
+                                      when
+                                          State(value == 1, aFired == true)
+                                      then
+                                      end
+                                      
+                                      // Rule C: in ruleflow-group YGroup with auto-focus true.
+                                      // When this rule becomes active, it will push its ruleflow group to the focus stack.
+                                      rule "C"
+                                          ruleflow-group "YGroup"
+                                          auto-focus true
+                                      when
+                                          State(value == 1, aFired == true)
+                                      then
+                                      end
+                                      """.formatted(FiringOrderTest.class.getName());
+
     @ParameterizedTest
     @MethodSource("parameters")
     void ruleCActivatesBeforeRuleBInsertTest(RUN_TYPE runType) {
-        final KieSession kieSession = getKieSession(runType, DRL_INSERT_FACT);
+        ruleCActivatesBeforeRuleB(runType, DRL_INSERT_FACT);
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void ruleCActivatesBeforeRuleBUpdateTest(RUN_TYPE runType) {
+        ruleCActivatesBeforeRuleB(runType, DRL_UPDATE_FACT);
+    }
+
+    void ruleCActivatesBeforeRuleB(RUN_TYPE runType, String drl) {
+        final KieSession kieSession = getKieSession(runType, drl);
 
         try {
             final List<String> firingOrder = new ArrayList<>();
