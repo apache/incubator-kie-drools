@@ -95,6 +95,10 @@ public class ProcessTestHelper {
         ((DefaultProcessEventListenerConfig) app.config().get(ProcessConfig.class).processEventListeners()).register(kogitoProcessEventListener);
     }
 
+    public static void registerHandler(Application app, KogitoWorkItemHandler handler) {
+        ((DefaultWorkItemHandlerConfig) app.config().get(ProcessConfig.class).workItemHandlers()).register(handler.getName(), handler);
+    }
+
     public static void registerHandler(Application app, String handlerName, KogitoWorkItemHandler handler) {
         ((DefaultWorkItemHandlerConfig) app.config().get(ProcessConfig.class).workItemHandlers()).register(handlerName, handler);
     }
