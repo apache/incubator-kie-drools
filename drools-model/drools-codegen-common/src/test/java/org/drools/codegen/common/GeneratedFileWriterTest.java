@@ -50,8 +50,8 @@ class GeneratedFileWriterTest {
         GeneratedFileWriter.Builder retrieved = GeneratedFileWriter.builder(finalPath, resourcesDirectoryProperty,
                                                                             sourcesDirectoryProperty, bt);
         assertEquals(bt.CLASSES_PATH.toString(), retrieved.classesDir);
-        assertEquals(resourcesDirectory, retrieved.resourcePath);
-        assertEquals(sourcesDirectory, retrieved.scaffoldedSourcesDir);
+        assertEquals(resourcesDirectory, retrieved.resourcesDir);
+        assertEquals(sourcesDirectory, retrieved.sourcesDir);
         System.clearProperty(resourcesDirectoryProperty);
         System.clearProperty(sourcesDirectoryProperty);
     }
@@ -67,9 +67,9 @@ class GeneratedFileWriterTest {
         assertEquals(bt.CLASSES_PATH.toString(), retrieved.classesDir);
         String expected = String.format("%s/%s", bt.GENERATED_RESOURCES_PATH.toString(), finalPath).replace("/",
                                                                                                             File.separator);
-        assertEquals(expected, retrieved.resourcePath);
+        assertEquals(expected, retrieved.resourcesDir);
         expected = String.format("%s/%s", bt.GENERATED_SOURCES_PATH.toString(), finalPath).replace("/", File.separator);
-        assertEquals(expected, retrieved.scaffoldedSourcesDir);
+        assertEquals(expected, retrieved.sourcesDir);
     }
 
     @ParameterizedTest
