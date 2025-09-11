@@ -37,7 +37,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -251,33 +250,26 @@ public class ActivateAndDeleteOnListenerTest {
         final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( new ForceEagerActivationOption.FILTERED(rule -> rule.getName().equals("yyy")));
 
-        final List<String> list = new ArrayList<>();
-
-        final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-            public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                list.add(event.getMatch().getRule().getName());
-            }
-        };
 
         KieSession ksession;
 
         // scenario 1
         ksession = kbase.newKieSession(conf, null);
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         try {
-            list.clear();
-            ksession.addEventListener(agendaEventListener);
+            ksession.addEventListener(listener);
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(1);
-            assertThat(list.size()).isEqualTo(1);
-            assertThat(list.get(0)).isEqualTo("yyy");
+            assertThat(listener.getMatchCreated()).hasSize(1).containsExactly("yyy");
 
-            list.clear();
+            listener.resetAllEvents();
+            
             ksession.fireAllRules();
-            assertThat(list.size()).isEqualTo(1);
-            assertThat(list.get(0)).isEqualTo("xxx");
+            
+            assertThat(listener.getMatchCreated()).hasSize(1).containsExactly("xxx");
         } finally {
             ksession.dispose();
         }
@@ -285,20 +277,18 @@ public class ActivateAndDeleteOnListenerTest {
         // scenario 2
         ksession = kbase.newKieSession(conf, null);
         try {
-            list.clear();
-            ksession.addEventListener(agendaEventListener);
+            listener.resetAllEvents();
+            ksession.addEventListener(listener);
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(Long.valueOf(1));
-            assertThat(list.size()).isEqualTo(1);
-            assertThat(list.get(0)).isEqualTo("yyy");
+            assertThat(listener.getMatchCreated()).hasSize(1).containsExactly("yyy");
 
-            list.clear();
+            listener.resetAllEvents();
             ksession.fireAllRules();
-            assertThat(list.size()).isEqualTo(1);
-            assertThat(list.get(0)).isEqualTo("xxx");
+            assertThat(listener.getMatchCreated()).hasSize(1).containsExactly("xxx");
         } finally {
             ksession.dispose();
         }

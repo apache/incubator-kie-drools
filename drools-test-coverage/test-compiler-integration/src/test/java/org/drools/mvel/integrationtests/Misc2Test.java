@@ -38,7 +38,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -105,10 +104,6 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -3645,7 +3640,6 @@ public class Misc2Test {
                      "end";
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
-        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -3686,7 +3680,6 @@ public class Misc2Test {
                      "end";
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
-        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -4529,22 +4522,17 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
         KieSession ksession = kbase.newKieSession();
 
-        final AtomicInteger i = new AtomicInteger( 0 );
-
-        ksession.addEventListener( new DefaultAgendaEventListener() {
-            public void matchCreated( MatchCreatedEvent event ) {
-                i.incrementAndGet();
-            }
-
-            public void matchCancelled( MatchCancelledEvent event ) {
-                i.decrementAndGet();
-            }
-        } );
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        
+        ksession.addEventListener(listener);
 
         ksession.insert( new SimpleEvent() );
         ksession.fireAllRules();
 
-        assertThat(i.get()).isEqualTo(1);
+        int matchesCreated = listener.getMatchCreated().size();
+        int matchesCancelled = listener.getMatchCancelled().size();
+        
+        assertThat(matchesCreated).isEqualTo(matchesCancelled + 1);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
