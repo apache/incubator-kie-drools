@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.model.Alarm;
 import org.drools.testcoverage.common.model.Person;
@@ -137,34 +138,20 @@ public class ActivateAndDeleteOnListenerTest {
 
         final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
-            final List<String> list = new ArrayList<>();
-
-            final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-                @Override
-                public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add("activated");
-                }
-
-                @Override
-                public void matchCancelled(final MatchCancelledEvent event ) {
-                    list.add("cancelled");
-                }
-            };
-            ksession.addEventListener(agendaEventListener);
+            TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+            ksession.addEventListener(listener);
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
+            assertThat(listener.getMatchCancelled()).isEmpty();
 
             final FactHandle fh = ksession.insert(1);
-            assertThat(list.size()).isEqualTo(2);
-            assertThat(list.get(0)).isEqualTo("activated");
-            assertThat(list.get(1)).isEqualTo("activated");
+            assertThat(listener.getMatchCreated()).hasSize(2).containsExactlyInAnyOrder("xxx", "yyy");
+            assertThat(listener.getMatchCancelled()).isEmpty();
 
-            list.clear();
             ksession.delete( fh );
-            assertThat(list.size()).isEqualTo(2);
-            assertThat(list.get(0)).isEqualTo("cancelled");
-            assertThat(list.get(1)).isEqualTo("cancelled");
+            assertThat(listener.getMatchCreated()).hasSize(2).containsExactlyInAnyOrder("xxx", "yyy");
+            assertThat(listener.getMatchCancelled()).hasSize(2).containsExactlyInAnyOrder("xxx", "yyy");
         } finally {
             ksession.dispose();
         }
@@ -190,20 +177,14 @@ public class ActivateAndDeleteOnListenerTest {
 
         final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
-            final List<String> list = new ArrayList<>();
-
-            final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-                public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add("activated");
-                }
-            };
-            ksession.addEventListener(agendaEventListener);
+            TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+            ksession.addEventListener(listener);
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(1);
-            assertThat(list.size()).isEqualTo(2);
+            assertThat(listener.getMatchCreated()).hasSize(2);
         } finally {
             ksession.dispose();
         }
@@ -231,24 +212,18 @@ public class ActivateAndDeleteOnListenerTest {
 
         final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
-            final List<String> list = new ArrayList<>();
+            TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
 
-            final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-                public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add(event.getMatch().getRule().getName());
-                }
-            };
-            ksession.addEventListener(agendaEventListener);
-
+            ksession.addEventListener(listener);
+            
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(Boolean.TRUE);
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(1);
-            assertThat(list.size()).isEqualTo(1);
-            assertThat(list.get(0)).isEqualTo("yyy");
+            assertThat(listener.getMatchCreated()).hasSize(1).containsExactly("yyy");
         } finally {
             ksession.dispose();
         }
@@ -519,23 +494,17 @@ public class ActivateAndDeleteOnListenerTest {
 
         final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
-            final List<String> list = new ArrayList<>();
-
-            final AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
-                public void matchCreated(final org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add("activated");
-                }
-            };
-            ksession.addEventListener(agendaEventListener);
+            TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+            ksession.addEventListener(listener);
 
             ksession.insert(Boolean.TRUE);
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(0);
+            assertThat(listener.getMatchCreated()).isEmpty();
 
             ksession.insert(1);
-            assertThat(list.size()).isEqualTo(1);
+            assertThat(listener.getMatchCreated()).hasSize(1);
         } finally {
             ksession.dispose();
         }
