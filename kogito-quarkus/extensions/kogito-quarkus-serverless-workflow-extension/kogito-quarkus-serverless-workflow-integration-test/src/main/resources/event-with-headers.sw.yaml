@@ -1,0 +1,64 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/serverlessworkflow/specification/refs/heads/0.8.x/schema/workflow.json
+id: event-with-headers
+specVersion: "0.8"
+key: lock-flow
+version: "1.0.0"
+events:
+  - type: lock-event
+    kind: consumed
+    name: lock-event
+    source: local
+  - name: id-event
+    source: local
+    type: id-event
+    kind: produced
+functions:
+  - name: sysLog
+    type: custom
+    operation: sysout:INFO
+  - name: getWithSimpleBearerTokenSecurityScheme
+    operation: specs/simple-server.yaml#getWithSimpleBearerTokenSecurityScheme
+start: listenToLock
+states:
+  - name: listenToLock
+    type: event
+    onEvents:
+      - eventRefs:
+          - lock-event
+        actions:
+          - functionRef:
+              refName: sysLog
+              arguments:
+                message: ${ "Lock received " + .name + " -- with headers " + ($WORKFLOW.headers | tostring) }
+    transition:
+      nextState: sendRESTRequest
+      produceEvents:
+          - eventRef: id-event
+            data: '$WORKFLOW.instanceId'
+  - name: sendRESTRequest
+    type: operation
+    actions:
+      - name: "getWithSimpleBearerTokenSecurityScheme"
+        functionRef:
+          refName: getWithSimpleBearerTokenSecurityScheme
+    end:
+      terminate: true
