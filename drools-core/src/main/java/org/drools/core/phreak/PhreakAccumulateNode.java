@@ -18,6 +18,7 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Accumulate;
@@ -206,7 +207,7 @@ public class PhreakAccumulateNode {
         return accContext;
     }
 
-    public static void initContext(Object workingMemoryContext, ReteEvaluator reteEvaluator, Accumulate accumulate, BaseTuple leftTuple, AccumulateContextEntry accContext) {
+    public static void initContext(Object workingMemoryContext, ValueResolver reteEvaluator, Accumulate accumulate, BaseTuple leftTuple, AccumulateContextEntry accContext) {
         // Create the function context, but allow init to override it.
         Object funcContext = accumulate.createFunctionContext();
         funcContext = accumulate.init(workingMemoryContext, accContext, funcContext, leftTuple, reteEvaluator);
