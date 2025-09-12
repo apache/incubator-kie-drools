@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.drools.util.StringUtils;
 import org.jbpm.process.core.Context;
@@ -49,6 +50,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a SubFlow node.
@@ -57,6 +60,7 @@ import org.kie.kogito.process.impl.AbstractProcessInstance;
 public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance implements KogitoEventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
+    private static final Logger logger = LoggerFactory.getLogger(LambdaSubProcessNodeInstance.class);
 
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
@@ -85,17 +89,21 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         Object o = subProcessFactory.bind(context);
         org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
 
-        org.kie.api.runtime.process.ProcessInstance pi = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
-        ((ProcessInstanceImpl) pi).setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
-        ((ProcessInstanceImpl) pi).setMetaData("ParentNodeInstanceId", getUniqueId());
-        ((ProcessInstanceImpl) pi).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
-        ((ProcessInstanceImpl) pi).setParentProcessInstanceId(getProcessInstance().getStringId());
-        ((ProcessInstanceImpl) pi)
-                .setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
-        ((ProcessInstanceImpl) pi).setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
-        ((ProcessInstanceImpl) pi).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
-
-        processInstance.start();
+        ProcessInstanceImpl pi = (ProcessInstanceImpl) ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
+        pi.setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
+        pi.setMetaData("ParentNodeInstanceId", getUniqueId());
+        pi.setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
+        pi.setParentProcessInstanceId(getProcessInstance().getStringId());
+        pi.setRootProcessInstanceId(StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
+        pi.setRootProcessId(StringUtils.isEmpty(getProcessInstance().getRootProcessId()) ? getProcessInstance().getProcessId() : getProcessInstance().getRootProcessId());
+        pi.setSignalCompletion(getSubProcessNode().isWaitForCompletion());
+        Map<String, List<String>> headers = getProcessInstance().getHeaders();
+        if (logger.isDebugEnabled()) {
+            logger.debug("Parent headers are {}", headers != null ? headers.keySet() : Set.of());
+        }
+        pi.setHeaders(headers);
+        // headers parameters set to null so start does not override the ones already set
+        processInstance.start(null);
         this.processInstanceId = processInstance.id();
         this.asyncWaitingNodeInstance = hasAsyncNodeInstance(pi);
 

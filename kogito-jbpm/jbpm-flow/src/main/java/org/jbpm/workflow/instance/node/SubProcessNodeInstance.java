@@ -37,6 +37,7 @@ import org.jbpm.process.instance.StartProcessHelper;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -119,7 +120,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
             }
 
-            ProcessInstance processInstance = null;
+            ProcessInstanceImpl processInstance = null;
             if (getProcessInstance().getCorrelationKey() != null) {
                 // in case there is correlation key on parent instance pass it along to child so it can be easily correlated 
                 // since correlation key must be unique for active instances it appends processId and timestamp
@@ -129,15 +130,16 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 businessKeys.add(String.valueOf(System.currentTimeMillis()));
                 CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
                 CorrelationKey subProcessCorrelationKey = correlationKeyFactory.newCorrelationKey(businessKeys);
-                processInstance = (ProcessInstance) ((CorrelationAwareProcessRuntime) kruntime).createProcessInstance(processId, subProcessCorrelationKey, parameters);
+                processInstance = (ProcessInstanceImpl) ((CorrelationAwareProcessRuntime) kruntime).createProcessInstance(processId, subProcessCorrelationKey, parameters);
             } else {
 
-                processInstance = (ProcessInstance) kruntime.createProcessInstance(processId, parameters);
+                processInstance = (ProcessInstanceImpl) kruntime.createProcessInstance(processId, parameters);
             }
             this.processInstanceId = processInstance.getStringId();
             processInstance.setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
             processInstance.setMetaData("ParentNodeInstanceId", getUniqueId());
             processInstance.setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
+            processInstance.setHeaders(getProcessInstance().getHeaders());
             processInstance.setParentProcessInstanceId(getProcessInstance().getStringId());
             processInstance.setRootProcessInstanceId(
                     StringUtils.isEmpty(getProcessInstance().getRootProcessInstanceId()) ? getProcessInstance().getStringId() : getProcessInstance().getRootProcessInstanceId());
