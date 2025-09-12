@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.service.vertx;
 
+import java.io.File;
 import java.util.function.Function;
 
 import io.vertx.core.MultiMap;
@@ -59,7 +60,7 @@ public class VertxRouterSetupHelper {
                             .end());
 
             final String normalized = indexUIPath.endsWith("/") ? indexUIPath.substring(0, indexUIPath.length() - 1) : indexUIPath;
-            final FileSystemAccess fsa = normalized.startsWith("/") ? FileSystemAccess.ROOT : FileSystemAccess.RELATIVE;
+            final FileSystemAccess fsa = new File(normalized).isAbsolute() ? FileSystemAccess.ROOT : FileSystemAccess.RELATIVE;
             final StaticHandler handler = StaticHandler.create(fsa, normalized)
                     .setDefaultContentEncoding("utf-8")
                     .setDirectoryListing(false)
