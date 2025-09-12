@@ -31,6 +31,7 @@ import org.kie.kogito.addons.quarkus.token.exchange.utils.CacheUtils;
 import org.kie.kogito.addons.quarkus.token.exchange.utils.ConfigReaderUtils;
 import org.kie.kogito.addons.quarkus.token.exchange.utils.OidcClientUtils;
 import org.kie.kogito.internal.utils.ConversionUtils;
+import org.kie.kogito.serverless.workflow.openapi.RuntimeConfigCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.Scheduler;
 
-import io.quarkiverse.openapi.generator.providers.ConfigCredentialsProvider;
 import io.quarkiverse.openapi.generator.providers.CredentialsContext;
 import io.quarkus.oidc.client.OidcClient;
 import io.quarkus.oidc.client.OidcClientConfig;
@@ -69,7 +69,7 @@ import static io.quarkiverse.openapi.generator.providers.AbstractAuthProvider.ge
 @Alternative
 @Specializes
 @Priority(200)
-public class OpenApiCustomCredentialProvider extends ConfigCredentialsProvider implements TokenCRUD {
+public class OpenApiCustomCredentialProvider extends RuntimeConfigCredentialsProvider implements TokenCRUD {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenApiCustomCredentialProvider.class);
     public static final String LOG_PREFIX_STARTING_TOKEN_EXCHANGE = "STARTING TOKEN EXCHANGE";
     public static final String LOG_PREFIX_COMPLETED_TOKEN_EXCHANGE = "COMPLETED TOKEN EXCHANGE";

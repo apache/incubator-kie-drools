@@ -51,6 +51,10 @@
       <artifactId>quarkus-openapi-generator</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
     </dependency>

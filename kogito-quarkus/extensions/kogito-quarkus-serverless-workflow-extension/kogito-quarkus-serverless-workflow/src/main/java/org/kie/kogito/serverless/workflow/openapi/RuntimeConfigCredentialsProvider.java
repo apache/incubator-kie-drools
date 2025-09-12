@@ -24,9 +24,15 @@ import io.quarkiverse.openapi.generator.providers.ConfigCredentialsProvider;
 import io.quarkiverse.openapi.generator.providers.CredentialsContext;
 import io.quarkus.restclient.runtime.RestClientBuilderFactory;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Specializes;
 
-@ApplicationScoped
+@Dependent
+@Alternative
+@Specializes
+@Priority(199)
 public class RuntimeConfigCredentialsProvider extends ConfigCredentialsProvider {
 
     protected String getConfigKey(CredentialsContext context) {

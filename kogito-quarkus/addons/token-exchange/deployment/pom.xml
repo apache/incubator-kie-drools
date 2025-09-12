@@ -45,6 +45,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkiverse.openapi.generator</groupId>
       <artifactId>quarkus-openapi-generator-deployment</artifactId>
     </dependency>
