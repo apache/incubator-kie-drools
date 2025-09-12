@@ -18,31 +18,35 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
-import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kogito.workitem.rest.decorators.PrefixParamsDecorator;
 
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE;
-import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.ID;
+public final class GetParamsDecorator extends PrefixParamsDecorator {
 
-public final class PlainJsonKnativeParamsDecorator extends PrefixParamsDecorator {
+    private Map<String, Object> getParams;
 
     @Override
-    public void decorate(KogitoWorkItem workItem, Map<String, Object> parameters, HttpRequest<?> request) {
-        if (isCloudEvent(KnativeFunctionPayloadSupplier.getPayload(parameters))) {
-            throw new IllegalArgumentException(CLOUDEVENT_SENT_AS_PLAIN_JSON_ERROR_MESSAGE);
-        }
-
-        super.decorate(workItem, parameters, request);
+    public void decorate(KogitoWorkItem item, Map<String, Object> parameters, HttpRequest<?> request) {
+        this.getParams = KnativeFunctionPayloadSupplier.getPayload(parameters);
+        super.decorate(item, parameters, request);
     }
 
-    private static boolean isCloudEvent(Map<String, Object> payload) {
-        List<String> cloudEventMissingAttributes = CloudEventUtils.getMissingAttributes(payload);
-        return !payload.isEmpty() && (cloudEventMissingAttributes.isEmpty() || (cloudEventMissingAttributes.size() == 1 && cloudEventMissingAttributes.contains(ID)));
+    @Override
+    protected boolean isQueryParameter(String key) {
+        return this.getParams.containsKey(key) && !super.isHeaderParameter(key);
+    }
+
+    @Override
+    protected boolean isHeaderParameter(String key) {
+        return this.getParams.containsKey(key) && super.isHeaderParameter(key);
+    }
+
+    @Override
+    protected String toQueryKey(String key) {
+        return key;
     }
 }

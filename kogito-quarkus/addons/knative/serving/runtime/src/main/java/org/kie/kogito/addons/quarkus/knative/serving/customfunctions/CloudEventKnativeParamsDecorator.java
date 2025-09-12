@@ -22,14 +22,14 @@ import java.util.Map;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
-import org.kogito.workitem.rest.decorators.ParamsDecorator;
+import org.kogito.workitem.rest.decorators.PrefixParamsDecorator;
 
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8;
 import static org.kie.kogito.addons.quarkus.knative.serving.customfunctions.KnativeWorkItemHandler.ID;
 
-public final class CloudEventKnativeParamsDecorator implements ParamsDecorator {
+public final class CloudEventKnativeParamsDecorator extends PrefixParamsDecorator {
 
     @Override
     public void decorate(KogitoWorkItem workItem, Map<String, Object> parameters, HttpRequest<?> request) {
@@ -44,6 +44,8 @@ public final class CloudEventKnativeParamsDecorator implements ParamsDecorator {
         CloudEventUtils.validateCloudEvent(cloudEvent);
 
         request.putHeader("Content-Type", APPLICATION_CLOUDEVENTS_JSON_CHARSET_UTF_8);
+
+        super.decorate(workItem, parameters, request);
     }
 
     private static String generateCloudEventId(int uniqueIdentifier, String processInstanceId) {

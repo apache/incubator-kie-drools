@@ -21,6 +21,7 @@ package org.kie.kogito.addons.quarkus.knative.serving.deployment;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.CloudEventKnativeParamsDecorator;
+import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.GetParamsDecorator;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.PlainJsonKnativeParamsDecorator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +41,6 @@ class KogitoAddonKnativeServingProcessorTest {
         assertThat(processor.reflectiveClasses()).isNotNull();
         assertThat(processor.reflectiveClasses().getClassNames())
                 .containsExactlyInAnyOrder(CloudEventKnativeParamsDecorator.class.getName(),
-                        PlainJsonKnativeParamsDecorator.class.getName());
+                        PlainJsonKnativeParamsDecorator.class.getName(), GetParamsDecorator.class.getName());
     }
 }

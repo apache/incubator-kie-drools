@@ -1,0 +1,36 @@
+{
+  "id": "cloudEventHeadersKnativeFunction",
+  "version": "1.0",
+  "name": "Test Knative function",
+  "description": "This workflow tests a Knative function",
+  "start": "invokeFunction",
+  "functions": [
+    {
+      "name": "greet",
+      "type": "custom",
+      "operation": "knative:services.v1.serving.knative.dev/default/serverless-workflow-greeting-quarkus?path=/cloud-event&method=POST&asCloudEvent=true"
+    }
+  ],
+  "states": [
+    {
+      "name": "invokeFunction",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "greet",
+            "arguments": {
+              "specversion": "1.0",
+              "id": "42",
+              "source": "https://localhost:8080",
+              "type": "org.kie.kogito.test",
+              "HEADER_Test": "test",
+              "HEADER_Authorization": "Bearer token"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

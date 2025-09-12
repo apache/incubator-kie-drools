@@ -20,6 +20,7 @@
 package org.kie.kogito.addons.quarkus.knative.serving.deployment;
 
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.CloudEventKnativeParamsDecorator;
+import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.GetParamsDecorator;
 import org.kie.kogito.addons.quarkus.knative.serving.customfunctions.PlainJsonKnativeParamsDecorator;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
@@ -46,7 +47,7 @@ public class KogitoAddonKnativeServingProcessor extends OneOfCapabilityKogitoAdd
         return new ReflectiveClassBuildItem(true,
                 true,
                 true,
-                CloudEventKnativeParamsDecorator.class, PlainJsonKnativeParamsDecorator.class);
+                CloudEventKnativeParamsDecorator.class, PlainJsonKnativeParamsDecorator.class, GetParamsDecorator.class);
     }
 
 }
