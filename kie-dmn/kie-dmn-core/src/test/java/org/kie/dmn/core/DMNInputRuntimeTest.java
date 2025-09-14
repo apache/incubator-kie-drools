@@ -759,13 +759,12 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @ParameterizedTest
-    @MethodSource("params")
-    void errorHandlingWithStrictModeEvaluateAll(boolean useExecModelCompiler) {
-        init(useExecModelCompiler);
+    @MethodSource("strictMode")
+    void errorHandlingWithWithoutStrictModeEvaluateAll(boolean strictMode) {
+        init(false, strictMode);
         String nameSpace = "https://kie.org/dmn/_79591DB5-1EE1-4CBD-AA5D-2E3EDF31155E";
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/DMN-MultipleInvalidElements" +
                                                                         ".dmn", this.getClass());
-        ((DMNRuntimeImpl)runtime).setOption(new RuntimeModeOption(RuntimeModeOption.MODE.STRICT));
         final DMNModel dmnModel = runtime.getModel(
                 nameSpace,
                 "DMN_8F7C4323-412A-4E0B-9AEF-0F24C8F55282");
@@ -774,13 +773,25 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("id", "_7273EA2E-2CC3-4012-8F87-39E310C8DF3C");
         dmnContext.set("Conditional Input", 107);
-        dmnContext.set("New Input Data", 8888);
+        dmnContext.set("New Input Data", "8888");
         dmnContext.set("Score", 80);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
-        assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(2);
-        assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
-        dmnResult.getDecisionResults().forEach(decisionResult -> assertThat(decisionResult.getResult()).isNull());
+        if (strictMode) {
+            assertThat(dmnResult.getMessages(DMNMessage.Severity.ERROR).size()).isEqualTo(5);
+            assertThat(dmnResult.getDecisionResults()).isNotNull().hasSize(3);
+            dmnResult.getDecisionResults().forEach(decisionResult -> {
+                assertThat(decisionResult.getResult()).isNull();
+                assertThat(decisionResult.getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+            });
+        } else {
+            assertThat(dmnResult.getDecisionResultByName("Decision1").getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+            assertThat(dmnResult.getDecisionResultByName("Decision2").getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.FAILED);
+            assertThat(dmnResult.getDecisionResultByName("Decision3").getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+            assertThat(dmnResult.getDecisionResultByName("Decision1").getResult()).isNull();
+            assertThat(dmnResult.getDecisionResultByName("Decision2").getResult()).isNull();
+            assertThat(dmnResult.getDecisionResultByName("Decision3").getResult()).isEqualTo("Good");
+        }
     }
 
     @ParameterizedTest

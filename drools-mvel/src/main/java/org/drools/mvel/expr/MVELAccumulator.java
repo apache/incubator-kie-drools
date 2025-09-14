@@ -33,7 +33,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
 import org.kie.api.runtime.rule.FactHandle;
@@ -123,7 +122,7 @@ public class MVELAccumulator
         VariableResolverFactory factory = factoryContext.getInitFactory();
         initUnit.updateFactory( null, tuple, localVars, valueResolver, valueResolver.getGlobalResolver(), factory );
 
-        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
             factory.setNextFactory( data.getFunctionFactory() );
