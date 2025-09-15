@@ -41,7 +41,6 @@ import io.restassured.path.json.JsonPath;
 
 import jakarta.ws.rs.core.HttpHeaders;
 
-import static io.restassured.RestAssured.given;
 import static org.kie.kogito.addons.quarkus.token.exchange.OpenApiCustomCredentialProvider.LOG_PREFIX_COMPLETED_TOKEN_EXCHANGE;
 import static org.kie.kogito.addons.quarkus.token.exchange.OpenApiCustomCredentialProvider.LOG_PREFIX_FAILED_TOKEN_EXCHANGE;
 import static org.kie.kogito.addons.quarkus.token.exchange.OpenApiCustomCredentialProvider.LOG_PREFIX_STARTING_TOKEN_EXCHANGE;
@@ -84,7 +83,7 @@ class TokenExchangeIT {
         // Wait for the process to complete - it should take approximately 11+ seconds
         // due to the 1s delay + 10s delay in the workflow
         long startTime = System.currentTimeMillis();
-        waitForProcessCompletion(processInstanceId, Duration.ofSeconds(25));
+        ProcessAwaitUtils.waitForProcessCompletion("token_exchange", processInstanceId, Duration.ofSeconds(25));
         long endTime = System.currentTimeMillis();
 
         LOGGER.info("Process completed in {} seconds", (endTime - startTime) / 1000.0);
@@ -159,45 +158,6 @@ class TokenExchangeIT {
         LOGGER.info("  - Starting token exchange: {} times", startTokenExchangeLogLines.size());
         LOGGER.info("  - Completed token exchange: {} times", completedTokenExchangeLogLines.size());
         LOGGER.info("  - Token refresh: {} times", refreshTokenExchangeLogLines.size());
-    }
-
-    private void waitForProcessCompletion(String processInstanceId, Duration timeout) {
-        long startTime = System.currentTimeMillis();
-        long timeoutMs = timeout.toMillis();
-
-        while (System.currentTimeMillis() - startTime < timeoutMs) {
-            try {
-                // Check if process still exists - 404 means it completed and was cleaned up
-                int statusCode = given()
-                        .contentType("application/json")
-                        .accept("application/json")
-                        .when()
-                        .get("/token_exchange/" + processInstanceId)
-                        .then()
-                        .extract()
-                        .statusCode();
-
-                if (statusCode == 404) {
-                    LOGGER.info("Process instance {} completed successfully (404 - cleaned up)", processInstanceId);
-                    return;
-                }
-
-                Thread.sleep(1000); // Wait 1 second before checking again
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Interrupted while waiting for process completion", e);
-            } catch (Exception e) {
-                LOGGER.debug("Error checking process state (will retry): {}", e.getMessage());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    throw new RuntimeException("Interrupted while waiting for process completion", ie);
-                }
-            }
-        }
-
-        throw new RuntimeException("Process instance " + processInstanceId + " did not complete within " + timeout);
     }
 
     protected static String buildProcessInput(String query) {
