@@ -29,11 +29,12 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtractTemporals;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public class SubExecutor implements InfixExecutor {
 
@@ -57,15 +58,23 @@ public class SubExecutor implements InfixExecutor {
     }
 
     private Object sub(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
+        if ((left == null && right instanceof Number) || (right == null && left instanceof Number)) {
+            BigDecimal leftNumber = getBigDecimal(left, ctx);
+            BigDecimal rightNumber = getBigDecimal(right, ctx);
+            return leftNumber != null && rightNumber != null ? leftNumber.subtract(rightNumber, MathContext.DECIMAL128)
+                    : null;
+        }
+
+        if ((left instanceof Number && right instanceof String) || (left instanceof String && right instanceof Number)
+                || (left instanceof String && right instanceof String)) {
+            return getSubtractedString(ctx);
         }
 
         if (left instanceof Number) {
-            BigDecimal leftNumber = getBigDecimalOrNull(left);
-            return leftNumber != null && right instanceof Number ?
-                    leftNumber.subtract(getBigDecimalOrNull(right), MathContext.DECIMAL128) :
-                    null;
+            BigDecimal leftNumber = getBigDecimal(left, ctx);
+            BigDecimal rightNumber = getBigDecimal(right, ctx);
+            return leftNumber != null && rightNumber != null ? leftNumber.subtract(rightNumber, MathContext.DECIMAL128)
+                    : null;
         }
 
         if (right instanceof Duration) {
@@ -92,6 +101,22 @@ public class SubExecutor implements InfixExecutor {
             return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
         }
 
+        if (left instanceof String || right instanceof String) {
+            return getSubtractedString(ctx);
+        }
+
+        if (left == null || right == null) {
+            return null;
+        }
+
         return null;
+    }
+
+    private String getSubtractedString(EvaluationContext ctx) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+            return "";
+        } else {
+            return null;
+        }
     }
 }

@@ -24,9 +24,11 @@ import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.isAllowedMultiplicationBasedOnSpec;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
@@ -52,44 +54,72 @@ public class MultExecutor implements InfixExecutor {
     }
 
     private Object mult(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
-        }
         if (!isAllowedMultiplicationBasedOnSpec(left, right, ctx)) {
             return null;
+        }
+
+        if ((left instanceof Number && right instanceof String)
+                || (left instanceof String && right instanceof Number)) {
+            return getMultipliedString(ctx);
         }
 
         if (left instanceof Number) {
             if (right instanceof Number) {
                 BigDecimal leftNumber = getBigDecimalOrNull(left);
-                return leftNumber != null && right instanceof Number ?
-                        leftNumber.multiply(getBigDecimalOrNull(right), MathContext.DECIMAL128) :
-                        null;
+                BigDecimal rightNumber = getBigDecimal(right, ctx);
+                return leftNumber != null && rightNumber != null
+                        ? leftNumber.multiply(rightNumber, MathContext.DECIMAL128) : null;
             }
             if (right instanceof Duration) {
-                return Duration.ofSeconds(getBigDecimalOrNull(left).multiply(getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128).longValue());
+                return Duration.ofSeconds(getBigDecimalOrNull(left)
+                        .multiply(getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128)
+                        .longValue());
             }
             if (right instanceof ChronoPeriod) {
-                return ComparablePeriod.ofMonths(getBigDecimalOrNull(left).multiply(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128).intValue());
+                return ComparablePeriod.ofMonths(getBigDecimalOrNull(left)
+                        .multiply(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)),
+                                MathContext.DECIMAL128)
+                        .intValue());
             }
             return null;
         }
 
-        if (left instanceof Duration && right instanceof Number) {
+        if (left instanceof Duration) {
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
-            final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
+            BigDecimal rightDecimal;
+            if (right instanceof Number) {
+                rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
+            } else {
+                rightDecimal = getBigDecimal(right, ctx);
+            }
             return Duration.ofNanos(durationNumericValue.multiply(rightDecimal).longValue());
         }
 
         if (left instanceof ChronoPeriod) {
-            if (right instanceof Number) {
-                return ComparablePeriod.ofMonths(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).multiply(getBigDecimalOrNull(right), MathContext.DECIMAL128).intValue());
+            if (right instanceof Number || right == null) {
+                BigDecimal rightNumber = getBigDecimal(right, ctx);
+                return ComparablePeriod
+                        .ofMonths(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left))
+                                .multiply(rightNumber, MathContext.DECIMAL128).intValue());
             }
             if (right instanceof ChronoPeriod) {
-                return getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).multiply(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
+                return getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).multiply(
+                        getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)),
+                        MathContext.DECIMAL128);
             }
+        }
+        if (left == null || right == null) {
+            return null;
         }
 
         return null;
+    }
+
+    private BigDecimal getMultipliedString(EvaluationContext ctx) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+            return BigDecimal.ZERO;
+        } else {
+            return null;
+        }
     }
 }

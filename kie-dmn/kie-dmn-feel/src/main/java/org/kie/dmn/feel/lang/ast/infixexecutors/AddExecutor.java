@@ -26,13 +26,15 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.addLocalDateAndDuration;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.commonManageInvalidParameters;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getTemporalAmount;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public class AddExecutor implements InfixExecutor {
@@ -58,19 +60,23 @@ public class AddExecutor implements InfixExecutor {
     }
 
     private Object add(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
+        if ((left instanceof String || right instanceof String)) {
+            return getSummedString(left, right, ctx);
         }
 
         if (left instanceof Number) {
             BigDecimal leftNumber = getBigDecimalOrNull(left);
-            return leftNumber != null && right instanceof Number ?
-                    leftNumber.add(getBigDecimalOrNull(right), MathContext.DECIMAL128) :
-                    null;
+            if (right == null) {
+                right = getBigDecimal(right, ctx);
+            }
+            return leftNumber != null && right instanceof Number
+                    ? leftNumber.add(getBigDecimalOrNull(right), MathContext.DECIMAL128) : null;
         }
-
-        if (left instanceof String stringLeft) {
-            return right instanceof String stringRight ? stringLeft + stringRight : null;
+        if (left == null && right instanceof Number) {
+            BigDecimal rightNumber = getBigDecimalOrNull(right);
+            left = getBigDecimal(left, ctx);
+            return rightNumber != null && left instanceof Number
+                    ? rightNumber.add(getBigDecimalOrNull(left), MathContext.DECIMAL128) : null;
         }
 
         if (left instanceof Duration leftDuration) {
@@ -86,6 +92,7 @@ public class AddExecutor implements InfixExecutor {
         }
 
         if (left instanceof Temporal temporal) {
+            right = getTemporalAmount(right, ctx);
             if (right instanceof TemporalAmount temporalAmount) {
                 return temporal.plus(temporalAmount);
             }
@@ -97,9 +104,24 @@ public class AddExecutor implements InfixExecutor {
                 return chronoPeriod.plus(temporalAmount);
             }
         }
-        ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+        if (left == null || right == null) {
+            return getSummedString(left, right, ctx);
+        }
+
+        commonManageInvalidParameters(ctx);
         return null;
     }
 
-
+    private String getSummedString(Object left, Object right, EvaluationContext ctx) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+            String leftString = getString(left);
+            String rightString = getString(right);
+            return leftString + rightString;
+        } else {
+            if (left instanceof String stringLeft && right instanceof String stringRight) {
+                return stringLeft + stringRight;
+            }
+            return null;
+        }
+    }
 }

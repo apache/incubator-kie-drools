@@ -32,6 +32,8 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Msg;
 
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.commonManageInvalidParameters;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
@@ -57,16 +59,16 @@ public class DivExecutor implements InfixExecutor {
     }
 
     private Object div(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
-        }
-
         if (left instanceof Number) {
+            if (right == null) {
+                right = getBigDecimal(right, ctx);
+            }
             if (right instanceof Number) {
                 return math(left, right, ctx, (l, r) -> l.divide(r, MathContext.DECIMAL128));
             }
+
             if (right instanceof TemporalAmount) {
-                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+                commonManageInvalidParameters(ctx);
             }
             return null;
         }
@@ -75,10 +77,12 @@ public class DivExecutor implements InfixExecutor {
             if (right instanceof Number) {
                 final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
                 final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
-                return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
+                return Duration
+                        .ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
             }
             if (right instanceof Duration) {
-                return getBigDecimalOrNull(((Duration) left).getSeconds()).divide(getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128);
+                return getBigDecimalOrNull(((Duration) left).getSeconds())
+                        .divide(getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128);
             }
         }
 
@@ -86,15 +90,31 @@ public class DivExecutor implements InfixExecutor {
             if (right instanceof Number) {
                 final BigDecimal rightDecimal = getBigDecimalOrNull(right);
                 if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
-                    ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
+                    ctx.notifyEvt(
+                            () -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
                     return null;
                 } else {
-                    return ComparablePeriod.ofMonths(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
+                    return ComparablePeriod
+                            .ofMonths(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left))
+                                    .divide(rightDecimal, MathContext.DECIMAL128).intValue());
                 }
             }
             if (right instanceof ChronoPeriod) {
-                return getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
+                return getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(
+                        getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)),
+                        MathContext.DECIMAL128);
             }
+        }
+
+        if (left == null && right instanceof Number) {
+            left = getBigDecimal(left, ctx);
+            if (left != null) {
+                return math(left, right, ctx, (l, r) -> l.divide(r, MathContext.DECIMAL128));
+            }
+        }
+
+        if (left == null || right == null) {
+            return null;
         }
 
         return null;
