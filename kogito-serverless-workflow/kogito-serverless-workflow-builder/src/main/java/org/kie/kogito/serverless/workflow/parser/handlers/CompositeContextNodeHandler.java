@@ -51,6 +51,7 @@ import io.serverlessworkflow.api.sleep.Sleep;
 import io.serverlessworkflow.api.workflow.Functions;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
+import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.exclusiveSplitNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.subprocessNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
@@ -74,27 +75,34 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     protected final <T extends AbstractCompositeNodeFactory<?, ?>> T handleActions(T embeddedSubProcess, List<Action> actions, String outputVar, boolean shouldMerge) {
-        if (actions != null && !actions.isEmpty()) {
-            NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
-            NodeFactory<?, ?> currentNode = startNode;
-            for (Action action : actions) {
-                currentNode = connect(currentNode, getActionNode(embeddedSubProcess, action, outputVar != null ? outputVar : getVarName(), shouldMerge));
-            }
-            connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
-        } else {
-            connect(embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart"), embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
-        }
+        return handleActions(embeddedSubProcess, actions, outputVar, shouldMerge, DEFAULT_WORKFLOW_VAR);
+    }
+
+    protected final <T extends AbstractCompositeNodeFactory<?, ?>> T handleActions(T embeddedSubProcess, List<Action> actions, String outputVar, boolean shouldMerge, String modelVar) {
+        NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
+        NodeFactory<?, ?> currentNode = handleActions(embeddedSubProcess, startNode, actions, outputVar, shouldMerge, modelVar);
+        connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         return embeddedSubProcess;
+    }
+
+    protected <T extends AbstractCompositeNodeFactory<?, ?>> NodeFactory<?, ?> handleActions(T embeddedSubProcess, NodeFactory<?, ?> currentNode, List<Action> actions, String outputVar,
+            boolean shouldMerge, String modelVar) {
+        if (actions != null && !actions.isEmpty()) {
+            for (Action action : actions) {
+                currentNode = connect(currentNode, getActionNode(embeddedSubProcess, action, outputVar != null ? outputVar : getVarName(), shouldMerge, modelVar));
+            }
+        }
+        return currentNode;
     }
 
     protected final MakeNodeResult getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             Action action) {
-        return getActionNode(embeddedSubProcess, action, getVarName(), true);
+        return getActionNode(embeddedSubProcess, action, getVarName(), true, DEFAULT_WORKFLOW_VAR);
     }
 
     protected final MakeNodeResult getActionNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
-            Action action, String collectVar, boolean shouldMerge) {
-        return addActionCondition(embeddedSubProcess, action, addActionSleep(embeddedSubProcess, action, processActionFilter(embeddedSubProcess, action, collectVar, shouldMerge)));
+            Action action, String collectVar, boolean shouldMerge, String modelVar) {
+        return addActionCondition(embeddedSubProcess, action, addActionSleep(embeddedSubProcess, action, processActionFilter(embeddedSubProcess, action, collectVar, shouldMerge, modelVar)));
     }
 
     private MakeNodeResult addActionCondition(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, Action action, MakeNodeResult actionNode) {
@@ -143,7 +151,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     private MakeNodeResult processActionFilter(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
-            Action action, String collectVar, boolean shouldMerge) {
+            Action action, String collectVar, boolean shouldMerge, String modelVar) {
         ActionDataFilter actionFilter = action.getActionDataFilter();
         String fromExpr = null;
         String resultExpr = null;
@@ -157,13 +165,13 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         }
         if (action.getFunctionRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getFunctionRef(), inputVar, outputVar), action));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getFunctionRef(), inputVar, outputVar), action), modelVar);
         } else if (action.getEventRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getEventRef(), inputVar), action));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getEventRef(), inputVar), action), modelVar);
         } else if (action.getSubFlowRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar), action));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar), action), modelVar);
         } else {
             return faultyNodeResult(embeddedSubProcess, "Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
         }

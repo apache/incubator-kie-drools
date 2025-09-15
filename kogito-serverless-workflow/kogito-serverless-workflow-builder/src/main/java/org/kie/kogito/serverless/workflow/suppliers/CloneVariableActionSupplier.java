@@ -22,23 +22,21 @@ import org.jbpm.compiler.canonical.ExpressionSupplier;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
-import org.kie.kogito.serverless.workflow.actions.SetValueAction;
+import org.kie.kogito.serverless.workflow.actions.CloneVariableAction;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
 
-public class SetValueActionSupplier extends SetValueAction implements ExpressionSupplier {
+public class CloneVariableActionSupplier extends CloneVariableAction implements ExpressionSupplier {
 
     private Expression expression;
 
-    public SetValueActionSupplier(String varName, JsonNode value) {
-        super(varName, value);
-        this.expression = ExpressionUtils.getObjectCreationExpr(SetValueAction.class, varName, value);
+    public CloneVariableActionSupplier(String sourceName, String targetName) {
+        super(sourceName, targetName);
+        this.expression = ExpressionUtils.getObjectCreationExpr(CloneVariableAction.class, sourceName, targetName);
     }
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
         return expression;
-
     }
 }

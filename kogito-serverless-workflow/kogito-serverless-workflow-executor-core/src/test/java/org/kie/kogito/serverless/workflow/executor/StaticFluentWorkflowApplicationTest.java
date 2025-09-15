@@ -185,6 +185,25 @@ public class StaticFluentWorkflowApplicationTest {
         }
     }
 
+    @Test
+    void testParallelIsolation() {
+        final String INC = "inc";
+
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("ParallelTest").function(expr(INC, ".input=.input+1"))
+                    .start(parallel()
+                            .atLeast(2)
+                            .newBranch().action(call(INC)).endBranch()
+                            .newBranch().action(call(INC)).endBranch()
+                            .newBranch().action(call(INC)).endBranch())
+                    .end().build();
+
+            Process<JsonNodeModel> process = application.process(workflow);
+            JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
+            assertThat(result.get("input").asInt()).isEqualTo(5);
+        }
+    }
+
     public int duplicate(int number) {
         return number * 2;
     }

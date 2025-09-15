@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
-import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler.FilterableNodeSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SetCollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SetExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.SetValueActionSupplier;

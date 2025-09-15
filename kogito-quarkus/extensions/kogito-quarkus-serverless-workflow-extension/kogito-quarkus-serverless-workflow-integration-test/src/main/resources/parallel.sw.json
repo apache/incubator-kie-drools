@@ -6,26 +6,26 @@
 "start": "Parallel",
 "functions": [
     {
-      "name": "concatA",
+      "name": "partA",
       "type": "expression",
-      "operation": ".result|=.+\"A\""
+      "operation": ".firstPart=\"A\""
     },
     {
-      "name": "concatB",
+      "name": "partB",
       "type": "expression",
-      "operation": ".result|=.+\"B\""
+      "operation": ".secondPart=\"B\""
     },
     {
-      "name": "concatC",
+      "name": "partC",
       "type": "expression",
-      "operation": ".result|=.+\"C\""
+      "operation": ".thirdPart=\"C\""
     }
   ],
 "states":[  
   {  
      "name":"Parallel",
      "type":"parallel",
-     "branches": [ {"actions": [{"functionRef":"concatA"}] }, {"actions": [{"functionRef":"concatB"}] },{"actions": [{"functionRef":"concatC"}] }],
+     "branches": [ {"actions": [{"functionRef":"partA"}] }, {"actions": [{"functionRef":"partB"}] },{"actions": [{"functionRef":"partC"}] }],
      "numCompleted" : ".numCompleted",
      "completionType" : "atLeast",
      "end": {

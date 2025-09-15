@@ -18,13 +18,17 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasLength;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @QuarkusIntegrationTest
 class ParallelStateIT {
@@ -38,18 +42,24 @@ class ParallelStateIT {
                 .post("/parallel")
                 .then()
                 .statusCode(201)
-                .body("workflowdata.result", hasLength(3));
+                .body("workflowdata.firstPart", is("A"))
+                .body("workflowdata.secondPart", is("B"))
+                .body("workflowdata.thirdPart", is("C"));
     }
 
     @Test
     void testPartialParallelRest() {
-        given()
+        Map<String, Object> result = given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\"workflowdata\":{\"numCompleted\": 2}}").when()
                 .post("/parallel")
                 .then()
                 .statusCode(201)
-                .body("workflowdata.result", hasLength(2));
+                .extract().body().as(new TypeRef<Map<String, Object>>() {
+                });
+        assertThat(result).containsKey("workflowdata");
+        Map<String, Object> workflowData = (Map<String, Object>) result.get("workflowdata");
+        assertThat(workflowData).hasSize(3);
     }
 }

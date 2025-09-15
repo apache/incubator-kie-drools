@@ -51,7 +51,6 @@ import org.kie.kogito.internal.utils.KogitoTags;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
-import org.kie.kogito.serverless.workflow.parser.VariableInfo;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ErrorExpressionActionSupplier;
@@ -439,50 +438,44 @@ public abstract class StateHandler<S extends State> {
             toExpr = eventFilter.getToStateData();
             useData = eventFilter.isUseData();
         }
-        return filterAndMergeNode(embeddedSubProcess, isStartState ? new VariableInfo(DEFAULT_WORKFLOW_VAR, varName) : new VariableInfo(varName, varName), null, dataExpr, toExpr, useData, true,
-                nodeSupplier);
+        return filterAndMergeNode(embeddedSubProcess, varName, null, dataExpr, toExpr, useData, true,
+                nodeSupplier, DEFAULT_WORKFLOW_VAR);
     }
 
     protected boolean isTempVariable(String varName) {
-        return !varName.equals(ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+        return !varName.equals(DEFAULT_WORKFLOW_VAR);
     }
 
     protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
             boolean useData,
-            boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
-        return filterAndMergeNode(embeddedSubProcess, new VariableInfo(actionVarName, actionVarName), fromStateExpr, resultExpr, toStateExpr, useData, shouldMerge, nodeSupplier);
-    }
-
-    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, VariableInfo variableInfo, String fromStateExpr, String resultExpr, String toStateExpr,
-            boolean useData,
-            boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
-        String actionVarName = variableInfo.getOutputVar();
+            boolean shouldMerge, FilterableNodeSupplier nodeSupplier, String modelVar) {
         if (isTempVariable(actionVarName)) {
             embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Map.of(KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG));
         }
         NodeFactory<?, ?> startNode, currentNode;
         if (fromStateExpr != null) {
             startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, fromStateExpr)
-                    .withVarNames(DEFAULT_WORKFLOW_VAR, actionVarName).build()).metaData(SWFConstants.STATE_NAME, state.getName());
+                    .withVarNames(modelVar, actionVarName).build()).metaData(SWFConstants.STATE_NAME, state.getName());
             currentNode = connect(startNode, nodeSupplier.apply(embeddedSubProcess, actionVarName, actionVarName).metaData(SWFConstants.STATE_NAME, state.getName()));
         } else {
-            startNode = currentNode = nodeSupplier.apply(embeddedSubProcess, DEFAULT_WORKFLOW_VAR, actionVarName);
+            startNode = currentNode = nodeSupplier.apply(embeddedSubProcess, modelVar, actionVarName);
         }
         if (useData) {
             if (resultExpr != null) {
                 currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, resultExpr)
-                        .withVarNames(variableInfo.getInputVar(), actionVarName).build()));
+                        .withVarNames(actionVarName, actionVarName).build()));
             }
             if (toStateExpr != null) {
                 currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
-                        .action(new CollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, DEFAULT_WORKFLOW_VAR, actionVarName)));
+                        .action(new CollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, modelVar, actionVarName)));
             } else if (shouldMerge) {
                 currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
-                        .action(new MergeActionSupplier(actionVarName, DEFAULT_WORKFLOW_VAR)));
+                        .action(new MergeActionSupplier(actionVarName, modelVar)));
             }
         }
         currentNode.done();
         return new MakeNodeResult(startNode, currentNode);
+
     }
 
     protected final NodeFactory<?, ?> connect(NodeFactory<?, ?> currentNode, NodeFactory<?, ?> nodeFactory) {
@@ -546,7 +539,7 @@ public abstract class StateHandler<S extends State> {
             String errorMessage = metadata.get("errorMessage");
             if (errorMessage != null && !errorMessage.isBlank()) {
                 NodeFactory<?, ?> errorMessageNode =
-                        factory.actionNode(parserContext.newId()).action(new ErrorExpressionActionSupplier(workflow.getExpressionLang(), errorMessage, SWFConstants.DEFAULT_WORKFLOW_VAR));
+                        factory.actionNode(parserContext.newId()).action(new ErrorExpressionActionSupplier(workflow.getExpressionLang(), errorMessage, DEFAULT_WORKFLOW_VAR));
                 connect(errorMessageNode, startNode);
                 startNode = errorMessageNode;
             }
