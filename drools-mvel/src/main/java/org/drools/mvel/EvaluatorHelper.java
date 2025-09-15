@@ -27,7 +27,6 @@ import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
-import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class EvaluatorHelper {
@@ -50,7 +49,7 @@ public class EvaluatorHelper {
         return map;
     }
 
-    public static void initOperators(FactHandle handle, Tuple tuple, EvaluatorWrapper[] operators) {
+    public static void initOperators(FactHandle handle, BaseTuple tuple, EvaluatorWrapper[] operators) {
         FactHandle[] handles = tuple != null ? tuple.toFactHandles() : new FactHandle[0];
         for (EvaluatorWrapper operator : operators) {
             operator.loadHandles(handles, handle);

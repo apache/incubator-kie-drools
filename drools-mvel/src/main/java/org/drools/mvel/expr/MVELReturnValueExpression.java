@@ -22,13 +22,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.FieldValue;
@@ -96,7 +93,7 @@ public class MVELReturnValueExpression
 
         
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = ((InternalRuleBase)valueResolver.getRuleBase()).getPackage("MAIN");
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
