@@ -75,8 +75,7 @@ public class MultipleSalienceUpdateFactTest extends KieSessionTest {
 
         session.execute(getCommands().newBatchExecution(commands, null));
 
-        assertThat(firedRules.isRuleFired("PERSON_PAUL")).isTrue();
-        assertThat(firedRules.isRuleFired("PERSON_PETER")).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).contains("PERSON_PAUL", "PERSON_PETER");
     }
 
     @Override

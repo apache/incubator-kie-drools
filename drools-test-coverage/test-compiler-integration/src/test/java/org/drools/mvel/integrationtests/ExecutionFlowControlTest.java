@@ -22,6 +22,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.mvel.compiler.Cell;
 import org.drools.mvel.compiler.Cheese;
@@ -40,10 +41,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -829,22 +826,11 @@ public class ExecutionFlowControlTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_UpdateActivationCreationNoLoop.drl");
 
         KieSession ksession = kbase.newKieSession();
+        
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
 
-        final List created = new ArrayList();
-        final List cancelled = new ArrayList();
-        final AgendaEventListener l = new DefaultAgendaEventListener() {
-            @Override
-            public void matchCreated(MatchCreatedEvent event) {
-                created.add( event );
-            }
 
-            @Override
-            public void matchCancelled(MatchCancelledEvent event) {
-                cancelled.add( event );
-            }
-        };
-
-        ksession.addEventListener( l );
+        ksession.addEventListener( listener );
 
         final Cheese stilton = new Cheese( "stilton", 15 );
         final FactHandle stiltonHandle = ksession.insert( stilton );
@@ -863,15 +849,16 @@ public class ExecutionFlowControlTest {
 
         ksession.fireAllRules();
 
-        assertThat(created.size()).isEqualTo(3);
-        assertThat(cancelled.size()).isEqualTo(0);
+        
+        assertThat(listener.getMatchCreated()).hasSize(3);
+        assertThat(listener.getMatchCancelled()).hasSize(0);
 
         // simulate a modify inside a consequence
         ksession.update( stiltonHandle, stilton );
 
         // with true modify, no reactivations should be triggered
-        assertThat(created.size()).isEqualTo(3);
-        assertThat(cancelled.size()).isEqualTo(0);
+        assertThat(listener.getMatchCreated()).hasSize(3);
+        assertThat(listener.getMatchCancelled()).hasSize(0);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
