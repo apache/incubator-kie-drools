@@ -41,7 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -3695,6 +3697,23 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
+    }
+
+    @Test
+    void testDecisionServiceWithEventListener() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "testmodels/evaluated-model.dmn", this.getClass(),
+                "testmodels/to-be-included.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("evaluated-model", "evaluated-model");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "MyHelloService");
+        assertThat(dmnResult.getDecisionResultByName("MyOutput").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("MyOutput")).isEqualTo("Hello, world!");
     }
 
 }

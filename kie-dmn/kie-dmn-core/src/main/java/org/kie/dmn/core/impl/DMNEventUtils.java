@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
@@ -67,9 +68,12 @@ public final class DMNEventUtils {
         Map<String, Object> results = new LinkedHashMap<>();
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         for (String id : decisionIDs) {
-            String decisionName = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id).getName();
-            Object decisionResult = event.getResult().getContext().get(decisionName);
-            results.put(decisionName, decisionResult);
+            DecisionNode decisionNode = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id);
+            if(decisionNode != null) {
+                String decisionName = decisionNode.getName();
+                Object decisionResult = event.getResult().getContext().get(decisionName);
+                results.put(decisionName, decisionResult);
+            }
         }
         return results;
     }
