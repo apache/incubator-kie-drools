@@ -64,8 +64,6 @@ public class FiringOrderTest extends BaseModelTest {
                                       
                                       import %s.State;
                                       
-                                      global java.util.List firingOrder;
-                                      
                                       // Rule A: in ruleflow-group XGroup. It modifies State so that B and C become eligible.
                                       rule "A"
                                           ruleflow-group "XGroup"
@@ -102,8 +100,6 @@ public class FiringOrderTest extends BaseModelTest {
                                       package com.example.drools
                                       
                                       import %s.State;
-                                      
-                                      global java.util.List firingOrder;
                                       
                                       // Rule A: in ruleflow-group XGroup. It modifies State so that B and C become eligible.
                                       rule "A"
@@ -160,9 +156,6 @@ public class FiringOrderTest extends BaseModelTest {
                 }
             };
             kieSession.addEventListener(listener);
-
-            // Global for firing order from the DRL RHS for additional verification
-            kieSession.setGlobal("firingOrder", firingOrder);
 
             // Initial fact to trigger A
             State state = new State(0, false);
