@@ -33,7 +33,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import java.util.Map;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -76,8 +76,9 @@ public class DMNEventUtilsTest {
             mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(decisionId);
             Map<String, Object> resultMap = DMNEventUtils.extractDSOutputDecisionsValues(event);
 
-            assertEquals(1, resultMap.size());
-            assertEquals(decisionValue, resultMap.get(decisionName));
+            assertThat(resultMap).isNotNull();
+            assertThat(resultMap.size()).isEqualTo(1);
+            assertThat(resultMap.get(decisionName)).isEqualTo(decisionValue);
         }
     }
 
@@ -113,7 +114,8 @@ public class DMNEventUtilsTest {
         try (MockedStatic<DMNCompilerImpl> mockedStatic = Mockito.mockStatic(DMNCompilerImpl.class)) {
             mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(null);
             Map<String, Object> resultMap = DMNEventUtils.extractDSOutputDecisionsValues(event);
-            assertEquals(0, resultMap.size());
+            assertThat(resultMap).isNotNull();
+            assertThat(resultMap.size()).isEqualTo(0);
         }
     }
 }
