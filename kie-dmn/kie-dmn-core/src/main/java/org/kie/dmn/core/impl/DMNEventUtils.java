@@ -69,7 +69,7 @@ public final class DMNEventUtils {
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         for (String id : decisionIDs) {
             DecisionNode decisionNode = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id);
-            if(decisionNode != null) {
+            if (decisionNode != null) {
                 String decisionName = decisionNode.getName();
                 Object decisionResult = event.getResult().getContext().get(decisionName);
                 results.put(decisionName, decisionResult);
