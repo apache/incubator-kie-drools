@@ -102,7 +102,7 @@ public class BFEELTest extends BaseFEELTest {
                 { "\"Today is \" + today()", String.format("Today is %s", LocalDate.now()), null },
                 { "5 + \" minutes\"", "5 minutes", null }, { "\"This is \" + null", "This is ", null },
                 { "1 + null", BigDecimal.ONE, null }, { "null + 1", BigDecimal.ONE, null },
-                { "date(\"2021-01-01\") + 7", LocalDate.of(2021, 1, 1), null },
+                { "date(\"2021-01-01\") + 7", BigDecimal.valueOf(7), null },
 
                 { "null - 6", BigDecimal.valueOf(-6), null },
 

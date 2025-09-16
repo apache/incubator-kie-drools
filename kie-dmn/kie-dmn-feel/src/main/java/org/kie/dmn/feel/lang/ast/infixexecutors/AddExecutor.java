@@ -66,11 +66,9 @@ public class AddExecutor implements InfixExecutor {
 
         if (left instanceof Number) {
             BigDecimal leftNumber = getBigDecimalOrNull(left);
-            if (right == null) {
-                right = getBigDecimal(right, ctx);
-            }
-            return leftNumber != null && right instanceof Number
-                    ? leftNumber.add(getBigDecimalOrNull(right), MathContext.DECIMAL128) : null;
+            BigDecimal rightNumber = getBigDecimal(right, ctx);
+            return leftNumber != null && rightNumber != null
+                    ? leftNumber.add(rightNumber, MathContext.DECIMAL128) : null;
         }
         if (left == null && right instanceof Number) {
             BigDecimal rightNumber = getBigDecimalOrNull(right);
@@ -92,6 +90,13 @@ public class AddExecutor implements InfixExecutor {
         }
 
         if (left instanceof Temporal temporal) {
+            if (right instanceof Number) {
+                BigDecimal leftNumber = getBigDecimal(left, ctx);
+                BigDecimal rightNumber = getBigDecimal(right, ctx);
+                if (leftNumber != null && rightNumber != null) {
+                    return leftNumber.add(rightNumber, MathContext.DECIMAL128);
+                }
+            }
             right = getTemporalAmount(right, ctx);
             if (right instanceof TemporalAmount temporalAmount) {
                 return temporal.plus(temporalAmount);

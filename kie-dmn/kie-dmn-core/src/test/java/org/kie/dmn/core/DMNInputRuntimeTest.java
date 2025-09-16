@@ -67,7 +67,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     void sFeelInvalidBFeelValidExpressions(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil
-                .createRuntime("invalid_models/DMNv1_6/B-FEEL/S-FEELInvalidExpressions" + ".dmn", this.getClass());
+                .createRuntime("invalid_models/DMNv1_6/B-FEEL/S-FEELInvalidExpressions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_71957705-0381-4AEB-9BFD-59059D89A18C",
                 "DMN_E73F88CE-4E67-4B67-BFB2-7977441F2343");
         assertThat(dmnModel).isNotNull();
@@ -78,7 +78,6 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult.hasErrors()).isFalse();
         List<DMNMessage> warnings = dmnResult.getMessages(DMNMessage.Severity.WARN);
-        System.out.println("warnings: " + warnings.size());
         assertThat(warnings).hasSize(3);
         assertThat(dmnResult.getDecisionResults()).hasSize(14);
         assertThat(dmnResult.getDecisionResultByName("DayOfWeek").getResult()).isEqualTo("");
@@ -90,7 +89,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("ThisIsNull").getResult()).isEqualTo("This is ");
         assertThat(dmnResult.getDecisionResultByName("OnePlusNull").getResult()).isEqualTo(BigDecimal.ONE);
         assertThat(dmnResult.getDecisionResultByName("NullMinusSix").getResult()).isEqualTo(BigDecimal.valueOf(-6));
-        assertThat(dmnResult.getDecisionResultByName("DatePlusSeven").getResult()).isEqualTo(LocalDate.of(2021, 1, 1));
+        assertThat(dmnResult.getDecisionResultByName("DatePlusSeven").getResult()).isEqualTo(BigDecimal.valueOf(7));
         assertThat(dmnResult.getDecisionResultByName("AbcMinusTwo").getResult()).isEqualTo("");
         assertThat(dmnResult.getDecisionResultByName("TwentytwoTimesA").getResult()).isEqualTo(BigDecimal.ZERO);
         assertThat(dmnResult.getDecisionResultByName("NullDividedTwentytwo").getResult()).isEqualTo(BigDecimal.ZERO);
