@@ -61,8 +61,6 @@ import org.drools.base.rule.constraint.Constraint;
 import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.ConditionAnalyzer.CombinedCondition;
 import org.drools.mvel.ConditionAnalyzer.Condition;
 import org.drools.mvel.ConditionAnalyzer.EvaluatedExpression;
@@ -812,8 +810,8 @@ public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implemen
             return true;
         }
 
-        Map<String, Object> thisImports = (( MVELDialectRuntimeData ) ((KnowledgeBaseImpl)kbase).getPackage(thisPkg).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
-        Map<String, Object> otherImports = (( MVELDialectRuntimeData ) ((KnowledgeBaseImpl)kbase).getPackage(otherPkg).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
+        Map<String, Object> thisImports = (( MVELDialectRuntimeData ) kbase.getPackage(thisPkg).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
+        Map<String, Object> otherImports = (( MVELDialectRuntimeData ) kbase.getPackage(otherPkg).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
 
                     if (fieldValue != null && constraintType.getOperator() != null) {
             return equalsExpressionTokensInBothImports(getLeftInExpression(constraintType), thisImports, otherImports);
@@ -877,7 +875,7 @@ public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implemen
 
     protected MVELDialectRuntimeData getMVELDialectRuntimeData(RuleBase kbase) {
         for (String packageName : packageNames) {
-            InternalKnowledgePackage pkg = ((InternalKnowledgeBase)kbase).getPackage(packageName);
+            InternalKnowledgePackage pkg = kbase.getPackage(packageName);
             if (pkg != null) {
                 return ((MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel"));
             }

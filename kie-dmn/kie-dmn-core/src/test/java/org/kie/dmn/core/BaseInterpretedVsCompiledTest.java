@@ -20,6 +20,10 @@ package org.kie.dmn.core;
 
 import org.junit.jupiter.api.AfterEach;
 import org.kie.dmn.core.compiler.ExecModelCompilerOption;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
+
+import static org.kie.dmn.core.compiler.RuntimeModeOption.MODE.LENIENT;
+import static org.kie.dmn.core.compiler.RuntimeModeOption.MODE.STRICT;
 
 public abstract class BaseInterpretedVsCompiledTest {
 
@@ -27,15 +31,28 @@ public abstract class BaseInterpretedVsCompiledTest {
         return new Object[]{false};
     }
 
+    protected static Object[] strictMode() {
+        return new Object[]{false, true};
+    }
+
     protected boolean useExecModelCompiler;
+    protected boolean useStrictMode;
 
     protected void init(boolean useExecModelCompiler){
+        init(useExecModelCompiler, false);
+    }
+
+    protected void init(boolean useExecModelCompiler, boolean useStrictMode) {
         this.useExecModelCompiler = useExecModelCompiler;
+        this.useStrictMode = useStrictMode;
         System.setProperty(ExecModelCompilerOption.PROPERTY_NAME, Boolean.toString(useExecModelCompiler));
+        String modeToSet = useStrictMode ? STRICT.getMode() : LENIENT.getMode();
+        System.setProperty(RuntimeModeOption.PROPERTY_NAME, modeToSet);
     }
 
     @AfterEach
     public void after() {
         System.clearProperty(ExecModelCompilerOption.PROPERTY_NAME);
+        System.clearProperty(RuntimeModeOption.PROPERTY_NAME);
     }
 }

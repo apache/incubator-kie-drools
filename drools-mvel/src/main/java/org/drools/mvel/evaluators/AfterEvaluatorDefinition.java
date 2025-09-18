@@ -29,9 +29,9 @@ import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.util.TimeIntervalParser;
-import org.drools.core.common.DefaultEventHandle;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.time.Interval;
+import org.kie.api.runtime.rule.EventHandle;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -249,12 +249,12 @@ public class AfterEvaluatorDefinition
 
         @Override
         protected long getLeftTimestamp( FactHandle handle) {
-            return ( (DefaultEventHandle) handle ).getEndTimestamp();
+            return ( (EventHandle) handle ).getEndTimestamp();
         }
 
         @Override
         protected long getRightTimestamp( FactHandle handle ) {
-            return ( (DefaultEventHandle) handle ).getStartTimestamp();
+            return ( (EventHandle) handle ).getStartTimestamp();
         }
     }
 }

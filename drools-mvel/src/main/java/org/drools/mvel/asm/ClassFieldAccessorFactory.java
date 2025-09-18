@@ -26,7 +26,6 @@ import org.drools.core.base.*;
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.base.base.extractors.BaseObjectClassFieldReader;
 import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.base.util.Drools;
 import org.drools.mvel.accessors.*;
 import org.drools.wiring.api.util.ByteArrayClassLoader;
@@ -358,7 +357,7 @@ public class ClassFieldAccessorFactory implements FieldAccessorFactory {
                                l1,
                                0 );
         mv.visitLocalVariable( "workingMemory",
-                               Type.getDescriptor( InternalWorkingMemory.class ),
+                               Type.getDescriptor( ValueResolver.class ),
                                null,
                                l0,
                                l1,

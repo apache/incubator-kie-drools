@@ -29,7 +29,6 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -88,7 +87,7 @@ public class MVELConsequence
                 knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, valueResolver, valueResolver.getGlobalResolver());
 
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage("MAIN");
         if (pkg != null) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(this.id);
             factory.setNextFactory(data.getFunctionFactory());

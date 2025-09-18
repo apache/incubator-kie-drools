@@ -102,6 +102,7 @@ public final class Msg {
     public static final Message2 ERROR_EVAL_DS_NODE                                  = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision Service node '%s': %s" );
     public static final Message2 ERROR_EVAL_BKM_NODE                                 = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Business Knowledge Model node '%s': %s" );
     public static final Message2 ERROR_EVAL_DECISION_NODE                            = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision node '%s': %s" );
+    public static final Message2 ERROR_EVAL_DECISION_NODE_STRICT_MODE                = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision node on strict mode '%s': %s" );
     public static final Message4 ERROR_EVAL_NODE_DEP_WRONG_TYPE                      = new Message4( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s' for dependency '%s': the dependency value '%s' is not allowed by the declared type (%s)" );
     public static final Message3 ERROR_EVAL_NODE_RESULT_WRONG_TYPE                   = new Message3( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s': the declared result type is '%s' but the actual value '%s' is not an instance of that type" );
     public static final Message2 EXPR_TYPE_NOT_SUPPORTED_IN_NODE                     = new Message2( DMNMessageType.EXPR_TYPE_NOT_SUPPORTED_IN_NODE, "Expression type '%s' not supported in node '%s'" );

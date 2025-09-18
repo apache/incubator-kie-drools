@@ -34,7 +34,6 @@ import org.drools.mvel.evaluators.MeetsEvaluatorDefinition.MeetsEvaluator;
 import org.drools.mvel.evaluators.MetByEvaluatorDefinition.MetByEvaluator;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.base.rule.accessor.Evaluator;
-import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.EventHandle;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -122,7 +121,7 @@ public class VariableRestriction {
             evaluator = (Evaluator) in.readObject();
             object = in.readObject();
             declaration = (Declaration) in.readObject();
-            tuple = (Tuple) in.readObject();
+            tuple = (BaseTuple) in.readObject();
             entry = (ContextEntry) in.readObject();
             leftNull = in.readBoolean();
             rightNull = in.readBoolean();

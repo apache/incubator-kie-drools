@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
@@ -184,7 +185,7 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory betaMemory = (BetaMemory) this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
+        BetaMemory betaMemory = this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
                                   new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
                                   new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
@@ -320,7 +321,7 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleListWithContext<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, BaseTuple leftTuple,
-                                                          Object key, ReteEvaluator reteEvaluator) {
+                                                          Object key, ValueResolver reteEvaluator) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
                 entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, reteEvaluator) );

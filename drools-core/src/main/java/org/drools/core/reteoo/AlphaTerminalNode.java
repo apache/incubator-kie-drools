@@ -51,7 +51,9 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
             leftTuple.setPropagationContext( propagationContext );
 
             if ( rtn.getRule().getAutoFocus() && !agendaItem.getAgendaGroup().isActive() ) {
-                activationsManager.getAgendaGroupsManager().setFocus( agendaItem.getAgendaGroup() );
+                if (activationsManager.getAgendaGroupsManager().setFocus(agendaItem.getAgendaGroup())) {
+                    activationsManager.haltGroupEvaluation();
+                }
             }
 
             PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );

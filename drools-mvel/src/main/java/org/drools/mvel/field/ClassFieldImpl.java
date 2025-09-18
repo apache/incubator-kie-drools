@@ -19,7 +19,6 @@
 package org.drools.mvel.field;
 
 import org.drools.base.common.DroolsObjectInput;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.base.rule.accessor.FieldValue;
 
 import java.io.Externalizable;
