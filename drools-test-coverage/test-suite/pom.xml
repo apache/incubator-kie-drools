@@ -181,17 +181,6 @@
   </dependencies>
 
   <profiles>
-    <profile>
-      <id>runTurtleTests</id>
-      <activation>
-        <property>
-          <name>runTurtleTests</name>
-        </property>
-      </activation>
-      <properties>
-        <excludedGroups/>
-      </properties>
-    </profile>
 
     <!-- drools-test-suite requires test jars built by drools-test-coverage-jars -->
     <!-- This profile makes sure that drools-test-coverage-jars is executed if not-->

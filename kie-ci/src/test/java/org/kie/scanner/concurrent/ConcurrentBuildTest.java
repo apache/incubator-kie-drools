@@ -27,9 +27,9 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.AbstractKieCiTest;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class ConcurrentBuildTest extends AbstractKieCiTest {
     private static final Logger LOG = LoggerFactory.getLogger(ConcurrentBuildTest.class);
 
@@ -58,7 +58,6 @@ public class ConcurrentBuildTest extends AbstractKieCiTest {
         this.fileManager.tearDown();
     }
 
-    // This is TurtleTest. You can run this test with -PrunTurtleTests
     @Test
     @Timeout(600000)
     public void concurrentBuildWithDependency() throws Exception {
