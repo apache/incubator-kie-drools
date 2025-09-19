@@ -29,7 +29,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.EvalExpression;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
 
@@ -94,7 +93,7 @@ public class MVELEvalExpression
                             factory );
 
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

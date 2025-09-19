@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
 import org.drools.core.common.InternalFactHandle;
@@ -136,7 +135,7 @@ public final class GeneratorHelper {
     }
 
     static TypeResolver getTypeResolver(final InvokerStub stub, final ValueResolver valueResolver, final ClassLoader classLoader) {
-        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage(stub.getPackageName());
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage(stub.getPackageName());
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
             Set<String> imports = new HashSet<>();
