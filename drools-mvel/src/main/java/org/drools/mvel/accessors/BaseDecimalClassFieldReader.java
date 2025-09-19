@@ -24,7 +24,7 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.base.BaseClassFieldReader;
 import org.drools.base.base.ValueType;
 
-public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
+public abstract class BaseDecimalClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
@@ -35,51 +35,39 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
      * @param fieldType
      * @param valueType
      */
-    protected BaseDoubleClassFieldReader(final int index,
-                                            final Class fieldType,
-                                            final ValueType valueType) {
+    protected BaseDecimalClassFieldReader(final int index,
+                                          final Class fieldType,
+                                          final ValueType valueType) {
         super( index,
                fieldType,
-               valueType );
+               ValueType.DOUBLE_TYPE );
     }
 
-    public BaseDoubleClassFieldReader() {
+    public BaseDecimalClassFieldReader() {
     }
 
     public Object getValue(ValueResolver valueResolver, final Object object) {
-        return Double.valueOf( getDoubleValue( valueResolver, object ) );
+        double value = getDecimalValue(valueResolver, object);
+        // Return the correct wrapper type based on the original field type
+        if (getExtractToClass() == float.class) {
+            return Float.valueOf((float) value);
+        } else {
+            return Double.valueOf(value);
+        }
     }
 
     public boolean getBooleanValue(ValueResolver valueResolver, final Object object) {
         throw new RuntimeException( "Conversion to boolean not supported from double" );
     }
 
-    public byte getByteValue(ValueResolver valueResolver, final Object object) {
-        return (byte) getDoubleValue( valueResolver, object );
 
+    public abstract double getDecimalValue(ValueResolver valueResolver, Object object);
+
+
+    public long getWholeNumberValue(ValueResolver valueResolver, final Object object) {
+        return (long) getDecimalValue( valueResolver, object );
     }
 
-    public char getCharValue(ValueResolver valueResolver, final Object object) {
-        throw new RuntimeException( "Conversion to char not supported from double" );
-    }
-
-    public abstract double getDoubleValue(ValueResolver valueResolver, Object object);
-
-    public float getFloatValue(ValueResolver valueResolver, final Object object) {
-        return (float) getDoubleValue( valueResolver, object );
-    }
-
-    public int getIntValue(ValueResolver valueResolver, final Object object) {
-        return (int) getDoubleValue( valueResolver, object );
-    }
-
-    public long getLongValue(ValueResolver valueResolver, final Object object) {
-        return (long) getDoubleValue( valueResolver, object );
-    }
-
-    public short getShortValue(ValueResolver valueResolver, final Object object) {
-        return (short) getDoubleValue( valueResolver, object );
-    }
 
     public boolean isNullValue(ValueResolver valueResolver, final Object object) {
         return false;
@@ -87,7 +75,7 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod("getDoubleValue",
+            return this.getClass().getDeclaredMethod("getDecimalValue",
                                                      ValueResolver.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -96,7 +84,7 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
     }
 
     public int getHashCode(ValueResolver valueResolver, final Object object) {
-        final long temp = Double.doubleToLongBits( getDoubleValue( valueResolver, object ) );
+        final long temp = Double.doubleToLongBits( getDecimalValue( valueResolver, object ) );
         return (int) (temp ^ (temp >>> 32));
     }
 

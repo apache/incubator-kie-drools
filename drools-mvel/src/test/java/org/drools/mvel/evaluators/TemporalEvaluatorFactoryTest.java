@@ -1117,7 +1117,7 @@ public class TemporalEvaluatorFactoryTest {
             }
             return context;
         } else if ( coerced.isDecimalNumber() ) {
-            final VariableRestriction.DoubleVariableContextEntry context = new VariableRestriction.DoubleVariableContextEntry( extractor,
+            final VariableRestriction.DecimalVariableContextEntry context = new VariableRestriction.DecimalVariableContextEntry( extractor,
                                                                                        declaration,
                                                                                        evaluator );
             if ( row[2] == null ) {
@@ -1180,11 +1180,11 @@ public class TemporalEvaluatorFactoryTest {
 
         public char getCharValue(ValueResolver valueResolver,
                                  final Object object) {
-            return object != null ? ((Character) object).charValue() : '\0';
+            return (char) getWholeNumberValue(valueResolver, object);
         }
 
-        public double getDoubleValue(ValueResolver valueResolver,
-                                     final Object object) {
+        public double getDecimalValue(ValueResolver valueResolver,
+                                      final Object object) {
             return object != null ? ((Number) object).doubleValue() : 0.0;
         }
 
@@ -1196,22 +1196,13 @@ public class TemporalEvaluatorFactoryTest {
             return null;
         }
 
-        public float getFloatValue(ValueResolver valueResolver,
-                                   final Object object) {
-            return object != null ? ((Number) object).floatValue() : (float) 0.0;
-        }
-
         public int getHashCode(ValueResolver valueResolver,
                                final Object object) {
             return 0;
         }
 
-        public int getIntValue(ValueResolver valueResolver,
-                               final Object object) {
-            return object != null ? ((Number) object).intValue() : 0;
-        }
 
-        public long getLongValue(ValueResolver valueResolver,
+        public long getWholeNumberValue(ValueResolver valueResolver,
                                  final Object object) {
             return object != null ? ((Number) object).longValue() : 0;
         }

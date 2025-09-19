@@ -36,3 +36,6 @@ dependency-reduced-pom.xml
 
 #CI
 !.ci
+
+# Claude Code project documentation
+CLAUDE.md
