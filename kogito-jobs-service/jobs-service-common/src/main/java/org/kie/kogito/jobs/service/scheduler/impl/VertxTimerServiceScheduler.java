@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.InternalSchedulerService;
@@ -36,19 +37,23 @@ import org.kie.kogito.timer.impl.TimerJobInstance;
 import io.vertx.mutiny.core.Vertx;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class VertxTimerServiceScheduler implements TimerService<ManageableJobHandle>,
         InternalSchedulerService {
 
-    private static final long MIN_TIMER_DELAY = 1000;
+    private final long schedulerMinTimerDelayInMillis;
 
     protected TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
     protected final Vertx vertx;
 
-    public VertxTimerServiceScheduler(Vertx vertx) {
+    @Inject
+    public VertxTimerServiceScheduler(Vertx vertx,
+            @ConfigProperty(name = "kogito.jobs-service.schedulerMinTimerDelayInMillis", defaultValue = "1000") long schedulerMinTimerDelayInMillis) {
         this.vertx = vertx;
+        this.schedulerMinTimerDelayInMillis = schedulerMinTimerDelayInMillis;
     }
 
     @Override
@@ -120,7 +125,7 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
 
     private long calculateDelay(long then, ZonedDateTime now) {
         long delay = then - now.toInstant().toEpochMilli();
-        return Math.max(MIN_TIMER_DELAY, delay);
+        return Math.max(schedulerMinTimerDelayInMillis, delay);
     }
 
     public Vertx getVertx() {

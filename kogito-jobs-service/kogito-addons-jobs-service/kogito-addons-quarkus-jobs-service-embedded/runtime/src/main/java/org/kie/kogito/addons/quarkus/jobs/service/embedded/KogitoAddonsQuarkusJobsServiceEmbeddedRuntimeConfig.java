@@ -33,6 +33,12 @@ public class KogitoAddonsQuarkusJobsServiceEmbeddedRuntimeConfig {
     public long schedulerChunkInMinutes;
 
     /**
+     * Minimal delay used by scheduler before firing any job.
+     */
+    @ConfigItem(name = "schedulerMinTimerDelayInMillis", defaultValue = "1000")
+    public long schedulerMinTimerDelayInMillis;
+
+    /**
      * The interval the jobs loading method runs to fetch the persisted jobs from the repository.
      */
     @ConfigItem(name = "loadJobIntervalInMinutes", defaultValue = "10")

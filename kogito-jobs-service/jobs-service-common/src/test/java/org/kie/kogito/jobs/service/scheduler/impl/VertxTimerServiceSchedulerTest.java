@@ -83,7 +83,7 @@ class VertxTimerServiceSchedulerTest {
 
     @BeforeEach
     public void setUp() {
-        tested = new VertxTimerServiceScheduler(vertx);
+        tested = new VertxTimerServiceScheduler(vertx, 1);
     }
 
     @Test

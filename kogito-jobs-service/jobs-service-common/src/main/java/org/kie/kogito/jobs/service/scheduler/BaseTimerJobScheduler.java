@@ -84,6 +84,8 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
      */
     long schedulerChunkInMinutes;
 
+    long schedulerMinTimerDelayInMillis;
+
     private ReactiveJobRepository jobRepository;
 
     private final Map<String, SchedulerControlRecord> schedulerControl;
@@ -113,13 +115,14 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
     }
 
     protected BaseTimerJobScheduler() {
-        this(null, 0, 0, 0, true, true);
+        this(null, 0, 0, 0, 0, true, true);
     }
 
     protected BaseTimerJobScheduler(ReactiveJobRepository jobRepository,
             long backoffRetryMillis,
             long maxIntervalLimitToRetryMillis,
             long schedulerChunkInMinutes,
+            long schedulerMinTimerDelayInMillis,
             boolean forceExecuteExpiredJobs,
             boolean forceExecuteExpiredJobsOnServiceStart) {
         this.jobRepository = jobRepository;
@@ -127,6 +130,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
         this.maxIntervalLimitToRetryMillis = maxIntervalLimitToRetryMillis;
         this.schedulerControl = new ConcurrentHashMap<>();
         this.schedulerChunkInMinutes = schedulerChunkInMinutes;
+        this.schedulerMinTimerDelayInMillis = schedulerMinTimerDelayInMillis;
         this.forceExecuteExpiredJobs = forceExecuteExpiredJobs;
         this.forceExecuteExpiredJobsOnServiceStart = forceExecuteExpiredJobsOnServiceStart;
     }
@@ -261,7 +265,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
             return delay;
         }
         //in case forceExecuteExpiredJobs is true, execute the job immediately.
-        return forceExecuteExpiredJobs ? Duration.ofSeconds(1) : Duration.ofSeconds(-1);
+        return forceExecuteExpiredJobs ? Duration.ofMillis(schedulerMinTimerDelayInMillis) : Duration.ofSeconds(-1);
     }
 
     private Duration calculateRawDelay(ZonedDateTime expirationTime) {

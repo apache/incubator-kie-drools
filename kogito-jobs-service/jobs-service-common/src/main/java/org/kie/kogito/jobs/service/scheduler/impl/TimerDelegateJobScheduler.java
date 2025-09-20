@@ -58,13 +58,15 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
             @ConfigProperty(name = "kogito.jobs-service.backoffRetryMillis", defaultValue = "1000") long backoffRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.maxIntervalLimitToRetryMillis", defaultValue = "60000") long maxIntervalLimitToRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.schedulerChunkInMinutes", defaultValue = "10") long schedulerChunkInMinutes,
+            @ConfigProperty(name = "kogito.jobs-service.schedulerMinTimerDelayInMillis", defaultValue = "1000") long schedulerMinTimerDelayInMillis,
             @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs", defaultValue = "true") boolean forceExecuteExpiredJobs,
             @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobsOnServiceStart", defaultValue = "true") boolean forceExecuteExpiredJobsOnServiceStart,
             JobExecutorResolver jobExecutorResolver, VertxTimerServiceScheduler delegate) {
-        super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs, forceExecuteExpiredJobsOnServiceStart);
+        super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, schedulerMinTimerDelayInMillis, forceExecuteExpiredJobs,
+                forceExecuteExpiredJobsOnServiceStart);
         LOGGER.info(
-                "Creating JobScheduler with backoffRetryMillis={}, maxIntervalLimitToRetryMillis={}, schedulerChunkInMinutes={}, forceExecuteExpiredJobs={}, forceExecuteExpiredJobsOnServiceStart={}",
-                backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs, forceExecuteExpiredJobsOnServiceStart);
+                "Creating JobScheduler with backoffRetryMillis={}, maxIntervalLimitToRetryMillis={}, schedulerChunkInMinutes={}, schedulerMinTimerDelayInMillis={}, forceExecuteExpiredJobs={}, forceExecuteExpiredJobsOnServiceStart={}",
+                backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, schedulerMinTimerDelayInMillis, forceExecuteExpiredJobs, forceExecuteExpiredJobsOnServiceStart);
         this.jobExecutorResolver = jobExecutorResolver;
         this.delegate = delegate;
     }
