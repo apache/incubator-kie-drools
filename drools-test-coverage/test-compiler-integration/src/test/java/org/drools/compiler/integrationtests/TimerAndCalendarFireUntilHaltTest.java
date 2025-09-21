@@ -19,13 +19,12 @@
 package org.drools.compiler.integrationtests;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -36,8 +35,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
@@ -46,34 +43,12 @@ import static org.awaitility.Awaitility.await;
 
 public class TimerAndCalendarFireUntilHaltTest {
 
-    private final class RecordingRulesListener extends  DefaultAgendaEventListener {
-        private Map<String, Integer> firedRules = new HashMap<>();
-         
-
-        public int timesRulesHasFired(String ruleName) {
-            if (firedRules.containsKey(ruleName)) {
-                return firedRules.get(ruleName).intValue();
-            }
-            return 0;
-        }
-
-
-        @Override
-        public void afterMatchFired(AfterMatchFiredEvent event) {
-            String ruleName = event.getMatch().getRule().getName();
-            if (!firedRules.containsKey(ruleName)) {
-                firedRules.put(ruleName, Integer.valueOf(0));
-            } 
-            
-            firedRules.put(ruleName, firedRules.get(ruleName).intValue()+1);
-        }
-    }
 
     private KieSession ksession;
     private KieBase kbase;
     private CountDownLatch stoppedLatch;
     private PseudoClockScheduler timeService;
-    private RecordingRulesListener listener;
+    private TrackingAgendaEventListener listener;
     private CountDownLatch startingLatch;
     private FactHandle triggerHandle;
 
@@ -205,7 +180,7 @@ public class TimerAndCalendarFireUntilHaltTest {
         kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
         ksession = kbase.newKieSession(kieSessionConfiguration, null);      
-        listener = new RecordingRulesListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         timeService = ksession.getSessionClock();
     }
@@ -229,7 +204,7 @@ public class TimerAndCalendarFireUntilHaltTest {
     }
 
     private Callable<Boolean> ruleHasFired(String ruleName, int times) {
-        return () -> listener.timesRulesHasFired(ruleName) == times;
+        return () -> listener.getAfterMatchFired().stream().filter(x -> x.equals(ruleName)).count() == times;
     }
 
     private void advanceTimerOneSecond() {

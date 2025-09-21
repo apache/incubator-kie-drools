@@ -25,13 +25,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -175,7 +174,7 @@ public class RuleAttributesTest extends BaseModelTest {
         KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "hello" );
-        ksession.insert( new Integer( 42 ) );
+        ksession.insert( Integer.valueOf( 42 ) );
 
         // set the agenda groups in reverse order so that stack is preserved
         ksession.getAgenda().getAgendaGroup( "End" ).setFocus();
@@ -343,14 +342,14 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(runType, str);
 
-        final OrderListener listener = new OrderListener();
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first test - we try to fire rule in agenda group which has auto focus
         // disable, we won't succeed
         final FactHandle withoutAutoFocus = ksession.insert("withoutAutoFocus");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.getAfterMatchFired()).isEmpty();
 
         // second test - we try to fire rule in agenda group with auto focus
         // enabled
@@ -359,30 +358,9 @@ public class RuleAttributesTest extends BaseModelTest {
         ksession.insert("autoFocus");
         ksession.delete(withoutAutoFocus);
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = {"b2", "b1"};
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("b2", "b1");
     }
 
-    public static class OrderListener extends DefaultAgendaEventListener {
-
-        private List<String> rulesFired = new ArrayList<String>();
-
-        @Override
-        public void afterMatchFired(final AfterMatchFiredEvent event) {
-            rulesFired.add(event.getMatch().getRule().getName());
-        }
-
-        public int size() {
-            return rulesFired.size();
-        }
-
-        public String get(final int index) {
-            return rulesFired.get(index);
-        }
-    }
 
     @ParameterizedTest
 	@MethodSource("parameters")

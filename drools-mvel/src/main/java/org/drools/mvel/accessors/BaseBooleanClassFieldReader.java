@@ -59,40 +59,18 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
     public abstract boolean getBooleanValue(ValueResolver valueResolver,
                                             Object object);
 
-    public byte getByteValue(ValueResolver valueResolver,
-                             final Object object) {
-        throw new RuntimeException( "Conversion to byte not supported from boolean" );
-    }
 
-    public char getCharValue(ValueResolver valueResolver,
-                             final Object object) {
-        throw new RuntimeException( "Conversion to char not supported from boolean" );
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver,
-                                 final Object object) {
+    public double getDecimalValue(ValueResolver valueResolver,
+                                  final Object object) {
         throw new RuntimeException( "Conversion to double not supported from boolean" );
     }
 
-    public float getFloatValue(ValueResolver valueResolver,
-                               final Object object) {
-        throw new RuntimeException( "Conversion to float not supported from boolean" );
-    }
 
-    public int getIntValue(ValueResolver valueResolver,
-                           final Object object) {
-        throw new RuntimeException( "Conversion to int not supported from boolean" );
-    }
-
-    public long getLongValue(ValueResolver valueResolver,
+    public long getWholeNumberValue(ValueResolver valueResolver,
                              final Object object) {
         throw new RuntimeException( "Conversion to long not supported from boolean" );
     }
 
-    public short getShortValue(ValueResolver valueResolver,
-                               final Object object) {
-        throw new RuntimeException( "Conversion to short not supported from boolean" );
-    }
 
     public boolean isNullValue(ValueResolver valueResolver,
                                final Object object) {

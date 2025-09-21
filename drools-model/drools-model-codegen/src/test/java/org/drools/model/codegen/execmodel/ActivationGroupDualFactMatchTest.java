@@ -21,6 +21,7 @@ package org.drools.model.codegen.execmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -134,16 +135,10 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
         // === PHASE 2: Event Listener Setup for Rule Execution Tracking ===
 
         // Track which rules fire during execution for validation
-        final List<String> firedRules = new ArrayList<>();
 
         // Add event listener to capture rule firing events
-        kSession.addEventListener(new DefaultAgendaEventListener() {
-            @Override
-            public void afterMatchFired(final AfterMatchFiredEvent event) {
-                // Record the name of each rule that fires
-                firedRules.add(event.getMatch().getRule().getName());
-            }
-        });
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        kSession.addEventListener(listener);
 
         // Set the global variable that rules use to manipulate agenda focus
         kSession.setGlobal("ksession", kSession);
@@ -177,9 +172,9 @@ public class ActivationGroupDualFactMatchTest extends BaseModelTest {
 
         // === PHASE 5: Validation - Verify Expected Behavior ===
 
-        final boolean ruleAFired = firedRules.contains("Rule A - GroupA");
-        final long ruleBFires = firedRules.stream().filter(r -> r.equals("Rule B - GroupB")).count();
-        final long setupFires = firedRules.stream().filter(r -> r.equals("Setup Rule - GroupA")).count();
+        final boolean ruleAFired = listener.getAfterMatchFired().contains("Rule A - GroupA");
+        final long ruleBFires = listener.getAfterMatchFired().stream().filter(r -> r.equals("Rule B - GroupB")).count();
+        final long setupFires = listener.getAfterMatchFired().stream().filter(r -> r.equals("Setup Rule - GroupA")).count();
 
         // Validate the expected execution pattern
         assertThat(setupFires).as("Setup rule should fire 3 times (once per dynamic fact).").isEqualTo(3);

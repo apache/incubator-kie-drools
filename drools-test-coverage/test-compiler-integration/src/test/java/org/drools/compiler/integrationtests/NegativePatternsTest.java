@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
@@ -32,8 +33,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -132,34 +131,34 @@ public class NegativePatternsTest {
 
         // no rules should be fired in the beginning
         advanceTime(LONG_SLEEP_TIME);
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         // after firing the rule will wait for 18ms
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         final FactHandle event = entryPoint.insert(new TestEvent(0, "EventA"));
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         entryPoint.delete(event);
         ksession.fireAllRules();
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         // rule was already fired and no changes were made to working memory
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleAbsence")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -190,7 +189,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("SingleConstrained")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleConstrained")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -208,7 +207,7 @@ public class NegativePatternsTest {
             advanceTime(SHORT_SLEEP_TIME);
             ksession.fireAllRules();
         }
-        assertThat(firedRulesListener.ruleFiredCount("MultipleEvents")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEvents")).hasSize(count);
 
         entryPoint.insert(new TestEvent(count, "EventA"));
         final FactHandle handle = entryPoint.insert(new TestEvent(-1, "EventB"));
@@ -231,7 +230,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("MultipleEvents")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEvents")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -247,7 +246,7 @@ public class NegativePatternsTest {
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("MultipleEntryPoints")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEntryPoints")).hasSize(count);
 
         FactHandle handle;
         for (int i = 0; i < LOOPS; i++) {
@@ -274,7 +273,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertThat(firedRulesListener.ruleFiredCount("MultipleEntryPoints")).isEqualTo(count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEntryPoints")).hasSize(count);
     }
 
     private void advanceTime(final long amount) {
@@ -310,49 +309,4 @@ public class NegativePatternsTest {
         }
     }
 
-    /**
-     * Listener tracking number of rules fired.
-     */
-    public static class TrackingAgendaEventListener extends DefaultAgendaEventListener {
-
-        private final Map<String, Integer> rulesFired = new HashMap<String, Integer>();
-
-        @Override
-        public void afterMatchFired(final AfterMatchFiredEvent event) {
-            final String rule = event.getMatch().getRule().getName();
-            if (isRuleFired(rule)) {
-                rulesFired.put(rule, rulesFired.get(rule) + 1);
-            } else {
-                rulesFired.put(rule, 1);
-            }
-        }
-
-        /**
-         * Return true if the rule was fired at least once
-         *
-         * @param rule - name of the rule
-         * @return true if the rule was fired
-         */
-        public boolean isRuleFired(final String rule) {
-            return rulesFired.containsKey(rule);
-        }
-
-        /**
-         * Returns number saying how many times the rule was fired
-         *
-         * @param rule - name of the rule
-         * @return number how many times rule was fired, 0 if rule wasn't fired
-         */
-        public int ruleFiredCount(final String rule) {
-            if (isRuleFired(rule)) {
-                return rulesFired.get(rule);
-            } else {
-                return 0;
-            }
-        }
-
-        public void clear() {
-            rulesFired.clear();
-        }
-    }
 }

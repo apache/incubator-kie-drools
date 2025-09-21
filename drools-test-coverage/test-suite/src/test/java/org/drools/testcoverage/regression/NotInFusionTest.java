@@ -56,7 +56,7 @@ public class NotInFusionTest extends KieSessionTest {
         KieSession ksession = session.getStateful();
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).contains(RULE1);
     }
 
     @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
@@ -69,7 +69,7 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).doesNotContain(RULE1);
     }
 
     @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
@@ -82,14 +82,14 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).doesNotContain(RULE1);
 
         insertEvent(ksession);
         insertEvent(ksession);
         insertEvent(ksession);
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).contains(RULE1);
     }
 
     @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
@@ -102,7 +102,7 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).doesNotContain(RULE1);
 
         for (int i = 0; i < 3; i++) {
             insertNotEvent(ksession, "different value");
@@ -110,7 +110,7 @@ public class NotInFusionTest extends KieSessionTest {
 
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).contains(RULE1);
     }
 
     @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
@@ -123,16 +123,16 @@ public class NotInFusionTest extends KieSessionTest {
         insertNotEvent(ksession);
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isFalse();
-        assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isFalse();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).doesNotContain(RULE1);
+        assertThat(firedRules.getAfterMatchFired()).as(RULE3).doesNotContain(RULE3);
 
         for (int i = 0; i < 4; i++) {
             insertNotEvent(ksession, "different value");
             ksession.fireAllRules();
         }
 
-        assertThat(firedRules.isRuleFired(RULE3)).as(RULE3).isTrue();
-        assertThat(firedRules.isRuleFired(RULE1)).as(RULE1).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE3).contains(RULE3);
+        assertThat(firedRules.getAfterMatchFired()).as(RULE1).contains(RULE1);
     }
 
     @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
@@ -145,7 +145,7 @@ public class NotInFusionTest extends KieSessionTest {
         ksession.insert(createNotEvent(ksession, "value"));
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE2)).isFalse();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE2).doesNotContain(RULE2);
 
         for (int i = 0; i < 3; i++) {
             ksession.insert(createNotEvent(ksession, "different value"));
@@ -153,7 +153,7 @@ public class NotInFusionTest extends KieSessionTest {
 
         ksession.fireAllRules();
 
-        assertThat(firedRules.isRuleFired(RULE2)).as(RULE2).isTrue();
+        assertThat(firedRules.getAfterMatchFired()).as(RULE2).contains(RULE2);
     }
 
     private void insertNotEvent(KieSession ksession) throws Exception {

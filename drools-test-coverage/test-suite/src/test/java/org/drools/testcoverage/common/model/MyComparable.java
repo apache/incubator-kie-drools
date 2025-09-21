@@ -54,6 +54,10 @@ public class MyComparable implements Comparable<MyComparable> {
         this.intValue = intValue;
     }
 
+    public Long getLongValue() {
+        return intValue != null ? intValue.longValue() : null;
+    }
+
     @Override
     public int compareTo(MyComparable o) {
         MyComparable other = o;

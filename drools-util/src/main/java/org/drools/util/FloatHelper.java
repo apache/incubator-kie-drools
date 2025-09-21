@@ -16,28 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.testcoverage.common.listener;
+package org.drools.util;
 
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
+/**
+ * Utility class for handling float to double conversions with precision cleanup.
+ */
+public class FloatHelper {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OrderListener extends DefaultAgendaEventListener {
-
-    private List<String> rulesFired = new ArrayList<String>();
-
-    @Override
-    public void afterMatchFired(final AfterMatchFiredEvent event) {
-        rulesFired.add(event.getMatch().getRule().getName());
-    }
-
-    public int size() {
-        return rulesFired.size();
-    }
-
-    public String get(final int index) {
-        return rulesFired.get(index);
+    /**
+     * Cleans up precision artifacts when converting float to double.
+     * Rounds to approximately 7 significant digits (float precision).
+     * 
+     * @param d the double value to clean up
+     * @return the cleaned double value
+     */
+    public static double cleanDouble(double d) {
+        // Round to ~7 significant digits (float precision)
+        return Math.round(d * 1e7) / 1e7;
     }
 }

@@ -55,48 +55,37 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetByteValue() {
-        assertThat(this.reader.getByteValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((byte)1);
     }
 
     @Test
     public void testGetCharValue() {
-        try {
-            this.reader.getCharValue( null,
-                                         this.bean );
-            fail( "Should have throw an exception" );
-        } catch ( final Exception e ) {
-            // success
-        }
+        assertThat((char) this.reader.getWholeNumberValue(null,
+                this.bean)).isEqualTo((char)1);
     }
 
     @Test
     public void testGetDoubleValue() {
-        assertThat(this.reader.getDoubleValue(null,
+        assertThat(this.reader.getDecimalValue(null,
                 this.bean)).isCloseTo(1.0, within(0.01));
     }
 
     @Test
-    public void testGetFloatValue() {
-        assertThat(this.reader.getFloatValue(null,
-                this.bean)).isCloseTo(1.0f, within(0.01f));
-    }
-
-    @Test
     public void testGetIntValue() {
-        assertThat(this.reader.getIntValue(null,
+        assertThat((int) this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo(1);
     }
 
     @Test
     public void testGetLongValue() {
-        assertThat(this.reader.getLongValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo(1);
     }
 
     @Test
     public void testGetShortValue() {
-        assertThat(this.reader.getShortValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((short)1);
     }
 

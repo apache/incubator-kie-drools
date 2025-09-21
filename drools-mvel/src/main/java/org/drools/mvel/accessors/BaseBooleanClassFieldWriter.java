@@ -64,40 +64,17 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
     public abstract void setBooleanValue(final Object bean,
                                          final boolean value);
 
-    public void setByteValue(final Object bean,
-                             final byte value) {
-        throw new RuntimeException( "Conversion to boolean not supported from byte" );
-    }
 
-    public void setCharValue(final Object bean,
-                             final char value) {
-        throw new RuntimeException( "Conversion to boolean not supported from char" );
-    }
-
-    public void setDoubleValue(final Object bean,
-                               final double value) {
+    public void setDecimalValue(final Object bean,
+                                final double value) {
         throw new RuntimeException( "Conversion to boolean not supported from double" );
     }
 
-    public void setFloatValue(final Object bean,
-                              final float value) {
-        throw new RuntimeException( "Conversion to boolean not supported from float" );
-    }
-
-    public void setIntValue(final Object bean,
-                            final int value) {
-        throw new RuntimeException( "Conversion to boolean not supported from int" );
-    }
-
-    public void setLongValue(final Object bean,
-                             final long value) {
+    public void setWholeNumberValue(final Object bean,
+                                    final long value) {
         throw new RuntimeException( "Conversion to boolean not supported from long" );
     }
 
-    public void setShortValue(final Object bean,
-                              final short value) {
-        throw new RuntimeException( "Conversion to boolean not supported from short" );
-    }
 
     public Method getNativeWriteMethod() {
         try {

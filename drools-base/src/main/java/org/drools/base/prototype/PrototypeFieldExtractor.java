@@ -86,33 +86,15 @@ public class PrototypeFieldExtractor implements Externalizable, ReadAccessor {
         return (Boolean) ((PrototypeFactInstance) object).get(fieldName);
     }
 
-    public byte getByteValue(ValueResolver valueResolver, Object object) {
-        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).byteValue();
-    }
 
-    public char getCharValue(ValueResolver valueResolver, Object object) {
-        return (Character) ((PrototypeFactInstance) object).get(fieldName);
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver, Object object) {
+    public double getDecimalValue(ValueResolver valueResolver, Object object) {
         return ((Number) ((PrototypeFactInstance) object).get( fieldName )).doubleValue();
     }
 
-    public float getFloatValue(ValueResolver valueResolver, Object object) {
-        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).floatValue();
-    }
-
-    public int getIntValue(ValueResolver valueResolver, Object object) {
-        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).intValue();
-    }
-
-    public long getLongValue(ValueResolver valueResolver, Object object) {
+    public long getWholeNumberValue(ValueResolver valueResolver, Object object) {
         return ((Number) ((PrototypeFactInstance) object).get( fieldName )).longValue();
     }
 
-    public short getShortValue(ValueResolver valueResolver, Object object) {
-        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).shortValue();
-    }
 
     public Method getNativeReadMethod() {
         try {

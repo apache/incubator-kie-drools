@@ -97,7 +97,7 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
             }
             if ( "num".equals( key ) ) {
                 double d = (Double) value;
-                bit_writer.setDoubleValue( object, d );
+                bit_writer.setDecimalValue( object, d );
                 return value;
             }
 
@@ -123,7 +123,7 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
 //                val = object.isBl();
 //                object.setBl( true );
                 val = bit_reader.getValue( object );
-                bit_writer.setIntValue( object, 0 );
+                bit_writer.setWholeNumberValue( object, 0 );
                 return val;
             }
             if ( "age".equals( key ) ) {
@@ -147,7 +147,7 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
 //            object.setD(0);
 //            object.setBite( null );
 //            object.setSchool( null );
-            bit_writer.setIntValue( object, 0 );
+            bit_writer.setWholeNumberValue( object, 0 );
             name_writer.setValue( object, null );
             map.clear();
 
