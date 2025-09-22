@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNModel;
@@ -35,8 +36,6 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
-import org.kie.dmn.model.api.DMNElementReference;
-import org.kie.dmn.model.api.Import;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,9 +69,10 @@ public final class DMNEventUtils {
 
     public static Map<String, Object> extractDSOutputDecisionsValues(AfterEvaluateDecisionServiceEvent event) {
         Map<String, Object> results = new LinkedHashMap<>();
+        String namespace = event.getDecisionService().getModelNamespace();
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         for (String id : decisionIDs) {
-            DecisionNode decisionNode = retrieveDecisionNode(((DMNResultImpl) event.getResult()).getModel(), id);
+            DecisionNode decisionNode = retrieveDecisionNode(((DMNResultImpl) event.getResult()).getModel(), id, namespace);
             String decisionName = decisionNode.getName();
             Object decisionResult = event.getResult().getContext().get(decisionName);
             results.put(decisionName, decisionResult);
@@ -80,23 +80,11 @@ public final class DMNEventUtils {
         return results;
     }
 
-    static DecisionNode retrieveDecisionNode(DMNModel model, String id) {
-        DecisionNode decisionNode = model.getDecisionById(id);
-        if (decisionNode != null) {
-            return decisionNode;
-        }
-        List<Import> importList = model.getDefinitions().getImport();
-        for (Import importDeclaration : importList) {
-            String namespace = importDeclaration.getNamespace();
-            if (namespace != null && !namespace.isEmpty()) {
-                id = namespace + "#" + id;
-                decisionNode = model.getDecisionById(id);
-                if (decisionNode != null) {
-                    return decisionNode;
-                }
-            }
-        }
-        throw new NoSuchElementException("Decision node with ID '" + id + "' was not found in the model.");
+    static DecisionNode retrieveDecisionNode(DMNModel model, String id, String namespace) {
+        return Optional.ofNullable(model.getDecisionById(id))
+                .or(() -> Optional.ofNullable(model.getDecisionById(namespace + "#" + id)))
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("Decision node with ID '" + id + "' was not found in the model.")));
     }
 
     private DMNEventUtils() {

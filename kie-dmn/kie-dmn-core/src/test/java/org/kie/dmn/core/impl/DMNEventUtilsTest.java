@@ -122,12 +122,12 @@ public class DMNEventUtilsTest {
         when(event.getDecisionService()).thenReturn(decisionServiceNode);
         when(event.getResult()).thenReturn(dmnResult);
 
-//        try (MockedStatic<DMNCompilerImpl> mockedStatic = Mockito.mockStatic(DMNCompilerImpl.class)) {
-//            mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(null);
+        try (MockedStatic<DMNCompilerImpl> mockedStatic = Mockito.mockStatic(DMNCompilerImpl.class)) {
+            mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(null);
             Assertions.assertThatThrownBy(
-                            () -> DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1"))
+                            () -> DMNEventUtils.retrieveDecisionNode(dmnModel, null, "ns"))
                     .isInstanceOf(NoSuchElementException.class);
-        //}
+        }
     }
 
     @Test
@@ -137,7 +137,7 @@ public class DMNEventUtilsTest {
 
         when(dmnModel.getDecisionById("decision1")).thenReturn(decisionNode);
 
-        DecisionNode result = DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1");
+        DecisionNode result = DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1", "ns");
         assertThat(decisionNode).isEqualTo(result);
     }
 
@@ -154,7 +154,7 @@ public class DMNEventUtilsTest {
         when(mockImport.getNamespace()).thenReturn("ns");
         when(dmnModel.getDecisionById("ns#decision1")).thenReturn(decisionNode);
 
-        DecisionNode result = DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1");
+        DecisionNode result = DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1", "ns");
         assertThat(decisionNode).isEqualTo(result);
     }
 
@@ -171,7 +171,7 @@ public class DMNEventUtilsTest {
         when(dmnModel.getDecisionById("ns#decision1")).thenReturn(null);
 
         Assertions.assertThatThrownBy(
-                        () -> DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1"))
+                        () -> DMNEventUtils.retrieveDecisionNode(dmnModel, "decision1", "ns"))
                 .isInstanceOf(NoSuchElementException.class);
     }
 }
