@@ -99,7 +99,7 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetByteValue() {
         try {
-            this.extractor.getByteValue( null,
+            this.extractor.getWholeNumberValue( null,
                                          this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -110,7 +110,7 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( null,
+            this.extractor.getWholeNumberValue( null,
                                          this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -121,19 +121,8 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetDoubleValue() {
         try {
-            this.extractor.getDoubleValue( null,
+            this.extractor.getDecimalValue( null,
                                            this.person[0] );
-            fail( "Should have throw an exception" );
-        } catch ( final Exception e ) {
-            // success
-        }
-    }
-
-    @Test
-    public void testGetFloatValue() {
-        try {
-            this.extractor.getFloatValue( null,
-                                          this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -143,8 +132,8 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetIntValue() {
         try {
-            this.extractor.getIntValue( null,
-                                        this.person[0] );
+            this.extractor.getWholeNumberValue( null,
+                                                this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -154,8 +143,8 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetLongValue() {
         try {
-            this.extractor.getLongValue( null,
-                                         this.person[0] );
+            this.extractor.getWholeNumberValue( null,
+                                                this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -165,7 +154,7 @@ public class MVELClassFieldExtractorTest {
     @Test
     public void testGetShortValue() {
         try {
-            this.extractor.getShortValue( null,
+            this.extractor.getWholeNumberValue( null,
                                           this.person[0] );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {

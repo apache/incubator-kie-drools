@@ -72,9 +72,9 @@ public class VariableRestriction {
                                                     declaration,
                                                     evaluator );
         } else if ( coerced.isDecimalNumber() ) {
-            return new DoubleVariableContextEntry( fieldExtractor,
-                                                   declaration,
-                                                   evaluator );
+            return new DecimalVariableContextEntry( fieldExtractor,
+                                                    declaration,
+                                                    evaluator );
         } else if ( coerced.isIntegerNumber() || coerced.isEvent() ) {
             return new LongVariableContextEntry( fieldExtractor,
                                                  declaration,
@@ -279,7 +279,7 @@ public class VariableRestriction {
                                                                          tuple.getObject( this.declaration ) );
 
             if ( !leftNull ) {
-                this.left = this.declaration.getExtractor().getLongValue( valueResolver,
+                this.left = this.declaration.getExtractor().getWholeNumberValue( valueResolver,
                                                                           tuple.getObject( this.declaration ) );
             } else {
                 this.left = 0;
@@ -294,7 +294,7 @@ public class VariableRestriction {
                                                          handle.getObject());
 
             if ( !rightNull ) { // avoid a NullPointerException
-                this.right = this.extractor.getLongValue( valueResolver,
+                this.right = this.extractor.getWholeNumberValue( valueResolver,
                                                           handle.getObject() );
             } else {
                 this.right = 0;
@@ -341,7 +341,7 @@ public class VariableRestriction {
                                                                          tuple.getObject( this.declaration ));
 
             if ( !leftNull ) {
-                this.left = this.declaration.getExtractor().getCharValue( valueResolver,
+                this.left = (char) this.declaration.getExtractor().getWholeNumberValue( valueResolver,
                                                                           tuple.getObject( this.declaration ) );
             } else {
                 this.left = 0;
@@ -356,7 +356,7 @@ public class VariableRestriction {
                                                          handle.getObject());
 
             if ( !rightNull ) { // avoid a NullPointerException
-                this.right = this.extractor.getCharValue( valueResolver,
+                this.right = (char) this.extractor.getWholeNumberValue( valueResolver,
                                                           handle.getObject() );
             } else {
                 this.right = 0;
@@ -364,19 +364,19 @@ public class VariableRestriction {
         }
     }
 
-    public static class DoubleVariableContextEntry extends VariableContextEntry {
+    public static class DecimalVariableContextEntry extends VariableContextEntry {
 
         private static final long serialVersionUID = 510l;
 
         public double             left;
         public double             right;
 
-        public DoubleVariableContextEntry() {
+        public DecimalVariableContextEntry() {
         }
 
-        public DoubleVariableContextEntry(final ReadAccessor extractor,
-                                          final Declaration declaration,
-                                          final Evaluator evaluator) {
+        public DecimalVariableContextEntry(final ReadAccessor extractor,
+                                           final Declaration declaration,
+                                           final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
@@ -403,7 +403,7 @@ public class VariableRestriction {
                                                                          tuple.getObject( this.declaration ) );
 
             if ( !leftNull ) {
-                this.left = this.declaration.getExtractor().getDoubleValue( valueResolver,
+                this.left = this.declaration.getExtractor().getDecimalValue( valueResolver,
                                                                             tuple.getObject( this.declaration ) );
             } else {
                 this.left = 0;
@@ -418,7 +418,7 @@ public class VariableRestriction {
                                                          handle.getObject() );
 
             if ( !rightNull ) { // avoid a NullPointerException
-                this.right = this.extractor.getDoubleValue( valueResolver,
+                this.right = this.extractor.getDecimalValue( valueResolver,
                                                             handle.getObject() );
             } else {
                 this.right = 0;
@@ -519,7 +519,7 @@ public class VariableRestriction {
                 this.leftNull = this.declaration.getExtractor().isNullValue( valueResolver,
                                                                              tuple.getObject( this.declaration ) );
                 if ( !leftNull ) { // avoid a NullPointerException
-                    this.timestamp = this.declaration.getExtractor().getLongValue( valueResolver,
+                    this.timestamp = this.declaration.getExtractor().getWholeNumberValue( valueResolver,
                                                                                    tuple.getObject( this.declaration ) );
                 } else {
                     this.timestamp = 0;
@@ -539,7 +539,7 @@ public class VariableRestriction {
                 this.rightNull = this.extractor.isNullValue( valueResolver,
                                                              handle.getObject());
                 if ( !rightNull ) { // avoid a NullPointerException
-                    this.timestamp = this.extractor.getLongValue( valueResolver,
+                    this.timestamp = this.extractor.getWholeNumberValue( valueResolver,
                                                                   handle.getObject() );
                 } else {
                     this.timestamp = 0;
@@ -643,7 +643,7 @@ public class VariableRestriction {
               this.leftNull = this.declaration.getExtractor().isNullValue( valueResolver,
                                                                            tuple.getObject( this.declaration ) );
               if ( !leftNull ) { // avoid a NullPointerException
-                  this.startTS = this.declaration.getExtractor().getLongValue( valueResolver,
+                  this.startTS = this.declaration.getExtractor().getWholeNumberValue( valueResolver,
                                                                              tuple.getObject( this.declaration ) );
                 } else {
                     this.startTS = 0;
@@ -664,7 +664,7 @@ public class VariableRestriction {
               this.rightNull = this.extractor.isNullValue( valueResolver,
                                                            handle.getObject());
               if ( !rightNull ) { // avoid a NullPointerException
-                  this.startTS = this.extractor.getLongValue( valueResolver,
+                  this.startTS = this.extractor.getWholeNumberValue( valueResolver,
                                                               handle.getObject() );
               } else {
                     this.startTS = 0;
