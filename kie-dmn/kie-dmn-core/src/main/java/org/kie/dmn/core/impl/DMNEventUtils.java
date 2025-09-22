@@ -22,8 +22,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
@@ -33,6 +35,8 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.model.api.DMNElementReference;
+import org.kie.dmn.model.api.Import;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,14 +72,31 @@ public final class DMNEventUtils {
         Map<String, Object> results = new LinkedHashMap<>();
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         for (String id : decisionIDs) {
-            DecisionNode decisionNode = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id);
-            if (decisionNode != null) {
-                String decisionName = decisionNode.getName();
-                Object decisionResult = event.getResult().getContext().get(decisionName);
-                results.put(decisionName, decisionResult);
-            }
+            DecisionNode decisionNode = retrieveDecisionNode(((DMNResultImpl) event.getResult()).getModel(), id);
+            String decisionName = decisionNode.getName();
+            Object decisionResult = event.getResult().getContext().get(decisionName);
+            results.put(decisionName, decisionResult);
         }
         return results;
+    }
+
+    static DecisionNode retrieveDecisionNode(DMNModel model, String id) {
+        DecisionNode decisionNode = model.getDecisionById(id);
+        if (decisionNode != null) {
+            return decisionNode;
+        }
+        List<Import> importList = model.getDefinitions().getImport();
+        for (Import importDeclaration : importList) {
+            String namespace = importDeclaration.getNamespace();
+            if (namespace != null && !namespace.isEmpty()) {
+                id = namespace + "#" + id;
+                decisionNode = model.getDecisionById(id);
+                if (decisionNode != null) {
+                    return decisionNode;
+                }
+            }
+        }
+        throw new NoSuchElementException("Decision node with ID '" + id + "' was not found in the model.");
     }
 
     private DMNEventUtils() {

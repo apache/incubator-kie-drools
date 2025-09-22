@@ -3716,4 +3716,36 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getContext().get("MyOutput")).isEqualTo("Hello, world!");
     }
 
+    @Test
+    void testDecisionServiceWithEventListenerInSingleModel() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("testmodels/DecisionService.dmn", this.getClass());
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("DecisionService", "DecisionService");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("New Input Data", 20);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "New Decision Service");
+        assertThat(dmnResult.getDecisionResultByName("New Decision").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("New Decision")).isEqualTo(true);
+    }
+
+    @Test
+    void testDecisionServiceWithEventListenerWithUnnamedImport() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "testmodels/UnnamedImport.dmn", this.getClass(),
+                "testmodels/to-be-included.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("UnnamedImport", "UnnamedImport");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "MyHelloService");
+        assertThat(dmnResult.getDecisionResultByName("MyOutput").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("MyOutput")).isEqualTo("Hello, world!");
+    }
+
 }
