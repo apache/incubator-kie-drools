@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                 xmlns="to-be-included" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                 xmlns:kie="https://kie.org/dmn/extensions/1.0"
+                 xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                 xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                 xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                 id="_0c33d6da-c7f2-4f06-afee-c1246fc80f22" name="to-be-included"
+                 expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                 typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="to-be-included">
+  <dmn:decisionService id="_E914A35D-9684-4E58-B4CD-D3AA5EF26DAA" name="EchoService">
+    <dmn:variable id="_D81B8232-7BB4-4704-B6AA-CAA96AD6312D" name="EchoService" typeRef="string"></dmn:variable>
+    <dmn:outputDecision href="#_C44C3C84-BBB9-4472-BD92-836D70C38CA4"></dmn:outputDecision>
+    <dmn:inputData href="#_D58DA5AD-5E0E-4340-8B18-5B95290F1ED8"></dmn:inputData>
+  </dmn:decisionService>
+  <dmn:inputData id="_D58DA5AD-5E0E-4340-8B18-5B95290F1ED8" name="Input">
+    <dmn:variable id="_058E5AD9-BF26-4C10-96FF-5B81C6F39A10" name="Input" typeRef="string"></dmn:variable>
+  </dmn:inputData>
+  <dmn:decision id="_C44C3C84-BBB9-4472-BD92-836D70C38CA4" name="Output">
+    <dmn:variable id="_E4C27206-EAD5-414D-9F54-483A967EF9E1" name="Output" typeRef="string"></dmn:variable>
+    <dmn:informationRequirement id="_11455C95-8D95-4F52-88B7-6D2E40FE6982">
+      <dmn:requiredInput href="#_D58DA5AD-5E0E-4340-8B18-5B95290F1ED8"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_1DB08813-FD05-41EA-AC03-B72C6BFEAA6D" label="Output" typeRef="string">
+      <dmn:text>Input</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_8AF232CC-08E5-405B-A41B-E3F4EB9EBAC5" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension xmlns:kie="https://www.drools.org/kie/dmn/1.5">
+          <kie:ComponentWidths dmnElementRef="_1DB08813-FD05-41EA-AC03-B72C6BFEAA6D">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_335E1241-120E-4F24-ADA4-64347C318D66" dmnElementRef="_E914A35D-9684-4E58-B4CD-D3AA5EF26DAA" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="820" y="180" width="320" height="320"></dc:Bounds>
+        <dmndi:DMNDecisionServiceDividerLine id="_B03E4E84-F3AE-404D-95AA-1C3AE5278AD3">
+          <di:waypoint x="820" y="340"></di:waypoint>
+          <di:waypoint x="1140" y="340"></di:waypoint>
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_5B82CEBD-6120-4F04-896E-2BA4EA68B690" dmnElementRef="_D58DA5AD-5E0E-4340-8B18-5B95290F1ED8" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="980" y="640" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_BA22F3B9-4719-48AA-A17B-4FA22C90D7F1" dmnElementRef="_C44C3C84-BBB9-4472-BD92-836D70C38CA4" isListedInputData="false" isCollapsed="false">
+        <dc:Bounds x="900" y="220" width="160" height="80"></dc:Bounds>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_22507731-D7C1-465D-9C1F-04866EC6F601-AUTO-TARGET" dmnElementRef="_11455C95-8D95-4F52-88B7-6D2E40FE6982" sourceElement="_5B82CEBD-6120-4F04-896E-2BA4EA68B690" targetElement="_BA22F3B9-4719-48AA-A17B-4FA22C90D7F1">
+        <di:waypoint x="1060" y="680"></di:waypoint>
+        <di:waypoint x="980" y="260"></di:waypoint>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
