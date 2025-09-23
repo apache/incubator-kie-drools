@@ -48,14 +48,18 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
         this.type = type;
         this.dataSourceParameterType = dataSourceParameterType;
 
+        Class<?> _boxedVarType;
         Class<?> varType = type instanceof Class ? convertFromPrimitiveType((Class)type) : rawType(type);
         try {
-            this.boxedVarType = varType.getClassLoader() == null || varType.getClassLoader() == DataSource.class.getClassLoader() ?
+            _boxedVarType = varType.getClassLoader() == null || varType.getClassLoader() == DataSource.class.getClassLoader() ?
                     varType :
                     DataSource.class.getClassLoader().loadClass(varType.getCanonicalName());
         } catch (ClassNotFoundException e) {
+            _boxedVarType = type instanceof Class ? convertFromPrimitiveType((Class)type) : rawType(type);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        this.boxedVarType = _boxedVarType;
     }
 
     public SimpleRuleUnitVariable(String name, Class<?> type) {

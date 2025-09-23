@@ -360,20 +360,12 @@ public final class BuildUtils {
 
 
     public static String extractor(String type) {
-        if ( "byte".equals( type ) ) {
-            return "getByteValue";
+        if ( "byte".equals( type ) || "int".equals( type ) || "long".equals( type ) || "short".equals( type )) {
+            return "getWholeNumberValue";
         } else if ( "char".equals( type ) ) {
             return "getCharValue";
-        } else if ( "double".equals( type ) ) {
-            return "getDoubleValue";
-        } else if ( "float".equals( type ) ) {
-            return "getFloatValue";
-        } else if ( "int".equals( type ) ) {
-            return "getIntValue";
-        } else if ( "long".equals( type ) ) {
-            return "getLongValue";
-        } else if ( "short".equals( type ) ) {
-            return "getShortValue";
+        } else if ( "double".equals( type ) || "float".equals( type ) ) {
+            return "getDecimalValue";
         } else if ( "boolean".equals( type ) ) {
             return "getBooleanValue";
         } else {
@@ -382,20 +374,10 @@ public final class BuildUtils {
     }
 
     public static String injector( String type ) {
-        if ( "byte".equals( type ) ) {
-            return "setByteValue";
-        } else if ( "char".equals( type ) ) {
-            return "setCharValue";
-        } else if ( "double".equals( type ) ) {
-            return "setDoubleValue";
-        } else if ( "float".equals( type ) ) {
-            return "setFloatValue";
-        } else if ( "int".equals( type ) ) {
-            return "setIntValue";
-        } else if ( "long".equals( type ) ) {
-            return "setLongValue";
-        } else if ( "short".equals( type ) ) {
-            return "setShortValue";
+        if ( "byte".equals( type ) || "int".equals( type ) || "long".equals( type ) || "short".equals( type ) || "char".equals( type )) {
+            return "setWholeNumberValue";
+        } else if ( "double".equals( type ) || "float".equals( type ) ) {
+            return "setDecimalValue";
         } else if ( "boolean".equals( type ) ) {
             return "setBooleanValue";
         } else {

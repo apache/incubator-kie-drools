@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
 import org.drools.core.base.BaseClassFieldWriter;
 import org.drools.base.base.ValueType;
 
-public abstract class BaseShortClassFieldWriter extends BaseClassFieldWriter {
+public abstract class BaseDecimalClassFieldWriter extends BaseClassFieldWriter {
 
     private static final long serialVersionUID = 510l;
 
-    public BaseShortClassFieldWriter(final Class< ? > clazz,
-                                     final String fieldName) {
+    public BaseDecimalClassFieldWriter(final Class< ? > clazz,
+                                       final String fieldName) {
         super( clazz,
                fieldName );
     }
@@ -40,71 +40,49 @@ public abstract class BaseShortClassFieldWriter extends BaseClassFieldWriter {
      * @param fieldType
      * @param valueType
      */
-    protected BaseShortClassFieldWriter(final int index,
-                                        final Class< ? > fieldType,
-                                        final ValueType valueType) {
+    protected BaseDecimalClassFieldWriter(final int index,
+                                          final Class< ? > fieldType,
+                                          final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
-    public BaseShortClassFieldWriter() {
+    public BaseDecimalClassFieldWriter() {
     }
 
     public void setValue(final Object bean,
                          final Object value) {
-        setShortValue( bean,
-                       value == null ? 0 : ((Number) value).shortValue() );
+        setDecimalValue( bean,
+                        value == null ? 0 : ((Number) value).doubleValue() );
     }
 
     public void setBooleanValue(final Object bean,
                                 final boolean value) {
-        throw new RuntimeException( "Conversion to short not supported from boolean" );
+        throw new RuntimeException( "Conversion to double not supported from boolean" );
     }
 
-    public void setByteValue(final Object bean,
-                             final byte value) {
-        setShortValue( bean,
-                       value);
 
-    }
-
-    public void setCharValue(final Object bean,
-                             final char value) {
-        throw new RuntimeException( "Conversion to short not supported from char" );
-    }
+    public abstract void setDecimalValue(final Object object,
+                                         final double value);
 
     public void setDoubleValue(final Object bean,
                                final double value) {
-        setShortValue( bean,
-                       (short) value );
+        setDecimalValue( bean,
+                        value );
     }
 
-    public void setFloatValue(final Object bean,
-                              final float value) {
-        setShortValue( bean,
-                       (short) value );
+    public void setWholeNumberValue(final Object bean,
+                                    final long value) {
+        setDecimalValue( bean,
+                        (double) value );
     }
 
-    public void setIntValue(final Object bean,
-                            final int value) {
-        setShortValue( bean,
-                       (short) value );
-    }
-
-    public void setLongValue(final Object bean,
-                             final long value) {
-        setShortValue( bean,
-                       (short) value );
-    }
-
-    public abstract void setShortValue(final Object object,
-                                       final short value);
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod("setShortValue",
-                                                     Object.class, short.class);
+            return this.getClass().getDeclaredMethod("setDecimalValue",
+                                                     Object.class, double.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

@@ -32,8 +32,6 @@ public abstract class BaseClassFieldExtractorsTest {
 
     public abstract void testGetLongValue();
 
-    public abstract void testGetFloatValue();
-
     public abstract void testGetDoubleValue();
 
     public abstract void testGetValue();

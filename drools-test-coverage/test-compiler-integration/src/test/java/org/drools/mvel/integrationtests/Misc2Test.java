@@ -38,7 +38,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -54,6 +53,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -103,12 +103,7 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -2796,53 +2791,20 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         StatelessKieSession ksession = kbase.newStatelessKieSession();
 
-        final List<String> firings = new ArrayList<>();
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
 
-        AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void matchCreated( org.kie.api.event.rule.MatchCreatedEvent event ) {
-            }
-
-            public void matchCancelled( org.kie.api.event.rule.MatchCancelledEvent event ) {
-            }
-
-            public void beforeMatchFired( org.kie.api.event.rule.BeforeMatchFiredEvent event ) {
-            }
-
-            public void afterMatchFired( org.kie.api.event.rule.AfterMatchFiredEvent event ) {
-                firings.add( "Fired!" );
-            }
-
-            public void agendaGroupPopped( org.kie.api.event.rule.AgendaGroupPoppedEvent event ) {
-            }
-
-            public void agendaGroupPushed( org.kie.api.event.rule.AgendaGroupPushedEvent event ) {
-            }
-
-            public void beforeRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
-            }
-
-            public void afterRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
-            }
-
-            public void beforeRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
-            }
-
-            public void afterRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
-            }
-        };
-
-        ksession.addEventListener( agendaEventListener );
+        ksession.addEventListener( listener );
 
         ksession.execute( "1" );
         ksession.execute( "2" );
 
-        assertThat(firings.size()).isEqualTo(2);
+        assertThat(listener.getAfterMatchFired()).hasSize(2);
 
-        ksession.removeEventListener( agendaEventListener );
+        ksession.removeEventListener( listener );
 
         ksession.execute( "3" );
 
-        assertThat(firings.size()).isEqualTo(2);
+        assertThat(listener.getAfterMatchFired()).hasSize(2);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -3590,26 +3552,8 @@ public class Misc2Test {
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
 
-//        ReteDumper.dumpRete(kb);
-
-        final List created = new ArrayList();
-        final List cancelled = new ArrayList();
-        final List fired = new ArrayList();
-
-        ks.addEventListener( new DefaultAgendaEventListener() {
-
-            public void matchCreated( MatchCreatedEvent event ) {
-                created.add( event.getMatch().getRule().getName() );
-            }
-
-            public void matchCancelled( MatchCancelledEvent event ) {
-                cancelled.add( event.getMatch().getRule().getName() );
-            }
-
-            public void afterMatchFired( AfterMatchFiredEvent event ) {
-                fired.add( event.getMatch().getRule().getName() );
-            }
-        } );
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ks.addEventListener(listener);
         ks.fireAllRules();
 
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
@@ -3617,19 +3561,9 @@ public class Misc2Test {
         ks.insert( tb );
         assertThat(ks.fireAllRules()).isEqualTo(1);
 
-        assertThat(created.size()).isEqualTo(3);
-        assertThat(cancelled.size()).isEqualTo(2);
-        assertThat(fired.size()).isEqualTo(1);
-
-
-        assertThat(created.get(0)).isEqualTo("Rule2");
-        assertThat(created.get(1)).isEqualTo("Rule1");
-        assertThat(created.get(2)).isEqualTo("Rule2");
-
-        assertThat(cancelled.get(0)).isEqualTo("Rule2");
-        assertThat(cancelled.get(1)).isEqualTo("Rule2");
-
-        assertThat(fired.get(0)).isEqualTo("Rule1");
+        assertThat(listener.getMatchCreated()).hasSize(3).containsExactly("Rule2", "Rule1", "Rule2");
+        assertThat(listener.getMatchCancelled()).hasSize(2).containsExactly("Rule2", "Rule2");
+        assertThat(listener.getAfterMatchFired()).hasSize(1).containsExactly("Rule1");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -3662,24 +3596,8 @@ public class Misc2Test {
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
 
-        final List created = new ArrayList();
-        final List cancelled = new ArrayList();
-        final List fired = new ArrayList();
-
-        ks.addEventListener( new DefaultAgendaEventListener() {
-
-            public void matchCreated( MatchCreatedEvent event ) {
-                created.add( event.getMatch().getRule().getName() );
-            }
-
-            public void matchCancelled( MatchCancelledEvent event ) {
-                cancelled.add( event.getMatch().getRule().getName() );
-            }
-
-            public void afterMatchFired( AfterMatchFiredEvent event ) {
-                fired.add( event.getMatch().getRule().getName() );
-            }
-        } );
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ks.addEventListener(listener);
         ks.fireAllRules();
 
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
@@ -3687,18 +3605,9 @@ public class Misc2Test {
         ks.insert( tb );
         assertThat(ks.fireAllRules()).isEqualTo(2);
 
-        assertThat(created.size()).isEqualTo(3);
-        assertThat(cancelled.size()).isEqualTo(1);
-        assertThat(fired.size()).isEqualTo(2);
-
-        assertThat(created.get(0)).isEqualTo("Rule1");
-        assertThat(created.get(1)).isEqualTo("Rule1");
-        assertThat(created.get(2)).isEqualTo("Rule2");
-
-        assertThat(cancelled.get(0)).isEqualTo("Rule1");
-
-        assertThat(fired.get(0)).isEqualTo("Rule1");
-        assertThat(fired.get(1)).isEqualTo("Rule2");
+        assertThat(listener.getMatchCreated()).hasSize(3).containsExactly("Rule1", "Rule1", "Rule2");
+        assertThat(listener.getMatchCancelled()).hasSize(1).containsExactly("Rule1");
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("Rule1", "Rule2");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -3731,7 +3640,6 @@ public class Misc2Test {
                      "end";
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
-        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -3772,7 +3680,6 @@ public class Misc2Test {
                      "end";
         KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kb.newKieSession();
-        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -4615,22 +4522,17 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", streamConfig, drl);
         KieSession ksession = kbase.newKieSession();
 
-        final AtomicInteger i = new AtomicInteger( 0 );
-
-        ksession.addEventListener( new DefaultAgendaEventListener() {
-            public void matchCreated( MatchCreatedEvent event ) {
-                i.incrementAndGet();
-            }
-
-            public void matchCancelled( MatchCancelledEvent event ) {
-                i.decrementAndGet();
-            }
-        } );
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        
+        ksession.addEventListener(listener);
 
         ksession.insert( new SimpleEvent() );
         ksession.fireAllRules();
 
-        assertThat(i.get()).isEqualTo(1);
+        int matchesCreated = listener.getMatchCreated().size();
+        int matchesCancelled = listener.getMatchCancelled().size();
+        
+        assertThat(matchesCreated).isEqualTo(matchesCancelled + 1);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")

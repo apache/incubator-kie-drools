@@ -279,7 +279,7 @@ public class CoincidesEvaluatorDefinition
                 leftStartTS = ((DefaultEventHandle) left).getStartTimestamp();
                 leftEndTS = ((DefaultEventHandle) left).getEndTimestamp();
             } else {
-                leftStartTS = context.declaration.getExtractor().getLongValue( valueResolver, left.getObject() );
+                leftStartTS = context.declaration.getExtractor().getWholeNumberValue( valueResolver, left.getObject() );
                 leftEndTS = leftStartTS;
             }
 
@@ -303,7 +303,7 @@ public class CoincidesEvaluatorDefinition
                 rightStartTS = ((DefaultEventHandle) right).getStartTimestamp();
                 rightEndTS = ((DefaultEventHandle) right).getEndTimestamp();
             } else {
-                rightStartTS = context.extractor.getLongValue( valueResolver, right.getObject() );
+                rightStartTS = context.extractor.getWholeNumberValue( valueResolver, right.getObject() );
                 rightEndTS = rightStartTS;
             }                        
             
@@ -332,7 +332,7 @@ public class CoincidesEvaluatorDefinition
                 rightStartTS = ((DefaultEventHandle) handle1).getStartTimestamp();
                 rightEndTS = ((DefaultEventHandle) handle1).getEndTimestamp();
             } else {
-                rightStartTS = extractor1.getLongValue( valueResolver, handle1.getObject() );
+                rightStartTS = extractor1.getWholeNumberValue( valueResolver, handle1.getObject() );
                 rightEndTS = rightStartTS;
             }       
             
@@ -340,7 +340,7 @@ public class CoincidesEvaluatorDefinition
                 leftStartTS = ((DefaultEventHandle) handle2).getStartTimestamp();
                 leftEndTS = ((DefaultEventHandle) handle2).getEndTimestamp();
             } else {
-                leftStartTS = extractor2.getLongValue( valueResolver, handle2.getObject() );
+                leftStartTS = extractor2.getWholeNumberValue( valueResolver, handle2.getObject() );
                 leftEndTS = leftStartTS;
             }            
 

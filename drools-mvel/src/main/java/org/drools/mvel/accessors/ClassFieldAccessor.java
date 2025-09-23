@@ -75,39 +75,16 @@ public class ClassFieldAccessor implements AcceptsReadAccessor, FieldAccessor, E
         return this.reader.getValue(valueResolver, object);
     }
 
+
+
     @Override
-    public char getCharValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getCharValue(valueResolver, object);
+    public long getWholeNumberValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getWholeNumberValue(valueResolver, object);
     }
 
     @Override
-    public int getIntValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getIntValue(valueResolver, object);
-    }
-
-    @Override
-    public byte getByteValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getByteValue(valueResolver, object);
-    }
-
-    @Override
-    public short getShortValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getShortValue(valueResolver, object);
-    }
-
-    @Override
-    public long getLongValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getLongValue(valueResolver, object);
-    }
-
-    @Override
-    public float getFloatValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getFloatValue(valueResolver, object);
-    }
-
-    @Override
-    public double getDoubleValue(ValueResolver valueResolver, Object object) {
-        return this.reader.getDoubleValue(valueResolver, object);
+    public double getDecimalValue(ValueResolver valueResolver, Object object) {
+        return this.reader.getDecimalValue(valueResolver, object);
     }
 
     @Override
@@ -213,43 +190,31 @@ public class ClassFieldAccessor implements AcceptsReadAccessor, FieldAccessor, E
 
     public void setByteValue(Object bean,
                              byte value) {
-        writer.setByteValue( bean,
+        writer.setWholeNumberValue( bean,
                              value );
     }
 
     public void setCharValue(Object bean,
                              char value) {
-        writer.setCharValue( bean,
+        writer.setWholeNumberValue( bean,
                              value );
     }
 
-    public void setDoubleValue(Object bean,
-                               double value) {
-        writer.setDoubleValue( bean,
+    public void setDecimalValue(Object bean,
+                                double value) {
+        writer.setDecimalValue( bean,
                                value );
     }
 
-    public void setFloatValue(Object bean,
-                              float value) {
-        writer.setFloatValue( bean,
-                              value );
-    }
-
-    public void setIntValue(Object bean,
-                            int value) {
-        writer.setIntValue( bean,
-                            value );
-    }
-
-    public void setLongValue(Object bean,
-                             long value) {
-        writer.setLongValue( bean,
+    public void setWholeNumberValue(Object bean,
+                                    long value) {
+        writer.setWholeNumberValue( bean,
                              value );
     }
 
     public void setShortValue(Object bean,
                               short value) {
-        writer.setShortValue( bean,
+        writer.setWholeNumberValue( bean,
                               value );
     }
 
