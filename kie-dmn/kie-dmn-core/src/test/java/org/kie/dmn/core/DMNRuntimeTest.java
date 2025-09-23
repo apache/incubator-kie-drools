@@ -3702,8 +3702,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     void testDecisionServiceWithEventListener() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
-                "testmodels/evaluated-model.dmn", this.getClass(),
-                "testmodels/to-be-included.dmn"
+                "valid_models/DMNv1_6/DecisionService/evaluated-model.dmn", this.getClass(),
+                "valid_models/DMNv1_6/DecisionService/to-be-included.dmn"
         );
         runtime.addListener(new DecisionLoggingListener());
         DMNModel dmnModel = runtime.getModel("evaluated-model", "evaluated-model");
@@ -3718,7 +3718,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     void testDecisionServiceWithEventListenerInSingleModel() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("testmodels/DecisionService.dmn", this.getClass());
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/DecisionService/DecisionService.dmn", this.getClass());
         runtime.addListener(new DecisionLoggingListener());
         DMNModel dmnModel = runtime.getModel("DecisionService", "DecisionService");
         assertThat(dmnModel).isNotNull();
@@ -3734,8 +3734,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     void testDecisionServiceWithEventListenerWithUnnamedImport() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
-                "testmodels/UnnamedImport.dmn", this.getClass(),
-                "testmodels/to-be-included.dmn"
+                "valid_models/DMNv1_6/DecisionService/UnnamedImport.dmn", this.getClass(),
+                "valid_models/DMNv1_6/DecisionService/to-be-included.dmn"
         );
         runtime.addListener(new DecisionLoggingListener());
         DMNModel dmnModel = runtime.getModel("UnnamedImport", "UnnamedImport");

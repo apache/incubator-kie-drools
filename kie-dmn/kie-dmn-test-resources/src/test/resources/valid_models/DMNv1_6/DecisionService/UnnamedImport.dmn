@@ -18,7 +18,7 @@
   ~ under the License.
   -->
 <dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns="UnnamedImportTest" xmlns:included0="to-be-included" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:feel="https://www.omg.org/spec/DMN/20240513/FEEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_4102384f-2d2e-4fbf-8ae1-1748678e9769" name="UnnamedImport" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="UnnamedImport" xmlns:included1="to-be-included">
-    <dmn:import id="_6D77B170-F843-4958-B9DE-BFC8E8D0C419" name="" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="to-be-included" locationURI="./to-be-included.dmn" />
+    <dmn:import id="_6D77B170-F843-4958-B9DE-BFC8E8D0C419" name="to-be-included" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="" locationURI="./to-be-included.dmn" />
     <dmn:decision id="_7C00D427-2D7E-413A-878A-A447262EEFFE" name="MyOutput">
         <dmn:variable id="_A78C2D6E-85CB-4C3E-A575-692541AA3130" name="MyOutput" typeRef="string" />
         <dmn:knowledgeRequirement id="_CE4A4A3A-0266-4E82-8066-1FEEB4A0743D">
