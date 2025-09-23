@@ -39,7 +39,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 
 class SampleCodegenTest {
 
@@ -90,7 +90,7 @@ class SampleCodegenTest {
 
         if (contextBuilder.build().hasRESTForGenerator(codeGenerator)) {
             assertThat(generatedFiles).hasSize(1);
-            List<GeneratedFile> generatedRests = generatedFiles.stream().filter(gf -> gf.type() == REST_TYPE).collect(Collectors.toList());
+            List<GeneratedFile> generatedRests = generatedFiles.stream().filter(gf -> gf.type() == REST).collect(Collectors.toList());
             assertThat(generatedRests).hasSize(1);
 
             CompilationUnit compilationUnit = StaticJavaParser.parse(new String(generatedRests.get(0).contents()));

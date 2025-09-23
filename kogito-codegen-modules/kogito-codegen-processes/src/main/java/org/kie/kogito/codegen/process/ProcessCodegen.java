@@ -71,6 +71,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_PATH;
 import static org.kie.kogito.codegen.process.util.BusinessCalendarUtil.conditionallyAddCustomBusinessCalendar;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.generatorProperty;
@@ -495,7 +496,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         if (context().hasRESTForGenerator(this)) {
             for (ProcessResourceGenerator resourceGenerator : rgs) {
-                storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
+                storeFile(REST, resourceGenerator.generatedFilePath(),
                         resourceGenerator.generate());
                 storeFile(MODEL_TYPE, WorkItemModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
             }
@@ -530,7 +531,7 @@ public class ProcessCodegen extends AbstractGenerator {
         if (context().hasRest() && context().hasRESTForGenerator(this)) {
             final ProcessCloudEventMetaFactoryGenerator topicsGenerator =
                     new ProcessCloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
-            storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
+            storeFile(REST, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
         }
 
         for (ProcessInstanceGenerator pi : pis) {

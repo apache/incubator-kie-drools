@@ -38,9 +38,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesString;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PredictionCodegenUtils {
@@ -131,7 +131,7 @@ public class PredictionCodegenUtils {
             KogitoBuildContext context, String applicationCanonicalName) {
         PMMLRestResourceGenerator resourceGenerator = new PMMLRestResourceGenerator(context, model,
                 applicationCanonicalName);
-        files.add(new GeneratedFile(REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate()));
+        files.add(new GeneratedFile(REST, resourceGenerator.generatedFilePath(), resourceGenerator.generate()));
 
         PMMLOASResult oasResult = PMMLOASResultFactory.getPMMLOASResult(model);
         try {

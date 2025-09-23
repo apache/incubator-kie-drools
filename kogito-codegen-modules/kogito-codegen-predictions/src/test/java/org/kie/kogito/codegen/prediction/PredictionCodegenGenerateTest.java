@@ -48,9 +48,9 @@ import com.github.javaparser.ast.CompilationUnit;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.contextBuilders;
 import static org.kie.kogito.codegen.prediction.PredictionCodegenFactory.parsePredictions;
 import static org.kie.kogito.codegen.prediction.PredictionCodegenFactoryTest.REFLECT_JSON;
@@ -216,7 +216,7 @@ class PredictionCodegenGenerateTest {
         if (hasREST) {
             // REST resource
             assertThat(expectedRestEndpoints).isEqualTo(generatedFiles.stream()
-                    .filter(generatedFile -> generatedFile.type().equals(REST_TYPE))
+                    .filter(generatedFile -> generatedFile.type().equals(REST))
                     .count());
             // OpenAPI Json schema
             assertThat(expectedRestEndpoints).isEqualTo(generatedFiles.stream()

@@ -44,7 +44,6 @@ import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
 import org.kie.efesto.quarkus.deployment.EfestoGeneratedClassBuildItem;
 import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery;
 import org.kie.kogito.quarkus.KogitoRecorder;
@@ -77,6 +76,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.makeBuildItems;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
@@ -326,7 +326,7 @@ public class KogitoAssetsProcessor {
 
         generatedBeanBuildItems.forEach(generatedBeans::produce);
         Set<String> restResourceClassNameSet = generatedFiles.stream()
-                .filter(file -> file.type().equals(Generator.REST_TYPE))
+                .filter(file -> file.type().equals(REST))
                 .map(file -> toClassName(file.path().toString()))
                 .collect(Collectors.toSet());
         generatedBeanBuildItems.stream()

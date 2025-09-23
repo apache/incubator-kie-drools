@@ -36,6 +36,7 @@
 
   <properties>
     <java.module.name>org.kie.kogito.maven.plugin.testing</java.module.name>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <dependencyManagement>

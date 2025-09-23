@@ -71,9 +71,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesString;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 import static org.kie.kogito.codegen.decision.DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY;
 
@@ -229,7 +229,7 @@ public class DecisionCodegenUtils {
         DecisionRestResourceGenerator resourceGenerator = new DecisionRestResourceGenerator(context, dmnModel, appCanonicalName)
                 .withStronglyTyped(stronglyTypedEnabled)
                 .withOASResult(oasResult, isMPAnnotationsPresent, isIOSwaggerOASv3AnnotationsPresent);
-        storeFile(generatedFiles, REST_TYPE, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+        storeFile(generatedFiles, REST, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
         if (context.getAddonsConfig().usePrometheusMonitoring()) {
             generateAndStoreGrafanaDashboards(context, generatedFiles, resourceGenerator);
         }
@@ -258,7 +258,7 @@ public class DecisionCodegenUtils {
     static void generateCloudEventsResources(Collection<GeneratedFile> generatedFiles, KogitoBuildContext context, List<DMNModel> dmnModels) {
         if (context.getAddonsConfig().useCloudEvents()) {
             final DecisionCloudEventMetaFactoryGenerator ceMetaFactoryGenerator = new DecisionCloudEventMetaFactoryGenerator(context, dmnModels);
-            storeFile(generatedFiles, REST_TYPE, ceMetaFactoryGenerator.generatedFilePath(), ceMetaFactoryGenerator.generate());
+            storeFile(generatedFiles, REST, ceMetaFactoryGenerator.generatedFilePath(), ceMetaFactoryGenerator.generate());
         }
     }
 

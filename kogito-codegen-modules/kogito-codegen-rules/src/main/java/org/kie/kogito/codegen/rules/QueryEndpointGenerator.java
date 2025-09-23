@@ -47,10 +47,10 @@ import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.setGeneric;
 import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.toKebabCase;
 import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.toNonPrimitiveType;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 
 public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
 
@@ -83,7 +83,7 @@ public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
         generateQueryMethods(cu, clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());
 
-        return new GeneratedFile(REST_TYPE,
+        return new GeneratedFile(REST,
                 generatedFilePath(),
                 cu.toString());
     }

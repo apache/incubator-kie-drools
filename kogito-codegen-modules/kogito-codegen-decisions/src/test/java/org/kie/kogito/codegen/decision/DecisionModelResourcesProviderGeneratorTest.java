@@ -26,14 +26,12 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
-import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -51,6 +49,8 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.codegen.common.GeneratedFileType.REST;
+import static org.drools.codegen.common.GeneratedFileType.SOURCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -82,13 +82,13 @@ public class DecisionModelResourcesProviderGeneratorTest {
         // Align this FAI-215 test (#621) with unknown order of generated files (ie.: additional generated files might be present)
         //A Rest endpoint is always generated per model.
         List<GeneratedFile> generatedRESTFiles = generatedFiles.stream()
-                .filter(gf -> gf.type().equals(AbstractGenerator.REST_TYPE))
+                .filter(gf -> gf.type().equals(REST))
                 .collect(toList());
         assertFalse(generatedRESTFiles.isEmpty());
         assertEquals(numberOfModels, generatedRESTFiles.size());
 
         List<GeneratedFile> generatedCLASSFile = generatedFiles.stream()
-                .filter(gf -> gf.type().equals(GeneratedFileType.SOURCE))
+                .filter(gf -> gf.type().equals(SOURCE))
                 .collect(toList());
         assertEquals(1, generatedCLASSFile.size());
         GeneratedFile classFile = generatedCLASSFile.get(0);

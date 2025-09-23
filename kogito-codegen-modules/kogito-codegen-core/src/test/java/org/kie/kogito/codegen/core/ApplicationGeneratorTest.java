@@ -36,7 +36,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.kie.kogito.codegen.api.context.KogitoBuildContext.generateRESTConfigurationKeyForResource;
 
 public class ApplicationGeneratorTest {
@@ -136,7 +136,7 @@ public class ApplicationGeneratorTest {
             assertThat(appGenerator.generateComponents())
                     .isNotEmpty()
                     .hasSize(1)
-                    .matches(files -> files.stream().anyMatch(gf -> REST_TYPE.equals(gf.type())));
+                    .matches(files -> files.stream().anyMatch(gf -> REST.equals(gf.type())));
         } else {
             assertThat(appGenerator.generateComponents()).isEmpty();
         }
@@ -163,7 +163,7 @@ public class ApplicationGeneratorTest {
             assertThat(appGenerator.generateComponents())
                     .isNotEmpty()
                     .hasSize(1)
-                    .matches(files -> files.stream().anyMatch(gf -> REST_TYPE.equals(gf.type())));
+                    .matches(files -> files.stream().anyMatch(gf -> REST.equals(gf.type())));
         } else {
             assertThat(appGenerator.generateComponents()).isEmpty();
         }
@@ -294,7 +294,7 @@ public class ApplicationGeneratorTest {
         @Override
         protected Collection<GeneratedFile> internalGenerate() {
             if (context.hasRESTForGenerator(this)) {
-                return Collections.singleton(new GeneratedFile(REST_TYPE, "my/path", ""));
+                return Collections.singleton(new GeneratedFile(REST, "my/path", ""));
             } else {
                 return Collections.emptyList();
             }

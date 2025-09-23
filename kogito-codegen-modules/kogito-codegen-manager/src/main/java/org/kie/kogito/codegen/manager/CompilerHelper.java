@@ -44,28 +44,52 @@ public class CompilerHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompilerHelper.class);
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "17");
-    private static final GeneratedFileWriter.Builder GENERATED_FILE_WRITER_BUILDER = GeneratedFileWriter.builder("kogito", "kogito.codegen.resources.directory", "kogito.codegen.sources.directory");
+    private static final GeneratedFileWriter.Builder GENERATED_FILE_WRITER_BUILDER =
+            GeneratedFileWriter.builder("kogito", "kogito.codegen.resources.directory", "kogito.codegen.sources.directory");
     public static final String SOURCES = "SOURCES";
     public static final String RESOURCES = "RESOURCES";
 
     private CompilerHelper() {
     }
 
-    public static void compileAndDumpGeneratedSources(Collection<GeneratedFile> generatedSources,
-            ClassLoader classLoader,
+    public record CompileInfo(Collection<GeneratedFile> generatedSources,
+            Collection<GeneratedFile> resources,
+            ClassLoader projectClassLoader,
             List<String> runtimeClassPathElements,
             File baseDir,
             String javaSourceEncoding,
-            String javaSourceVersion,
-            String javaTargetVersion) {
-        compileAndWriteClasses(generatedSources,
-                classLoader,
-                buildJavaCompilerSettings(runtimeClassPathElements,
-                        javaSourceEncoding,
-                        javaSourceVersion,
-                        javaTargetVersion),
-                getGeneratedFileWriter(baseDir));
-        writeFiles(generatedSources, baseDir);
+            String javaVersion) {
+
+        public CompileInfo(Collection<GeneratedFile> generatedSources, Collection<GeneratedFile> resources, GenerateModelHelper.GenerateModelInfo generateModelInfo) {
+            this(generatedSources,
+                    resources,
+                    generateModelInfo.projectClassLoader(),
+                    generateModelInfo.runtimeClassPathElements(),
+                    generateModelInfo.baseDir(),
+                    generateModelInfo.javaSourceEncoding(),
+                    generateModelInfo.javaVersion());
+        }
+    }
+
+    public static void compileAndDump(CompileInfo compileInfo) {
+        compileAndDumpGeneratedSources(compileInfo);
+        dumpResources(compileInfo.resources(), compileInfo.baseDir());
+    }
+
+    public static void compileAndDumpGeneratedSources(CompileInfo compileInfo) {
+        // Compile and write files
+        compileAndWriteClasses(compileInfo.generatedSources(),
+                compileInfo.projectClassLoader,
+                buildJavaCompilerSettings(compileInfo.runtimeClassPathElements,
+                        compileInfo.javaSourceEncoding,
+                        compileInfo.javaVersion),
+                getGeneratedFileWriter(compileInfo.baseDir));
+        // Dump resources
+        writeFiles(compileInfo.generatedSources, compileInfo.baseDir);
+    }
+
+    public static void dumpResources(Collection<GeneratedFile> resources, Path baseDir) {
+        dumpResources(resources, baseDir.toFile());
     }
 
     public static void dumpResources(Collection<GeneratedFile> resources, File baseDir) {
@@ -75,6 +99,15 @@ public class CompilerHelper {
     static void writeFiles(Collection<GeneratedFile> toWrite, File baseDir) {
         GeneratedFileWriter writer = getGeneratedFileWriter(baseDir);
         toWrite.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer));
+    }
+
+    static void writeFiles(Collection<GeneratedFile> toWrite, Path baseDir) {
+        GeneratedFileWriter writer = getGeneratedFileWriter(baseDir);
+        toWrite.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer));
+    }
+
+    static GeneratedFileWriter getGeneratedFileWriter(Path baseDir) {
+        return GENERATED_FILE_WRITER_BUILDER.build(baseDir);
     }
 
     static void writeGeneratedFile(GeneratedFile generatedFile, GeneratedFileWriter writer) {
@@ -119,15 +152,14 @@ public class CompilerHelper {
 
     static JavaCompilerSettings buildJavaCompilerSettings(List<String> runtimeClassPathElements,
             String sourceEncoding,
-            String sourceVersion,
-            String targetVersion) {
+            String javaVersion) {
         JavaCompilerSettings settings = new JavaCompilerSettings();
         for (String path : runtimeClassPathElements) {
             settings.addClasspath(new File(path));
         }
         settings.setSourceEncoding(sourceEncoding);
-        settings.setSourceVersion(sourceVersion);
-        settings.setTargetVersion(targetVersion);
+        settings.setSourceVersion(javaVersion);
+        settings.setTargetVersion(javaVersion);
         return settings;
     }
 }

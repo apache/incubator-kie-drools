@@ -41,7 +41,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.kie.kogito.codegen.core.CustomDashboardGeneratedUtils.loadCustomGrafanaDashboardsList;
 
 public class ApplicationGenerator {
@@ -121,7 +121,7 @@ public class ApplicationGenerator {
     }
 
     private boolean filterGeneratedFile(GeneratedFile generatedFile, boolean keepRestFile) {
-        boolean keepFile = keepRestFile || !REST_TYPE.equals(generatedFile.type());
+        boolean keepFile = keepRestFile || !REST.equals(generatedFile.type());
         if (!keepFile) {
             LOGGER.warn("Skipping file because REST is disabled: " + generatedFile.relativePath());
         }

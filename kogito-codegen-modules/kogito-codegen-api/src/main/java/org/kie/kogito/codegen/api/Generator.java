@@ -30,7 +30,6 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
  */
 public interface Generator {
 
-    GeneratedFileType REST_TYPE = GeneratedFileType.of("REST", GeneratedFileType.Category.SOURCE, true, true);
     GeneratedFileType MODEL_TYPE = GeneratedFileType.of("MODEL", GeneratedFileType.Category.SOURCE, true, true);
 
     /**

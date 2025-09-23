@@ -20,6 +20,7 @@ package org.kie.kogito.maven.plugin.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
@@ -45,26 +46,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.kie.kogito.codegen.manager.util.CodeGenManagerUtil.convertURIsToURLs;
 
 public final class MojoUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MojoUtil.class);
 
-    public static Set<URL> getProjectFiles(final MavenProject mavenProject,
+    public static Set<URI> getProjectFiles(final MavenProject mavenProject,
             final List<InternalKieModule> kmoduleDeps)
             throws DependencyResolutionRequiredException, IOException {
-        final Set<URL> urls = new HashSet<>();
+        final Set<URI> toReturn = getScaffoldFiles(mavenProject, kmoduleDeps);
         for (final String element : mavenProject.getCompileClasspathElements()) {
-            urls.add(new File(element).toURI().toURL());
+            toReturn.add(new File(element).toURI());
         }
+        return toReturn;
+    }
 
+    public static Set<URI> getScaffoldFiles(final MavenProject mavenProject,
+            final List<InternalKieModule> kmoduleDeps)
+            throws IOException {
+        final Set<URI> toReturn = new HashSet<>();
         mavenProject.setArtifactFilter(new CumulativeScopeArtifactFilter(Arrays.asList("compile", "runtime")));
         for (final Artifact artifact : mavenProject.getArtifacts()) {
             if (artifact.getType().equals("jar")) {
-                populateURLsFromJarArtifact(urls, artifact, kmoduleDeps);
+                populateURLsFromJarArtifact(toReturn, artifact, kmoduleDeps);
             }
         }
-        return urls;
+        return toReturn;
     }
 
     public static ClassLoader createProjectClassLoader(final ClassLoader parentClassLoader,
@@ -72,9 +80,9 @@ public final class MojoUtil {
             final File outputDirectory,
             final List<InternalKieModule> kmoduleDeps) throws MojoExecutionException {
         try {
-            final Set<URL> urls = getProjectFiles(mavenProject, kmoduleDeps);
-            urls.add(outputDirectory.toURI().toURL());
-            URL[] urlArray = urls.toArray(new URL[urls.size()]);
+            final Set<URI> uris = getProjectFiles(mavenProject, kmoduleDeps);
+            uris.add(outputDirectory.toURI());
+            URL[] urlArray = convertURIsToURLs(uris);
             LOGGER.debug("Creating maven project class loading with: {}", Arrays.asList(urlArray));
             return URLClassLoader.newInstance(urlArray, parentClassLoader);
         } catch (final DependencyResolutionRequiredException | IOException e) {
@@ -82,11 +90,11 @@ public final class MojoUtil {
         }
     }
 
-    private static void populateURLsFromJarArtifact(final Set<URL> toPopulate, final Artifact artifact,
+    private static void populateURLsFromJarArtifact(final Set<URI> toPopulate, final Artifact artifact,
             final List<InternalKieModule> kmoduleDeps) throws IOException {
         final File file = artifact.getFile();
         if (file != null && file.isFile()) {
-            toPopulate.add(file.toURI().toURL());
+            toPopulate.add(file.toURI());
             final KieModuleModel depModel = getDependencyKieModel(file);
             if (kmoduleDeps != null && depModel != null) {
                 final ReleaseId releaseId = new ReleaseIdImpl(artifact.getGroupId(), artifact.getArtifactId(),
@@ -108,18 +116,18 @@ public final class MojoUtil {
         return null;
     }
 
+    public static boolean hasDependency(final MavenProject mavenProject, CodeGenManagerUtil.Framework framework) {
+        return mavenProject.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains(framework.toName()));
+    }
+
     public static boolean hasClassOnClasspath(final MavenProject project, String className) {
         try {
             Set<Artifact> elements = project.getArtifacts();
-            URL[] urls = new URL[elements.size()];
-
-            int i = 0;
+            Set<URI> uris = new HashSet<>();
             for (Artifact artifact : elements) {
-                urls[i] = artifact.getFile().toURI().toURL();
-                i++;
+                uris.add(artifact.getFile().toURI());
             }
-
-            return CodeGenManagerUtil.isClassNameInUrlClassLoader(urls, className);
+            return CodeGenManagerUtil.isClassNameInUrlClassLoader(uris, className);
         } catch (Exception e) {
             return false;
         }

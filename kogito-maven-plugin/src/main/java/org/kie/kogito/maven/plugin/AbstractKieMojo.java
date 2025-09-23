@@ -19,89 +19,124 @@
 package org.kie.kogito.maven.plugin;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.drools.codegen.common.GeneratedFileWriter;
+import org.kie.kogito.codegen.manager.BuilderManager;
 import org.kie.kogito.codegen.manager.util.CodeGenManagerUtil;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
-    protected static final GeneratedFileWriter.Builder GENERATED_FILE_WRITER_BUILDER = GeneratedFileWriter.builder("kogito", "kogito.codegen.resources.directory", "kogito.codegen.sources.directory");
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    protected File projectBaseDir;
-
-    @Parameter
-    protected Map<String, String> properties;
-
-    @Parameter(required = true, defaultValue = "${project}")
-    protected MavenProject project;
-
-    @Parameter(required = true, defaultValue = "${project.build.sourceEncoding}")
-    protected String projectSourceEncoding;
-
-    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
-    protected File outputDirectory;
-
-    @Parameter(required = true, defaultValue = "${project.basedir}")
-    protected File baseDir;
-
-    @Parameter(property = "kogito.codegen.persistence")
-    protected boolean persistence;
-
-    @Parameter(property = "kogito.codegen.rules")
-    protected String generateRules;
-
-    @Parameter(property = "kogito.codegen.processes")
-    protected String generateProcesses;
-
     @Parameter(property = "kogito.codegen.decisions")
     protected String generateDecisions;
+
+    /**
+     * Partial generation can be used when reprocessing a pre-compiled project
+     * for faster code-generation. It only generates code for rules and processes,
+     * and does not generate extra meta-classes (etc. Application).
+     * Use only when doing recompilation and for development purposes
+     */
+    @Parameter(property = "kogito.codegen.partial", defaultValue = "false")
+    protected boolean generatePartial;
 
     @Parameter(property = "kogito.codegen.predictions")
     protected String generatePredictions;
 
-    protected void setSystemProperties(Map<String, String> properties) {
-        if (properties != null) {
-            getLog().debug("Additional system properties: " + properties);
-            for (Map.Entry<String, String> property : properties.entrySet()) {
-                System.setProperty(property.getKey(), property.getValue());
-            }
-            getLog().debug("Configured system properties were successfully set.");
+    @Parameter(property = "kogito.codegen.processes")
+    protected String generateProcesses;
+
+    @Parameter(property = "kogito.codegen.rules")
+    protected String generateRules;
+
+    @Parameter
+    protected Map<String, String> properties;
+
+    @Parameter(defaultValue = "17", property = "maven.compiler.release")
+    protected String mavenCompilerJavaVersion;
+
+    @Parameter(property = "kogito.codegen.persistence")
+    protected boolean persistence;
+
+    @Parameter(required = true, defaultValue = "${project.basedir}")
+    protected File projectBaseDir;
+
+    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
+    protected File projectBuildOutputDirectory;
+
+    @Parameter(required = true, defaultValue = "${project.build.sourceEncoding}")
+    protected String projectSourceEncoding;
+
+    @Parameter(property = "kogito.jsonSchema.version", required = false) //TODO double check this required false
+    protected String jsonSchemaVersion;
+
+    @Parameter(property = "kogito.codegen.ondemand", defaultValue = "false")
+    protected boolean onDemand;
+
+    @Parameter(property = "kogito.sources.keep", defaultValue = "false")
+    protected boolean keepSources;
+
+    @Parameter(required = true, defaultValue = "${project}")
+    protected MavenProject project;
+
+    @Component
+    protected MavenProject mavenProject;
+
+    public void buildProject() throws MojoExecutionException {
+        getLog().info("buildProject");
+        executionLog();
+        try {
+            Set<URI> projectFilesUris = MojoUtil.getProjectFiles(mavenProject, null);
+            BuilderManager.BuildInfo buildInfo = new BuilderManager.BuildInfo(projectFilesUris,
+                    projectBaseDir.toPath(),
+                    projectBuildOutputDirectory.toPath(),
+                    mavenProject.getGroupId(),
+                    mavenProject.getArtifactId(),
+                    mavenProject.getVersion(),
+                    projectSourceEncoding,
+                    mavenCompilerJavaVersion,
+                    jsonSchemaVersion,
+                    generatePartial,
+                    persistence,
+                    onDemand,
+                    keepSources,
+                    mavenProject.getRuntimeClasspathElements(),
+                    discoverFramework(),
+                    properties);
+            BuilderManager.build(buildInfo);
+        } catch (DependencyResolutionRequiredException | IOException e) {
+            throw new MojoExecutionException("Error building project", e);
         }
     }
 
-    protected ClassLoader projectClassLoader() throws MojoExecutionException {
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        return MojoUtil.createProjectClassLoader(contextClassLoader,
-                project,
-                outputDirectory,
-                null);
+    protected void executionLog() {
+        getLog().info("Compiler Java Version: " + mavenCompilerJavaVersion);
+        getLog().info("Compiler Source Encoding: " + projectSourceEncoding);
+        getLog().info("Project base directory: " + projectBaseDir.getAbsolutePath());
+        getLog().info("Build output directory: " + projectBuildOutputDirectory);
+        getLog().info("Partial generation is enabled: " + generatePartial);
+        getLog().info("Json schema version: " + jsonSchemaVersion);
+        getLog().info("===================================");
     }
 
-    protected CodeGenManagerUtil.Framework discoverFramework() {
-        if (hasDependency("quarkus")) {
+    CodeGenManagerUtil.Framework discoverFramework() {
+        if (MojoUtil.hasDependency(mavenProject, CodeGenManagerUtil.Framework.QUARKUS)) {
             return CodeGenManagerUtil.Framework.QUARKUS;
         }
 
-        if (hasDependency("spring")) {
+        if (MojoUtil.hasDependency(mavenProject, CodeGenManagerUtil.Framework.SPRING)) {
             return CodeGenManagerUtil.Framework.SPRING;
         }
 
         return CodeGenManagerUtil.Framework.NONE;
     }
 
-    private boolean hasDependency(String dependency) {
-        return project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains(dependency));
-    }
-
-    protected GeneratedFileWriter getGeneratedFileWriter() {
-        return GENERATED_FILE_WRITER_BUILDER.build(Path.of(baseDir.getAbsolutePath()));
-    }
 }

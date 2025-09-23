@@ -45,6 +45,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.codegen.common.GeneratedFileType.REST;
 
 public class SampleCodegen implements Generator {
 
@@ -95,7 +96,7 @@ public class SampleCodegen implements Generator {
                     SampleCodegen::isSampleRuntimeField).forEach(SampleCodegen::initializeSampleRuntimeField);
         }
 
-        return context.hasRESTForGenerator(this) ? Collections.singleton(new GeneratedFile(REST_TYPE, generator.generatedFilePath(), compilationUnit.toString())) : Collections.emptyList();
+        return context.hasRESTForGenerator(this) ? Collections.singleton(new GeneratedFile(REST, generator.generatedFilePath(), compilationUnit.toString())) : Collections.emptyList();
     }
 
     @Override
