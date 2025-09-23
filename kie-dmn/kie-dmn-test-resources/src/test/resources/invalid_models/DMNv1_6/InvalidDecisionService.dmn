@@ -17,22 +17,22 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="DecisionService" id="_B3F89E6B-756E-418D-BD4C-73E629FB2591" name="DecisionService">
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="DecisionService" id="_B3F89E6B-756E-418D-BD4C-73E629FB2591" name="DecisionService" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
   <decision name="New Decision" id="_009C5383-62F7-4E0F-92F5-54A31445CEFE">
-    <variable name="New Decision" id="_04ED196E-B025-4E6B-8E4C-2D53F2BAEB68" typeRef="number" />
+    <variable name="New Decision" id="_04ED196E-B025-4E6B-8E4C-2D53F2BAEB68" typeRef="boolean" />
     <informationRequirement id="_05D5999C-D0F9-467C-99D9-6F887094A149">
       <requiredInput href="#_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0" />
     </informationRequirement>
-    <literalExpression id="_9D91FFCF-6498-4FED-B322-5832F545794F" typeRef="number" label="New Decision">
-      <text>New Input Data </text>
+    <literalExpression id="_9D91FFCF-6498-4FED-B322-5832F545794F" typeRef="boolean" label="New Decision">
+      <text>New Input Data &gt; 18</text>
     </literalExpression>
   </decision>
   <inputData name="New Input Data" id="_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0">
     <variable name="New Input Data" id="_DE47B272-FC27-47BF-9071-0106C636734A" typeRef="number" />
   </inputData>
   <decisionService name="New Decision Service" id="_6A46D1F3-8EC2-4105-961D-0D57D880B9CE">
-    <variable name="New Decision Service" id="_5B99C462-C4FB-4571-8D49-D2C9EEA26244" typeRef="number" />
-    <outputDecision href="#_009C5383-62F7-4E0F-92F5-54A31445CEFE" />
+    <variable name="New Decision Service" id="_5B99C462-C4FB-4571-8D49-D2C9EEA26244" />
+    <outputDecision href="#_INVALID_ID" />
     <inputData href="#_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0" />
   </decisionService>
   <dmndi:DMNDI>
