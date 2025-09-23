@@ -405,6 +405,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                 } catch (Exception exception) {
                     LOG.trace("Timeout {} with jobId {} will be retried if possible", timerId, jobId, exception);
                     JobDetails nextJobDetails = computeRetryIfAny(jobDetails);
+                    fireEvents(nextJobDetails);
                     removeIfFinal(timerId, jobContext, nextJobDetails);
                     jobSchedulerListeners.forEach(l -> l.onFailure(jobDetails));
                     return new JobTimeoutExecution(nextJobDetails, exception);

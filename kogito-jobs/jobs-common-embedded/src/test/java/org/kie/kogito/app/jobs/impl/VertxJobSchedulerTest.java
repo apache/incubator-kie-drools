@@ -207,11 +207,12 @@ public class VertxJobSchedulerTest {
         JobContextFactory jobContextFactory = new MemoryJobContextFactory();
         TestFailureJobExecutor latchJobExecutor = new TestFailureJobExecutor(2);
         LatchExecutionJobSchedulerListener latchExecutionJobSchedulerListener = new LatchExecutionJobSchedulerListener();
+        TestEventPublisher eventPublisher = new TestEventPublisher();
         JobScheduler jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
                 .withJobExecutors(latchJobExecutor)
                 .withRetryInterval(1000L)
                 .withJobEventAdapters(new TestJobDetailsEventAdapter())
-                .withEventPublishers(new TestEventPublisher())
+                .withEventPublishers(eventPublisher)
                 .withJobContextFactory(jobContextFactory)
                 .withJobStore(memoryJobStore)
                 .withJobSchedulerListeners(latchExecutionJobSchedulerListener)
@@ -280,6 +281,73 @@ public class VertxJobSchedulerTest {
 
         jobScheduler.schedule(new TestJobDescription(jobId, ZonedDateTime.now().plus(Duration.ofSeconds(1))));
         latchExecutionJobSchedulerListener.waitForExecution();
+        assertThat(memoryJobStore.find(jobContextFactory.newContext(), jobId)).isNotNull().extracting(JobDetails::getStatus).isEqualTo(JobStatus.ERROR);
+
+        jobScheduler.close();
+    }
+
+    @Test
+    public void testEventPublishedOnErrorWithNoRetries() throws Exception {
+
+        int EXPECTED_EVENTS = 3; // SCHEDULED, RUNNING, ERROR
+
+        final String jobId = "1";
+        JobStore memoryJobStore = new MemoryJobStore();
+        JobContextFactory jobContextFactory = new MemoryJobContextFactory();
+        TestFailureJobExecutor latchJobExecutor = new TestFailureJobExecutor(1);
+        TestEventPublisher eventPublisher = new TestEventPublisher();
+        LatchFailureJobSchedulerListener latchExecutionJobSchedulerListener = new LatchFailureJobSchedulerListener(1);
+        JobScheduler jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
+                .withMaxNumberOfRetries(0)
+                .withJobExecutors(latchJobExecutor)
+                .withRetryInterval(1000L)
+                .withJobEventAdapters(new TestJobDetailsEventAdapter())
+                .withEventPublishers(eventPublisher)
+                .withJobContextFactory(jobContextFactory)
+                .withJobStore(memoryJobStore)
+                .withJobSchedulerListeners(latchExecutionJobSchedulerListener)
+                .withJobDescriptorMergers(new TestJobDescriptionMerger())
+                .build();
+
+        jobScheduler.init();
+
+        jobScheduler.schedule(new TestJobDescription(jobId, ZonedDateTime.now().plus(Duration.ofSeconds(1))));
+        latchExecutionJobSchedulerListener.waitForExecution();
+        assertThat(eventPublisher.getPublishedEventsCount()).isEqualTo(EXPECTED_EVENTS);
+        assertThat(memoryJobStore.find(jobContextFactory.newContext(), jobId)).isNotNull().extracting(JobDetails::getStatus).isEqualTo(JobStatus.ERROR);
+
+        jobScheduler.close();
+    }
+
+    @Test
+    public void testEventPublishedOnErrorWithRetry() throws Exception {
+        final int NUMBER_OF_FAILURES = 2; // first execution + number of retries
+        final int NUMBER_OF_RETRIES = NUMBER_OF_FAILURES - 1;
+        int EXPECTED_EVENTS = 6; // SCHEDULED, RUNNING, 2xRETRY, RUNNING, ERROR
+
+        final String jobId = "1";
+        JobStore memoryJobStore = new MemoryJobStore();
+        JobContextFactory jobContextFactory = new MemoryJobContextFactory();
+        TestFailureJobExecutor latchJobExecutor = new TestFailureJobExecutor(NUMBER_OF_FAILURES);
+        TestEventPublisher eventPublisher = new TestEventPublisher();
+        LatchFailureJobSchedulerListener latchExecutionJobSchedulerListener = new LatchFailureJobSchedulerListener(NUMBER_OF_FAILURES);
+        JobScheduler jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
+                .withMaxNumberOfRetries(NUMBER_OF_RETRIES)
+                .withJobExecutors(latchJobExecutor)
+                .withRetryInterval(1000L)
+                .withJobEventAdapters(new TestJobDetailsEventAdapter())
+                .withEventPublishers(eventPublisher)
+                .withJobContextFactory(jobContextFactory)
+                .withJobStore(memoryJobStore)
+                .withJobSchedulerListeners(latchExecutionJobSchedulerListener)
+                .withJobDescriptorMergers(new TestJobDescriptionMerger())
+                .build();
+
+        jobScheduler.init();
+
+        jobScheduler.schedule(new TestJobDescription(jobId, ZonedDateTime.now().plus(Duration.ofSeconds(1))));
+        latchExecutionJobSchedulerListener.waitForExecution();
+        assertThat(eventPublisher.getPublishedEventsCount()).isEqualTo(EXPECTED_EVENTS);
         assertThat(memoryJobStore.find(jobContextFactory.newContext(), jobId)).isNotNull().extracting(JobDetails::getStatus).isEqualTo(JobStatus.ERROR);
 
         jobScheduler.close();

@@ -19,6 +19,7 @@
 package org.kie.kogito.app.jobs.impl;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
@@ -30,15 +31,26 @@ public class TestEventPublisher implements EventPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestEventPublisher.class);
 
+    private final AtomicInteger publishedEventsCount;
+
+    public TestEventPublisher() {
+        this.publishedEventsCount = new AtomicInteger(0);
+    }
+
     @Override
     public void publish(DataEvent<?> event) {
         JobInstanceDataEvent jobInstanceDataEvent = (JobInstanceDataEvent) event;
-        LOG.info("job event {}", new String(jobInstanceDataEvent.getData()));
+        this.publishedEventsCount.incrementAndGet();
+        LOG.info("job event {}, publishedEventsCount {}", new String(jobInstanceDataEvent.getData()), publishedEventsCount.get());
     }
 
     @Override
     public void publish(Collection<DataEvent<?>> events) {
         events.forEach(this::publish);
+    }
+
+    public int getPublishedEventsCount() {
+        return publishedEventsCount.get();
     }
 
 }
