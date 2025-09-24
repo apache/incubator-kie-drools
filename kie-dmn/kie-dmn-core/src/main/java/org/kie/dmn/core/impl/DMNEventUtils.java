@@ -71,8 +71,9 @@ public final class DMNEventUtils {
         Map<String, Object> results = new LinkedHashMap<>();
         String namespace = event.getDecisionService().getModelNamespace();
         List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        DMNModel dmnModel = ((DMNResultImpl) event.getResult()).getModel();
         for (String id : decisionIDs) {
-            DecisionNode decisionNode = retrieveDecisionNode(((DMNResultImpl) event.getResult()).getModel(), id, namespace);
+            DecisionNode decisionNode = retrieveDecisionNode(dmnModel, id, namespace);
             String decisionName = decisionNode.getName();
             Object decisionResult = event.getResult().getContext().get(decisionName);
             results.put(decisionName, decisionResult);
@@ -84,7 +85,7 @@ public final class DMNEventUtils {
         return Optional.ofNullable(model.getDecisionById(id))
                 .or(() -> Optional.ofNullable(model.getDecisionById(namespace + "#" + id)))
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("Decision node with ID '" + id + "' was not found in the model.")));
+                        String.format("Decision node with ID '%s' was not found in the model.", id)));
     }
 
     private DMNEventUtils() {
