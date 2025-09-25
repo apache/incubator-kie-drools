@@ -361,6 +361,33 @@ public class RuleAttributesTest extends BaseModelTest {
         assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("b2", "b1");
     }
 
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAutoFocusWithModify(RUN_TYPE runType) {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p : Person(age == 18)\n" +
+                        "then\n" +
+                        "  modify($p) { setAge(19) };\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "  agenda-group \"groupA\"\n" +
+                        "  auto-focus true\n" +
+                        "when\n" +
+                        "  $p : Person(age == 19)\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(runType, str);
+
+        Person me = new Person( "Mario", 18 );
+        ksession.insert( me );
+        int fired = ksession.fireAllRules();
+
+        assertThat(fired).isEqualTo(2);
+    }
 
     @ParameterizedTest
 	@MethodSource("parameters")
