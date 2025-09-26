@@ -49,8 +49,6 @@ public class ModifyHandler extends PropagatorCompilerHandler {
             modifyStatement = parseStatement("ALPHATERMINALNODE." + g + "modifyObject(handle, modifyPreviousTuples, context, wm);");
         }
 
-
-
         replaceNameExpr(modifyStatement, "ALPHATERMINALNODE", getVariableName(sink));
         return modifyStatement;
     }

@@ -326,9 +326,6 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
         this.previousObjectSinkNode = previous;
     }
 
-    void disablePropertyReactivity() {
-        inferredMask = AllSetBitMask.get();
-    }
 
     public BitMask getNegativeMask() {
         return negativeMask;

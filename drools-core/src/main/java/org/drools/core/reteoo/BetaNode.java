@@ -403,12 +403,6 @@ public abstract class BetaNode extends LeftTupleSource
     public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
-    void disablePropertyReactivity() {
-        rightInput.disablePropertyReactivity();
-        if (NodeTypeEnums.isBetaNode(leftInput)) {
-            ((BetaNode)leftInput).disablePropertyReactivity();
-        }
-    }
 
     @Override
     public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder) {
