@@ -44,6 +44,10 @@ public class MockLeftTupleSink extends LeftTupleSource
         super( 0, buildContext );
     }
 
+    public MockLeftTupleSink(final int id, BuildContext buildContext) {
+        super( id, buildContext );
+    }
+
     public MockLeftTupleSink(final int id) {
         super(id, null);
     }
@@ -119,6 +123,19 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
+        if ( super.getLeftTupleSource() != null) {
+            return super.getLeftTupleSource();
+        }
+
+        return new MockLeftTupleSink(null) {
+            @Override
+            public int getType() {
+                return NodeTypeEnums.LeftInputAdapterNode;
+            }
+        };
+    }
+
+    public LeftTupleSource getParent() {
         if ( super.getLeftTupleSource() != null) {
             return super.getLeftTupleSource();
         }

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -200,7 +201,7 @@ public class ReteooBuilder
         Map<Integer, BaseNode> stillInUse = new HashMap<>();
         Collection<ObjectSource> alphas = new HashSet<>();
 
-        removePath(wms, context, stillInUse, alphas, terminalNode);
+        removePath(wms, context, stillInUse, alphas, terminalNode, terminalNode.getStartTupleSource());
 
         Set<Integer> removedNodes = new HashSet<>();
         for (ObjectSource alpha : alphas) {
@@ -215,7 +216,7 @@ public class ReteooBuilder
      * Each time it reaches a subnetwork beta node, the current path evaluation ends, and instead the subnetwork
      * path continues.
      */
-    private void removePath( Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
+    private void removePath( Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode, NetworkNode startNode) {
         LeftTupleNode[] nodes = endNode.getPathNodes();
         for (int i = endNode.getPathIndex(); i >= 0; i--) {
             BaseNode node = (BaseNode) nodes[i];
@@ -227,17 +228,25 @@ public class ReteooBuilder
 
             if ( removed ) {
                 // reteoo requires to call remove on the OTN for tuples cleanup
-                if (NodeTypeEnums.isBetaNode(node) && !((BetaNode) node).isRightInputIsRiaNode()) {
-                    alphas.add(((BetaNode) node).getRightInput());
+                if (NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
+                    alphas.add(((BetaNode) node).getRightInput().getParent());
                 } else if (NodeTypeEnums.isLeftInputAdapterNode(node)) {
                     alphas.add(((LeftInputAdapterNode) node).getObjectSource());
                 }
-            }
 
-            if (NodeTypeEnums.isBetaNode(node) && ((BetaNode) node).isRightInputIsRiaNode()) {
-                endNode = (PathEndNode) ((BetaNode) node).getRightInput();
-                removePath(wms, context, stillInUse, alphas, endNode);
-                return;
+                if (NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
+                    // this must be removed after alpha nodes are collected
+                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput());
+                } else if (NodeTypeEnums.isBetaNodeWithSubnetwork(node)) {
+                    endNode = (PathEndNode) ((BetaNode) node).getRightInput().getParent();
+                    // this must be removed after we have a reference to the TupleToObjectNode endnode
+                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput());
+                    removePath(wms, context, stillInUse, alphas, endNode, endNode.getStartTupleSource());
+                }
+
+                if (node == startNode) { // don't go past the network start node
+                    return;
+                }
             }
         }
     }
@@ -248,8 +257,10 @@ public class ReteooBuilder
 
         if (removed) {
             stillInUse.remove( node.getId() );
-            for (InternalWorkingMemory workingMemory : wms) {
-                workingMemory.clearNodeMemory((MemoryFactory) node);
+            if (NodeTypeEnums.isMemoryFactory(node)) {
+                for (InternalWorkingMemory workingMemory : wms) {
+                    workingMemory.clearNodeMemory((MemoryFactory) node);
+                }
             }
         } else {
             stillInUse.put( node.getId(), node );
@@ -258,11 +269,11 @@ public class ReteooBuilder
         return removed;
     }
 
-    private void removeObjectSource(Collection<InternalWorkingMemory> wms, Map<Integer, BaseNode> stillInUse, Set<Integer> removedNodes, ObjectSource node, RuleRemovalContext context ) {
+    private void removeObjectSource(Collection<InternalWorkingMemory> wms, Map<Integer, BaseNode> stillInUse, Set<Integer> removedNodes, BaseNode node, RuleRemovalContext context ) {
         if (removedNodes.contains( node.getId() )) {
             return;
         }
-        ObjectSource parent = node.getParentObjectSource();
+        BaseNode parent = node.getParent();
 
         boolean removed = node.remove( context, this );
 
@@ -272,9 +283,8 @@ public class ReteooBuilder
             stillInUse.remove(node.getId());
             removedNodes.add(node.getId());
 
-            if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
-                 node.getType() != NodeTypeEnums.AlphaNode ) {
-                // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
+            if ( NodeTypeEnums.isMemoryFactory(node)) {
+                // @TODO phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
                 for (InternalWorkingMemory workingMemory : wms) {
                     workingMemory.clearNodeMemory( (MemoryFactory) node);
                 }
@@ -294,11 +304,11 @@ public class ReteooBuilder
             removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule, removedNodes, context );
         }
         if ( NodeTypeEnums.isBetaNode( node ) ) {
-            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule, removedNodes, context );
+            removeNodeAssociation( ((BetaNode) node).getRightInput().getParent(), rule, removedNodes, context );
         } else if ( NodeTypeEnums.isLeftInputAdapterNode(node)) {
-            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule, removedNodes, context );
+            removeNodeAssociation( node.getParent(), rule, removedNodes, context );
         } else if ( node.getType() == NodeTypeEnums.AlphaNode ) {
-            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule, removedNodes, context );
+            removeNodeAssociation( node.getParent(), rule, removedNodes, context );
         }
     }
 
@@ -310,11 +320,11 @@ public class ReteooBuilder
                 ObjectSource source = (AlphaNode) node;
                 while ( true ) {
                     source.resetInferredMask();
-                    ObjectSource parent = source.getParentObjectSource();
+                    BaseNode parent = source.getParent();
                     if (parent.getType() != NodeTypeEnums.AlphaNode) {
                         break;
                     }
-                    source = parent;
+                    source = (ObjectSource) parent;
                 }
                 updateLeafSet(source, leafSet );
             } else if( NodeTypeEnums.isBetaNode( node ) ) {
@@ -333,6 +343,8 @@ public class ReteooBuilder
         for ( BaseNode node : leafSet ) {
             if ( NodeTypeEnums.isTerminalNode( node ) ) {
                 ((TerminalNode)node).initInferredMask();
+            } else if (NodeTypeEnums.isBetaRightNode(node)){
+                ((RightInputAdapterNode<BetaNode>)node).initInferredMask();
             } else { // else node instanceof BetaNode
                 ((BetaNode)node).initInferredMask();
             }
@@ -354,6 +366,8 @@ public class ReteooBuilder
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
+        } else if ( NodeTypeEnums.isBetaRightNode( baseNode ) && ( baseNode.isInUse() )) {
+            leafSet.add( baseNode );
         } else if ( baseNode.getType() == NodeTypeEnums.EvalConditionNode ) {
             for ( LeftTupleSink sink : ((EvalConditionNode) baseNode).getSinkPropagator().getSinks() ) {
                 if ( ((BaseNode)sink).isInUse() ) {

@@ -98,11 +98,11 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     }
 
 
-    public ObjectTypeNodeId getLeftInputOtnId() {
+    public ObjectTypeNodeId getInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
+    public void setInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
 
@@ -114,6 +114,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         getLeftTupleSource().addTupleSink( this, context );
-        addAssociation( context, context.getRule() );
+        addAssociation(context.getRule(), context);
     }
 }

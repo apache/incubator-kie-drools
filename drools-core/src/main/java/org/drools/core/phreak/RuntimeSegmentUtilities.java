@@ -36,7 +36,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
@@ -65,8 +65,8 @@ public class RuntimeSegmentUtilities {
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {
-            if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.isRightInputIsRiaNode()) {
-                createRiaSegmentMemory(reteEvaluator, (BetaNode) segmentRoot);
+            if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.inputIsTupleToObjectNode()) {
+                createSubnetworkSegmentMemory(reteEvaluator, (BetaNode) segmentRoot);
             }
             return smem;
         }
@@ -99,7 +99,7 @@ public class RuntimeSegmentUtilities {
 
         SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
 
-        updateRiaAndTerminalMemory(reteEvaluator, smem, proto);
+        updateSubnetworkAndTerminalMemory(reteEvaluator, smem, proto);
 
         return smem;
     }
@@ -115,10 +115,10 @@ public class RuntimeSegmentUtilities {
         return querySmem;
     }
 
-    static RightInputAdapterNode createRiaSegmentMemory( ReteEvaluator reteEvaluator, BetaNode betaNode ) {
-        RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+    static TupleToObjectNode createSubnetworkSegmentMemory(ReteEvaluator reteEvaluator, BetaNode betaNode) {
+        TupleToObjectNode tton = (TupleToObjectNode) betaNode.getRightInput().getParent();
 
-        LeftTupleSource subnetworkLts = riaNode.getStartTupleSource();
+        LeftTupleSource subnetworkLts = tton.getStartTupleSource();
 
         Memory rootSubNetwokrMem = reteEvaluator.getNodeMemory( (MemoryFactory) subnetworkLts );
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
@@ -126,7 +126,7 @@ public class RuntimeSegmentUtilities {
             // we need to stop recursion here
             getOrCreateSegmentMemory(reteEvaluator, subnetworkLts, rootSubNetwokrMem);
         }
-        return riaNode;
+        return tton;
     }
 
     public static void createChildSegments(ReteEvaluator reteEvaluator, LeftTupleSinkPropagator sinkProp, SegmentMemory smem) {
@@ -150,16 +150,16 @@ public class RuntimeSegmentUtilities {
     }
 
     /**
-     * This adds the segment memory to the terminal node or ria node's list of memories.
+     * This adds the segment memory to the terminal node or TupleToObjectNode node's list of memories.
      * In the case of the terminal node this allows it to know that all segments from
      * the tip to root are linked.
-     * In the case of the ria node its all the segments up to the start of the subnetwork.
-     * This is because the rianode only cares if all of it's segments are linked, then
+     * In the case of the TupleToObjectNode node its all the segments up to the start of the subnetwork.
+     * This is because the TupleToObjectNode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
      */
-    private static void updateRiaAndTerminalMemory(ReteEvaluator reteEvaluator,
-                                                   SegmentMemory smem,
-                                                   SegmentPrototype proto) {
+    private static void updateSubnetworkAndTerminalMemory(ReteEvaluator reteEvaluator,
+                                                          SegmentMemory smem,
+                                                          SegmentPrototype proto) {
         for (PathEndNode endNode : proto.getPathEndNodes()) {
             if (!isInsideSubnetwork(endNode, proto)) {
                 // While SegmentPrototypes are added for entire path, for traversal reasons.

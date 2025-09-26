@@ -331,7 +331,7 @@ public class PropertyReactivityTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")
-    @Timeout(5000)
+    @Timeout(5000) // TODO timeout commented out in PR?
     public void testPRAfterAccumulate(RUN_TYPE runType) {
         // DROOLS-2427
         final String str =
