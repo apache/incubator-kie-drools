@@ -155,7 +155,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private void processInputData(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputData()) {
-            String id = DMNCompilerImpl.getId(er);
+            String id = DMNCompilerImpl.getReferenceId(er);
             InputDataNode input = model.getInputById(id);
             if (input != null) {
                 String inputNamePrefix = inputQualifiedNamePrefix(input, model);
@@ -169,7 +169,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private void processInputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model, List<DSFormalParameter> parameters) {
         for (DMNElementReference er : ni.getDecisionService().getInputDecision()) {
-            String id = DMNCompilerImpl.getId(er);
+            String id = DMNCompilerImpl.getReferenceId(er);
             DecisionNode input = model.getDecisionById(id);
             if (input != null) {
                 String inputNamePrefix = inputQualifiedNamePrefix(input, model);
@@ -183,7 +183,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
 
     private void validateEncapsulatedDecision(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         for (DMNElementReference er : ni.getDecisionService().getEncapsulatedDecision()) {
-            String id = DMNCompilerImpl.getId(er);
+            String id = DMNCompilerImpl.getReferenceId(er);
             if (model.getDecisionById(id) == null) {
                 reportReferenceError(ni, model, id);
             }
@@ -193,7 +193,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
     private List<DecisionNode> getOutputDecisions(DecisionServiceNodeImpl ni, DMNModelImpl model) {
         List<DecisionNode> outputDecisions = new ArrayList<>();
         for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
-            String id = DMNCompilerImpl.getId(er);
+            String id = DMNCompilerImpl.getReferenceId(er);
             DecisionNode outDecision = model.getDecisionById(id);
             if (outDecision != null) {
                 outputDecisions.add(outDecision);

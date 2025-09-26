@@ -70,7 +70,7 @@ public final class DMNEventUtils {
     public static Map<String, Object> extractDSOutputDecisionsValues(AfterEvaluateDecisionServiceEvent event) {
         Map<String, Object> results = new LinkedHashMap<>();
         String namespace = event.getDecisionService().getModelNamespace();
-        List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(DMNCompilerImpl::getReferenceId).toList();
         DMNModel dmnModel = ((DMNResultImpl) event.getResult()).getModel();
         for (String id : decisionIDs) {
             DecisionNode decisionNode = retrieveDecisionNode(dmnModel, id, namespace);
