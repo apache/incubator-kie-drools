@@ -24,7 +24,7 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.base.BaseClassFieldReader;
 import org.drools.base.base.ValueType;
 
-public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
+public abstract class BaseWholeNumberClassFieldReader extends BaseClassFieldReader {
 
     private static final long serialVersionUID = 510l;
 
@@ -35,51 +35,49 @@ public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
      * @param fieldType
      * @param valueType
      */
-    protected BaseIntClassFieldReader(final int index,
-                                         final Class fieldType,
-                                         final ValueType valueType) {
+    protected BaseWholeNumberClassFieldReader(final int index,
+                                              final Class fieldType,
+                                              final ValueType valueType) {
         super( index,
                fieldType,
                valueType );
     }
 
-    public BaseIntClassFieldReader() {
+    public BaseWholeNumberClassFieldReader() {
     }
 
     public Object getValue(ValueResolver valueResolver, final Object object) {
-        return getIntValue( valueResolver, object );
+        long value = getWholeNumberValue( valueResolver, object );
+        if(getExtractToClass() == byte.class) {
+            return Byte.valueOf((byte) value);
+        } else if(getExtractToClass() == short.class) {
+            return Short.valueOf((short) value);
+        } else if(getExtractToClass() == int.class) {
+            return Integer.valueOf((int) value);
+        } else if(getExtractToClass() == char.class) {
+            return Character.valueOf((char) value);
+        } else {
+            return Long.valueOf(value);
+        }
+    }
+
+    public Object getInternalValue(Object object) {
+        long value = getWholeNumberValue( null, object );
+        return Long.valueOf(value);
     }
 
     public boolean getBooleanValue(ValueResolver valueResolver, final Object object) {
-        throw new RuntimeException( "Conversion to boolean not supported from int" );
+        throw new RuntimeException( "Conversion to boolean not supported from long" );
     }
 
-    public byte getByteValue(ValueResolver valueResolver, final Object object) {
-        return (byte) getIntValue( valueResolver, object );
 
+    public double getDecimalValue(ValueResolver valueResolver, final Object object) {
+        return getWholeNumberValue( valueResolver, object );
     }
 
-    public char getCharValue(ValueResolver valueResolver, final Object object) {
-        throw new RuntimeException( "Conversion to char not supported from int" );
-    }
 
-    public double getDoubleValue(ValueResolver valueResolver, final Object object) {
-        return getIntValue( valueResolver, object );
-    }
+    public abstract long getWholeNumberValue(ValueResolver valueResolver, Object object);
 
-    public float getFloatValue(ValueResolver valueResolver, final Object object) {
-        return getIntValue( valueResolver, object );
-    }
-
-    public abstract int getIntValue(ValueResolver valueResolver, Object object);
-
-    public long getLongValue(ValueResolver valueResolver, final Object object) {
-        return getIntValue( valueResolver, object );
-    }
-
-    public short getShortValue(ValueResolver valueResolver, final Object object) {
-        return (short) getIntValue( valueResolver, object );
-    }
 
     public boolean isNullValue(ValueResolver valueResolver, final Object object) {
         return false;
@@ -87,7 +85,7 @@ public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod("getIntValue",
+            return this.getClass().getDeclaredMethod("getWholeNumberValue",
                                                      ValueResolver.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
@@ -96,6 +94,8 @@ public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
     }
 
     public int getHashCode(ValueResolver valueResolver, final Object object) {
-        return getIntValue( valueResolver, object );
+        final long temp = getWholeNumberValue( valueResolver, object );
+        return (int) (temp ^ (temp >>> 32));
     }
+
 }

@@ -108,7 +108,7 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
         }
         if ( "num".equals( key ) ) {
             double d = (Double) value;
-            bit_writer.setDoubleValue( object, d );
+            bit_writer.setDecimalValue( object, d );
             return value;
         }
 
@@ -133,7 +133,7 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
         }
         if ( "bol".equals( key ) ) {
             val = bit_reader.getValue( object );
-            bit_writer.setIntValue( object, 0 );
+            bit_writer.setWholeNumberValue( object, 0 );
             return val;
         }
         if ( "age".equals( key ) ) {
@@ -149,7 +149,7 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
 
 
     public void clear() {
-        bit_writer.setIntValue( object, 0 );
+        bit_writer.setWholeNumberValue( object, 0 );
         name_writer.setValue( object, null );
         super.clear();
 

@@ -41,7 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -92,6 +94,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -3695,6 +3698,62 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
         assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
+    }
+
+    @Test
+    void testDecisionServiceWithEventListener() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "testmodels/evaluated-model.dmn", this.getClass(),
+                "testmodels/to-be-included.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("evaluated-model", "evaluated-model");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "MyHelloService");
+        assertThat(dmnResult.getDecisionResultByName("MyOutput").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("MyOutput")).isEqualTo("Hello, world!");
+    }
+
+    @Test
+    void testDecisionServiceWithEventListenerInSingleModel() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/DecisionService/DecisionService.dmn", this.getClass());
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("DecisionService", "DecisionService");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("New Input Data", 20);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "New Decision Service");
+        assertThat(dmnResult.getDecisionResultByName("New Decision").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("New Decision")).isEqualTo(new BigDecimal("20"));
+    }
+
+    @Test
+    void testDecisionServiceWithEventListenerWithUnnamedImport() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "valid_models/DMNv1_6/DecisionService/UnnamedImport.dmn", this.getClass(),
+                "valid_models/DMNv1_6/DecisionService/DecisionService.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("UnnamedImport", "UnnamedImport");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("New Input Data", 20);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "Decision Service");
+        assertThat(dmnResult.getDecisionResultByName("Decision").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("Decision")).isEqualTo(true);
+    }
+
+    @Test
+    void testDecisionServiceWithInvalidId() {
+        assertThatThrownBy(() -> DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/InvalidDecisionService.dmn",this.getClass()))
+                .isInstanceOf(IllegalStateException.class);
     }
 
 }
