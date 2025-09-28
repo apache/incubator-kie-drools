@@ -22,15 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.model.operators.ContainsOperator;
-import org.drools.model.operators.ExcludesOperator;
-import org.drools.model.operators.InOperator;
-import org.drools.model.operators.MatchesOperator;
-import org.drools.model.operators.MemberOfOperator;
-import org.drools.model.operators.SoundsLikeOperator;
-import org.drools.model.operators.StringEndsWithOperator;
-import org.drools.model.operators.StringLengthWithOperator;
-import org.drools.model.operators.StringStartsWithOperator;
+import org.drools.model.operators.*;
 
 public interface Operator<A, B> extends Predicate2<A, B[]> {
 
@@ -61,11 +53,10 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
     String getOperatorName();
 
     class Register {
-        private static final Map<String, Operator> opMap = new HashMap<>();
+        private static final Map<String, Operator<?, ?>> opMap = new HashMap<>();
 
         static {
             register( InOperator.INSTANCE );
-            register( MatchesOperator.INSTANCE );
             register( ContainsOperator.INSTANCE );
             register( ExcludesOperator.INSTANCE );
             register( MemberOfOperator.INSTANCE );
@@ -75,7 +66,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
             register( StringLengthWithOperator.INSTANCE );
         }
 
-        public static void register(Operator operator) {
+        public static void register(Operator<?, ?> operator) {
             opMap.put( operator.getOperatorName(), operator);
         }
 
@@ -83,7 +74,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
             return opMap.containsKey( opName );
         }
 
-        public static Operator getOperator(String opName) {
+        public static Operator<?, ?> getOperator(String opName) {
             return opMap.get( opName );
         }
 

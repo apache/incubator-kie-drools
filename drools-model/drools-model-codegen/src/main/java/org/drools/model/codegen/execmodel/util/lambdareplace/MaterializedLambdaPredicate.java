@@ -22,24 +22,21 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.utils.StringEscapeUtils;
 import org.drools.model.functions.PredicateInformation;
+import org.drools.mvel.parser.ast.expr.RegexExpr;
 
-import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.createSimpleAnnotation;
-import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
+import java.util.Collection;
+import java.util.Optional;
+
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.*;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
@@ -65,6 +62,18 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     }
 
     private void createTestMethod(EnumDeclaration classDeclaration) {
+        Optional.of(lambdaExpr)
+                .map(LambdaExpr::getBody)
+                .filter(Statement::isExpressionStmt)
+                .map(Statement::asExpressionStmt)
+                .map(ExpressionStmt::getChildNodes)
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(RegexExpr.class::isInstance)
+                .map(RegexExpr.class::cast)
+                .findAny()
+                .ifPresent(re -> classDeclaration.addMember(re.getCompiledRegexMember()));
+
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
         methodDeclaration.addAnnotation(createSimpleAnnotation("Override"));
