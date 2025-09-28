@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:included0="DecisionService" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="UnnamedImport" id="_949A13C5-7D20-48D3-908E-46260FB7D957" name="UnnamedImport">
+    <import id="_2905F450-C24C-4DE7-8DCC-DE96832DCECA" name="" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="DecisionService" locationURI="./DecisionService.dmn" />
+    <decision name="Decision" id="_1573892C-4776-4EB0-85C8-51A1C9F65ED0">
+        <variable name="Decision" id="_739F7FAB-E4A3-4A26-9E57-4A43C471F8B7" typeRef="boolean" />
+        <knowledgeRequirement id="_0F2D4D2E-439B-480B-8FF8-249DF9CC35AA">
+            <requiredKnowledge href="DecisionService#_6A46D1F3-8EC2-4105-961D-0D57D880B9CE" />
+        </knowledgeRequirement>
+        <literalExpression id="_C1FB9ACB-0479-4317-B53E-A2BACEC87418" typeRef="boolean" label="Decision">
+            <text>New Decision Service (30) &gt; 25</text>
+        </literalExpression>
+    </decision>
+    <decisionService name="Decision Service" id="_D9A667E3-0B61-4CF0-B4ED-495BBABDAEE2">
+        <variable name="Decision Service" id="_FBDCFAFE-8CB4-4369-832E-84FB6F3CD285" typeRef="boolean" />
+        <outputDecision href="#_1573892C-4776-4EB0-85C8-51A1C9F65ED0" />
+    </decisionService>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_F2A21F05-E48C-4C9B-AE1F-9579DDACAC81" name="Default DRD" useAlternativeInputDataShape="false">
+            <di:extension>
+                <kie:ComponentsWidthsExtension>
+                    <kie:ComponentWidths dmnElementRef="_C1FB9ACB-0479-4317-B53E-A2BACEC87418">
+                        <kie:width>190</kie:width>
+                    </kie:ComponentWidths>
+                </kie:ComponentsWidthsExtension>
+            </di:extension>
+            <dmndi:DMNShape id="_C20FFD53-A04F-48FA-97B5-B4EDE5B1D8EA" dmnElementRef="_D9A667E3-0B61-4CF0-B4ED-495BBABDAEE2" isCollapsed="false" isListedInputData="false">
+                <dc:Bounds x="320" y="60" width="320" height="320" />
+                <dmndi:DMNDecisionServiceDividerLine id="_F1D74E68-13AA-4AA8-824A-0415329A0DC6">
+                    <di:waypoint x="320" y="220" />
+                    <di:waypoint x="640" y="220" />
+                </dmndi:DMNDecisionServiceDividerLine>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_1D40BB50-E172-4837-923D-CD9E8598A8EE" dmnElementRef="_1573892C-4776-4EB0-85C8-51A1C9F65ED0" isCollapsed="false" isListedInputData="false">
+                <dc:Bounds x="400" y="120" width="160" height="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_2074D1BA-8DE4-4068-A361-1B586D3FAD38" dmnElementRef="included0:_6A46D1F3-8EC2-4105-961D-0D57D880B9CE" isCollapsed="false">
+                <dc:Bounds x="1000" y="180" width="320" height="320" />
+                <dmndi:DMNDecisionServiceDividerLine id="_42AF4F5A-2495-4551-9A2A-640E0051B39D">
+                    <di:waypoint x="1000" y="340" />
+                    <di:waypoint x="1320" y="340" />
+                </dmndi:DMNDecisionServiceDividerLine>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_826CC1F0-0701-4AAE-87D8-D484375871A6" dmnElementRef="included0:_009C5383-62F7-4E0F-92F5-54A31445CEFE">
+                <dc:Bounds x="1080" y="240" width="160" height="80" />
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_DD19289C-ACC9-49B6-972E-5CD8FDEE45B5" dmnElementRef="_0F2D4D2E-439B-480B-8FF8-249DF9CC35AA" sourceElement="_2074D1BA-8DE4-4068-A361-1B586D3FAD38" targetElement="_1D40BB50-E172-4837-923D-CD9E8598A8EE">
+                <di:waypoint x="1160" y="340" />
+                <di:waypoint x="560" y="160" />
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>

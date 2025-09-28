@@ -35,7 +35,6 @@ import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.LinkedList;
 
 public class TupleEvaluationUtil {
     public static boolean flushLeftTupleIfNecessary(ReteEvaluator reteEvaluator, SegmentMemory sm, boolean streamMode) {
@@ -130,7 +129,7 @@ public class TupleEvaluationUtil {
 
         ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
         RuleNetworkEvaluator.INSTANCE.outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, activationsManager,
-                new LinkedList<>(),
-                true, rtnPmem.getOrCreateRuleAgendaItem(activationsManager).getRuleExecutor());
+                true,
+                rtnPmem.getOrCreateRuleAgendaItem(activationsManager).getRuleExecutor());
     }
 }
