@@ -45,7 +45,6 @@ import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Calendars;
@@ -455,8 +454,7 @@ public class PhreakTimerNode {
 
         RuleNetworkEvaluator.INSTANCE.outerEval(pmem, sink, bit, tm,
                                                 smems, smemIndex, trgLeftTuples,
-                                                activationsManager, new LinkedList<>(), true,
-                                                pmem.getRuleAgendaItem().getRuleExecutor());
+                                                activationsManager, true, pmem.getRuleAgendaItem().getRuleExecutor());
     }
 
     public static class TimerNodeJobContext

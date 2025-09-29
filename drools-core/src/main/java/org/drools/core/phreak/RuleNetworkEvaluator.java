@@ -123,8 +123,6 @@ public class RuleNetworkEvaluator {
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
 
-        LinkedList<StackEntry> stack = new LinkedList<>();
-
         NetworkNode node;
         Memory nodeMem;
         boolean firstSegmentIsOnlyLia = liaNode == smem.getTipNode();
@@ -144,7 +142,7 @@ public class RuleNetworkEvaluator {
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
-        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, activationsManager, stack, true, executor);
+        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, activationsManager, true, executor);
     }
 
     public static String indent(int size) {
@@ -183,18 +181,14 @@ public class RuleNetworkEvaluator {
                           int smemIndex,
                           TupleSets trgTuples,
                           ActivationsManager activationsManager,
-                          LinkedList<StackEntry> stack,
                           boolean processRian,
                           RuleExecutor executor) {
+
+        LinkedList<StackEntry> stack = new LinkedList<>();
         innerEval(pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, activationsManager, stack, processRian, executor);
-        while (true) {
-            // eval
-            if (!stack.isEmpty()) {
-                StackEntry entry = stack.removeLast();
-                evalStackEntry(entry, stack, executor, activationsManager);
-            } else {
-                return; // stack is empty return;
-            }
+        while (!stack.isEmpty()) {
+            StackEntry entry = stack.removeLast();
+            evalStackEntry(entry, stack, executor, activationsManager);
         }
     }
 
