@@ -78,7 +78,7 @@ public class DMNEventUtilsTest {
         when(event.getResult()).thenReturn(dmnResult);
 
         try (MockedStatic<DMNCompilerImpl> mockedStatic = Mockito.mockStatic(DMNCompilerImpl.class)) {
-            mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(decisionId);
+            mockedStatic.when(() -> DMNCompilerImpl.getReferenceId(dmnElementReference)).thenReturn(decisionId);
             Map<String, Object> resultMap = DMNEventUtils.extractDSOutputDecisionsValues(event);
 
             assertThat(resultMap).isNotNull();
@@ -123,7 +123,7 @@ public class DMNEventUtilsTest {
         when(event.getResult()).thenReturn(dmnResult);
 
         try (MockedStatic<DMNCompilerImpl> mockedStatic = Mockito.mockStatic(DMNCompilerImpl.class)) {
-            mockedStatic.when(() -> DMNCompilerImpl.getId(dmnElementReference)).thenReturn(null);
+            mockedStatic.when(() -> DMNCompilerImpl.getReferenceId(dmnElementReference)).thenReturn(null);
             Assertions.assertThatThrownBy(
                             () -> DMNEventUtils.retrieveDecisionNode(dmnModel, null, "ns"))
                     .isInstanceOf(NoSuchElementException.class);
