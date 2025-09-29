@@ -22,7 +22,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.model.operators.*;
+import org.drools.model.operators.ContainsOperator;
+import org.drools.model.operators.ExcludesOperator;
+import org.drools.model.operators.InOperator;
+import org.drools.model.operators.MatchesOperator;
+import org.drools.model.operators.MemberOfOperator;
+import org.drools.model.operators.SoundsLikeOperator;
+import org.drools.model.operators.StringEndsWithOperator;
+import org.drools.model.operators.StringLengthWithOperator;
+import org.drools.model.operators.StringStartsWithOperator;
 
 public interface Operator<A, B> extends Predicate2<A, B[]> {
 
@@ -57,6 +65,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
 
         static {
             register( InOperator.INSTANCE );
+            register( MatchesOperator.INSTANCE );
             register( ContainsOperator.INSTANCE );
             register( ExcludesOperator.INSTANCE );
             register( MemberOfOperator.INSTANCE );

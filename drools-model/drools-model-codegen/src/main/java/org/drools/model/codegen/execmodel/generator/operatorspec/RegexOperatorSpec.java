@@ -22,10 +22,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.*;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
@@ -36,48 +33,69 @@ import java.util.regex.Pattern;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 
-public class RegexOperatorSpec implements OperatorSpec {
+public class RegexOperatorSpec extends NativeOperatorSpec {
     public static final RegexOperatorSpec INSTANCE = new RegexOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        StringLiteralExpr regexLiteral = pointFreeExpr.getRight().getFirst()
-                .filter(Expression::isStringLiteralExpr)
-                .map(Expression::asStringLiteralExpr)
+        Expression regexExpression = pointFreeExpr.getRight().getFirst()
                 .orElse(new StringLiteralExpr("regexp_failed_to_parse"));
 
-        NameExpr regexFieldName = pointFreeExpr.getRight().getFirst()
-                .filter(Expression::isStringLiteralExpr)
-                .map(Expression::asStringLiteralExpr)
-                .map(StringLiteralExpr::asString)
-                .map(s -> "regexp_" + s.hashCode())
-                .map(NameExpr::new)
-                .orElse(new NameExpr("regexp_failed_to_parse"));
+        if (shouldInlineRegex(pointFreeExpr.getRight())) {
+            return super.getExpression(context, pointFreeExpr, left, expressionTyper);
+        } else {
+            NameExpr regexFieldName = new NameExpr("regexp");
 
-        MethodCallExpr compiledRegexField = new MethodCallExpr(
-                new NameExpr(Pattern.class.getName()), "compile", NodeList.nodeList(regexLiteral)
-        );
+            MethodCallExpr compiledRegexField = new MethodCallExpr(
+                    new NameExpr(Pattern.class.getName()), "compile", NodeList.nodeList(regexExpression)
+            );
 
-        VariableDeclarator variableDeclarator = new VariableDeclarator(
-                toClassOrInterfaceType(Pattern.class),
-                regexFieldName.getName(),
-                compiledRegexField
-        );
+            VariableDeclarator variableDeclarator = new VariableDeclarator(
+                    toClassOrInterfaceType(Pattern.class),
+                    regexFieldName.getName(),
+                    compiledRegexField
+            );
 
-        FieldDeclaration compiledRegexMember = new FieldDeclaration(
-                NodeList.nodeList(Modifier.privateModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
-                variableDeclarator
-        );
+            FieldDeclaration compiledRegexMember = new FieldDeclaration(
+                    NodeList.nodeList(Modifier.privateModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
+                    variableDeclarator
+            );
 
-        MethodCallExpr matchesCallExpr = new MethodCallExpr(
-                new MethodCallExpr(regexFieldName, "matcher", NodeList.nodeList(left.getExpression())),
-                "matches"
-        );
+            BinaryExpr nullCheckExpr = new BinaryExpr(left.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS);
 
-        return new RegexExpr(compiledRegexMember, matchesCallExpr);
+            MethodCallExpr matchesCallExpr = new MethodCallExpr(
+                    new MethodCallExpr(regexFieldName, "matcher", NodeList.nodeList(left.getExpression())),
+                    "matches"
+            );
+
+            BinaryExpr compoundRegexCallExpr = new BinaryExpr(nullCheckExpr, matchesCallExpr, BinaryExpr.Operator.AND);
+
+            return new RegexExpr(compiledRegexMember, compoundRegexCallExpr);
+        }
     }
 
-    @Override
-    public boolean isStatic() {
+    /**
+     * Recursively check if the regexPatternExpression contains a method call on the fact.
+     * If so, we consider it a dynamic regex, and cannot inline the regex expression.
+     *
+     * @param regexPatternExpression the regex pattern expression under analysis
+     * @return true if the regex pattern expression is dynamic, false otherwise
+     */
+    private boolean shouldInlineRegex(NodeList<Expression> regexPatternExpression) {
+        for (Expression expression : regexPatternExpression) {
+            if (expression instanceof MethodCallExpr methodCallExpr) {
+                boolean isInFactScope = methodCallExpr.getScope()
+                        .filter(Expression::isNameExpr)
+                        .map(Expression::asNameExpr)
+                        .map(NameExpr::getNameAsString)
+                        .filter("_this"::equals)
+                        .isPresent();
+
+                return isInFactScope || shouldInlineRegex(methodCallExpr.getArguments());
+            }
+
+            return false;
+        }
+
         return false;
     }
 }

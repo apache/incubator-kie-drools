@@ -21,37 +21,37 @@ package org.drools.mvel.parser.ast.expr;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 
 public final class RegexExpr extends LiteralExpr {
 
-    private final MethodCallExpr matchesCallExpr;
+    private final BinaryExpr matchesEvaluationExpr;
     private final FieldDeclaration compiledRegexMember;
 
     @AllFieldsConstructor
-    public RegexExpr(FieldDeclaration compiledRegexMember, MethodCallExpr matchesCallExpr) {
+    public RegexExpr(FieldDeclaration compiledRegexMember, BinaryExpr matchesEvaluationExpr) {
         super();
 
-        this.matchesCallExpr = matchesCallExpr;
+        this.matchesEvaluationExpr = matchesEvaluationExpr;
         this.compiledRegexMember = compiledRegexMember;
     }
 
     @Override
     public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
         if (v instanceof CloneVisitor) {
-            return (R) new RegexExpr(compiledRegexMember.clone(), matchesCallExpr.clone());
+            return (R) new RegexExpr(compiledRegexMember.clone(), matchesEvaluationExpr.clone());
         } else {
-            return v.visit(matchesCallExpr, arg);
+            return v.visit(matchesEvaluationExpr, arg);
         }
     }
 
     @Override
     public <A> void accept(VoidVisitor<A> v, A arg) {
-        v.visit(matchesCallExpr, arg);
+        v.visit(matchesEvaluationExpr, arg);
     }
 
     @Override
