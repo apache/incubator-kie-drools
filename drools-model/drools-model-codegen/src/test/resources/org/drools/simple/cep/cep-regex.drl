@@ -23,6 +23,6 @@ import org.drools.model.codegen.project.data.Person
 declare Person @role(event) end
 
 rule IsTest when
-  Person( name matches "tst1", name matches "tst2" )
+  Person( name matches "tst1", name matches "tst2" || matches "tst3" )
 then
 end

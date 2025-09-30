@@ -22,6 +22,7 @@ import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.visitor.CloneVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -29,11 +30,11 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 
 public final class RegexExpr extends LiteralExpr {
 
-    private final BinaryExpr matchesEvaluationExpr;
+    private final EnclosedExpr matchesEvaluationExpr;
     private final FieldDeclaration compiledRegexMember;
 
     @AllFieldsConstructor
-    public RegexExpr(FieldDeclaration compiledRegexMember, BinaryExpr matchesEvaluationExpr) {
+    public RegexExpr(FieldDeclaration compiledRegexMember, EnclosedExpr matchesEvaluationExpr) {
         super();
 
         this.matchesEvaluationExpr = matchesEvaluationExpr;

@@ -32,45 +32,64 @@ import org.drools.mvel.parser.ast.expr.RegexExpr;
 import java.util.regex.Pattern;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.util.StringUtils.md5Hash;
 
 public class RegexOperatorSpec extends NativeOperatorSpec {
     public static final RegexOperatorSpec INSTANCE = new RegexOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        Expression regexExpression = pointFreeExpr.getRight().getFirst()
-                .orElse(new StringLiteralExpr("regexp_failed_to_parse"));
-
         if (shouldInlineRegex(pointFreeExpr.getRight())) {
             return super.getExpression(context, pointFreeExpr, left, expressionTyper);
         } else {
-            NameExpr regexFieldName = new NameExpr("regexp");
+            // TODO(?) throw some exception instead of creating regexp_failed_to_parse expressions
+            Expression regexExpression = pointFreeExpr.getRight().getFirst()
+                    .orElse(new StringLiteralExpr("regexp_failed_to_parse"));
 
-            MethodCallExpr compiledRegexField = new MethodCallExpr(
-                    new NameExpr(Pattern.class.getName()), "compile", NodeList.nodeList(regexExpression)
+            NameExpr regexFieldName = new NameExpr("regexp_" + md5Hash(regexExpression.toString()));
+
+            return new RegexExpr(
+                    getClassMemberFieldDeclaration(regexFieldName, regexExpression),
+                    getClassMemberInvocationExpression(pointFreeExpr, left, regexFieldName)
             );
-
-            VariableDeclarator variableDeclarator = new VariableDeclarator(
-                    toClassOrInterfaceType(Pattern.class),
-                    regexFieldName.getName(),
-                    compiledRegexField
-            );
-
-            FieldDeclaration compiledRegexMember = new FieldDeclaration(
-                    NodeList.nodeList(Modifier.privateModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
-                    variableDeclarator
-            );
-
-            BinaryExpr nullCheckExpr = new BinaryExpr(left.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS);
-
-            MethodCallExpr matchesCallExpr = new MethodCallExpr(
-                    new MethodCallExpr(regexFieldName, "matcher", NodeList.nodeList(left.getExpression())),
-                    "matches"
-            );
-
-            BinaryExpr compoundRegexCallExpr = new BinaryExpr(nullCheckExpr, matchesCallExpr, BinaryExpr.Operator.AND);
-
-            return new RegexExpr(compiledRegexMember, compoundRegexCallExpr);
         }
+    }
+
+    private EnclosedExpr getClassMemberInvocationExpression(PointFreeExpr pointFreeExpr, TypedExpression left, NameExpr regexFieldName) {
+        // we need to cast the left expression to CharSequence, otherwise it might fail in cases of missing type safety
+        // e.g. test method parameters (_this) is of a raw type Map
+        EnclosedExpr typeSafeStringToMatch = new EnclosedExpr(new CastExpr(toClassOrInterfaceType(CharSequence.class), left.getExpression()));
+
+        MethodCallExpr matchesCallExpr = new MethodCallExpr(
+                new MethodCallExpr(regexFieldName, "matcher", NodeList.nodeList(typeSafeStringToMatch)),
+                "matches"
+        );
+
+        // null string should not match
+        BinaryExpr compoundRegexCallExpr = new BinaryExpr(
+                new BinaryExpr(left.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS),
+                pointFreeExpr.isNegated() ? new UnaryExpr(matchesCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT) : matchesCallExpr,
+                BinaryExpr.Operator.AND
+        );
+
+        return new EnclosedExpr(compoundRegexCallExpr);
+    }
+
+    private FieldDeclaration getClassMemberFieldDeclaration(NameExpr regexFieldName, Expression regexExpression) {
+
+        MethodCallExpr compiledRegexField = new MethodCallExpr(
+                new NameExpr(Pattern.class.getName()), "compile", NodeList.nodeList(regexExpression)
+        );
+
+        VariableDeclarator variableDeclarator = new VariableDeclarator(
+                toClassOrInterfaceType(Pattern.class),
+                regexFieldName.getName(),
+                compiledRegexField
+        );
+
+        return new FieldDeclaration(
+                NodeList.nodeList(Modifier.privateModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
+                variableDeclarator
+        );
     }
 
     /**

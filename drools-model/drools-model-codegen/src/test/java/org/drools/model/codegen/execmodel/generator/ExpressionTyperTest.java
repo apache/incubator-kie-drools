@@ -119,7 +119,7 @@ public class ExpressionTyperTest {
         final PointFreeExpr expression = new PointFreeExpr(null, new NameExpr("name"), NodeList.nodeList(new StringLiteralExpr("[A-Z]")), new SimpleName("matches"), false, null, null, null, null);
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
         final TypedExpression actual = typedExpressionResult.getTypedExpression().get();
-        final TypedExpression expected = typedResult("_this.getName() != null && regexp.matcher(_this.getName()).matches()", String.class);
+        final TypedExpression expected = typedResult("(_this.getName() != null && regexp_49CE5AB50F4FBCBE25DB1AF1EC5CACE2.matcher(((java.lang.CharSequence) _this.getName())).matches())", String.class);
         assertThat(actual).isEqualTo(expected);
     }
 

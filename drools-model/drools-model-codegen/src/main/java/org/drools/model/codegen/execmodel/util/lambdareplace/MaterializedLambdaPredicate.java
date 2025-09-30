@@ -19,6 +19,7 @@
 package org.drools.model.codegen.execmodel.util.lambdareplace;
 
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -34,6 +35,7 @@ import org.drools.model.functions.PredicateInformation;
 import org.drools.mvel.parser.ast.expr.RegexExpr;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.*;
@@ -62,17 +64,9 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     }
 
     private void createTestMethod(EnumDeclaration classDeclaration) {
-        Optional.of(lambdaExpr)
-                .map(LambdaExpr::getBody)
-                .filter(Statement::isExpressionStmt)
-                .map(Statement::asExpressionStmt)
-                .map(ExpressionStmt::getChildNodes)
-                .stream()
-                .flatMap(Collection::stream)
-                .filter(RegexExpr.class::isInstance)
-                .map(RegexExpr.class::cast)
-                .findAny()
-                .ifPresent(re -> classDeclaration.addMember(re.getCompiledRegexMember()));
+        collectRegexExpressions(lambdaExpr).stream()
+                .map(RegexExpr::getCompiledRegexMember)
+                .forEach(classDeclaration::addMember);
 
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
@@ -83,6 +77,22 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
         ExpressionStmt clone = (ExpressionStmt) lambdaExpr.getBody().clone();
         methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(clone.getExpression()))));
+    }
+
+    /**
+     * recursively traverse the node tree and collect all RegexExpr
+     * @param node
+     * @return
+     */
+    private Collection<RegexExpr> collectRegexExpressions(Node node) {
+        if (node instanceof RegexExpr) {
+            return Collections.singletonList((RegexExpr) node);
+        } else {
+            return node.getChildNodes().stream()
+                    .map(this::collectRegexExpressions)
+                    .flatMap(Collection::stream)
+                    .toList();
+        }
     }
 
     private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
