@@ -70,9 +70,9 @@
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
-    <version.io.micrometer>1.14.10</version.io.micrometer>
+    <version.io.micrometer>1.14.11</version.io.micrometer>
     <version.io.quarkus>3.20.2.2</version.io.quarkus>
-    <version.io.netty>4.1.126.Final</version.io.netty>
+    <version.io.netty>4.1.127.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.11</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
@@ -100,7 +100,7 @@
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.19.Final</version.org.infinispan>
+    <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
@@ -109,8 +109,8 @@
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
     <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.activation>2.0.1</version.jakarta.activation>
-    <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
+    <version.jakarta.activation>2.0.3</version.jakarta.activation>
+    <version.jakarta.activation-api>2.1.4</version.jakarta.activation-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
@@ -142,7 +142,7 @@
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.org.xmlunit>2.10.3</version.org.xmlunit>
+    <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <!-- therefore the property is rewritten in that repository parent -->
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
