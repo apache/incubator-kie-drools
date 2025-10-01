@@ -68,6 +68,8 @@ public class GraphQLUtils {
     private static final String COMPLETED = "completed";
     private static final String POTENTIAL_GROUPS = "potentialGroups";
     private static final String POTENTIAL_USERS = "potentialUsers";
+    private static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
+    private static final String ROOT_PROCESS_ID = "rootProcessId";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLUtils.class);
     private static final Map<Class<?>, String> QUERY_FIELDS = new HashMap<>();
@@ -200,6 +202,14 @@ public class GraphQLUtils {
 
     public static String getUserTaskInstanceByIdAndPotentialUsers(String id, List<String> potentialUsers) throws Exception {
         return getUserTaskInstanceWithArray("UserTaskInstanceByIdAndPotentialUsers", potentialUsers, POTENTIAL_USERS, Map.of(ID, id));
+    }
+
+    public static String getUserTaskInstanceByIdAndRootProcessInstanceId(String id, String rootProcessInstanceId) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndRootProcessInstanceId", Map.of(ID, id, ROOT_PROCESS_INSTANCE_ID, rootProcessInstanceId));
+    }
+
+    public static String getUserTaskInstanceByIdAndRootProcessId(String id, String rootProcessId) {
+        return getUserTaskInstanceQuery("UserTaskInstanceByIdAndRootProcessId", Map.of(ID, id, ROOT_PROCESS_ID, rootProcessId));
     }
 
     public static String getJobById(String id) {

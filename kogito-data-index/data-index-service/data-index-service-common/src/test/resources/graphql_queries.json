@@ -107,6 +107,22 @@
     "query": "query ( $id: String, $potentialUsers: [String!] ) { UserTaskInstances( where: {  id: {  equal : $id }, potentialUsers: { containsAny: $potentialUsers } } ){ %s } }",
     "variables": {}
   },
+  "UserTaskInstanceByIdAndRootProcessInstanceId": {
+    "query": "query ( $id: String, $rootProcessInstanceId: String ) { UserTaskInstances( where: {  id: {  equal : $id }, rootProcessInstanceId: { equal: $rootProcessInstanceId } } ){ %s } }",
+    "variables": {}
+  },
+  "UserTaskInstanceByIdAndRootProcessId": {
+    "query": "query ( $id: String, $rootProcessId: String ) { UserTaskInstances( where: {  id: {  equal : $id }, rootProcessId: { equal: $rootProcessId } } ){ %s } }",
+    "variables": {}
+  },
+  "UserTaskInstanceByIdAndEndpoint": {
+    "query": "query ( $id: String, $endpoint: String ) { UserTaskInstances( where: {  id: {  equal : $id }, endpoint: { equal: $endpoint } } ){ %s } }",
+    "variables": {}
+  },
+  "UserTaskInstanceByIdAndExternalReferenceId": {
+    "query": "query ( $id: String, $externalReferenceId: String ) { UserTaskInstances( where: {  id: {  equal : $id }, externalReferenceId: { equal: $externalReferenceId } } ){ %s } }",
+    "variables": {}
+  },
   "JobById": {
     "query": "query ( $id: String ) { Jobs( where: {  id: {  equal : $id } } ){ %s } }",
     "variables": {}

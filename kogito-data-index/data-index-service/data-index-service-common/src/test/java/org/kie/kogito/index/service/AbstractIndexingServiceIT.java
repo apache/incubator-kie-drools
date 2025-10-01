@@ -405,8 +405,10 @@ public abstract class AbstractIndexingServiceIT {
         String state = "InProgress";
         String processId = "deals";
         String processInstanceId = UUID.randomUUID().toString();
+        String rootProcessId = "hiring";
+        String rootProcessInstanceId = UUID.randomUUID().toString();
 
-        UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state);
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(getUserTaskInstanceById(taskId), event);
@@ -418,18 +420,18 @@ public abstract class AbstractIndexingServiceIT {
                 event);
 
         state = "Completed";
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "kogito", "Completed");
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, "kogito", "Completed");
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(
                 getUserTaskInstanceByIdAndCompleted(taskId, formatDateTime(event.getData().getEventDate())), event);
 
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "admin", "Completed");
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, "admin", "Completed");
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(getUserTaskInstanceByIdAndActualOwner(taskId, "admin"), event);
 
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, null, "Completed");
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, null, "Completed");
         LOGGER.info("event {}", event);
         indexUserTaskCloudEvent(event);
 
@@ -496,6 +498,8 @@ public abstract class AbstractIndexingServiceIT {
                         .body("data.UserTaskInstances[0].actualOwner", event.getData().getActualOwner() != null ? is(event.getData().getActualOwner()) : anything())
                         .body("data.UserTaskInstances[0].started", anything())
                         .body("data.UserTaskInstances[0].lastUpdate", anything())
+                        .body("data.UserTaskInstances[0].rootProcessId", is(event.getKogitoRootProcessId()))
+                        .body("data.UserTaskInstances[0].rootProcessInstanceId", is(event.getKogitoRootProcessInstanceId()))
                         .body("data.UserTaskInstances[0].endpoint",
                                 is(event.getSource().toString() + "/" + event.getData().getProcessInstanceId() + "/" + event.getData().getUserTaskName() + "/"
                                         + event.getData().getExternalReferenceId())));
