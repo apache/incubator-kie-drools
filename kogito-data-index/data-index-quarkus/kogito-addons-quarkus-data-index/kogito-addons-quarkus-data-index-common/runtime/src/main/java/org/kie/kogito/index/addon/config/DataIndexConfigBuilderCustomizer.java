@@ -18,22 +18,15 @@
  */
 package org.kie.kogito.index.addon.config;
 
-import java.util.Optional;
+import io.smallrye.config.SmallRyeConfigBuilder;
+import io.smallrye.config.SmallRyeConfigBuilderCustomizer;
 
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import io.smallrye.config.ConfigMapping;
+public class DataIndexConfigBuilderCustomizer implements SmallRyeConfigBuilderCustomizer {
 
-@ConfigMapping(prefix = "kogito.data-index")
-@ConfigRoot(phase = ConfigPhase.BUILD_TIME)
-public interface DataIndexBuildConfig {
-
-    /**
-     * Configures whether to use Reactive or Blocking behaviour for the RouterProducer and EventConsumer components.
-     * If the property is set, and has the value true, blocking behaviour is configured, and the
-     * BlockingGraphqlRouterProducer and BlockingMessagingEventConsumer are used.
-     * In any other case, the ReactiveGraphqlRouterProducer and ReactiveMessagingEventConsumer are used.
-     */
-    Optional<Boolean> blocking();
-
+    @Override
+    public void configBuilder(SmallRyeConfigBuilder builder) {
+        // Align with quarkus to avoid the validation issue when we have runtime and build-time configs in the same
+        // namespace. https://github.com/quarkusio/quarkus/blob/265a4328f8195d9c2ef4fbf32f41eb23253479b7/core/runtime/src/main/java/io/quarkus/runtime/configuration/QuarkusConfigBuilderCustomizer.java#L113
+        builder.withMappingIgnore("kogito.data-index.**");
+    }
 }

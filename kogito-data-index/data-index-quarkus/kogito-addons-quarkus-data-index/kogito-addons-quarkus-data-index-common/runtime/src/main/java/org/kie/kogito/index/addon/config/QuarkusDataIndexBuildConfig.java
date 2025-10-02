@@ -16,27 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.job.sink.recipient;
+package org.kie.kogito.index.addon.config;
 
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigMapping(prefix = "kogito.job.recipient.sink")
-@ConfigRoot(phase = ConfigPhase.RUN_TIME)
-public interface JobSinkRecipientRuntimeConfiguration {
+/**
+ * We keep this class for backward compatibility purposes.
+ * Avoid using quarkus.kogito.data-index prefixed properties unless there's a strong reason.
+ * see: DataIndexBuildConfig.
+ */
+@ConfigMapping(prefix = "quarkus.kogito.data-index")
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+public interface QuarkusDataIndexBuildConfig {
 
     /**
-     * Default timeout to execute HTTP requests for the SinkRecipient when the Job's timeout is not configured.
+     * If GraphQL UI should be enabled. By default, this is only included when the application is running in dev mode.
      */
-    @WithDefault("5000")
-    long timeoutInMillis();
+    @WithName("graphql.ui.always-include")
+    @WithDefault("false")
+    boolean graphqlUiAlwaysInclude();
 
-    /**
-     * Max accepted timeout to execute HTTP requests for the SinkRecipient when the Job's timeout is configured.
-     * Attempts to surpass this value will result in a validation error at Job creation time.
-     */
-    @WithDefault("60000")
-    long maxTimeoutInMillis();
 }

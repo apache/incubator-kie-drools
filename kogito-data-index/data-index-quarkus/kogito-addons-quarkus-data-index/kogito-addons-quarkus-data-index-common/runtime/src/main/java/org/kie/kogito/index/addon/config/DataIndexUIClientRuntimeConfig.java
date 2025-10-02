@@ -18,23 +18,28 @@
  */
 package org.kie.kogito.index.addon.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(prefix = "kogito", name = "dataindex", phase = ConfigPhase.RUN_TIME)
-public class DataIndexUIClientRuntimeConfig {
-
-    /**
-     * Data Index HTTP URL
-     */
-    @ConfigItem(name = "http.url", defaultValue = "http://localhost:${quarkus.http.port}")
-    public String dataIndexHttpUrl;
+@ConfigMapping(prefix = "kogito.dataindex")
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+public interface DataIndexUIClientRuntimeConfig {
 
     /**
-     * Data Index WS URL
+     * Data Index HTTP URL.
      */
-    @ConfigItem(name = "ws.url", defaultValue = "ws://localhost:${quarkus.http.port}")
-    public String dataIndexWebsocketUrl;
+    @WithName("http.url")
+    @WithDefault("http://localhost:${quarkus.http.port}")
+    String dataIndexHttpUrl();
+
+    /**
+     * Data Index WS URL.
+     */
+    @WithName("ws.url")
+    @WithDefault("ws://localhost:${quarkus.http.port}")
+    String dataIndexWebsocketUrl();
 
 }

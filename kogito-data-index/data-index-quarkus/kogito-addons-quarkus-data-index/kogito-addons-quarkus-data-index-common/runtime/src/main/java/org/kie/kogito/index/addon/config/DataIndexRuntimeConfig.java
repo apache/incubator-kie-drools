@@ -20,17 +20,50 @@ package org.kie.kogito.index.addon.config;
 
 import java.util.Optional;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(prefix = "kogito", name = "data-index", phase = ConfigPhase.RUN_TIME)
-public class DataIndexRuntimeConfig {
+@ConfigMapping(prefix = "kogito.data-index")
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+public interface DataIndexRuntimeConfig {
 
     /**
-     * Data Index URL
+     * Data Index URL.
      */
-    @ConfigItem(name = "url")
-    public Optional<String> dataIndexUrl;
+    Optional<String> url();
+
+    /**
+     * Path to the Data Index web application if any.
+     */
+    @WithName("ui.path")
+    Optional<String> uiPath();
+
+    /**
+     * Path for publishing the Graphql UI.
+     */
+    @WithName("vertx-graphql.ui.path")
+    @WithDefault("/graphiql")
+    String graphqlUIPath();
+
+    /**
+     * Graphql UI tenant.
+     */
+    @WithName("vertx-graphql.ui.tenant")
+    @WithDefault("web-app-tenant")
+    String graphqlUITenant();
+
+    /**
+     * Domain Objects indexing.
+     */
+    @WithDefault("true")
+    boolean domainIndexing();
+
+    /**
+     * Availability health check enabling.
+     */
+    Optional<Boolean> healthEnabled();
 
 }

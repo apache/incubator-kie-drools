@@ -18,75 +18,119 @@
  */
 package org.kie.kogito.addons.quarkus.jobs.service.embedded;
 
-import io.quarkus.runtime.annotations.ConfigItem;
+import java.util.Optional;
+
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(prefix = "kogito", name = "jobs-service", phase = ConfigPhase.RUN_TIME)
-public class KogitoAddonsQuarkusJobsServiceEmbeddedRuntimeConfig {
+@ConfigMapping(prefix = "kogito.jobs-service", namingStrategy = ConfigMapping.NamingStrategy.VERBATIM)
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+public interface KogitoAddonsQuarkusJobsServiceEmbeddedRuntimeConfig {
+
+    /**
+     * Embedded jobs service url.
+     */
+    String url();
 
     /**
      * The current chunk size in minutes the scheduler handles, it is used to keep a limited number of jobs scheduled
      * in the in-memory scheduler.
      */
-    @ConfigItem(name = "schedulerChunkInMinutes", defaultValue = "10")
-    public long schedulerChunkInMinutes;
+    @WithDefault("10")
+    long schedulerChunkInMinutes();
 
     /**
      * Minimal delay used by scheduler before firing any job.
      */
-    @ConfigItem(name = "schedulerMinTimerDelayInMillis", defaultValue = "1000")
-    public long schedulerMinTimerDelayInMillis;
+    @WithDefault("1000")
+    long schedulerMinTimerDelayInMillis();
 
     /**
      * The interval the jobs loading method runs to fetch the persisted jobs from the repository.
      */
-    @ConfigItem(name = "loadJobIntervalInMinutes", defaultValue = "10")
-    public long loadJobIntervalInMinutes;
+    @WithDefault("10")
+    long loadJobIntervalInMinutes();
 
     /**
      * The interval based on the current time the jobs loading method uses to fetch jobs "FROM (now -
      * loadJobFromCurrentTimeIntervalInMinutes) TO schedulerChunkInMinutes
      */
-    @ConfigItem(name = "loadJobFromCurrentTimeIntervalInMinutes", defaultValue = "60")
-    public long loadJobFromCurrentTimeIntervalInMinutes;
+    @WithDefault("60")
+    long loadJobFromCurrentTimeIntervalInMinutes();
 
     /**
      * Maximum amount of time the jobs service will be retrying to get a successful execution for a job.
      */
-    @ConfigItem(name = "maxIntervalLimitToRetryMillis", defaultValue = "60000")
-    public long maxIntervalLimitToRetryMillis;
+    @WithDefault("60000")
+    long maxIntervalLimitToRetryMillis();
 
     /**
      * Delay between retries when a job execution fails, and it must be retried.
      */
-    @ConfigItem(name = "backoffRetryMillis", defaultValue = "1000")
-    public long backoffRetryMillis;
+    @WithDefault("1000")
+    long backoffRetryMillis();
 
     /**
      * Flag to allow and force a job with expirationTime in the past to be executed immediately. If false an
      * exception will be thrown.
      */
-    @ConfigItem(name = "forceExecuteExpiredJobs", defaultValue = "true")
-    public boolean forceExecuteExpiredJobs;
+    @WithDefault("true")
+    boolean forceExecuteExpiredJobs();
 
     /**
      * Flag to allow that jobs that where timed-out when the jobs service was down, must be fired immediately at the
      * jobs service next startup.
      */
-    @ConfigItem(name = "forceExecuteExpiredJobsOnServiceStart", defaultValue = "true")
-    boolean forceExecuteExpiredJobsOnServiceStart;
+    @WithDefault("true")
+    boolean forceExecuteExpiredJobsOnServiceStart();
 
     /**
      * Number of retries configured for the periodic jobs loading procedure. Every time the procedure is started this
      * value is considered.
      */
-    @ConfigItem(name = "loadJobRetries", defaultValue = "3")
-    int loadJobRetries;
+    @WithDefault("3")
+    int loadJobRetries();
 
     /**
      * Error strategy to apply when the periodic jobs loading procedure has exceeded the jobLoadReties.
      */
-    @ConfigItem(name = "loadJobErrorStrategy", defaultValue = "NONE")
-    String loadJobErrorStrategy;
+    @WithDefault("NONE")
+    String loadJobErrorStrategy();
+
+    /**
+     * Heartbeat interval for the JobsServiceInstanceManager.
+     */
+    @WithName("management.heartbeat.interval-in-seconds")
+    @WithDefault("1")
+    int heardBeatIntervalInSeconds();
+
+    /**
+     * Heartbeat expiration time for the JobsServiceInstanceManager.
+     */
+    @WithName("management.heartbeat.expiration-in-seconds")
+    @WithDefault("10")
+    int heartbeatExpirationInSeconds();
+
+    /**
+     * Jobs Service id for the JobsServiceInstanceManager.
+     */
+    @WithName("management.heartbeat.management-id")
+    @WithDefault("kogito-jobs-service-leader")
+    String leaderManagementId();
+
+    /**
+     * Leader check interval for the JobsServiceInstanceManager.
+     */
+    @WithName("management.leader-check.interval-in-seconds")
+    @WithDefault("1")
+    int leaderCheckIntervalInSeconds();
+
+    /**
+     * Availability health check enabling.
+     */
+    @WithName("health-enabled")
+    Optional<Boolean> healthEnabled();
 }
