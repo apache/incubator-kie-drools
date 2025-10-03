@@ -21,7 +21,6 @@ package org.drools.mvel.parser.ast.expr;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.visitor.CloneVisitor;
@@ -30,15 +29,15 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 
 public final class RegexExpr extends LiteralExpr {
 
-    private final EnclosedExpr matchesEvaluationExpr;
     private final FieldDeclaration compiledRegexMember;
+    private final EnclosedExpr matchesEvaluationExpr;
 
     @AllFieldsConstructor
     public RegexExpr(FieldDeclaration compiledRegexMember, EnclosedExpr matchesEvaluationExpr) {
         super();
 
-        this.matchesEvaluationExpr = matchesEvaluationExpr;
         this.compiledRegexMember = compiledRegexMember;
+        this.matchesEvaluationExpr = matchesEvaluationExpr;
     }
 
     @Override

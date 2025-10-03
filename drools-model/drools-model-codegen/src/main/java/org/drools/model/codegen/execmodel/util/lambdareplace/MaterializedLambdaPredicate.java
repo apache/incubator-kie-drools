@@ -27,7 +27,6 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.utils.StringEscapeUtils;
@@ -36,7 +35,6 @@ import org.drools.mvel.parser.ast.expr.RegexExpr;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.*;
 
@@ -66,6 +64,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     private void createTestMethod(EnumDeclaration classDeclaration) {
         collectRegexExpressions(lambdaExpr).stream()
                 .map(RegexExpr::getCompiledRegexMember)
+                .distinct()
                 .forEach(classDeclaration::addMember);
 
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);

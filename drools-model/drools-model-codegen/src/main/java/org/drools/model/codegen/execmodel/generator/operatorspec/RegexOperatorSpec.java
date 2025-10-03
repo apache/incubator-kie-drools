@@ -22,7 +22,15 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
@@ -38,12 +46,9 @@ public class RegexOperatorSpec extends NativeOperatorSpec {
     public static final RegexOperatorSpec INSTANCE = new RegexOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        if (shouldInlineRegex(pointFreeExpr.getRight())) {
-            return super.getExpression(context, pointFreeExpr, left, expressionTyper);
-        } else {
-            // TODO(?) throw some exception instead of creating regexp_failed_to_parse expressions
+        if (canPrecompileRegex(pointFreeExpr.getRight())) {
             Expression regexExpression = pointFreeExpr.getRight().getFirst()
-                    .orElse(new StringLiteralExpr("regexp_failed_to_parse"));
+                    .orElseThrow(() -> new IllegalStateException("Failed to parse regex expression"));
 
             NameExpr regexFieldName = new NameExpr("regexp_" + md5Hash(regexExpression.toString()));
 
@@ -51,6 +56,8 @@ public class RegexOperatorSpec extends NativeOperatorSpec {
                     getClassMemberFieldDeclaration(regexFieldName, regexExpression),
                     getClassMemberInvocationExpression(pointFreeExpr, left, regexFieldName)
             );
+        } else {
+            return super.getExpression(context, pointFreeExpr, left, expressionTyper);
         }
     }
 
@@ -92,29 +99,10 @@ public class RegexOperatorSpec extends NativeOperatorSpec {
         );
     }
 
-    /**
-     * Recursively check if the regexPatternExpression contains a method call on the fact.
-     * If so, we consider it a dynamic regex, and cannot inline the regex expression.
-     *
-     * @param regexPatternExpression the regex pattern expression under analysis
-     * @return true if the regex pattern expression is dynamic, false otherwise
-     */
-    private boolean shouldInlineRegex(NodeList<Expression> regexPatternExpression) {
-        for (Expression expression : regexPatternExpression) {
-            if (expression instanceof MethodCallExpr methodCallExpr) {
-                boolean isInFactScope = methodCallExpr.getScope()
-                        .filter(Expression::isNameExpr)
-                        .map(Expression::asNameExpr)
-                        .map(NameExpr::getNameAsString)
-                        .filter("_this"::equals)
+    private boolean canPrecompileRegex(NodeList<Expression> regexPatternExpression) {
+        return regexPatternExpression.size() == 1 &&
+                regexPatternExpression.getFirst()
+                        .filter(StringLiteralExpr.class::isInstance)
                         .isPresent();
-
-                return isInFactScope || shouldInlineRegex(methodCallExpr.getArguments());
-            }
-
-            return false;
-        }
-
-        return false;
     }
 }
