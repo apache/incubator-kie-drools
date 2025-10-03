@@ -166,11 +166,8 @@ public class PhreakBranchNode {
             if (branchTuples.mainLeftTuple != null) {
                 normalizeStagedTuples( stagedLeftTuples, branchTuples.mainLeftTuple );
 
-                if (breaking && !NodeTypeEnums.isTerminalNode(branchTuples.mainLeftTuple.getSink())) {
-                    // child exist, new one does not, so delete
-                    trgLeftTuples.addDelete(branchTuples.mainLeftTuple);
-                } else {
-                    // child exist, new one does, so update
+                if (!breaking) {
+                    // default consequence will also be executed
                     trgLeftTuples.addUpdate(branchTuples.mainLeftTuple);
                 }
             } else if (!breaking) {
