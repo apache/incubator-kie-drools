@@ -39,7 +39,6 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -114,7 +113,6 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
-import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -253,7 +251,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private boolean tmsEnabled;
     
-    private Map<QuerySpecification, QueryResultsImpl> queryCache = new HashMap<>();
     
 
     // ------------------------------------------------------------
@@ -645,14 +642,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                               arguments,
                                                               getQueryListenerInstance(),
                                                               false );
-            
-            
-            QuerySpecification querySpec = new QuerySpecification(queryName, arguments);
-            
-            
-            if (queryCache.containsKey(querySpec)) {
-            	return queryCache.get(querySpec);
-            }
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
                                                                           null,
@@ -679,7 +668,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
             
-            queryCache.put(querySpec, queryResultsImpl);
 			return queryResultsImpl;
         } finally {
             if (!calledFromRHS) {
