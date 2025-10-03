@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -265,10 +267,17 @@ public class Consequence {
         }
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
+            List<String> ordered = existingDecls.stream().filter(d -> containsWord(d, consequenceString)).sorted((a, b) -> Integer.compare(consequenceString.indexOf(a), consequenceString.indexOf(b))).collect(Collectors.toList());
+            return new LinkedHashSet<>(ordered);
         } else if (ruleConsequence != null) {
-            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+            List<String> rhsNamesInOrder = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
+            LinkedHashSet<String> ordered = new LinkedHashSet<>();
+            for (String n : rhsNamesInOrder) {
+                if (existingDecls.contains(n)) {
+                    ordered.add(n);
+                }
+            }
+            return ordered;
         }
 
         throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
