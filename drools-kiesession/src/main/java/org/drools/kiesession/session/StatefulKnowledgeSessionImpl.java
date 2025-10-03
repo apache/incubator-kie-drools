@@ -39,7 +39,6 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -149,6 +148,8 @@ import static org.drools.base.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.util.ClassUtils.rawType;
 
+
+
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatefulKnowledgeSession,
@@ -249,6 +250,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Consumer<PropagationEntry> workingMemoryActionListener;
 
     private boolean tmsEnabled;
+    
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -660,10 +663,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             this.handleFactory.destroyFactHandle( handle);
 
-            return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
+            QueryResultsImpl queryResultsImpl = new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
+            
+			return queryResultsImpl;
         } finally {
             if (!calledFromRHS) {
                 this.lock.unlock();
