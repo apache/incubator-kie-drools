@@ -20,12 +20,15 @@ package org.drools.model.codegen.execmodel.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 
 import com.github.javaparser.ParseProblemException;
@@ -257,18 +260,48 @@ public class Consequence {
     }
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
-        Set<String> existingDecls = new HashSet<>();
-        existingDecls.addAll(context.getAvailableBindings());
-        existingDecls.addAll(context.getGlobals().keySet());
-        if (context.getRuleUnitDescr() != null) {
-            existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
+        final List<String> orderedCandidates = new ArrayList<>();
+        context.getAllDeclarations().forEach(d -> orderedCandidates.add(d.getBindingId()));
+
+        final Map<String, java.lang.reflect.Type> globals = context.getGlobals();
+        if (globals != null && !globals.isEmpty()) {
+            final List<String> g = new ArrayList<>(globals.keySet());
+            Collections.sort(g);
+            orderedCandidates.addAll(g);
         }
 
+        if (context.getRuleUnitDescr() != null && context.getRuleUnitDescr().getUnitVars() != null) {
+            final List<String> u = new ArrayList<>(context.getRuleUnitDescr().getUnitVars());
+            Collections.sort(u);
+            orderedCandidates.addAll(u);
+        }
+
+        // MVEL dialect: we don't have a Java AST, so perform a conservative word-boundary text check.
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
-        } else if (ruleConsequence != null) {
-            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+            final LinkedHashSet<String> used = new LinkedHashSet<>();
+            for (String id : orderedCandidates) {
+                if (containsWord(id, consequenceString)) {
+                    used.add(id); // preserves canonical order
+                }
+            }
+            return used;
+        }
+
+        // JAVA dialect: mine simple-name usages from the parsed Right-Hand Side Abstract Syntax Tree, then filter using the canonical order.
+        else if (ruleConsequence != null) {
+            final Set<String> namesInRHS = ruleConsequence.findAll(NameExpr.class)
+                    .stream()
+                    .map(NameExpr::getNameAsString)
+                    .collect(Collectors.toSet());
+
+            // Preserve canonical order while retaining only those actually used in the RHS.
+            final LinkedHashSet<String> used = new LinkedHashSet<>();
+            for (String id : orderedCandidates) {
+                if (namesInRHS.contains(id)) {
+                    used.add(id);
+                }
+            }
+            return used;
         }
 
         throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
