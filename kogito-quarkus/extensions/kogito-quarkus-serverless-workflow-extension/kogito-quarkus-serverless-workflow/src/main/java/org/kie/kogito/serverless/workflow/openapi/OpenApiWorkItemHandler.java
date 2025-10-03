@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.openapi;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -33,20 +35,27 @@ import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.internal.utils.CaseInsensitiveSet;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.restclient.runtime.RestClientBuilderFactory;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler {
 
     private static final Collection<String> excludedHeaders = new CaseInsensitiveSet("User-Agent", "Host", "Content-Length", "Accept", "Accept-Encoding", "Connection");
+
+    private static final Logger logger = LoggerFactory.getLogger(OpenApiWorkItemHandler.class);
 
     static String CONFIG_KEY_SUFFIX_PROP = "openApiConfigKeySuffix";
 
@@ -69,12 +78,27 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
                     });
                 }
             }
-        }, Integer.MIN_VALUE).build(clazz);
+        }, Integer.MIN_VALUE).register((ResponseExceptionMapper) response -> new WebApplicationException(fromResponse(response), response.getStatus())).build(clazz);
         try {
             return internalExecute(ref, parameters);
         } catch (WebApplicationException ex) {
             throw new WorkItemExecutionException(Integer.toString(ex.getResponse().getStatus()), ex.getMessage());
         }
+    }
+
+    private String fromResponse(Response response) {
+        Object entity = response.getEntity();
+        if (entity instanceof ByteArrayInputStream input) {
+            if (MediaType.APPLICATION_JSON_TYPE.equals(response.getMediaType())) {
+                try {
+                    return ObjectMapperFactory.get().readTree(input).toString();
+                } catch (IOException e) {
+                    logger.warn("Error parsing json error response {}", e.toString());
+                }
+            }
+            return new String(input.readAllBytes());
+        }
+        return entity != null ? entity.toString() : response.getStatusInfo().getReasonPhrase();
     }
 
     private Optional<String> calculatedConfigKey(KogitoWorkItem workItem) {
