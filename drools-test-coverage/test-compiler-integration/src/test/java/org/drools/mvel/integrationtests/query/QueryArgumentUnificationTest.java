@@ -25,14 +25,16 @@ public class QueryArgumentUnificationTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueriesWithVariableUnification(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "";
-        str += "package org.drools.mvel.compiler.test  \n";
-        str += "import org.drools.mvel.compiler.Person \n";
-        str += "query peeps( String $name, String $likes, int $age ) \n";
-        str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
-        str += "end\n";
+    	String drl = """
+		    package org.drools.mvel.compiler.test  
+		    import org.drools.mvel.compiler.Person 
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+		    query peeps(String $name, String $likes, int $age) 
+		        $p : Person($name := name, $likes := likes, $age := age) 
+		    end
+		    """;
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         Person p1 = new Person("darth", "stilton", 100);
@@ -40,94 +42,98 @@ public class QueryArgumentUnificationTest {
         Person p3 = new Person("luke", "brie", 300);
         Person p4 = new Person("bobba", "cheddar", 300);
 
-        ksession.insert( p1 );
-        ksession.insert( p2 );
-        ksession.insert( p3 );
-        ksession.insert( p4 );
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+        ksession.insert(p4);
 
         QueryResults results = ksession.getQueryResults("peeps", Variable.v, Variable.v, Variable.v);
         assertThat(results).hasSize(4);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba","darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba","darth");
 
         results = ksession.getQueryResults("peeps", Variable.v, Variable.v, 300);
         assertThat(results).hasSize(3);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba");
 
         results = ksession.getQueryResults("peeps", Variable.v, "stilton", 300);
         assertThat(results).hasSize(1);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("yoda");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("yoda");
         
         results = ksession.getQueryResults("peeps", Variable.v, "stilton", Variable.v);
         assertThat(results).hasSize(2);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("yoda", "darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("yoda", "darth");
 
         results = ksession.getQueryResults("peeps", "darth", Variable.v, Variable.v);
         assertThat(results).hasSize(1);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("darth");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueriesWithVariableUnificationOnPatterns(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "";
-        str += "package org.drools.mvel.compiler.test  \n";
-        str += "import org.drools.mvel.compiler.Person \n";
-        str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
-        str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
-        str += "end\n";
+    	String drl = """
+		    package org.drools.mvel.compiler.test  
+		    import org.drools.mvel.compiler.Person 
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+		    query peeps(Person $p, String $name, String $likes, int $age) 
+		        $p := Person($name := name, $likes := likes, $age := age) 
+		    end
+		    """;
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        Person p1 = new Person( "darth", "stilton", 100 );
-        Person p2 = new Person( "yoda", "stilton", 300 );
-        Person p3 = new Person( "luke", "brie", 300 );
-        Person p4 = new Person( "bobba", "cheddar", 300 );
+        Person p1 = new Person("darth", "stilton", 100);
+        Person p2 = new Person("yoda", "stilton", 300);
+        Person p3 = new Person("luke", "brie", 300);
+        Person p4 = new Person("bobba", "cheddar", 300);
 
-        ksession.insert( p1 );
-        ksession.insert( p2 );
-        ksession.insert( p3 );
-        ksession.insert( p4 );
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+        ksession.insert(p4);
 
         QueryResults results = ksession.getQueryResults("peeps", Variable.v, Variable.v, Variable.v, Variable.v);
         assertThat(results).hasSize(4);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba","darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("luke", "yoda", "bobba","darth");
 
         results = ksession.getQueryResults("peeps", p1, Variable.v, Variable.v, Variable.v);
         
         assertThat(results).hasSize(1);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("darth");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueriesWithVariableUnificationOnNestedFields(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "";
-        str += "package org.drools.mvel.compiler.test  \n";
-        str += "import org.drools.mvel.compiler.Person \n";
-        str += "query peeps( String $name, String $likes, String $street) \n";
-        str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
-        str += "end\n";
+    	String drl = """
+		    package org.drools.mvel.compiler.test  
+		    import org.drools.mvel.compiler.Person 
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+		    query peeps(String $name, String $likes, String $street) 
+		        $p : Person($name := name, $likes := likes, $street := address.street) 
+		    end
+		    """;
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        Person p1 = new Person( "darth", "stilton", 100 );
-        p1.setAddress( new Address( "s1" ) );
+        Person p1 = new Person("darth", "stilton", 100);
+        p1.setAddress(new Address("s1"));
 
-        Person p2 = new Person( "yoda", "stilton", 300 );
-        p2.setAddress( new Address( "s2" ) );
+        Person p2 = new Person("yoda", "stilton", 300);
+        p2.setAddress(new Address("s2"));
 
-        ksession.insert( p1 );
-        ksession.insert( p2 );
+        ksession.insert(p1);
+        ksession.insert(p2);
 
         QueryResults results = ksession.getQueryResults("peeps", Variable.v, Variable.v, Variable.v);
         assertThat(results).hasSize(2);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("yoda", "darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("yoda", "darth");
 
         results = ksession.getQueryResults("peeps", Variable.v, Variable.v, "s1");
         assertThat(results).hasSize(1);
-        assertThat(results).extracting(r -> ((Person) r.get( "$p" )).getName()).containsExactlyInAnyOrder("darth");
+        assertThat(results).extracting(r -> ((Person) r.get("$p")).getName()).containsExactlyInAnyOrder("darth");
     }
 
 }

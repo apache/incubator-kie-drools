@@ -38,8 +38,6 @@ import org.drools.mvel.compiler.oopath.model.Thing;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -58,15 +56,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -77,13 +72,8 @@ public class QueryTest {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @BeforeEach
-    public void before(TestInfo info) {
-       System.out.println( "] " + info.getTestMethod().get().getName());
-    }
-
-    private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments ) throws Exception {
-        QueryResultsImpl results = (QueryResultsImpl) session.getQueryResults( queryName, arguments );
+    private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments) throws Exception {
+        QueryResultsImpl results = (QueryResultsImpl) session.getQueryResults(queryName, arguments);
 
         FlatQueryResults flatResults = new FlatQueryResults(results);
 
@@ -96,20 +86,20 @@ public class QueryTest {
         FlatQueryResults copyFlatResults = roundTrip(flatResults);
         String [] identifiers = results.getIdentifiers();
         Iterator<QueryResultsRow> copyFlatIter = copyFlatResults.iterator();
-        for( int i = 0; i < results.size(); ++i ) {
+        for(int i = 0; i < results.size(); ++i) {
             QueryResultsRow row = results.get(i);
             assertThat(copyFlatIter.hasNext()).as("Round-tripped flat query results contain less rows than original query results").isTrue();
             QueryResultsRow copyRow = copyFlatIter.next();
-            for( String id : identifiers ) {
+            for(String id : identifiers) {
                 Object obj = row.get(id);
-                if( obj != null ) {
+                if(obj != null) {
                     Object copyObj = copyRow.get(id);
                     assertThat(obj != null && obj.equals(copyObj)).as("Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj).isTrue();
                 }
                 FactHandle fh = row.getFactHandle(id);
                 FactHandle copyFh = copyRow.getFactHandle(id);
-                if( fh != null ) {
-                    assertThat(copyFh).as( "Flat query result [" + i + "] does not contain facthandle: '" + fh.getId() + "'").isNotNull();
+                if(fh != null) {
+                    assertThat(copyFh).as("Flat query result [" + i + "] does not contain facthandle: '" + fh.getId() + "'").isNotNull();
                     String fhStr = fh.toExternalForm();
                     fhStr = fhStr.substring(0, fhStr.lastIndexOf(":"));
                     String copyFhStr = copyFh.toExternalForm();
@@ -121,31 +111,31 @@ public class QueryTest {
 
         // check identifiers
         Set<String> copyFlatIds = new TreeSet<String>(Arrays.asList(copyFlatResults.getIdentifiers()));
-        assertThat(copyFlatIds.toArray() ).as("Flat query results identifiers").isEqualTo(flatIds.toArray());
+        assertThat(copyFlatIds.toArray()).as("Flat query results identifiers").isEqualTo(flatIds.toArray());
         return copyFlatResults;
     }
 
 
-    private static <T> T roundTrip( Object obj ) throws Exception {
+    private static <T> T roundTrip(Object obj) throws Exception {
         Class[] classes = { obj.getClass() };
         JAXBContext ctx = getJaxbContext(classes);
         String xmlOut = marshall(ctx, obj);
         return unmarshall(ctx, xmlOut);
     }
 
-    private static <T> T unmarshall( JAXBContext ctx, String xmlIn ) throws Exception {
+    private static <T> T unmarshall(JAXBContext ctx, String xmlIn) throws Exception {
         ByteArrayInputStream xmlStrInputStream = new ByteArrayInputStream(xmlIn.getBytes(Charset.forName("UTF-8")));
         Object out = ctx.createUnmarshaller().unmarshal(xmlStrInputStream);
         return (T) out;
     }
 
-    private static String marshall( JAXBContext ctx, Object obj ) throws Exception {
+    private static String marshall(JAXBContext ctx, Object obj) throws Exception {
         StringWriter writer = new StringWriter();
         ctx.createMarshaller().marshal(obj, writer);
         return writer.getBuffer().toString();
     }
 
-    private static JAXBContext getJaxbContext( Class<?>... classes ) throws Exception {
+    private static JAXBContext getJaxbContext(Class<?>... classes) throws Exception {
         List<Class<?>> jaxbClassList = new ArrayList<Class<?>>();
         jaxbClassList.addAll(Arrays.asList(classes));
         jaxbClassList.add(Cheese.class);
@@ -163,9 +153,9 @@ public class QueryTest {
 
         session.fireAllRules();
 
-        QueryResults results = getQueryResults(session, "assertedobjquery" );
+        QueryResults results = getQueryResults(session, "assertedobjquery");
         assertThat(results).hasSize(1);
-        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value1" ));
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value1"));
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -176,59 +166,57 @@ public class QueryTest {
 
         session.fireAllRules();
 
-        String queryName = "assertedobjquery";
-        Object [] arguments = new String[]{"value1"};
-
-        QueryResults results = getQueryResults( session, queryName, arguments );
+        QueryResults results = getQueryResults(session, "assertedobjquery", "value1");
 
         assertThat(results).hasSize(1);
-        InsertedObject value = new InsertedObject( "value1" );
+        InsertedObject value = new InsertedObject("value1");
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(value);
 
-        results = getQueryResults( session, "assertedobjquery", new Object[]{"value3"}  );
+        results = getQueryResults(session, "assertedobjquery", "value3");
 
         assertThat(results).hasSize(0);
 
-        results = getQueryResults( session, "assertedobjquery2", new Object[]{null, "value2"}  );
+        results = getQueryResults(session, "assertedobjquery2", null, "value2");
         assertThat(results).hasSize(1);
-        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value2"));
 
-        results = getQueryResults(session, "assertedobjquery2", new Object[]{"value3", "value2"}  );
+        results = getQueryResults(session, "assertedobjquery2", "value3", "value2");
 
         assertThat(results).hasSize(1);
-        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
+        assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value2"));
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithMultipleResultsOnKnowledgeApi(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "";
-        str += "package org.drools.mvel.integrationtests\n";
-        str += "import org.drools.mvel.compiler.Cheese \n";
-        str += "query cheeses \n";
-        str += "    stilton : Cheese(type == 'stilton') \n";
-        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
-        str += "end\n";
+        String drl = """
+        	package org.drools.mvel.integrationtests;
+        	import org.drools.mvel.compiler.Cheese;
+        	query cheeses
+        		stilton : Cheese(type == 'stilton')
+        		cheddar : Cheese(type == 'cheddar', price == stilton.price)
+        	end
+        	""";
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
 
 
-        Cheese stilton1 = new Cheese( "stilton", 1 );
-        Cheese cheddar1 = new Cheese( "cheddar", 1 );
-        Cheese stilton2 = new Cheese( "stilton", 2 );
-        Cheese cheddar2 = new Cheese( "cheddar", 2 );
-        Cheese stilton3 = new Cheese( "stilton", 3 );
-        Cheese cheddar3 = new Cheese( "cheddar", 3 );
+        Cheese stilton1 = new Cheese("stilton", 1);
+        Cheese cheddar1 = new Cheese("cheddar", 1);
+        Cheese stilton2 = new Cheese("stilton", 2);
+        Cheese cheddar2 = new Cheese("cheddar", 2);
+        Cheese stilton3 = new Cheese("stilton", 3);
+        Cheese cheddar3 = new Cheese("cheddar", 3);
 
-        session.insert( stilton1 );
-        session.insert( stilton2 );
-        session.insert( stilton3 );
-        session.insert( cheddar1 );
-        session.insert( cheddar2 );
-        session.insert( cheddar3 );
+        session.insert(stilton1);
+        session.insert(stilton2);
+        session.insert(stilton3);
+        session.insert(cheddar1);
+        session.insert(cheddar2);
+        session.insert(cheddar3);
 
-        QueryResults results = getQueryResults(session, "cheeses" );
+        QueryResults results = getQueryResults(session, "cheeses");
         assertThat(results.getIdentifiers()).hasSize(2);
         
         assertThat(results).hasSize(3);
@@ -239,7 +227,7 @@ public class QueryTest {
     			tuple(stilton2, cheddar2),
     			tuple(stilton3, cheddar3));
 
-        FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
+        FlatQueryResults flatResults = new FlatQueryResults(((StatefulKnowledgeSessionImpl) session).getQueryResults("cheeses"));
 
         assertThat(flatResults)
         	.extracting(r->r.get("stilton"), r-> r.get("cheddar"))
@@ -251,97 +239,111 @@ public class QueryTest {
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
-    public void testTwoQuerries(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+    public void testTwoQueries(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_TwoQuerries.drl");
+    	
+    	String drl = """
+			package org.drools.compiler.test;
+
+			import org.drools.mvel.compiler.Cheese;
+			import org.drools.mvel.compiler.Person;
+
+			query "find stinky cheeses"
+				Cheese(type == "stinky")
+			end 
+
+			query "find pensioners"
+				Person(age > 65)
+			end 
+			""";
+    	
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
 
         final Cheese stilton = new Cheese("stinky", 5);
-        session.insert( stilton );
+        session.insert(stilton);
         final Person per1 = new Person("stinker", "smelly feet", 70);
         final Person per2 = new Person("skunky", "smelly armpits", 40);
-        session.insert( per1 );
-        session.insert( per2 );
+        session.insert(per1);
+        session.insert(per2);
 
-        QueryResults results = getQueryResults( session, "find stinky cheeses" );
-        assertThat(results).hasSize(1);
-
-        results = getQueryResults( session, "find pensioners" );
-        assertThat(results).hasSize(1);
+        assertThat(getQueryResults(session, "find stinky cheeses")).hasSize(1);
+        assertThat(getQueryResults(session, "find pensioners")).hasSize(1);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testDoubleQueryWithExists(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-    	String drl = "" + 
-    			"package org.drools.mvel.integrationtests\n" +
-    			"import " + Person.class.getCanonicalName() + "\n" +
-    			"query \"2 persons with the same status\"\n" +
-    			"        p : Person($status : status, $age : age)\n" +
-    			"        exists Person(status == $status, age > $age);\n" +
-    			"end";
+    	String drl = """
+    		package org.drools.mvel.integrationtests;
+    		import org.drools.mvel.compiler.Person;
+			query "2 persons with the same status"
+				p : Person($status : status, $age : age)
+				exists Person(status == $status, age > $age);
+			end
+   			""";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
 
         
-        final Person stilton20 = new Person( "p1", "stilton", 20 );
-        stilton20.setStatus( "europe" );
-        final FactHandle c1FactHandle = session.insert( stilton20 );
+        final Person stilton20 = new Person("p1", "stilton", 20);
+        stilton20.setStatus("europe");
+        final FactHandle c1FactHandle = session.insert(stilton20);
         
-        final Person stilton30 = new Person( "p2", "stilton", 30 );
-        stilton30.setStatus( "europe" );
-        final FactHandle c2FactHandle = session.insert( stilton30 );
+        final Person stilton30 = new Person("p2", "stilton", 30);
+        stilton30.setStatus("europe");
+        final FactHandle c2FactHandle = session.insert(stilton30);
         
-        final Person stilton40 = new Person( "p3", "stilton", 40 );
-        stilton40.setStatus( "europe" );
-        final FactHandle c3FactHandle = session.insert( stilton40 );
+        final Person stilton40 = new Person("p3", "stilton", 40);
+        stilton40.setStatus("europe");
+        final FactHandle c3FactHandle = session.insert(stilton40);
         
 
-        QueryResults results = session.getQueryResults( "2 persons with the same status" );
+        QueryResults results = session.getQueryResults("2 persons with the same status");
         assertThat(results).hasSize(2);
 
         // europe=[ 1, 2 ], america=[ 3 ]
-        stilton40.setStatus( "america" );
-        session.update( c3FactHandle, stilton40 );
+        stilton40.setStatus("america");
+        session.update(c3FactHandle, stilton40);
         
-        results = session.getQueryResults(  "2 persons with the same status" );
+        results = session.getQueryResults( "2 persons with the same status");
         assertThat(results).hasSize(1);
 
         // europe=[ 1 ], america=[ 2, 3 ]
-        stilton30.setStatus( "america" );
-        session.update( c2FactHandle, stilton30 );
+        stilton30.setStatus("america");
+        session.update(c2FactHandle, stilton30);
  
-        results = session.getQueryResults( "2 persons with the same status" );
+        results = session.getQueryResults("2 persons with the same status");
         assertThat(results).hasSize(1);
 
         // europe=[ ], america=[ 1, 2, 3 ]
-        stilton20.setStatus( "america" );
-        session.update( c1FactHandle, stilton20 );
+        stilton20.setStatus("america");
+        session.update(c1FactHandle, stilton20);
 
-        results = getQueryResults( session, "2 persons with the same status" );
+        results = getQueryResults(session, "2 persons with the same status");
         assertThat(results).hasSize(2);
 
         // europe=[ 2 ], america=[ 1, 3 ]
-        stilton30.setStatus( "europe" );
-        session.update( c2FactHandle, stilton30 );
+        stilton30.setStatus("europe");
+        session.update(c2FactHandle, stilton30);
 
-        results = getQueryResults( session, "2 persons with the same status" );
+        results = getQueryResults(session, "2 persons with the same status");
         assertThat(results).hasSize(1);
 
         // europe=[ 1, 2 ], america=[ 3 ]
-        stilton20.setStatus( "europe" );
-        session.update( c1FactHandle, stilton20 );
+        stilton20.setStatus("europe");
+        session.update(c1FactHandle, stilton20);
 
-        results = session.getQueryResults( "2 persons with the same status" );
+        results = session.getQueryResults("2 persons with the same status");
         assertThat(results).hasSize(1);
 
         // europe=[ 1, 2, 3 ], america=[ ]
-        stilton40.setStatus( "europe" );
-        session.update( c3FactHandle, stilton40 );
+        stilton40.setStatus("europe");
+        session.update(c3FactHandle, stilton40);
 
-        results = session.getQueryResults( "2 persons with the same status" );
+        results = session.getQueryResults("2 persons with the same status");
         assertThat(results).hasSize(2);
     }
 
@@ -352,11 +354,11 @@ public class QueryTest {
         KieSession session = kbase.newKieSession();
         session.fireAllRules();
 
-        QueryResults results = getQueryResults( session, "collect objects" );
+        QueryResults results = getQueryResults(session, "collect objects");
         assertThat(results).hasSize(1);
 
         final QueryResultsRow row = results.iterator().next();
-        final List list = (List) row.get( "$list" );
+        final List list = (List) row.get("$list");
 
         assertThat(list).hasSize(2);
     }
@@ -370,15 +372,15 @@ public class QueryTest {
 
         String workerId = "B1234";
         Worker worker = new Worker();
-        worker.setId( workerId );
+        worker.setId(workerId);
 
-        FactHandle handle = ksession.insert( worker );
+        FactHandle handle = ksession.insert(worker);
         ksession.fireAllRules();
 
         assertThat(handle).isNotNull();
 
         Object retractedWorker = null;
-        for ( int i = 0; i < 100; i++ ) {
+        for (int i = 0; i < 100; i++) {
             retractedWorker = ksession.getQueryResults("getWorker",
                                                        new Object[]{workerId});
         }
@@ -390,8 +392,8 @@ public class QueryTest {
         Collection<EntryPointNode> entryPointNodes = ((InternalRuleBase)kbase).getRete().getEntryPointNodes().values();
 
         EntryPointNode defaultEntryPointNode = null;
-        for ( EntryPointNode epNode : entryPointNodes ) {
-            if ( epNode.getEntryPoint().getEntryPointId().equals( "DEFAULT" ) ) {
+        for (EntryPointNode epNode : entryPointNodes) {
+            if (epNode.getEntryPoint().getEntryPointId().equals("DEFAULT")) {
                 defaultEntryPointNode = epNode;
                 break;
             }
@@ -400,8 +402,8 @@ public class QueryTest {
 
         Map<ObjectType, ObjectTypeNode> obnodes = defaultEntryPointNode.getObjectTypeNodes();
 
-        ObjectType key = new ClassObjectType( DroolsQuery.class );
-        ObjectTypeNode droolsQueryNode = obnodes.get( key );
+        ObjectType key = new ClassObjectType(DroolsQuery.class);
+        ObjectTypeNode droolsQueryNode = obnodes.get(key);
         Iterator<InternalFactHandle> it = droolsQueryNode.getFactHandlesIterator(sessionImpl);
         assertThat(it).isExhausted();
     }
@@ -409,42 +411,38 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testStandardQueryListener(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
-        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.STANDARD );
+        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.STANDARD);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testNonCloningQueryListener(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
-        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.LIGHTWEIGHT );
+        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.LIGHTWEIGHT);
     }
 
     public void runQueryListenerTest(KieBaseTestConfiguration kieBaseTestConfiguration , QueryListenerOption option) throws IOException, ClassNotFoundException {
-        String str = "";
-        str += "package org.drools.mvel.integrationtests\n";
-        str += "import " + Cheese.class.getCanonicalName() + " \n";
-        str += "query cheeses(String $type) \n";
-        str += "    $cheese : Cheese(type == $type) \n";
-        str += "end\n";
+        String drl = """
+    		package org.drools.mvel.integrationtests;
+    		import org.drools.mvel.compiler.Cheese;
+    		query cheeses(String $type)
+    			$cheese : Cheese(type == $type)
+    		end
+    
+    		""";
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         // insert some data into the session
-        for ( int i = 0; i < 10000; i++ ) {
-            ksession.insert( new Cheese( i % 2 == 0 ? "stilton" : "brie" ) );
+        for (int i = 0; i < 10000; i++) {
+            ksession.insert(new Cheese(i % 2 == 0 ? "stilton" : "brie"));
         }
 
         // query the session
-        List<Cheese> cheeses;
-        for ( int i = 0; i < 100; i++ ) {
-            QueryResults queryResults = ksession.getQueryResults( "cheeses",
-                                                                                           "stilton");
-            cheeses = new ArrayList<Cheese>();
-            for ( QueryResultsRow row : queryResults ) {
-                cheeses.add( (Cheese) row.get( "$cheese" ) );
-            }
-
-            assertThat(cheeses).hasSize(5000);
+        for (int i = 0; i < 100; i++) {
+            QueryResults queryResults = ksession.getQueryResults("cheeses", "stilton");
+            
+            assertThat(queryResults).extracting(row -> row.get("$cheese")).hasSize(5000);
         }
     }
 
@@ -453,28 +451,27 @@ public class QueryTest {
     public void testQueryWithEval(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
 
-        String str = "package org.drools.mvel.integrationtests\n" +
-                     "import " + DomainObject.class.getCanonicalName() + " \n" +
-                     "query queryWithEval \n" +
-                     "    $do: DomainObject()\n" +
-                     "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +
-                     "end";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        String drl = """
+        	package org.drools.mvel.integrationtests
+        	import org.drools.mvel.compiler.DomainObject;
+        	query queryWithEval
+        		$do: DomainObject()
+        		not DomainObject(id == $do.id, eval(interval.isAfter($do.getInterval())))
+        	end
+        	""";
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         DomainObject do1 = new DomainObject();
-        do1.setId( 1 );
-        do1.setInterval( new Interval( 10,
-                                       5 ) );
+        do1.setId(1);
+        do1.setInterval(new Interval(10, 5));
         DomainObject do2 = new DomainObject();
-        do2.setId( 1 );
-        do2.setInterval( new Interval( 20,
-                                       5 ) );
-        ksession.insert( do1 );
-        ksession.insert( do2 );
+        do2.setId(1);
+        do2.setInterval(new Interval(20, 5));
+        ksession.insert(do1);
+        ksession.insert(do2);
 
-        QueryResults results = ksession.getQueryResults( "queryWithEval" );
+        QueryResults results = ksession.getQueryResults("queryWithEval");
         assertThat(results).hasSize(1);
         assertThat(results.iterator().next().get("$do")).isEqualTo(do2);
     }
@@ -485,43 +482,44 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testGlobalsInQueries(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        String drl = "\n" +
-                     "package com.sample\n" +
-                     "\n" +
-                     "global java.lang.String AString;\n" +
-                     "global java.util.List list;\n" +
-                     "\n" +
-                     "declare AThing\n" +
-                     "     name: String @key\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule init\n" +
-                     "     when\n" +
-                     "     then\n" +
-                     "         insert( new AThing( AString ) );\n" +
-                     "         insert( new AThing( 'Holla' ) );\n" +
-                     "end\n" +
-                     "\n" +
-                     "query test( String $in ) \n" +
-                     "     AThing( $in; )\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule spot\n" +
-                     "     when\n" +
-                     "         test( \"Hello\"; )\n" +
-                     "         AThing( \"Hello\"; )\n" +
-                     "         test( AString; )\n" +
-                     "         AThing( AString; )" +
-                     "     then\n" +
-                     "         list.add( AString + \" World\" );\n" +
-                     "end\n";
+        String drl = """
+		    package com.sample
+		
+		    global java.lang.String AString;
+		    global java.util.List list;
+		
+		    declare AThing
+		         name: String @key
+		    end
+		
+		    rule init
+		         when
+		         then
+		             insert(new AThing(AString));
+		             insert(new AThing('Holla'));
+		    end
+		
+		    query test(String $in) 
+		         AThing($in;)
+		    end
+		
+		    rule spot
+		         when
+		             test("Hello";)
+		             AThing("Hello";)
+		             test(AString;)
+		             AThing(AString;)
+		         then
+		             list.add(AString + " World");
+		    end
+		    """;
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
-        ks.setGlobal( "AString", "Hello" );
-        ks.setGlobal( "list", list );
+        ks.setGlobal("AString", "Hello");
+        ks.setGlobal("list", list);
         ks.fireAllRules();
 
         assertThat(list).containsExactly("Hello World");
@@ -532,37 +530,40 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testQueryWithClassArg(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-590
-        String drl = "global java.util.List list; " +
-                     "" +
-                     "declare Foo end " +
-                     "" +
-                     "query bar( Class $c ) " +
-                     "  Class( this.getName() == $c.getName() ) " +
-                     "end " +
-                     "query bar2( Class $c ) " +
-                     "  Class( this == $c ) " +
-                     "end " +
-                     "" +
-                     "rule Init when then insert( Foo.class ); end " +
-                     "" +
-                     "rule React1 " +
-                     "when " +
-                     "  bar( Foo.class ; ) " +
-                     "then " +
-                     "  list.add( 'aa' ); " +
-                     "end  " +
+        String drl = """
+    	    global java.util.List list;
 
-                     "rule React2 " +
-                     "when\n" +
-                     "  bar2( Foo.class ; ) " +
-                     "then " +
-                     "  list.add( 'bb' ); " +
-                     "end";
+    	    declare Foo end
 
-        List<String> list = new ArrayList<>(  );
+    	    query bar(Class $c)
+    	      Class(this.getName() == $c.getName())
+    	    end
+
+    	    query bar2(Class $c)
+    	      Class(this == $c)
+    	    end
+
+    	    rule Init when then insert(Foo.class); end
+
+    	    rule React1
+    	    when
+    	      bar(Foo.class ;)
+    	    then
+    	      list.add('aa');
+    	    end
+
+    	    rule React2
+    	    when
+    	      bar2(Foo.class ;)
+    	    then
+    	      list.add('bb');
+    	    end
+    	    """;
+
+        List<String> list = new ArrayList<>();
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kbase.newKieSession();
-        ks.setGlobal( "list", list );
+        ks.setGlobal("list", list);
         ks.fireAllRules();
 
         assertThat(list).containsExactly("aa", "bb");
@@ -572,32 +573,35 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testPassGlobalToNestedQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-851
-        String drl = "global java.util.List list;\n" +
-                     "global Integer number;\n" +
-                     "\n" +
-                     "query findString( String $out )\n" +
-                     "    findStringWithLength( number, $out; )\n" +
-                     "end\n" +
-                     "query findStringWithLength( int $in, String $out )\n" +
-                     "    $out := String( $in := length )\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R when\n" +
-                     "    findString( $s; )\n" +
-                     "then\n" +
-                     "    list.add( $s );\n" +
-                     "end\n";
+        String drl = """
+		    global java.util.List list;
+		    global Integer number;
+		
+		    query findString(String $out)
+		        findStringWithLength(number, $out;)
+		    end
+		
+		    query findStringWithLength(int $in, String $out)
+		        $out := String($in := length)
+		    end
+		
+		    rule R when
+		        findString($s;)
+		    then
+		        list.add($s);
+		    end
+		    """;
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ks = kbase.newKieSession();
 
         List<String> list = new ArrayList<>();
-        ks.setGlobal( "list", list );
-        ks.setGlobal( "number", 3 );
+        ks.setGlobal("list", list);
+        ks.setGlobal("number", 3);
 
-        ks.insert( "Hi" );
-        ks.insert( "Bye" );
-        ks.insert( "Hello" );
+        ks.insert("Hi");
+        ks.insert("Bye");
+        ks.insert("Hello");
         ks.fireAllRules();
 
         assertThat(list).containsExactly("Bye");
@@ -607,22 +611,21 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testQueryWithAccessorAsArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-414
-        String str =
-                "import org.drools.mvel.compiler.Person\n" +
-                "global java.util.List persons;\n" +
-                "\n" +
-                "query contains(String $s, String $c)\n" +
-                "    $s := String( this.contains( $c ) )\n" +
-                "end\n" +
-                "\n" +
-                "rule R when\n" +
-                "    $p : Person()\n" +
-                "    contains( $p.name, \"a\"; )\n" +
-                "then\n" +
-                "    persons.add( $p );\n" +
-                "end\n";
+        String drl = """
+        	import org.drools.mvel.compiler.Person
+        	global java.util.List persons;
+        	query contains(String $s, String $c)
+        		$s := String(this.contains($c))
+        	end
+        	rule R when
+        		$p : Person()
+        		contains($p.name, "a";)
+        	then
+        		persons.add($p);
+        	end
+        	""";
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List<Person> personsWithA = new ArrayList<Person>();
@@ -644,23 +647,22 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testQueryWithExpressionAsArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-414
-        String str =
-                "import org.drools.mvel.compiler.Person\n" +
-                "global java.util.List persons;\n" +
-                "\n" +
-                "query checkLength(String $s, int $l)\n" +
-                "    $s := String( length == $l )\n" +
-                "end\n" +
-                "\n" +
-                "rule R when\n" +
-                "    $i : Integer()\n" +
-                "    $p : Person()\n" +
-                "    checkLength( $p.name, 1 + $i + $p.age; )\n" +
-                "then\n" +
-                "    persons.add( $p );\n" +
-                "end\n";
+        String drl = """
+    		import org.drools.mvel.compiler.Person;
+    		global java.util.List persons;
+    		query checkLength(String $s, int $l)
+    			$s := String(length == $l)
+    		end
+    		rule R when
+    			$i : Integer()
+    			$p : Person()
+    			checkLength($p.name, 1 + $i + $p.age;)
+    		then
+    			persons.add($p);
+    		end
+    		""";
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         List<Person> list = new ArrayList<Person>();
@@ -684,29 +686,30 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testQueryInSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1386
-        String str = "query myquery(Integer $i)\n" +
-                     "   $i := Integer()\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule R when\n" +
-                     "   String()\n" +
-                     "   accumulate (myquery($i;);\n" +
-                     "      $result_count : count(1)\n" +
-                     "   )\n" +
-                     "   eval($result_count > 0)\n" +
-                     "then\n" +
-                     "end\n\n";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        String drl = """
+			query myquery(Integer $i)
+			   $i := Integer()
+			end
+			
+			rule R when
+			   String()
+			   accumulate (myquery($i;);
+			      $result_count : count(1)
+			   )
+			   eval($result_count > 0)
+			then
+			end
+			""";
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        FactHandle iFH = ksession.insert( 1 );
-        FactHandle sFH = ksession.insert( "" );
+        FactHandle iFH = ksession.insert(1);
+        FactHandle sFH = ksession.insert("");
 
         ksession.fireAllRules();
 
-        ksession.update( iFH, 1 );
-        ksession.delete( sFH );
+        ksession.update(iFH, 1);
+        ksession.delete(sFH);
 
         ksession.fireAllRules();
     }
@@ -714,7 +717,7 @@ public class QueryTest {
     public static class Question {}
     public static class QuestionVisible {
         private final Question question;
-        public QuestionVisible( Question question ) {
+        public QuestionVisible(Question question) {
             this.question = question;
         }
         public Question getQuestion() {
@@ -726,26 +729,27 @@ public class QueryTest {
     @MethodSource("parameters")
     public void testQueryWithOptionalOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1386
-        String str =
-                "package org.test\n" +
-                "import " + Question.class.getCanonicalName() + "\n" +
-                "import " + QuestionVisible.class.getCanonicalName() + "\n" +
-                "query QuestionsKnowledge\n" +
-                "    $question: Question()\n" +
-                "    $visible: QuestionVisible(question == $question) or not QuestionVisible(question == $question)\n" +
-                "end\n";
+        String drl = """
+        	package org.test;
+        	import org.drools.mvel.integrationtests.query.QueryTest.Question;
+        	import org.drools.mvel.integrationtests.query.QueryTest.QuestionVisible;
+        	query QuestionsKnowledge
+        		$question: Question()
+        		$visible: QuestionVisible(question == $question) or not QuestionVisible(question == $question)
+        	end
+        	""";
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         Question question = new Question();
-        ksession.insert( question );
+        ksession.insert(question);
         QueryResults results = ksession.getQueryResults("QuestionsKnowledge");
         assertThat(results).hasSize(1);
         QueryResultsRow row = results.iterator().next();
         assertThat(row.get("$question")).isSameAs(question);
 
-        QuestionVisible questionVisible = new QuestionVisible( question );
-        ksession.insert( questionVisible );
+        QuestionVisible questionVisible = new QuestionVisible(question);
+        ksession.insert(questionVisible);
         results = ksession.getQueryResults("QuestionsKnowledge");
         assertThat(results).hasSize(1);
         row = results.iterator().next();
@@ -756,16 +760,17 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithFrom(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        final String drl =
-                "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
-                "query isContainedIn( Thing $x, Thing $y )\n" +
-                "    $y := Thing() from $x.children\n" +
-                "or\n" +
-                "    ( $z := Thing() from $x.children and isContainedIn( $z, $y; ) )\n" +
-                "end\n";
+        String drl = """
+        	import org.drools.mvel.compiler.oopath.model.Thing;
+            query isContainedIn(Thing $x, Thing $y)
+        		$y := Thing() from $x.children
+        		or
+        		($z := Thing() from $x.children and isContainedIn($z, $y;))
+        	end
+        	""";
 
-        final Thing smartphone = new Thing("smartphone");
-        final List<String> itemList = Arrays.asList("display", "keyboard", "processor");
+        Thing smartphone = new Thing("smartphone");
+        List<String> itemList = Arrays.asList("display", "keyboard", "processor");
         itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -773,9 +778,7 @@ public class QueryTest {
 
         ksession.insert(smartphone);
 
-        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", smartphone, Variable.v);
-        final List<String> resultList = StreamSupport.stream(queryResults.spliterator(), false)
-                .map(row -> ((Thing) row.get("$y")).getName()).collect(Collectors.toList());
-        assertThat(resultList).as("Query does not contain all items").containsAll(itemList);
+        QueryResults queryResults = ksession.getQueryResults("isContainedIn", smartphone, Variable.v);
+        assertThat(queryResults).as("Query does not contain all items").extracting(row -> ((Thing) row.get("$y")).getName()).containsAll(itemList);
     }
 }
