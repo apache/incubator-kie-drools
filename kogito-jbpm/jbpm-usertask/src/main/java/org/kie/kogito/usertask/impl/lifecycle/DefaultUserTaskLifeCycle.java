@@ -227,6 +227,10 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
 
     private void checkPermission(UserTaskInstance userTaskInstance, String user, Collection<String> roles) {
 
+        if (user == null) {
+            throw new UserTaskInstanceNotAuthorizedException("No user defined to perform an operation on user task " + userTaskInstance.getId());
+        }
+
         if (WORKFLOW_ENGINE_USER.equals(user)) {
             return;
         }
