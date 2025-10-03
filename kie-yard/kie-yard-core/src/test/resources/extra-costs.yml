@@ -1,0 +1,64 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+specVersion: alpha
+kind: YaRD
+name: "Traffic Violation"
+expressionLang: jshell
+inputs:
+  - name: Fragile
+    type: boolean
+  - name: Package Tracking
+    type: boolean
+  - name: Insurance
+    type: boolean
+  - name: Package Type
+    type: string
+elements:
+  - name: Selected premiums
+    type: Decision
+    logic:
+      type: DecisionTable
+      # Collect all costs
+      hitPolicy: COLLECT
+      inputs: [ Package Type, Fragile, Package Tracking, Insurance ]
+      rules:
+        # Insurance for all packages, based on size and if the content is fragile
+        - when: [ 'S', true, "-", true ]
+          then: '{ "Name": "Fragile insurance cost", "Price": 10}'
+        - when: [ 'M', true, "-", true ]
+          then: '{ "Name": "Fragile insurance cost", "Price": 20}'
+        - when: [ 'L', true, "-", true ]
+          then: '{ "Name": "Fragile insurance cost", "Price": 30}'
+        - when: [ 'XL', true, "-", true ]
+          then: '{ "Name": "Fragile insurance cost", "Price": 40}'
+        - when: [ "-", false, "-", true ]
+          then: '{ "Name": "Regular insurance cost", "Price": 5}'
+        # Tracking cost is same for all sizes
+        - when: [ "-", "-", true, "-" ]
+          then: '{ "Name": "Tracking cost", "Price": 5}'
+        # Fragile package extra care cost
+        - when: [ "-", true, "-", "-" ]
+          then: '{ "Name": "Fragile package shipping cost", "Price": 15}'
+  - name: "Total cost of premiums"
+    type: Decision
+    logic:
+      type: LiteralExpression
+      expression: |
+        ((java.util.List<java.util.Map<String,Integer>>)`Selected premiums`).stream().map(m -> m.get("Price")).mapToInt(Integer::valueOf).sum();
+#      Feels filthy compared to FEEL below
+#      expression: 'sum( for item in Selected premiums return item.Price )'
