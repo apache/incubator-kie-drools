@@ -148,7 +148,28 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQuery2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
+    	String drl = """
+			package org.drools.compiler.integrationtests;
+			
+			import org.drools.mvel.compiler.InsertedObject;
+			import java.util.ArrayList;
+			
+			rule rule1
+			  when
+			  then
+			    insert( new InsertedObject( "value1") );
+			    insert( new InsertedObject( "value2") );
+			end
+			
+			query "assertedobjquery"
+			    assertedobj : InsertedObject( value=="value1" )
+			end 
+			
+			query "collect objects"
+			    $list : ArrayList() from collect( InsertedObject() )
+			end    			
+    		""";
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
@@ -161,7 +182,29 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithParams(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryWithParams.drl");
+    	String drl = """
+			package org.drools.integrationtests;
+			
+			import org.drools.mvel.compiler.InsertedObject;
+			
+			rule rule1
+			  when
+			  then
+			    insert( new InsertedObject( "value1") );
+			    insert( new InsertedObject( "value2") );
+			end
+			
+			query "assertedobjquery" ( String $value )
+			    assertedobj : InsertedObject( value == $value )
+			end 
+			
+			
+			query "assertedobjquery2" ( String $value1, String $value2 )
+			    assertedobj : InsertedObject( value == $value2 )
+			end    			
+    		""";
+    	
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
@@ -350,7 +393,28 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithCollect(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
+    	String drl = """
+			package org.drools.compiler.integrationtests;
+			
+			import org.drools.mvel.compiler.InsertedObject;
+			import java.util.ArrayList;
+			
+			rule rule1
+			  when
+			  then
+			    insert( new InsertedObject( "value1") );
+			    insert( new InsertedObject( "value2") );
+			end
+			
+			query "assertedobjquery"
+			    assertedobj : InsertedObject( value=="value1" )
+			end 
+			
+			query "collect objects"
+			    $list : ArrayList() from collect( InsertedObject() )
+			end    			
+    			""";
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession session = kbase.newKieSession();
         session.fireAllRules();
 
@@ -366,7 +430,20 @@ public class QueryTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testDroolsQueryCleanup(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryMemoryLeak.drl");
+    	String drl = """
+			package org.drools.mvel.compiler
+			
+			query getWorker(String _id)
+			    queryResult : Worker(id == _id)
+			end
+			
+			query getWorkers()
+			    queryResult : Worker()
+			end    			
+    		""";
+    	
+    	
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
 
