@@ -22,16 +22,20 @@ public class QueryWithErrorsTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithIncompatibleArgs(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        String drl = "global java.util.List list; " +
-                     "" +
-                     "query foo( String $s, String $s, String $s ) end " +
-                     "" +
-                     "rule React \n" +
-                     "when\n" +
-                     "  $i : Integer() " +
-                     "  foo( $i, $x, $i ; ) " +
-                     "then\n" +
-                     "end";
+        String drl ="""
+        		global java.util.List list;
+                
+                query 
+        			foo(String $s, String $s, String $s)
+        		end
+        		
+        		rule React
+        		when
+        			$i : Integer()
+        			foo($i, $x, $i ;)
+        		then
+        		end
+        		""";
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
@@ -42,16 +46,18 @@ public class QueryWithErrorsTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testQueryWithSyntaxError(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        String drl = "global java.util.List list; " +
-                     "" +
-                     "query foo( Integer $i ) end " +
-                     "" +
-                     "rule React \n" +
-                     "when\n" +
-                     "  $i : Integer() " +
-                     "  foo( $i ) " +   // missing ";" should result in 1 compilation error
-                     "then\n" +
-                     "end";
+        String drl = """
+        		global java.util.List list;
+        		query 
+        			foo(Integer $i) 
+        		end
+        		rule React
+        		when
+        			$i : Integer()
+        			foo($i)  // missing ";" should result in 1 compilation error
+        		then
+        		end
+        		""";
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
@@ -64,18 +70,18 @@ public class QueryWithErrorsTest {
     @MethodSource("parameters")
     public void testQueryWithWrongParamNumber(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = """
-        		     global java.util.List list;
-                     query foo( Integer $i ) 
-                     
-                     end
-                     rule React
-        		     when
-                       $i : Integer()
-                       $j : Integer()
-                       foo( $i, $j ; )
-                     then
-                     end
-                     """;
+    			global java.util.List list;
+    			query foo(Integer $i) 
+                 
+    			end
+    			rule React
+    			when
+    				$i : Integer()
+    				$j : Integer()
+    				foo($i, $j ;)
+    			then
+    			end
+                 """;
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
@@ -87,25 +93,26 @@ public class QueryWithErrorsTest {
     @MethodSource("parameters")
     public void testNotExistingDeclarationInQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-414
-        String drl =
-                "import org.drools.compiler.Person\n" +
-                "global java.util.List persons;\n" +
-                "\n" +
-                "query checkLength(String $s, int $l)\n" +
-                "    $s := String( length == $l )\n" +
-                "end\n" +
-                "\n" +
-                "rule R when\n" +
-                "    $i : Integer()\n" +
-                "    $p : Person()\n" +
-                "    checkLength( $p.name, 1 + $x + $p.age; )\n" +
-                "then\n" +
-                "    persons.add( $p );\n" +
-                "end\n";
+        String drl ="""
+        		import org.drools.compiler.Person;
+        		global java.util.List persons;
+
+        		query checkLength(String $s, int $l)
+        		    $s := String(length == $l)
+        		end
+
+        		rule R when
+					$i : Integer()
+					$p : Person()
+					checkLength($p.name, 1 + $x + $p.age;)
+        		then
+        		    persons.add($p);
+        		end\n"
+        		""";
 
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-        assertThat(errors.isEmpty()).as("Should have an error").isFalse();
+        assertThat(errors).as("Should have an error").isNotEmpty();
     }
 
 

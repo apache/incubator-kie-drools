@@ -29,15 +29,17 @@ public class QueryLiveTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testOpenQuery(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "";
-        str += "package org.drools.mvel.compiler.test  \n";
-        str += "import org.drools.mvel.compiler.Cheese \n";
-        str += "query cheeses(String $type1, String $type2) \n";
-        str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
-        str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
-        str += "end\n";
+    	String drl = """
+		    package org.drools.mvel.compiler.test  
+		    import org.drools.mvel.compiler.Cheese 
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+		    query cheeses(String $type1, String $type2) 
+		        stilton : Cheese(type == $type1, $sprice : price) 
+		        cheddar : Cheese(type == $type2, $cprice : price == stilton.price) 
+		    end
+		    """;
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         Cheese stilton1 = new Cheese("stilton", 1);
@@ -186,15 +188,16 @@ public class QueryLiveTest {
     @MethodSource("parameters")
     public void testOpenQueryNoParams(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // RHDM-717
-        String str = "";
-        str += "package org.drools.mvel.compiler.test  \n";
-        str += "import org.drools.mvel.compiler.Cheese \n";
-        str += "query cheeses \n";
-        str += "    stilton : Cheese(type == 'stilton') \n";
-        str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
-        str += "end\n";
+    	String drl = """
+		    package org.drools.mvel.compiler.test  
+		    import org.drools.mvel.compiler.Cheese 
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+		    query cheeses 
+		        stilton : Cheese(type == 'stilton') 
+		        cheddar : Cheese(type == 'cheddar', price == stilton.price) 
+		    end
+		    """;
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
         Cheese stilton1 = new Cheese("stilton", 1);

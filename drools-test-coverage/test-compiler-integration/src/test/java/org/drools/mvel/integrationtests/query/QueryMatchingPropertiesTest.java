@@ -22,7 +22,6 @@ package org.drools.mvel.integrationtests.query;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.jupiter.api.AfterEach;
@@ -42,39 +41,47 @@ public class QueryMatchingPropertiesTest {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
     
-    public final static String MATCH_FOO= 			
-			"package org.drools.integrationtests\n" +
-			"import " + QueryMatchingPropertiesTest.Foo.class.getCanonicalName() + "\n" +
-			"query \"MatchFoo\"\n" + 
-			"    foo : Foo();\n" +
-			"end\n";
+    public final static String MATCH_FOO = """
+    	    package org.drools.integrationtests
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.Foo 
+
+    	    query "MatchFoo"
+    	        foo : Foo();
+    	    end
+    	    """;
 
     
-    public final static String MATCH_FOO_WITH_FOO_ON_ID = 			
-			"package org.drools.integrationtests\n" +
-			"import " + QueryMatchingPropertiesTest.Foo.class.getCanonicalName() + "\n" +
-			"query \"MatchFooWithFooOnId\"\n" + 
-			"    foo : Foo();\n" +
-			"    foo2 : Foo(id == foo.id);\n" +
-			"end\n";
+    public final static String MATCH_FOO_WITH_FOO_ON_ID =  """
+    	    package org.drools.integrationtests
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.Foo 
 
-    public final static String MATCH_FOO_WITH_BAR_ON_ID = 			
-    		"package org.drools.integrationtests\n" +
-			"import " + QueryMatchingPropertiesTest.Bar.class.getCanonicalName() + "\n" +
-			"import " + QueryMatchingPropertiesTest.Foo.class.getCanonicalName() + "\n" +
-			"query \"MatchFooWithBarOnId\"\n" +
-			"    foo : Foo();\n" +
-			"    bar : Bar(id == foo.id)\n" +
-			"end\n";
+    	    query "MatchFooWithFooOnId"
+    	        foo : Foo();
+    	        foo2 : Foo(id == foo.id);
+    	    end
+    	    """;
+
+    public final static String MATCH_FOO_WITH_BAR_ON_ID = """
+    	    package org.drools.integrationtests
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.Bar 
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.Foo 
+
+    	    query "MatchFooWithBarOnId"
+    	        foo : Foo();
+    	        bar : Bar(id == foo.id)
+    	    end
+    	    """;
     
-    public final static String MATCH_FOO_WITH_SUPERFOO_ON_ID = 			
-    		"package org.drools.integrationtests\n" +
-			"import " + QueryMatchingPropertiesTest.Foo.class.getCanonicalName() + "\n" +
-			"import " + QueryMatchingPropertiesTest.SuperFoo.class.getCanonicalName() + "\n" +
-			"query \"MatchFooWithSuperFooOnId\"\n" +
-			"    foo : Foo();\n" +
-			"    superFoo : SuperFoo(id == foo.id)\n" +
-			"end\n";
+    public final static String MATCH_FOO_WITH_SUPERFOO_ON_ID = """
+    	    package org.drools.integrationtests
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.Foo 
+    	    import org.drools.mvel.integrationtests.query.QueryMatchingPropertiesTest.SuperFoo 
+
+    	    query "MatchFooWithSuperFooOnId"
+    	        foo : Foo();
+    	        superFoo : SuperFoo(id == foo.id)
+    	    end
+    	    """;
 
 
 	private KieSession kieSession;
@@ -100,8 +107,6 @@ public class QueryMatchingPropertiesTest {
 	    kieSession.insert(bar);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFoo");
-
-	    new ReteDumper().dump(kieSession);
 	    
 	    
 	    assertThat(queryResults).hasSize(1);
@@ -119,11 +124,6 @@ public class QueryMatchingPropertiesTest {
 	    kieSession.insert(bar);
 
 	    QueryResults queryResults = kieSession.getQueryResults("MatchFooWithBarOnId");
-
-	    QueryResults queryResults2 = kieSession.getQueryResults("MatchFooWithBarOnId");
-
-	    new ReteDumper().dump(kieSession);
-	    
 	    
 	    assertThat(queryResults).hasSize(1);
 	    assertThat(queryResults).isSameAs(queryResults);
