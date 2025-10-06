@@ -39,11 +39,11 @@
     <version.org.springdoc>2.8.8</version.org.springdoc>
     <!-- Groovy -->
     <!-- must be aligned with the Archetype plugin: https://maven.apache.org/archetype/maven-archetype-plugin/dependencies.html -->
-    <version.org.apache.groovy>4.0.27</version.org.apache.groovy>
+    <version.org.apache.groovy>4.0.28</version.org.apache.groovy>
     <version.org.spockframework>2.2-groovy-4.0</version.org.spockframework>
     <!-- Spring Boot Cloud aligned with Spring Boot Framework version. See: https://spring.io/projects/spring-cloud -->
     <!-- https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2022.0-Release-Notes -->
-    <version.org.springframework.cloud>2024.0.1</version.org.springframework.cloud>
+    <version.org.springframework.cloud>2024.0.2</version.org.springframework.cloud>
     <!-- Aligned with Spring Boot Cloud -->
     <version.io.fabric8>7.2.0</version.io.fabric8>
   </properties>

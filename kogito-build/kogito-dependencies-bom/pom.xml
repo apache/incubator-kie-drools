@@ -35,12 +35,13 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.20.1</version.io.quarkus>
+    <version.io.quarkus>3.20.2.2</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
-    <version.org.springframework.boot>3.4.7</version.org.springframework.boot>
+    <version.org.springframework>6.2.11</version.org.springframework>
+    <version.org.springframework.boot>3.4.10</version.org.springframework.boot>
     <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
-    <version.org.bouncycastle.bc.jdk18on>1.80</version.org.bouncycastle.bc.jdk18on>
+    <version.org.bouncycastle.bc.jdk18on>1.81</version.org.bouncycastle.bc.jdk18on>
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
@@ -73,7 +74,7 @@
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
 
-    <version.io.netty>4.1.122.Final</version.io.netty>
+    <version.io.netty>4.1.127.Final</version.io.netty>
 
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <!--
@@ -83,12 +84,12 @@
     -->
     <version.io.fabric8.kubernetes-client>7.1.0</version.io.fabric8.kubernetes-client>
     <version.io.fabric8.openshift-mock>6.13.5</version.io.fabric8.openshift-mock>
-    <version.io.micrometer>1.14.8</version.io.micrometer>
+    <version.io.micrometer>1.14.11</version.io.micrometer>
     <version.org.flywaydb>11.8.0</version.org.flywaydb>
     <version.org.postgresql>42.7.7</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
-    <version.io.smallrye-open-api>4.0.10</version.io.smallrye-open-api>
+    <version.io.smallrye-open-api>4.0.11</version.io.smallrye-open-api>
     <version.io.smallrye-config>3.11.4</version.io.smallrye-config>
     <version.org.awaitility>4.2.2</version.org.awaitility>
 
@@ -96,20 +97,20 @@
 
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.5.13</version.io.vertx>
+    <version.io.vertx>4.5.18</version.io.vertx>
     <version.io.grpc>1.69.1</version.io.grpc>
 
-    <version.io.quarkus.camel>3.20.1</version.io.quarkus.camel>
+    <version.io.quarkus.camel>3.20.2</version.io.quarkus.camel>
 
     <version.io.swagger.parser.v3>2.1.20</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
 
-    <version.org.apache.commons>3.17.0</version.org.apache.commons>
+    <version.org.apache.commons>3.18.0</version.org.apache.commons>
     <version.commons.io>2.19.0</version.commons.io>
 
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
 
-    <version.org.infinispan>15.0.15.Final</version.org.infinispan>
+    <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
 
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
@@ -137,8 +138,8 @@
     <version.org.junit.platform>1.12.2</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.mockito>5.17.0</version.org.mockito>
     <version.org.testcontainers>1.20.6</version.org.testcontainers>
-    <version.org.xmlunit-core>2.10.2</version.org.xmlunit-core>
-    <version.io.rest-assured>5.5.5</version.io.rest-assured>
+    <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
+    <version.io.rest-assured>5.5.6</version.io.rest-assured>
 
     <version.net.byte-buddy>1.15.11</version.net.byte-buddy>
 
@@ -161,10 +162,137 @@
     <version.com.google.collections>1.0</version.com.google.collections>
     <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.27.1</version.apache.commons.commons-compress>
+
+    <version.tomcat.embed.core>10.1.46</version.tomcat.embed.core>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- Not directly used, but used to override transitive versions of Spring dependencies dependencies to fix vulnerabilities -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aspects</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-indexer</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core-test</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-instrument</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jcl</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jms</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-messaging</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-oxm</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-r2dbc</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webflux</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-websocket</artifactId>
+        <version>${version.org.springframework}</version>
+      </dependency>
+
+      <!-- Not directly used, but used to override transitive versions from other dependencies to fix vulnerabilities -->
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${version.tomcat.embed.core}</version>
+      </dependency>
+
       <!-- Not directly used, but a vulnerable version has been brought from com.dajudge.kindcontainer dependency -->
       <dependency>
         <groupId>org.bouncycastle</groupId>
@@ -457,6 +585,82 @@
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
       </dependency>
 
+      <!-- Forced version of the majority of general netty dependencies. This is to enforce an aligned netty libraries version in transitive dependencies, due to possible CVEs. -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-dns</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-haproxy</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http2</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-memcache</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-mqtt</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-redis</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-smtp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-socks</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-stomp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-xml</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-dev-tools</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-handler</artifactId>
@@ -464,7 +668,47 @@
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
+        <artifactId>netty-handler-proxy</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler-ssl-ocsp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver-dns</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-rxtx</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-sctp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-udt</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
 
