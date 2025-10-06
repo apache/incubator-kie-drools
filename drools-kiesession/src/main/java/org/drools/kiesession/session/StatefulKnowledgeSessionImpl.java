@@ -68,7 +68,6 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -662,13 +661,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             this.handleFactory.destroyFactHandle( handle);
-
-            QueryResultsImpl queryResultsImpl = new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
+            return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
-            
-			return queryResultsImpl;
         } finally {
             if (!calledFromRHS) {
                 this.lock.unlock();

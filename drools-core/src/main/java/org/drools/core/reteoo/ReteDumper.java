@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -57,9 +56,6 @@ public class ReteDumper {
     private Predicate<BaseNode> nodesFilter;
 
     private boolean nodeInfoOnly = false;
-    
-    private Map<Integer, BaseNode> nodeMap = new HashMap<>();
-    private Map<Integer, BaseNode> childrenMap = new TreeMap<>();
 
     public ReteDumper() {
         this(node -> true);
@@ -204,7 +200,6 @@ public class ReteDumper {
     private void dumpNode( BaseNode node, String ident, Set<BaseNode> visitedNodes, BiConsumer<BaseNode, String> consumer ) {
         consumer.accept( node, ident );
         
-        nodeMap.put(node.getId(), node);
         if (!visitedNodes.add( node )) {
             return;
         }
@@ -212,7 +207,6 @@ public class ReteDumper {
         NetworkNode[] sinks = node.getSinks();
         if (sinks != null) {
             for (NetworkNode sink : sinks) {
-            	childrenMap.put(Integer.valueOf(node.getId()), (BaseNode) sink);
                 BaseNode sinkNode = ( BaseNode ) sink;
                 if ( nodesFilter.test( sinkNode ) ) {
                     dumpNode( sinkNode, ident + "  ", visitedNodes, consumer );
