@@ -23,7 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -197,9 +199,11 @@ public class ReteDumper {
 
     private void dumpNode( BaseNode node, String ident, Set<BaseNode> visitedNodes, BiConsumer<BaseNode, String> consumer ) {
         consumer.accept( node, ident );
+        
         if (!visitedNodes.add( node )) {
             return;
         }
+        
         NetworkNode[] sinks = node.getSinks();
         if (sinks != null) {
             for (NetworkNode sink : sinks) {
