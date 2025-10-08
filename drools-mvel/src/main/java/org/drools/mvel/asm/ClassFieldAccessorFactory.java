@@ -35,10 +35,6 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Map;
 
 import static org.drools.mvel.accessors.ClassFieldAccessorStore.getClassFieldInspector;

@@ -35,7 +35,6 @@ import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.EqualityKey;
