@@ -25,11 +25,15 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitInstance;
 
 import static java.util.stream.Collectors.toList;
 @Path("/$endpointName$")
+@Tag(name = "Rules - $modelName$")
 public class $unit$Query$name$Endpoint {
 
     @jakarta.inject.Inject
@@ -44,6 +48,8 @@ public class $unit$Query$name$Endpoint {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(operationId ="execute-rule-query-$modelName$",
+            summary="It executes the $modelName$ Rule Query")
     public List<$ReturnType$> executeQuery($UnitTypeDTO$ unitDTO) {
         RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
         // Do not return the result directly to allow post execution codegen (like monitoring)
@@ -56,6 +62,8 @@ public class $unit$Query$name$Endpoint {
     @Path("/first")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(operationId ="execute-rule-query-single-result-$modelName$",
+            summary="It executes the $modelName$ Rule Query. It returns one single fact (the first) as a result.")
     public $ReturnType$ executeQueryFirst($UnitTypeDTO$ unitDTO) {
         List<$ReturnType$> results = executeQuery(unitDTO);
         $ReturnType$ response = results.isEmpty() ? null : results.get(0);
