@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -19,28 +18,20 @@
     under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>kogito-addons-quarkus-parent</artifactId>
     <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-quarkus-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>kogito-addons-quarkus-common-parent</artifactId>
-  <name>Kogito Add-On Quarkus Common - Parent</name>
+  <groupId>org.apache.kie.sonataflow</groupId>
+  <artifactId>sonataflow-addons-quarkus-openapi-parent</artifactId>
+  <name>SonataFlow:: Addons :: Quarkus:: Serverless Workflow:: OpenAPI:: Parent</name>
+  <description>Serverless Workflow OpenAPI Quarkus Addons</description>
   <packaging>pom</packaging>
-  <description>Collection of common libraries used by Kogito Quarkus Add-ons.</description>
-
   <modules>
     <module>deployment</module>
-    <module>reactive-messaging</module>
-    <module>kogito-addons-quarkus-common-health</module>
-    <module>kogito-addons-quarkus-data-index-health</module>
-    <module>kogito-addons-quarkus-jobs-service-health</module>
-    <module>sonataflow-deployment</module>
+    <module>runtime</module>
   </modules>
-
 </project>

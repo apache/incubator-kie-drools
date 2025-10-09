@@ -23,6 +23,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.ServiceLoader.Provider;
+import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -48,14 +51,13 @@ import org.kie.kogito.quarkus.common.deployment.LiveReloadExecutionBuildItem;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
-import org.kie.kogito.quarkus.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
-import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
 import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
+import org.kie.kogito.serverless.workflow.parser.schema.ServerlessWorkflowOASFilter;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -75,7 +77,9 @@ import io.quarkus.smallrye.openapi.deployment.spi.AddToOpenAPIDefinitionBuildIte
 public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
 
     // Injecting Instance<WorkflowOpenApiHandlerGenerator> does not work here
-    private static WorkflowHandlerGenerator[] generators = { WorkflowOpenApiHandlerGenerator.instance, WorkflowRPCHandlerGenerator.instance };
+
+    private static Collection<WorkflowHandlerGenerator> generators =
+            Stream.concat(Stream.of(WorkflowRPCHandlerGenerator.instance), ServiceLoader.load(WorkflowHandlerGenerator.class).stream().map(Provider::get)).toList();
 
     @BuildStep
     @Override

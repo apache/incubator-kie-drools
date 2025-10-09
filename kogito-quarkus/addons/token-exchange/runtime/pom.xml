@@ -42,17 +42,8 @@
       <artifactId>quarkus-arc</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-oidc-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.openapi.generator</groupId>
-      <artifactId>quarkus-openapi-generator</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.kie.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus</artifactId>
+      <artifactId>sonataflow-addons-quarkus-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

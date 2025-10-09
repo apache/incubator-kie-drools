@@ -70,9 +70,6 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
 
     public static final WorkflowOpenApiHandlerGenerator instance = new WorkflowOpenApiHandlerGenerator();
 
-    private WorkflowOpenApiHandlerGenerator() {
-    }
-
     @Override
     protected Stream<WorkflowHandlerGeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a) {
         final String fileName = a.value().asString();

@@ -382,6 +382,18 @@
             <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+      
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-common-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-common-deployment</artifactId>
+         <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>
@@ -2379,6 +2391,28 @@
       <dependency>
         <groupId>org.apache.kie.sonataflow</groupId>
         <artifactId>sonataflow-addons-quarkus-python-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-openapi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-openapi</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+       <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-openapi-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-openapi-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

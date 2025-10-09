@@ -62,6 +62,7 @@
     <module>dynamic</module>
     <module>jbpm-usertask-storage-jpa</module>
     <module>token-exchange</module>
+    <module>openapi</module>
   </modules>
 
   <profiles>

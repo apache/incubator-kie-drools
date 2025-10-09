@@ -42,10 +42,13 @@
       <groupId>org.apache.kie.sonataflow</groupId>
       <artifactId>sonataflow-quarkus</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-openapi-generated-deployment</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-common-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-openapi-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -84,10 +87,6 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-client-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-client-jackson-deployment</artifactId>
     </dependency>
     <dependency>
@@ -103,10 +102,6 @@
       <artifactId>quarkus-cache-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkiverse.openapi.generator</groupId>
-      <artifactId>quarkus-openapi-generator-deployment</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi-deployment</artifactId>
     </dependency>
@@ -117,11 +112,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-grpc-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-oidc-client-deployment</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

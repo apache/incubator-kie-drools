@@ -57,10 +57,6 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-client-jackson</artifactId>
     </dependency>
     <dependency>
@@ -102,10 +98,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-openapi-generated</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-jsonpath-expression</artifactId>
     </dependency>
     <dependency>
@@ -116,13 +108,9 @@
       <groupId>io.quarkiverse.jackson-jq</groupId>
       <artifactId>quarkus-jackson-jq</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.openapi.generator</groupId>
-      <artifactId>quarkus-openapi-generator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.openapi.generator</groupId>
-      <artifactId>quarkus-openapi-generator-oidc</artifactId>
+     <dependency>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.asyncapi</groupId>
