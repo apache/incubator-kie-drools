@@ -18,16 +18,14 @@
  */
 package org.kie.maven.plugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceStore;
 
-import static org.drools.util.IoUtils.readBytesFromInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class DiskResourceStore implements ResourceStore {
 
@@ -78,55 +76,33 @@ public class DiskResourceStore implements ResourceStore {
     }
 
     private void commonWrite(String fullPath, byte[] pResourceData, boolean createFolder) {
-        File file = new File(fullPath);
-        if (createFolder) {
-            File dir = file.getParentFile();
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-        }
-
-        FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(file);
-            fos.write(pResourceData);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
+            final Path path = Paths.get(fullPath).normalize();
+            if (createFolder) {
+                final Path parentPath = path.getParent();
+                if (parentPath != null) {
+                    Files.createDirectories(parentPath);
                 }
             }
+            Files.write(path, pResourceData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private byte[] commonRead(String fullPath) {
-        FileInputStream fis = null;
         try {
-            fis = new FileInputStream(fullPath);
-            return readBytesFromInputStream(fis);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return Files.readAllBytes(Paths.get(fullPath).normalize());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
     private void commonRemove(String fullPath) {
-        File file = new File(fullPath);
-        if (file.exists()) {
-            file.delete();
+        try {
+            Files.deleteIfExists(Paths.get(fullPath).normalize());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
