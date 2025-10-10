@@ -52,7 +52,6 @@ import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.FromNode;
@@ -68,8 +67,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.TupleToObjectNode;
-import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -81,6 +79,8 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.reteoo.TupleToObjectNode;
+import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.util.FastIterator;
 import org.kie.api.definition.rule.Rule;
@@ -96,8 +96,8 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.isRootNode;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isSet;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.updateNodeTypesMask;
-import static org.drools.core.phreak.EagerPhreakBuilder.Add.attachAdapterAndPropagate;
 import static org.drools.core.phreak.EagerPhreakBuilder.deleteLeftTuple;
+import static org.drools.core.phreak.EagerPhreakBuilder.Add.attachAdapterAndPropagate;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.createSubnetworkSegmentMemory;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getOrCreateSegmentMemory;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
@@ -585,7 +585,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     public static void flushStagedTuples(InternalWorkingMemory wm, TerminalNode tn, PathMemory pmem, List<LeftTupleNode> splits) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
         if ( pmem.isInitialized() ) {
-            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem, pmem.getRuleAgendaItem().getRuleExecutor(), wm);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(wm, pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
         }
 
         // With the removing rules being flushed, we need to check any splits that will be merged, to see if they need flushing
