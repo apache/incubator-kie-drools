@@ -36,10 +36,10 @@ import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
 public class PhreakAsyncReceiveNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakAsyncReceiveNode.class );
 
-    public void doNode(AsyncReceiveNode node,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       AsyncReceiveNode node,
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples) {
 

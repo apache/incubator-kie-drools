@@ -29,10 +29,10 @@ import org.drools.metric.util.MetricLogUtils;
 public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
 
     @Override
-    public void doNode( AccumulateNode accNode,
+    public void doNode( ReteEvaluator reteEvaluator,
+                        AccumulateNode accNode,
                         LeftTupleSink sink,
                         AccumulateNode.AccumulateMemory am,
-                        ReteEvaluator reteEvaluator,
                         TupleSets srcLeftTuples,
                         TupleSets trgLeftTuples,
                         TupleSets stagedLeftTuples) {
@@ -40,7 +40,7 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);
 
-            super.doNode(accNode, sink, am, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(reteEvaluator, accNode, sink, am, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

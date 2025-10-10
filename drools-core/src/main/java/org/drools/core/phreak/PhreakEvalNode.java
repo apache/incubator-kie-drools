@@ -40,10 +40,10 @@ public class PhreakEvalNode {
 
     private static final String EVAL_LEFT_TUPLE_DELETED = "EVAL_LEFT_TUPLE_DELETED";
 
-    public void doNode(EvalConditionNode evalNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
@@ -124,7 +124,7 @@ public class PhreakEvalNode {
 
                     TupleImpl childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                 }
                 // else do nothing
             }
