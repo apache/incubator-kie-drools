@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -93,16 +94,17 @@ public class BetweenNode
         Object o_val = value.evaluate(ctx);
         Object o_s = start.evaluate(ctx);
         Object o_e = end.evaluate(ctx);
+        FEELEvent.Severity severity = ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? FEELEvent.Severity.WARN : FEELEvent.Severity.ERROR;
         if (o_val == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "value")));
             problem = true;
         }
         if (o_s == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "start")));
             problem = true;
         }
         if (o_e == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "end")));
             problem = true;
         }
         if (problem && ctx.getFEELDialect() != FEELDialect.BFEEL) return null;
