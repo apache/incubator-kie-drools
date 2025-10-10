@@ -28,6 +28,8 @@ public class MockTupleSource extends LeftTupleSource {
     private int               attached;
 
     private int               updated;
+    
+    private int               objectCount = 0;
 
     public MockTupleSource(final int id, BuildContext context) {
         super( id, context );
@@ -68,5 +70,14 @@ public class MockTupleSource extends LeftTupleSource {
     @Override
     public boolean isLeftTupleMemoryEnabled() {
         return true;
+    }
+
+    public void setObjectCount(int objectCount) {
+        this.objectCount = objectCount;
+    }
+    
+    @Override
+    public int getObjectCount() {
+        return this.objectCount;
     }
 }

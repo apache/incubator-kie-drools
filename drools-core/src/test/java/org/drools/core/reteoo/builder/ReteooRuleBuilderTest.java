@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.drools.base.base.ClassObjectType;
@@ -34,6 +35,7 @@ import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +94,7 @@ public class ReteooRuleBuilderTest {
 
         rule.setConsequence( consequence );
 
-        final List terminals = this.builder.addRule( this.rulebase, Collections.emptyList(), rule );
+        final List terminals = this.builder.addRule( this.rulebase, Collections.emptyList(), rule, new BiLinearDetector.BiLinearContext(new HashMap<>(), new HashMap<>()) );
 
         assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 

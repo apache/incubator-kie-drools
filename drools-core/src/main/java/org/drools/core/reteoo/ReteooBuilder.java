@@ -45,6 +45,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.kie.api.definition.rule.Rule;
 
@@ -69,8 +70,8 @@ public class ReteooBuilder
 
     private transient RuleBuilder       ruleBuilder;
 
-    private IdGenerator nodeIdsGenerator = new IdGenerator(1);
-    private IdGenerator memoryIdsGenerator = new IdGenerator(1);
+    private IdGenerator nodeIdsGenerator = new IdGenerator();
+    private IdGenerator memoryIdsGenerator = new IdGenerator();
 
     // ------------------------------------------------------------
     // Constructors
@@ -100,11 +101,11 @@ public class ReteooBuilder
     /**
      * Add a <code>Rule</code> to the network.
      *
-     * @param rule     The rule to add.
+     * @param rule                  The rule to add.
      * @throws InvalidPatternException
      */
-    public synchronized List<TerminalNode> addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( this.kBase, workingMemories, rule );
+    public synchronized List<TerminalNode> addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories, BiLinearDetector.BiLinearContext biLinearContext) {
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( this.kBase, workingMemories, rule, biLinearContext);
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -235,11 +236,11 @@ public class ReteooBuilder
 
                 if (NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
                     // this must be removed after alpha nodes are collected
-                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput());
+                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput().asBaseNode());
                 } else if (NodeTypeEnums.isBetaNodeWithSubnetwork(node)) {
                     endNode = (PathEndNode) ((BetaNode) node).getRightInput().getParent();
                     // this must be removed after we have a reference to the TupleToObjectNode endnode
-                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput());
+                    removeLeftTupleNode(wms, context, stillInUse, ((BetaNode) node).getRightInput().asBaseNode());
                     removePath(wms, context, stillInUse, alphas, endNode, endNode.getStartTupleSource());
                 }
 
@@ -381,16 +382,13 @@ public class ReteooBuilder
     public static class IdGenerator implements Externalizable {
 
         private static final long serialVersionUID = 510l;
+        private static final int FIRST_ID = 1;
 
         private Queue<Integer>    recycledIds;
         private int               nextId;
 
         public IdGenerator() {
-            this(1);
-        }
-
-        public IdGenerator(final int firstId) {
-            this.nextId = firstId;
+            this.nextId = FIRST_ID;
             this.recycledIds = new ArrayDeque<>();
         }
 

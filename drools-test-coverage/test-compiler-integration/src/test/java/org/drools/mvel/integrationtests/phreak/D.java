@@ -19,48 +19,36 @@
 package org.drools.mvel.integrationtests.phreak;
 
 import org.kie.api.definition.type.Position;
-import java.util.List;
-import java.util.ArrayList;
 
-public class A {
+public class D {
 
     @Position(0)
-    Integer object;
-    
-    private List<Object> children = new ArrayList<>();
+    Object object;
 
-    public A(Integer object) {
+    public D(Object object) {
         super();
         this.object = object;
     }
-    
-    public static A a(Integer object) {
-        return new A( object );
+
+    public static D d(Object object) {
+        return new D( object );
     }
 
-    public static A[] a(Integer... objects) {
-        A[] as = new A[objects.length];
+    public static D[] d(Object... objects) {
+        D[] ds = new D[objects.length];
         int i = 0;
-        for ( Integer object : objects ) {
-            as[i++] = new A( object );
+        for ( Object object : objects ) {
+            ds[i++] = new D( object );
         }
-        return as;
+        return ds;
     }        
 
     public Object getObject() {
         return object;
     }
 
-    public void setObject(Integer object) {
+    public void setObject(Object object) {
         this.object = object;
-    }
-
-    public List<Object> getChildren() {
-        return children;
-    }
-    
-    public void setChildren(List<Object> children) {
-        this.children = children;
     }
 
     @Override
@@ -76,7 +64,7 @@ public class A {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        A other = (A) obj;
+        D other = (D) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
@@ -85,7 +73,7 @@ public class A {
 
     @Override
     public String toString() {
-        return "A[" + object + "]";
+        return "D [" + object + "]";
     }
 
 }

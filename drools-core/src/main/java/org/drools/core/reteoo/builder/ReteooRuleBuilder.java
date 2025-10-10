@@ -21,6 +21,7 @@ package org.drools.core.reteoo.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -50,10 +51,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
-import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.reteoo.RuleBuilder;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.WindowNode;
+import org.drools.core.reteoo.*;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.api.conf.EventProcessingOption;
 
@@ -109,7 +107,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule) throws InvalidPatternException {
+    public List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule, BiLinearDetector.BiLinearContext biLinearContext) throws InvalidPatternException {
 
         // the list of terminal nodes
         final List<TerminalNode> termNodes = new ArrayList<>();
@@ -122,6 +120,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
             final BuildContext context = new BuildContext( kBase, workingMemories );
             context.setRule( rule );
             context.setSubRuleIndex( i );
+
+            context.setBiLinearContext(biLinearContext);
 
             // if running in STREAM mode, calculate temporal distance for events
             if (EventProcessingOption.STREAM.equals( kBase.getRuleBaseConfiguration().getEventProcessingMode() )) {
@@ -162,6 +162,17 @@ public class ReteooRuleBuilder implements RuleBuilder {
         builder.build( context,
                        this.utils,
                        subrule );
+
+        for (Map.Entry<String, List<BiLinearDetector.Pair>> stringPairEntry : context.getBiLinearContext().sharedChains().entrySet()) {
+            for (BiLinearDetector.Pair pair : stringPairEntry.getValue()) {
+                if(pair.providerRuleName().equals(rule.getName())){
+
+                    if( context.getLastNode() instanceof LeftTupleSource lts){
+                        context.getBiLinearContext().setLink(stringPairEntry.getKey(), lts);
+                    }
+                }
+            }
+        }
 
         TerminalNode terminal;
         if (!context.isTerminated()) {

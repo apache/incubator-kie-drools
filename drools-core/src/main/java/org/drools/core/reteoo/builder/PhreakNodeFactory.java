@@ -41,6 +41,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateRight;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BiLinearJoinNode;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
@@ -117,6 +118,16 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
     public JoinNode buildJoinNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
         JoinRightAdapterNode joinRight = new JoinRightAdapterNode(id, rightInput, context);
         return new JoinNode(context.getNextNodeId(), leftInput, joinRight, binder, context );
+    }
+
+    public BiLinearJoinNode buildBiLinearJoinNode(BetaConstraints binder, BuildContext context) {
+        return new BiLinearJoinNode(
+                context.getNextNodeId(),
+                context.getTupleSource(),
+                new BiLinearLeftInputWrapper(),
+                binder,
+                context
+        );
     }
 
     public NotNode buildNotNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {

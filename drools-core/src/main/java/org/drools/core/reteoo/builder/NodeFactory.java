@@ -47,6 +47,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
+import org.drools.core.reteoo.BiLinearJoinNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -106,6 +107,9 @@ public interface NodeFactory {
                             ObjectSource rightInput,
                             BetaConstraints binder,
                             BuildContext context );
+
+    BiLinearJoinNode buildBiLinearJoinNode(BetaConstraints binder,
+                                           BuildContext context );
 
     NotNode buildNotNode( int id,
                           LeftTupleSource leftInput,
