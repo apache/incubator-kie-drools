@@ -537,7 +537,6 @@ public class RuleNetworkEvaluator {
                                  TupleSets srcTuples,
                                  TupleSets stagedLeftTuples,
                                  boolean processSubnetwork) {
-
         BetaNode betaNode = (BetaNode) node;
         BetaMemory bm;
         AccumulateMemory am = null;
