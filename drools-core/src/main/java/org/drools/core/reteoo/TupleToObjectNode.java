@@ -336,7 +336,16 @@ public class TupleToObjectNode extends ObjectSource
         private void updateRuleTerminalNodes() {
             rules = new ArrayList<>();
             for ( ObjectSink osink : getTupleToObjectNode().getObjectSinkPropagator().getSinks() ) {
-                for ( LeftTupleSink ltsink : ((BetaNode)osink).getSinkPropagator().getSinks() )  {
+                LeftTupleSinkPropagator sinkPropagator;
+                if (osink instanceof BetaNode) {
+                    sinkPropagator = ((BetaNode) osink).getSinkPropagator();
+                } else if (osink instanceof RightInputAdapterNode) {
+                    sinkPropagator = ((RightInputAdapterNode<?>) osink).getBetaNode().getSinkPropagator();
+                } else {
+                    continue; // Skip unsupported node types
+                }
+
+                for ( LeftTupleSink ltsink : sinkPropagator.getSinks() )  {
                     findAndAddTN(ltsink, rules );
                 }
             }
