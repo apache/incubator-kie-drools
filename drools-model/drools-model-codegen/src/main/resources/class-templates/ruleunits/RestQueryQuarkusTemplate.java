@@ -48,7 +48,7 @@ public class $unit$Query$name$Endpoint {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(operationId ="execute-rule-query-$modelName$",
+    @Operation(operationId ="executeRuleQuery_$modelName$",
             summary="It executes the $modelName$ Rule Query")
     public List<$ReturnType$> executeQuery($UnitTypeDTO$ unitDTO) {
         RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
@@ -62,7 +62,7 @@ public class $unit$Query$name$Endpoint {
     @Path("/first")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(operationId ="execute-rule-query-single-result-$modelName$",
+    @Operation(operationId ="executeRuleQuerySingleResult_$modelName$",
             summary="It executes the $modelName$ Rule Query. It returns one single fact (the first) as a result.")
     public $ReturnType$ executeQueryFirst($UnitTypeDTO$ unitDTO) {
         List<$ReturnType$> results = executeQuery(unitDTO);
