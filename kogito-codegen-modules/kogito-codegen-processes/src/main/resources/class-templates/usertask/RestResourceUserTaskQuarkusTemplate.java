@@ -127,7 +127,7 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
-            String body) throws Exception {
+            String body) throws IOException {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setOutputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
@@ -139,7 +139,7 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
-            String body) throws Exception {
+            String body) throws IOException {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setInputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }

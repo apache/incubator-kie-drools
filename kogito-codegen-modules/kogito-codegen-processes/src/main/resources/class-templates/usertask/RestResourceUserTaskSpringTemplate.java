@@ -129,7 +129,7 @@ public class UserTasksResource {
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
-            @RequestBody String body) throws Exception {
+            @RequestBody String body) throws IOException {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setOutputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
@@ -139,7 +139,7 @@ public class UserTasksResource {
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
-            @RequestBody String body) throws Exception {
+            @RequestBody String body) throws IOException {
         Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setInputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
