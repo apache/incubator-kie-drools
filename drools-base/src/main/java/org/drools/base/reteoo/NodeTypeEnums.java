@@ -82,6 +82,7 @@ public class NodeTypeEnums {
     // LeftTupleSource, LefTTupleSink, LeftTupleNode, BetaNode
     public static final int BetaNode                = (320 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
     public static final int JoinNode                = (330 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int BiLinearJoinNode        = (335 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
     public static final int NotNode                 = (340 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
     public static final int ExistsNode              = (350 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
     public static final int AccumulateNode          = (360 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;

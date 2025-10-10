@@ -32,6 +32,7 @@ import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.BiLinearJoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -98,6 +99,7 @@ public class LeftTupleIterator
 
         switch (source.getType()) {
             case NodeTypeEnums.JoinNode:
+            case NodeTypeEnums.BiLinearJoinNode:
             case NodeTypeEnums.NotNode:
             case NodeTypeEnums.FromNode:
             case NodeTypeEnums.AccumulateNode: {
@@ -263,7 +265,7 @@ public class LeftTupleIterator
                 leftTuple = (TupleImpl) localIt.next(leftTuple );
             }
 
-        } else if ( source instanceof JoinNode || source instanceof NotNode|| source instanceof FromNode || source instanceof AccumulateNode ) {
+        } else if ( source instanceof JoinNode || source instanceof BiLinearJoinNode || source instanceof NotNode|| source instanceof FromNode || source instanceof AccumulateNode ) {
             BetaMemory memory;
             FastIterator localIt;
             if ( source instanceof FromNode ) {
