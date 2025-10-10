@@ -49,7 +49,6 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;

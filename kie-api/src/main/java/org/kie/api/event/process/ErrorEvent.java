@@ -18,8 +18,6 @@
  */
 package org.kie.api.event.process;
 
-import org.kie.api.runtime.process.NodeInstance;
-
 /**
  * An event when a error is thrown
  */
