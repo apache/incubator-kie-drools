@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Main broken"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: "Creator"
     type: string

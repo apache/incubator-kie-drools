@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Branch responsibilities"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: "Main POM"
     type: 'http://myapi.org/jsonSchema.json#POM'

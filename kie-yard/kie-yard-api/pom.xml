@@ -35,11 +35,9 @@
 
   <properties>
     <java.module.name>org.kie.yard.api</java.module.name>
-    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <dependencies>
-
 
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -55,5 +53,6 @@
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
     </dependency>
+
   </dependencies>
 </project>

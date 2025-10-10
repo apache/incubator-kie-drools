@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Traffic Violation"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: Fragile
     type: boolean
@@ -59,6 +59,10 @@ elements:
     logic:
       type: LiteralExpression
       expression: |
-        ((java.util.List<java.util.Map<String,Integer>>)`Selected premiums`).stream().map(m -> m.get("Price")).mapToInt(Integer::valueOf).sum();
+        sum = 0;
+        foreach (item : `Selected premiums`) {
+          sum += item.Price;
+        }
+        sum;
 #      Feels filthy compared to FEEL below
 #      expression: 'sum( for item in Selected premiums return item.Price )'
