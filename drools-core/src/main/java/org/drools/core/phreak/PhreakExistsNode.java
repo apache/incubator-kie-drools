@@ -35,10 +35,10 @@ import org.drools.core.util.FastIterator;
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 public class PhreakExistsNode {
-    public void doNode(ExistsNode existsNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       ExistsNode existsNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
@@ -266,7 +266,7 @@ public class PhreakExistsNode {
 
                 if (leftTuple.getFirstChild() != null) {
                     // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, leftTuple.getFirstChild() );
                 }
                 // with no previous children. do nothing.
             } else if (leftTuple.getFirstChild() == null) {
@@ -401,7 +401,7 @@ public class PhreakExistsNode {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if ( childLeftTuple != null ) {
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                         }
                     }
 
@@ -431,7 +431,7 @@ public class PhreakExistsNode {
             } else {
                 if (leftTuple.getFirstChild() != null) {
                     // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, leftTuple.getFirstChild() );
                 }
                 blocker.removeBlocked(leftTuple);
             }
@@ -495,7 +495,7 @@ public class PhreakExistsNode {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) {
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                         }
                     }
 

@@ -43,10 +43,10 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 public class PhreakFromNode {
-    public void doNode(FromNode fromNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       FromNode fromNode,
                        FromMemory fm,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
@@ -205,7 +205,7 @@ public class PhreakFromNode {
                 while (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }
@@ -266,7 +266,7 @@ public class PhreakFromNode {
                                             TupleImpl childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.setPropagationContext( propagationContext );
-            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
         }
     }
 }

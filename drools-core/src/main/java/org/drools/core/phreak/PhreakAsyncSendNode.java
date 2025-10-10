@@ -42,9 +42,9 @@ public class PhreakAsyncSendNode {
         return ExecutorProviderFactory.getExecutorProvider().getExecutor();
     }
 
-    public void doNode(AsyncSendNode node,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       AsyncSendNode node,
                        AsyncSendMemory memory,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples) {
 
         if (srcLeftTuples.getInsertFirst() != null) {
