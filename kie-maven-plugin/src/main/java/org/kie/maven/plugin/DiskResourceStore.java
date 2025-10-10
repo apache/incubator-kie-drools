@@ -18,19 +18,14 @@
  */
 package org.kie.maven.plugin;
 
+import org.drools.util.PortablePath;
+import org.kie.memorycompiler.resources.ResourceStore;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.drools.util.PortablePath;
-import org.kie.memorycompiler.resources.ResourceStore;
-
-import static org.drools.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceStore implements ResourceStore {
 
@@ -86,10 +81,10 @@ public class DiskResourceStore implements ResourceStore {
             if (createFolder) {
                 final Path parentPath = path.getParent();
                 if (parentPath != null) {
-                    parentPath.toFile().mkdirs();
+                    Files.createDirectories(parentPath);
                 }
             }
-            Files.write(Paths.get(fullPath).normalize(), pResourceData);
+            Files.write(path, pResourceData);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
