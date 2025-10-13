@@ -75,6 +75,7 @@ import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
 import org.drools.model.codegen.execmodel.generator.drlxparse.NumberAndStringArithmeticOperationCoercion;
 import org.drools.model.codegen.execmodel.generator.operatorspec.NativeOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.OperatorSpec;
+import org.drools.model.codegen.execmodel.generator.operatorspec.RegexOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.TemporalOperatorSpec;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.FullyQualifiedInlineCastExpr;
@@ -480,6 +481,9 @@ public class ExpressionTyper {
         if (ModelGenerator.temporalOperators.contains(operator )) {
             return TemporalOperatorSpec.INSTANCE;
         }
+        if ("matches".equals(operator)) {
+            return RegexOperatorSpec.INSTANCE;
+        }
         if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
             return NativeOperatorSpec.INSTANCE;
         }
@@ -801,11 +805,11 @@ public class ExpressionTyper {
     private TypedExpressionCursor binaryExpr(BinaryExpr binaryExpr) {
         TypedExpressionResult left = toTypedExpression(binaryExpr.getLeft());
         TypedExpression leftTypedExpression = left.getTypedExpression()
-                                                  .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
+                .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
         binaryExpr.setLeft(leftTypedExpression.getExpression());
         TypedExpressionResult right = toTypedExpression(binaryExpr.getRight());
         TypedExpression rightTypedExpression = right.getTypedExpression()
-                                                    .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
+                .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
         binaryExpr.setRight(rightTypedExpression.getExpression());
         if (shouldConvertArithmeticBinaryToMethodCall(binaryExpr.getOperator(), leftTypedExpression.getType(), rightTypedExpression.getType())) {
             Expression compiledExpression = convertArithmeticBinaryToMethodCall(binaryExpr, leftTypedExpression.getOriginalPatternType(), ruleContext);

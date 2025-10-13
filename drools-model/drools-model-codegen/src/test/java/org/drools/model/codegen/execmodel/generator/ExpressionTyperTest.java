@@ -60,16 +60,15 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PL
 public class ExpressionTyperTest {
 
     private HashSet<String> imports;
-    private PackageModel packageModel;
     private TypeResolver typeResolver;
     private RuleContext ruleContext;
-    private KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
-    private RuleDescr ruleDescr = new RuleDescr("testRule");
+    private final KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+    private final RuleDescr ruleDescr = new RuleDescr("testRule");
 
     @BeforeEach
     public void setUp() throws Exception {
         imports = new HashSet<>();
-        packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
+        PackageModel packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
         ruleContext = new RuleContext(knowledgeBuilder, knowledgeBuilder, packageModel, typeResolver, ruleDescr);
         imports.add(Person.class.getCanonicalName());
@@ -107,11 +106,20 @@ public class ExpressionTyperTest {
     }
 
     @Test
-    public void pointFreeTest() {
+    public void pointFreeForDynamicRegexMatchesOperatorTest() {
+        final PointFreeExpr expression = new PointFreeExpr(null, new NameExpr("name"), NodeList.nodeList(new MethodCallExpr("getEmail")), new SimpleName("matches"), false, null, null, null, null);
+        TypedExpressionResult typedExpressionResult = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
+        final TypedExpression actual = typedExpressionResult.getTypedExpression().get();
+        final TypedExpression expected = typedResult("D.eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), _this.getEmail())", String.class);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void pointFreeForStaticRegexMatchesOperatorTest() {
         final PointFreeExpr expression = new PointFreeExpr(null, new NameExpr("name"), NodeList.nodeList(new StringLiteralExpr("[A-Z]")), new SimpleName("matches"), false, null, null, null, null);
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
         final TypedExpression actual = typedExpressionResult.getTypedExpression().get();
-        final TypedExpression expected = typedResult("D.eval(org.drools.model.operators.MatchesOperator.INSTANCE, _this.getName(), \"[A-Z]\")", String.class);
+        final TypedExpression expected = typedResult("(_this.getName() != null && regexp_49CE5AB50F4FBCBE25DB1AF1EC5CACE2.matcher(((java.lang.CharSequence) _this.getName())).matches())", String.class);
         assertThat(actual).isEqualTo(expected);
     }
 

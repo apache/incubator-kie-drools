@@ -27,9 +27,11 @@ import org.drools.base.rule.constraint.Constraint;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.HashKey;
+import org.drools.core.reteoo.JoinRightAdapterNode;
+import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -82,8 +84,8 @@ public class CompositeObjectSinkAdapterTest {
 
 
     public void testAddBeta() {
-        final MockBetaNode beta = createBetaNode();
-        
+        RightInputAdapterNode beta = new JoinRightAdapterNode(0, new MockObjectSink(), buildContext);
+
         ad.addObjectSink( beta );
         
         sinksAre(beta);
@@ -94,7 +96,7 @@ public class CompositeObjectSinkAdapterTest {
     }
     
     public void testAddBetaRemoveBeta() {
-        final MockBetaNode beta = createBetaNode();
+        RightInputAdapterNode beta = new JoinRightAdapterNode(0, new MockObjectSink(), buildContext);
         ad.addObjectSink( beta );
 
         ad.removeObjectSink( beta );
@@ -174,7 +176,7 @@ public class CompositeObjectSinkAdapterTest {
         ad.addObjectSink( al );
         final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
-        final BetaNode beta = createBetaNode();
+        RightInputAdapterNode beta = new JoinRightAdapterNode(0, new MockObjectSink(), buildContext);
         
         ad.addObjectSink( beta );
         
@@ -190,7 +192,8 @@ public class CompositeObjectSinkAdapterTest {
         ad.addObjectSink( al );
         final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
-        final BetaNode beta = createBetaNode();
+        RightInputAdapterNode beta = new JoinRightAdapterNode(0, new MockObjectSink(), buildContext);
+
         ad.addObjectSink( beta );
 
         ad.removeObjectSink( beta );
@@ -478,7 +481,7 @@ public class CompositeObjectSinkAdapterTest {
 	private MockBetaNode createBetaNode() {
 		return new MockBetaNode( buildContext.getNextNodeId(),
                                                     new MockBetaNode( ),
-                                                    new MockObjectSource(),
+                                                    new JoinRightAdapterNode(0, new MockObjectSink(), buildContext),
                                                     buildContext );
 	}
 	

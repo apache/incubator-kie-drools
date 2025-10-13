@@ -61,7 +61,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
     String getOperatorName();
 
     class Register {
-        private static final Map<String, Operator> opMap = new HashMap<>();
+        private static final Map<String, Operator<?, ?>> opMap = new HashMap<>();
 
         static {
             register( InOperator.INSTANCE );
@@ -75,7 +75,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
             register( StringLengthWithOperator.INSTANCE );
         }
 
-        public static void register(Operator operator) {
+        public static void register(Operator<?, ?> operator) {
             opMap.put( operator.getOperatorName(), operator);
         }
 
@@ -83,7 +83,7 @@ public interface Operator<A, B> extends Predicate2<A, B[]> {
             return opMap.containsKey( opName );
         }
 
-        public static Operator getOperator(String opName) {
+        public static Operator<?, ?> getOperator(String opName) {
             return opMap.get( opName );
         }
 

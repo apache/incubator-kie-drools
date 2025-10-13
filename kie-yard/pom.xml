@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.kie</groupId>
+        <artifactId>drools-build-parent</artifactId>
+        <version>999-SNAPSHOT</version>
+        <relativePath>../build-parent</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-yard</artifactId>
+    <version>999-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>KIE :: Yard - YAML Rules DSL</name>
+    <description>Yet another Rules DSL (YaRD) - A YAML-based domain-specific language for defining business rules</description>
+
+    <url>http://drools.org</url>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>JBoss by Red Hat</name>
+        <url>http://www.jboss.org/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/kiegroup/yard.git</connection>
+        <developerConnection>scm:git:git@github.com:kiegroup/yard.git</developerConnection>
+        <url>https://github.com/kiegroup/yard</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>All developers are listed in the KIE GitHub organization</name>
+            <url>https://github.com/orgs/kiegroup/people</url>
+        </developer>
+    </developers>
+
+    <properties>
+
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
+
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <version.org.drools>8.44.0.Final</version.org.drools>
+        <version.jackson>2.15.2</version.jackson>
+        <version.jshell>1.1.0</version.jshell>
+        <version.org.glassfish.jakarta.json>2.0.1</version.org.glassfish.jakarta.json>
+    </properties>
+
+    <!-- distributionManagement section -->
+    <distributionManagement>
+        <repository>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshot Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-yard-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-ruleunits-dsl</artifactId>
+                <version>${version.org.drools}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.obermuhlner</groupId>
+                <artifactId>jshell-scriptengine</artifactId>
+                <version>${version.jshell}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>kie-yard-api</module>
+        <module>kie-yard-core</module>
+    </modules>
+
+</project>

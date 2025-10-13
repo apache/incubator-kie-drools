@@ -39,7 +39,6 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -69,7 +68,6 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -148,6 +146,8 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.base.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.util.ClassUtils.rawType;
+
+
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -249,6 +249,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Consumer<PropagationEntry> workingMemoryActionListener;
 
     private boolean tmsEnabled;
+    
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -659,7 +661,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             this.handleFactory.destroyFactHandle( handle);
-
             return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
                                          this,
