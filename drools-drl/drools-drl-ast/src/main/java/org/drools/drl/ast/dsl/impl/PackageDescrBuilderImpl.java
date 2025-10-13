@@ -29,7 +29,6 @@ import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.drools.drl.ast.dsl.QueryDescrBuilder;
 import org.drools.drl.ast.dsl.RuleDescrBuilder;
 import org.drools.drl.ast.dsl.UnitDescrBuilder;
-import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;

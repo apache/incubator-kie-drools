@@ -20,7 +20,6 @@ package org.drools.model.codegen.execmodel.generator.drlxparse;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
