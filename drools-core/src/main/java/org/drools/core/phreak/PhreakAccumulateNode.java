@@ -48,10 +48,10 @@ import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 public class PhreakAccumulateNode {
 
-    public void doNode(AccumulateNode accNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       AccumulateNode accNode,
                        LeftTupleSink sink,
                        AccumulateMemory am,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {

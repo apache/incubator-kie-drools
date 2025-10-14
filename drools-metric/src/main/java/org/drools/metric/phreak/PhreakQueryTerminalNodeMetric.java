@@ -30,15 +30,15 @@ import org.drools.metric.util.MetricLogUtils;
 public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
 
     @Override
-    public void doNode(QueryTerminalNode qtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       LinkedList<StackEntry> stack) {
+    public void doNode(ActivationsManager activationsManager,
+                       LinkedList<StackEntry> stack,
+                       QueryTerminalNode qtnNode,
+                       TupleSets srcLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(qtnNode);
 
-            super.doNode(qtnNode, activationsManager, srcLeftTuples, stack);
+            super.doNode(activationsManager, stack, qtnNode, srcLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();
