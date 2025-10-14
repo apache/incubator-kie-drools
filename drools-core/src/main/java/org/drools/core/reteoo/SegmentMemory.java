@@ -332,14 +332,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.linkedNodeMask = mask & linkedNodeMask;
     }
 
-    public void mergeBitMasks(SegmentMemory sm2, LeftTupleNode[] origNodes, long currentLinkedNodeMask) {
+    public void mergeBitMasks(SegmentMemory sm, LeftTupleNode[] origNodes, long currentLinkedNodeMask) {
         // @TODO Haven't made this work for more than 64 nodes, as per SegmentUtilities.nextNodePosMask (mdp)
         int shiftBits = origNodes.length;
 
-        long linkedBitsToAdd = sm2.linkedNodeMask << shiftBits;
-        long dirtyBitsToAdd = sm2.dirtyNodeMask << shiftBits;
+        long linkedBitsToAdd = sm.linkedNodeMask << shiftBits;
+        long dirtyBitsToAdd = sm.dirtyNodeMask << shiftBits;
         this.linkedNodeMask = linkedBitsToAdd | currentLinkedNodeMask;
-        this.dirtyNodeMask = dirtyBitsToAdd | getDirtyNodeMask();
+        this.dirtyNodeMask = dirtyBitsToAdd | dirtyNodeMask;
     }
 
     public void mergePathMemories(SegmentMemory segmentMemory) {
@@ -531,6 +531,104 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.nodeMemories = mergedMemories.toArray(new Memory[mergedMemories.size()]);
     }
 
+    public void mergeSegment(SegmentMemory other) {
+        if (NodeTypeEnums.isLeftInputAdapterNode(getTipNode()) && !other.stagedLeftTuples.isEmpty()) {
+            // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
+            // these are safe to just move to the parent SegmentMemory
+            stagedLeftTuples.addAll(other.stagedLeftTuples);
+        }
+
+        // sm1 may not be linked yet to sm2 because sm2 has been just created
+        if (contains(other)) {
+            remove(other);
+        }
+
+        if (other.getFirst() != null) {
+            for (SegmentMemory sm = other.getFirst(); sm != null;) {
+                SegmentMemory next = sm.getNext();
+                other.remove(sm);
+                add(sm);
+                sm = next;
+            }
+        }
+        // re-assigned tip nodes
+        setTipNode(other.getTipNode());
+
+        mergeNodeMemories(other);
+
+        mergeBitMasks(other);
+    }
+
+    public void mergeSegment(SegmentMemory other,
+                             SegmentPrototype proto1,
+                             LeftTupleNode[] origNodes) {
+        if (NodeTypeEnums.isLeftInputAdapterNode(getTipNode()) && !other.getStagedLeftTuples().isEmpty()) {
+            // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
+            // these are safe to just move to the parent SegmentMemory
+            getStagedLeftTuples().addAll(other.getStagedLeftTuples());
+        }
+
+        // sm1 may not be linked yet to sm2 because sm2 has been just created
+        if (contains(other)) {
+            remove(other);
+        }
+
+        // add all child sms
+        if (other.getFirst() != null) {
+            for (SegmentMemory sm = other.getFirst(); sm != null;) {
+                SegmentMemory next = sm.getNext();
+                other.remove(sm);
+                add(sm);
+                sm = next;
+            }
+        }
+
+        // preserve values that get changed updateSegmentMemory, for merge
+        long currentLinkedNodeMask = getLinkedNodeMask();
+        updateFromPrototype(proto1);
+        mergeBitMasks(other, origNodes, currentLinkedNodeMask);
+    }
+
+    public SegmentMemory splitSegmentOn(SegmentMemory other, LeftTupleNode splitNode) {
+        // Move the children of this segment to other segment
+        if (getFirst() != null) {
+            for (SegmentMemory sm = getFirst(); sm != null;) {
+                SegmentMemory next = getNext();
+                remove(sm);
+                other.add(sm);
+                sm = next;
+            }
+        }
+
+        add(other);
+
+        other.setPos(getPos()); // clone for now, it's corrected later
+        other.setSegmentPosMaskBit(getSegmentPosMaskBit()); // clone for now, it's corrected later
+        other.setLinkedNodeMask(getLinkedNodeMask()); // clone for now, it's corrected later
+
+        other.mergePathMemories(this);
+
+        // re-assigned tip nodes
+        other.setTipNode(getTipNode());
+        setTipNode(splitNode); // splitNode is now tip of original segment
+
+        if (NodeTypeEnums.isLeftInputAdapterNode(getTipNode())) {
+            if (!getStagedLeftTuples().isEmpty()) {
+                // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
+                other.getStagedLeftTuples().addAll(getStagedLeftTuples());
+            }
+        }
+
+        // find the pos of the node in the segment
+        int pos = nodeSegmentPosition(splitNode);
+
+        splitNodeMemories(other, pos);
+        splitBitMasks(other, pos);
+        other.correctSegmentMemoryAfterSplitOnAdd(1);
+
+        return other;
+    }
+
     private void addToMemoryList(List<Memory> smNodeMemories, Memory mem) {
         if (!smNodeMemories.isEmpty()) {
             Memory last = smNodeMemories.get(smNodeMemories.size() - 1);
@@ -552,6 +650,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     public void correctSegmentMemoryAfterSplitOnRemove(int i) {
         this.pos = pos - i;
         this.segmentPosMaskBit = segmentPosMaskBit >> i;
+    }
+
+    public void updateFromPrototype(SegmentPrototype proto) {
+        this.proto = proto;
+        this.allLinkedMaskTest = proto.getAllLinkedMaskTest();
+        this.segmentPosMaskBit = proto.getSegmentPosMaskBit();
+        this.linkedNodeMask = proto.getLinkedNodeMask();
+        this.pos = proto.getPos();
     }
 
     @Override
@@ -591,20 +697,12 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         public SegmentMemory shallowNewSegmentMemory() {
             SegmentMemory smem = new SegmentMemory();
-            shallowUpdateSegmentMemory(smem);
+            smem.updateFromPrototype(this);
             return smem;
         }
 
-        public void shallowUpdateSegmentMemory(SegmentMemory smem) {
-            smem.proto = this;
-            smem.allLinkedMaskTest = this.allLinkedMaskTest;
-            smem.segmentPosMaskBit = this.segmentPosMaskBit;
-            smem.linkedNodeMask = this.linkedNodeMask;
-            smem.pos = this.pos;
-        }
-
         public void updateSegmentMemory(SegmentMemory smem, ReteEvaluator reteEvaluator) {
-            shallowUpdateSegmentMemory(smem);
+            smem.updateFromPrototype(this);
             Memory[] nodeMemories = new Memory[getNodesInSegment().length];
             for (int i = 0; i < memories.length; i++) {
                 Memory mem = reteEvaluator.getNodeMemory((MemoryFactory) getNodesInSegment()[i]);
@@ -718,6 +816,139 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         public void setPathEndNodes(PathEndNode[] pathEndNodes) {
             this.pathEndNodes = pathEndNodes;
+        }
+
+        public void splitProtos(SegmentPrototype proto2, LeftTupleNode splitNode) {
+            setTipNode(splitNode);
+
+            LeftTupleNode[] nodes = getNodesInSegment();
+
+            MemoryPrototype[] mems = getMemories();
+
+            int arraySplit = splitNode.getPathIndex() - getRootNode().getPathIndex() + 1;
+            LeftTupleNode[] proto1Nodes = new LeftTupleNode[arraySplit];
+            LeftTupleNode[] proto2Nodes = new LeftTupleNode[nodes.length - arraySplit];
+            System.arraycopy(nodes, 0, proto1Nodes, 0, proto1Nodes.length);
+            System.arraycopy(nodes, arraySplit, proto2Nodes, 0, proto2Nodes.length);
+            setNodesInSegment(proto1Nodes);
+            proto2.setNodesInSegment(proto2Nodes);
+
+            setNodeTypes(proto1Nodes);
+            proto2.setNodeTypes(proto2Nodes);
+
+            // Split the memory protos across proto1 and proto2
+            MemoryPrototype[] proto1Mems = new MemoryPrototype[proto1Nodes.length];
+            MemoryPrototype[] proto2Mems = new MemoryPrototype[proto2Nodes.length];
+            System.arraycopy(mems, 0, proto1Mems, 0, proto1Mems.length);
+            setMemories(proto1Mems);
+
+            // proto2Mems needs updating, no point in arraycopy, so just use standard for loop to copy
+            int bitPos = 1;
+            for (int i = 0; i < proto2Mems.length; i++) {
+                proto2Mems[i] = mems[i + arraySplit];
+                proto2Mems[i].setNodePosMaskBit(bitPos);
+                bitPos = bitPos << 1;
+            }
+
+            proto2.setMemories(proto2Mems);
+            splitBitMasks(proto2);
+        }
+
+        public void splitEagerProtos(boolean proto1WasEager, SegmentPrototype other, PathEndNode endNode) {
+            if (proto1WasEager) { // if it wasn't eager before, nothing can be eager after
+                SegmentPrototype[] eager = endNode.getEagerSegmentPrototypes();
+                if (requiresEager() && other.requiresEager()) {
+                    // keep proto1 and add proto2
+                    SegmentPrototype[] newEager = new SegmentPrototype[eager.length + 1];
+                    System.arraycopy(eager, 0, newEager, 0, eager.length);
+                    newEager[newEager.length - 1] = other; // I don't think order matters, so just add to the end
+                    endNode.setEagerSegmentPrototypes(newEager);
+                } else if (other.requiresEager()) {
+                    // proto2 is no longer eager, find proto1 and swap proto1 with proto2
+                    for (int i = 0; i < eager.length; i++) {
+                        if (eager[i] == this) {
+                            eager[i] = other;
+                            break;
+                        }
+                    }
+                } // else if ( requiresEager() && !proto2.requiresEager()) do nothing as proto1 already in the array
+            }
+        }
+
+        public void mergeProtos(SegmentPrototype other, LeftTupleNode[] origNodes) {
+            setTipNode(other.getTipNode());
+            LeftTupleNode[] nodes = new LeftTupleNode[getNodesInSegment().length + other.getNodesInSegment().length];
+
+            System.arraycopy(getNodesInSegment(), 0, nodes,
+                    0, getNodesInSegment().length);
+
+            System.arraycopy(other.getNodesInSegment(), 0, nodes,
+                    getNodesInSegment().length, other.getNodesInSegment().length);
+
+            setNodesInSegment(nodes);
+
+            MemoryPrototype[] protoMems = new MemoryPrototype[getMemories().length + other.getMemories().length];
+
+            System.arraycopy(getMemories(), 0, protoMems,
+                    0, getMemories().length);
+
+            System.arraycopy(other.getMemories(), 0, protoMems,
+                    getMemories().length, other.getMemories().length);
+
+            setNodesInSegment(nodes);
+            setMemories(protoMems);
+
+            int bitPos = 1;
+            for (MemoryPrototype protoMem : protoMems) {
+                protoMem.setNodePosMaskBit(bitPos);
+                bitPos = bitPos << 1;
+            }
+            setNodeTypes(nodes);
+
+            mergeBitMasks(other, origNodes);
+        }
+
+        public void mergeEagerProtos(SegmentPrototype proto2, boolean proto2WasEager, PathEndNode endNode) {
+            if (!requiresEager() && !proto2.requiresEager()) {
+                return;
+            }
+
+            SegmentPrototype[] eager = endNode.getEagerSegmentPrototypes();
+            if (requiresEager() && proto2.requiresEager()) {
+                // keep proto1 and remove proto2
+                SegmentPrototype[] newEager = new SegmentPrototype[eager.length - 1];
+                copyWithRemoval(eager, newEager, proto2);
+                endNode.setEagerSegmentPrototypes(newEager);
+            } else if (requiresEager() && proto2WasEager) {
+                // find proto2 and swap proto2 with proto1
+                for (int i = 0; i < eager.length; i++) {
+                    if (eager[i] == proto2) {
+                        eager[i] = this;
+                        break;
+                    }
+                }
+            } // else if ( requiresEager() && !proto2.requiresEager()) do nothing as proto1 already in the array
+        }
+
+        private static void copyWithRemoval(SegmentPrototype[] orinalProtos,
+                                            SegmentPrototype[] newProtos,
+                                            SegmentPrototype protoToRemove) {
+            for (int i = 0, j = 0; i < orinalProtos.length; i++) {
+                if (orinalProtos[i] == protoToRemove) {
+                    // j is not increased here.
+                    continue;
+                }
+                newProtos[j] = orinalProtos[i];
+                j++;
+            }
+        }
+
+        public void setNodeTypes(LeftTupleNode[] protoNodes) {
+            int nodeTypesInSegment = 0;
+            for (LeftTupleNode node : protoNodes) {
+                nodeTypesInSegment = BuildtimeSegmentUtilities.updateNodeTypesMask(node, nodeTypesInSegment);
+            }
+            setNodeTypesInSegment(nodeTypesInSegment);
         }
 
         public void mergeBitMasks(SegmentPrototype sm2, LeftTupleNode[] origNodes) {
