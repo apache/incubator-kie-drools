@@ -18,7 +18,6 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;

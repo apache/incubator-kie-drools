@@ -19,7 +19,6 @@
 package org.drools.tms.beliefsystem.jtms;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;

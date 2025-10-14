@@ -41,12 +41,8 @@ import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.ASTORE;
 import static org.mvel2.asm.Opcodes.CHECKCAST;
 import static org.drools.mvel.asm.TypeConversionHelper.*;
-import static org.mvel2.asm.Opcodes.D2F;
-import static org.mvel2.asm.Opcodes.I2B;
-import static org.mvel2.asm.Opcodes.I2S;
 import static org.mvel2.asm.Opcodes.INVOKESTATIC;
 import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
-import static org.mvel2.asm.Opcodes.L2I;
 import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {

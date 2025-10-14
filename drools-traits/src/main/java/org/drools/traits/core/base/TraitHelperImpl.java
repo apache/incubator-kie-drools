@@ -32,7 +32,6 @@ import java.util.PriorityQueue;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;

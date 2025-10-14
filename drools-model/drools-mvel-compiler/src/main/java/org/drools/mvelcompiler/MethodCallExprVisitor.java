@@ -19,12 +19,8 @@
 package org.drools.mvelcompiler;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.utils.Pair;
-import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
-import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -35,7 +31,6 @@ import org.drools.mvelcompiler.util.VisitorContext;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

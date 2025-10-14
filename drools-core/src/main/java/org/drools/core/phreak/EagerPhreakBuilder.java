@@ -55,7 +55,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathEndNode.PathMemSpec;

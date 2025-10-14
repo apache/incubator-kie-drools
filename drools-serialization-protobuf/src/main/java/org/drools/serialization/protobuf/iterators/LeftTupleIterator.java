@@ -37,7 +37,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightTuple;
