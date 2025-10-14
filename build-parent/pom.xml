@@ -71,9 +71,9 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.14.11</version.io.micrometer>
-    <version.io.quarkus>3.20.2.2</version.io.quarkus>
+    <version.io.quarkus>3.20.3</version.io.quarkus>
     <version.io.netty>4.1.127.Final</version.io.netty>
-    <version.io.smallrye.openapi.core>4.0.11</version.io.smallrye.openapi.core>
+    <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
