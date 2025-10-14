@@ -37,27 +37,26 @@ public class BetaNodeTest {
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
 
         final LeftTupleSource ts = new MockTupleSource( 1, buildContext );
-        final ObjectSource    os    = new MockObjectSource( 2, buildContext );
-        RightInputAdapterNode right = new JoinRightAdapterNode(5, os, buildContext);
+        final ObjectSource os = new MockObjectSource( 2, buildContext );
         
         final BetaNode j1 = new JoinNode( 1,
                                           ts,
-                                          right,
+                                          os,
                                           EmptyBetaConstraints.getInstance(),
                                           buildContext );
         final BetaNode j2 = new JoinNode( 2,
                                           ts,
-                                          right,
+                                          os,
                                           EmptyBetaConstraints.getInstance(),
                                           buildContext );
         final BetaNode n1 = new NotNode( 3,
                                          ts,
-                                         right,
+                                         os,
                                          EmptyBetaConstraints.getInstance(),
                                          buildContext );
         final BetaNode n2 = new NotNode( 4,
                                          ts,
-                                         right,
+                                         os,
                                          EmptyBetaConstraints.getInstance(),
                                          buildContext );
 

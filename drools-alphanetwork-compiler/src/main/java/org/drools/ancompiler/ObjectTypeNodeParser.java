@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -202,8 +201,8 @@ public class ObjectTypeNodeParser {
             traversePropagator(alphaNode.getObjectSinkPropagator(), handler);
 
             handler.endNonHashedAlphaNode(alphaNode);
-        } else if (NodeTypeEnums.isBetaRightNode( sink ) ) {
-            BetaNode betaNode = ((RightInputAdapterNode) sink).getBetaNode();
+        } else if (NodeTypeEnums.isBetaNode( sink ) ) {
+            BetaNode betaNode = (BetaNode) sink;
 
             handler.startBetaNode(betaNode);
             handler.endBetaNode(betaNode);

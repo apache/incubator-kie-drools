@@ -287,12 +287,12 @@ public class AlphaNode extends ObjectSource
 
         @Override
         public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
-            throw new UnsupportedOperationException();
+            sink.addAssociatedTerminal(terminalNode);
         }
 
         @Override
         public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
-            throw new UnsupportedOperationException();
+            sink.removeAssociatedTerminal(terminalNode);
         }
 
         @Override

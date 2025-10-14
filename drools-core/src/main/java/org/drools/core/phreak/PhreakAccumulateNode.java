@@ -84,7 +84,7 @@ public class PhreakAccumulateNode {
             doLeftUpdates(accNode, am, reteEvaluator, srcLeftTuples, tempLeftTuples);
         }
 
-        if (!accNode.getRightInput().inputIsTupleToObjectNode()) {
+        if (!accNode.isRightInputIsRiaNode()) {
             // Non subnetworks ore process right then left. This because it's typically faster to ensure all RightTuples
             // are in place then you can iterate with the left evaluation cached.
             if (srcRightTuples.getInsertFirst() != null) {
@@ -157,7 +157,7 @@ public class PhreakAccumulateNode {
             }
 
             BaseAccumulation accresult = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
-            if (accNode.getRightInput().inputIsTupleToObjectNode()) {
+            if (accNode.isRightInputIsRiaNode()) {
                 // This is a subnetwork, do not process further. As all matches will processed
                 // by the right insert. This is to avoid double iteration (first right side iteration
                 // then left side iteration) or for the join to find matching tuple chains, which it previously
@@ -237,12 +237,12 @@ public class PhreakAccumulateNode {
             TupleImpl next = rightTuple.getStagedNext();
             boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(accNode, rightTuple);
 
-            if (useTupleMemory || !accNode.getRightInput().inputIsTupleToObjectNode()) {
+            if (useTupleMemory || !accNode.isRightInputIsRiaNode()) {
                 // If tuple memory is off, it will still be when it is not a subnetwork.
                 rtm.add(rightTuple);
             }
 
-            if (accNode.getRightInput().inputIsTupleToObjectNode() || (ltm != null && ltm.size() > 0)) {
+            if (accNode.isRightInputIsRiaNode() || (ltm != null && ltm.size() > 0)) {
                 constraints.updateFromFactHandle( contextEntry,
                                                   reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
@@ -285,7 +285,7 @@ public class PhreakAccumulateNode {
             TupleImpl next = leftTuple.getStagedNext();
             BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
 
-            if (accNode.getRightInput().inputIsTupleToObjectNode()) {
+            if (accNode.isRightInputIsRiaNode()) {
                 // This is a subnetwork, do not process further. As all matches will processed
                 // by the right updates. This is to avoid double iteration (first right side iteration
                 // then left side iteration) or for the join to find matching tuple chains, which it previously
@@ -719,7 +719,7 @@ public class PhreakAccumulateNode {
         TupleImpl tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
 
-        if (accNode.getRightInput().inputIsTupleToObjectNode()) {
+        if (accNode.isRightInputIsRiaNode()) {
             // if there is a subnetwork, handle must be unwrapped
             tuple = rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
@@ -774,7 +774,7 @@ public class PhreakAccumulateNode {
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
         FactHandle handle = rightTuple.getFactHandle();
         TupleImpl tuple = leftParent;
-        if (accNode.getRightInput().inputIsTupleToObjectNode()) {
+        if (accNode.isRightInputIsRiaNode()) {
             tuple = rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
         }
@@ -818,7 +818,7 @@ public class PhreakAccumulateNode {
                 TupleImpl         rightTuple  = childMatch.getRightParent();
                 FactHandle childHandle = rightTuple.getFactHandle();
                 TupleImpl          tuple       = leftParent;
-                if (accNode.getRightInput().inputIsTupleToObjectNode()) {
+                if (accNode.isRightInputIsRiaNode()) {
                     // if there is a subnetwork, handle must be unwrapped
                     tuple = rightTuple;
                     childHandle = rightTuple.getFactHandleForEvaluation();

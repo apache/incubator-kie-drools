@@ -282,13 +282,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             }
         }
 
-        // BetaRights must be removed by identity
-        for (Iterator<ObjectSinkNode> it = otherSinks.iterator(); it.hasNext();) {
-            if (sink == it.next()) {
-                it.remove();
-                break;
-            }
-        }
+        this.otherSinks.remove( (ObjectSinkNode) sink );
 
         if ( this.otherSinks.isEmpty() ) {
             this.otherSinks = null;
@@ -865,20 +859,20 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return newSinks;
     }
     
-    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
         if ( this.otherSinks != null ) {
-            // this is only used for TupleToObjectNode nodes when exists are shared, we know there is no indexing for those
+            // this is only used for ria nodes when exists are shared, we know there is no indexing for those
             for ( ObjectSinkNode sink : this.otherSinks ) {
-                SingleObjectSinkAdapter.staticDoLinkSubnetwork(sink, reteEvaluator);
+                SingleObjectSinkAdapter.staticDoLinkRiaNode( sink, reteEvaluator );
             }
         }
     }
 
-    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
         if ( this.otherSinks != null ) {
-            // this is only used for TupleToObjectNode nodes when exists are shared, we know there is no indexing for those
+            // this is only used for ria nodes when exists are shared, we know there is no indexing for those
             for ( ObjectSinkNode sink : this.otherSinks ) {
-                SingleObjectSinkAdapter.staticDoUnlinkSubnetwork(sink, reteEvaluator);
+                SingleObjectSinkAdapter.staticDoUnlinkRiaNode( sink, reteEvaluator );
             }
         }
     }     

@@ -20,14 +20,11 @@ package org.drools.mvel.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,9 +63,6 @@ public class RightTupleIndexHashTableTest {
 
     @Test
     public void testSingleEntry() throws Exception {
-        BuildContext bctx = new BuildContext(new KnowledgeBaseImpl("01"), Collections.emptyList());
-        MockLeftTupleSink    sink = new MockLeftTupleSink(0, bctx);
-
         final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
@@ -90,7 +84,7 @@ public class RightTupleIndexHashTableTest {
 
         assertThat(map.size()).isEqualTo(0);
         assertThat(map.getFirst(new LeftTuple( cheddarHandle1,
-                                               sink,
+                                                       new MockLeftTupleSink(0),
                 true ))).isNull();
 
         final Cheese stilton1 = new Cheese( "stilton",
@@ -110,17 +104,14 @@ public class RightTupleIndexHashTableTest {
                                                                          stilton2 );
 
         final Tuple tuple = map.getFirst( new LeftTuple( stiltonHandle2,
-                                                         sink,
-                                                         true ) );
+                                                                 new MockLeftTupleSink(0),
+                                                             true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonRighTuple.getFactHandle());
         assertThat(tuple.getNext()).isNull();
     }
 
     @Test
     public void testTwoDifferentEntries() throws Exception {
-        BuildContext bctx = new BuildContext(new KnowledgeBaseImpl("01"), Collections.emptyList());
-        MockLeftTupleSink    sink = new MockLeftTupleSink(0, bctx);
-
         final ReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
@@ -159,8 +150,8 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
         Tuple tuple = map.getFirst( new LeftTuple( stiltonHandle2,
-                                                   sink,
-                                                   true ) );
+                                                           new MockLeftTupleSink(0),
+                                                       true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
         assertThat(tuple.getNext()).isNull();
 
@@ -169,8 +160,8 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                          cheddar2 );
         tuple = map.getFirst( new LeftTuple( cheddarHandle2,
-                                             sink,
-                                             true ) );
+                                                     new MockLeftTupleSink(0),
+                                                 true ) );
         assertThat(tuple.getFactHandle()).isSameAs(cheddarHandle1);
         assertThat(tuple.getNext()).isNull();
     }
@@ -223,11 +214,8 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                          stilton2 );
 
-        BuildContext bctx = new BuildContext(new KnowledgeBaseImpl("01"), Collections.emptyList());
-        MockLeftTupleSink    sink = new MockLeftTupleSink(0, bctx);
-
         final TupleImpl tuple = map.getFirst( new LeftTuple( stiltonHandle3,
-                                                              sink,
+                                                                     new MockLeftTupleSink(0),
                                                            true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
         assertThat(tuple.getNext().getFactHandle()).isSameAs(stiltonHandle2);
@@ -586,9 +574,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
 
-        BuildContext bctx = new BuildContext(new KnowledgeBaseImpl("01"), Collections.emptyList());
-        MockLeftTupleSink    sink = new MockLeftTupleSink(0, bctx);
-        assertThat(map.getFirst(new LeftTuple(stiltonHandle, sink, true ))).isNull();
+        assertThat(map.getFirst(new LeftTuple(stiltonHandle, new MockLeftTupleSink(0), true ))).isNull();
     }
 
 }

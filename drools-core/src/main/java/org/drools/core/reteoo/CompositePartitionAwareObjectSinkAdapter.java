@@ -220,14 +220,14 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
-        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a TupleToObjectNode");
+    public void doLinkRiaNode( ReteEvaluator reteEvaluator ) {
+        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
 
     }
 
     @Override
-    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
-        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a TupleToObjectNode");
+    public void doUnlinkRiaNode( ReteEvaluator reteEvaluator ) {
+        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
 
     }
 

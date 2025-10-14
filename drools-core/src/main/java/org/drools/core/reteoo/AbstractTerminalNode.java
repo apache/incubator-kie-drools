@@ -115,11 +115,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     @Override
-    public BaseNode getParent() {
-        return tupleSource;
-    }
-
-    @Override
     public void setPathMemSpec(PathMemSpec pathMemSpec) {
         this.pathMemSpec = pathMemSpec;
     }
@@ -135,7 +130,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     @Override
     public void resetPathMemSpec(TerminalNode removingTN) {
         // null all PathMemSpecs, for all pathEnds, or the recursion will use a previous value.
-        // calling calculatePathMemSpec, will eventually getPathMemSpec on all nested ttons, so previous values must be nulled
+        // calling calculatePathMemSpec, will eventually getPathMemSpec on all nested rians, so previous values must be nulled
         Arrays.stream(pathEndNodes).forEach( n -> {
             n.nullPathMemSpec();
             n.setSegmentPrototypes(null);
@@ -217,7 +212,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     protected void initDeclaredMask(BuildContext context) {
         if ( !(NodeTypeEnums.isLeftInputAdapterNode(unwrapTupleSource()))) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
-            declaredMask = AllSetBitMask.get();
+            setDeclaredMask( AllSetBitMask.get() );
             return;
         }
 
@@ -226,11 +221,11 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
         if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> accessibleProperties = pattern.getAccessibleProperties( context.getRuleBase() );
-            declaredMask = pattern.getPositiveWatchMask(accessibleProperties);
-            negativeMask = pattern.getNegativeWatchMask(accessibleProperties);
+            setDeclaredMask( pattern.getPositiveWatchMask(accessibleProperties) );
+            setNegativeMask( pattern.getNegativeWatchMask(accessibleProperties) );
         } else  {
             // if property specific is not on, then accept all modification propagations
-            declaredMask = AllSetBitMask.get();
+            setDeclaredMask( AllSetBitMask.get() );
         }
     }
 
@@ -239,14 +234,14 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         if ( NodeTypeEnums.isLeftInputAdapterNode(leftTupleSource) &&
              ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
             AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource();
-            inferredMask = alphaNode.updateMask( getDeclaredMask() );
+            setInferredMask( alphaNode.updateMask( getDeclaredMask() ) );
         } else {
-            inferredMask = getDeclaredMask();
+            setInferredMask(  getDeclaredMask() );
         }
 
-        inferredMask = getInferredMask().resetAll( getNegativeMask() );
+        setInferredMask( getInferredMask().resetAll( getNegativeMask() ) );
         if ( getNegativeMask().isAllSet() && !getDeclaredMask().isAllSet() ) {
-            inferredMask = getInferredMask().setAll( getDeclaredMask() );
+            setInferredMask( getInferredMask().setAll( getDeclaredMask() ) );
         }
     }
 
@@ -283,9 +278,25 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public BitMask getInferredMask() {
         return inferredMask;
     }
+    
+    public BitMask getLeftInferredMask() {
+        return inferredMask;
+    }
+
+    public void setDeclaredMask(BitMask mask) {
+        declaredMask = mask;
+    }
+
+    public void setInferredMask(BitMask mask) {
+        inferredMask = mask;
+    }
 
     public BitMask getNegativeMask() {
         return negativeMask;
+    }
+
+    public void setNegativeMask(BitMask mask) {
+        negativeMask = mask;
     }
 
     public void networkUpdated(UpdateContext updateContext) {

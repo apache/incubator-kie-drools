@@ -23,7 +23,6 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.Sink;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
@@ -41,14 +40,8 @@ public class ModifyHandler extends PropagatorCompilerHandler {
         if (sinkCanBeInlined(sink)) {
             modifyStatement = parseStatement("ALPHATERMINALNODE.collectObject();");
         } else {
-            String g = "";
-            if (NodeTypeEnums.isBetaNode(sink)) {
-                g = "getRightInput().";
-            }
-
-            modifyStatement = parseStatement("ALPHATERMINALNODE." + g + "modifyObject(handle, modifyPreviousTuples, context, wm);");
+            modifyStatement = parseStatement("ALPHATERMINALNODE.modifyObject(handle, modifyPreviousTuples, context, wm);");
         }
-
         replaceNameExpr(modifyStatement, "ALPHATERMINALNODE", getVariableName(sink));
         return modifyStatement;
     }

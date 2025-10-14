@@ -355,11 +355,11 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     protected static void updateTupleSinkId(ObjectTypeNode otn,
                                             ObjectSource source) {
         for (ObjectSink sink : source.sink.getSinks()) {
-            if (NodeTypeEnums.isBetaRightNode(sink)) {
-                ((RightInputAdapterNode)sink).setInputOtnId(otn.nextOtnId());
+            if (NodeTypeEnums.isBetaNode(sink)) {
+                ((BetaNode)sink).setRightInputOtnId(otn.nextOtnId());
             } else if (NodeTypeEnums.isLeftInputAdapterNode(sink)) {
                 for (LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks()) {
-                    liaChildSink.setInputOtnId(otn.nextOtnId());
+                    liaChildSink.setLeftInputOtnId(otn.nextOtnId());
                 }
             } else if (sink.getType() == NodeTypeEnums.WindowNode) {
                 ((WindowNode)sink).setRightInputOtnId(otn.nextOtnId());

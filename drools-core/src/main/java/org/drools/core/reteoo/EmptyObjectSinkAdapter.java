@@ -94,12 +94,12 @@ public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
         return obj instanceof EmptyObjectSinkAdapter;
     }
 
-    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
         
     }
 
-    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
         
     }

@@ -24,8 +24,15 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ModifyPreviousTuples;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RuleRemovalContext;
+import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.common.PropagationContext;
 
@@ -35,9 +42,14 @@ public class MockBetaNode extends BetaNode {
         
     }
 
+    @Override
+    protected boolean doRemove( RuleRemovalContext context, ReteooBuilder builder) {
+        return true;
+    }
+
     MockBetaNode(final int id,
                  final LeftTupleSource leftInput,
-                 final RightInputAdapterNode rightInput,
+                 final ObjectSource rightInput,
                  BuildContext buildContext) {
         super( id,
                leftInput,
@@ -48,7 +60,7 @@ public class MockBetaNode extends BetaNode {
 
     MockBetaNode(final int id,
                  final LeftTupleSource leftInput,
-                 final RightInputAdapterNode rightInput) {
+                 final ObjectSource rightInput) {
         super( id,
                leftInput,
                rightInput,
@@ -61,9 +73,22 @@ public class MockBetaNode extends BetaNode {
                              final ReteEvaluator reteEvaluator) {
     }
 
+    @Override
+    public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
+    }
+
+    public void retractRightTuple(final TupleImpl rightTuple,
+                                  final PropagationContext context,
+                                  final ReteEvaluator reteEvaluator) {
+    }
 
     public int getType() {
         return 0;
+    }
+
+    public void modifyRightTuple(TupleImpl rightTuple,
+                                 PropagationContext context,
+                                 ReteEvaluator reteEvaluator) {
     }
 
     public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {

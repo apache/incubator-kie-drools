@@ -18,7 +18,6 @@
  */
 package org.drools.serialization.protobuf.iterators;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
@@ -150,9 +149,9 @@ public class LeftTupleIterator
             }
             case NodeTypeEnums.LeftInputAdapterNode:
             case NodeTypeEnums.AlphaTerminalNode: {
-                BaseNode os = ((LeftInputAdapterNode) source).getParentObjectSource();
+                ObjectSource os = ((LeftInputAdapterNode) source).getParentObjectSource();
                 while ( !(os instanceof ObjectTypeNode) ) {
-                    os = os.getParent();
+                    os = os.getParentObjectSource();
                 }
 
                 ObjectTypeNode otn = (ObjectTypeNode) os;

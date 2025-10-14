@@ -218,13 +218,13 @@ public abstract class CompiledNetwork implements ObjectSinkPropagator {
     }
 
     @Override
-    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
-        originalSinkPropagator.doLinkSubnetwork(reteEvaluator);
+    public void doLinkRiaNode(ReteEvaluator reteEvaluator) {
+        originalSinkPropagator.doLinkRiaNode(reteEvaluator);
     }
 
     @Override
-    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
-        originalSinkPropagator.doUnlinkSubnetwork(reteEvaluator);
+    public void doUnlinkRiaNode(ReteEvaluator reteEvaluator) {
+        originalSinkPropagator.doUnlinkRiaNode(reteEvaluator);
     }
 
     public abstract void init(Object... args);

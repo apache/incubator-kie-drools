@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class NegativePatternsTest {
 
-    private static final int LOOPS = 2;
+    private static final int LOOPS = 300;
     private static final int SHORT_SLEEP_TIME = 20;
     private static final int LONG_SLEEP_TIME = 30;
 
@@ -131,34 +131,34 @@ public class NegativePatternsTest {
 
         // no rules should be fired in the beginning
         advanceTime(LONG_SLEEP_TIME);
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         // after firing the rule will wait for 18ms
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         final FactHandle event = entryPoint.insert(new TestEvent(0, "EventA"));
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         entryPoint.delete(event);
         ksession.fireAllRules();
         count++;
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
 
         // rule was already fired and no changes were made to working memory
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleAbsence", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleAbsence")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -189,7 +189,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertRuleFiredCount("SingleConstrained", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("SingleConstrained")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -207,21 +207,18 @@ public class NegativePatternsTest {
             advanceTime(SHORT_SLEEP_TIME);
             ksession.fireAllRules();
         }
-        assertRuleFiredCount("MultipleEvents", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEvents")).hasSize(count);
 
         entryPoint.insert(new TestEvent(count, "EventA"));
         final FactHandle handle = entryPoint.insert(new TestEvent(-1, "EventB"));
         advanceTime(SHORT_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEvents", count);
 
         entryPoint.delete(handle);
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEvents", count);
         // it shouldn't fire because of the duration
         advanceTime(SHORT_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEvents", count);
         // it shouldn't fire because event A is gone out of window
 
         while (count < LOOPS) {
@@ -233,7 +230,7 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEvents", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEvents")).hasSize(count);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -249,7 +246,7 @@ public class NegativePatternsTest {
         ksession.fireAllRules();
         advanceTime(LONG_SLEEP_TIME);
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEntryPoints", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEntryPoints")).hasSize(count);
 
         FactHandle handle;
         for (int i = 0; i < LOOPS; i++) {
@@ -276,16 +273,12 @@ public class NegativePatternsTest {
         }
 
         ksession.fireAllRules();
-        assertRuleFiredCount("MultipleEntryPoints", count);
+        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals("MultipleEntryPoints")).hasSize(count);
     }
 
     private void advanceTime(final long amount) {
         final SessionPseudoClock clock = ksession.getSessionClock();
         clock.advanceTime(amount, TimeUnit.MILLISECONDS);
-    }
-
-    private void assertRuleFiredCount(String ruleName, int expectedCount) {
-        assertThat(firedRulesListener.getAfterMatchFired()).filteredOn(s -> s.equals(ruleName)).hasSize(expectedCount);
     }
 
     /**

@@ -36,7 +36,6 @@ import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.drools.base.reteoo.NodeTypeEnums;
 
@@ -111,8 +110,6 @@ public abstract class BaseNode
         this.streamMode = streamMode;
     }
 
-    public abstract BaseNode getParent();
-
     /**
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
@@ -177,8 +174,12 @@ public abstract class BaseNode
     /**
      * Associates this node with the give rule
      */
-    public void addAssociation(Rule rule, BuildContext context) {
+    public void addAssociation( Rule rule ) {
         this.associations.add( rule );
+    }
+
+    public void addAssociation( BuildContext context, Rule rule ) {
+        addAssociation( rule );
     }
 
     /**
@@ -241,6 +242,4 @@ public abstract class BaseNode
     }
 
 
-    public abstract BitMask getDeclaredMask();
-    public abstract BitMask getInferredMask();
 }

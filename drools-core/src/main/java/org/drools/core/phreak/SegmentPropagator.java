@@ -32,7 +32,7 @@ import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushWhenSubnetwork;
+import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushWhenRiaNode;
 
 public class SegmentPropagator {
 
@@ -60,7 +60,7 @@ public class SegmentPropagator {
                     continue;
                 }
                 forceFlushLeftTuple(dataDrivenPmem, smem, reteEvaluator, smem.getStagedLeftTuples());
-                forceFlushWhenSubnetwork(reteEvaluator, dataDrivenPmem);
+                forceFlushWhenRiaNode(reteEvaluator, dataDrivenPmem);
             }
         }
     }

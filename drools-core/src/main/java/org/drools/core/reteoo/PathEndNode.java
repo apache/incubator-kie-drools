@@ -101,12 +101,12 @@ public interface PathEndNode extends LeftTupleSinkNode, MemoryFactory<PathMemory
                     NodeTypeEnums.isBetaNode( tupleSource ) &&
                     NodeTypeEnums.AccumulateNode != tupleSource.getType()) { // accumulates can never be disabled
                 BetaNode bn = ( BetaNode) tupleSource;
-                if ( bn.getRightInput().inputIsTupleToObjectNode() ) {
+                if ( bn.isRightInputIsRiaNode() ) {
                     updateBitInNewSegment = false;
-                    TupleToObjectNode tton = (TupleToObjectNode) bn.getRightInput().getParent();
+                    RightInputAdapterNode rian = (RightInputAdapterNode) bn.getRightInput();
                     // only ria's without reactive subnetworks can be disabled and thus need checking
                     // The getNodeMemory will call this method recursive for sub networks it reaches
-                    if ( tton.getPathMemSpec(removingTN).allLinkedTestMask != 0 ) {
+                    if ( rian.getPathMemSpec(removingTN).allLinkedTestMask != 0 ) {
                         allLinkedTestMask = allLinkedTestMask | 1;
                     }
                 } else if ( NodeTypeEnums.NotNode != bn.getType() || ((NotNode)bn).isEmptyBetaConstraints()) {

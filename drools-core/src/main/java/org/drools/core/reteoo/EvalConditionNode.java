@@ -72,7 +72,7 @@ public class EvalConditionNode extends LeftTupleSource
         this.setObjectCount(leftInput.getObjectCount()); // 'eval' nodes do not increase the count
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
-        initMasks(context);
+        initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
     }
@@ -258,8 +258,8 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     @Override
-    public void addAssociation(Rule rule, BuildContext context) {
-        super.addAssociation(rule, context);
+    public void addAssociation( BuildContext context, Rule rule ) {
+        super.addAssociation(context, rule);
         componentsMap.put(new RuleKey(rule, context.getSubRuleIndex()), context.peekRuleComponent());
     }
 

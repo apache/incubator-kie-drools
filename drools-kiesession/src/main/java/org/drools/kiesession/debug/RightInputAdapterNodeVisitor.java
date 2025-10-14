@@ -25,7 +25,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.TupleToObjectNode;
 
 import java.util.Collection;
 
@@ -40,10 +39,10 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     protected void doVisit(NetworkNode node,
                            Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
-        TupleToObjectNode an = (TupleToObjectNode) node;
-        DefaultNodeInfo   ni = info.getNodeInfo( node );
+        RightInputAdapterNode an = (RightInputAdapterNode) node;
+        DefaultNodeInfo ni = info.getNodeInfo( node );
 
-        BetaNode betaNode = ((RightInputAdapterNode)an.getObjectSinkPropagator().getSinks()[0]).getBetaNode();
+        BetaNode betaNode = (BetaNode) an.getObjectSinkPropagator().getSinks()[0];
 
         Memory childMemory = info.getSession().getNodeMemory( betaNode );
 

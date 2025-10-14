@@ -68,7 +68,7 @@ public class TimerNode extends LeftTupleSource
         this.startEndDeclarations = startEndDeclarations;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
-        initMasks(context);
+        initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
 

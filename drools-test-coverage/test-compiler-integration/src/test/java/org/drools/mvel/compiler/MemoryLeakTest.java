@@ -38,7 +38,6 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.JoinRightAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
@@ -107,7 +106,7 @@ public class MemoryLeakTest {
         JoinNode joinNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                joinNode = ((JoinRightAdapterNode)otn.getObjectSinkPropagator().getSinks()[0]).getBetaNode();
+                joinNode = (JoinNode) otn.getObjectSinkPropagator().getSinks()[0];
                 break;
             }
         }

@@ -23,7 +23,6 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.Sink;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
@@ -41,11 +40,7 @@ public class AssertHandler extends PropagatorCompilerHandler {
         if (sinkCanBeInlined(sink)) {
             assertStatement = parseStatement("ALPHATERMINALNODE.collectObject();");
         } else {
-            String g = "";
-            if (NodeTypeEnums.isBetaNode(sink)) {
-                g = "getRightInput().";
-            }
-            assertStatement = parseStatement("ALPHATERMINALNODE." + g + "assertObject(handle, context, wm);");
+            assertStatement = parseStatement("ALPHATERMINALNODE.assertObject(handle, context, wm);");
         }
         replaceNameExpr(assertStatement, "ALPHATERMINALNODE", getVariableName(sink));
         return assertStatement;

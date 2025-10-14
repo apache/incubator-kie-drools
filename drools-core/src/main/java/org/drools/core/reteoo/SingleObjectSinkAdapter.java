@@ -87,46 +87,47 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
         sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, reteEvaluator );
     }
     
-    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
-        staticDoLinkSubnetwork(sink, reteEvaluator);
+    public void  doLinkRiaNode(ReteEvaluator reteEvaluator) {
+        staticDoLinkRiaNode( sink, reteEvaluator );
     }
     
-    public static void staticDoLinkSubnetwork(ObjectSink sink, ReteEvaluator reteEvaluator) {
+    public static void staticDoLinkRiaNode(ObjectSink sink, ReteEvaluator reteEvaluator) {
         BetaMemory bm;
-        BetaNode betaNode;
-        if ( sink.getType() == NodeTypeEnums.AccumulateRightAdapterNode ) {
-            AccumulateRight accnode = ( AccumulateRight ) sink;
-            betaNode = accnode.getBetaNode();
-            AccumulateMemory accMem = ( AccumulateMemory ) reteEvaluator.getNodeMemory( betaNode );
+        if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
+            AccumulateNode accnode = ( AccumulateNode ) sink;
+            AccumulateMemory accMem = ( AccumulateMemory ) reteEvaluator.getNodeMemory( accnode );
             bm = accMem.getBetaMemory();
+        } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
+            BetaNode betaNode = ( BetaNode ) sink;
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
         } else {
-            RightInputAdapterNode betaRight = (RightInputAdapterNode) sink;
-            betaNode = betaRight.getBetaNode();
-            bm = RightInputAdapterNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
+            throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
 
         if ( bm.getStagedRightTuples().isEmpty() ) {
             if ( bm.getRightTupleMemory().size() == 0 ) {
-                bm.linkNode( betaNode, reteEvaluator );
+                bm.linkNode( ( BetaNode ) sink, reteEvaluator );
             } else {
-                bm.setNodeDirty( betaNode, reteEvaluator );
+                bm.setNodeDirty( ( BetaNode ) sink, reteEvaluator );
             }
         }
     }
     
-    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
-        staticDoUnlinkSubnetwork(sink, reteEvaluator);
+    public void  doUnlinkRiaNode( ReteEvaluator reteEvaluator) {
+        staticDoUnlinkRiaNode( sink, reteEvaluator );
     }   
     
-    public static void staticDoUnlinkSubnetwork(ObjectSink sink, ReteEvaluator reteEvaluator) {
+    public static void staticDoUnlinkRiaNode(ObjectSink sink,  ReteEvaluator reteEvaluator) {
         BetaMemory bm;
-        if ( sink.getType() == NodeTypeEnums.AccumulateRightAdapterNode ) {
-            AccumulateNode accnode = ((AccumulateRight)sink).getBetaNode();
+        if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
+            AccumulateNode accnode = ( AccumulateNode ) sink;
             AccumulateMemory accMem = ( AccumulateMemory ) reteEvaluator.getNodeMemory( accnode );
             bm = accMem.getBetaMemory();
-        }  else {
-            BetaNode betaNode = ((RightInputAdapterNode) sink).getBetaNode();
-            bm = RightInputAdapterNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
+        } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
+            BetaNode betaNode = ( BetaNode ) sink;
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
+        } else {
+            throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
 
         if (sink.getType() == NodeTypeEnums.NotNode) {

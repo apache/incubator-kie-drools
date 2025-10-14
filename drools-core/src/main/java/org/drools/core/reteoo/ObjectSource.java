@@ -78,10 +78,6 @@ public abstract class ObjectSource extends BaseNode {
         this( id, partitionId, null, 3, 3);
     }
 
-    protected ObjectSource(int id, final ObjectSource objectSource, RuleBasePartitionId partitionId) {
-        this( id, partitionId, objectSource, 3, 3);
-    }
-
     /**
      * Single parameter constructor that specifies the unique id of the node.
      */
@@ -97,12 +93,20 @@ public abstract class ObjectSource extends BaseNode {
         this.sink = EmptyObjectSinkAdapter.getInstance();
     }
 
-    public InternalRuleBase getRuleBase() {
-        return source.getRuleBase();
+    // ------------------------------------------------------------
+    // Instance methods
+    // ------------------------------------------------------------
+
+    public ObjectSource getParentObjectSource() {
+        return this.source;
     }
 
-    public BaseNode getParent() {
-        return source;
+    public void setParentObjectSource(ObjectSource source) {
+        this.source = source;
+    }
+
+    public InternalRuleBase getRuleBase() {
+        return source.getRuleBase();
     }
 
     public void initDeclaredMask(BuildContext context) {
@@ -233,10 +237,6 @@ public abstract class ObjectSource extends BaseNode {
     }
 
     public BitMask getDeclaredMask() {
-        return declaredMask;
-    }
-
-    public BitMask getInferredMask() {
-        return inferredMask;
+        return EmptyBitMask.get();
     }
 }

@@ -22,21 +22,21 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
-import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.util.AbstractLinkedListNode;
 
 public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements SegmentNodeMemory {
 
     private              TupleMemory leftTupleMemory;
     private              TupleMemory rightTupleMemory;
-    private              TupleSets   stagedRightTuples;
-    private              C           context;
+    private              TupleSets stagedRightTuples;
+    private              C         context;
     // the node type this memory belongs to
-    private              int         nodeType;
-    private SegmentMemory            segmentMemory;
-    private long                     nodePosMaskBit;
-    private int                      counter;
-    private SubnetworkPathMemory     subnetworkPathMemory;
+    private              int     nodeType;
+    private SegmentMemory              segmentMemory;
+    private long                       nodePosMaskBit;
+    private int                        counter;
+    private RiaPathMemory              riaRuleMemory;
 
     public BetaMemory() {
     }
@@ -68,12 +68,12 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
         return this.leftTupleMemory;
     }
 
-    public SubnetworkPathMemory getSubnetworkPathMemory() {
-        return subnetworkPathMemory;
+    public RiaPathMemory getRiaRuleMemory() {
+        return riaRuleMemory;
     }
 
-    public void setSubnetworkPathMemory(SubnetworkPathMemory subnetworkPathMemory) {
-        this.subnetworkPathMemory = subnetworkPathMemory;
+    public void setRiaRuleMemory(RiaPathMemory riaRuleMemory) {
+        this.riaRuleMemory = riaRuleMemory;
     }
 
     /**

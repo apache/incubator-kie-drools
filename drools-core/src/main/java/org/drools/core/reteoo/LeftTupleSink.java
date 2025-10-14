@@ -31,13 +31,11 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     boolean isLeftTupleMemoryEnabled();
 
-    ObjectTypeNodeId getInputOtnId();
+    ObjectTypeNodeId getLeftInputOtnId();
 
-    void setInputOtnId(ObjectTypeNodeId leftInputOtnId);
+    void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId);
 
-    BitMask getDeclaredMask();
-
-    BitMask getInferredMask();
+    BitMask getLeftInferredMask();
 
     void setPartitionIdWithSinks( RuleBasePartitionId partitionId );
 }

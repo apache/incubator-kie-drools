@@ -43,7 +43,7 @@ public class PhreakNotNode {
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
 
-        if (!notNode.getRightInput().inputIsTupleToObjectNode()) {
+        if (!notNode.isRightInputIsRiaNode()) {
             doNormalNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
             PhreakSubnetworkNotExistsNode.doSubNetworkNode(notNode, sink, bm,

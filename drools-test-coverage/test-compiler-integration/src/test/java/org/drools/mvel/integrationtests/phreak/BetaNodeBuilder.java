@@ -18,7 +18,6 @@
  */
 package org.drools.mvel.integrationtests.phreak;
 
-import org.drools.core.reteoo.JoinRightAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.base.base.ClassObjectType;
@@ -136,14 +135,11 @@ public class BetaNodeBuilder {
 
         switch (nodeType) {
             case NodeTypeEnums.JoinNode:
-                return new JoinNode(buildContext.getNextNodeId(), leftInput,
-                                    new JoinRightAdapterNode(buildContext.getNextNodeId(), rightInput, buildContext), betaConstraints, buildContext);
+                return new JoinNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.NotNode:
-                return new NotNode(buildContext.getNextNodeId(), leftInput,
-                                   new JoinRightAdapterNode(buildContext.getNextNodeId(), rightInput, buildContext), betaConstraints, buildContext);
+                return new NotNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.ExistsNode:
-                return new ExistsNode(buildContext.getNextNodeId(), leftInput,
-                                      new JoinRightAdapterNode(buildContext.getNextNodeId(), rightInput, buildContext), betaConstraints, buildContext);
+                return new ExistsNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
         }
         throw new IllegalStateException("Unable to build Node");
     }
