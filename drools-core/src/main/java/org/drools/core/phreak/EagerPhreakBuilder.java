@@ -379,7 +379,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 }
             }
 
-            splitBitMasks(sm1, sm2, currentLinkedNodeMask);
+            sm1.splitBitMasks(sm2, currentLinkedNodeMask);
 
             Memory[] mem1 = new Memory[proto1.getMemories().length];
             Memory[] mem2 = new Memory[proto2.getMemories().length];
@@ -490,7 +490,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
 
             proto2.setMemories(proto2Mems);
-            splitBitMasks(proto1, proto2);
+            proto1.splitBitMasks(proto2);
         }
 
         private static void splitEagerProtos(SegmentPrototype proto1, boolean proto1WasEager, SegmentPrototype proto2, PathEndNode endNode) {
@@ -513,37 +513,6 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 } // else if ( proto1.requiresEager() && !proto2.requiresEager()) do nothing as proto1 already in the array
             }
         }
-
-        private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, long currentLinkedNodeMask) {
-            // @TODO Haven't made this work for more than 64 nodes, as per SegmentUtilities.nextNodePosMask (mdp)
-            int  splitPos              = sm1.getSegmentPrototype().getNodesInSegment().length; // +1 as zero based
-            long currentDirtyNodeMask  = sm1.getDirtyNodeMask();
-            long splitMask         =  ((1L << (splitPos)) - 1);
-
-            sm1.setDirtyNodeMask(currentDirtyNodeMask & splitMask);
-            sm1.setLinkedNodeMask(currentLinkedNodeMask & splitMask);
-
-            sm2.setLinkedNodeMask(currentLinkedNodeMask >> splitPos);
-            sm2.setDirtyNodeMask(currentDirtyNodeMask >> splitPos);
-        }
-
-        private static void splitBitMasks(SegmentPrototype sm1, SegmentPrototype sm2) {
-            // @TODO Haven't made this work for more than 64 nodes, as per SegmentUtilities.nextNodePosMask (mdp)
-            int  splitPos          = sm1.getNodesInSegment().length; // +1 as zero based
-            long splitMask         = ((1L << (splitPos)) - 1);
-
-            long currentLinkedNodeMask = sm1.getLinkedNodeMask();
-            long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-
-            sm1.setLinkedNodeMask(currentLinkedNodeMask & splitMask);
-            sm1.setAllLinkedMaskTest(currentAllLinkedMaskTest & splitMask);
-
-            sm2.setLinkedNodeMask(currentLinkedNodeMask >> splitPos);
-            sm2.setAllLinkedMaskTest(currentAllLinkedMaskTest >> splitPos);
-
-            sm2.setSegmentPosMaskBit(sm1.getSegmentPosMaskBit() << 1);
-        }
-
 
         private static void addNewPaths(List<Pair> exclBranchRoots, TerminalNode tn,
                                         Collection<InternalWorkingMemory> wms, InternalRuleBase kBase,
@@ -837,7 +806,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
             setNodeTypes(proto1, nodes);
 
-            mergeBitMasks(proto1, proto2, origNodes);
+            proto1.mergeBitMasks(proto2, origNodes);
         }
 
 
@@ -913,20 +882,6 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             proto1.shallowUpdateSegmentMemory(sm1);
 
             mergeBitMasks(sm1, sm2, origNodes, currentLinkedNodeMask);
-        }
-
-        private static void mergeBitMasks(SegmentPrototype sm1, SegmentPrototype sm2, LeftTupleNode[] origNodes) {
-            // @TODO Haven't made this work for more than 64 nodes, as per SegmentUtilities.nextNodePosMask (mdp)
-            int shiftBits = origNodes.length;
-
-            long currentLinkedNodeMask = sm1.getLinkedNodeMask();
-            long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-
-            long linkedBitsToAdd = sm2.getLinkedNodeMask() << shiftBits;
-            long allBitsToAdd = sm2.getAllLinkedMaskTest() << shiftBits;
-
-            sm1.setLinkedNodeMask(linkedBitsToAdd | currentLinkedNodeMask);
-            sm1.setAllLinkedMaskTest(allBitsToAdd | currentAllLinkedMaskTest);
         }
 
         private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2, LeftTupleNode[] origNodes, long currentLinkedNodeMask) {

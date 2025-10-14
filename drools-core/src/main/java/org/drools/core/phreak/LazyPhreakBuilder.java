@@ -19,7 +19,6 @@
 package org.drools.core.phreak;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,7 +71,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.Tuple;
@@ -264,7 +262,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
             smem.unlinkSegment(wm);
-            correctSegmentMemoryAfterSplitOnAdd(smem, smemSplitAdjustAmount);
+            smem.correctSegmentMemoryAfterSplitOnAdd(smemSplitAdjustAmount);
         }
 
         @Override
@@ -325,7 +323,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
             smem.unlinkSegment(wm);
-            correctSegmentMemoryAfterSplitOnRemove(smem, smemSplitAdjustAmount);
+            smem.correctSegmentMemoryAfterSplitOnRemove(smemSplitAdjustAmount);
         }
 
         @Override
@@ -682,20 +680,6 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-
-    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm) {
-        correctSegmentMemoryAfterSplitOnAdd(sm, 1);
-    }
-
-    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm, int i) {
-        sm.setPos(sm.getPos() + i);
-        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() << i);
-    }
-
-    public static void correctSegmentMemoryAfterSplitOnRemove(SegmentMemory sm, int i) {
-        sm.setPos(sm.getPos() - i);
-        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() >> i);
-    }
 
     private static int getSegmentPos(LeftTupleNode lts) {
         int counter = 0;
@@ -1074,13 +1058,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         // find the pos of the node in the segment
-        int pos = nodeSegmentPosition(sm1, splitNode);
+        int pos = sm1.nodeSegmentPosition(splitNode);
 
-        splitNodeMemories(sm1, sm2, pos);
+        
+        sm1.splitNodeMemories(sm2, pos);
 
-        splitBitMasks(sm1, sm2, pos);
+        sm1.splitBitMasks(sm2, pos);
 
-        correctSegmentMemoryAfterSplitOnAdd(sm2);
+        sm2.correctSegmentMemoryAfterSplitOnAdd(1);
 
         return sm2;
     }
@@ -1108,100 +1093,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
         // re-assigned tip nodes
         sm1.setTipNode(sm2.getTipNode());
 
-        mergeNodeMemories(sm1, sm2);
+        sm1.mergeNodeMemories(sm2);
 
-        mergeBitMasks(sm1, sm2);
-    }
-
-    private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-        int  splitPos                 = pos + 1; // +1 as zero based
-        long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-        long currentLinkedNodeMask    = sm1.getLinkedNodeMask();
-        long mask                     = (1L << splitPos) - 1;
-
-        sm1.setAllLinkedMaskTest(mask & currentAllLinkedMaskTest);
-        sm1.setLinkedNodeMask(sm1.getLinkedNodeMask() & sm1.getAllLinkedMaskTest());
-
-        mask = currentAllLinkedMaskTest >> splitPos;
-        sm2.setAllLinkedMaskTest(mask);
-        sm2.setLinkedNodeMask(mask & (currentLinkedNodeMask >> splitPos));
-    }
-
-    private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
-        Memory[] smNodeMemories2 = sm2.getNodeMemories();
-
-        long mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.length;
-        sm1.setAllLinkedMaskTest(mask & sm1.getAllLinkedMaskTest());
-
-        mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.length;
-        sm1.setLinkedNodeMask(mask & sm1.getLinkedNodeMask());
-    }
-
-    private static void splitNodeMemories(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-        List<Memory> smNodeMemories1 = new ArrayList<>(Arrays.asList(sm1.getNodeMemories()));
-        List<Memory> smNodeMemories2 = new ArrayList<>();
-
-        Memory mem = smNodeMemories1.get(0);
-        long nodePosMask = 1;
-        for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
-            Memory next = mem.getNext();
-            if (i > pos) {
-                smNodeMemories1.remove(mem);
-                addToMemoryList(smNodeMemories2, mem);
-                mem.setSegmentMemory(sm2);
-
-                // correct the NodePosMaskBit
-                if (mem instanceof SegmentNodeMemory) {
-                    ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
-                }
-                nodePosMask = nextNodePosMask(nodePosMask);
-            }
-            mem = next;
-        }
-        sm1.setNodeMemories(smNodeMemories1.toArray(new Memory[smNodeMemories1.size()]));
-        sm2.setNodeMemories(smNodeMemories2.toArray(new Memory[smNodeMemories2.size()]));
-    }
-
-    private static void mergeNodeMemories(SegmentMemory sm1, SegmentMemory sm2) {
-        List<Memory> mergedMemories = new ArrayList<>();
-
-        int nodePosMask = 1;
-        for (Memory mem : sm1.getNodeMemories() ) {
-            nodePosMask = nodePosMask >> 1;
-            mergedMemories.add(mem);
-        }
-
-        for (Memory mem : sm2.getNodeMemories() ) {
-            addToMemoryList(mergedMemories, mem);
-            mem.setSegmentMemory(sm1);
-
-            // correct the NodePosMaskBit
-            if (mem instanceof SegmentNodeMemory) {
-                ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
-            }
-            nodePosMask = nodePosMask >> 1;
-        }
-
-        sm1.setNodeMemories(mergedMemories.toArray(new Memory[mergedMemories.size()]));
-    }
-
-    private static void addToMemoryList(List<Memory> smNodeMemories, Memory mem) {
-        if (!smNodeMemories.isEmpty()) {
-            Memory last = smNodeMemories.get(smNodeMemories.size()-1);
-            last.setNext(mem);
-            mem.setPrevious(last);
-        }
-        smNodeMemories.add(mem);
-    }
-
-    private static int nodeSegmentPosition(SegmentMemory sm1, LeftTupleNode splitNode) {
-        LeftTupleNode lt = splitNode;
-        int nodePos = 0;
-        while (lt != sm1.getRootNode()) {
-            lt = lt.getLeftTupleSource();
-            nodePos++;
-        }
-        return nodePos;
+        sm1.mergeBitMasks(sm2);
     }
 
     private static PathEndNodeMemories getPathEndMemories(InternalWorkingMemory wm,
