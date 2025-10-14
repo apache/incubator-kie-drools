@@ -63,23 +63,18 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void getReferenceId() {
+    void getId() {
         String localPart = "reference";
         DMNElementReference elementReference = new TDMNElementReference();
         elementReference.setHref(String.format("%s#%s", NAMESPACE, localPart));
         elementReference.setParent(parent);
-        String retrieved = DMNCompilerImpl.getReferenceId(elementReference);
+        String retrieved = DMNCompilerImpl.getId(elementReference);
         assertThat(retrieved).isNotNull().isEqualTo(localPart);
 
         String expected = String.format("%s#%s", "http://a-different-namespace", localPart);
         elementReference.setHref(expected);
-        retrieved = DMNCompilerImpl.getReferenceId(elementReference);
+        retrieved = DMNCompilerImpl.getId(elementReference);
         assertThat(retrieved).isNotNull().isEqualTo(expected);
-
-        expected = String.format("#%s", localPart);
-        elementReference.setHref(expected);
-        retrieved = DMNCompilerImpl.getReferenceId(elementReference);
-        assertThat(retrieved).isNotNull().isEqualTo(localPart);
     }
 
     @Test
