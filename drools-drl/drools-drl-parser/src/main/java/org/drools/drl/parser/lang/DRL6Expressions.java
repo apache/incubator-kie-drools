@@ -1,23 +1,23 @@
 // $ANTLR 3.5.2 src/main/resources/org/drools/drl/parser/DRL6Expressions.g 2025-01-31 19:08:38
 
-    package org.drools.drl.parser.lang;
+package org.drools.drl.parser.lang;
 
-    import java.util.LinkedList;
-    import org.drools.drl.parser.DroolsParserException;
-    import org.drools.drl.parser.lang.ParserHelper;
-    import org.drools.drl.parser.lang.DroolsParserExceptionFactory;
-    import org.drools.drl.parser.lang.Location;
+import java.util.LinkedList;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.ParserHelper;
+import org.drools.drl.parser.lang.DroolsParserExceptionFactory;
+import org.drools.drl.parser.lang.Location;
 
-    import org.drools.drl.ast.dsl.AnnotatedDescrBuilder;
-    import org.drools.drl.ast.dsl.AnnotationDescrBuilder;
+import org.drools.drl.ast.dsl.AnnotatedDescrBuilder;
+import org.drools.drl.ast.dsl.AnnotationDescrBuilder;
 
-    import org.drools.drl.ast.descr.AtomicExprDescr;
-    import org.drools.drl.ast.descr.AnnotatedBaseDescr;
-    import org.drools.drl.ast.descr.AnnotationDescr;
-    import org.drools.drl.ast.descr.BaseDescr;
-    import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-    import org.drools.drl.ast.descr.RelationalExprDescr;
-    import org.drools.drl.ast.descr.BindingDescr;
+import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.AnnotatedBaseDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.BindingDescr;
 
 
 import org.antlr.runtime.*;

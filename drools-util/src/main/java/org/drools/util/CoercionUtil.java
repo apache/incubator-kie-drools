@@ -22,7 +22,6 @@ package org.drools.util;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 

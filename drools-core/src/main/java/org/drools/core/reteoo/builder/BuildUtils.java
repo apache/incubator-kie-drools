@@ -129,7 +129,7 @@ public class BuildUtils {
                 }
                 partition = context.getPartitionId();
             }
-            // set node whit the actual partition label
+            // set node with the actual partition label
             node.setPartitionId( context, partition );
             node.attach(context);
         } else {
@@ -145,7 +145,7 @@ public class BuildUtils {
         }
         // adds the node to the context list to track all added nodes
         context.getNodes().add( node );
-        node.addAssociation( context, context.getRule() );
+        node.addAssociation(context.getRule(), context);
         return (T)node;
     }
 

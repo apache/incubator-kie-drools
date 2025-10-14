@@ -96,7 +96,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                             type.getName() );
                 }
             }
-        } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
+        } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic() != null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
             type = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic().getExpression(), bkm.getEncapsulatedLogic().getExpression().getTypeRef());
         } else {
             // for now the call bellow will return type UNKNOWN

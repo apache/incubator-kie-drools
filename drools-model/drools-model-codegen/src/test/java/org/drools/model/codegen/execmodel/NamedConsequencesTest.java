@@ -625,4 +625,69 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(result.size()).isEqualTo(2);
         assertThat(result.containsAll(asList("main", "t1"))).isTrue();
     }
+
+    @ParameterizedTest
+    @MethodSource("parametersStandardOnly") // fails to build with exec model. Filed as incubator-kie-drools/issues/6459
+    void testConditionalBreak_defaultBreakDefault(RUN_TYPE runType) {
+        String str = """
+                package com.example.reproducer;
+                
+                import org.drools.model.codegen.execmodel.domain.Person;
+                
+                global java.util.List result;
+                
+                rule R1
+                  when
+                    Person( $age : age > 10 )
+                    if( $age == 21 ) break [ Do2 ]
+                  then
+                    result.add("R1 Default Consequence: $age = " + $age);
+                  then[ Do2 ]
+                    result.add("R1 Do2 Consequence: $age = " + $age);
+                end
+                
+                rule R2
+                  when
+                    $p : Person( age == 20 )
+                  then
+                    result.add("R2");
+                    $p.setAge(21);
+                    update($p);
+                end
+                
+                rule R3
+                  when
+                    $p : Person( age == 21 )
+                  then
+                    result.add("R3");
+                    $p.setAge(22);
+                    update($p);
+                end
+        """;
+
+        // incubator-kie-issues/issues/2105
+        // The expected flow is:
+        //   1. R1 fires, goes to default consequence
+        //   2. R2 fires, sets age to 21
+        //   3. R1 fires, goes to Do2 consequence
+        //   4. R3 fires, sets age to 22
+        //   5. R1 fires, goes to default consequence
+        // The original issue is that the step 3 executes both Do2 and default consequences.
+        // If we fix PhreakBranchNode.doLeftUpdates to call `trgLeftTuples.addDelete(branchTuples.mainLeftTuple);` even if branchTuples.mainLeftTuple.getSink() is TerminalNode,
+        // then next issue arises. The step 5 fails with NPE because the deletion breaks dormantMatches LinkedList.
+        // The issue reproduces when conditional branch results in "default", "break", "default" order
+
+        KieSession ksession = getKieSession(runType, str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal( "result", result );
+
+        ksession.insert(new Person("John", 20));
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactly("R1 Default Consequence: $age = 20",
+                                           "R2",
+                                           "R1 Do2 Consequence: $age = 21",
+                                           "R3",
+                                           "R1 Default Consequence: $age = 22");
+    }
 }

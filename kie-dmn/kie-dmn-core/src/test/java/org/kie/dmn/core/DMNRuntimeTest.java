@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
@@ -70,6 +72,7 @@ import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.model.Person;
@@ -82,6 +85,7 @@ import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.Msg;
 import org.kie.dmn.feel.util.NumberEvalHelper;
+import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.InformationItem;
@@ -3754,6 +3758,38 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     void testDecisionServiceWithInvalidId() {
         assertThatThrownBy(() -> DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/InvalidDecisionService.dmn",this.getClass()))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void testGetReferenceIdWithImports() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "valid_models/DMNv1_6/NamespaceTests/ImportingModel.dmn", this.getClass(),
+                "valid_models/DMNv1_6/NamespaceTests/ImportedModel.dmn"
+        );
+
+        DMNModel importingModel = runtime.getModel("ImportingModel", "ImportingModel");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).isFalse();
+
+        Optional<DecisionServiceNode> dsNodeOpt = importingModel.getDecisionServices().stream()
+                .filter(ds -> ds.getName().equals("DecisionService B"))
+                .findFirst();
+
+        assertThat(dsNodeOpt).isPresent();
+        DecisionServiceNode dsNode = dsNodeOpt.get();
+
+        List<DMNElementReference> reference1 = dsNode.getDecisionService().getInputData();
+        List<DMNElementReference> reference2 = dsNode.getDecisionService().getOutputDecision();
+        assertThat(reference1).isNotEmpty();
+        assertThat(reference2).isNotEmpty();
+
+        DMNElementReference importedRef = reference1.get(0);
+        String resolvedId = DMNCompilerImpl.getReferenceId(importedRef);
+        DMNElementReference importedRef2 = reference2.get(0);
+        String resolvedId2 = DMNCompilerImpl.getReferenceId(importedRef2);
+
+        assertThat(resolvedId).isEqualTo("ImportedModel#_D57E59F9-FC14-4B53-888C-CAADBA0AEFF6");
+        assertThat(resolvedId2).isEqualTo("ImportedModel#_CE7D37D7-FC33-4C3A-AD3D-6EB6BECBC2B7");
     }
 
 }

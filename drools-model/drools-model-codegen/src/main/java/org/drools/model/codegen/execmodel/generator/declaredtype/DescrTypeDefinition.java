@@ -43,7 +43,6 @@ import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodDefin
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeDefinition;
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeResolver;
 
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

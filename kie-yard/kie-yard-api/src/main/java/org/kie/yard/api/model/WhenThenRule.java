@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.yard.api.model;
 
-package org.drools.integrationtests;
+import java.util.List;
 
-import org.drools.mvel.compiler.InsertedObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+public class WhenThenRule implements Rule {
 
-rule rule1
-  when
-  then
-    insert( new InsertedObject( "value1") );
-    insert( new InsertedObject( "value2") );
-end
+    private final int rowNumber;
+    
+    @JsonProperty("when")
+    private List when;
+    
+    @JsonProperty("then")
+    private Object then;
 
-query "assertedobjquery" ( String $value )
-    assertedobj : InsertedObject( value == $value )
-end 
+    public WhenThenRule(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
 
+    @Override
+    public int getRowNumber() {
+        return rowNumber;
+    }
 
-query "assertedobjquery2" ( String $value1, String $value2 )
-    assertedobj : InsertedObject( value == $value2 )
-end
- 
+    public List getWhen() {
+        return when;
+    }
+
+    public Object getThen() {
+        return then;
+    }
+
+    public void setWhen(List when) {
+        this.when = when;
+    }
+
+    public void setThen(Object then) {
+        this.then = then;
+    }
+}

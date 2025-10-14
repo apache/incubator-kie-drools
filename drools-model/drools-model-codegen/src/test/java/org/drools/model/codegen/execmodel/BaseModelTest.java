@@ -83,6 +83,10 @@ public abstract class BaseModelTest {
         }
     }
 
+    public static Stream<RUN_TYPE> parametersStandardOnly() {
+        return Stream.of(RUN_TYPE.STANDARD_FROM_DRL);
+    }
+
     public BaseModelTest() {
     }
 

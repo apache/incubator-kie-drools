@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="ImportingModel" id="_A822E73F-8B05-4484-B190-056F1E905EC4" name="ImportingModel" xmlns:included0="ImportedModel">
+  <import id="_01CB2056-514C-44F8-AA0F-BA0A20007ACD" name="A" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="ImportedModel" locationURI="./Model A.dmn" />
+  <decisionService name="DecisionService B" id="_95293839-C5D1-44D7-88EE-2DA10076B3DB">
+    <variable name="DecisionService B" id="_93560E9F-93FD-4A4C-8F0D-D6DB583B4B63" typeRef="number" />
+    <outputDecision href="ImportedModel#_CE7D37D7-FC33-4C3A-AD3D-6EB6BECBC2B7" />
+    <inputData href="ImportedModel#_D57E59F9-FC14-4B53-888C-CAADBA0AEFF6" />
+  </decisionService>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_51EDA251-7952-49AE-9F55-099AB47EB130" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths />
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_0E3535FD-057C-47A5-9222-1AF5E4034AD3" dmnElementRef="_95293839-C5D1-44D7-88EE-2DA10076B3DB" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="500" y="0" width="320" height="320" />
+        <dmndi:DMNDecisionServiceDividerLine id="_1D23636A-117D-4B39-AE0F-E4E32F294AA0">
+          <di:waypoint x="500" y="160" />
+          <di:waypoint x="820" y="160" />
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_1AFCAACA-D2DB-4FE9-95C1-253E9CB2EF11" dmnElementRef="included0:_CE7D37D7-FC33-4C3A-AD3D-6EB6BECBC2B7">
+        <dc:Bounds x="580" y="60" width="160" height="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
