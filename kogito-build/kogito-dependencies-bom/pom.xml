@@ -35,7 +35,7 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.20.2.2</version.io.quarkus>
+    <version.io.quarkus>3.20.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework>6.2.11</version.org.springframework>
     <version.org.springframework.boot>3.4.10</version.org.springframework.boot>
@@ -89,7 +89,7 @@
     <version.org.postgresql>42.7.7</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
-    <version.io.smallrye-open-api>4.0.11</version.io.smallrye-open-api>
+    <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
     <version.io.smallrye-config>3.11.4</version.io.smallrye-config>
     <version.org.awaitility>4.2.2</version.org.awaitility>
 
@@ -98,7 +98,7 @@
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.5.18</version.io.vertx>
-    <version.io.grpc>1.69.1</version.io.grpc>
+    <version.io.grpc>1.76.0</version.io.grpc>
 
     <version.io.quarkus.camel>3.20.2</version.io.quarkus.camel>
 
@@ -407,6 +407,41 @@
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-stub</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-core</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-util</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-context</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-api</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf-lite</artifactId>
         <version>${version.io.grpc}</version>
       </dependency>
 
