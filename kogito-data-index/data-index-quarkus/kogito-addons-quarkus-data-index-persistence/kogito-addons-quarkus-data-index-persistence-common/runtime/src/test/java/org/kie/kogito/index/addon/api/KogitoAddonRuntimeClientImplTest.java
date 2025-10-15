@@ -19,12 +19,11 @@
 package org.kie.kogito.index.addon.api;
 
 import java.nio.Buffer;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +31,13 @@ import org.kie.kogito.Application;
 import org.kie.kogito.index.addon.api.models.TestModel;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.model.*;
+import org.kie.kogito.index.model.Timer;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.service.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.service.auth.DataIndexAuthTokenReader;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstances;
@@ -164,6 +165,88 @@ public class KogitoAddonRuntimeClientImplTest {
             when(processInstance.status()).thenReturn(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
             return null;
         }).when(error);
+    }
+
+    @Test
+    public void testGetProcessInstanceTimers() throws Exception {
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        WorkflowProcessInstance workflowProcessInstance = mock(WorkflowProcessInstance.class);
+        when(workflowProcessInstance.getProcessId()).thenReturn(pI.getProcessId());
+        when(workflowProcessInstance.getId()).thenReturn(pI.getId());
+
+        List<TimerDescription> timers = new ArrayList<>();
+        timers.add(TimerDescription.Builder
+                .ofProcessInstance(workflowProcessInstance)
+                .timerId("timerId")
+                .timerDescription("SLA")
+                .build());
+
+        when(processInstance.timers()).thenReturn(timers);
+
+        CompletableFuture<List<Timer>> result = client.getProcessInstanceTimers(SERVICE_URL, pI);
+
+        verify(processes, times(1)).processById(anyString());
+        verify(instances, times(1)).findById(anyString());
+        verify(processInstance, times(1)).timers();
+
+        assertThat(result).isNotNull()
+                .isDone();
+
+        assertThat(result.get())
+                .hasSize(1)
+                .element(0)
+                .hasFieldOrPropertyWithValue("processId", pI.getProcessId())
+                .hasFieldOrPropertyWithValue("processInstanceId", pI.getId())
+                .hasFieldOrPropertyWithValue("timerId", "timerId")
+                .hasFieldOrPropertyWithValue("description", "SLA");
+    }
+
+    @Test
+    public void testGetProcessInstanceTimersErrorWithWrongProcessId() {
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        when(processes.processById(anyString())).thenReturn(null);
+
+        assertThatThrownBy(() -> client.getProcessInstanceTimers(SERVICE_URL, pI))
+                .isInstanceOf(DataIndexServiceException.class)
+                .hasMessage("Cannot get timers for process instance 'pId': process with id 'travels' cannot be found");
+
+        verify(processes, times(1)).processById(anyString());
+        verify(instances, never()).findById(anyString());
+        verify(processInstance, never()).timers();
+    }
+
+    @Test
+    public void testGetProcessInstanceTimersErrorWithWrongProcessInstanceId() {
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        when(instances.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> client.getProcessInstanceTimers(SERVICE_URL, pI))
+                .isInstanceOf(DataIndexServiceException.class)
+                .hasMessage("Cannot get timers for process instance 'pId': instance cannot be found in process 'travels'");
+
+        verify(processes, times(1)).processById(anyString());
+        verify(instances, times(1)).findById(anyString());
+        verify(processInstance, never()).timers();
+    }
+
+    @Test
+    public void testGetProcessInstanceTimersErrorWithUnexpectedErrorGettingTimers() {
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        when(processInstance.timers()).thenThrow(new RuntimeException("Something went wrong"));
+
+        assertThatThrownBy(() -> client.getProcessInstanceTimers(SERVICE_URL, pI))
+                .isInstanceOf(DataIndexServiceException.class)
+                .hasMessage("Failure getting timers for process instance 'pId'")
+                .hasRootCauseInstanceOf(RuntimeException.class)
+                .hasRootCauseMessage("Something went wrong");
+
+        verify(processes, times(1)).processById(anyString());
+        verify(instances, times(1)).findById(anyString());
+        verify(processInstance, times(1)).timers();
     }
 
     @Test

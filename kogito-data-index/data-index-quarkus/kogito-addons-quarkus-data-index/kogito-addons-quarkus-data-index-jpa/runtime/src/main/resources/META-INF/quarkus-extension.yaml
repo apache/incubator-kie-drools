@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: Kogito Data Index PostgreSQL Quarkus Add-On
+name: Kogito Data Index JPA Quarkus Add-On
 description: Runs the Kogito Data Index embedded with JPA persistence
 metadata:
   keywords:
@@ -28,7 +28,7 @@ metadata:
     - tasks
     - jobs
     - BPMN
-    - postgresql
+    - JPA
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"

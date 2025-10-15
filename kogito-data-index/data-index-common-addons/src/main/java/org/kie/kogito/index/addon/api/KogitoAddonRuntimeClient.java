@@ -202,15 +202,29 @@ public class KogitoAddonRuntimeClient extends KogitoRuntimeCommonClient implemen
 
     @Override
     public CompletableFuture<List<Timer>> getProcessInstanceTimers(String serviceUrl, ProcessInstance processInstance) {
-        return CompletableFuture.completedFuture(executeOnProcessInstance(processInstance.getProcessId(), processInstance.getId(), pInstance -> {
+
+        Process<?> process = processes != null ? processes.processById(processInstance.getProcessId()) : null;
+
+        if (process == null) {
+            throw new DataIndexServiceException(
+                    String.format("Cannot get timers for process instance '%s': process with id '%s' cannot be found", processInstance.getId(), processInstance.getProcessId()));
+        }
+
+        Optional<? extends org.kie.kogito.process.ProcessInstance<?>> foundProcessInstanceOptional = process.instances().findById(processInstance.getId());
+        if (foundProcessInstanceOptional.isPresent()) {
+            org.kie.kogito.process.ProcessInstance<?> foundProcessInstance = foundProcessInstanceOptional.get();
             try {
-                return pInstance.timers().stream()
+                List<Timer> timers = foundProcessInstance.timers().stream()
                         .map(Timer::from)
                         .toList();
+                return CompletableFuture.completedFuture(timers);
             } catch (Exception ex) {
-                throw new DataIndexServiceException("Failure getting timers for process instance " + pInstance.id(), ex);
+                throw new DataIndexServiceException(String.format("Failure getting timers for process instance '%s'", processInstance.getId()), ex);
             }
-        }));
+        } else {
+            throw new DataIndexServiceException(
+                    String.format("Cannot get timers for process instance '%s': instance cannot be found in process '%s'", processInstance.getId(), processInstance.getProcessId()));
+        }
     }
 
     private static Map<String, String> mapMetadata(org.kie.api.definition.process.Node n) {
