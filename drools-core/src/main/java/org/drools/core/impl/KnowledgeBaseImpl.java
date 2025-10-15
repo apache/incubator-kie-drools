@@ -1053,7 +1053,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             // All Protos must be created, before inserting objects.
             for (TerminalNode tn : terminalNodes) {
                 tn.getPathMemSpec();
-                BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, this);
+                BuildtimeSegmentUtilities.createPathProtoMemories(this, tn, null);
             }
             Set<Integer> visited = new HashSet<>();
             for (TerminalNode tn : terminalNodes) {

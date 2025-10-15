@@ -652,7 +652,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                             if (!childSmem.getStagedLeftTuples().isEmpty()) {
                                 PathMemory childPmem = childSmem.getPathMemories().get(0);
                                 flushed.add(new Flushed(childPmem, childSmem));
-                                forceFlushLeftTuple(childPmem, childSmem, wm, childSmem.getStagedLeftTuples()
+                                forceFlushLeftTuple(wm, childPmem, childSmem, childSmem.getStagedLeftTuples()
                                         .takeAll());
                             }
                         }
@@ -667,7 +667,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             for (Flushed path : flushed) {
                 if (!path.segmentMemory.getStagedLeftTuples().isEmpty()) {
                     flushCount++;
-                    forceFlushLeftTuple(pmem, path.segmentMemory, wm, path.segmentMemory.getStagedLeftTuples()
+                    forceFlushLeftTuple(wm, pmem, path.segmentMemory, path.segmentMemory.getStagedLeftTuples()
                             .takeAll());
                 }
             }
@@ -700,7 +700,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         if (smemIndex < length) {
             // it only found a SM that needed flushing, if smemIndex < length
-            forceFlushLeftTuple(pmem, sm, wm, sm.getStagedLeftTuples().takeAll());
+            forceFlushLeftTuple(wm, pmem, sm, sm.getStagedLeftTuples().takeAll());
         }
     }
 

@@ -102,7 +102,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
         Set<Integer> visited = new HashSet<>();
         if (tn.getPathNodes()[0].getAssociatedTerminalsSize() == 1) {
-            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
+            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
 
             // rule added with no sharing, so populate it's lian
             wms.forEach(wm -> Add.insertLiaFacts(wm, tn.getPathNodes()[0], visited, false));
@@ -487,7 +487,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                                         TerminalNode tn,
                                         Set<SegmentMemoryPair> smemsToNotify) {
             // create protos
-            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
+            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
 
             // update SegmentProtos with new EndNodes
             for (PathEndNode endNode : tn.getPathEndNodes()) {
@@ -1255,7 +1255,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                                     SegmentPrototype proto,
                                     PathEndNode endNode) {
         PathMemSpec spec = endNode.getPathMemSpec();
-        spec.update(BuildtimeSegmentUtilities.getPathAllLinkedMaskTest(endNode.getSegmentPrototypes(), endNode),
+        spec.update(BuildtimeSegmentUtilities.getPathAllLinkedMaskTest(endNode, endNode.getSegmentPrototypes()),
                 endNode.getSegmentPrototypes().length);
 
         // Now update the PathMemories array of SegmentMemories.
