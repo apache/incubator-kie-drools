@@ -153,7 +153,7 @@ public class AddRuleTest {
 
         insertAndFlush(wm);
 
-        SegmentMemory smemLian = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentMemory smemLian = wm.getNodeMemories().getNodeMemory(lian).getSegmentMemory();
         SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smemLian.getSegmentPrototype()).isSameAs(smemProto0);
 
@@ -192,7 +192,7 @@ public class AddRuleTest {
 
         insertAndFlush(wm);
 
-        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian).getSegmentMemory();
         SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
@@ -253,7 +253,7 @@ public class AddRuleTest {
         insertAndFlush(wm);
         wm.fireAllRules();
 
-        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian).getSegmentMemory();
         SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
@@ -319,7 +319,7 @@ public class AddRuleTest {
 
         insertAndFlush(wm);
 
-        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian).getSegmentMemory();
         SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
         assertSegmentsLengthAndPos(endNode1, 2, wm);
