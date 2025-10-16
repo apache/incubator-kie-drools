@@ -34,7 +34,6 @@
 
     <properties>
         <java.module.name>org.kie.yard.core</java.module.name>
-        <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
     <dependencies>
@@ -47,10 +46,6 @@
             <artifactId>drools-ruleunits-dsl</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>ch.obermuhlner</groupId>
-            <artifactId>jshell-scriptengine</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
@@ -88,8 +83,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-        </plugins>
-    </build>
 </project>

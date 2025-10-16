@@ -19,7 +19,6 @@
 package org.drools.core.phreak;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,7 +71,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.Tuple;
@@ -112,7 +110,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
      * For add tuples are processed after the segments and pmems have been adjusted
      */
     @Override
-    public void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase) {
+    public void addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> wms, TerminalNode tn) {
         if (log.isTraceEnabled()) {
             log.trace("Adding Rule {}", tn.getRule().getName());
         }
@@ -126,7 +124,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         RuleImpl rule = tn.getRule();
         LeftTupleNode firstSplit = getNetworkSplitPoint(tn);
-        PathEndNodes pathEndNodes = getPathEndNodes(kBase, firstSplit, tn, rule, hasProtos, hasWms);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase, rule, firstSplit, tn, hasProtos, hasWms);
 
         // Insert the facts for the new paths. This will iterate each new path from EndNode to the splitStart - but will not process the splitStart itself (as tha already exist).
         // It does not matter that the prior segments have not yet been processed for splitting, as this will only apply for branches of paths that did not exist before
@@ -148,7 +146,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(tnms.otherPmems, null);
 
                 // must collect all visited SegmentMemories, for link notification
-                Set<SegmentMemory> smemsToNotify = handleExistingPaths(wm, tn, prevSmemsLookup, tnms.otherPmems, ExistingPathStrategy.ADD_STRATEGY);
+                Set<SegmentMemory> smemsToNotify = handleExistingPaths(wm, tn, prevSmemsLookup, tnms.otherPmems,
+                        ExistingPathStrategy.ADD_STRATEGY);
 
                 addNewPaths(wm, smemsToNotify, tnms.subjectPmems);
 
@@ -159,7 +158,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         if (hasWms) {
-            insertFacts( pathEndNodes, wms );
+            insertFacts(wms, pathEndNodes);
         } else {
             for (PathEndNode node : pathEndNodes.otherEndNodes) {
                 node.resetPathMemSpec(null);
@@ -172,7 +171,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
      * For remove tuples are processed before the segments and pmems have been adjusted
      */
     @Override
-    public void removeRule( TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase) {
+    public void removeRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> wms, TerminalNode tn) {
         if (log.isTraceEnabled()) {
             log.trace("Removing Rule {}", tn.getRule().getName());
         }
@@ -184,16 +183,16 @@ class LazyPhreakBuilder implements PhreakBuilder {
             return;
         }
 
-        RuleImpl      rule       = tn.getRule();
+        RuleImpl rule = tn.getRule();
         LeftTupleNode firstSplit = getNetworkSplitPoint(tn);
-        PathEndNodes pathEndNodes = getPathEndNodes(kBase, firstSplit, tn, rule, hasProtos, hasWms);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase, rule, firstSplit, tn, hasProtos, hasWms);
 
         for (InternalWorkingMemory wm : wms) {
             wm.flushPropagations();
 
             PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes);
 
-            if ( !tnms.subjectPmems.isEmpty() ) {
+            if (!tnms.subjectPmems.isEmpty()) {
                 if (NodeTypeEnums.isLeftInputAdapterNode(firstSplit) && firstSplit.getAssociatedTerminalsSize() == 1) {
                     if (tnms.subjectPmem != null) {
                         flushStagedTuples(wm, firstSplit, tnms.subjectPmem);
@@ -212,13 +211,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(tnms.otherPmems, tn);
 
                     // must collect all visited SegmentMemories, for link notification
-                    Set<SegmentMemory> smemsToNotify = handleExistingPaths(wm, tn, prevSmemsLookup, tnms.otherPmems, ExistingPathStrategy.REMOVE_STRATEGY);
+                    Set<SegmentMemory> smemsToNotify = handleExistingPaths(wm, tn, prevSmemsLookup, tnms.otherPmems,
+                            ExistingPathStrategy.REMOVE_STRATEGY);
 
                     notifySegments(wm, smemsToNotify);
                 }
             }
 
-            if (tnms.subjectPmem != null && tnms.subjectPmem.isInitialized() && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
+            if (tnms.subjectPmem != null && tnms.subjectPmem.isInitialized() && tnms.subjectPmem.getRuleAgendaItem()
+                    .isQueued()) {
                 // SubjectPmem can be null, if it was never initialized
                 tnms.subjectPmem.getRuleAgendaItem().dequeue();
             }
@@ -232,24 +233,38 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     public interface ExistingPathStrategy {
+
         ExistingPathStrategy ADD_STRATEGY = new AddExistingPaths();
         ExistingPathStrategy REMOVE_STRATEGY = new RemoveExistingPaths();
 
         SegmentMemory[] getSegmenMemories(PathMemory pmem);
 
-        void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount);
+        void adjustSegment(InternalWorkingMemory wm,
+                           Set<SegmentMemory> smemsToNotify,
+                           SegmentMemory smem,
+                           int smemSplitAdjustAmount);
 
-        void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
-                         LeftTupleNode parentNode, LeftTupleNode node, TerminalNode tn,
-                         Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
-                         InternalWorkingMemory wm);
+        void handleSplit(InternalWorkingMemory wm,
+                         PathMemory pmem,
+                         SegmentMemory[] prevSmems,
+                         SegmentMemory[] smems,
+                         int smemIndex,
+                         int prevSmemIndex,
+                         LeftTupleNode parentNode,
+                         LeftTupleNode node,
+                         TerminalNode tn,
+                         Set<LeftTupleNode> visited,
+                         Set<SegmentMemory> smemsToNotify,
+                         Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap);
 
-        void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem);
+        void processSegmentMemories(PathMemory pmem, SegmentMemory[] smems);
 
         int incSmemIndex1(int smemIndex);
+
         int incSmemIndex2(int smemIndex);
 
         int incPrevSmemIndex1(int prevSmemIndex);
+
         int incPrevSmemIndex2(int prevSmemIndex);
     }
 
@@ -261,17 +276,28 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         @Override
-        public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
+        public void adjustSegment(InternalWorkingMemory wm,
+                                  Set<SegmentMemory> smemsToNotify,
+                                  SegmentMemory smem,
+                                  int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
             smem.unlinkSegment(wm);
-            correctSegmentMemoryAfterSplitOnAdd(smem, smemSplitAdjustAmount);
+            smem.correctSegmentMemoryAfterSplitOnAdd(smemSplitAdjustAmount);
         }
 
         @Override
-        public void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
-                                LeftTupleNode parentNode, LeftTupleNode node, TerminalNode tn,
-                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
-                                InternalWorkingMemory wm) {
+        public void handleSplit(InternalWorkingMemory wm,
+                                PathMemory pmem,
+                                SegmentMemory[] prevSmems,
+                                SegmentMemory[] smems,
+                                int smemIndex,
+                                int prevSmemIndex,
+                                LeftTupleNode parentNode,
+                                LeftTupleNode node,
+                                TerminalNode tn,
+                                Set<LeftTupleNode> visited,
+                                Set<SegmentMemory> smemsToNotify,
+                                Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap) {
             if (smems[smemIndex - 1] != null) {
                 SegmentMemory sm2 = nodeToSegmentMap.get(node);
                 if (sm2 == null) {
@@ -288,15 +314,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         @Override
-        public void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem) {
+        public void processSegmentMemories(PathMemory pmem, SegmentMemory[] smems) {
 
         }
 
         @Override
         public int incSmemIndex1(int smemIndex) {
-            return smemIndex+1;
+            return smemIndex + 1;
         }
-
 
         @Override
         public int incPrevSmemIndex1(int prevSmemIndex) {
@@ -310,7 +335,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         @Override
         public int incPrevSmemIndex2(int prevSmemIndex) {
-            return prevSmemIndex+1;
+            return prevSmemIndex + 1;
         }
     }
 
@@ -318,21 +343,32 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         @Override
         public SegmentMemory[] getSegmenMemories(PathMemory pmem) {
-            return new SegmentMemory[ pmem.getSegmentMemories().length ];
+            return new SegmentMemory[pmem.getSegmentMemories().length];
         }
 
         @Override
-        public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
+        public void adjustSegment(InternalWorkingMemory wm,
+                                  Set<SegmentMemory> smemsToNotify,
+                                  SegmentMemory smem,
+                                  int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
             smem.unlinkSegment(wm);
-            correctSegmentMemoryAfterSplitOnRemove(smem, smemSplitAdjustAmount);
+            smem.correctSegmentMemoryAfterSplitOnRemove(smemSplitAdjustAmount);
         }
 
         @Override
-        public void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
-                                LeftTupleNode parentNode, LeftTupleNode node, TerminalNode tn,
-                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
-                                InternalWorkingMemory wm) {
+        public void handleSplit(InternalWorkingMemory wm,
+                                PathMemory pmem,
+                                SegmentMemory[] prevSmems,
+                                SegmentMemory[] smems,
+                                int smemIndex,
+                                int prevSmemIndex,
+                                LeftTupleNode parentNode,
+                                LeftTupleNode node,
+                                TerminalNode tn,
+                                Set<LeftTupleNode> visited,
+                                Set<SegmentMemory> smemsToNotify,
+                                Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap) {
             if (visited.contains(node)) {
                 return;
             }
@@ -346,7 +382,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 // Temporarily remove the terminal node of the rule to be removed from the rete network to avoid that
                 // its path memory could be added to an existing segment memory during the merge of 2 segments
                 LeftTupleSource removedTerminalSource = tn.getLeftTupleSource();
-                removedTerminalSource.removeTupleSink( tn );
+                removedTerminalSource.removeTupleSink(tn);
 
                 if (sm1 == null) {
                     sm1 = createChildSegment(wm, parentNode);
@@ -358,7 +394,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     sm1.add(sm2);
                 }
 
-                mergeSegment(sm1, sm2);
+                sm1.mergeSegment(sm2);
                 smemsToNotify.add(sm1);
                 sm1.unlinkSegment(wm);
                 sm2.unlinkSegment(wm);
@@ -366,15 +402,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                 // Add back the the terminal node of the rule to be removed into the rete network to permit the network
                 // traversal up from it and the removal of all the nodes exclusively belonging to the removed rule
-                removedTerminalSource.addTupleSink( tn );
+                removedTerminalSource.addTupleSink(tn);
             }
         }
 
         @Override
-        public void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem) {
+        public void processSegmentMemories(PathMemory pmem, SegmentMemory[] smems) {
             for (int i = 0; i < smems.length; i++) {
                 if (smems[i] != null) {
-                    pmem.setSegmentMemory( smems[i].getPos(), smems[i] );
+                    pmem.setSegmentMemory(smems[i].getPos(), smems[i]);
                 }
             }
         }
@@ -386,12 +422,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         @Override
         public int incPrevSmemIndex1(int prevSmemIndex) {
-            return prevSmemIndex+1;
+            return prevSmemIndex + 1;
         }
 
         @Override
         public int incSmemIndex2(int smemIndex) {
-            return smemIndex+1;
+            return smemIndex + 1;
         }
 
         @Override
@@ -400,10 +436,13 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static Set<SegmentMemory> handleExistingPaths(InternalWorkingMemory wm, TerminalNode tn,
-                                                          Map<PathMemory, SegmentMemory[]> prevSmemsLookup, List<PathMemory> pmems, ExistingPathStrategy strategy) {
-        Set<SegmentMemory>                smemsToNotify    = new HashSet<>();
-        Set<SegmentMemory>                visitedSegments  = new HashSet<>();
+    private static Set<SegmentMemory> handleExistingPaths(InternalWorkingMemory wm,
+                                                          TerminalNode tn,
+                                                          Map<PathMemory, SegmentMemory[]> prevSmemsLookup,
+                                                          List<PathMemory> pmems,
+                                                          ExistingPathStrategy strategy) {
+        Set<SegmentMemory> smemsToNotify = new HashSet<>();
+        Set<SegmentMemory> visitedSegments = new HashSet<>();
         Set<LeftTupleNode> visitedNodes = new HashSet<>();
         Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap = new HashMap<>();
 
@@ -411,14 +450,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
             LeftTupleNode[] nodes = pmem.getPathEndNode().getPathNodes();
 
             SegmentMemory[] prevSmems = prevSmemsLookup.get(pmem);
-            SegmentMemory[] smems     = strategy.getSegmenMemories(pmem);
+            SegmentMemory[] smems = strategy.getSegmenMemories(pmem);
 
             LeftTupleNode node;
-            int           prevSmemIndex         = 0;
-            int           smemIndex             = 0;
-            int           smemSplitAdjustAmount = 0;
-            int           nodeIndex             = 0;
-            int           nodeTypesInSegment    = 0;
+            int prevSmemIndex = 0;
+            int smemIndex = 0;
+            int smemSplitAdjustAmount = 0;
+            int nodeIndex = 0;
+            int nodeTypesInSegment = 0;
 
             // excluding the rule just added iterate while not split (i.e. find the next split, prior to this rule being added)
             // note it's checking for when the parent is the split, and thus node is the next root root.
@@ -427,7 +466,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             do {
                 node = nodes[nodeIndex++];
                 LeftTupleSource parentNode = node.getLeftTupleSource();
-                nodeTypesInSegment = BuildtimeSegmentUtilities.updateNodeTypesMask( parentNode, nodeTypesInSegment );
+                nodeTypesInSegment = BuildtimeSegmentUtilities.updateNodeTypesMask(parentNode, nodeTypesInSegment);
                 if (isSplit(parentNode)) {
                     smemIndex = strategy.incSmemIndex1(smemIndex);
                     prevSmemIndex = strategy.incPrevSmemIndex1(prevSmemIndex);
@@ -435,70 +474,74 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         smemIndex = strategy.incSmemIndex2(smemIndex);
                         prevSmemIndex = strategy.incPrevSmemIndex2(prevSmemIndex);
                         smems[smemIndex] = prevSmems[prevSmemIndex];
-                        if ( smems[smemIndex] != null && smemSplitAdjustAmount > 0 && visitedSegments.add(smems[smemIndex])) {
-                            strategy.adjustSegment( wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount );
+                        if (smems[smemIndex] != null && smemSplitAdjustAmount > 0 && visitedSegments.add(
+                                smems[smemIndex])) {
+                            strategy.adjustSegment(wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount);
                         }
                     } else {
-                        strategy.handleSplit(pmem, prevSmems, smems, smemIndex, prevSmemIndex,
-                                parentNode, node, tn, visitedNodes,
-                                smemsToNotify, nodeToSegmentMap, wm);
+                        strategy.handleSplit(wm, pmem, prevSmems, smems, smemIndex,
+                                prevSmemIndex, parentNode, node, tn,
+                                visitedNodes, smemsToNotify, nodeToSegmentMap);
                         smemSplitAdjustAmount++;
                     }
-                    checkEagerSegmentCreation(wm, parentNode, nodeTypesInSegment );
+                    checkEagerSegmentCreation(wm, parentNode, nodeTypesInSegment);
                     nodeTypesInSegment = 0;
                 }
             } while (!NodeTypeEnums.isEndNode(node));
-            strategy.processSegmentMemories(smems, pmem);
+            strategy.processSegmentMemories(pmem, smems);
         }
         return smemsToNotify;
     }
 
-    private static void addNewPaths(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, List<PathMemory> pmems) {
+    private static void addNewPaths(InternalWorkingMemory wm,
+                                    Set<SegmentMemory> smemsToNotify,
+                                    List<PathMemory> pmems) {
         // Multiple paths may be renetrant, in the case of a second subnetwork on the same rule.
         // Must make sure we don't duplicate the child smem, and when found, just update it with new pmem.
         Set<LeftTupleNode> visited = new HashSet<>();
         for (PathMemory pmem : pmems) {
             LeftTupleSink tipNode = pmem.getPathEndNode();
 
-            LeftTupleNode child  = tipNode;
+            LeftTupleNode child = tipNode;
             LeftTupleNode parent = tipNode.getLeftTupleSource();
 
             while (true) {
                 if (visited.add(child)) {
-                    if ( parent != null && parent.getAssociatedTerminalsSize() != 1 && child.getAssociatedTerminalsSize() == 1 ) {
+                    if (parent != null && parent.getAssociatedTerminalsSize() != 1 && child
+                            .getAssociatedTerminalsSize() == 1) {
                         // This is the split point that the new path enters an existing path.
                         // If the parent has other child SegmentMemorys then it must create a new child SegmentMemory
                         // If the parent is a query node, then it's internal data structure needs changing
                         // all right input data must be propagated
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent );
-                        if ( mem != null && mem.getSegmentMemory() != null ) {
+                        Memory mem = wm.getNodeMemories().peekNodeMemory(parent);
+                        if (mem != null && mem.getSegmentMemory() != null) {
                             SegmentMemory sm = mem.getSegmentMemory();
-                            if ( sm.getFirst() != null && sm.size() < parent.getSinkPropagator().size()) {
+                            if (sm.getFirst() != null && sm.size() < parent.getSinkPropagator().size()) {
                                 LeftTupleSink[] sinks = parent.getSinkPropagator().getSinks();
                                 for (int i = sm.size(); i < sinks.length; i++) {
-                                    SegmentMemory childSmem = createChildSegment( wm, sinks[i] );
-                                    sm.add( childSmem );
-                                    pmem.setSegmentMemory( childSmem.getPos(), childSmem );
-                                    smemsToNotify.add( childSmem );
+                                    SegmentMemory childSmem = createChildSegment(wm, sinks[i]);
+                                    sm.add(childSmem);
+                                    pmem.setSegmentMemory(childSmem.getPos(), childSmem);
+                                    smemsToNotify.add(childSmem);
                                 }
                             }
-                            correctMemoryOnSplitsChanged( wm, parent, null );
+                            correctMemoryOnSplitsChanged(wm, parent, null);
                         }
                     } else {
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( child );
+                        Memory mem = wm.getNodeMemories().peekNodeMemory(child);
                         // The root of each segment
-                        if ( mem != null ) {
+                        if (mem != null) {
                             SegmentMemory sm = mem.getSegmentMemory();
-                            if ( sm != null && !sm.getPathMemories().contains( pmem ) ) {
+                            if (sm != null && !sm.getPathMemories().contains(pmem)) {
                                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
-                                sm.notifyRuleLinkSegment( wm, pmem );
+                                sm.notifyRuleLinkSegment(wm, pmem);
                             }
                         }
                     }
                 } else {
-                    Memory mem = wm.getNodeMemories().peekNodeMemory( child );
-                    if ( mem != null ) {
-                        mem.getSegmentMemory().notifyRuleLinkSegment( wm, pmem );
+                    Memory mem = wm.getNodeMemories().peekNodeMemory(child);
+                    if (mem != null) {
+                        mem.getSegmentMemory().notifyRuleLinkSegment(wm, pmem);
                     }
                 }
 
@@ -512,13 +555,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-
     private static void removeNewPaths(InternalWorkingMemory wm, List<PathMemory> pmems) {
         Set<Integer> visitedNodes = new HashSet<>();
         for (PathMemory pmem : pmems) {
             LeftTupleSink tipNode = pmem.getPathEndNode();
 
-            LeftTupleNode child  = tipNode;
+            LeftTupleNode child = tipNode;
             LeftTupleNode parent = tipNode.getLeftTupleSource();
 
             while (true) {
@@ -527,18 +569,19 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     deleteRightInputData(wm, (LeftTupleSink) child);
                 }
 
-                if (parent != null && parent.getAssociatedTerminalsSize() != 1 && child.getAssociatedTerminalsSize() == 1) {
+                if (parent != null && parent.getAssociatedTerminalsSize() != 1 && child
+                        .getAssociatedTerminalsSize() == 1) {
                     // This is the split point that the new path enters an existing path.
                     // If the parent has other child SegmentMemorys then it must create a new child SegmentMemory
                     // If the parent is a query node, then it's internal data structure needs changing
                     // all right input data must be propagated
-                    if (!visitedNodes.contains( child.getId() )) {
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent );
-                        if ( mem != null && mem.getSegmentMemory() != null ) {
+                    if (!visitedNodes.contains(child.getId())) {
+                        Memory mem = wm.getNodeMemories().peekNodeMemory(parent);
+                        if (mem != null && mem.getSegmentMemory() != null) {
                             SegmentMemory sm = mem.getSegmentMemory();
-                            if ( sm.getFirst() != null ) {
-                                SegmentMemory childSm = wm.getNodeMemories().peekNodeMemory( child ).getSegmentMemory();
-                                sm.remove( childSm );
+                            if (sm.getFirst() != null) {
+                                SegmentMemory childSm = wm.getNodeMemories().peekNodeMemory(child).getSegmentMemory();
+                                sm.remove(childSm);
                             }
                         }
                     }
@@ -547,7 +590,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     // The root of each segment
                     if (mem != null) {
                         SegmentMemory sm = mem.getSegmentMemory();
-                        if (sm != null && sm.getPathMemories().contains( pmem )) {
+                        if (sm != null && sm.getPathMemories().contains(pmem)) {
                             mem.getSegmentMemory().removePathMemory(pmem);
                         }
                     }
@@ -569,22 +612,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static boolean isSplit(LeftTupleNode node, TerminalNode removingTN) {
-        return node != null && BuildtimeSegmentUtilities.isTipNode( node, removingTN );
+        return node != null && BuildtimeSegmentUtilities.isTipNode(node, removingTN);
     }
 
     public static class Flushed {
-        SegmentMemory segmentMemory;
-        PathMemory pathMemory;
 
-        public Flushed(SegmentMemory segmentMemory, PathMemory pathMemory) {
-            this.segmentMemory = segmentMemory;
+        PathMemory pathMemory;
+        SegmentMemory segmentMemory;
+
+        public Flushed(PathMemory pathMemory, SegmentMemory segmentMemory) {
             this.pathMemory = pathMemory;
+            this.segmentMemory = segmentMemory;
         }
     }
 
-    public static void flushStagedTuples(InternalWorkingMemory wm, TerminalNode tn, PathMemory pmem, List<LeftTupleNode> splits) {
+    public static void flushStagedTuples(InternalWorkingMemory wm,
+                                         TerminalNode tn,
+                                         PathMemory pmem,
+                                         List<LeftTupleNode> splits) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
-        if ( pmem.isInitialized() ) {
+        if (pmem.isInitialized()) {
             RuleNetworkEvaluator.INSTANCE.evaluateNetwork(wm, pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
         }
 
@@ -596,15 +643,17 @@ class LazyPhreakBuilder implements PhreakBuilder {
         for (LeftTupleNode node : splits) {
             if (!isSplit(node, tn)) { // check if the split is there even without the processed rule
                 Memory mem = wm.getNodeMemories().peekNodeMemory(node);
-                if ( mem != null) {
+                if (mem != null) {
                     SegmentMemory smem = mem.getSegmentMemory();
 
-                    if ( !smem.isEmpty() ) {
-                        for ( SegmentMemory childSmem = smem.getFirst(); childSmem != null; childSmem = childSmem.getNext() ) {
-                            if ( !childSmem.getStagedLeftTuples().isEmpty() ) {
+                    if (!smem.isEmpty()) {
+                        for (SegmentMemory childSmem = smem.getFirst(); childSmem != null; childSmem = childSmem
+                                .getNext()) {
+                            if (!childSmem.getStagedLeftTuples().isEmpty()) {
                                 PathMemory childPmem = childSmem.getPathMemories().get(0);
-                                flushed.add( new Flushed(childSmem, childPmem));
-                                forceFlushLeftTuple(childPmem, childSmem, wm, childSmem.getStagedLeftTuples().takeAll());
+                                flushed.add(new Flushed(childPmem, childSmem));
+                                forceFlushLeftTuple(wm, childPmem, childSmem, childSmem.getStagedLeftTuples()
+                                        .takeAll());
                             }
                         }
                     }
@@ -616,27 +665,28 @@ class LazyPhreakBuilder implements PhreakBuilder {
         while (!flushed.isEmpty() && flushCount != 0) {
             flushCount = 0;
             for (Flushed path : flushed) {
-                if ( !path.segmentMemory.getStagedLeftTuples().isEmpty() ) {
+                if (!path.segmentMemory.getStagedLeftTuples().isEmpty()) {
                     flushCount++;
-                    forceFlushLeftTuple(pmem, path.segmentMemory, wm, path.segmentMemory.getStagedLeftTuples().takeAll());
+                    forceFlushLeftTuple(wm, pmem, path.segmentMemory, path.segmentMemory.getStagedLeftTuples()
+                            .takeAll());
                 }
             }
         }
     }
 
     private static void flushStagedTuples(InternalWorkingMemory wm, LeftTupleNode splitStartNode, PathMemory pmem) {
-        if ( !pmem.isInitialized() ) {
+        if (!pmem.isInitialized()) {
             // The rule has never been linked in and evaluated, so there will be nothing to flush.
             return;
         }
-        int             smemIndex = getSegmentPos(splitStartNode); // index before the segments are merged
-        SegmentMemory[] smems     = pmem.getSegmentMemories();
+        int smemIndex = getSegmentPos(splitStartNode); // index before the segments are merged
+        SegmentMemory[] smems = pmem.getSegmentMemories();
 
-        SegmentMemory   sm        = null;
+        SegmentMemory sm = null;
 
         // If there is no sharing, then there will not be any staged tuples in later segemnts, and thus no need to search for them if the current sm is empty.
         int length = smems.length;
-        if ( splitStartNode.getAssociatedTerminalsSize() == 1 ) {
+        if (splitStartNode.getAssociatedTerminalsSize() == 1) {
             length = 1;
         }
 
@@ -648,13 +698,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
             smemIndex++;
         }
 
-        if ( smemIndex < length ) {
+        if (smemIndex < length) {
             // it only found a SM that needed flushing, if smemIndex < length
-            forceFlushLeftTuple(pmem, sm, wm, sm.getStagedLeftTuples().takeAll());
+            forceFlushLeftTuple(wm, pmem, sm, sm.getStagedLeftTuples().takeAll());
         }
     }
 
-    private static Map<PathMemory, SegmentMemory[]> reInitPathMemories(List<PathMemory> pathMems, TerminalNode removingTN) {
+    private static Map<PathMemory, SegmentMemory[]> reInitPathMemories(List<PathMemory> pathMems,
+                                                                       TerminalNode removingTN) {
         Map<PathMemory, SegmentMemory[]> previousSmems = new HashMap<>();
         for (PathMemory pmem : pathMems) {
             // Re initialise all the PathMemories
@@ -673,28 +724,16 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void correctMemoryOnSplitsChanged(InternalWorkingMemory wm, LeftTupleNode splitStart, TerminalNode removingTN) {
+    private static void correctMemoryOnSplitsChanged(InternalWorkingMemory wm,
+                                                     LeftTupleNode splitStart,
+                                                     TerminalNode removingTN) {
         if (splitStart.getType() == NodeTypeEnums.QueryElementNode) {
-            QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart);
+            QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories()
+                    .peekNodeMemory(splitStart);
             if (mem != null) {
                 mem.correctMemoryOnSinksChanged(removingTN);
             }
         }
-    }
-
-
-    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm) {
-        correctSegmentMemoryAfterSplitOnAdd(sm, 1);
-    }
-
-    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm, int i) {
-        sm.setPos(sm.getPos() + i);
-        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() << i);
-    }
-
-    public static void correctSegmentMemoryAfterSplitOnRemove(SegmentMemory sm, int i) {
-        sm.setPos(sm.getPos() - i);
-        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() >> i);
     }
 
     private static int getSegmentPos(LeftTupleNode lts) {
@@ -711,26 +750,27 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void insertLiaFacts(InternalWorkingMemory wm, LeftTupleNode startNode) {
         // rule added with no sharing
         PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-        final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-        LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
+        final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(),
+                PropagationContext.Type.RULE_ADDITION, null, null, null);
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) startNode;
         attachAdapterAndPropagate(wm, lian, pctx);
     }
 
-    private static void insertFacts(PathEndNodes endNodes, Collection<InternalWorkingMemory> wms) {
+    private static void insertFacts(Collection<InternalWorkingMemory> wms, PathEndNodes endNodes) {
         Set<LeftTupleNode> visited = new HashSet<>();
 
-        for ( PathEndNode endNode : endNodes.subjectEndNodes ) {
-            LeftTupleNode[]  nodes = endNode.getPathNodes();
-            for ( int i = 0; i < nodes.length; i++ ) {
+        for (PathEndNode endNode : endNodes.subjectEndNodes) {
+            LeftTupleNode[] nodes = endNode.getPathNodes();
+            for (int i = 0; i < nodes.length; i++) {
                 LeftTupleNode node = nodes[i];
-                if  ( NodeTypeEnums.isBetaNode(node) && node.getAssociatedTerminalsSize() == 1 ) {
-                    if (!visited.add( node )) {
+                if (NodeTypeEnums.isBetaNode(node) && node.getAssociatedTerminalsSize() == 1) {
+                    if (!visited.add(node)) {
                         continue;// this is to avoid rentering a path, and processing nodes twice. This can happen for nested subnetworks.
                     }
                     BetaNode bn = (BetaNode) node;
 
                     if (!bn.getRightInput().inputIsTupleToObjectNode()) {
-                        for ( InternalWorkingMemory wm : wms ) {
+                        for (InternalWorkingMemory wm : wms) {
                             attachAdapterAndPropagate(wm, bn);
                         }
                     }
@@ -741,7 +781,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void deleteRightInputData(InternalWorkingMemory wm, LeftTupleSink node) {
         if (wm.getNodeMemories().peekNodeMemory(node) != null) {
-            BetaNode       bn = (BetaNode) node;
+            BetaNode bn = (BetaNode) node;
             BetaMemory bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) wm.getNodeMemory(bn)).getBetaMemory();
@@ -749,9 +789,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 bm = (BetaMemory) wm.getNodeMemory(bn);
             }
 
-            TupleMemory  rtm = bm.getRightTupleMemory();
-            FastIterator<TupleImpl> it  = rtm.fullFastIterator();
-            for (TupleImpl rightTuple = BetaNode.getFirstTuple(rtm, it); rightTuple != null; ) {
+            TupleMemory rtm = bm.getRightTupleMemory();
+            FastIterator<TupleImpl> it = rtm.fullFastIterator();
+            for (TupleImpl rightTuple = BetaNode.getFirstTuple(rtm, it); rightTuple != null;) {
                 TupleImpl next = it.next(rightTuple);
                 rtm.remove(rightTuple);
                 rightTuple.unlinkFromRightParent();
@@ -776,7 +816,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         if (source.getType() == NodeTypeEnums.WindowNode) {
             WindowNode.WindowMemory memory = wm.getNodeMemory(((WindowNode) source));
             for (DefaultEventHandle factHandle : memory.getFactHandles()) {
-                factHandle.forEachRightTuple( rt -> {
+                factHandle.forEachRightTuple(rt -> {
                     if (source.equals(rt.getSink())) {
                         rt.unlinkFromRightParent();
                     }
@@ -786,7 +826,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void unlinkRightTuples(TupleImpl rightTuple) {
-        for (TupleImpl rt = rightTuple; rt != null; ) {
+        for (TupleImpl rt = rightTuple; rt != null;) {
             TupleImpl next = rt.getStagedNext();
             // this RightTuple could have been already unlinked by the former cycle
             if (rt.getFactHandle() != null) {
@@ -807,8 +847,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
         // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
         // which provide the potential peer of the tuple being added or removed
 
-        if ( node.getType() == NodeTypeEnums.AlphaTerminalNode) {
-            processLeftTuplesOnLian( wm, insert, rule, (LeftInputAdapterNode) node );
+        if (node.getType() == NodeTypeEnums.AlphaTerminalNode) {
+            processLeftTuplesOnLian(wm, rule, (LeftInputAdapterNode) node, insert);
             return;
         }
 
@@ -822,15 +862,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
         while (!NodeTypeEnums.isLeftInputAdapterNode(node)) {
 
             if (NodeTypeEnums.isBetaNode(node)) {
-                BetaMemory    bm;
+                BetaMemory bm;
                 if (NodeTypeEnums.AccumulateNode == node.getType()) {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
+                    Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (TupleImpl) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild( wm, rule, (TupleImpl) accctx.getResultLeftTuple(), insert);
+                        visitChild(wm, rule, (TupleImpl) accctx.getResultLeftTuple(), insert);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType() && !node.inputIsTupleToObjectNode()) { // do not process exists with subnetworks
                     // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
@@ -838,24 +878,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                    for (RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it); rt != null; rt = (RightTuple) it.next(rt)) {
+                    for (RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(),
+                            it); rt != null; rt = (RightTuple) it.next(rt)) {
                         for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
                             visitLeftTuple(wm, rule, lt, insert);
                         }
                     }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
-                    FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    for (TupleImpl lt = (TupleImpl)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (TupleImpl) it.next(lt)) {
+                    FastIterator<TupleImpl> it = bm.getLeftTupleMemory().fullFastIterator();
+                    for (TupleImpl lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = it.next(
+                            lt)) {
                         visitLeftTuple(wm, rule, lt, insert);
                     }
                 }
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
-                FromMemory   fm  = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
-                TupleMemory  ltm = fm.getBetaMemory().getLeftTupleMemory();
-                FastIterator it  = ltm.fullFastIterator();
-                for (TupleImpl lt = ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
+                FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
+                TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                FastIterator<TupleImpl> it = ltm.fullFastIterator();
+                for (TupleImpl lt = ltm.getFirst(null); lt != null; lt = it.next(lt)) {
                     visitChild(wm, rule, lt, insert);
                 }
                 return;
@@ -868,20 +910,23 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
-        processLeftTuplesOnLian( wm, insert, rule, (LeftInputAdapterNode) node );
+        processLeftTuplesOnLian(wm, rule, (LeftInputAdapterNode) node, insert);
     }
 
-    private static void processLeftTuplesOnLian( InternalWorkingMemory wm, boolean insert, Rule rule, LeftInputAdapterNode lian ) {
+    private static void processLeftTuplesOnLian(InternalWorkingMemory wm,
+                                                Rule rule,
+                                                LeftInputAdapterNode lian,
+                                                boolean insert) {
         BaseNode os = lian.getObjectSource();
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParent();
         }
 
-        ObjectTypeNode otn  = (ObjectTypeNode) os;
+        ObjectTypeNode otn = (ObjectTypeNode) os;
         Iterator<InternalFactHandle> it = otn.getFactHandlesIterator(wm);
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
-            fh.forEachLeftTuple( lt -> {
+            fh.forEachLeftTuple(lt -> {
                 TupleImpl nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
@@ -889,8 +934,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     visitChild(wm, rule, lt, insert);
 
                     if (lt.getHandlePrevious() != null && nextLt != null) {
-                        lt.getHandlePrevious().setHandleNext( nextLt );
-                        nextLt.setHandlePrevious( lt.getHandlePrevious() );
+                        lt.getHandlePrevious().setHandleNext(nextLt);
+                        nextLt.setHandlePrevious(lt.getHandlePrevious());
                     }
                 }
             });
@@ -910,26 +955,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
         TupleImpl prevLt = null;
         LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getSink();
 
-        for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+        for (; sink != null; sink = sink.getNextLeftTupleSinkNode()) {
 
-            if ( lt != null ) {
+            if (lt != null) {
                 if (lt.getSink().isAssociatedWith(rule)) {
 
                     if (lt.getSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
-                            for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
+                            for (TupleImpl child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                                 visitChild(wm, rule, child, insert);
                             }
                         } else if (lt.getSink().getType() == NodeTypeEnums.TupleToObjectNode) {
-                            insertPeerRightTuple( wm, rule, lt, insert);
+                            insertPeerRightTuple(wm, rule, lt, insert);
                         }
                     } else if (!insert) {
-                        iterateLeftTuple( wm, lt );
+                        iterateLeftTuple(wm, lt);
                         TupleImpl lt2 = null;
-                        for ( TupleImpl peerLt = lt.getPeer();
-                              peerLt != null && peerLt.getSink().isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
-                              peerLt = peerLt.getPeer() ) {
-                            iterateLeftTuple( wm, peerLt );
+                        for (TupleImpl peerLt = lt.getPeer(); peerLt != null && peerLt.getSink().isAssociatedWith(
+                                rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1; peerLt = peerLt
+                                        .getPeer()) {
+                            iterateLeftTuple(wm, peerLt);
                             lt2 = peerLt;
                         }
 
@@ -948,15 +993,16 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void insertPeerRightTuple( InternalWorkingMemory wm, Rule rule, TupleImpl lt, boolean insert ) {
+    private static void insertPeerRightTuple(InternalWorkingMemory wm, Rule rule, TupleImpl lt, boolean insert) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
-        TupleImpl         prevLt = null;
-        TupleToObjectNode tton   = (TupleToObjectNode) lt.getSink();
+        TupleImpl prevLt = null;
+        TupleToObjectNode tton = (TupleToObjectNode) lt.getSink();
 
         for (ObjectSink sink : tton.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
-                if (prevLt != null && !insert && sink.isAssociatedWith(rule) && sink.getAssociatedTerminalsSize() == 1) {
-                    prevLt.setPeer( null );
+                if (prevLt != null && !insert && sink.isAssociatedWith(rule) && sink
+                        .getAssociatedTerminalsSize() == 1) {
+                    prevLt.setPeer(null);
                 }
                 prevLt = lt;
                 lt = lt.getPeer();
@@ -964,7 +1010,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 BetaNode bn = ((RightInputAdapterNode) sink).getBetaNode();
                 BetaMemory bm = (BetaMemory) wm.getNodeMemory(bn);
                 prevLt = TupleFactory.createPeer(tton, prevLt);
-                bm.linkNode( bn, wm );
+                bm.linkNode(bn, wm);
                 bm.getStagedRightTuples().addInsert(prevLt);
             }
         }
@@ -973,34 +1019,40 @@ class LazyPhreakBuilder implements PhreakBuilder {
     /**
      * Create all missing peers
      */
-    private static TupleImpl insertPeerLeftTuple(InternalWorkingMemory wm, LeftTupleSinkNode node, TupleImpl lt, boolean insert) {
+    private static TupleImpl insertPeerLeftTuple(InternalWorkingMemory wm,
+                                                 LeftTupleSinkNode node,
+                                                 TupleImpl lt,
+                                                 boolean insert) {
         TupleImpl peer = TupleFactory.createPeer(node, lt);
 
-        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.AlphaTerminalNode ) {
+        if (node.getLeftTupleSource().getType() == NodeTypeEnums.AlphaTerminalNode) {
             if (insert) {
-                TerminalNode rtn = ( TerminalNode ) node;
+                TerminalNode rtn = (TerminalNode) node;
                 InternalAgenda agenda = wm.getAgenda();
-                RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem( wm, agenda, rtn, insert );
-                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), agenda, agendaItem, (RuleTerminalNodeLeftTuple) peer );
+                RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem(wm, agenda, rtn, insert);
+                PhreakRuleTerminalNode.doLeftTupleInsert(rtn, agendaItem.getRuleExecutor(), agenda, agendaItem,
+                        (RuleTerminalNodeLeftTuple) peer);
             }
             return peer;
         }
 
         LeftInputAdapterNode.LiaNodeMemory liaMem = null;
-        if ( NodeTypeEnums.isLeftInputAdapterNode(node.getLeftTupleSource())) {
+        if (NodeTypeEnums.isLeftInputAdapterNode(node.getLeftTupleSource())) {
             liaMem = wm.getNodeMemory(((LeftInputAdapterNode) node.getLeftTupleSource()));
         }
 
         Memory memory = wm.getNodeMemories().peekNodeMemory(node);
         if (memory == null || memory.getSegmentMemory() == null) {
-            throw new IllegalStateException("Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");
+            throw new IllegalStateException(
+                    "Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");
         }
 
-        if ( liaMem == null) {
+        if (liaMem == null) {
             memory.getSegmentMemory().getStagedLeftTuples().addInsert(peer);
         } else {
             // If parent is Lian, then this must be called, so that any linking or unlinking can be done.
-            LeftInputAdapterNode.doInsertSegmentMemoryWithFlush(wm, true, liaMem, memory.getSegmentMemory(), peer, node.getLeftTupleSource().isStreamMode());
+            LeftInputAdapterNode.doInsertSegmentMemoryWithFlush(wm, true, liaMem, memory.getSegmentMemory(), peer, node
+                    .getLeftTupleSource().isStreamMode());
         }
 
         return peer;
@@ -1008,22 +1060,23 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void iterateLeftTuple(InternalWorkingMemory wm, TupleImpl lt) {
         if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
-            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getSink());
+            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(lt.getSink());
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualActivationsManager( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), (RuleTerminalNodeLeftTuple) lt );
+                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(wm), pmem.getRuleAgendaItem()
+                        .getRuleExecutor(), (RuleTerminalNodeLeftTuple) lt);
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                TupleImpl resultLt = (TupleImpl) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                TupleImpl resultLt = (TupleImpl) ((AccumulateContext) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
-                    iterateLeftTuple( wm, resultLt );
+                    iterateLeftTuple(wm, resultLt);
                 }
             }
             for (TupleImpl child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                 for (TupleImpl peer = child; peer != null; peer = peer.getPeer()) {
                     if (peer.getPeer() == null) {
                         // it's unnnecessary to visit the unshared networks, so only iterate the last peer
-                        iterateLeftTuple( wm, peer );
+                        iterateLeftTuple(wm, peer);
                     }
                 }
             }
@@ -1042,166 +1095,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
         // create new segment, starting after split
         LeftTupleNode childNode = splitNode.getSinkPropagator().getFirstLeftTupleSink();
         SegmentMemory sm2 = new SegmentMemory(childNode); // we know there is only one sink
-        wm.getNodeMemories().peekNodeMemory( childNode ).setSegmentMemory( sm2 );
+        wm.getNodeMemories().peekNodeMemory(childNode).setSegmentMemory(sm2);
 
-        // Move the children of sm1 to sm2
-        if (sm1.getFirst() != null) {
-            for (SegmentMemory sm = sm1.getFirst(); sm != null; ) {
-                SegmentMemory next = sm.getNext();
-                sm1.remove(sm);
-                sm2.add(sm);
-                sm = next;
-            }
-        }
-
-        sm1.add(sm2);
-
-        sm2.setPos(sm1.getPos());  // clone for now, it's corrected later
-        sm2.setSegmentPosMaskBit(sm1.getSegmentPosMaskBit()); // clone for now, it's corrected later
-        sm2.setLinkedNodeMask(sm1.getLinkedNodeMask());  // clone for now, it's corrected later
-
-        sm2.mergePathMemories(sm1);
-
-        // re-assigned tip nodes
-        sm2.setTipNode(sm1.getTipNode());
-        sm1.setTipNode(splitNode); // splitNode is now tip of original segment
-
-        if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode())) {
-            if (!sm1.getStagedLeftTuples().isEmpty()) {
-                // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
-                sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
-            }
-        }
-
-        // find the pos of the node in the segment
-        int pos = nodeSegmentPosition(sm1, splitNode);
-
-        splitNodeMemories(sm1, sm2, pos);
-
-        splitBitMasks(sm1, sm2, pos);
-
-        correctSegmentMemoryAfterSplitOnAdd(sm2);
-
-        return sm2;
-    }
-
-    private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
-        if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode()) && !sm2.getStagedLeftTuples().isEmpty()) {
-            // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
-            // these are safe to just move to the parent SegmentMemory
-            sm1.getStagedLeftTuples().addAll(sm2.getStagedLeftTuples());
-        }
-
-        // sm1 may not be linked yet to sm2 because sm2 has been just created
-        if (sm1.contains(sm2)) {
-            sm1.remove(sm2);
-        }
-
-        if (sm2.getFirst() != null) {
-            for (SegmentMemory sm = sm2.getFirst(); sm != null; ) {
-                SegmentMemory next = sm.getNext();
-                sm2.remove(sm);
-                sm1.add(sm);
-                sm = next;
-            }
-        }
-        // re-assigned tip nodes
-        sm1.setTipNode(sm2.getTipNode());
-
-        mergeNodeMemories(sm1, sm2);
-
-        mergeBitMasks(sm1, sm2);
-    }
-
-    private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-        int  splitPos                 = pos + 1; // +1 as zero based
-        long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-        long currentLinkedNodeMask    = sm1.getLinkedNodeMask();
-        long mask                     = (1L << splitPos) - 1;
-
-        sm1.setAllLinkedMaskTest(mask & currentAllLinkedMaskTest);
-        sm1.setLinkedNodeMask(sm1.getLinkedNodeMask() & sm1.getAllLinkedMaskTest());
-
-        mask = currentAllLinkedMaskTest >> splitPos;
-        sm2.setAllLinkedMaskTest(mask);
-        sm2.setLinkedNodeMask(mask & (currentLinkedNodeMask >> splitPos));
-    }
-
-    private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
-        Memory[] smNodeMemories2 = sm2.getNodeMemories();
-
-        long mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.length;
-        sm1.setAllLinkedMaskTest(mask & sm1.getAllLinkedMaskTest());
-
-        mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.length;
-        sm1.setLinkedNodeMask(mask & sm1.getLinkedNodeMask());
-    }
-
-    private static void splitNodeMemories(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-        List<Memory> smNodeMemories1 = new ArrayList<>(Arrays.asList(sm1.getNodeMemories()));
-        List<Memory> smNodeMemories2 = new ArrayList<>();
-
-        Memory mem = smNodeMemories1.get(0);
-        long nodePosMask = 1;
-        for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
-            Memory next = mem.getNext();
-            if (i > pos) {
-                smNodeMemories1.remove(mem);
-                addToMemoryList(smNodeMemories2, mem);
-                mem.setSegmentMemory(sm2);
-
-                // correct the NodePosMaskBit
-                if (mem instanceof SegmentNodeMemory) {
-                    ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
-                }
-                nodePosMask = nextNodePosMask(nodePosMask);
-            }
-            mem = next;
-        }
-        sm1.setNodeMemories(smNodeMemories1.toArray(new Memory[smNodeMemories1.size()]));
-        sm2.setNodeMemories(smNodeMemories2.toArray(new Memory[smNodeMemories2.size()]));
-    }
-
-    private static void mergeNodeMemories(SegmentMemory sm1, SegmentMemory sm2) {
-        List<Memory> mergedMemories = new ArrayList<>();
-
-        int nodePosMask = 1;
-        for (Memory mem : sm1.getNodeMemories() ) {
-            nodePosMask = nodePosMask >> 1;
-            mergedMemories.add(mem);
-        }
-
-        for (Memory mem : sm2.getNodeMemories() ) {
-            addToMemoryList(mergedMemories, mem);
-            mem.setSegmentMemory(sm1);
-
-            // correct the NodePosMaskBit
-            if (mem instanceof SegmentNodeMemory) {
-                ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
-            }
-            nodePosMask = nodePosMask >> 1;
-        }
-
-        sm1.setNodeMemories(mergedMemories.toArray(new Memory[mergedMemories.size()]));
-    }
-
-    private static void addToMemoryList(List<Memory> smNodeMemories, Memory mem) {
-        if (!smNodeMemories.isEmpty()) {
-            Memory last = smNodeMemories.get(smNodeMemories.size()-1);
-            last.setNext(mem);
-            mem.setPrevious(last);
-        }
-        smNodeMemories.add(mem);
-    }
-
-    private static int nodeSegmentPosition(SegmentMemory sm1, LeftTupleNode splitNode) {
-        LeftTupleNode lt = splitNode;
-        int nodePos = 0;
-        while (lt != sm1.getRootNode()) {
-            lt = lt.getLeftTupleSource();
-            nodePos++;
-        }
-        return nodePos;
+        return sm1.splitSegmentOn(sm2, splitNode);
     }
 
     private static PathEndNodeMemories getPathEndMemories(InternalWorkingMemory wm,
@@ -1225,7 +1121,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         tnMems.subjectPmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(pathEndNodes.subjectEndNode);
         if (tnMems.subjectPmem == null && !tnMems.otherPmems.isEmpty()) {
             // If "other pmem's are initialized, then the subject needs to be initialized too.
-            tnMems.subjectPmem = wm.getNodeMemory( pathEndNodes.subjectEndNode);
+            tnMems.subjectPmem = wm.getNodeMemory(pathEndNodes.subjectEndNode);
         }
 
         for (LeftTupleNode node : pathEndNodes.subjectEndNodes) {
@@ -1249,15 +1145,16 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static class PathEndNodeMemories {
+
         PathMemory subjectPmem;
         List<PathMemory> subjectPmems = new ArrayList<>();
         List<PathMemory> otherPmems = new ArrayList<>();
     }
 
     private static PathEndNodes getPathEndNodes(InternalRuleBase kBase,
+                                                Rule processedRule,
                                                 LeftTupleNode lt,
                                                 TerminalNode tn,
-                                                Rule processedRule,
                                                 boolean hasProtos,
                                                 boolean hasWms) {
         PathEndNodes endNodes = new PathEndNodes();
@@ -1269,37 +1166,38 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         if (hasProtos) {
-            invalidateRootNode( kBase, lt );
+            invalidateRootNode(kBase, lt);
         }
 
-        collectPathEndNodes(kBase, lt, endNodes, tn, processedRule, hasProtos, hasWms, hasProtos && isSplit(lt));
+        collectPathEndNodes(kBase, processedRule, lt, endNodes, tn, hasProtos, hasWms, hasProtos && isSplit(lt));
 
         return endNodes;
     }
 
     private static void collectPathEndNodes(InternalRuleBase kBase,
+                                            Rule processedRule,
                                             LeftTupleNode lt,
                                             PathEndNodes endNodes,
                                             TerminalNode tn,
-                                            Rule processedRule,
                                             boolean hasProtos,
                                             boolean hasWms,
                                             boolean isBelowNewSplit) {
         // Traverses the sinks in reverse order in order to collect PathEndNodes so that
         // the outermost (sub)network are evaluated before the innermost one
-        for (LeftTupleSinkNode sink = lt.getSinkPropagator().getLastLeftTupleSink(); sink != null; sink = sink.getPreviousLeftTupleSinkNode()) {
+        for (LeftTupleSinkNode sink = lt.getSinkPropagator().getLastLeftTupleSink(); sink != null; sink = sink
+                .getPreviousLeftTupleSinkNode()) {
             if (sink == tn) {
                 continue;
             }
             if (hasProtos) {
                 if (isBelowNewSplit) {
-                    if ( isRootNode( sink, null )) {
-                        kBase.invalidateSegmentPrototype( sink );
+                    if (isRootNode(sink, null)) {
+                        kBase.invalidateSegmentPrototype(sink);
                     }
                 } else {
                     isBelowNewSplit = isSplit(sink);
                     if (isBelowNewSplit) {
-                        invalidateRootNode( kBase, sink );
+                        invalidateRootNode(kBase, sink);
                     }
                 }
             }
@@ -1310,15 +1208,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     }
                 }
 
-                collectPathEndNodes(kBase, sink, endNodes, tn, processedRule, hasProtos, hasWms, isBelowNewSplit);
+                collectPathEndNodes(kBase, processedRule, sink, endNodes, tn, hasProtos, hasWms, isBelowNewSplit);
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 endNodes.otherEndNodes.add((PathEndNode) sink);
             } else if (NodeTypeEnums.TupleToObjectNode == sink.getType()) {
-                if (sink.isAssociatedWith( processedRule )) {
-                    endNodes.subjectEndNodes.add( (PathEndNode) sink );
+                if (sink.isAssociatedWith(processedRule)) {
+                    endNodes.subjectEndNodes.add((PathEndNode) sink);
                 }
                 if (sink.getAssociatedTerminalsSize() > 1 || !sink.isAssociatedWith(processedRule)) {
-                    endNodes.otherEndNodes.add( (PathEndNode) sink );
+                    endNodes.otherEndNodes.add((PathEndNode) sink);
                 }
             } else {
                 throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
@@ -1327,18 +1225,19 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void invalidateRootNode(InternalRuleBase kBase, LeftTupleNode lt) {
-        while (!isRootNode( lt, null )) {
+        while (!isRootNode(lt, null)) {
             lt = lt.getLeftTupleSource();
         }
-        kBase.invalidateSegmentPrototype( lt );
+        kBase.invalidateSegmentPrototype(lt);
     }
 
     private static class PathEndNodes {
-        PathEndNode   subjectEndNode;
+
+        PathEndNode subjectEndNode;
         LeftTupleNode subjectSplit;
-        List<PathEndNode>   subjectEndNodes = new ArrayList<>();
-        List<LeftTupleNode> subjectSplits   = new ArrayList<>();
-        List<PathEndNode>   otherEndNodes   = new ArrayList<>();
+        List<PathEndNode> subjectEndNodes = new ArrayList<>();
+        List<LeftTupleNode> subjectSplits = new ArrayList<>();
+        List<PathEndNode> otherEndNodes = new ArrayList<>();
     }
 
     static SegmentMemory createChildSegment(ReteEvaluator reteEvaluator, LeftTupleNode node) {
@@ -1346,7 +1245,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         if (memory.getSegmentMemory() == null) {
             if (NodeTypeEnums.isEndNode(node)) {
                 // RTNS and TupleToObjectNode's have their own segment, if they are the child of a split.
-                createChildSegmentForTerminalNode( node, memory );
+                createChildSegmentForTerminalNode(node, memory);
             } else {
                 createSegmentMemory(reteEvaluator, (LeftTupleSource) node);
             }
@@ -1357,21 +1256,21 @@ class LazyPhreakBuilder implements PhreakBuilder {
     static SegmentMemory createSegmentMemory(ReteEvaluator reteEvaluator, LeftTupleNode segmentRoot) {
         if (NodeTypeEnums.isTerminalNode(segmentRoot)) {
             Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) segmentRoot);
-            return createChildSegmentForTerminalNode(segmentRoot, memory );
+            return createChildSegmentForTerminalNode(segmentRoot, memory);
         }
         return createSegmentMemory(reteEvaluator, (LeftTupleSource) segmentRoot);
     }
 
-    private static SegmentMemory createChildSegmentForTerminalNode( LeftTupleNode node, Memory memory ) {
-        SegmentMemory childSmem = new SegmentMemory( node ); // rtns or TupleToObjectNodes don't need a queue
+    private static SegmentMemory createChildSegmentForTerminalNode(LeftTupleNode node, Memory memory) {
+        SegmentMemory childSmem = new SegmentMemory(node); // rtns or TupleToObjectNodes don't need a queue
         PathMemory pmem = (PathMemory) memory;
 
-        childSmem.setPos( pmem.getSegmentMemories().length - 1 );
+        childSmem.setPos(pmem.getSegmentMemories().length - 1);
         pmem.setSegmentMemory(childSmem);
         RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, childSmem);
 
         childSmem.setTipNode(node);
-        childSmem.setNodeMemories(new Memory[] {memory});
+        childSmem.setNodeMemories(new Memory[]{memory});
         return childSmem;
     }
 
@@ -1383,31 +1282,35 @@ class LazyPhreakBuilder implements PhreakBuilder {
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
         long nodePosMask = 1;
         long allLinkedTestMask = 0;
-        boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
+        boolean updateNodeBit = true; // nodes after a branch CE can notify, but they cannot impact linking
 
         int nodeTypesInSegment = 0;
         List<Memory> memories = new ArrayList<>();
         while (true) {
             nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
             if (NodeTypeEnums.isBetaNode(tupleSource)) {
-                allLinkedTestMask = processBetaNode(reteEvaluator, (BetaNode)tupleSource, smem, memories, nodePosMask, allLinkedTestMask, updateNodeBit);
+                allLinkedTestMask = processBetaNode(reteEvaluator, (BetaNode) tupleSource, smem, memories, nodePosMask,
+                        allLinkedTestMask, updateNodeBit);
             } else {
                 switch (tupleSource.getType()) {
                     case NodeTypeEnums.LeftInputAdapterNode:
                     case NodeTypeEnums.AlphaTerminalNode:
-                        allLinkedTestMask = processLiaNode(reteEvaluator, (LeftInputAdapterNode) tupleSource, smem, memories, nodePosMask, allLinkedTestMask);
+                        allLinkedTestMask = processLiaNode(reteEvaluator, (LeftInputAdapterNode) tupleSource, smem,
+                                memories, nodePosMask, allLinkedTestMask);
                         break;
                     case NodeTypeEnums.EvalConditionNode:
                         processEvalNode(reteEvaluator, (EvalConditionNode) tupleSource, smem, memories);
                         break;
                     case NodeTypeEnums.ConditionalBranchNode:
-                        updateNodeBit = processBranchNode(reteEvaluator, (ConditionalBranchNode) tupleSource, smem, memories);
+                        updateNodeBit = processBranchNode(reteEvaluator, (ConditionalBranchNode) tupleSource, smem,
+                                memories);
                         break;
                     case NodeTypeEnums.FromNode:
                         processFromNode(reteEvaluator, (FromNode) tupleSource, smem, memories);
                         break;
                     case NodeTypeEnums.ReactiveFromNode:
-                        processReactiveFromNode(reteEvaluator, (MemoryFactory) tupleSource, smem, memories, nodePosMask);
+                        processReactiveFromNode(reteEvaluator, (MemoryFactory) tupleSource, smem, memories,
+                                nodePosMask);
                         break;
                     case NodeTypeEnums.TimerConditionNode:
                         processTimerNode(reteEvaluator, (TimerNode) tupleSource, smem, memories, nodePosMask);
@@ -1416,10 +1319,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         processAsyncSendNode(reteEvaluator, (AsyncSendNode) tupleSource, smem, memories);
                         break;
                     case NodeTypeEnums.AsyncReceiveNode:
-                        processAsyncReceiveNode(reteEvaluator, (AsyncReceiveNode) tupleSource, smem, memories, nodePosMask);
+                        processAsyncReceiveNode(reteEvaluator, (AsyncReceiveNode) tupleSource, smem, memories,
+                                nodePosMask);
                         break;
                     case NodeTypeEnums.QueryElementNode:
-                        updateNodeBit = processQueryNode(reteEvaluator, (QueryElementNode) tupleSource, segmentRoot, smem, memories, nodePosMask);
+                        updateNodeBit = processQueryNode(reteEvaluator, (QueryElementNode) tupleSource, segmentRoot,
+                                smem, memories, nodePosMask);
                         break;
                 }
             }
@@ -1436,18 +1341,18 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateTupleToObjectAndTerminalMemory
                     Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) sink);
                     if (sink.getType() == NodeTypeEnums.TupleToObjectNode) {
-                        PathMemory subnMem = (SubnetworkPathMemory)memory;
-                        memories.add( subnMem );
+                        PathMemory subnMem = (SubnetworkPathMemory) memory;
+                        memories.add(subnMem);
 
-                        TupleToObjectNode tton  = (TupleToObjectNode) sink;
-                        ObjectSink[]      nodes = tton.getObjectSinkPropagator().getSinks();
-                        for ( ObjectSink node : nodes ) {
-                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                getOrCreateSegmentMemory( reteEvaluator, (LeftTupleSource) node );
+                        TupleToObjectNode tton = (TupleToObjectNode) sink;
+                        ObjectSink[] nodes = tton.getObjectSinkPropagator().getSinks();
+                        for (ObjectSink node : nodes) {
+                            if (NodeTypeEnums.isLeftTupleSource(node)) {
+                                getOrCreateSegmentMemory(reteEvaluator, (LeftTupleSource) node);
                             }
                         }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                        memories.add( memory );
+                        memories.add(memory);
                     }
                     memory.setSegmentMemory(smem);
                     smem.setTipNode(sink);
@@ -1490,12 +1395,18 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         updateSubnetworkAndTerminalMemory(reteEvaluator, tupleSource, tupleSource, smem, false, nodeTypesInSegment);
 
-        reteEvaluator.getKnowledgeBase().registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype().initFromSegmentMemory(smem));
+        reteEvaluator.getKnowledgeBase().registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype()
+                .initFromSegmentMemory(smem));
 
         return smem;
     }
 
-    private static boolean processQueryNode(ReteEvaluator reteEvaluator, QueryElementNode queryNode, LeftTupleSource segmentRoot, SegmentMemory smem, List<Memory> memories, long nodePosMask) {
+    private static boolean processQueryNode(ReteEvaluator reteEvaluator,
+                                            QueryElementNode queryNode,
+                                            LeftTupleSource segmentRoot,
+                                            SegmentMemory smem,
+                                            List<Memory> memories,
+                                            long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
         QueryElementNode.QueryElementNodeMemory queryNodeMem = smem.createNodeMemory(queryNode, reteEvaluator);
@@ -1503,36 +1414,53 @@ class LazyPhreakBuilder implements PhreakBuilder {
         queryNodeMem.setQuerySegmentMemory(querySmem);
         queryNodeMem.setSegmentMemory(smem);
         memories.add(queryNodeMem);
-        return ! queryNode.getQueryElement().isAbductive();
+        return !queryNode.getQueryElement().isAbductive();
     }
 
-    private static void processFromNode(ReteEvaluator reteEvaluator, MemoryFactory tupleSource, SegmentMemory smem, List<Memory> memories) {
+    private static void processFromNode(ReteEvaluator reteEvaluator,
+                                        MemoryFactory tupleSource,
+                                        SegmentMemory smem,
+                                        List<Memory> memories) {
         Memory mem = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(mem);
         mem.setSegmentMemory(smem);
     }
 
-    private static void processAsyncSendNode(ReteEvaluator reteEvaluator, MemoryFactory tupleSource, SegmentMemory smem, List<Memory> memories) {
+    private static void processAsyncSendNode(ReteEvaluator reteEvaluator,
+                                             MemoryFactory tupleSource,
+                                             SegmentMemory smem,
+                                             List<Memory> memories) {
         Memory mem = smem.createNodeMemory(tupleSource, reteEvaluator);
         mem.setSegmentMemory(smem);
         memories.add(mem);
     }
 
-    private static void processAsyncReceiveNode(ReteEvaluator reteEvaluator, AsyncReceiveNode tupleSource, SegmentMemory smem, List<Memory> memories, long nodePosMask) {
-        AsyncReceiveNode.AsyncReceiveMemory tnMem = smem.createNodeMemory( tupleSource, reteEvaluator );
+    private static void processAsyncReceiveNode(ReteEvaluator reteEvaluator,
+                                                AsyncReceiveNode tupleSource,
+                                                SegmentMemory smem,
+                                                List<Memory> memories,
+                                                long nodePosMask) {
+        AsyncReceiveNode.AsyncReceiveMemory tnMem = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
     }
 
-    private static void processReactiveFromNode(ReteEvaluator reteEvaluator, MemoryFactory tupleSource, SegmentMemory smem, List<Memory> memories, long nodePosMask) {
+    private static void processReactiveFromNode(ReteEvaluator reteEvaluator,
+                                                MemoryFactory tupleSource,
+                                                SegmentMemory smem,
+                                                List<Memory> memories,
+                                                long nodePosMask) {
         FromNode.FromMemory mem = ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, reteEvaluator));
         memories.add(mem);
         mem.setSegmentMemory(smem);
         mem.setNodePosMaskBit(nodePosMask);
     }
 
-    private static boolean processBranchNode(ReteEvaluator reteEvaluator, ConditionalBranchNode tupleSource, SegmentMemory smem, List<Memory> memories) {
+    private static boolean processBranchNode(ReteEvaluator reteEvaluator,
+                                             ConditionalBranchNode tupleSource,
+                                             SegmentMemory smem,
+                                             List<Memory> memories) {
         ConditionalBranchNode.ConditionalBranchMemory branchMem = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(branchMem);
         branchMem.setSegmentMemory(smem);
@@ -1540,20 +1468,32 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return false;
     }
 
-    private static void processEvalNode(ReteEvaluator reteEvaluator, EvalConditionNode tupleSource, SegmentMemory smem, List<Memory> memories) {
+    private static void processEvalNode(ReteEvaluator reteEvaluator,
+                                        EvalConditionNode tupleSource,
+                                        SegmentMemory smem,
+                                        List<Memory> memories) {
         EvalConditionNode.EvalMemory evalMem = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(evalMem);
         evalMem.setSegmentMemory(smem);
     }
 
-    private static void processTimerNode(ReteEvaluator reteEvaluator, TimerNode tupleSource, SegmentMemory smem, List<Memory> memories, long nodePosMask) {
-        TimerNode.TimerNodeMemory tnMem = smem.createNodeMemory( tupleSource, reteEvaluator );
+    private static void processTimerNode(ReteEvaluator reteEvaluator,
+                                         TimerNode tupleSource,
+                                         SegmentMemory smem,
+                                         List<Memory> memories,
+                                         long nodePosMask) {
+        TimerNode.TimerNodeMemory tnMem = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
     }
 
-    private static long processLiaNode(ReteEvaluator reteEvaluator, LeftInputAdapterNode tupleSource, SegmentMemory smem, List<Memory> memories, long nodePosMask, long allLinkedTestMask) {
+    private static long processLiaNode(ReteEvaluator reteEvaluator,
+                                       LeftInputAdapterNode tupleSource,
+                                       SegmentMemory smem,
+                                       List<Memory> memories,
+                                       long nodePosMask,
+                                       long allLinkedTestMask) {
         LeftInputAdapterNode.LiaNodeMemory liaMemory = smem.createNodeMemory(tupleSource, reteEvaluator);
         memories.add(liaMemory);
         liaMemory.setSegmentMemory(smem);
@@ -1562,10 +1502,17 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return allLinkedTestMask;
     }
 
-    private static long processBetaNode(ReteEvaluator reteEvaluator, BetaNode betaNode, SegmentMemory smem, List<Memory> memories, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
+    private static long processBetaNode(ReteEvaluator reteEvaluator,
+                                        BetaNode betaNode,
+                                        SegmentMemory smem,
+                                        List<Memory> memories,
+                                        long nodePosMask,
+                                        long allLinkedTestMask,
+                                        boolean updateNodeBit) {
         BetaMemory bm;
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
-            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) smem.createNodeMemory(betaNode, reteEvaluator));
+            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) smem.createNodeMemory(
+                    betaNode, reteEvaluator));
             memories.add(accMemory);
             accMemory.setSegmentMemory(smem);
 
@@ -1622,7 +1569,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
         PathMemory pmem = null;
         for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                nodeTypesInSegment = updateSubnetworkAndTerminalMemory(reteEvaluator, (LeftTupleSource) sink, originalLt, smem, fromPrototype, nodeTypesInSegment);
+                nodeTypesInSegment = updateSubnetworkAndTerminalMemory(reteEvaluator, (LeftTupleSource) sink,
+                        originalLt, smem, fromPrototype, nodeTypesInSegment);
             } else if (sink.getType() == NodeTypeEnums.TupleToObjectNode) {
                 // Even though we don't add the pmem and smem together, all pmem's for all pathend nodes must be initialized
                 SubnetworkPathMemory subnMem = (SubnetworkPathMemory) reteEvaluator.getNodeMemory((MemoryFactory) sink);
@@ -1632,18 +1580,19 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                     if (fromPrototype) {
                         ObjectSink[] nodes = ((TupleToObjectNode) sink).getObjectSinkPropagator().getSinks();
-                        for ( ObjectSink node : nodes ) {
+                        for (ObjectSink node : nodes) {
                             // check if the SegmentMemory has been already created by the BetaNode and if so avoid to build it twice
-                            if ( NodeTypeEnums.isLeftTupleSource(node) && reteEvaluator.getNodeMemory((MemoryFactory) node).getSegmentMemory() == null )  {
+                            if (NodeTypeEnums.isLeftTupleSource(node) && reteEvaluator.getNodeMemory(
+                                    (MemoryFactory) node).getSegmentMemory() == null) {
                                 restoreSegmentFromPrototype(reteEvaluator, (LeftTupleSource) node, nodeTypesInSegment);
                             }
                         }
-                    } else if ( ( pmem.getAllLinkedMaskTest() & ( 1L << pmem.getSegmentMemories().length ) ) == 0 ) {
+                    } else if ((pmem.getAllLinkedMaskTest() & (1L << pmem.getSegmentMemories().length)) == 0) {
                         // must eagerly initialize child segment memories
                         ObjectSink[] nodes = ((TupleToObjectNode) sink).getObjectSinkPropagator().getSinks();
-                        for ( ObjectSink node : nodes ) {
-                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                getOrCreateSegmentMemory( reteEvaluator, (LeftTupleSource) node );
+                        for (ObjectSink node : nodes) {
+                            if (NodeTypeEnums.isLeftTupleSource(node)) {
+                                getOrCreateSegmentMemory(reteEvaluator, (LeftTupleSource) node);
                             }
                         }
                     }
@@ -1666,22 +1615,23 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return nodeTypesInSegment;
     }
 
-    private static void restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
+    private static void restoreSegmentFromPrototype(ReteEvaluator reteEvaluator,
+                                                    LeftTupleSource segmentRoot,
+                                                    int nodeTypesInSegment) {
         SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, segmentRoot);
-        if ( smem != null ) {
+        if (smem != null) {
             updateSubnetworkAndTerminalMemory(reteEvaluator, segmentRoot, segmentRoot, smem, true, nodeTypesInSegment);
         }
     }
 
     private static int checkSegmentBoundary(ReteEvaluator reteEvaluator, LeftTupleSource lt, int nodeTypesInSegment) {
-        if ( isRootNode( lt, null ) )  {
+        if (isRootNode(lt, null)) {
             // we are in a new child segment
             checkEagerSegmentCreation(reteEvaluator, lt.getLeftTupleSource(), nodeTypesInSegment);
             nodeTypesInSegment = 0;
         }
         return updateNodeTypesMask(lt, nodeTypesInSegment);
     }
-
 
     /**
      * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
@@ -1702,11 +1652,13 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return false;
     }
 
-    public static void checkEagerSegmentCreation(ReteEvaluator reteEvaluator, LeftTupleSource lt, int nodeTypesInSegment) {
+    public static void checkEagerSegmentCreation(ReteEvaluator reteEvaluator,
+                                                 LeftTupleSource lt,
+                                                 int nodeTypesInSegment) {
         // A Not node has to be eagerly initialized unless in its segment there is at least a join node
-        if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
-                !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
-                !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
+        if (isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
+            !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
+            !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT)) {
             getOrCreateSegmentMemory(reteEvaluator, lt);
         }
     }

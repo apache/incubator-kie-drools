@@ -48,15 +48,18 @@ public class RuntimeSegmentUtilities {
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
     public static SegmentMemory getOrCreateSegmentMemory(ReteEvaluator reteEvaluator, LeftTupleNode node) {
-        return getOrCreateSegmentMemory(reteEvaluator, node, reteEvaluator.getNodeMemory((MemoryFactory<? extends Memory>) node));
+        return getOrCreateSegmentMemory(reteEvaluator, node, reteEvaluator.getNodeMemory(
+                (MemoryFactory<? extends Memory>) node));
     }
 
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentMemory getOrCreateSegmentMemory(ReteEvaluator reteEvaluator, LeftTupleNode node, Memory memory) {
+    public static SegmentMemory getOrCreateSegmentMemory(ReteEvaluator reteEvaluator,
+                                                         LeftTupleNode node,
+                                                         Memory memory) {
         SegmentMemory smem = memory.getSegmentMemory();
-        if ( smem != null ) {
+        if (smem != null) {
             return smem;
         }
 
@@ -64,7 +67,7 @@ public class RuntimeSegmentUtilities {
         LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(node);
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
-        if ( smem != null ) {
+        if (smem != null) {
             if (NodeTypeEnums.isBetaNode(segmentRoot) && segmentRoot.inputIsTupleToObjectNode()) {
                 createSubnetworkSegmentMemory(reteEvaluator, (BetaNode) segmentRoot);
             }
@@ -81,7 +84,7 @@ public class RuntimeSegmentUtilities {
             return null;
         }
 
-        LeftTupleNode lastNode = proto.getNodesInSegment()[proto.getNodesInSegment().length-1];
+        LeftTupleNode lastNode = proto.getNodesInSegment()[proto.getNodesInSegment().length - 1];
 
         if (NodeTypeEnums.isTerminalNode(lastNode)) {
             // If the last node is a tn and it's pmem does not exist, instantiate it separately to avoid a recursive smem/pmem creation.
@@ -120,7 +123,7 @@ public class RuntimeSegmentUtilities {
 
         LeftTupleSource subnetworkLts = tton.getStartTupleSource();
 
-        Memory rootSubNetwokrMem = reteEvaluator.getNodeMemory( (MemoryFactory) subnetworkLts );
+        Memory rootSubNetwokrMem = reteEvaluator.getNodeMemory((MemoryFactory) subnetworkLts);
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
@@ -129,14 +132,16 @@ public class RuntimeSegmentUtilities {
         return tton;
     }
 
-    public static void createChildSegments(ReteEvaluator reteEvaluator, LeftTupleSinkPropagator sinkProp, SegmentMemory smem) {
-        if ( !smem.isEmpty() ) {
-              return; // this can happen when multiple threads are trying to initialize the segment
+    public static void createChildSegments(ReteEvaluator reteEvaluator,
+                                           LeftTupleSinkPropagator sinkProp,
+                                           SegmentMemory smem) {
+        if (!smem.isEmpty()) {
+            return; // this can happen when multiple threads are trying to initialize the segment
         }
-        for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
-            SegmentMemory childSmem = PhreakBuilder.isEagerSegmentCreation() ?
-                    createChildSegment(reteEvaluator, sink) :
-                    LazyPhreakBuilder.createChildSegment(reteEvaluator, sink);
+        for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink
+                .getNextLeftTupleSinkNode()) {
+            SegmentMemory childSmem = PhreakBuilder.isEagerSegmentCreation() ? createChildSegment(reteEvaluator, sink)
+                    : LazyPhreakBuilder.createChildSegment(reteEvaluator, sink);
             smem.add(childSmem);
         }
     }
@@ -171,9 +176,10 @@ public class RuntimeSegmentUtilities {
             if (pmem != null) {
                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
             } else {
-                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) endNode, reteEvaluator);
-                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);  // this needs to be set before init, to avoid recursion during eager segment initialisation
-                pmem.setSegmentMemory( smem.getPos(), smem );
+                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) endNode,
+                        reteEvaluator);
+                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem); // this needs to be set before init, to avoid recursion during eager segment initialisation
+                pmem.setSegmentMemory(smem.getPos(), smem);
                 initializePathMemory(reteEvaluator, endNode, pmem);
             }
 
@@ -201,7 +207,7 @@ public class RuntimeSegmentUtilities {
     public static void initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode, PathMemory pmem) {
         if (pathEndNode.getEagerSegmentPrototypes() != null) {
             for (SegmentPrototype eager : pathEndNode.getEagerSegmentPrototypes()) {
-                if ( pmem.getSegmentMemories()[eager.getPos()] == null) {
+                if (pmem.getSegmentMemories()[eager.getPos()] == null) {
                     getOrCreateSegmentMemory(reteEvaluator, eager.getRootNode());
                 }
             }
