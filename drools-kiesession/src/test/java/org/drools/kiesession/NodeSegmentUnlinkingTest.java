@@ -198,7 +198,7 @@ public class NodeSegmentUnlinkingTest {
         for (TerminalNode tn : new TerminalNode[] {rtn1, rtn2, rtn3}) {
             tn.setPathEndNodes( new PathEndNode[] {tn});
             tn.resetPathMemSpec(null);
-            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
+            BuildtimeSegmentUtilities.createPathProtoMemories(kBase.getSegmentPrototypeRegistry(), tn, null);
         }
     }
 
@@ -254,13 +254,13 @@ public class NodeSegmentUnlinkingTest {
         n5.attach(buildContext);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
-        SegmentPrototype[] protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase, n3, null);
+        SegmentPrototype[] protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase.getSegmentPrototypeRegistry(), n3, null);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
 
-        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase, n4, null);
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase.getSegmentPrototypeRegistry(), n4, null);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
 
-        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase, n5, null);
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(kBase.getSegmentPrototypeRegistry(), n5, null);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
         createSegmentMemory( n2, ksession );
 

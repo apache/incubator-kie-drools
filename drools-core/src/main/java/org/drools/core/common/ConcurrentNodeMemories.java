@@ -70,7 +70,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     private void resetSegmentMemory(SegmentMemory smem) {
         if (smem != null) {
-            smem.reset(ruleBase.getSegmentPrototype(smem));
+            smem.reset(ruleBase.getSegmentPrototypeRegistry().getSegmentPrototype(smem));
             if (smem.isSegmentLinked()) {
                 smem.notifyRuleLinkSegment(reteEvaluator);
             }

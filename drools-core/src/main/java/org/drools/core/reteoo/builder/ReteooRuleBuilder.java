@@ -216,7 +216,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context, terminalNode);
 
-        if (!PhreakBuilder.isEagerSegmentCreation() || context.getRuleBase().hasSegmentPrototypes()) {
+        if (!PhreakBuilder.isEagerSegmentCreation() || context.getRuleBase().getSegmentPrototypeRegistry().hasSegmentPrototypes()) {
             // only need to process this, if segment protos exist
             PhreakBuilder.get().addRule(context.getRuleBase(), context.getWorkingMemories(), terminalNode);
         }

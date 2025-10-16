@@ -71,6 +71,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.Tuple;
@@ -115,7 +116,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             log.trace("Adding Rule {}", tn.getRule().getName());
         }
 
-        boolean hasProtos = kBase.hasSegmentPrototypes();
+        boolean hasProtos = kBase.getSegmentPrototypeRegistry().hasSegmentPrototypes();
         boolean hasWms = !wms.isEmpty();
 
         if (!hasProtos && !hasWms) {
@@ -124,7 +125,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         RuleImpl rule = tn.getRule();
         LeftTupleNode firstSplit = getNetworkSplitPoint(tn);
-        PathEndNodes pathEndNodes = getPathEndNodes(kBase, rule, firstSplit, tn, hasProtos, hasWms);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase.getSegmentPrototypeRegistry(), rule, firstSplit, tn, hasProtos, hasWms);
 
         // Insert the facts for the new paths. This will iterate each new path from EndNode to the splitStart - but will not process the splitStart itself (as tha already exist).
         // It does not matter that the prior segments have not yet been processed for splitting, as this will only apply for branches of paths that did not exist before
@@ -176,7 +177,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             log.trace("Removing Rule {}", tn.getRule().getName());
         }
 
-        boolean hasProtos = kBase.hasSegmentPrototypes();
+        boolean hasProtos = kBase.getSegmentPrototypeRegistry().hasSegmentPrototypes();
         boolean hasWms = !wms.isEmpty();
 
         if (!hasProtos && !hasWms) {
@@ -185,7 +186,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         RuleImpl rule = tn.getRule();
         LeftTupleNode firstSplit = getNetworkSplitPoint(tn);
-        PathEndNodes pathEndNodes = getPathEndNodes(kBase, rule, firstSplit, tn, hasProtos, hasWms);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase.getSegmentPrototypeRegistry(), rule, firstSplit, tn, hasProtos, hasWms);
 
         for (InternalWorkingMemory wm : wms) {
             wm.flushPropagations();
@@ -1151,7 +1152,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         List<PathMemory> otherPmems = new ArrayList<>();
     }
 
-    private static PathEndNodes getPathEndNodes(InternalRuleBase kBase,
+    private static PathEndNodes getPathEndNodes(SegmentPrototypeRegistry prototypeRegistry,
                                                 Rule processedRule,
                                                 LeftTupleNode lt,
                                                 TerminalNode tn,
@@ -1166,15 +1167,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         if (hasProtos) {
-            invalidateRootNode(kBase, lt);
+            invalidateRootNode(prototypeRegistry, lt);
         }
 
-        collectPathEndNodes(kBase, processedRule, lt, endNodes, tn, hasProtos, hasWms, hasProtos && isSplit(lt));
+        collectPathEndNodes(prototypeRegistry, processedRule, lt, endNodes, tn, hasProtos, hasWms, hasProtos && isSplit(lt));
 
         return endNodes;
     }
 
-    private static void collectPathEndNodes(InternalRuleBase kBase,
+    private static void collectPathEndNodes(SegmentPrototypeRegistry prototypeRegistry,
                                             Rule processedRule,
                                             LeftTupleNode lt,
                                             PathEndNodes endNodes,
@@ -1192,12 +1193,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
             if (hasProtos) {
                 if (isBelowNewSplit) {
                     if (isRootNode(sink, null)) {
-                        kBase.invalidateSegmentPrototype(sink);
+                        prototypeRegistry.invalidateSegmentPrototype(sink);
                     }
                 } else {
                     isBelowNewSplit = isSplit(sink);
                     if (isBelowNewSplit) {
-                        invalidateRootNode(kBase, sink);
+                        invalidateRootNode(prototypeRegistry, sink);
                     }
                 }
             }
@@ -1208,7 +1209,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     }
                 }
 
-                collectPathEndNodes(kBase, processedRule, sink, endNodes, tn, hasProtos, hasWms, isBelowNewSplit);
+                collectPathEndNodes(prototypeRegistry, processedRule, sink, endNodes, tn, hasProtos, hasWms, isBelowNewSplit);
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 endNodes.otherEndNodes.add((PathEndNode) sink);
             } else if (NodeTypeEnums.TupleToObjectNode == sink.getType()) {
@@ -1224,11 +1225,11 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void invalidateRootNode(InternalRuleBase kBase, LeftTupleNode lt) {
+    private static void invalidateRootNode(SegmentPrototypeRegistry prototypeRegistry, LeftTupleNode lt) {
         while (!isRootNode(lt, null)) {
             lt = lt.getLeftTupleSource();
         }
-        kBase.invalidateSegmentPrototype(lt);
+        prototypeRegistry.invalidateSegmentPrototype(lt);
     }
 
     private static class PathEndNodes {
@@ -1395,7 +1396,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         updateSubnetworkAndTerminalMemory(reteEvaluator, tupleSource, tupleSource, smem, false, nodeTypesInSegment);
 
-        reteEvaluator.getKnowledgeBase().registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype()
+        reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry().registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype()
                 .initFromSegmentMemory(smem));
 
         return smem;
@@ -1409,7 +1410,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                             long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
-        QueryElementNode.QueryElementNodeMemory queryNodeMem = smem.createNodeMemory(queryNode, reteEvaluator);
+        QueryElementNode.QueryElementNodeMemory queryNodeMem = reteEvaluator.getNodeMemory(queryNode);
         queryNodeMem.setNodePosMaskBit(nodePosMask);
         queryNodeMem.setQuerySegmentMemory(querySmem);
         queryNodeMem.setSegmentMemory(smem);
@@ -1421,7 +1422,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                         MemoryFactory tupleSource,
                                         SegmentMemory smem,
                                         List<Memory> memories) {
-        Memory mem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        Memory mem = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(mem);
         mem.setSegmentMemory(smem);
     }
@@ -1430,7 +1431,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                              MemoryFactory tupleSource,
                                              SegmentMemory smem,
                                              List<Memory> memories) {
-        Memory mem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        Memory mem = reteEvaluator.getNodeMemory(tupleSource);
         mem.setSegmentMemory(smem);
         memories.add(mem);
     }
@@ -1440,7 +1441,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                                 SegmentMemory smem,
                                                 List<Memory> memories,
                                                 long nodePosMask) {
-        AsyncReceiveNode.AsyncReceiveMemory tnMem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        AsyncReceiveNode.AsyncReceiveMemory tnMem = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
@@ -1451,7 +1452,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                                 SegmentMemory smem,
                                                 List<Memory> memories,
                                                 long nodePosMask) {
-        FromNode.FromMemory mem = ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, reteEvaluator));
+        FromNode.FromMemory mem = ((FromNode.FromMemory) reteEvaluator.getNodeMemory(tupleSource));
         memories.add(mem);
         mem.setSegmentMemory(smem);
         mem.setNodePosMaskBit(nodePosMask);
@@ -1461,7 +1462,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                              ConditionalBranchNode tupleSource,
                                              SegmentMemory smem,
                                              List<Memory> memories) {
-        ConditionalBranchNode.ConditionalBranchMemory branchMem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        ConditionalBranchNode.ConditionalBranchMemory branchMem = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(branchMem);
         branchMem.setSegmentMemory(smem);
         // nodes after a branch CE can notify, but they cannot impact linking
@@ -1472,7 +1473,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                         EvalConditionNode tupleSource,
                                         SegmentMemory smem,
                                         List<Memory> memories) {
-        EvalConditionNode.EvalMemory evalMem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        EvalConditionNode.EvalMemory evalMem = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(evalMem);
         evalMem.setSegmentMemory(smem);
     }
@@ -1482,7 +1483,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                          SegmentMemory smem,
                                          List<Memory> memories,
                                          long nodePosMask) {
-        TimerNode.TimerNodeMemory tnMem = smem.createNodeMemory(tupleSource, reteEvaluator);
+        TimerNode.TimerNodeMemory tnMem = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
@@ -1494,7 +1495,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                        List<Memory> memories,
                                        long nodePosMask,
                                        long allLinkedTestMask) {
-        LeftInputAdapterNode.LiaNodeMemory liaMemory = smem.createNodeMemory(tupleSource, reteEvaluator);
+        LeftInputAdapterNode.LiaNodeMemory liaMemory = reteEvaluator.getNodeMemory(tupleSource);
         memories.add(liaMemory);
         liaMemory.setSegmentMemory(smem);
         liaMemory.setNodePosMaskBit(nodePosMask);
@@ -1511,14 +1512,13 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                         boolean updateNodeBit) {
         BetaMemory bm;
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
-            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) smem.createNodeMemory(
-                    betaNode, reteEvaluator));
+            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) reteEvaluator.getNodeMemory(betaNode));
             memories.add(accMemory);
             accMemory.setSegmentMemory(smem);
 
             bm = accMemory.getBetaMemory();
         } else {
-            bm = (BetaMemory) smem.createNodeMemory(betaNode, reteEvaluator);
+            bm = (BetaMemory) reteEvaluator.getNodeMemory(betaNode);
             memories.add(bm);
         }
 
@@ -1618,7 +1618,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void restoreSegmentFromPrototype(ReteEvaluator reteEvaluator,
                                                     LeftTupleSource segmentRoot,
                                                     int nodeTypesInSegment) {
-        SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, segmentRoot);
+        SegmentMemory smem = reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry().createSegmentFromPrototype(reteEvaluator, segmentRoot);
         if (smem != null) {
             updateSubnetworkAndTerminalMemory(reteEvaluator, segmentRoot, segmentRoot, smem, true, nodeTypesInSegment);
         }
