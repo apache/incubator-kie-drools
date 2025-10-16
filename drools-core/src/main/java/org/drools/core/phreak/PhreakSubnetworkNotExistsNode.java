@@ -96,7 +96,7 @@ public class PhreakSubnetworkNotExistsNode {
                     if (node.getType() == NodeTypeEnums.ExistsNode) {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     } else if (!leftTuple.isExpired()) { // else !exists
                         trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true));
                     }
@@ -168,7 +168,7 @@ public class PhreakSubnetworkNotExistsNode {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) { // this can be null if the LT is not yet added
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ public class PhreakSubnetworkNotExistsNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 if (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                 }
 
                 leftTuple.setContextObject(null); // this is now right delete knows the LT is also being removed

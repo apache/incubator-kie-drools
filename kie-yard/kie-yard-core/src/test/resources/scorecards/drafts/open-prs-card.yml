@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Open PRs"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: "Creator"
     type: string

@@ -59,7 +59,7 @@ public class SegmentPropagator {
                     // skip flushing segments that have only inserts staged and the path is not linked
                     continue;
                 }
-                forceFlushLeftTuple(dataDrivenPmem, smem, reteEvaluator, smem.getStagedLeftTuples());
+                forceFlushLeftTuple(reteEvaluator, dataDrivenPmem, smem, smem.getStagedLeftTuples());
                 forceFlushWhenSubnetwork(reteEvaluator, dataDrivenPmem);
             }
         }

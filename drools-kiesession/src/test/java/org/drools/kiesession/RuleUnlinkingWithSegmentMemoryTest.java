@@ -191,7 +191,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         for (TerminalNode tn : new TerminalNode[] {rtn1, rtn2, rtn3}) {
             tn.setPathEndNodes( new PathEndNode[] {tn});
             tn.resetPathMemSpec(null);
-            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
+            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
         }
     }
     

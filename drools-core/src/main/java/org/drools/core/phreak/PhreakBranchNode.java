@@ -34,10 +34,10 @@ import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 
 public class PhreakBranchNode {
-    public void doNode(ConditionalBranchNode branchNode,
+    public void doNode(ActivationsManager activationsManager,
+                       ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,

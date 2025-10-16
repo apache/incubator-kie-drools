@@ -113,7 +113,7 @@ public class AddRuleTest {
         assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT);
 
         SegmentPrototype[] oldSmemProtos = endNode.getSegmentPrototypes();
-        SegmentPrototype smemProto1 = Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+        SegmentPrototype smemProto1 = Add.processSplit(kbase1, Collections.singletonList(wm), cbeta, new HashSet<>());
 
         assertSegmentsLengthAndPos(endNode, 2, oldSmemProtos, smemProto1, wm);
         assertThat(endNode.getSegmentPrototypes()[0]).isSameAs(smemProto0);
@@ -161,7 +161,7 @@ public class AddRuleTest {
         assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(31);
         assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(10); // nots must be linked in
         assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT | BuildtimeSegmentUtilities.NOT_NODE_BIT);
-        SegmentPrototype smemProto1 = Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+        SegmentPrototype smemProto1 = Add.processSplit(kbase1, Collections.singletonList(wm), cbeta, new HashSet<>());
 
         assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(7);
         assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(2);
@@ -207,7 +207,7 @@ public class AddRuleTest {
         assertThat(smemProtoX.getPos()).isEqualTo(1);
 
         SegmentPrototype[] oldSmemProtos = endNode1.getSegmentPrototypes();
-        SegmentPrototype smemProtoE2 = Add.processSplit(ebeta3, kbase1, Collections.singletonList(wm), new HashSet<>());
+        SegmentPrototype smemProtoE2 = Add.processSplit(kbase1, Collections.singletonList(wm), ebeta3, new HashSet<>());
         assertSegmentsLengthAndPos(endNode0, 3, wm);
         assertSegmentsLengthAndPos(endNode1, 2, oldSmemProtos, smemProtoE2, wm);
 
@@ -262,7 +262,7 @@ public class AddRuleTest {
         assertSegmentsLengthAndPos(endNode1, 2, wm);
 
         // processSplit should return null, as it's alreayd split and this does nothing.
-        assertThat(Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>())).isNull();
+        assertThat(Add.processSplit(kbase1, Collections.singletonList(wm), cbeta, new HashSet<>())).isNull();
 
         // now add a rule at the given split, so we can check paths were all updated correctly
         addRuleAtGivenSplit(kbase1, wm, cbeta, yotn);
@@ -295,7 +295,7 @@ public class AddRuleTest {
         rtn.setPathEndNodes(new PathEndNode[]{rtn});
         rtn.doAttach(buildContext);
         Arrays.stream(rtn.getPathNodes()).forEach( n -> {n.addAssociatedTerminal(rtn); ((BaseNode)n).addAssociation(rule, null);});
-        new EagerPhreakBuilder().addRule(rtn, Collections.singletonList(wm), kbase1);
+        new EagerPhreakBuilder().addRule(kbase1, Collections.singletonList(wm), rtn);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -330,7 +330,7 @@ public class AddRuleTest {
         assertThat(smemProtoEV.getAllLinkedMaskTest()).isEqualTo(12); // first two are evals, so each is 0
 
         SegmentPrototype[] oldSmemProtos = endNode1.getSegmentPrototypes();
-        SegmentPrototype smemProtoE4 = Add.processSplit(ebeta3, kbase1, Collections.singletonList(wm), new HashSet<>());
+        SegmentPrototype smemProtoE4 = Add.processSplit(kbase1, Collections.singletonList(wm), ebeta3, new HashSet<>());
 
         assertSegmentsLengthAndPos(endNode1, 2, oldSmemProtos, smemProtoE4, wm);
 
@@ -369,7 +369,7 @@ public class AddRuleTest {
         assertSegmentsLengthAndPos(endNode0, 3, wm);
 
         SegmentPrototype[] oldSmemProtos = endNode0.getSegmentPrototypes();
-        SegmentPrototype smemProto1 = Add.processSplit(bbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+        SegmentPrototype smemProto1 = Add.processSplit(kbase1, Collections.singletonList(wm), bbeta, new HashSet<>());
 
         assertSegmentsLengthAndPos(endNode0, 4, oldSmemProtos, smemProto1, wm);
         assertThat(endNode0.getPathMemSpec().allLinkedTestMask()).isEqualTo(15);

@@ -42,11 +42,6 @@ public class LiteralExpressionBuilder {
     public Firable build() {
         final String expr = decisionLogic.getExpression();
         definitions.outputs().put(name, StoreHandle.empty(Object.class));
-        if(Objects.equals(expressionLang, "jshell")){
-            return new JShellLiteralExpressionInterpreter(name, QuotedExprParsed.from(expr));
-        }
-        else {
-            return new MVELLiteralExpressionInterpreter(name,QuotedExprParsed.from(expr));
-        }
+        return new MVELLiteralExpressionInterpreter(name, QuotedExprParsed.from(expr));
     }
 }

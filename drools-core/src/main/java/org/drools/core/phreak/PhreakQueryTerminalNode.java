@@ -39,10 +39,10 @@ import org.drools.core.util.LinkedList;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakQueryTerminalNode {
-    public void doNode(QueryTerminalNode qtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       LinkedList<StackEntry> stack) {
+    public void doNode(ActivationsManager activationsManager,
+                       LinkedList<StackEntry> stack,
+                       QueryTerminalNode qtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
         }

@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Resource Limits"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: "CPU Count"
     type: number
@@ -33,7 +33,6 @@ elements:
     type: Decision
     logic:
       type: LiteralExpression
-      # With JShell this does not work, but this can be done with a Java oneliner
       expression: |
         `Run Started` -`Run Ended`
   - name: Fitting profiles

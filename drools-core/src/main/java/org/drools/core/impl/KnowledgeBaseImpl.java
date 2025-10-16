@@ -1053,14 +1053,14 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             // All Protos must be created, before inserting objects.
             for (TerminalNode tn : terminalNodes) {
                 tn.getPathMemSpec();
-                BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, this);
+                BuildtimeSegmentUtilities.createPathProtoMemories(this, tn, null);
             }
             Set<Integer> visited = new HashSet<>();
             for (TerminalNode tn : terminalNodes) {
                 // populate memories
                 wms.stream().forEach( wm -> {
-                    Add.insertLiaFacts(tn.getPathNodes()[0], wm, visited, true);
-                    Add.insertFacts(tn, wm, visited, true);
+                    Add.insertLiaFacts(wm, tn.getPathNodes()[0], visited, true);
+                    Add.insertFacts(wm, tn, visited, true);
                 });
             }
         }

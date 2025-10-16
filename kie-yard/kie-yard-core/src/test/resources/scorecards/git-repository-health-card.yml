@@ -18,7 +18,7 @@
 specVersion: alpha
 kind: YaRD
 name: "Git Repository Completeness"
-expressionLang: jshell
+expressionLang: mvel
 inputs:
   - name: "Repository Data"
     type: 'http://myapi.org/jsonSchema.json#GitRepositoryData'

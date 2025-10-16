@@ -32,10 +32,10 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 
 public class PhreakJoinNode {
-    public void doNode(JoinNode joinNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       JoinNode joinNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
@@ -200,7 +200,7 @@ public class PhreakJoinNode {
                 for (TupleImpl childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
                     if (rightTuple == null || rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory()) {
-                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     }
                     childLeftTuple = nextChild;
                 }
@@ -266,7 +266,7 @@ public class PhreakJoinNode {
                 } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
                     // delete, childLeftTuple is updated
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }
@@ -305,7 +305,7 @@ public class PhreakJoinNode {
                     while ( childLeftTuple != null ) {
                         childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
                         TupleImpl nextChild = childLeftTuple.getRightParentNext();
-                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                         childLeftTuple = nextChild;
                     }
                     // childLeftTuple is now null, so the next check will attempt matches for new bucket
@@ -382,7 +382,7 @@ public class PhreakJoinNode {
                     // delete, childLeftTuple is updated
                     childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                     TupleImpl nextChild = childLeftTuple.getRightParentNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }
@@ -409,7 +409,7 @@ public class PhreakJoinNode {
 
                 while (childLeftTuple != null) {
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }
@@ -436,7 +436,7 @@ public class PhreakJoinNode {
                 childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                 while (childLeftTuple != null) {
                     TupleImpl nextChild = childLeftTuple.getRightParentNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }
