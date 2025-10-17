@@ -42,6 +42,7 @@ import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -55,6 +56,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
+import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
@@ -247,7 +249,9 @@ public class PersistenceGenerator extends AbstractGenerator {
                 Expression newMarshallerExpr = new ObjectCreationExpr(null, new ClassOrInterfaceType(null, baseMarshallers), NodeList.nodeList());
                 body.addStatement(new MethodCallExpr(new NameExpr("context"), "registerMarshaller", NodeList.nodeList(newMarshallerExpr)));
             }
-            CatchClause catchClause = new CatchClause(new Parameter().setType(IOException.class).setName("e"), new BlockStmt());
+            CatchClause catchClause = new CatchClause(new Parameter().setType(IOException.class).setName("e"), new BlockStmt(NodeList.nodeList(new ThrowStmt(new ObjectCreationExpr(
+                    null, StaticJavaParser.parseClassOrInterfaceType("java.io.UncheckedIOException"),
+                    NodeList.nodeList(new NameExpr("e")))))));
             TryStmt tryStmt = new TryStmt(body, NodeList.nodeList(catchClause), null);
             constructor.getBody().addStatement(tryStmt);
             String fqnProtoStreamMarshaller = packageName + "." + clazz.getName().toString();
