@@ -291,6 +291,8 @@ public class TupleToObjectNode extends ObjectSource
     }
 
     public static class SubnetworkPathMemory extends PathMemory implements Memory {
+        private List<RuleImpl> rules;
+        private ReteEvaluator reteEvaluator;
 
         private ReteEvaluator reteEvaluator;
 
