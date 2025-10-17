@@ -150,7 +150,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return sbuilder.toString();
     }
 
-    public boolean linkNode(long mask, ReteEvaluator reteEvaluator) {
+    public boolean linkNode(long mask) {
         linkedNodeMask |= mask;
         dirtyNodeMask |= mask;
         if (IS_LOG_TRACE_ENABLED) {
@@ -158,7 +158,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                     getRuleNames());
         }
 
-        return notifyRuleLinkSegment(reteEvaluator);
+        return notifyRuleLinkSegment();
     }
 
     public boolean linkNodeWithoutRuleNotify(long mask) {
@@ -190,29 +190,29 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return dataDrivePmemLinked;
     }
 
-    public boolean notifyRuleLinkSegment(ReteEvaluator reteEvaluator, long mask) {
+    public boolean notifyRuleLinkSegment(long mask) {
         dirtyNodeMask |= mask;
-        return notifyRuleLinkSegment(reteEvaluator);
+        return notifyRuleLinkSegment();
     }
 
-    public boolean notifyRuleLinkSegment(ReteEvaluator reteEvaluator) {
+    public boolean notifyRuleLinkSegment() {
         boolean dataDrivePmemLinked = false;
         if (isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 PathMemory pmem = pathMemories.get(i);
-                notifyRuleLinkSegment(reteEvaluator, pmem);
+                notifyRuleLinkSegment(pmem);
                 dataDrivePmemLinked |= (pmem.isDataDriven() && pmem.isRuleLinked());
             }
         }
         return dataDrivePmemLinked;
     }
 
-    public void notifyRuleLinkSegment(ReteEvaluator reteEvaluator, PathMemory pmem) {
-        pmem.linkSegment(segmentPosMaskBit, reteEvaluator);
+    public void notifyRuleLinkSegment(PathMemory pmem) {
+        pmem.linkSegment(segmentPosMaskBit);
     }
 
-    public boolean unlinkNode(long mask, ReteEvaluator reteEvaluator) {
+    public boolean unlinkNode(long mask) {
         boolean dataDrivePmemLinked = false;
         boolean linked = isSegmentLinked();
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
@@ -230,24 +230,24 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 PathMemory pmem = pathMemories.get(i);
                 // the data driven pmem has to be flushed only if the pmem was formerly linked
                 dataDrivePmemLinked |= (pmem.isDataDriven() && pmem.isRuleLinked());
-                pmem.unlinkedSegment(segmentPosMaskBit, reteEvaluator);
+                pmem.unlinkedSegment(segmentPosMaskBit);
             }
         } else {
             // if not unlinked, then we still need to notify if the rule is linked
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 if (pathMemories.get(i).isRuleLinked()) {
-                    pathMemories.get(i).doLinkRule(reteEvaluator);
+                    pathMemories.get(i).doLinkRule();
                 }
             }
         }
         return dataDrivePmemLinked;
     }
 
-    public void unlinkSegment(ReteEvaluator reteEvaluator) {
+    public void unlinkSegment() {
         for (int i = 0, length = pathMemories.size(); i < length; i++) {
             // do not use foreach, don't want Iterator object creation
-            pathMemories.get(i).unlinkedSegment(segmentPosMaskBit, reteEvaluator);
+            pathMemories.get(i).unlinkedSegment(segmentPosMaskBit);
         }
     }
 

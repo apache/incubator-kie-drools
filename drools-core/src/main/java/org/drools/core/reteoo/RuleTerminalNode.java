@@ -142,7 +142,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 }
             }
             RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
-            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
         }
     }
 

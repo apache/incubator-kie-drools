@@ -154,8 +154,7 @@ public class PhreakNotNode {
 
         // this must be processed here, rather than initial insert, as we need to link the blocker
         unlinkNotNodeOnRightInsert(notNode,
-                                   bm,
-                                   reteEvaluator);
+                                   bm);
 
         for (RightTuple rightTuple = (RightTuple) srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = (RightTuple) rightTuple.getStagedNext();
@@ -206,12 +205,11 @@ public class PhreakNotNode {
     }
 
     public static void unlinkNotNodeOnRightInsert(NotNode notNode,
-                                                  BetaMemory bm,
-                                                  ReteEvaluator reteEvaluator) {
+                                                  BetaMemory bm) {
         if (bm.getSegmentMemory().isSegmentLinked() && notNode.isEmptyBetaConstraints()) {
             // this must be processed here, rather than initial insert, as we need to link the blocker
             // @TODO this could be more efficient, as it means the entire StagedLeftTuples for all previous nodes where evaluated, needlessly.
-            bm.unlinkNode(reteEvaluator);
+            bm.unlinkNode();
         }
     }
 

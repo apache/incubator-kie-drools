@@ -92,12 +92,12 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
             segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.linkNode(nodePosMaskBit, reteEvaluator) :
+               segmentMemory.linkNode(nodePosMaskBit) :
                segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
     }
 
-    public boolean unlinkNode(ReteEvaluator reteEvaluator) {
-        return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
+    public boolean unlinkNode() {
+        return segmentMemory.unlinkNode(nodePosMaskBit);
     }
 
     public int getNodeType() {
@@ -145,7 +145,7 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
             segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.notifyRuleLinkSegment(reteEvaluator, nodePosMaskBit) :
+               segmentMemory.notifyRuleLinkSegment(nodePosMaskBit) :
                segmentMemory.linkSegmentWithoutRuleNotify(nodePosMaskBit);
     }
 

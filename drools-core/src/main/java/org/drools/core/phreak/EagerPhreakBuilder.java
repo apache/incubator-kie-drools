@@ -123,7 +123,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             Add.insertFacts(wm, tn, visited, false);
         }
 
-        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
+        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment());
     }
 
     /**
@@ -554,7 +554,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         SegmentMemory sm = parentMem.getSegmentMemory();
                         SegmentMemory childSmem = RuntimeSegmentUtilities.createChildSegment(wm, child);
                         sm.add(childSmem);
-                        sm.notifyRuleLinkSegment(wm);
+                        sm.notifyRuleLinkSegment();
                         notifyImpactedSegments(wm, sm, smemsToNotify);
                         notifyImpactedSegments(wm, childSmem, smemsToNotify);
                     }
@@ -1132,7 +1132,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(lt.getSink());
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(wm), pmem.getRuleAgendaItem()
+                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(), pmem.getRuleAgendaItem()
                         .getRuleExecutor(), (RuleTerminalNodeLeftTuple) lt);
             }
         } else {

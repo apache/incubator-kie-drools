@@ -186,7 +186,7 @@ public class RuntimeSegmentUtilities {
 
             if (smem.getAllLinkedMaskTest() > 0 && smem.isSegmentLinked()) {
                 // not's can cause segments to be linked, and the rules need to be notified for evaluation
-                smem.notifyRuleLinkSegment(reteEvaluator);
+                smem.notifyRuleLinkSegment();
             }
         }
     }

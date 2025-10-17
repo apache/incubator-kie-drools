@@ -29,7 +29,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;
@@ -295,9 +294,12 @@ public class TupleToObjectNode extends ObjectSource
     }
 
     public static class SubnetworkPathMemory extends PathMemory implements Memory {
+        private List<RuleImpl> rules;
+        private ReteEvaluator reteEvaluator;
 
         public SubnetworkPathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
             super(pathEndNode, reteEvaluator);
+            this.reteEvaluator = reteEvaluator;
         }
 
         @Override
@@ -318,17 +320,12 @@ public class TupleToObjectNode extends ObjectSource
         }
 
         @Override
-        public void doLinkRule(ReteEvaluator reteEvaluator) {
+        public void doLinkRule() {
             getTupleToObjectNode().getObjectSinkPropagator().doLinkSubnetwork(reteEvaluator);
         }
 
         @Override
-        public void doLinkRule(ActivationsManager activationsManager) {
-            doLinkRule(activationsManager.getReteEvaluator());
-        }
-
-        @Override
-        public void doUnlinkRule(ReteEvaluator reteEvaluator) {
+        public void doUnlinkRule() {
             getTupleToObjectNode().getObjectSinkPropagator().doUnlinkSubnetwork(reteEvaluator);
         }
 
