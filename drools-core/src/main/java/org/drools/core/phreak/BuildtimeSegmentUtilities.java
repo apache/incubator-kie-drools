@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.BetaNode;
@@ -57,6 +56,7 @@ import org.drools.core.reteoo.SegmentMemory.RightInputAdapterPrototype;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.SegmentMemory.TerminalPrototype;
 import org.drools.core.reteoo.SegmentMemory.TimerMemoryPrototype;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 
@@ -119,11 +119,11 @@ public class BuildtimeSegmentUtilities {
         return allLinkedMaskTest;
     }
 
-    public static SegmentPrototype[] createPathProtoMemories(InternalRuleBase rbase,
+    public static SegmentPrototype[] createPathProtoMemories(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                              TerminalNode tn,
                                                              TerminalNode removingTn) {
         // Will initialise all segments in a path
-        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(rbase, tn, removingTn);
+        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(segmentPrototypeRegistry, tn, removingTn);
 
         // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
         if (smems.length > 0) {
@@ -133,7 +133,7 @@ public class BuildtimeSegmentUtilities {
         return smems;
     }
 
-    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(InternalRuleBase rbase,
+    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                                       LeftTupleNode lts,
                                                                       TerminalNode removingTn) {
         LeftTupleNode segmentRoot = lts;
@@ -151,10 +151,10 @@ public class BuildtimeSegmentUtilities {
             }
 
             // Store all nodes for the main path in reverse order (we're starting from the terminal node).
-            SegmentPrototype smem = rbase.getSegmentPrototype(segmentRoot);
+            SegmentPrototype smem = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
             if (smem == null) {
                 start = segmentRoot.getPathIndex(); // we want counter to start from the new segment proto only
-                smem = createSegmentMemory(rbase, segmentRoot, segmentTip, removingTn, recordBefore);
+                smem = createSegmentMemory(segmentPrototypeRegistry,  segmentRoot, segmentTip, removingTn, recordBefore);
             }
             smems.add(0, smem);
 
@@ -194,7 +194,7 @@ public class BuildtimeSegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentPrototype createSegmentMemory(InternalRuleBase rbase,
+    private static SegmentPrototype createSegmentMemory(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                        LeftTupleNode segmentRoot,
                                                        LeftTupleNode segmentTip,
                                                        TerminalNode removingTn,
@@ -216,7 +216,7 @@ public class BuildtimeSegmentUtilities {
             nodeTypesInSegment = updateNodeTypesMask(node, nodeTypesInSegment);
             if (NodeTypeEnums.isBetaNode(node)) {
                 boolean updateAllLinked = node.getPathIndex() < recordBefore && updateNodeBit;
-                allLinkedTestMask = processBetaNode(rbase, (BetaNode) node, removingTn, smem, memories,
+                allLinkedTestMask = processBetaNode(segmentPrototypeRegistry, (BetaNode) node, removingTn, smem, memories,
                         nodes, nodePosMask, allLinkedTestMask, updateAllLinked);
             } else {
                 switch (node.getType()) {
@@ -273,7 +273,7 @@ public class BuildtimeSegmentUtilities {
         smem.setMemories(memories.toArray(new MemoryPrototype[memories.size()]));
         smem.setNodeTypesInSegment(nodeTypesInSegment);
 
-        rbase.registerSegmentPrototype(segmentRoot, smem);
+        segmentPrototypeRegistry.registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }
@@ -391,7 +391,7 @@ public class BuildtimeSegmentUtilities {
         return allLinkedTestMask;
     }
 
-    private static long processBetaNode(InternalRuleBase rbase,
+    private static long processBetaNode(SegmentPrototypeRegistry prototypeRegistry, 
                                         BetaNode betaNode,
                                         TerminalNode removingTn,
                                         SegmentPrototype smem,
@@ -405,7 +405,7 @@ public class BuildtimeSegmentUtilities {
             // there is a subnetwork, so create all it's segment memory prototypes
             tton = (TupleToObjectNode) betaNode.getRightInput().getParent();
 
-            SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(rbase, tton, removingTn);
+            SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(prototypeRegistry, tton, removingTn);
             setSegments(tton, smems);
 
             if (updateNodeBit && canBeDisabled(betaNode) && tton.getPathMemSpec().allLinkedTestMask() > 0) {

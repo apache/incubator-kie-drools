@@ -34,7 +34,6 @@ import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.LinkedList;
@@ -75,10 +74,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public SegmentMemory(LeftTupleNode rootNode) {
         this.proto = new SegmentPrototype(rootNode, null);
-    }
-
-    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory, ReteEvaluator reteEvaluator) {
-        return reteEvaluator.getNodeMemory(memoryFactory);
     }
 
     public LeftTupleNode getRootNode() {

@@ -39,6 +39,7 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 
 import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 
@@ -79,7 +80,8 @@ public class RuntimeSegmentUtilities {
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleNode segmentRoot) {
-        SegmentPrototype proto = reteEvaluator.getKnowledgeBase().getSegmentPrototype(segmentRoot);
+        SegmentPrototypeRegistry segmentPrototypeRegistry = reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry();
+        SegmentPrototype proto = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
         if (proto == null || proto.getNodesInSegment() == null) {
             return null;
         }
@@ -100,7 +102,7 @@ public class RuntimeSegmentUtilities {
             }
         }
 
-        SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
+        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
 
         updateSubnetworkAndTerminalMemory(reteEvaluator, smem, proto);
 
@@ -203,7 +205,7 @@ public class RuntimeSegmentUtilities {
         return pmem;
     }
 
-    public static void initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode, PathMemory pmem) {
+    private static void initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode, PathMemory pmem) {
         if (pathEndNode.getEagerSegmentPrototypes() != null) {
             for (SegmentPrototype eager : pathEndNode.getEagerSegmentPrototypes()) {
                 if (pmem.getSegmentMemories()[eager.getPos()] == null) {
