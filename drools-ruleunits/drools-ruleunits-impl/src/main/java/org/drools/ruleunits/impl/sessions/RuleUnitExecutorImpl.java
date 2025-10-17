@@ -127,7 +127,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
-        this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
+        this.nodeMemories = new ConcurrentNodeMemories(ruleBase, this);
 
         this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
         this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
@@ -181,7 +181,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     @Override
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
     }
 
     @Override

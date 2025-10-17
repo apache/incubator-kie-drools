@@ -335,7 +335,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = new ConcurrentNodeMemories(kBase, this);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
@@ -836,7 +836,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void reset() {
         if (nodeMemories != null) {
-            nodeMemories.resetAllMemories( this );
+            nodeMemories.resetAllMemories();
         }
 
         this.agenda.reset();
@@ -1340,7 +1340,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * @return The node's memory.
      */
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final MemoryFactory node) {

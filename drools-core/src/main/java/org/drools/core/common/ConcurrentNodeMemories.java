@@ -26,7 +26,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.SegmentMemory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * A concurrent implementation for the node memories interface
@@ -37,9 +36,11 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final InternalRuleBase ruleBase;
+    private final ReteEvaluator reteEvaluator;
 
-    public ConcurrentNodeMemories( InternalRuleBase ruleBase) {
+    public ConcurrentNodeMemories( InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
         this.ruleBase = ruleBase;
+        this.reteEvaluator = reteEvaluator;
         this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
 
@@ -53,8 +54,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
         this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
 
-    public void resetAllMemories(StatefulKnowledgeSession session) {
-        InternalRuleBase kBase = (InternalRuleBase) session.getKieBase();
+    public void resetAllMemories() {
         Set<SegmentMemory> smemSet = new HashSet<>();
 
         for (int i = 0; i < memories.length(); i++) {
@@ -65,14 +65,14 @@ public class ConcurrentNodeMemories implements NodeMemories {
             }
         }
 
-        smemSet.forEach(smem -> resetSegmentMemory(session, kBase, smem));
+        smemSet.forEach(smem -> resetSegmentMemory(smem));
     }
 
-    private void resetSegmentMemory(StatefulKnowledgeSession session, InternalRuleBase kBase, SegmentMemory smem) {
+    private void resetSegmentMemory(SegmentMemory smem) {
         if (smem != null) {
-            smem.reset(kBase.getSegmentPrototype(smem));
+            smem.reset(ruleBase.getSegmentPrototype(smem));
             if (smem.isSegmentLinked()) {
-                smem.notifyRuleLinkSegment((InternalWorkingMemory) session);
+                smem.notifyRuleLinkSegment(reteEvaluator);
             }
         }
     }
@@ -83,13 +83,13 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * fails the checks, it will move into the critical sessions and re-check everything
      * before effectively doing any change on data structures.
      */
-    public Memory getNodeMemory(MemoryFactory node, ReteEvaluator reteEvaluator) {
+    public Memory getNodeMemory(MemoryFactory node) {
         if( node.getMemoryId() >= this.memories.length() ) {
             resize( node.getMemoryId() );
         }
 
         Memory memory = this.memories.get( node.getMemoryId() );
-        return memory != null ? memory : createNodeMemory( node, reteEvaluator );
+        return memory != null ? memory : createNodeMemory( node );
     }
 
 
@@ -97,7 +97,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * Checks if a memory does not exists for the given node and
      * creates it.
      */
-    private Memory createNodeMemory( MemoryFactory node, ReteEvaluator reteEvaluator ) {
+    private Memory createNodeMemory( MemoryFactory node ) {
         try {
             this.lock.readLock().lock();
             // need to try again in a synchronized code block to make sure
