@@ -139,7 +139,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
 
-    private SegmentPrototypeRegistry protos;
+    private SegmentPrototypeRegistry segmentPrototypeRegistry;
     
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
@@ -182,7 +182,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         this.globals = new HashMap<>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
-        this.protos = new SegmentPrototypeRegistryImpl(isEagerSegmentCreation());
+        this.segmentPrototypeRegistry = new SegmentPrototypeRegistryImpl(isEagerSegmentCreation());
 
         setupRete();
 
@@ -922,37 +922,37 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     }
 
     public SegmentPrototypeRegistry getSegmentPrototypeRegistry() {
-        return protos;
+        return segmentPrototypeRegistry;
     }
 
     public boolean hasSegmentPrototypes() {
-        return protos.hasSegmentPrototypes();
+        return segmentPrototypeRegistry.hasSegmentPrototypes();
     }
 
     public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
-        protos.registerSegmentPrototype(tupleSource, smem);
+        segmentPrototypeRegistry.registerSegmentPrototype(tupleSource, smem);
     }
 
     public void invalidateSegmentPrototype(LeftTupleNode rootNode) {
-        protos.invalidateSegmentPrototype(rootNode);
+        segmentPrototypeRegistry.invalidateSegmentPrototype(rootNode);
     }
 
     @Override
     public SegmentPrototype getSegmentPrototype(LeftTupleNode node) {
-        return protos.getSegmentPrototype(node);
+        return segmentPrototypeRegistry.getSegmentPrototype(node);
     }
 
     @Override
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
-        return protos.createSegmentFromPrototype(reteEvaluator, tupleSource);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, tupleSource);
     }
 
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype proto) {
-        return protos.createSegmentFromPrototype(reteEvaluator, proto);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
     }
 
     public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {
-        return protos.getSegmentPrototype(segment);
+        return segmentPrototypeRegistry.getSegmentPrototype(segment);
     }
 
     private static class TypeDeclarationCandidate {

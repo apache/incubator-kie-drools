@@ -299,15 +299,15 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             detachedTuples.forEach(d -> d.reattachToRight());
         }
 
-        public static SegmentPrototype processSplit(SegmentPrototypeRegistry prototypeRegistry,
+        public static SegmentPrototype processSplit(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                     Collection<InternalWorkingMemory> wms,
                                                     LeftTupleNode splitNode,
                                                     Set<SegmentMemoryPair> smemsToNotify) {
             LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode);
-            SegmentPrototype proto1 = prototypeRegistry.getSegmentPrototype(segmentRoot);
+            SegmentPrototype proto1 = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
             if (proto1.getTipNode() != splitNode) {
                 // split does not already exist, add it.
-                return splitSegment(prototypeRegistry, wms, proto1, splitNode, smemsToNotify);
+                return splitSegment(segmentPrototypeRegistry, wms, proto1, splitNode, smemsToNotify);
             }
 
             // split already exists, add it.
@@ -575,7 +575,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
     public static class Remove {
 
-        private static void removeExistingPaths(SegmentPrototypeRegistry prototypeRegistry,
+        private static void removeExistingPaths(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                 Collection<InternalWorkingMemory> wms,
                                                 List<Pair> exclBranchRoots,
                                                 TerminalNode tn) {
@@ -603,7 +603,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         smproto.setPathEndNodes(newNodes);
                     } else {
                         // unregister the segments exclusive to the branch being used
-                        prototypeRegistry.invalidateSegmentPrototype(smproto.getRootNode());
+                        segmentPrototypeRegistry.invalidateSegmentPrototype(smproto.getRootNode());
                     }
                 }
             }
@@ -675,7 +675,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
-        private static void processMerges(SegmentPrototypeRegistry prototypeRegistry,
+        private static void processMerges(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                           Collection<InternalWorkingMemory> wms,
                                           LeftTupleNode splitNode,
                                           TerminalNode tn,
@@ -689,7 +689,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 // with the tn ignored, it's no longer a semgnet tip so it's segment is ready to merge
                 LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode, tn);
 
-                SegmentPrototype proto1 = prototypeRegistry.getSegmentPrototype(segmentRoot);
+                SegmentPrototype proto1 = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
 
                 // find the remaining child and get it's proto
                 LeftTupleNode ltn = null;
@@ -707,12 +707,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     throw new RuntimeException();
                 }
 
-                SegmentPrototype proto2 = prototypeRegistry.getSegmentPrototype(ltn);
-                mergeSegments(prototypeRegistry, wms, proto1, proto2);
+                SegmentPrototype proto2 = segmentPrototypeRegistry.getSegmentPrototype(ltn);
+                mergeSegments(segmentPrototypeRegistry, wms, proto1, proto2);
             }
         }
 
-        public static void mergeSegments(SegmentPrototypeRegistry prototypeRegistry,
+        public static void mergeSegments(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                          Collection<InternalWorkingMemory> wms,
                                          SegmentPrototype proto1,
                                          SegmentPrototype proto2) {
@@ -752,7 +752,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 updatePaths(wms, newList, proto1, endNode);
             }
 
-            prototypeRegistry.invalidateSegmentPrototype(proto2.getRootNode());
+            segmentPrototypeRegistry.invalidateSegmentPrototype(proto2.getRootNode());
         }
 
         private static void mergeSegment(ReteEvaluator wm,

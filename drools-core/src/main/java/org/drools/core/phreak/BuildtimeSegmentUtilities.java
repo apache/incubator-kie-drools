@@ -119,11 +119,11 @@ public class BuildtimeSegmentUtilities {
         return allLinkedMaskTest;
     }
 
-    public static SegmentPrototype[] createPathProtoMemories(SegmentPrototypeRegistry segmentProtos,
+    public static SegmentPrototype[] createPathProtoMemories(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                              TerminalNode tn,
                                                              TerminalNode removingTn) {
         // Will initialise all segments in a path
-        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(segmentProtos, tn, removingTn);
+        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(segmentPrototypeRegistry, tn, removingTn);
 
         // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
         if (smems.length > 0) {
@@ -133,7 +133,7 @@ public class BuildtimeSegmentUtilities {
         return smems;
     }
 
-    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(SegmentPrototypeRegistry segmentProtos,
+    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                                       LeftTupleNode lts,
                                                                       TerminalNode removingTn) {
         LeftTupleNode segmentRoot = lts;
@@ -151,10 +151,10 @@ public class BuildtimeSegmentUtilities {
             }
 
             // Store all nodes for the main path in reverse order (we're starting from the terminal node).
-            SegmentPrototype smem = segmentProtos.getSegmentPrototype(segmentRoot);
+            SegmentPrototype smem = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
             if (smem == null) {
                 start = segmentRoot.getPathIndex(); // we want counter to start from the new segment proto only
-                smem = createSegmentMemory(segmentProtos,  segmentRoot, segmentTip, removingTn, recordBefore);
+                smem = createSegmentMemory(segmentPrototypeRegistry,  segmentRoot, segmentTip, removingTn, recordBefore);
             }
             smems.add(0, smem);
 
@@ -194,7 +194,7 @@ public class BuildtimeSegmentUtilities {
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    private static SegmentPrototype createSegmentMemory(SegmentPrototypeRegistry prototypeRegistry,
+    private static SegmentPrototype createSegmentMemory(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                        LeftTupleNode segmentRoot,
                                                        LeftTupleNode segmentTip,
                                                        TerminalNode removingTn,
@@ -216,7 +216,7 @@ public class BuildtimeSegmentUtilities {
             nodeTypesInSegment = updateNodeTypesMask(node, nodeTypesInSegment);
             if (NodeTypeEnums.isBetaNode(node)) {
                 boolean updateAllLinked = node.getPathIndex() < recordBefore && updateNodeBit;
-                allLinkedTestMask = processBetaNode(prototypeRegistry, (BetaNode) node, removingTn, smem, memories,
+                allLinkedTestMask = processBetaNode(segmentPrototypeRegistry, (BetaNode) node, removingTn, smem, memories,
                         nodes, nodePosMask, allLinkedTestMask, updateAllLinked);
             } else {
                 switch (node.getType()) {
@@ -273,7 +273,7 @@ public class BuildtimeSegmentUtilities {
         smem.setMemories(memories.toArray(new MemoryPrototype[memories.size()]));
         smem.setNodeTypesInSegment(nodeTypesInSegment);
 
-        prototypeRegistry.registerSegmentPrototype(segmentRoot, smem);
+        segmentPrototypeRegistry.registerSegmentPrototype(segmentRoot, smem);
 
         return smem;
     }

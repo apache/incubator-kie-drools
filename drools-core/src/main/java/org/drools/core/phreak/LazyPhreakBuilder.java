@@ -1152,7 +1152,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         List<PathMemory> otherPmems = new ArrayList<>();
     }
 
-    private static PathEndNodes getPathEndNodes(SegmentPrototypeRegistry prototypeRegistry,
+    private static PathEndNodes getPathEndNodes(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                 Rule processedRule,
                                                 LeftTupleNode lt,
                                                 TerminalNode tn,
@@ -1167,15 +1167,15 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         if (hasProtos) {
-            invalidateRootNode(prototypeRegistry, lt);
+            invalidateRootNode(segmentPrototypeRegistry, lt);
         }
 
-        collectPathEndNodes(prototypeRegistry, processedRule, lt, endNodes, tn, hasProtos, hasWms, hasProtos && isSplit(lt));
+        collectPathEndNodes(segmentPrototypeRegistry, processedRule, lt, endNodes, tn, hasProtos, hasWms, hasProtos && isSplit(lt));
 
         return endNodes;
     }
 
-    private static void collectPathEndNodes(SegmentPrototypeRegistry prototypeRegistry,
+    private static void collectPathEndNodes(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                             Rule processedRule,
                                             LeftTupleNode lt,
                                             PathEndNodes endNodes,
@@ -1193,12 +1193,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
             if (hasProtos) {
                 if (isBelowNewSplit) {
                     if (isRootNode(sink, null)) {
-                        prototypeRegistry.invalidateSegmentPrototype(sink);
+                        segmentPrototypeRegistry.invalidateSegmentPrototype(sink);
                     }
                 } else {
                     isBelowNewSplit = isSplit(sink);
                     if (isBelowNewSplit) {
-                        invalidateRootNode(prototypeRegistry, sink);
+                        invalidateRootNode(segmentPrototypeRegistry, sink);
                     }
                 }
             }
@@ -1209,7 +1209,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     }
                 }
 
-                collectPathEndNodes(prototypeRegistry, processedRule, sink, endNodes, tn, hasProtos, hasWms, isBelowNewSplit);
+                collectPathEndNodes(segmentPrototypeRegistry, processedRule, sink, endNodes, tn, hasProtos, hasWms, isBelowNewSplit);
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 endNodes.otherEndNodes.add((PathEndNode) sink);
             } else if (NodeTypeEnums.TupleToObjectNode == sink.getType()) {
@@ -1225,11 +1225,11 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void invalidateRootNode(SegmentPrototypeRegistry prototypeRegistry, LeftTupleNode lt) {
+    private static void invalidateRootNode(SegmentPrototypeRegistry segmentPrototypeRegistry, LeftTupleNode lt) {
         while (!isRootNode(lt, null)) {
             lt = lt.getLeftTupleSource();
         }
-        prototypeRegistry.invalidateSegmentPrototype(lt);
+        segmentPrototypeRegistry.invalidateSegmentPrototype(lt);
     }
 
     private static class PathEndNodes {

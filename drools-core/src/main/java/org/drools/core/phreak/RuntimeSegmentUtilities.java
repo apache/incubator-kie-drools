@@ -80,8 +80,8 @@ public class RuntimeSegmentUtilities {
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleNode segmentRoot) {
-        SegmentPrototypeRegistry prototypeRegistry = reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry();
-        SegmentPrototype proto = prototypeRegistry.getSegmentPrototype(segmentRoot);
+        SegmentPrototypeRegistry segmentPrototypeRegistry = reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry();
+        SegmentPrototype proto = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
         if (proto == null || proto.getNodesInSegment() == null) {
             return null;
         }
@@ -102,7 +102,7 @@ public class RuntimeSegmentUtilities {
             }
         }
 
-        SegmentMemory smem = prototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
+        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
 
         updateSubnetworkAndTerminalMemory(reteEvaluator, smem, proto);
 
