@@ -48,6 +48,7 @@
     <module>rest-exception-handler</module>
     <module>process-svg</module>
     <module>process-management</module>
+    <module>process-instance-migration</module>
     <module>task-management</module>
     <module>kubernetes</module>
     <module>flyway</module>

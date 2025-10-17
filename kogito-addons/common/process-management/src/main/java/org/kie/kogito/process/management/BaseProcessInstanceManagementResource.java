@@ -27,7 +27,6 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
-import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.Process;
@@ -123,32 +122,6 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
             return buildOkResponse(data);
         });
-    }
-
-    public T doMigrateInstance(String processId, ProcessMigrationSpec migrationSpec, String processInstanceId) {
-        try {
-            Process<? extends Model> process = processes.get().processById(processId);
-            process.instances().migrateProcessInstances(migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion(), processInstanceId);
-            Map<String, Object> message = new HashMap<>();
-            message.put("message", processInstanceId + " instance migrated");
-            message.put("processInstanceId", processInstanceId);
-            return buildOkResponse(message);
-        } catch (Exception e) {
-            return badRequestResponse(e.getMessage());
-        }
-    }
-
-    public T doMigrateAllInstances(String processId, ProcessMigrationSpec migrationSpec) {
-        try {
-            Process<? extends Model> process = processes.get().processById(processId);
-            long numberOfProcessInstanceMigrated = process.instances().migrateAll(migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion());
-            Map<String, Object> message = new HashMap<>();
-            message.put("message", "All instances migrated");
-            message.put("numberOfProcessInstanceMigrated", numberOfProcessInstanceMigrated);
-            return buildOkResponse(message);
-        } catch (Exception e) {
-            return badRequestResponse(e.getMessage());
-        }
     }
 
     public T doGetWorkItemsInProcessInstance(String processId, String processInstanceId) {

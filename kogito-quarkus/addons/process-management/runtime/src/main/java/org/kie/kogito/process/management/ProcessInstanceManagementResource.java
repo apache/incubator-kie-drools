@@ -98,22 +98,6 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     }
 
     @Override
-    @POST
-    @Path("{processId}/instances/{processInstanceId}/migrate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response migrateInstance(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, ProcessMigrationSpec migrationSpec) {
-        return doMigrateInstance(processId, migrationSpec, processInstanceId);
-    }
-
-    @Override
-    @POST
-    @Path("{processId}/migrate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response migrateAllInstances(@PathParam("processId") String processId, ProcessMigrationSpec migrationSpec) {
-        return doMigrateAllInstances(processId, migrationSpec);
-    }
-
-    @Override
     @GET
     @Path("{processId}/instances/{processInstanceId}/nodeInstances")
     @Produces(MediaType.APPLICATION_JSON)

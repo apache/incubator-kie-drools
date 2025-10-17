@@ -213,16 +213,6 @@ class BaseProcessInstanceManagementResourceTest {
             }
 
             @Override
-            public Object migrateAllInstances(String processId, ProcessMigrationSpec migrationSpec) {
-                return null;
-            }
-
-            @Override
-            public Object migrateInstance(String processId, String processInstanceId, ProcessMigrationSpec migrationSpec) {
-                return null;
-            }
-
-            @Override
             public Object updateNodeInstanceSla(String processId, String processInstanceId, String nodeInstanceId, SlaPayload SLAPayload) {
                 return null;
             }
