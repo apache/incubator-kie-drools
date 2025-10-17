@@ -44,10 +44,10 @@ import org.kie.api.event.rule.MatchCancelledCause;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakRuleTerminalNode {
-    public void doNode(TerminalNode rtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       RuleExecutor executor) {
+    public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
+                       TerminalNode rtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(activationsManager, srcLeftTuples, executor);
         }

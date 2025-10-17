@@ -29,15 +29,15 @@ import org.drools.metric.util.MetricLogUtils;
 public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
 
     @Override
-    public void doNode(AsyncSendNode node,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       AsyncSendNode node,
                        AsyncSendMemory memory,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(node);
 
-            super.doNode(node, memory, reteEvaluator, srcLeftTuples);
+            super.doNode(reteEvaluator, node, memory, srcLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

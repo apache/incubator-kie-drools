@@ -227,7 +227,7 @@ public class RuleExecutor {
     }
 
     public void evaluateNetwork(ActivationsManager activationsManager) {
-        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
+        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( activationsManager, this, pmem );
         setDirty( false );
     }
 

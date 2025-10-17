@@ -245,7 +245,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
         PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
         if ( pmem != null ) {
-            forceFlushLeftTuple( pmem, sm, reteEvaluator, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
+            forceFlushLeftTuple( reteEvaluator, pmem, sm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
             if ( linkOrNotify ) {
                 lm.setNodeDirty( reteEvaluator );
             }

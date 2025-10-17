@@ -31,10 +31,10 @@ import org.drools.metric.util.MetricLogUtils;
 public class PhreakBranchNodeMetric extends PhreakBranchNode {
 
     @Override
-    public void doNode(ConditionalBranchNode branchNode,
+    public void doNode(ActivationsManager activationsManager,
+                       ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,
@@ -43,7 +43,7 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
         try {
             MetricLogUtils.getInstance().startMetrics(branchNode);
 
-            super.doNode(branchNode, cbm, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            super.doNode(activationsManager, branchNode, cbm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

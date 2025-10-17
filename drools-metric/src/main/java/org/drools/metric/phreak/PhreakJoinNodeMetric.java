@@ -29,17 +29,17 @@ import org.drools.metric.util.MetricLogUtils;
 public class PhreakJoinNodeMetric extends PhreakJoinNode {
 
     @Override
-    public void doNode(JoinNode joinNode,
+    public void doNode(ReteEvaluator reteEvaluator,
+                       JoinNode joinNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
         try {
             MetricLogUtils.getInstance().startMetrics(joinNode);
 
-            super.doNode(joinNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(reteEvaluator, joinNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();
