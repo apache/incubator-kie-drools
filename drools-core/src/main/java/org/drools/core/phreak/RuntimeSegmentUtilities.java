@@ -39,6 +39,7 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 
 import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 
@@ -79,7 +80,8 @@ public class RuntimeSegmentUtilities {
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleNode segmentRoot) {
-        SegmentPrototype proto = reteEvaluator.getKnowledgeBase().getSegmentPrototype(segmentRoot);
+        SegmentPrototypeRegistry segmentPrototypeRegistry = reteEvaluator.getKnowledgeBase().getSegmentPrototypeRegistry();
+        SegmentPrototype proto = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
         if (proto == null || proto.getNodesInSegment() == null) {
             return null;
         }
@@ -100,7 +102,7 @@ public class RuntimeSegmentUtilities {
             }
         }
 
-        SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
+        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
 
         updateSubnetworkAndTerminalMemory(reteEvaluator, smem, proto);
 
@@ -176,8 +178,7 @@ public class RuntimeSegmentUtilities {
             if (pmem != null) {
                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
             } else {
-                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) endNode,
-                        reteEvaluator);
+                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) endNode);
                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem); // this needs to be set before init, to avoid recursion during eager segment initialisation
                 pmem.setSegmentMemory(smem.getPos(), smem);
                 initializePathMemory(reteEvaluator, endNode, pmem);
@@ -199,12 +200,12 @@ public class RuntimeSegmentUtilities {
     }
 
     public static PathMemory initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode) {
-        PathMemory pmem = reteEvaluator.getNodeMemories().getNodeMemory(pathEndNode, reteEvaluator);
+        PathMemory pmem = reteEvaluator.getNodeMemories().getNodeMemory(pathEndNode);
         initializePathMemory(reteEvaluator, pathEndNode, pmem);
         return pmem;
     }
 
-    public static void initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode, PathMemory pmem) {
+    private static void initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode, PathMemory pmem) {
         if (pathEndNode.getEagerSegmentPrototypes() != null) {
             for (SegmentPrototype eager : pathEndNode.getEagerSegmentPrototypes()) {
                 if (pmem.getSegmentMemories()[eager.getPos()] == null) {
