@@ -47,8 +47,8 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
+import org.kie.kogito.codegen.core.utils.CodegenUtil;
 import org.kie.kogito.codegen.process.persistence.ExclusionTypeUtils;
-import org.kie.kogito.codegen.process.util.CodegenUtil;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;

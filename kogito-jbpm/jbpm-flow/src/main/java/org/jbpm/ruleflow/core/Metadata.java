@@ -25,6 +25,7 @@ public class Metadata {
     public static final String ANNOTATIONS = "annotations";
     public static final String TRIGGER_REF = "TriggerRef";
     public static final String REF = "Ref";
+    public static final String CHANNEL_NAME = "ChannelName";
     public static final String MESSAGE_TYPE = "MessageType";
     public static final String MESSAGE_REF = "MessageRef";
     public static final String SIGNAL_TYPE = "SignalType";

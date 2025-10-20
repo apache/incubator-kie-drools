@@ -21,7 +21,16 @@ package org.kie.kogito.codegen.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
@@ -30,7 +39,12 @@ import org.drools.io.InternalResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.compiler.canonical.*;
+import org.jbpm.compiler.canonical.ModelMetaData;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.jbpm.compiler.canonical.TriggerMetaData.TriggerType;
+import org.jbpm.compiler.canonical.WorkItemModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.process.core.impl.ProcessImpl;
@@ -51,10 +65,12 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
+import org.kie.kogito.codegen.core.utils.CodegenUtil;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
+import org.kie.kogito.codegen.process.events.ChannelInfo;
+import org.kie.kogito.codegen.process.events.ChannelMappingStrategy;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMeta;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
-import org.kie.kogito.codegen.process.util.CodegenUtil;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
@@ -73,10 +89,10 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.drools.codegen.common.GeneratedFileType.REST;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_PATH;
+import static org.kie.kogito.codegen.core.utils.CodegenUtil.generatorProperty;
+import static org.kie.kogito.codegen.core.utils.CodegenUtil.isFaultToleranceEnabled;
+import static org.kie.kogito.codegen.core.utils.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.codegen.process.util.BusinessCalendarUtil.conditionallyAddCustomBusinessCalendar;
-import static org.kie.kogito.codegen.process.util.CodegenUtil.generatorProperty;
-import static org.kie.kogito.codegen.process.util.CodegenUtil.isFaultToleranceEnabled;
-import static org.kie.kogito.codegen.process.util.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.codegen.process.util.SourceFilesProviderProducerUtil.addSourceFilesToProvider;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
@@ -370,6 +386,9 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         // generate Process, ProcessInstance classes and the REST resource
+        Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping(context());
+        LOGGER.debug("channels found {}", channelsInfo);
+        List<TriggerMetaData> normalizedTriggers = new ArrayList<>();
 
         for (ProcessExecutableModelGenerator execModelGen : processExecutableModelGenerators) {
             String classPrefix = sanitizeClassName(execModelGen.extractedProcessId());
@@ -391,6 +410,8 @@ public class ProcessCodegen extends AbstractGenerator {
                     modelClassGenerator.generate());
 
             ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
+            List<TriggerMetaData> currentNormalizedTriggers = normalizeTriggers(metaData.getTriggers(), channelsInfo);
+            normalizedTriggers.addAll(currentNormalizedTriggers);
 
             //Creating and adding the ResourceGenerator for REST generation
             if (context().hasRest()) {
@@ -411,29 +432,28 @@ public class ProcessCodegen extends AbstractGenerator {
                 rgs.add(processResourceGenerator);
             }
 
-            if (metaData.getTriggers() != null) {
-
-                for (TriggerMetaData trigger : metaData.getTriggers()) {
-
-                    // generate message consumers for processes with message start events
-                    if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                        MessageConsumerGenerator messageConsumerGenerator =
-                                megs.computeIfAbsent(new ProcessCloudEventMeta(workFlowProcess.getId(), trigger), k -> new MessageConsumerGenerator(
-                                        context(),
-                                        workFlowProcess,
-                                        modelClassGenerator.className(),
-                                        execModelGen.className(),
-                                        applicationCanonicalName(),
-                                        trigger));
-                        metaData.addConsumer(trigger.getName(), messageConsumerGenerator.compilationUnit());
-                    } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
-                        MessageProducerGenerator messageProducerGenerator = new MessageProducerGenerator(
-                                context(),
-                                workFlowProcess,
-                                trigger);
-                        mpgs.add(messageProducerGenerator);
-                        metaData.addProducer(trigger.getName(), messageProducerGenerator.compilationUnit());
-                    }
+            // wiring events
+            for (TriggerMetaData trigger : currentNormalizedTriggers) {
+                // generate message consumers for processes with message start events
+                if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
+                    LOGGER.debug("Processing consumer trigger {}", trigger);
+                    MessageConsumerGenerator messageConsumerGenerator =
+                            megs.computeIfAbsent(new ProcessCloudEventMeta(workFlowProcess.getId(), trigger), k -> new MessageConsumerGenerator(
+                                    context(),
+                                    workFlowProcess,
+                                    modelClassGenerator.className(),
+                                    execModelGen.className(),
+                                    applicationCanonicalName(),
+                                    trigger));
+                    metaData.addConsumer(trigger.getName(), messageConsumerGenerator.compilationUnit());
+                } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
+                    LOGGER.debug("Processing producer trigger {}", trigger);
+                    MessageProducerGenerator messageProducerGenerator = new MessageProducerGenerator(
+                            context(),
+                            workFlowProcess,
+                            trigger);
+                    mpgs.add(messageProducerGenerator);
+                    metaData.addProducer(trigger.getName(), messageProducerGenerator.compilationUnit());
                 }
             }
 
@@ -443,6 +463,8 @@ public class ProcessCodegen extends AbstractGenerator {
             pis.add(pi);
         }
 
+        context().addContextAttribute(ContextAttributesConstants.PROCESS_TRIGGERS, normalizedTriggers);
+        // model
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile(MODEL_TYPE, modelClassGenerator.generatedFilePath(),
@@ -503,13 +525,13 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         for (MessageConsumerGenerator messageConsumerGenerator : megs.values()) {
-            storeFile(MESSAGE_CONSUMER_TYPE, messageConsumerGenerator.generatedFilePath(),
-                    messageConsumerGenerator.generate());
+            String code = messageConsumerGenerator.generate();
+            storeFile(MESSAGE_CONSUMER_TYPE, messageConsumerGenerator.generatedFilePath(), code);
         }
 
         for (MessageProducerGenerator messageProducerGenerator : mpgs) {
-            storeFile(MESSAGE_PRODUCER_TYPE, messageProducerGenerator.generatedFilePath(),
-                    messageProducerGenerator.generate());
+            String code = messageProducerGenerator.generate();
+            storeFile(MESSAGE_PRODUCER_TYPE, messageProducerGenerator.generatedFilePath(), code);
         }
 
         for (ProcessGenerator p : ps) {
@@ -562,6 +584,28 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private List<TriggerMetaData> normalizeTriggers(List<TriggerMetaData> triggers, Collection<ChannelInfo> channelsInfo) {
+        List<TriggerMetaData> normalizedTriggers = new ArrayList<>();
+        for (TriggerMetaData triggerMetadata : triggers) {
+            Optional<ChannelInfo> channelInfo = channelsInfo.stream().filter(e -> e.getTriggers().contains(triggerMetadata.getName())).findAny();
+            if (channelInfo.isPresent()) {
+                LOGGER.debug("Normalizing trigger {}, channel is present", triggerMetadata, channelInfo.get().getChannelName());
+                normalizedTriggers.add(TriggerMetaData.of(triggerMetadata, channelInfo.get().getChannelName()));
+                continue;
+            }
+            Predicate<ChannelInfo> defaultChannelInfoPredicate = triggerMetadata.getType().equals(TriggerType.ConsumeMessage) ? ChannelInfo::isInputDefault : ChannelInfo::isOutputDefault;
+            Optional<ChannelInfo> defaultChannel = channelsInfo.stream().filter(defaultChannelInfoPredicate::test).findAny();
+            if (defaultChannel.isEmpty()) {
+                LOGGER.warn("Skipping trigger {} as there is no default channel or channel defined for it", triggerMetadata);
+                continue;
+            }
+            String defaultChannelName = defaultChannel.map(ChannelInfo::getChannelName).get();
+            LOGGER.debug("Normalizing trigger {}, channel {}", triggerMetadata, defaultChannelName);
+            normalizedTriggers.add(TriggerMetaData.of(triggerMetadata, defaultChannelName));
+        }
+        return normalizedTriggers;
     }
 
     private void storeFile(GeneratedFileType type, String path, String source) {

@@ -22,8 +22,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class EventFactoryUtils {
     public static EventReceiver getEventReceiver(String trigger) {
         return getInstance(trigger, receivers, () -> new EventReceiver() {
             @Override
-            public <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass) {
+            public <T> void subscribe(Consumer<DataEvent<T>> consumer, Class<T> dataClass) {
                 // default receiver does nothing
             }
         });
@@ -73,9 +72,8 @@ public class EventFactoryUtils {
     public static EventEmitter getEventEmitter(String trigger) {
         return getInstance(trigger, emitters, () -> new EventEmitter() {
             @Override
-            public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
+            public void emit(DataEvent<?> dataEvent) {
                 // default emitter does nothing
-                return CompletableFuture.completedStage(null);
             }
         });
     }

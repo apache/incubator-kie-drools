@@ -88,10 +88,11 @@ public class MessageProducerGenerator {
         template.findAll(ConstructorDeclaration.class).forEach(cd -> cd.setName(resourceClazzName));
 
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> CodegenUtils.interpolateTypes(cls, trigger.getDataType()));
-        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ClassName$", resourceClazzName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ChannelName$", trigger.getChannelName())));
 
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();

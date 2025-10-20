@@ -125,6 +125,7 @@ public class MessageConsumerGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ProcessName$", processName)));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ChannelName$", trigger.getChannelName())));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(MethodCallExpr.class).forEach(this::interpolateStrings);
 
@@ -158,9 +159,9 @@ public class MessageConsumerGenerator {
                     name = Optional.ofNullable(name).orElseGet(() -> trigger.getModelRef());
                     t.setName(t.getNameAsString().replace("$SetModelMethodName$", "set" + StringUtils.ucFirst(name)));
                 });
+
         if (!(trigger.getNode() instanceof StartNode)) {
-            template.findAll(MethodDeclaration.class, m -> m.getName().getIdentifier().equals("getModelConverter"))
-                    .stream().findFirst().ifPresent(template::remove);
+            template.findAll(MethodDeclaration.class, m -> m.getName().getIdentifier().equals("getModelConverter")).stream().findFirst().ifPresent(template::remove);
         }
 
         if (!trigger.dataOnly()) {

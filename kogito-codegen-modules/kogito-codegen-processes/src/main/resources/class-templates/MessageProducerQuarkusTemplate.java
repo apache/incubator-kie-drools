@@ -22,15 +22,18 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.impl.AbstractMessageProducer;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @io.quarkus.runtime.Startup
 public class MessageProducer extends AbstractMessageProducer<$DataType$> {
 
     @Inject
+    @Named("Emitter-$ChannelName$")
     EventEmitter emitter;
 
     @jakarta.annotation.PostConstruct
     public void init() {
         init(emitter,"$Trigger$");
     }
+
 }

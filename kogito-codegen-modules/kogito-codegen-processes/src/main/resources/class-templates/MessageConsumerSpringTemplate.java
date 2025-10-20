@@ -29,27 +29,25 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-
-@org.springframework.stereotype.Component()
+@org.springframework.stereotype.Component
 public class $Type$MessageConsumer extends SpringMessageConsumer<$Type$, $DataType$> {
 
     @Autowired
-    @Qualifier("$ProcessName$") 
+    @Qualifier("$ProcessName$")
     Process<$Type$> process;
-    
-    
+
     @Autowired
+    @Qualifier("Receiver-$ChannelName$")
     EventReceiver eventReceiver;
 
-    
     @PostConstruct
-    void init() { 
-    	init (process, "$Trigger$", $DataType$.class, eventReceiver);
+    void init() {
+        init(process, "$Trigger$", $DataType$.class, eventReceiver);
     }
 
     private $Type$ eventToModel($DataType$ event) {
         $Type$ model = new $Type$();
-        if(event != null) {
+        if (event != null) {
             model.$SetModelMethodName$(event);
         }
         return model;

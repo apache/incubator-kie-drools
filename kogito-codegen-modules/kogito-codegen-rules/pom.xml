@@ -20,8 +20,8 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-codegen-modules</artifactId>
@@ -31,9 +31,9 @@
     <artifactId>kogito-codegen-rules</artifactId>
     <name>Kogito :: Codegen Rules</name>
 
-  <properties>
-    <java.module.name>org.kie.kogito.codegen.rules</java.module.name>
-  </properties>
+    <properties>
+        <java.module.name>org.kie.kogito.codegen.rules</java.module.name>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -46,7 +46,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -55,6 +55,10 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-events</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -69,7 +73,7 @@
             <artifactId>drools-model-codegen</artifactId>
         </dependency>
 
-<!--    Required because of GrafanaConfigurationWriter    -->
+        <!--    Required because of GrafanaConfigurationWriter    -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>grafana-api</artifactId>

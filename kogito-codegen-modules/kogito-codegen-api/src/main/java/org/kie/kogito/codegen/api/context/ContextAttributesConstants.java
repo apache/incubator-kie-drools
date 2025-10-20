@@ -21,6 +21,11 @@ package org.kie.kogito.codegen.api.context;
 public final class ContextAttributesConstants {
 
     /**
+     * computes the triggers being generated
+     */
+    public static final String PROCESS_TRIGGERS = "kogito.codegen.process.triggers";
+
+    /**
      * OpenAPI Generator Descriptors with information of every REST client generated indexed by the spec resource file.
      */
     public static final String OPENAPI_DESCRIPTORS = "openApiDescriptor";

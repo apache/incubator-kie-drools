@@ -31,9 +31,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -41,6 +43,7 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.KogitoEngine;
 import org.kie.kogito.Model;
@@ -107,33 +110,32 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     private Iterable<StaticWorkflowRegister> workflowRegisters;
     private Iterable<StaticProcessRegister> processRegisters;
     private final Collection<AutoCloseable> closeables = new ArrayList<>();
-    private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
+    private final ConcurrentMap<String, BlockingQueue<JsonNodeModel>> queues;
     private final UnitOfWorkManager manager;
     private ProcessInstancesFactory processInstancesFactory;
     private ExecutorService executor;
 
     private static class StaticCompletionEventListener extends DefaultKogitoProcessEventListener {
 
-        private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
+        private final ConcurrentMap<String, BlockingQueue<JsonNodeModel>> queues;
 
-        public StaticCompletionEventListener(Map<String, SynchronousQueue<JsonNodeModel>> queues) {
+        public StaticCompletionEventListener(ConcurrentMap<String, BlockingQueue<JsonNodeModel>> queues) {
             this.queues = queues;
+        }
+
+        @Override
+        public void beforeProcessStarted(ProcessStartedEvent event) {
+            WorkflowProcessInstance instance = (WorkflowProcessInstance) event.getProcessInstance();
+            queues.putIfAbsent(instance.getId(), new LinkedBlockingQueue<JsonNodeModel>());
         }
 
         @Override
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             WorkflowProcessInstance instance = (WorkflowProcessInstance) event.getProcessInstance();
-            SynchronousQueue<JsonNodeModel> queue = queues.remove(instance.getId());
-            if (queue != null) {
-                try {
-                    if (queue.offer(new JsonNodeModel(instance.getId(), instance.getVariables().get(SWFConstants.DEFAULT_WORKFLOW_VAR)), 1L, TimeUnit.SECONDS)) {
-                        logger.debug("waiting process instance {} has been notified about its completion", instance.getId());
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
+            BlockingQueue<JsonNodeModel> queue = queues.get(instance.getId());
+            queue.add(new JsonNodeModel(instance.getId(), instance.getVariables().get(SWFConstants.DEFAULT_WORKFLOW_VAR)));
         }
+
     }
 
     public static class WorkflowApplicationBuilder {
@@ -194,7 +196,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
             if (properties == null) {
                 this.properties = loadApplicationDotProperties();
             }
-            Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
+            ConcurrentMap<String, BlockingQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
             listeners.add(new StaticCompletionEventListener(queues));
             StaticWorkflowApplication application =
                     new StaticWorkflowApplication(properties, queues, listeners, manager.orElseGet(() -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), executor,
@@ -239,7 +241,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         return builder().withProperties(properties).build();
     }
 
-    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners,
+    private StaticWorkflowApplication(Map<String, Object> properties, ConcurrentMap<String, BlockingQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners,
             UnitOfWorkManager manager, ExecutorService executor, JobsService jobsService) {
         super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(new CachedWorkItemHandlerConfig(),
                 new DefaultProcessEventListenerConfig(listeners), manager, jobsService), new StaticConfigBean()));
@@ -369,7 +371,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     }
 
     public Optional<JsonNodeModel> waitForFinish(String id, Duration duration) throws InterruptedException, TimeoutException {
-        JsonNodeModel model = queues.computeIfAbsent(id, k -> new SynchronousQueue<>()).poll(duration.toMillis(), TimeUnit.MILLISECONDS);
+        JsonNodeModel model = queues.get(id).poll(duration.toMillis(), TimeUnit.MILLISECONDS);
         if (model == null) {
             Optional<ProcessInstance<JsonNodeModel>> pi = findProcessInstance(id);
             if (pi.isEmpty()) {

@@ -18,8 +18,7 @@
  */
 package org.kie.kogito.event;
 
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * Event receiver interface.
@@ -38,7 +37,7 @@ public interface EventReceiver extends AutoCloseable {
      * @param consumer consumer function that accepts the data event object and return a completion stage with the result of the consumption.
      * @param dataClass the model object class wrapped into the data event
      */
-    <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass);
+    <T> void subscribe(Consumer<DataEvent<T>> consumer, Class<T> dataClass);
 
     @Override
     default void close() throws Exception {

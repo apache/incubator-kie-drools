@@ -42,6 +42,10 @@
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.kie.sonataflow</groupId>
       <artifactId>sonataflow-addons-quarkus-camel</artifactId>
     </dependency>

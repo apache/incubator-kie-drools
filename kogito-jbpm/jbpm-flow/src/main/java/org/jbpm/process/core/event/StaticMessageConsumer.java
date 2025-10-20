@@ -20,8 +20,6 @@ package org.jbpm.process.core.event;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -41,7 +39,6 @@ public class StaticMessageConsumer<M extends Model, D> extends AbstractMessageCo
         private final Class<D> dataClass;
         private EventReceiver receiver;
         ProcessService processService;
-        ExecutorService executorService;
         Set<String> correlations = Collections.emptySet();
 
         protected Builder(Application application, Process<M> process, Class<D> dataClass, String trigger) {
@@ -61,11 +58,6 @@ public class StaticMessageConsumer<M extends Model, D> extends AbstractMessageCo
             return this;
         }
 
-        public Builder<M, D> executor(ExecutorService executorService) {
-            this.executorService = executorService;
-            return this;
-        }
-
         public Builder<M, D> executor(Set<String> correlations) {
             this.correlations = correlations;
             return this;
@@ -76,13 +68,10 @@ public class StaticMessageConsumer<M extends Model, D> extends AbstractMessageCo
             if (receiver == null) {
                 receiver = EventFactoryUtils.getEventReceiver(trigger);
             }
-            if (executorService == null) {
-                executorService = Executors.newWorkStealingPool();
-            }
             if (processService == null) {
                 processService = new ProcessServiceImpl(application);
             }
-            consumer.init(application, process, trigger, receiver, dataClass, processService, executorService, correlations);
+            consumer.init(application, process, trigger, receiver, dataClass, processService, correlations);
             return consumer;
         }
     }

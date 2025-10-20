@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.serverless.workflow.executor.events;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
 
@@ -37,8 +34,7 @@ public class InMemoryEventEmitter implements EventEmitter {
     }
 
     @Override
-    public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
+    public void emit(DataEvent<?> dataEvent) {
         eventReceiver.onEvent(dataEvent.asCloudEvent(o -> JsonCloudEventData.wrap((JsonNode) o)));
-        return CompletableFuture.completedStage(null);
     }
 }

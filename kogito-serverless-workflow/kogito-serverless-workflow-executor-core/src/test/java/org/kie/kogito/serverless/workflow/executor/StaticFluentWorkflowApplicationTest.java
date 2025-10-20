@@ -140,14 +140,19 @@ public class StaticFluentWorkflowApplicationTest {
     @Test
     void testEventPubSub() throws InterruptedException, TimeoutException {
         final String eventType = "eventType";
-        Workflow subscriber =
-                workflow("testCallback").start(callback(call(expr("prefix", "{slogan:.slogan+\"er Beti\"}")), eventDef(eventType)).outputFilter("{slogan:.slogan+.name}")).end().build();
-        Workflow publisher = workflow("testPublishEvent").start(operation().action(trigger(eventDef("eventType"), jsonObject().put("name", ".name"), ".id"))).end().build();
+        Workflow subscriber = workflow("testCallback")
+                .start(callback(call(expr("prefix", "{slogan:.slogan+\"er Beti\"}")), eventDef(eventType)).outputFilter("{slogan:.slogan+.name}"))
+                .end()
+                .build();
+        Workflow publisher = workflow("testPublishEvent")
+                .start(operation().action(trigger(eventDef("eventType"), jsonObject().put("name", ".name"), ".id")))
+                .end()
+                .build();
+
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             String id = application.execute(subscriber, jsonObject().put("slogan", "Viva ")).getId();
             application.execute(publisher, jsonObject().put("name", " manque pierda").put("id", id));
-            assertThat(application.waitForFinish(id, Duration.ofSeconds(3)).orElseThrow().getWorkflowdata())
-                    .isEqualTo(jsonObject().put("slogan", "Viva er Beti manque pierda"));
+            assertThat(application.waitForFinish(id, Duration.ofSeconds(3)).orElseThrow().getWorkflowdata()).isEqualTo(jsonObject().put("slogan", "Viva er Beti manque pierda"));
         }
     }
 

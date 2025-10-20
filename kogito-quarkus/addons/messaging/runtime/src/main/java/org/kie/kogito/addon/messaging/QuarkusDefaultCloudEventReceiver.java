@@ -19,35 +19,40 @@
 package org.kie.kogito.addon.messaging;
 
 import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver;
-import org.kie.kogito.config.ConfigBean;
+import org.kie.kogito.addon.quarkus.messaging.common.KogitoMessaging;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.EventUnmarshaller;
 
 import io.quarkus.arc.DefaultBean;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @DefaultBean
 @ApplicationScoped
+@Named("Receiver-default")
 public class QuarkusDefaultCloudEventReceiver extends AbstractQuarkusCloudEventReceiver<Object> {
 
     @Inject
-    ConfigBean configBean;
-
-    @Inject
+    @KogitoMessaging
     CloudEventUnmarshallerFactory<Object> cloudEventUnmarshaller;
 
     @Inject
+    @KogitoMessaging
     EventUnmarshaller<Object> eventUnmarshaller;
 
-    @PostConstruct
-    void init() {
-        if (configBean.useCloudEvents()) {
-            setCloudEventUnmarshaller(cloudEventUnmarshaller);
-        } else {
-            setEventDataUnmarshaller(eventUnmarshaller);
-        }
+    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "kogito.messaging.as-cloudevents", defaultValue = "true")
+    protected Boolean useCloudEvents;
+
+    @Override
+    protected CloudEventUnmarshallerFactory<Object> getCloudEventUnmarshallerFactory() {
+        return cloudEventUnmarshaller;
     }
+
+    @Override
+    protected EventUnmarshaller<Object> getEventUnmarshaller() {
+        return eventUnmarshaller;
+    }
+
 }

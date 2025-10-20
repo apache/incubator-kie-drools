@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.drools.codegen.common.GeneratedFile;
@@ -112,6 +113,10 @@ public class CodegenMessageStartEventTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void testMessageProducerForMessageEndEvent(KogitoBuildContext.Builder contextBuilder) {
+        Properties properties = new Properties();
+        properties.put("kogito.addon.cloudevents.kafka.kogito_outgoing_stream", "test-out");
+        properties.put("kogito.addon.cloudevents.kafka.kogito_incoming_stream", "test-in");
+        contextBuilder.withApplicationProperties(properties);
 
         KogitoBuildContext context = contextBuilder.build();
         ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(

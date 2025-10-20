@@ -65,6 +65,10 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-codegen-events</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-dmn</artifactId> <!-- depend on the utility wrapper module to avoid repeating dependency exclusions -->
         </dependency>
         <dependency>

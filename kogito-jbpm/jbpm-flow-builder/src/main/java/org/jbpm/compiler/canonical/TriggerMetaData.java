@@ -28,6 +28,7 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
+import static org.jbpm.ruleflow.core.Metadata.CHANNEL_NAME;
 import static org.jbpm.ruleflow.core.Metadata.CORRELATION_ATTRIBUTES;
 import static org.jbpm.ruleflow.core.Metadata.DATA_ONLY;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
@@ -45,6 +46,8 @@ public class TriggerMetaData {
 
     // name of the trigger derived from message or signal
     private final String name;
+    // name of the event data type
+    private final String channelName;
     // type of the trigger e.g. message, signal, timer...
     private final TriggerType type;
     // data type of the event associated with this trigger
@@ -66,9 +69,11 @@ public class TriggerMetaData {
 
     public static TriggerMetaData of(Node node, String mappingVariable) {
         Map<String, Object> nodeMetaData = node.getMetaData();
+        String channelName = (String) nodeMetaData.getOrDefault(CHANNEL_NAME, (String) nodeMetaData.get(TRIGGER_REF));
         return new TriggerMetaData(
                 node,
                 (String) nodeMetaData.get(TRIGGER_REF),
+                channelName,
                 TriggerType.valueOf((String) nodeMetaData.get(TRIGGER_TYPE)),
                 (String) nodeMetaData.get(MESSAGE_TYPE),
                 mappingVariable,
@@ -77,15 +82,33 @@ public class TriggerMetaData {
                 (CompositeCorrelation) nodeMetaData.get(CORRELATION_ATTRIBUTES)).validate();
     }
 
-    private TriggerMetaData(Node node, String name, TriggerType type, String dataType, String modelRef, String ownerId, Boolean dataOnly, CompositeCorrelation correlation) {
+    public static TriggerMetaData of(TriggerMetaData trigger, String channelName) {
+        return new TriggerMetaData(
+                trigger.node,
+                trigger.name,
+                channelName,
+                trigger.type,
+                trigger.dataType,
+                trigger.modelRef,
+                trigger.ownerId,
+                trigger.dataOnly,
+                trigger.correlation);
+    }
+
+    private TriggerMetaData(Node node, String name, String channelName, TriggerType type, String dataType, String modelRef, String ownerId, Boolean dataOnly, CompositeCorrelation correlation) {
         this.node = node;
         this.name = name;
+        this.channelName = channelName;
         this.type = type;
         this.dataType = dataType;
         this.modelRef = modelRef;
         this.ownerId = ownerId;
         this.dataOnly = dataOnly == null || dataOnly.booleanValue();
         this.correlation = correlation;
+    }
+
+    public String getChannelName() {
+        return channelName;
     }
 
     public String getName() {
@@ -153,7 +176,7 @@ public class TriggerMetaData {
     @Override
     public String toString() {
         return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" +
-                modelRef + ", ownerId=" + ownerId + "]";
+                modelRef + ", ownerId=" + ownerId + ", channelName=" + channelName + "]";
     }
 
     private static String getOwnerId(Node node) {

@@ -27,8 +27,6 @@ import org.kie.kogito.event.impl.StringCloudEventUnmarshallerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.quarkus.arc.DefaultBean;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -40,37 +38,37 @@ public class EventUnmarshallerProducer {
     ObjectMapper objectMapper;
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventUnmarshaller<Object> objectEventDataConverter() {
         return new JacksonEventDataUnmarshaller<>(objectMapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventUnmarshaller<String> stringEventDataConverter() {
         return new JacksonEventDataUnmarshaller<>(objectMapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventUnmarshaller<byte[]> bytesEventDataConverter() {
         return new JacksonEventDataUnmarshaller<>(objectMapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventUnmarshallerFactory<Object> objectCloudEventConverter() {
         return new ObjectCloudEventUnmarshallerFactory(objectMapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventUnmarshallerFactory<String> stringCloudEventConverter() {
         return new StringCloudEventUnmarshallerFactory(objectMapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventUnmarshallerFactory<byte[]> bytesCloudEventConverter() {
         return new ByteArrayCloudEventUnmarshallerFactory(objectMapper);
     }

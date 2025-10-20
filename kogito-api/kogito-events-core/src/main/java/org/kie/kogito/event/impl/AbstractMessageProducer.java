@@ -51,10 +51,6 @@ public abstract class AbstractMessageProducer<D> implements MessageProducerWithC
 
     @Override
     public void produce(KogitoProcessInstance pi, D eventData, Map<String, Object> contextAttrs) {
-        emitter.emit(DataEventFactory.from(eventData, trigger, pi, contextAttrs))
-                .exceptionally(ex -> {
-                    logger.error("An error was caught while process " + pi.getProcessId() + " produced message " + eventData, ex);
-                    return null;
-                });
+        emitter.emit(DataEventFactory.from(eventData, trigger, pi, contextAttrs));
     }
 }

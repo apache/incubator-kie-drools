@@ -21,8 +21,7 @@ package org.kie.kogito.serverless.workflow.executor.events;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.kie.kogito.event.CloudEventUnmarshaller;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
@@ -45,7 +44,7 @@ public class CloudEventReceiver implements EventReceiver {
     protected final Collection<Subscription<?, CloudEvent>> subscriptions = new ArrayList<>();
 
     @Override
-    public <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass) {
+    public <T> void subscribe(Consumer<DataEvent<T>> consumer, Class<T> dataClass) {
         subscriptions.add(new Subscription<>(consumer, new CloudEventConverter<>(dataClass, new CloudEventUnmarshallerFactory<CloudEvent>() {
             @Override
             public <S> CloudEventUnmarshaller<CloudEvent, S> unmarshaller(Class<S> targetClass) {
@@ -73,7 +72,7 @@ public class CloudEventReceiver implements EventReceiver {
     public void onEvent(CloudEvent value) {
         for (Subscription subscription : subscriptions) {
             try {
-                subscription.getConsumer().apply(subscription.getConverter().convert(value));
+                subscription.getConsumer().accept(subscription.getConverter().convert(value));
             } catch (IOException e) {
                 logger.info("Problem deserializing event {}", value, e);
             }

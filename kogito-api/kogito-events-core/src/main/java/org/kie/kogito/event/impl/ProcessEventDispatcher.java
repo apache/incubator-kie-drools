@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,6 +38,7 @@ import org.kie.kogito.event.EventDispatcher;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessService;
+import org.kie.kogito.process.SignalFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,54 +51,80 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
     private final ProcessService processService;
     private final Optional<Function<D, M>> modelConverter;
     private final Process<M> process;
-    private final ExecutorService executor;
     private final Function<DataEvent<D>, D> dataResolver;
 
-    public ProcessEventDispatcher(Process<M> process, Optional<Function<D, M>> modelConverter, ProcessService processService, ExecutorService executor, Set<String> correlationKeys,
+    public ProcessEventDispatcher(Process<M> process, Optional<Function<D, M>> modelConverter, ProcessService processService, Set<String> correlationKeys,
             Function<DataEvent<D>, D> dataResolver) {
         this.process = process;
         this.modelConverter = modelConverter;
         this.processService = processService;
-        this.executor = executor;
         this.correlationKeys = correlationKeys;
         this.dataResolver = dataResolver;
     }
 
     @Override
-    public CompletableFuture<ProcessInstance<M>> dispatch(String trigger, DataEvent<D> event) {
+    public ProcessInstance<M> dispatch(String trigger, DataEvent<D> event) {
         if (shouldSkipMessage(trigger, event)) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Ignoring message for trigger {} in process {}. Skipping consumed message {}", trigger, process.id(), event);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Ignoring message for trigger {} in process {}. Skipping consumed message {}", trigger, process.id(), event);
             }
-            return CompletableFuture.completedFuture(null);
+            return null;
         }
-        return resolveCorrelationId(event)
-                .map(kogitoReferenceId -> asCompletable(trigger, event, findById(kogitoReferenceId)))
-                .orElseGet(() -> {
-                    // check processInstanceId
-                    String processInstanceId = event.getKogitoReferenceId();
-                    if (processInstanceId != null) {
-                        return asCompletable(trigger, event, findById(processInstanceId));
-                    }
-                    // check businessKey
-                    String businessKey = event.getKogitoBusinessKey();
-                    if (businessKey != null) {
-                        return asCompletable(trigger, event, findByBusinessKey(businessKey));
-                    }
-                    // try to start a new instance if possible
-                    return CompletableFuture.supplyAsync(() -> startNewInstance(trigger, event), executor);
-                });
+
+        // now see if we have a particular one to check
+        Optional<ProcessInstance<M>> processInstance = null;
+        // check correlation key
+        String processInstanceId = resolveCorrelationId(event).orElse(null);
+        processInstance = signalTargetProcessInstance(processInstanceId, trigger, event, this::findById);
+        if (processInstance.isPresent()) {
+            LOGGER.debug("sending event to process {} with correlation key {} with trigger {} and payload {}", process.id(), processInstanceId, trigger, event);
+            return processInstance.get();
+        }
+
+        // check processInstanceId
+        processInstanceId = event.getKogitoReferenceId();
+        processInstance = signalTargetProcessInstance(processInstanceId, trigger, event, this::findById);
+        if (processInstance.isPresent()) {
+            LOGGER.debug("sending event to process {} with reference key {} with trigger {} and payload {}", process.id(), processInstanceId, trigger, event);
+            return processInstance.get();
+        }
+
+        // check businessKey
+        processInstanceId = event.getKogitoBusinessKey();
+        processInstance = signalTargetProcessInstance(processInstanceId, trigger, event, this::findByBusinessKey);
+        if (processInstance.isPresent()) {
+            LOGGER.debug("sending event to process {} with business key {} with trigger {} and payload {}", process.id(), processInstanceId, trigger, event);
+            return processInstance.get();
+        }
+
+        // we signal all the processes waiting for trigger (this covers intermediate catch events)
+        LOGGER.debug("sending event to process {} with trigger {} and payload {}", process.id(), trigger, event);
+        process.send(SignalFactory.of("Message-" + trigger, event));
+
+        // try to start a new instance if possible (this covers start events)
+        return startNewInstance(trigger, event);
+
     }
 
-    private CompletableFuture<ProcessInstance<M>> asCompletable(String trigger, DataEvent<D> event, Optional<ProcessInstance<M>> processInstance) {
+    private Optional<ProcessInstance<M>> signalTargetProcessInstance(String processInstanceId, String trigger, DataEvent<D> event, Function<String, Optional<ProcessInstance<M>>> findProcessInstance) {
+        if (processInstanceId == null) {
+            return Optional.empty();
+        }
 
-        return CompletableFuture.supplyAsync(() -> processInstance.map(pi -> {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Sending signal {} to process instance id '{}'", trigger, pi.id());
-            }
-            signalProcessInstance(trigger, pi.id(), event);
-            return pi;
-        }).orElseGet(() -> startNewInstance(trigger, event)), executor);
+        Optional<ProcessInstance<M>> processInstance = findProcessInstance.apply(processInstanceId);
+        if (processInstance.isEmpty()) {
+            return Optional.empty();
+        }
+
+        signalProcess(processInstance.get(), trigger, event);
+        return processInstance;
+    }
+
+    private void signalProcess(ProcessInstance<M> pi, String trigger, DataEvent<D> event) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Sending signal {} to process instance id '{}'", trigger, pi.id());
+        }
+        signalProcessInstance(trigger, pi.id(), event);
     }
 
     private Optional<ProcessInstance<M>> findById(String id) {
@@ -149,17 +174,20 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
     }
 
     private ProcessInstance<M> startNewInstance(String trigger, DataEvent<D> event) {
-        return modelConverter.map(m -> {
-            LOGGER.info("Starting new process instance with signal '{}'", trigger);
-            return processService.createProcessInstance(process, event.getKogitoBusinessKey(), m.apply(dataResolver.apply(event)),
-                    headersFromEvent(event), event.getKogitoStartFromNode(), trigger,
-                    event.getKogitoProcessInstanceId(), compositeCorrelation(event).orElse(null));
-        }).orElseGet(() -> {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("No matches found for trigger {} in process {}. Skipping consumed message {}", trigger, process.id(), event);
-            }
+        if (modelConverter.isEmpty()) {
             return null;
-        });
+        }
+        LOGGER.info("Starting new process instance with signal '{}'", trigger);
+        return processService.createProcessInstance(
+                process,
+                event.getKogitoBusinessKey(),
+                modelConverter.get().apply(dataResolver.apply(event)),
+                headersFromEvent(event),
+                event.getKogitoStartFromNode(),
+                trigger,
+                event.getKogitoProcessInstanceId(),
+                compositeCorrelation(event).orElse(null));
+
     }
 
     protected Map<String, List<String>> headersFromEvent(DataEvent<D> event) {

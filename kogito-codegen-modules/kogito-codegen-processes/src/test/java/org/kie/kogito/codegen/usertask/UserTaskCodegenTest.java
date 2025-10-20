@@ -27,8 +27,8 @@ import org.drools.codegen.common.rest.RestAnnotator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.core.utils.CodegenUtil;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
-import org.kie.kogito.codegen.process.util.CodegenUtil;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.function.BiFunction;
 
 import org.drools.codegen.common.GeneratedFile;
@@ -230,10 +231,15 @@ public abstract class AbstractCodegenIT {
     }
 
     protected KogitoBuildContext newContext() {
+        Properties properties = new Properties();
+        properties.put("kogito.addon.cloudevents.kafka.kogito_outgoing_stream", "test-out");
+        properties.put("kogito.addon.cloudevents.kafka.kogito_incoming_stream", "test-in");
+
         return JavaKogitoBuildContext.builder()
                 .withApplicationProperties(new File(TEST_RESOURCES))
                 .withPackageName(this.getClass().getPackage().getName())
                 .withAddonsConfig(addonsConfig)
+                .withApplicationProperties(properties)
                 .build();
     }
 

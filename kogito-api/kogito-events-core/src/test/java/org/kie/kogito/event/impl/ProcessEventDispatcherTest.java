@@ -96,8 +96,8 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testSigCloudEvent() throws Exception {
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, executor, null, o -> o.getData());
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source", "1")).toCompletableFuture().get();
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, null, o -> o.getData());
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source", "1"));
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
@@ -111,8 +111,8 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testCloudEventNewInstanceWithoutReference() throws Exception {
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, null, o -> o.getData());
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC)).toCompletableFuture().get();
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC));
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
@@ -128,8 +128,8 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testCloudEventNewInstanceWithReference() throws Exception {
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, null, o -> o.getData());
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source", "invalidReference")).toCompletableFuture().get();
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source", "invalidReference"));
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
@@ -147,8 +147,8 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testDataEvent() throws Exception {
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, null, o -> o.getData());
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(new TestEvent("pepe"))).toCompletableFuture().get();
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(new TestEvent("pepe")));
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), any(), signal.capture(), isNull(), isNull());
@@ -158,16 +158,16 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testIgnoredDataEvent() throws Exception {
-        EventDispatcher<DummyModel, Object> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, executor, null, o -> o.getData());
+        EventDispatcher<DummyModel, Object> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, null, o -> o.getData());
         final String payload = "{ a = b }";
-        ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(payload)).toCompletableFuture().get();
+        ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(payload));
         assertThat(result).isNull();
     }
 
     @Test
     void testStringSigCloudEvent() throws Exception {
-        EventDispatcher<DummyModel, String> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, executor, null, o -> o.getData());
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>("pepe", DUMMY_TOPIC, "source", "1")).toCompletableFuture().get();
+        EventDispatcher<DummyModel, String> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, null, o -> o.getData());
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>("pepe", DUMMY_TOPIC, "source", "1"));
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
@@ -183,9 +183,9 @@ class ProcessEventDispatcherTest {
 
     @Test
     void testIgnoredCloudEvent() throws Exception {
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, null, o -> o.getData());
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
         final TestCloudEvent<TestEvent> payload = new TestCloudEvent<>(new TestEvent("test"), "differentTopic", "differentSource");
-        ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, payload).toCompletableFuture().get();
+        ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, payload);
         assertThat(result).isNull();
     }
 
@@ -196,13 +196,13 @@ class ProcessEventDispatcherTest {
         String userValue = UUID.randomUUID().toString();
         String nameValue = UUID.randomUUID().toString();
 
-        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, Stream.of(userId, name).collect(Collectors.toSet()),
+        EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, Stream.of(userId, name).collect(Collectors.toSet()),
                 o -> o.getData());
         TestCloudEvent<TestEvent> event = new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source");
         event.addExtensionAttribute(userId, userValue);
         event.addExtensionAttribute(name, nameValue);
 
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event).toCompletableFuture().get();
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event);
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
@@ -234,13 +234,11 @@ class ProcessEventDispatcherTest {
         CompositeCorrelation compositeCorrelation = new CompositeCorrelation(correlations);
         correlationService.create(compositeCorrelation, "1");
         EventDispatcher<DummyModel, TestEvent> dispatcher =
-                new ProcessEventDispatcher<>(process, modelConverter(), processService, executor,
-                        Set.of(name, userId),
-                        o -> o.getData());
+                new ProcessEventDispatcher<>(process, modelConverter(), processService, Set.of(name, userId), o -> o.getData());
         TestCloudEvent<TestEvent> event = new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source");
         event.addExtensionAttribute(userId, userValue);
         event.addExtensionAttribute(name, nameValue);
-        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event).toCompletableFuture().get();
+        ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, event);
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);

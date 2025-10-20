@@ -21,9 +21,7 @@ package org.kie.kogito.eventdriven.decision;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -370,11 +368,11 @@ class EventDrivenDecisionControllerTest {
         private CloudEventUnmarshallerFactory unmarshaller = new ObjectCloudEventUnmarshallerFactory(objectMapper);
 
         public void accept(String message) throws IOException {
-            subscription.getConsumer().apply(subscription.getConverter().convert(message));
+            subscription.getConsumer().accept(subscription.getConverter().convert(message));
         }
 
         @Override
-        public <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> clazz) {
+        public <T> void subscribe(Consumer<DataEvent<T>> consumer, Class<T> clazz) {
             subscription = new Subscription(consumer, new CloudEventConverter<>(clazz, unmarshaller));
         }
     }

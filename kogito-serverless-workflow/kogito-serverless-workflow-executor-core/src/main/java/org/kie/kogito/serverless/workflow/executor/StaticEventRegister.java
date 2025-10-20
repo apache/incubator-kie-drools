@@ -37,7 +37,7 @@ public class StaticEventRegister implements StaticProcessRegister {
     public void register(StaticWorkflowApplication application, Workflow workflow, StaticWorkflowProcess process) {
         ((KogitoWorkflowProcess) process.get()).getNodesRecursively().stream().filter(EventNode.class::isInstance).map(EventNode.class::cast)
                 .filter(node -> EVENT_TYPE_MESSAGE.equals(node.getMetaData(EVENT_TYPE)))
-                .forEach(node -> StaticMessageConsumer.of(application, process, JsonNode.class, (String) node.getMetaData(TRIGGER_REF)).executor(application.executorService()).build());
+                .forEach(node -> StaticMessageConsumer.of(application, process, JsonNode.class, (String) node.getMetaData(TRIGGER_REF)).build());
         application.registerCloseable(EventFactoryUtils::cleanUp);
     }
 }

@@ -46,6 +46,7 @@
     <module>kogito-codegen-processes-integration-tests</module>
     <module>kogito-codegen-rules</module>
     <module>kogito-codegen-sample</module>
+    <module>kogito-codegen-events</module>
   </modules>
 
 </project>

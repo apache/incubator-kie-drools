@@ -44,7 +44,9 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.*;
+import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.buildCloudEvent;
+import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.startProcess;
+import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.waitForFinish;
 
 @QuarkusIntegrationTest
 class EventFlowIT {

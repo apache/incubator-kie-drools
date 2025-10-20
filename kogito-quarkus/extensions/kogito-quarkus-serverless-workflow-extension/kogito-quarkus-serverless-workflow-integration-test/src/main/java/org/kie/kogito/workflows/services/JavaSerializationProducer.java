@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.workflows.services;
 
-import org.kie.kogito.addon.quarkus.messaging.common.ChannelFormat;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +35,6 @@ public class JavaSerializationProducer {
 
     @Produces
     @Named("java")
-    @ChannelFormat
     public CloudEventUnmarshallerFactory<Object> getJavaCloudEventUnmarshallerFactory() {
         return new JavaSerializationUnmarshallerFactory(objectMapper);
     }

@@ -29,8 +29,6 @@ import org.kie.kogito.event.impl.StringEventMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.quarkus.arc.DefaultBean;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -42,37 +40,37 @@ public class EventMarshallerProducer {
     ObjectMapper mapper;
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventMarshaller<String> stringEventMarshaller() {
         return new StringEventMarshaller(mapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventMarshaller<byte[]> byteArrayEventMarshaller() {
         return new ByteArrayEventMarshaller(mapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public EventMarshaller<Object> defaultEventMarshaller() {
         return new NoOpEventMarshaller();
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventMarshaller<String> stringCloudEventMarshaller() {
         return new StringCloudEventMarshaller(mapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventMarshaller<byte[]> byteArrayCloudEventMarshaller() {
         return new ByteArrayCloudEventMarshaller(mapper);
     }
 
     @Produces
-    @DefaultBean
+    @KogitoMessaging
     public CloudEventMarshaller<Object> defaultCloudEventMarshaller() {
         return new NoOpCloudEventMarshaller(mapper);
     }

@@ -20,9 +20,7 @@ package org.kie.kogito.eventdriven.rules;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.DataEvent;
@@ -68,7 +66,7 @@ public class EventDrivenRulesController {
         eventReceiver.subscribe(new RequestHandler<>(queryExecutor), objectClass);
     }
 
-    private class RequestHandler<T> implements Function<DataEvent<T>, CompletionStage<?>> {
+    private class RequestHandler<T> implements Consumer<DataEvent<T>> {
 
         private EventDrivenQueryExecutor<T> queryExecutor;
 
@@ -77,7 +75,7 @@ public class EventDrivenRulesController {
         }
 
         @Override
-        public CompletionStage<?> apply(DataEvent<T> event) {
+        public void accept(DataEvent<T> event) {
             KogitoRulesExtension extension = ExtensionProvider.getInstance().parseExtension(KogitoRulesExtension.class, event);
             if (CloudEventUtils.isValidRequest(event, REQUEST_EVENT_TYPE, extension)) {
                 buildResponseCloudEvent(event, queryExecutor.executeQuery(event), extension).ifPresentOrElse(c -> eventEmitter.emit(c),
@@ -85,7 +83,6 @@ public class EventDrivenRulesController {
             } else {
                 LOG.warn("Event {} does not have expected information, discarding it", event);
             }
-            return CompletableFuture.completedStage(null);
         }
 
         private Optional<DataEvent<?>> buildResponseCloudEvent(DataEvent<?> event, Object payload, KogitoRulesExtension extension) {

@@ -64,10 +64,6 @@
       <artifactId>kogito-quarkus-workflow-common-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-addons-quarkus-messaging-deployment</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkiverse.jackson-jq</groupId>
       <artifactId>quarkus-jackson-jq-deployment</artifactId>
     </dependency>

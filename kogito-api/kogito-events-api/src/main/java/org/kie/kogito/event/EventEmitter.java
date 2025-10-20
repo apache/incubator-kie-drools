@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.event;
 
-import java.util.concurrent.CompletionStage;
-
 /**
  * It is responsible to interact with the external event service for event publishing.
  * One of its task is to transform the data event into the format expected by the external service.
@@ -33,7 +31,7 @@ public interface EventEmitter extends AutoCloseable {
      * 
      * @param dataEvent The DataEvent
      */
-    CompletionStage<Void> emit(DataEvent<?> dataEvent);
+    void emit(DataEvent<?> dataEvent);
 
     @Override
     default void close() throws Exception {

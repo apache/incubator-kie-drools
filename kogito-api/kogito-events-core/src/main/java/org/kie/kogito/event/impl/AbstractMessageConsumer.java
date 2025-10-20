@@ -20,8 +20,6 @@ package org.kie.kogito.event.impl;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import org.kie.kogito.Application;
@@ -47,10 +45,9 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
             EventReceiver eventReceiver,
             Class<D> dataClass,
             ProcessService processService,
-            ExecutorService executorService,
             Set<String> correlations) {
         this.trigger = trigger;
-        this.eventDispatcher = new ProcessEventDispatcher<>(process, getModelConverter(), processService, executorService, correlations, getDataResolver());
+        this.eventDispatcher = new ProcessEventDispatcher<>(process, getModelConverter(), processService, correlations, getDataResolver());
         eventReceiver.subscribe(this::consume, dataClass);
         logger.info("Consumer for {} started", trigger);
     }
@@ -64,10 +61,10 @@ public abstract class AbstractMessageConsumer<M extends Model, D> {
         return dataEvent.getData();
     }
 
-    private CompletionStage<?> consume(DataEvent<D> payload) {
+    private void consume(DataEvent<D> payload) {
         logger.trace("Received {} for trigger {}", payload, trigger);
-        return eventDispatcher.dispatch(trigger, payload)
-                .thenAccept(v -> logger.trace("Consume completed {} for trigger {}", payload, trigger));
+        eventDispatcher.dispatch(trigger, payload);
+        logger.trace("Consume completed {} for trigger {}", payload, trigger);
     }
 
     protected Optional<Function<D, M>> getModelConverter() {

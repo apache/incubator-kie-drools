@@ -26,7 +26,7 @@ import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.kogito.codegen.api.context.ContextAttributesConstants.KOGITO_CODEGEN_BOOLEAN_OBJECT_ACCESSOR_BEHAVIOUR;
-import static org.kie.kogito.codegen.process.util.CodegenUtil.*;
+import static org.kie.kogito.codegen.core.utils.CodegenUtil.*;
 
 public class CodegenUtilTest {
 

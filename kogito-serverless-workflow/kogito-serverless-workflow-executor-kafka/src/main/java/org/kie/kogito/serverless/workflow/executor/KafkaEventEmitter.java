@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.kie.kogito.event.DataEvent;
@@ -42,8 +39,7 @@ public class KafkaEventEmitter implements EventEmitter {
     }
 
     @Override
-    public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
+    public void emit(DataEvent<?> dataEvent) {
         kafkaProducer.send(new ProducerRecord<>(topic, dataEvent.asCloudEvent(o -> JsonCloudEventData.wrap((JsonNode) o))));
-        return CompletableFuture.completedStage(null);
     }
 }
