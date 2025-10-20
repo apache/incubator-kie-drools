@@ -25,7 +25,7 @@
 
   <groupId>org.drools.testcoverage</groupId>
   <artifactId>testEnum</artifactId>
-  <version>10.1.999-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>Drools :: Test Coverage :: Jar with enum</name>

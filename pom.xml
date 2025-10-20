@@ -31,7 +31,7 @@
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>10.1.999-SNAPSHOT</version>
+  <version>999-SNAPSHOT</version>
 
   <name>Drools :: Parent</name>
   <description>
@@ -113,7 +113,7 @@
   </mailingLists>
 
   <properties>
-    <project.build.outputTimestamp>2025-04-28T20:05:47Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
   </properties>
 

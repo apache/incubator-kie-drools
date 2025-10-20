@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-ruleunits</artifactId>
-        <version>10.1.999-SNAPSHOT</version>
+        <version>999-SNAPSHOT</version>
     </parent>
 
     <groupId>org.drools</groupId>
