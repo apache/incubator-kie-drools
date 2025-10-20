@@ -295,7 +295,6 @@ public class TupleToObjectNode extends ObjectSource
     }
 
     public static class SubnetworkPathMemory extends PathMemory implements Memory {
-        private List<RuleImpl> rules;
 
         public SubnetworkPathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
             super(pathEndNode, reteEvaluator);
@@ -333,51 +332,14 @@ public class TupleToObjectNode extends ObjectSource
             getTupleToObjectNode().getObjectSinkPropagator().doUnlinkSubnetwork(reteEvaluator);
         }
 
-        private void updateRuleTerminalNodes() {
-            rules = new ArrayList<>();
-            for ( ObjectSink osink : getTupleToObjectNode().getObjectSinkPropagator().getSinks() ) {
-                for ( LeftTupleSink ltsink : ((BetaNode)osink).getSinkPropagator().getSinks() )  {
-                    findAndAddTN(ltsink, rules );
-                }
-            }
-        }
-
-        private void findAndAddTN( LeftTupleSink ltsink, List<RuleImpl> terminalNodes) {
-            if ( NodeTypeEnums.isTerminalNode(ltsink)) {
-                terminalNodes.add( ((TerminalNode)ltsink).getRule() );
-            } else if ( ltsink.getType() == NodeTypeEnums.TupleToObjectNode) {
-                for ( NetworkNode childSink : ( ltsink).getSinks() )  {
-                    findAndAddTN((LeftTupleSink)childSink, terminalNodes);
-                }
-            } else {
-                for ( LeftTupleSink childLtSink : (ltsink).getSinkPropagator().getSinks() )  {
-                    findAndAddTN(childLtSink, terminalNodes);
-                }
-            }
-        }
-
-        public List<RuleImpl> getAssociatedRules() {
-            if ( rules == null ) {
-                updateRuleTerminalNodes();
-            }
-            return rules;
-        }
-
-        public String getRuleNames() {
-            Set<String> ruleNames = new HashSet<>();
-            for (RuleImpl rule : getAssociatedRules()) {
-                ruleNames.add(rule.getName());
-            }
-            return ruleNames.toString();
-        }
-
         @Override
         public int getNodeType() {
             return NodeTypeEnums.TupleToObjectNode;
         }
 
         public String toString() {
-            return "TupleToObjectNodeMem(" + getTupleToObjectNode().getId() + ") [" + getRuleNames() + "]";
+            return "TupleToObjectNodeMem(" + getTupleToObjectNode().getId() + ") ["
+                    + RuleNameExtractor.getRuleNames(getTupleToObjectNode().getObjectSinkPropagator().getSinks()) + "]";
         }
     }
 
