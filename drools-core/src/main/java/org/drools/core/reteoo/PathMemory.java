@@ -236,4 +236,12 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
     public ActivationsManager getActualActivationsManager() {
         return activationsManager;
     }
+    
+    public void addSegmentToPathMemory(SegmentMemory smem) {
+        if (smem.getRootNode().getPathIndex() >= getPathEndNode().getStartTupleSource().getPathIndex()) {
+            smem.addPathMemory(this);
+            setSegmentMemory(smem.getPos(), smem);
+        }
+
+    }
 }

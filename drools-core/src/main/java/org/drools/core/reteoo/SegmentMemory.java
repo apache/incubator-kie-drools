@@ -31,7 +31,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
@@ -42,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
                            implements
@@ -1057,7 +1055,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 SubnetworkPathMemory riaMem = (SubnetworkPathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(
                         tton);
                 if (riaMem == null) {
-                    riaMem = (SubnetworkPathMemory) RuntimeSegmentUtilities.initializePathMemory(reteEvaluator, tton);
+                    riaMem = (SubnetworkPathMemory) reteEvaluator.getSegmentMemorySupport().initializePathMemory(tton);
                 }
                 betaMemory.setSubnetworkPathMemory(riaMem);
             }
@@ -1140,7 +1138,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         @Override
         public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
             QueryElementNodeMemory qmem = (QueryElementNodeMemory) mem;
-            SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
+            SegmentMemory querySmem = reteEvaluator.getSegmentMemorySupport().getQuerySegmentMemory(queryNode);
             qmem.setQuerySegmentMemory(querySmem);
             qmem.setNodePosMaskBit(nodePosMaskBit);
         }

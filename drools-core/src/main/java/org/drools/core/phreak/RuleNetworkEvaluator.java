@@ -259,7 +259,7 @@ public class RuleNetworkEvaluator {
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
                         if (smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode())) {
-                            RuntimeSegmentUtilities.createChildSegments(activationsManager.getReteEvaluator(), smem.getTipNode().getSinkPropagator(), smem);
+                            activationsManager.getReteEvaluator().getSegmentMemorySupport().createChildSegments(smem.getTipNode().getSinkPropagator(), smem);
                         }
                         
                         smem = smems[i];
@@ -430,7 +430,7 @@ public class RuleNetworkEvaluator {
         if (node == smem.getTipNode()) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
             if (smem.isEmpty()) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator, ((LeftTupleSource) node).getSinkPropagator(), smem);
+                reteEvaluator.getSegmentMemorySupport().createChildSegments(((LeftTupleSource) node).getSinkPropagator(), smem);
             }
             return smem.getFirst().getStagedLeftTuples().takeAll();
         } else {

@@ -97,9 +97,6 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.updateNodeTypesMask;
 import static org.drools.core.phreak.EagerPhreakBuilder.deleteLeftTuple;
 import static org.drools.core.phreak.EagerPhreakBuilder.Add.attachAdapterAndPropagate;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.createSubnetworkSegmentMemory;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.getOrCreateSegmentMemory;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 
 class LazyPhreakBuilder implements PhreakBuilder {
@@ -534,7 +531,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         if (mem != null) {
                             SegmentMemory sm = mem.getSegmentMemory();
                             if (sm != null && !sm.getPathMemories().contains(pmem)) {
-                                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
+                                pmem.addSegmentToPathMemory(sm);
                                 sm.notifyRuleLinkSegment(pmem);
                             }
                         }
@@ -1268,7 +1265,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         childSmem.setPos(pmem.getSegmentMemories().length - 1);
         pmem.setSegmentMemory(childSmem);
-        RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, childSmem);
+        pmem.addSegmentToPathMemory(childSmem);
 
         childSmem.setTipNode(node);
         childSmem.setNodeMemories(new Memory[]{memory});
@@ -1349,7 +1346,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         ObjectSink[] nodes = tton.getObjectSinkPropagator().getSinks();
                         for (ObjectSink node : nodes) {
                             if (NodeTypeEnums.isLeftTupleSource(node)) {
-                                getOrCreateSegmentMemory(reteEvaluator, (LeftTupleSource) node);
+                                reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory((LeftTupleSource) node);
                             }
                         }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
@@ -1409,7 +1406,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                             List<Memory> memories,
                                             long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
-        SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
+        SegmentMemory querySmem = reteEvaluator.getSegmentMemorySupport().getQuerySegmentMemory(queryNode);
         QueryElementNode.QueryElementNodeMemory queryNodeMem = reteEvaluator.getNodeMemory(queryNode);
         queryNodeMem.setNodePosMaskBit(nodePosMask);
         queryNodeMem.setQuerySegmentMemory(querySmem);
@@ -1529,7 +1526,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         bm.setSegmentMemory(smem);
 
         if (betaNode.getRightInput().inputIsTupleToObjectNode()) {
-            TupleToObjectNode tton = createSubnetworkSegmentMemory(reteEvaluator, betaNode);
+            TupleToObjectNode tton = reteEvaluator.getSegmentMemorySupport().createSubnetworkSegmentMemory(betaNode);
 
             PathMemory subnetworkPathMemory = reteEvaluator.getNodeMemory(tton);
             bm.setSubnetworkPathMemory((SubnetworkPathMemory) subnetworkPathMemory);
@@ -1592,7 +1589,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                         ObjectSink[] nodes = ((TupleToObjectNode) sink).getObjectSinkPropagator().getSinks();
                         for (ObjectSink node : nodes) {
                             if (NodeTypeEnums.isLeftTupleSource(node)) {
-                                getOrCreateSegmentMemory(reteEvaluator, (LeftTupleSource) node);
+                                reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory((LeftTupleSource) node);
                             }
                         }
                     }
@@ -1603,7 +1600,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             }
 
             if (pmem != null && smem.getPos() < pmem.getSegmentMemories().length) {
-                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
+                pmem.addSegmentToPathMemory(smem);
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
                     smem.notifyRuleLinkSegment();
@@ -1659,7 +1656,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         if (isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
             !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
             !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT)) {
-            getOrCreateSegmentMemory(reteEvaluator, lt);
+            reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory(lt);
         }
     }
 }

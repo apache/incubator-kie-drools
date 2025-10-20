@@ -329,11 +329,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                     PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(endNode);
                     if (pmem == null) {
-                        pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
+                        pmem = wm.getSegmentMemorySupport().initializePathMemory(endNode);
                     }
                     if (pmem.getSegmentMemories()[proto.getPos()] == null) {
                         // we check null, as this might have been fixed due to eager initialisation
-                        RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
+                        pmem.addSegmentToPathMemory(smem);
                     }
                 }
             }));
@@ -520,7 +520,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             Memory mem = wm.getNodeMemories().peekNodeMemory(sproto.getRootNode());
                             if (mem != null && mem.getSegmentMemory() != null) {
                                 if (pmem == null) {
-                                    pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
+                                    pmem = wm.getSegmentMemorySupport().initializePathMemory(endNode);
                                 }
                                 SegmentMemory sm = mem.getSegmentMemory();
                                 pmem.getSegmentMemories()[sproto.getPos()] = sm;
@@ -532,7 +532,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             SegmentMemory sm = sproto.shallowNewSegmentMemory();
                             sm.setNodeMemories(new Memory[]{pmem});
                             pmem.setSegmentMemory(sm);
-                            RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
+                            pmem.addSegmentToPathMemory(sm);
                             notifyImpactedSegments(wm, sm, smemsToNotify);
                         }
                     }
@@ -552,7 +552,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (parentMem != null && parentMem.getSegmentMemory() != null &&
                         !parentMem.getSegmentMemory().isEmpty()) {
                         SegmentMemory sm = parentMem.getSegmentMemory();
-                        SegmentMemory childSmem = RuntimeSegmentUtilities.createChildSegment(wm, child);
+                        SegmentMemory childSmem = wm.getSegmentMemorySupport().createChildSegment(child);
                         sm.add(childSmem);
                         sm.notifyRuleLinkSegment();
                         notifyImpactedSegments(wm, sm, smemsToNotify);
@@ -769,12 +769,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             if (sm1 == null) {
                 // To be able to merge sm1 must exist
-                sm1 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto1.getRootNode());
+                sm1 = wm.getSegmentMemorySupport().getOrCreateSegmentMemory(proto1.getRootNode());
             }
 
             if (sm2 == null) {
                 // To be able to merge sm2 must exist
-                sm2 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto2.getRootNode());
+                sm2 = wm.getSegmentMemorySupport().getOrCreateSegmentMemory(proto2.getRootNode());
             }
 
             // merge the memories and reassign back to sm1

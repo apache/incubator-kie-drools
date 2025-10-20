@@ -42,7 +42,6 @@ import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.DetachedTuple;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractLinkedListNode;
@@ -180,9 +179,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode) {
             // liaNode in its own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            liaNode.getSinkPropagator(),
-                                                            sm);
+                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -272,9 +269,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode ) {
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            liaNode.getSinkPropagator(),
-                                                            sm);
+                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -332,9 +327,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode) {
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            liaNode.getSinkPropagator(),
-                                                            sm);
+                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
