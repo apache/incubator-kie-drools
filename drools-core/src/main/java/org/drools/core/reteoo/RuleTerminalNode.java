@@ -26,7 +26,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -132,7 +131,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
-    public void cancelMatch(InternalMatch match, ReteEvaluator reteEvaluator) {
+    public void cancelMatch(InternalMatch match) {
         if ( match.isQueued() ) {
             TupleImpl leftTuple = match.getTuple();
             if ( match.getRuleAgendaItem() != null ) {

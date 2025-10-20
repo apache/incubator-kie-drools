@@ -633,7 +633,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                          List<LeftTupleNode> splits) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
         if (pmem.isInitialized()) {
-            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(wm, pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
         }
 
         // With the removing rules being flushed, we need to check any splits that will be merged, to see if they need flushing

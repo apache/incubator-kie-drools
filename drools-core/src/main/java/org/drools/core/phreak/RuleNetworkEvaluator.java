@@ -108,8 +108,7 @@ public class RuleNetworkEvaluator {
 
     private RuleNetworkEvaluator() { }
 
-    public void evaluateNetwork(ReteEvaluator reteEvaluator,
-                                RuleExecutor executor,
+    public void evaluateNetwork(RuleExecutor executor,
                                 PathMemory pmem) {
         evaluateNetwork(pmem.getActualActivationsManager(), executor, pmem);
     }
