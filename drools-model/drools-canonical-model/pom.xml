@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>10.1.999-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
 
   <name>Drools :: Canonical Model</name>
