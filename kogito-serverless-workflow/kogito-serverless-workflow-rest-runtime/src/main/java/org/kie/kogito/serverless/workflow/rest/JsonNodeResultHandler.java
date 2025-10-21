@@ -19,6 +19,7 @@
 package org.kie.kogito.serverless.workflow.rest;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
@@ -33,18 +34,23 @@ import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.checkStatusCode;
 
 public class JsonNodeResultHandler implements RestWorkItemHandlerResult {
 
-    static final String STATUS_CODE = "statusCode";
-    static final String STATUS_MESSAGE = "statusMessage";
+    public static final String FAIL_ON_STATUS_ERROR = "failOnStatusCode";
+    public static final String STATUS_CODE = "statusCode";
+    public static final String STATUS_MESSAGE = "statusMessage";
+    public static final String RESPONSE_HEADERS = "responseHeaders";
 
     @Override
     public Object apply(HttpResponse<Buffer> t, Class<?> u, KogitoProcessContext context) {
         Map<String, Object> metadata = context.getNodeInstance().getNode().getMetaData();
-        if (metadata == null || toBoolean(metadata.getOrDefault("failOnStatusCode", Boolean.TRUE))) {
+        if (metadata == null || toBoolean(metadata.getOrDefault(FAIL_ON_STATUS_ERROR, Boolean.TRUE))) {
             checkStatusCode(t);
         } else {
             context.setVariable(STATUS_CODE, t.statusCode());
             context.setVariable(STATUS_MESSAGE, t.statusMessage());
         }
+
+        context.setVariable(RESPONSE_HEADERS, t.headers().entries().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
         return apply(t, u);
     }
 

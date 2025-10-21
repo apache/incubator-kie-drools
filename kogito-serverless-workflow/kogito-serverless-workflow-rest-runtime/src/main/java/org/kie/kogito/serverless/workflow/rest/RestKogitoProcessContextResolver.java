@@ -24,13 +24,17 @@ import java.util.function.Function;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolverExtension;
 
+import static org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler.RESPONSE_HEADERS;
 import static org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler.STATUS_CODE;
 import static org.kie.kogito.serverless.workflow.rest.JsonNodeResultHandler.STATUS_MESSAGE;
 
 public class RestKogitoProcessContextResolver implements KogitoProcessContextResolverExtension {
+
     @Override
     public Map<String, Function<KogitoProcessContext, Object>> getKogitoProcessContextResolver() {
-        return Map.of(JsonNodeResultHandler.STATUS_CODE, k -> k.getVariable(STATUS_CODE),
-                JsonNodeResultHandler.STATUS_MESSAGE, k -> k.getVariable(STATUS_MESSAGE));
+        return Map.of(
+                JsonNodeResultHandler.STATUS_CODE, k -> k.getVariable(STATUS_CODE),
+                JsonNodeResultHandler.STATUS_MESSAGE, k -> k.getVariable(STATUS_MESSAGE),
+                JsonNodeResultHandler.RESPONSE_HEADERS, k -> k.getVariable(RESPONSE_HEADERS));
     }
 }
