@@ -187,6 +187,7 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         task.setRootProcessId(event.getKogitoRootProcessId());
         task.setRootProcessInstanceId(event.getKogitoRootProcessInstanceId());
         task.setName(body.getUserTaskName());
+        task.setUserTaskId(event.getData().getUserTaskDefinitionId());
         task.setDescription(body.getUserTaskDescription());
         task.setState(body.getState());
         task.setPriority(body.getUserTaskPriority());

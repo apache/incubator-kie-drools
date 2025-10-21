@@ -81,6 +81,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         entity.setAttachments(Optional.ofNullable(instance.getAttachments()).map(attachments -> attachments.stream().map(this::fromAttachment).collect(toList())).orElse(null));
         entity.setExternalReferenceId(instance.getExternalReferenceId());
         entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
+        entity.setUserTaskId(instance.getUserTaskId());
         return entity;
     }
 
@@ -117,6 +118,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         instance.setAttachments(Optional.ofNullable(entity.getAttachments()).map(attachments -> attachments.stream().map(this::toAttachment).collect(toList())).orElse(null));
         instance.setExternalReferenceId(entity.getExternalReferenceId());
         instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
+        instance.setUserTaskId(entity.getUserTaskId());
         return instance;
     }
 

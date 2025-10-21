@@ -47,6 +47,7 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     @Id
     private String id;
     private String description;
+    private String userTaskId;
     private String name;
     private String priority;
     private String processInstanceId;
@@ -302,6 +303,14 @@ public class UserTaskInstanceEntity extends AbstractEntity {
         this.slaDueDate = slaDueDate;
     }
 
+    public String getUserTaskId() {
+        return userTaskId;
+    }
+
+    public void setUserTaskId(String definitionId) {
+        this.userTaskId = definitionId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -323,6 +332,7 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     public String toString() {
         return "UserTaskInstanceEntity{" +
                 "id='" + id + '\'' +
+                ", taskId='" + userTaskId + '\'' +
                 ", description='" + description + '\'' +
                 ", name='" + name + '\'' +
                 ", priority='" + priority + '\'' +

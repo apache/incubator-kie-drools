@@ -386,6 +386,7 @@ type Attachment {
 
 type UserTaskInstance {
     id: String!
+    userTaskId: String
     description: String
     name: String
     priority: String

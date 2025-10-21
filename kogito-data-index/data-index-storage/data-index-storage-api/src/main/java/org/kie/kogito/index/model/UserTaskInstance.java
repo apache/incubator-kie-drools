@@ -32,6 +32,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     private String endpoint;
     private String externalReferenceId;
     private ZonedDateTime slaDueDate;
+    private String userTaskId;
 
     public String getProcessId() {
         return processId;
@@ -51,6 +52,14 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
         if (id != null && !id.trim().isEmpty()) {
             this.rootProcessId = id;
         }
+    }
+
+    public String getUserTaskId() {
+        return userTaskId;
+    }
+
+    public void setUserTaskId(String userTaskId) {
+        this.userTaskId = userTaskId;
     }
 
     public String getEndpoint() {
