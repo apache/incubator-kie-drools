@@ -294,8 +294,6 @@ public class TupleToObjectNode extends ObjectSource
 
         private ReteEvaluator reteEvaluator;
 
-        private ReteEvaluator reteEvaluator;
-
         public SubnetworkPathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
             super(pathEndNode, reteEvaluator);
             this.reteEvaluator = reteEvaluator;

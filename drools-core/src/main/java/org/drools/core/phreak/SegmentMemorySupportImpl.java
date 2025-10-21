@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.drools.core.phreak;
 
 import java.util.ArrayList;
@@ -99,7 +117,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         // it should not be possible to reach here, for BuildTimeSegmentProtos
         return createSegmentMemoryLazily(segmentRoot);
     }
-    
+
     private SegmentMemory createSegmentMemoryLazily(LeftTupleNode segmentRoot) {
         if (NodeTypeEnums.isTerminalNode(segmentRoot)) {
             Memory memory = nodeMemories.getNodeMemory((MemoryFactory) segmentRoot);
@@ -182,7 +200,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         }
         return tton;
     }
-    
+
     public SegmentMemory createChildSegmentLazily(LeftTupleNode node) {
         Memory memory = nodeMemories.getNodeMemory((MemoryFactory) node);
         if (memory.getSegmentMemory() == null) {
@@ -378,7 +396,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
 
         return false;
     }
-    
+
     public SegmentMemory createSegmentMemoryLazily(LeftTupleSource segmentRoot) {
         LeftTupleSource tupleSource = segmentRoot;
         SegmentMemory smem = new SegmentMemory(segmentRoot);
@@ -394,7 +412,8 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         while (true) {
             nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
             if (NodeTypeEnums.isBetaNode(tupleSource)) {
-                allLinkedTestMask = processBetaNode((BetaNode) tupleSource, smem, memories, nodePosMask, allLinkedTestMask,
+                allLinkedTestMask = processBetaNode((BetaNode) tupleSource, smem, memories, nodePosMask,
+                        allLinkedTestMask,
                         updateNodeBit);
             } else {
                 switch (tupleSource.getType()) {
@@ -497,15 +516,16 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
 
         updateSubnetworkAndTerminalMemoryLazily(tupleSource, tupleSource, smem, false, nodeTypesInSegment);
 
-        segmentPrototypeRegistry.registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype().initFromSegmentMemory(smem));
+        segmentPrototypeRegistry.registerSegmentPrototype(segmentRoot, smem.getSegmentPrototype().initFromSegmentMemory(
+                smem));
 
         return smem;
     }
 
     private boolean processQueryNode(QueryElementNode queryNode,
-                                            SegmentMemory smem,
-                                            List<Memory> memories,
-                                            long nodePosMask) {
+                                     SegmentMemory smem,
+                                     List<Memory> memories,
+                                     long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         SegmentMemory querySmem = getQuerySegmentMemory(queryNode);
         QueryElementNode.QueryElementNodeMemory queryNodeMem = nodeMemories.getNodeMemory(queryNode);
@@ -517,25 +537,25 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private void processFromNode(MemoryFactory tupleSource,
-                                        SegmentMemory smem,
-                                        List<Memory> memories) {
+                                 SegmentMemory smem,
+                                 List<Memory> memories) {
         Memory mem = nodeMemories.getNodeMemory(tupleSource);
         memories.add(mem);
         mem.setSegmentMemory(smem);
     }
 
     private void processAsyncSendNode(MemoryFactory tupleSource,
-                                             SegmentMemory smem,
-                                             List<Memory> memories) {
+                                      SegmentMemory smem,
+                                      List<Memory> memories) {
         Memory mem = nodeMemories.getNodeMemory(tupleSource);
         mem.setSegmentMemory(smem);
         memories.add(mem);
     }
 
     private void processAsyncReceiveNode(AsyncReceiveNode tupleSource,
-                                                SegmentMemory smem,
-                                                List<Memory> memories,
-                                                long nodePosMask) {
+                                         SegmentMemory smem,
+                                         List<Memory> memories,
+                                         long nodePosMask) {
         AsyncReceiveNode.AsyncReceiveMemory tnMem = nodeMemories.getNodeMemory(tupleSource);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
@@ -543,9 +563,9 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private void processReactiveFromNode(MemoryFactory tupleSource,
-                                                SegmentMemory smem,
-                                                List<Memory> memories,
-                                                long nodePosMask) {
+                                         SegmentMemory smem,
+                                         List<Memory> memories,
+                                         long nodePosMask) {
         FromNode.FromMemory mem = ((FromNode.FromMemory) nodeMemories.getNodeMemory(tupleSource));
         memories.add(mem);
         mem.setSegmentMemory(smem);
@@ -553,8 +573,8 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private boolean processBranchNode(ConditionalBranchNode tupleSource,
-                                             SegmentMemory smem,
-                                             List<Memory> memories) {
+                                      SegmentMemory smem,
+                                      List<Memory> memories) {
         ConditionalBranchNode.ConditionalBranchMemory branchMem = nodeMemories.getNodeMemory(tupleSource);
         memories.add(branchMem);
         branchMem.setSegmentMemory(smem);
@@ -563,17 +583,17 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private void processEvalNode(EvalConditionNode tupleSource,
-                                        SegmentMemory smem,
-                                        List<Memory> memories) {
+                                 SegmentMemory smem,
+                                 List<Memory> memories) {
         EvalConditionNode.EvalMemory evalMem = nodeMemories.getNodeMemory(tupleSource);
         memories.add(evalMem);
         evalMem.setSegmentMemory(smem);
     }
 
     private void processTimerNode(TimerNode tupleSource,
-                                         SegmentMemory smem,
-                                         List<Memory> memories,
-                                         long nodePosMask) {
+                                  SegmentMemory smem,
+                                  List<Memory> memories,
+                                  long nodePosMask) {
         TimerNode.TimerNodeMemory tnMem = nodeMemories.getNodeMemory(tupleSource);
         memories.add(tnMem);
         tnMem.setNodePosMaskBit(nodePosMask);
@@ -581,10 +601,10 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private long processLiaNode(LeftInputAdapterNode tupleSource,
-                                       SegmentMemory smem,
-                                       List<Memory> memories,
-                                       long nodePosMask,
-                                       long allLinkedTestMask) {
+                                SegmentMemory smem,
+                                List<Memory> memories,
+                                long nodePosMask,
+                                long allLinkedTestMask) {
         LeftInputAdapterNode.LiaNodeMemory liaMemory = nodeMemories.getNodeMemory(tupleSource);
         memories.add(liaMemory);
         liaMemory.setSegmentMemory(smem);
@@ -594,14 +614,15 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private long processBetaNode(BetaNode betaNode,
-                                        SegmentMemory smem,
-                                        List<Memory> memories,
-                                        long nodePosMask,
-                                        long allLinkedTestMask,
-                                        boolean updateNodeBit) {
+                                 SegmentMemory smem,
+                                 List<Memory> memories,
+                                 long nodePosMask,
+                                 long allLinkedTestMask,
+                                 boolean updateNodeBit) {
         BetaMemory bm;
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
-            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) nodeMemories.getNodeMemory(betaNode));
+            AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) nodeMemories.getNodeMemory(
+                    betaNode));
             memories.add(accMemory);
             accMemory.setSegmentMemory(smem);
 
@@ -637,6 +658,5 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         }
         return allLinkedTestMask;
     }
-
 
 }
