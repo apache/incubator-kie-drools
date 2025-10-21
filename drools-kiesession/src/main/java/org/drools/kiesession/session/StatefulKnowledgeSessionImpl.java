@@ -349,7 +349,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this, handleFactory);
 
-        this.segmentMemorySupport = new SegmentMemorySupportImpl(this, nodeMemories, kBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, kBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
         
         this.sequential = conf.isSequential();
 

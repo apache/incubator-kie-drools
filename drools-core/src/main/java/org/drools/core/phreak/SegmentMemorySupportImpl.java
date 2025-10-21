@@ -27,7 +27,6 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
@@ -71,16 +70,13 @@ import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
 
 public class SegmentMemorySupportImpl implements SegmentMemorySupport {
 
-    private final ReteEvaluator reteEvaluator;
     private final NodeMemories nodeMemories;
     private final SegmentPrototypeRegistry segmentPrototypeRegistry;
     private final WorkingMemoryEntryPoint defaultEntryPoint;
 
-    public SegmentMemorySupportImpl(ReteEvaluator reteEvaluator,
-                                    NodeMemories nodeMemories,
+    public SegmentMemorySupportImpl(NodeMemories nodeMemories,
                                     SegmentPrototypeRegistry segmentPrototypeRegistry,
                                     WorkingMemoryEntryPoint defaultEntryPoint) {
-        this.reteEvaluator = reteEvaluator;
         this.nodeMemories = nodeMemories;
         this.segmentPrototypeRegistry = segmentPrototypeRegistry;
         this.defaultEntryPoint = defaultEntryPoint;
@@ -161,7 +157,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
             }
         }
 
-        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
+        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(proto, nodeMemories, this);
 
         updateSubnetworkAndTerminalMemory(smem, proto);
 
@@ -170,7 +166,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
 
     private void restoreSegmentFromPrototypeLazily(LeftTupleSource segmentRoot,
                                                    int nodeTypesInSegment) {
-        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, segmentRoot);
+        SegmentMemory smem = segmentPrototypeRegistry.createSegmentFromPrototype(nodeMemories, this, segmentRoot);
         if (smem != null) {
             updateSubnetworkAndTerminalMemoryLazily(segmentRoot, segmentRoot, smem, true, nodeTypesInSegment);
         }

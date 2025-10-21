@@ -18,7 +18,8 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
 public interface SegmentPrototypeRegistry {
@@ -27,9 +28,9 @@ public interface SegmentPrototypeRegistry {
     
     void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem);
 
-    SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource);
+    SegmentMemory createSegmentFromPrototype(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, LeftTupleSource tupleSource);
 
-    SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype smem);
+    SegmentMemory createSegmentFromPrototype(SegmentPrototype smem, NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport);
 
     SegmentPrototype getSegmentPrototype(SegmentMemory segment);
 

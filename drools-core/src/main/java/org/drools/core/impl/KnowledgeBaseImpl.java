@@ -944,11 +944,11 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
 
     @Override
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
-        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, tupleSource);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator.getNodeMemories(), reteEvaluator.getSegmentMemorySupport(), tupleSource);
     }
 
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype proto) {
-        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator, proto);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(proto, reteEvaluator.getNodeMemories(), reteEvaluator.getSegmentMemorySupport());
     }
 
     public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {

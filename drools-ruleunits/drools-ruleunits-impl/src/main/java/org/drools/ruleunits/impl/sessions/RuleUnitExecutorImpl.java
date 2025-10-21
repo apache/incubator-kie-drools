@@ -136,7 +136,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
         this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
         
-        this.segmentMemorySupport = new SegmentMemorySupportImpl(this, nodeMemories, ruleBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, ruleBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
         this.timerService = sessionConfiguration.createTimerService();
 
         initInitialFact();
