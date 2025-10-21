@@ -35,8 +35,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.io.swagger.core.v3>2.2.30</version.io.swagger.core.v3>
-    <version.org.springdoc>2.8.8</version.org.springdoc>
+    <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
+    <version.org.springdoc>2.8.13</version.org.springdoc>
     <!-- Groovy -->
     <!-- must be aligned with the Archetype plugin: https://maven.apache.org/archetype/maven-archetype-plugin/dependencies.html -->
     <version.org.apache.groovy>4.0.28</version.org.apache.groovy>

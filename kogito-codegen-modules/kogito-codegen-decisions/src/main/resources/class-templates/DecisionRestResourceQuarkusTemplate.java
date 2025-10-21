@@ -39,6 +39,7 @@ import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.dmn.util.StronglyTypedUtils;
 
 @Path("/$nameURL$")
+@org.eclipse.microprofile.openapi.annotations.tags.Tag(name = "Decision - $modelName$", description = "$modelDescription$")
 public class DMNRestResourceTemplate {
 
     Application application;
@@ -58,6 +59,7 @@ public class DMNRestResourceTemplate {
     @Path("/$dmnMethodUrl$")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @org.eclipse.microprofile.openapi.annotations.Operation(operationId ="evaluateDmn_$modelName$", summary="It evaluates the $modelName$ DMN Model")
     @org.eclipse.microprofile.openapi.annotations.parameters.RequestBody(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json",schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/InputSet1")), description = "DMN input")
     @org.eclipse.microprofile.openapi.annotations.responses.APIResponse(content = @org.eclipse.microprofile.openapi.annotations.media.Content(mediaType = "application/json", schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/OutputSet1")), description = "DMN output")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "/dmnDefinitions.json#/definitions/InputSet1")), description = "DMN input")
@@ -72,6 +74,7 @@ public class DMNRestResourceTemplate {
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
+    @org.eclipse.microprofile.openapi.annotations.Operation(operationId ="getDmn_$modelName$", summary = "Get the DMN $modelName$ model file")
     public String dmn() throws java.io.IOException {
         try (InputStream is = this.getClass().getResourceAsStream(CodegenStringUtil.escapeIdentifier("$modelName$") + ".dmn_nologic")) {
             return new String(org.drools.util.IoUtils.readBytesFromInputStream(Objects.requireNonNull(is)));

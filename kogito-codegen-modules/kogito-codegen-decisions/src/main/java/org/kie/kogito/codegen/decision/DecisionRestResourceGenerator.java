@@ -47,6 +47,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -84,6 +85,9 @@ public class DecisionRestResourceGenerator {
     private final TemplatedGenerator generator;
 
     private static final Supplier<RuntimeException> TEMPLATE_WAS_MODIFIED = () -> new RuntimeException("Template was modified!");
+    private static final String DMN_RESULT_ENDPOINT_OPERATION_ID = "evaluateDmnFullResults_";
+    private static final String DECISION_SERVICE_ENDPOINT_OPERATION_ID = "evaluateDmnService_";
+    private static final String DECISION_SERVICE_RESULT_ENDPOINT_OPERATION_ID = "evaluateDmnServiceFullResults_";
 
     public DecisionRestResourceGenerator(KogitoBuildContext context, DMNModel model, String appCanonicalName) {
         this.context = context;
@@ -144,7 +148,13 @@ public class DecisionRestResourceGenerator {
 
         final String dmnMethodUrlPlaceholder = "$dmnMethodUrl$";
 
-        template.addMember(cloneForDMNResult(dmnMethod, "dmn_dmnresult", "dmnresult", dmnMethodUrlPlaceholder));
+        template.addMember(cloneForDMNResult(dmnMethod,
+                "dmn_dmnresult",
+                "dmnresult",
+                dmnMethodUrlPlaceholder,
+                dmnModel.getName(),
+                DMN_RESULT_ENDPOINT_OPERATION_ID));
+
         for (DecisionService ds : dmnModel.getDefinitions().getDecisionService()) {
             if (ds.getAdditionalAttributes().keySet().stream().anyMatch(qn -> qn.getLocalPart().equals("dynamicDecisionService"))) {
                 continue;
@@ -162,7 +172,9 @@ public class DecisionRestResourceGenerator {
 
             //insert request path
             final String path = ds.getName();
+            final String modelAndServiceName = String.format("%s_%s", dmnModel.getName(), ds.getName());
             interpolateRequestPath(path, dmnMethodUrlPlaceholder, clonedMethod);
+            interpolateOperation(modelAndServiceName, DECISION_SERVICE_ENDPOINT_OPERATION_ID, clonedMethod);
 
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
             if (ds.getOutputDecision().size() == 1) {
@@ -177,7 +189,12 @@ public class DecisionRestResourceGenerator {
             }
 
             template.addMember(clonedMethod);
-            template.addMember(cloneForDMNResult(clonedMethod, name + "_dmnresult", ds.getName() + "/dmnresult", path));
+            template.addMember(cloneForDMNResult(clonedMethod,
+                    name + "_dmnresult",
+                    ds.getName() + "/dmnresult",
+                    path,
+                    modelAndServiceName,
+                    DECISION_SERVICE_RESULT_ENDPOINT_OPERATION_ID));
         }
 
         //set the root path for the dmnMethod itself
@@ -277,7 +294,7 @@ public class DecisionRestResourceGenerator {
     }
 
     private MethodDeclaration cloneForDMNResult(MethodDeclaration dmnMethod, String name, String pathName,
-            String placeHolder) {
+            String placeHolder, String modelName, String operationIdPrefix) {
         MethodDeclaration clonedDmnMethod = dmnMethod.clone();
         // a DMNResult-returning method doesn't need the OAS annotations for the $ref of return type.
         removeAnnFromMethod(clonedDmnMethod, "org.eclipse.microprofile.openapi.annotations.responses.APIResponse");
@@ -285,6 +302,7 @@ public class DecisionRestResourceGenerator {
         clonedDmnMethod.setName(name);
 
         interpolateRequestPath(pathName, placeHolder, clonedDmnMethod);
+        interpolateOperation(modelName, operationIdPrefix, clonedDmnMethod);
 
         MethodCallExpr methodCallExpr = clonedDmnMethod.findFirst(MethodCallExpr.class, mce -> mce.getNameAsString().equals("enrichResponseHeaders")).orElseThrow(TEMPLATE_WAS_MODIFIED);
         methodCallExpr.setName("buildDMNResultResponse").setArguments(NodeList.nodeList(new NameExpr("result")));
@@ -300,6 +318,19 @@ public class DecisionRestResourceGenerator {
                     String interpolated = s.replace(placeHolder, pathName);
                     vv.setString(interpolated);
                 });
+    }
+
+    private void interpolateOperation(String modelName, String operationIdPrefix, MethodDeclaration methodDecl) {
+        methodDecl.getAnnotationByName("Operation").ifPresent(annotation -> {
+            if (annotation.isNormalAnnotationExpr()) {
+                NormalAnnotationExpr normalExpr = annotation.asNormalAnnotationExpr();
+                for (MemberValuePair pair : normalExpr.getPairs()) {
+                    if (pair.getNameAsString().equals("operationId")) {
+                        pair.setValue(new StringLiteralExpr(String.format("%s%s", operationIdPrefix, modelName)));
+                    }
+                }
+            }
+        });
     }
 
     private void interpolateInputType(ClassOrInterfaceDeclaration template) {
@@ -379,13 +410,14 @@ public class DecisionRestResourceGenerator {
 
     private void interpolateStrings(StringLiteralExpr vv) {
         String s = vv.getValue();
-        String documentation = "";
-        String interpolated = s.replace("$name$", decisionName)
+        String modelDescription = dmnModel.getDefinitions().getDescription();
+        String interpolated = s
+                .replace("$name$", decisionName)
                 .replace("$nameURL$", nameURL)
                 .replace("$id$", decisionId)
                 .replace("$modelName$", dmnModel.getName())
-                .replace("$modelNamespace$", dmnModel.getNamespace())
-                .replace("$documentation$", documentation);
+                .replace("$modelDescription$", modelDescription != null ? modelDescription : "")
+                .replace("$modelNamespace$", dmnModel.getNamespace());
         vv.setString(interpolated);
     }
 

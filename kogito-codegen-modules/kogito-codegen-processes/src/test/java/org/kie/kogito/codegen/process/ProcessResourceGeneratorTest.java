@@ -19,6 +19,7 @@
 package org.kie.kogito.codegen.process;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -314,7 +315,7 @@ public class ProcessResourceGeneratorTest {
 
         classDeclaration.getMethods().stream()
                 .filter(this::isRestMethod)
-                .forEach(method -> assertThatMethodHasOpenApiDocumentation(method, expectedSummary, expectedDescription));
+                .forEach(method -> assertThatMethodHasOpenApiDocumentation(method, fileName, expectedSummary, expectedDescription));
     }
 
     private ClassOrInterfaceDeclaration getResourceClassDeclaration(KogitoBuildContext.Builder contextBuilder, String fileName) {
@@ -368,10 +369,30 @@ public class ProcessResourceGeneratorTest {
         return toReturn;
     }
 
-    private void assertThatMethodHasOpenApiDocumentation(MethodDeclaration method, String summary, String description) {
+    private void assertThatMethodHasOpenApiDocumentation(MethodDeclaration method, String fileName, String summary, String description) {
+        String operationId = "";
+        String nameWithoutExt = Paths.get(fileName).getFileName().toString().replaceFirst("[.][^.]+$", "");
+        if (method.getNameAsString().startsWith("createResource_")) {
+            operationId = String.format("createProcessInstance_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("getResources_")) {
+            operationId = String.format("getAllProcessInstances_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("getResourceSchema_")) {
+            operationId = String.format("getResourceSchema_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("getResource_")) {
+            operationId = String.format("getProcessInstance_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("deleteResource_")) {
+            operationId = String.format("deleteProcessInstance_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("updateModel_")) {
+            operationId = String.format("updateProcessInstance_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("updateModelPartial_")) {
+            operationId = String.format("patchProcessInstance_%s", nameWithoutExt);
+        } else if (method.getNameAsString().startsWith("getTasks_")) {
+            operationId = String.format("getTasksInstance_%s", nameWithoutExt);
+        }
+
         Optional<AnnotationExpr> annotation = method.getAnnotationByName("Operation");
         assertThat(annotation).isNotEmpty();
-        assertThatAnnotationHasSummaryAndDescription(annotation.orElseThrow(), summary, description);
+        assertThatAnnotationHasSummaryAndDescription(annotation.orElseThrow(), summary, description, operationId);
     }
 
     private void assertMethodOutputModelType(MethodDeclaration method, String outputType) {
@@ -379,12 +400,13 @@ public class ProcessResourceGeneratorTest {
         assertThat(method.getType().asString()).isEqualTo(outputType);
     }
 
-    private void assertThatAnnotationHasSummaryAndDescription(AnnotationExpr annotation, String summary, String description) {
+    private void assertThatAnnotationHasSummaryAndDescription(AnnotationExpr annotation, String summary, String description, String operationId) {
         NodeList<MemberValuePair> pairs = ((NormalAnnotationExpr) annotation).getPairs();
 
         assertThat(pairs).containsExactlyInAnyOrder(
                 new MemberValuePair("summary", new StringLiteralExpr(summary)),
-                new MemberValuePair("description", new StringLiteralExpr(description)));
+                new MemberValuePair("description", new StringLiteralExpr(description)),
+                new MemberValuePair("operationId", new StringLiteralExpr(operationId)));
     }
 
     private boolean isRestMethod(MethodDeclaration method) {

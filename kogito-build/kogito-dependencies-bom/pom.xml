@@ -102,8 +102,8 @@
 
     <version.io.quarkus.camel>3.20.2</version.io.quarkus.camel>
 
-    <version.io.swagger.parser.v3>2.1.20</version.io.swagger.parser.v3>
-    <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
+    <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
+    <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
 
     <version.org.apache.commons>3.18.0</version.org.apache.commons>
     <version.commons.io>2.19.0</version.commons.io>

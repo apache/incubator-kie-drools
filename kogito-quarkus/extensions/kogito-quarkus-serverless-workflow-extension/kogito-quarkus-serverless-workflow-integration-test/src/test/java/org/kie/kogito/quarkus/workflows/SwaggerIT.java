@@ -60,7 +60,7 @@ class SwaggerIT {
             checkOperation(path.getPut(), tags);
         }
         logger.debug("Tags collected {}", tags);
-        assertThat(tags).contains("expression");
+        assertThat(tags).contains("Process - expression");
 
     }
 
