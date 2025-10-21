@@ -59,4 +59,14 @@ public class TextAnnotationTest extends JbpmBpmn2TestCase {
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
     }
 
+    @Test
+    public void testTextAnnotationProcessForScriptTask() {
+        Application app = ProcessTestHelper.newApplication();
+
+        org.kie.kogito.process.Process<BPMN2_ScriptTextAnnotationModel> minimalProcess = BPMN2_ScriptTextAnnotationProcess.newProcess(app);
+        BPMN2_ScriptTextAnnotationModel model = minimalProcess.createModel();
+        org.kie.kogito.process.ProcessInstance<BPMN2_ScriptTextAnnotationModel> instance = minimalProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
 }

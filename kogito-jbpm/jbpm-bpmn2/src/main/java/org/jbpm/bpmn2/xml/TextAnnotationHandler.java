@@ -56,6 +56,7 @@ public class TextAnnotationHandler extends org.jbpm.compiler.xml.core.BaseAbstra
             this.validPeers.add(RuleFlowProcess.class);
             this.validPeers.add(SequenceFlow.class);
             this.validPeers.add(TextAnnotation.class);
+            this.validPeers.add(Association.class);
             this.allowNesting = false;
         }
     }
