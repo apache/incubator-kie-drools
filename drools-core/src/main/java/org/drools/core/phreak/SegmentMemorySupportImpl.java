@@ -169,7 +169,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         return querySmem;
     }
 
-    public TupleToObjectNode createSubnetworkSegmentMemory(BetaNode betaNode) {
+    private TupleToObjectNode createSubnetworkSegmentMemory(BetaNode betaNode) {
         TupleToObjectNode tton = (TupleToObjectNode) betaNode.getRightInput().getParent();
 
         LeftTupleSource subnetworkLts = tton.getStartTupleSource();
@@ -286,7 +286,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         }
     }
 
-    public int checkSegmentBoundary(LeftTupleSource lt, int nodeTypesInSegment) {
+    private int checkSegmentBoundary(LeftTupleSource lt, int nodeTypesInSegment) {
         if (isRootNode(lt, null)) {
             // we are in a new child segment
             checkEagerSegmentCreation(lt.getLeftTupleSource(), nodeTypesInSegment);
@@ -303,7 +303,7 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
      * This is because the TupleToObjectNode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
      */
-    public int updateSubnetworkAndTerminalMemoryLazily(LeftTupleSource lt,
+    private int updateSubnetworkAndTerminalMemoryLazily(LeftTupleSource lt,
                                                         LeftTupleSource originalLt,
                                                         SegmentMemory smem,
                                                         boolean fromPrototype,
