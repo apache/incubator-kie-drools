@@ -23,15 +23,17 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakAsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakAsyncReceiveNodeMetric extends PhreakAsyncReceiveNode {
 
+    public PhreakAsyncReceiveNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(ReteEvaluator reteEvaluator,
-                       AsyncReceiveNode node,
+    public void doNode(AsyncReceiveNode node,
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
@@ -40,7 +42,7 @@ public class PhreakAsyncReceiveNodeMetric extends PhreakAsyncReceiveNode {
         try {
             MetricLogUtils.getInstance().startMetrics(node);
 
-            super.doNode(reteEvaluator, node, memory, sink, srcLeftTuples, trgLeftTuples);
+            super.doNode(node, memory, sink, srcLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

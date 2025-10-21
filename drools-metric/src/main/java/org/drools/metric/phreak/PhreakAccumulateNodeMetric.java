@@ -23,15 +23,17 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakAccumulateNodeMetric extends PhreakAccumulateNode {
 
+    public PhreakAccumulateNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(ReteEvaluator reteEvaluator,
-                       AccumulateNode accNode,
+    public void doNode(AccumulateNode accNode,
                        LeftTupleSink sink,
                        AccumulateMemory am,
                        TupleSets srcLeftTuples,
@@ -41,7 +43,7 @@ public class PhreakAccumulateNodeMetric extends PhreakAccumulateNode {
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);
 
-            super.doNode(reteEvaluator, accNode, sink, am, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(accNode, sink, am, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

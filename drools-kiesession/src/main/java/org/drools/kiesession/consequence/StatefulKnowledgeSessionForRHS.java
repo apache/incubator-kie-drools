@@ -46,6 +46,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -500,6 +501,11 @@ public class StatefulKnowledgeSessionForRHS
 
     public GlobalResolver getGlobalResolver() {
         return delegate.getGlobalResolver();
+    }
+    
+    @Override
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return delegate.getRuleNetworkEvaluator();
     }
 
     @Override

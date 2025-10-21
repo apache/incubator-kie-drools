@@ -96,7 +96,7 @@ public class PhreakSubnetworkNotExistsNode {
                     if (node.getType() == NodeTypeEnums.ExistsNode) {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                        RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     } else if (!leftTuple.isExpired()) { // else !exists
                         trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true));
                     }
@@ -122,7 +122,7 @@ public class PhreakSubnetworkNotExistsNode {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
-            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(node, leftTuple);
+            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluatorImpl.useLeftMemory(node, leftTuple);
             // Do not need to init tupleList for matches, as this is done on right inserts.
             if (useTupleMemory) {
                 ltm.add(leftTuple);
@@ -161,14 +161,14 @@ public class PhreakSubnetworkNotExistsNode {
                     // Not/Exists nodes only have one child
                     if (node.getType() == NodeTypeEnums.ExistsNode) {
                         if (!leftTuple.isExpired()) {
-                            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(node, rightTuple);
+                            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluatorImpl.useLeftMemory(node, rightTuple);
                             trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
                         }
                     } else { // else !exists
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) { // this can be null if the LT is not yet added
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                            RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ public class PhreakSubnetworkNotExistsNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 if (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                    RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                 }
 
                 leftTuple.setContextObject(null); // this is now right delete knows the LT is also being removed

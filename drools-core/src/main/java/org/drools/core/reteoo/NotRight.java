@@ -25,7 +25,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.doExistentialUpdatesReorderChildLeftTuple;
+import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.doExistentialUpdatesReorderChildLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public class NotRight extends RightInputAdapterNode<NotNode> {

@@ -19,6 +19,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
@@ -30,10 +31,17 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.normalizeStagedTuples;
 
 
 public class PhreakBranchNode {
+
+    protected ReteEvaluator reteEvaluator;
+
+    public PhreakBranchNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
     public void doNode(ActivationsManager activationsManager,
                        ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
@@ -73,7 +81,7 @@ public class PhreakBranchNode {
             boolean breaking = false;
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
 
-            boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(branchNode, leftTuple);
+            boolean useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(branchNode, leftTuple);
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
@@ -117,7 +125,7 @@ public class PhreakBranchNode {
                 oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getSink();
             }
 
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
             RuleTerminalNode newRtn = null;
             boolean breaking = false;
@@ -200,7 +208,7 @@ public class PhreakBranchNode {
             }
 
             if (branchTuples.mainLeftTuple != null) {
-                RuleNetworkEvaluator.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
+                RuleNetworkEvaluatorImpl.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();
