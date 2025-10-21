@@ -31,24 +31,30 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleImpl;
 
 public class PhreakQueryNode {
+
+    protected ReteEvaluator reteEvaluator;
+
+    public PhreakQueryNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
     public void doNode(QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(qmem, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(qmem, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(queryNode, qmem, reteEvaluator, srcLeftTuples);
+            doLeftUpdates(queryNode, qmem, srcLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(queryNode, qmem, stackEntry, reteEvaluator, srcLeftTuples);
+            doLeftInserts(queryNode, qmem, stackEntry, srcLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -57,7 +63,6 @@ public class PhreakQueryNode {
     public void doLeftInserts(QueryElementNode queryNode,
                               QueryElementNodeMemory qmem,
                               StackEntry stackEntry,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples) {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
@@ -84,7 +89,6 @@ public class PhreakQueryNode {
 
     public void doLeftUpdates(QueryElementNode queryNode,
                               QueryElementNodeMemory qmem,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples) {
         for (TupleImpl leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
@@ -113,7 +117,6 @@ public class PhreakQueryNode {
     }
 
     public void doLeftDeletes(QueryElementNodeMemory qmem,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               TupleSets stagedLeftTuples) {
@@ -131,7 +134,7 @@ public class PhreakQueryNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                    RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
                     childLeftTuple = nextChild;
                 }
             }

@@ -36,8 +36,13 @@ import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
 public class PhreakAsyncReceiveNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakAsyncReceiveNode.class );
 
-    public void doNode(ReteEvaluator reteEvaluator,
-                       AsyncReceiveNode node,
+    private ReteEvaluator reteEvaluator;
+
+    public PhreakAsyncReceiveNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(AsyncReceiveNode node,
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
@@ -47,7 +52,7 @@ public class PhreakAsyncReceiveNode {
             doLeftInserts( memory, srcLeftTuples );
         }
 
-        doPropagateChildLeftTuples( node, memory, reteEvaluator, sink, trgLeftTuples );
+        doPropagateChildLeftTuples( node, memory, sink, trgLeftTuples );
 
         srcLeftTuples.resetAll();
     }
@@ -63,9 +68,8 @@ public class PhreakAsyncReceiveNode {
         }
     }
 
-    private static void doPropagateChildLeftTuples(AsyncReceiveNode node,
+    private void doPropagateChildLeftTuples(AsyncReceiveNode node,
                                                    AsyncReceiveMemory memory,
-                                                   ReteEvaluator reteEvaluator,
                                                    LeftTupleSink sink,
                                                    TupleSets trgLeftTuples) {
 

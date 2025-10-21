@@ -18,27 +18,29 @@
  */
 package org.drools.metric.phreak;
 
-import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakQueryTerminalNode;
 import org.drools.core.phreak.StackEntry;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.util.LinkedList;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
 
+    public PhreakQueryTerminalNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(ActivationsManager activationsManager,
-                       LinkedList<StackEntry> stack,
+    public void doNode(LinkedList<StackEntry> stack,
                        QueryTerminalNode qtnNode,
                        TupleSets srcLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(qtnNode);
 
-            super.doNode(activationsManager, stack, qtnNode, srcLeftTuples);
+            super.doNode(stack, qtnNode, srcLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

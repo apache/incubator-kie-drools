@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
+import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNode
