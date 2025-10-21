@@ -425,8 +425,8 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
                         processAsyncReceiveNode((AsyncReceiveNode) tupleSource, smem, memories, nodePosMask);
                         break;
                     case NodeTypeEnums.QueryElementNode:
-                        updateNodeBit = processQueryNode((QueryElementNode) tupleSource, segmentRoot, smem,
-                                memories, nodePosMask);
+                        updateNodeBit = processQueryNode((QueryElementNode) tupleSource, smem, memories,
+                                nodePosMask);
                         break;
                 }
             }
@@ -503,7 +503,6 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
     }
 
     private boolean processQueryNode(QueryElementNode queryNode,
-                                            LeftTupleSource segmentRoot,
                                             SegmentMemory smem,
                                             List<Memory> memories,
                                             long nodePosMask) {
