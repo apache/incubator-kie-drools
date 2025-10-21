@@ -93,7 +93,7 @@ public interface ActivationsManager {
 
     default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, InternalMatch justified) {
         if (!ruleAgendaItem.isQueued()) {
-            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
+            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem();
         }
         ruleAgendaItem.getRuleExecutor().modifyActiveTuple((RuleTerminalNodeLeftTuple) justified.getTuple() );
     }

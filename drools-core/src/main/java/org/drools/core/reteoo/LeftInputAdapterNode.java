@@ -195,7 +195,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // if there is no left memory, then there is no linking or notification
             if ( linkOrNotify ) {
                 // link and notify
-                lm.linkNode( reteEvaluator );
+                lm.linkNode( );
             } else {
                 // link without notify, when driven by a query, as we don't want it, placed on the agenda
                 lm.linkNodeWithoutRuleNotify();
@@ -247,7 +247,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( pmem != null ) {
             forceFlushLeftTuple( reteEvaluator, pmem, sm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
             if ( linkOrNotify ) {
-                lm.setNodeDirty( reteEvaluator );
+                lm.setNodeDirty( );
             }
             return findPathsToFlushFromSubnetwork(reteEvaluator, pmem);
         }
@@ -257,7 +257,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if ( stagedInsertWasEmpty && linkOrNotify  ) {
             // staged is empty, so notify rule, to force re-evaluation.
-            lm.setNodeDirty(reteEvaluator);
+            lm.setNodeDirty();
         }
         return Collections.emptyList();
     }
@@ -296,7 +296,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if ( lm.getAndDecreaseCounter() == 1 ) {
             if ( linkOrNotify ) {
-                lm.unlinkNode( reteEvaluator );
+                lm.unlinkNode( );
             } else {
                 lm.unlinkNodeWithoutRuleNotify();
             }
@@ -308,7 +308,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTuple.setPropagationContext( pctx );
         if ( flushLeftTupleIfNecessary( reteEvaluator, sm, leftTuple, streamMode, Tuple.DELETE ) ) {
             if ( linkOrNotify ) {
-                lm.setNodeDirty( reteEvaluator );
+                lm.setNodeDirty( );
             }
             return;
         }
@@ -318,7 +318,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if (  stagedDeleteWasEmpty && linkOrNotify ) {
             // staged is empty, so notify rule, to force re-evaluation
-            lm.setNodeDirty(reteEvaluator);
+            lm.setNodeDirty();
         }
     }
 
@@ -360,7 +360,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             if ( flushLeftTupleIfNecessary( reteEvaluator, sm, leftTuple, streamMode, Tuple.UPDATE ) ) {
                 if ( linkOrNotify ) {
-                    lm.setNodeDirty( reteEvaluator );
+                    lm.setNodeDirty( );
                 }
                 return;
             }
@@ -370,7 +370,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
             if ( stagedUpdateWasEmpty  && linkOrNotify ) {
                 // staged is empty, so notify rule, to force re-evaluation
-                lm.setNodeDirty(reteEvaluator);
+                lm.setNodeDirty();
             }
         }
     }
@@ -572,12 +572,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
             segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
         }
 
-        public void linkNode(ReteEvaluator reteEvaluator) {
-            segmentMemory.linkNode(nodePosMaskBit, reteEvaluator);
+        public void linkNode() {
+            segmentMemory.linkNode(nodePosMaskBit);
         }
 
-        public boolean unlinkNode(ReteEvaluator reteEvaluator) {
-            return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
+        public boolean unlinkNode() {
+            return segmentMemory.unlinkNode(nodePosMaskBit);
         }
 
         public void unlinkNodeWithoutRuleNotify() {
@@ -588,8 +588,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 
-        public void setNodeDirty(ReteEvaluator reteEvaluator) {
-            segmentMemory.notifyRuleLinkSegment(reteEvaluator, nodePosMaskBit);
+        public void setNodeDirty() {
+            segmentMemory.notifyRuleLinkSegment(nodePosMaskBit);
         }
 
         public void reset() {

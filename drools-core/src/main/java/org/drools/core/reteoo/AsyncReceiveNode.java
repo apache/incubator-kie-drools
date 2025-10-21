@@ -131,7 +131,7 @@ public class AsyncReceiveNode extends LeftTupleSource
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                pmem.doLinkRule( reteEvaluator );
+                pmem.doLinkRule();
             }
         }
     }

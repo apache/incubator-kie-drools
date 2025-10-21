@@ -154,7 +154,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                 processLeftTuples(wm, rule, firstSplit, true);
 
-                notifySegments(wm, smemsToNotify);
+                notifySegments(smemsToNotify);
             }
         }
 
@@ -215,7 +215,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     Set<SegmentMemory> smemsToNotify = handleExistingPaths(wm, tn, prevSmemsLookup, tnms.otherPmems,
                             ExistingPathStrategy.REMOVE_STRATEGY);
 
-                    notifySegments(wm, smemsToNotify);
+                    notifySegments(smemsToNotify);
                 }
             }
 
@@ -282,7 +282,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                   SegmentMemory smem,
                                   int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
-            smem.unlinkSegment(wm);
+            smem.unlinkSegment();
             smem.correctSegmentMemoryAfterSplitOnAdd(smemSplitAdjustAmount);
         }
 
@@ -353,7 +353,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                   SegmentMemory smem,
                                   int smemSplitAdjustAmount) {
             smemsToNotify.add(smem);
-            smem.unlinkSegment(wm);
+            smem.unlinkSegment();
             smem.correctSegmentMemoryAfterSplitOnRemove(smemSplitAdjustAmount);
         }
 
@@ -397,8 +397,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                 sm1.mergeSegment(sm2);
                 smemsToNotify.add(sm1);
-                sm1.unlinkSegment(wm);
-                sm2.unlinkSegment(wm);
+                sm1.unlinkSegment();
+                sm2.unlinkSegment();
                 visited.add(node);
 
                 // Add back the the terminal node of the rule to be removed into the rete network to permit the network
@@ -535,14 +535,14 @@ class LazyPhreakBuilder implements PhreakBuilder {
                             SegmentMemory sm = mem.getSegmentMemory();
                             if (sm != null && !sm.getPathMemories().contains(pmem)) {
                                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
-                                sm.notifyRuleLinkSegment(wm, pmem);
+                                sm.notifyRuleLinkSegment(pmem);
                             }
                         }
                     }
                 } else {
                     Memory mem = wm.getNodeMemories().peekNodeMemory(child);
                     if (mem != null) {
-                        mem.getSegmentMemory().notifyRuleLinkSegment(wm, pmem);
+                        mem.getSegmentMemory().notifyRuleLinkSegment(pmem);
                     }
                 }
 
@@ -633,7 +633,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                                          List<LeftTupleNode> splits) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
         if (pmem.isInitialized()) {
-            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(wm, pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
+            RuleNetworkEvaluator.INSTANCE.evaluateNetwork(pmem.getRuleAgendaItem().getRuleExecutor(), pmem);
         }
 
         // With the removing rules being flushed, we need to check any splits that will be merged, to see if they need flushing
@@ -719,9 +719,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
         return previousSmems;
     }
 
-    private static void notifySegments(InternalWorkingMemory wm, Set<SegmentMemory> smems) {
+    private static void notifySegments(Set<SegmentMemory> smems) {
         for (SegmentMemory sm : smems) {
-            sm.notifyRuleLinkSegment(wm);
+            sm.notifyRuleLinkSegment();
         }
     }
 
@@ -1063,7 +1063,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(lt.getSink());
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(wm), pmem.getRuleAgendaItem()
+                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(), pmem.getRuleAgendaItem()
                         .getRuleExecutor(), (RuleTerminalNodeLeftTuple) lt);
             }
         } else {
@@ -1606,7 +1606,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
-                    smem.notifyRuleLinkSegment(reteEvaluator);
+                    smem.notifyRuleLinkSegment();
                 }
                 checkEagerSegmentCreation(reteEvaluator, sink.getLeftTupleSource(), nodeTypesInSegment);
                 pmem = null;
