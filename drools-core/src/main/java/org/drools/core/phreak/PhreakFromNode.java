@@ -92,7 +92,7 @@ public class PhreakFromNode {
             PropagationContext propagationContext = leftTuple.getPropagationContext();
 
             Map<Object, RightTuple> matches       = null;
-            boolean                 useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(fromNode, leftTuple);
+            boolean                 useLeftMemory = PhreakNodeOperations.useLeftMemory(fromNode, leftTuple);
 
             if (useLeftMemory) {
                 fm.getBetaMemory().getLeftTupleMemory().add(leftTuple);
@@ -210,7 +210,7 @@ public class PhreakFromNode {
                 while (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                    PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     childLeftTuple = nextChild;
                 }
             }
@@ -271,7 +271,7 @@ public class PhreakFromNode {
                                             TupleImpl childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.setPropagationContext( propagationContext );
-            RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+            PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
         }
     }
 }

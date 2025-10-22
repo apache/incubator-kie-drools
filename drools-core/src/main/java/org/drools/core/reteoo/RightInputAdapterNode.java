@@ -29,6 +29,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.PhreakNodeOperations;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.AllSetBitMask;
@@ -42,7 +43,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.doUpdatesReorderChildLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNode
@@ -161,7 +161,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
 
     protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
         BetaNode.getBetaMemory(betaNode, reteEvaluator).getRightTupleMemory().removeAdd(rightTuple);
-        doUpdatesReorderChildLeftTuple(rightTuple);
+        PhreakNodeOperations.doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
     public void doDeleteRightTuple(final TupleImpl rightTuple,

@@ -134,7 +134,7 @@ public class PhreakQueryNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                    PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     childLeftTuple = nextChild;
                 }
             }
