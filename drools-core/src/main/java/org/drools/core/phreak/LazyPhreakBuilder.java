@@ -81,7 +81,6 @@ import org.slf4j.LoggerFactory;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isRootNode;
 import static org.drools.core.phreak.EagerPhreakBuilder.deleteLeftTuple;
 import static org.drools.core.phreak.EagerPhreakBuilder.Add.attachAdapterAndPropagate;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 
 class LazyPhreakBuilder implements PhreakBuilder {
 
@@ -634,8 +633,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
                             if (!childSmem.getStagedLeftTuples().isEmpty()) {
                                 PathMemory childPmem = childSmem.getPathMemories().get(0);
                                 flushed.add(new Flushed(childPmem, childSmem));
-                                forceFlushLeftTuple(wm, childPmem, childSmem, childSmem.getStagedLeftTuples()
-                                        .takeAll());
+                                wm.getRuleNetworkEvaluator().forceFlushLeftTuple(childPmem, childSmem, childSmem.getStagedLeftTuples()
+                                .takeAll());
                             }
                         }
                     }
@@ -649,8 +648,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
             for (Flushed path : flushed) {
                 if (!path.segmentMemory.getStagedLeftTuples().isEmpty()) {
                     flushCount++;
-                    forceFlushLeftTuple(wm, pmem, path.segmentMemory, path.segmentMemory.getStagedLeftTuples()
-                            .takeAll());
+                    wm.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, path.segmentMemory, path.segmentMemory.getStagedLeftTuples()
+                    .takeAll());
                 }
             }
         }
@@ -682,7 +681,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
         if (smemIndex < length) {
             // it only found a SM that needed flushing, if smemIndex < length
-            forceFlushLeftTuple(wm, pmem, sm, sm.getStagedLeftTuples().takeAll());
+            wm.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, sm.getStagedLeftTuples().takeAll());
         }
     }
 

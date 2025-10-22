@@ -23,14 +23,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
-import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
@@ -53,7 +49,7 @@ public class TupleEvaluationUtil {
             return false;
         }
 
-        forceFlushLeftTuple(reteEvaluator, pmem, sm, createLeftTupleTupleSets(leftTuple, stagedType));
+        reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, createLeftTupleTupleSets(leftTuple, stagedType));
         forceFlushWhenSubnetwork(reteEvaluator, pmem);
         return true;
     }
@@ -109,36 +105,7 @@ public class TupleEvaluationUtil {
     public static void forceFlushPath(ReteEvaluator reteEvaluator, PathMemory outPmem) {
         SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
         if (outSmem != null) {
-            forceFlushLeftTuple(reteEvaluator, outPmem, outSmem, new TupleSetsImpl());
+            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(outPmem, outSmem, new TupleSetsImpl());
         }
-    }
-
-    public static void forceFlushLeftTuple(ReteEvaluator reteEvaluator,
-                                           PathMemory pmem,
-                                           SegmentMemory sm,
-                                           TupleSets leftTupleSets) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
-
-        LeftTupleNode node;
-        Memory mem;
-        long bit = 1;
-        if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm
-                .getTipNode())) {
-            // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
-            node = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
-            mem = sm.getNodeMemories()[1];
-            bit = 2; // adjust bit to point to next node
-        } else {
-            node = sm.getRootNode();
-            mem = sm.getNodeMemories()[0];
-        }
-
-        PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : reteEvaluator.getNodeMemory(
-                (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
-
-        ActivationsManager activationsManager = pmem.getActualActivationsManager();
-        reteEvaluator.getRuleNetworkEvaluator().outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
-                leftTupleSets,
-                true);
     }
 }

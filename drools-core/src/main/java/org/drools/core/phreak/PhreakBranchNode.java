@@ -79,7 +79,7 @@ public class PhreakBranchNode {
             TupleImpl next = leftTuple.getStagedNext();
 
             boolean breaking = false;
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
             boolean useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(branchNode, leftTuple);
 

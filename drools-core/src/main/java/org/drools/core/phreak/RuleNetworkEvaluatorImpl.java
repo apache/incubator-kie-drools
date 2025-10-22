@@ -175,6 +175,36 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
         outerEval(activationsManager, executor, pmem, smems, firstSegmentIsOnlyLia ? 1 : 0, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, node, srcTuples, true);
     }
+    
+    @Override
+    public void forceFlushLeftTuple(PathMemory pmem,
+                                    SegmentMemory sm, 
+                                    TupleSets leftTupleSets) {
+        SegmentMemory[] smems = pmem.getSegmentMemories();
+
+        LeftTupleNode node;
+        Memory mem;
+        long bit = 1;
+        if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm
+                .getTipNode())) {
+            // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
+            node = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
+            mem = sm.getNodeMemories()[1];
+            bit = 2; // adjust bit to point to next node
+        } else {
+            node = sm.getRootNode();
+            mem = sm.getNodeMemories()[0];
+        }
+
+        PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : reteEvaluator.getNodeMemory(
+                (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
+
+        ActivationsManager activationsManager = pmem.getActualActivationsManager();
+        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
+                leftTupleSets,
+                true);
+    }
+
 
     @Override
     public void outerEval(ActivationsManager activationsManager,
