@@ -18,6 +18,7 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
@@ -36,7 +37,7 @@ import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 public class PhreakNotNode {
 
-    protected ReteEvaluator reteEvaluator;
+    private ReteEvaluator reteEvaluator;
 
     public PhreakNotNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
@@ -74,14 +75,11 @@ public class PhreakNotNode {
 
         if (srcLeftTuples.getUpdateFirst() != null) {
             // must happen before right inserts, so it can find left tuples to block.
-            RuleNetworkEvaluatorImpl.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                       srcLeftTuples);
+            PhreakNodeOperations.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
         }
 
         if ( srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluatorImpl.doUpdatesExistentialReorderRightMemory(bm,
-                                                                        notNode,
-                                                                        srcRightTuples); // this also preserves the next rightTuple
+            PhreakNodeOperations.doUpdatesExistentialReorderRightMemory(bm, notNode, srcRightTuples); // this also preserves the next rightTuple
         }
 
         if (srcRightTuples.getInsertFirst() != null) {
@@ -126,14 +124,14 @@ public class PhreakNotNode {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(notNode, leftTuple);
+            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(notNode, leftTuple);
 
             constraints.updateFromTuple( contextEntry,
                                          reteEvaluator,
                                          leftTuple );
 
             // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
-            RuleNetworkEvaluatorImpl.findLeftTupleBlocker( notNode, rtm, contextEntry, constraints, leftTuple, useLeftMemory );
+            PhreakNodeOperations.findLeftTupleBlocker(notNode, rtm, contextEntry, constraints, leftTuple, useLeftMemory);
 
             if (leftTuple.getBlocker() == null) {
                 insertChildLeftTuple( sink, trgLeftTuples, ltm, leftTuple, leftTuple.getPropagationContext(), useLeftMemory );
@@ -194,7 +192,7 @@ public class PhreakNotNode {
 
                         if ( childLeftTuple != null ) { // NotNode only has one child
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                            PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
 
@@ -288,7 +286,7 @@ public class PhreakNotNode {
                         // no need to remove, as we removed at the start
                         // to be matched against, as it's now blocked
                         childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext()); // we have the righttuple, so use it for the pctx
-                        RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                        PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     } // else: it's blocked now and no children so blocked before, thus do nothing
                 } else if (childLeftTuple == null) {
                     // not blocked, with no children, must have been previously blocked so assert
@@ -356,7 +354,7 @@ public class PhreakNotNode {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if ( childLeftTuple != null ) {
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple );
+                            PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
 
@@ -373,7 +371,7 @@ public class PhreakNotNode {
         constraints.resetTuple(contextEntry);
     }
 
-    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ReteEvaluator reteEvaluator, TupleMemory rtm, Object contextEntry,
+    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ValueResolver reteEvaluator, TupleMemory rtm, Object contextEntry,
                                                      BetaConstraints constraints, boolean iterateFromStart, LeftTupleSink sink, TupleSets trgLeftTuples, TupleMemory ltm) {
         LeftTuple firstBlocked = rightTuple.getTempBlocked();
         if ( firstBlocked != null ) {
@@ -449,7 +447,7 @@ public class PhreakNotNode {
 
                 if (childLeftTuple != null) { // NotNode only has one child
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
-                    RuleNetworkEvaluatorImpl.unlinkAndDeleteChildLeftTuple( trgLeftTuples, stagedLeftTuples, childLeftTuple ); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
+                    PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                 }
             } else {
                 blocker.removeBlocked(leftTuple);

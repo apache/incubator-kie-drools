@@ -75,7 +75,7 @@ public class PhreakAsyncSendNode {
 
             PropagationContext propagationContext = leftTuple.getPropagationContext();
 
-            boolean useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(node, leftTuple);
+            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(node, leftTuple);
 
             if (useLeftMemory) {
                 memory.getBetaMemory().getLeftTupleMemory().add(leftTuple);

@@ -31,7 +31,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
-import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.normalizeStagedTuples;
 
 
 public class PhreakBranchNode {
@@ -81,7 +80,7 @@ public class PhreakBranchNode {
             boolean breaking = false;
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
-            boolean useLeftMemory = RuleNetworkEvaluatorImpl.useLeftMemory(branchNode, leftTuple);
+            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(branchNode, leftTuple);
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
@@ -171,7 +170,7 @@ public class PhreakBranchNode {
 
             // Handle main branch
             if (branchTuples.mainLeftTuple != null) {
-                normalizeStagedTuples( stagedLeftTuples, branchTuples.mainLeftTuple );
+                PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, branchTuples.mainLeftTuple);
 
                 if (!breaking) {
                     // default consequence will also be executed
@@ -208,7 +207,7 @@ public class PhreakBranchNode {
             }
 
             if (branchTuples.mainLeftTuple != null) {
-                RuleNetworkEvaluatorImpl.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
+                PhreakNodeOperations.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();

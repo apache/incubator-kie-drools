@@ -44,8 +44,6 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.normalizeStagedTuples;
-
 public class PhreakAccumulateNode {
 
     protected ReteEvaluator reteEvaluator;
@@ -80,12 +78,12 @@ public class PhreakAccumulateNode {
         }
 
         if (srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluatorImpl.doUpdatesReorderRightMemory(bm, srcRightTuples);
+            PhreakNodeOperations.doUpdatesReorderRightMemory(bm, srcRightTuples);
             doRightUpdates(accNode, am, srcRightTuples, tempLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluatorImpl.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+            PhreakNodeOperations.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
             doLeftUpdates(accNode, am, srcLeftTuples, tempLeftTuples);
         }
 
@@ -154,7 +152,7 @@ public class PhreakAccumulateNode {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = leftTupleMemoryEnabled || RuleNetworkEvaluatorImpl.useLeftMemory(accNode, leftTuple);
+            boolean useLeftMemory = leftTupleMemoryEnabled || PhreakNodeOperations.useLeftMemory(accNode, leftTuple);
 
             if (useLeftMemory) {
                 ltm.add(leftTuple);
@@ -238,7 +236,7 @@ public class PhreakAccumulateNode {
 
         for (TupleImpl rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             TupleImpl next = rightTuple.getStagedNext();
-            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluatorImpl.useLeftMemory(accNode, rightTuple);
+            boolean useTupleMemory = tupleMemoryEnabled || PhreakNodeOperations.useLeftMemory(accNode, rightTuple);
 
             if (useTupleMemory || !accNode.getRightInput().inputIsTupleToObjectNode()) {
                 // If tuple memory is off, it will still be when it is not a subnetwork.
@@ -570,7 +568,7 @@ public class PhreakAccumulateNode {
     protected void propagateDelete( TupleSets trgLeftTuples, TupleSets stagedLeftTuples, Object accPropCtx ) {
         AccumulateContextEntry entry =  (AccumulateContextEntry) accPropCtx;
         if ( entry.isPropagated() ) {
-            normalizeStagedTuples( stagedLeftTuples, (TupleImpl) entry.getResultLeftTuple() );
+            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, (TupleImpl) entry.getResultLeftTuple());
             trgLeftTuples.addDelete( (TupleImpl) entry.getResultLeftTuple() );
         }
     }
@@ -674,7 +672,7 @@ public class PhreakAccumulateNode {
         childLeftTuple.setPropagationContext( propagationContext != null ? propagationContext : leftTuple.getPropagationContext() );
 
         if ( accPropCtx.isPropagated()) {
-            normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
+            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
 
             if (isAllowed) {
                 // modify

@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
-import static org.drools.core.phreak.RuleNetworkEvaluatorImpl.normalizeStagedTuples;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
@@ -199,7 +198,7 @@ public class PhreakTimerNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild(); // only has one child
                 if ( childLeftTuple != null ) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
-                    RuleNetworkEvaluatorImpl.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    PhreakNodeOperations.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                     if ( log.isTraceEnabled() ) {
                         log.trace( "Timer Delete {}", leftTuple );
                     }
@@ -350,7 +349,7 @@ public class PhreakTimerNode {
             // This childLeftTuple has been created in this doNode loop, just skip it
             childLeftTuple.setContextObject( null );
         } else {
-            normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
+            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
             trgLeftTuples.addUpdate( childLeftTuple );
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Update {}", childLeftTuple );

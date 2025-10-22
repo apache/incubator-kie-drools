@@ -101,7 +101,7 @@ public class ReactiveObjectUtil {
                            betaConstraints,
                            propagationContext,
                            context,
-                           RuleNetworkEvaluatorImpl.useLeftMemory( node, leftTuple ),
+                           PhreakNodeOperations.useLeftMemory(node, leftTuple),
                            mem.getStagedLeftTuples(),
                            null );
             } else {
