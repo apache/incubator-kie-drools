@@ -24,7 +24,6 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.phreak.SegmentPropagator;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -203,7 +202,7 @@ public class Scenario {
         }        
         
         SegmentMemory smem = bm.getSegmentMemory();
-        SegmentPropagator.propagate(smem, actualResultLeftTuples, wm);
+        wm.getRuleNetworkEvaluator().propagate(smem, actualResultLeftTuples);
         if ( testLeftMemory ) {
             equalsLeftMemory( leftMemory );
         }

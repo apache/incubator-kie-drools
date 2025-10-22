@@ -1,5 +1,7 @@
 package org.drools.core.phreak;
 
+import java.util.List;
+
 import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.Memory;
@@ -15,20 +17,23 @@ public interface RuleNetworkEvaluator {
     void evaluateNetwork(ActivationsManager activationsManager,
                          RuleExecutor executor,
                          PathMemory pmem);
-    
-    public void forceFlushLeftTuple(PathMemory pmem,
-                                    SegmentMemory sm, 
-                                    TupleSets leftTupleSets); 
 
-    void outerEval(ActivationsManager activationsManager,
-                   RuleExecutor executor,
-                   PathMemory pmem,
-                   SegmentMemory[] smems,
-                   int smemIndex,
-                   long bit,
-                   Memory nodeMem,
-                   NetworkNode node,
-                   TupleSets trgTuples,
-                   boolean processSubnetwork);
+    void evaluate(PathMemory pmem,
+                  ActivationsManager activationsManager,
+                  NetworkNode sink,
+                  Memory tm,
+                  TupleSets trgLeftTuples);
+    
+    void forceFlushPath(PathMemory outPmem); 
+
+    void forceFlushLeftTuple(PathMemory pmem,
+                             SegmentMemory sm,
+                             TupleSets leftTupleSets);
+    
+    void forceFlushWhenSubnetwork(PathMemory pmem);
+    
+    List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem);
+    
+    void propagate(SegmentMemory sourceSegment, TupleSets leftTuples);
 
 }

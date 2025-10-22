@@ -40,6 +40,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.DetachedTuple;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -54,9 +55,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
-import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromSubnetwork;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -227,25 +226,25 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
 
             for (PathMemory outPmem : pathsToFlush) {
-                forceFlushPath(reteEvaluator, outPmem);
+                reteEvaluator.getRuleNetworkEvaluator().forceFlushPath(outPmem);
             }
         }
     }
 
     public static void doInsertSegmentMemoryWithFlush(ReteEvaluator reteEvaluator, boolean notifySegment, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
         for (PathMemory outPmem : doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, streamMode )) {
-            forceFlushPath(reteEvaluator, outPmem);
+            reteEvaluator.getRuleNetworkEvaluator().forceFlushPath(outPmem);
         }
     }
 
     public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
         PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
         if ( pmem != null ) {
-            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT));
+            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, TupleSetsImpl.createLeftTupleTupleSets(leftTuple, Tuple.INSERT));
             if ( linkOrNotify ) {
                 lm.setNodeDirty( );
             }
-            return findPathsToFlushFromSubnetwork(reteEvaluator, pmem);
+            return reteEvaluator.getRuleNetworkEvaluator().findPathsToFlushFromSubnetwork(pmem);
         }
 
         // mask check is necessary if insert is a result of a modify

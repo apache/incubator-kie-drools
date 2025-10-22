@@ -18,19 +18,14 @@
  */
 package org.drools.core.phreak;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
-import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
+
+import static org.drools.core.common.TupleSetsImpl.createLeftTupleTupleSets;
 
 public class TupleEvaluationUtil {
 
@@ -50,7 +45,7 @@ public class TupleEvaluationUtil {
         }
 
         reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, createLeftTupleTupleSets(leftTuple, stagedType));
-        forceFlushWhenSubnetwork(reteEvaluator, pmem);
+        reteEvaluator.getRuleNetworkEvaluator().forceFlushWhenSubnetwork(pmem);
         return true;
     }
 
@@ -58,54 +53,5 @@ public class TupleEvaluationUtil {
         boolean forceFlush = streamMode || (leftTuple != null && leftTuple.getFactHandle() != null && leftTuple
                 .getFactHandle().isEvent());
         return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
-    }
-
-    public static TupleSets createLeftTupleTupleSets(TupleImpl leftTuple, short stagedType) {
-        TupleSets leftTupleSets = new TupleSetsImpl();
-        if (leftTuple != null) {
-            switch (stagedType) {
-                case Tuple.INSERT:
-                    leftTupleSets.addInsert(leftTuple);
-                    break;
-                case Tuple.DELETE:
-                    leftTupleSets.addDelete(leftTuple);
-                    break;
-                case Tuple.UPDATE:
-                    leftTupleSets.addUpdate(leftTuple);
-                    break;
-            }
-        }
-        return leftTupleSets;
-    }
-
-    public static void forceFlushWhenSubnetwork(ReteEvaluator reteEvaluator, PathMemory pmem) {
-        for (PathMemory outPmem : findPathsToFlushFromSubnetwork(reteEvaluator, pmem)) {
-            forceFlushPath(reteEvaluator, outPmem);
-        }
-    }
-
-    public static List<PathMemory> findPathsToFlushFromSubnetwork(ReteEvaluator reteEvaluator, PathMemory pmem) {
-        List<PathMemory> paths = null;
-        if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.TupleToObjectNode) {
-            for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
-                if (NodeTypeEnums.isTerminalNode(pnode)) {
-                    PathMemory outPmem = reteEvaluator.getNodeMemory(pnode);
-                    if (outPmem.isDataDriven()) {
-                        if (paths == null) {
-                            paths = new ArrayList<>();
-                        }
-                        paths.add(outPmem);
-                    }
-                }
-            }
-        }
-        return paths == null ? Collections.emptyList() : paths;
-    }
-
-    public static void forceFlushPath(ReteEvaluator reteEvaluator, PathMemory outPmem) {
-        SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
-        if (outSmem != null) {
-            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(outPmem, outSmem, new TupleSetsImpl());
-        }
     }
 }
