@@ -54,6 +54,17 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-reactive-pg-client-deployment</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>postgresql</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- This brings in the 2.x version of testcontainers postgresql module. -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

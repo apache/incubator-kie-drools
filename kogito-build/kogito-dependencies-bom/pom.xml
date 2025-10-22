@@ -137,7 +137,7 @@
     <version.org.junit.jupiter>5.12.2</version.org.junit.jupiter>
     <version.org.junit.platform>1.12.2</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.mockito>5.17.0</version.org.mockito>
-    <version.org.testcontainers>1.20.6</version.org.testcontainers>
+    <version.org.testcontainers>2.0.1</version.org.testcontainers>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
 
@@ -1276,6 +1276,63 @@
         <artifactId>jep</artifactId>
         <version>${version.black.ninia}</version>
       </dependency>
+
+      <!-- testcontainers dependencies -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${version.org.testcontainers}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-junit-jupiter</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-kafka</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-mongodb</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-postgresql</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-jdbc</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-oracle-xe</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-database-commons</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-toxiproxy</artifactId>
+        <version>${version.org.testcontainers}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

@@ -44,69 +44,51 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>kafka</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-kafka</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mongodb</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-mongodb</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-postgresql</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>jdbc</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-jdbc</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-oracle-xe</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>database-commons</artifactId>
-      <version>${version.org.testcontainers}</version>
-      <scope>compile</scope>
+      <artifactId>testcontainers-database-commons</artifactId>
     </dependency>
 
     <dependency>

@@ -51,6 +51,17 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kafka-client-deployment</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>toxiproxy</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- This brings in the 2.x testcontainers version of toxiproxy module. -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-toxiproxy</artifactId>
     </dependency>
   </dependencies>
   <build>
