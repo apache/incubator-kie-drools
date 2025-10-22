@@ -38,7 +38,6 @@ import org.drools.core.reteoo.NotRight;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -328,7 +327,7 @@ public class RuleUnlinkingTest {
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, liaNode);
+        wm.getSegmentMemorySupport().getOrCreateSegmentMemory(liaNode);
         liaNode.assertObject( f1, context, wm );
         n1.getRightInput().assertObject( f1, context, wm );
         n3.getRightInput().assertObject( f1, context, wm );
@@ -389,7 +388,7 @@ public class RuleUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory(node);
         if ( betaMemory.getSegmentMemory() == null ) {
-            RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, node);
+            wm.getSegmentMemorySupport().getOrCreateSegmentMemory(node);
         }
         return betaMemory;
 

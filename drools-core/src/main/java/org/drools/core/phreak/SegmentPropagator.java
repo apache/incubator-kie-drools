@@ -44,7 +44,7 @@ public class SegmentPropagator {
         LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
         if ( sourceSegment.isEmpty() ) {
-            RuntimeSegmentUtilities.createChildSegments(reteEvaluator, source.getSinkPropagator(), sourceSegment);
+            reteEvaluator.getSegmentMemorySupport().createChildSegments(source.getSinkPropagator(), sourceSegment);
         }
                 
         processPeers(sourceSegment, leftTuples);

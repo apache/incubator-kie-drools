@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
 
@@ -52,13 +53,13 @@ public class SegmentPrototypeRegistryImpl implements SegmentPrototypeRegistry {
     }
 
     @Override
-    public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
+    public SegmentMemory createSegmentFromPrototype(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, LeftTupleSource tupleSource) {
         SegmentPrototype proto = segmentProtos.get(tupleSource.getId());
-        return createSegmentFromPrototype(reteEvaluator, proto);
+        return createSegmentFromPrototype(proto, nodeMemories, segmentMemorySupport);
     }
 
-    public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype proto) {
-        return proto.newSegmentMemory(reteEvaluator);
+    public SegmentMemory createSegmentFromPrototype(SegmentPrototype proto, NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport) {
+        return proto.newSegmentMemory(nodeMemories, segmentMemorySupport);
     }
 
     public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {
