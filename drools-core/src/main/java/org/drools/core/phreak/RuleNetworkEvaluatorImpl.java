@@ -18,6 +18,9 @@
  */
 package org.drools.core.phreak;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.base.common.NetworkNode;
@@ -47,12 +50,14 @@ import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -66,12 +71,14 @@ import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 
 public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
@@ -168,6 +175,70 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     }
     
     @Override
+    public void evaluate(PathMemory pmem,
+                          ActivationsManager activationsManager,
+                          NetworkNode sink,
+                          Memory tm,
+                          TupleSets trgLeftTuples) {
+        SegmentMemory[] smems = pmem.getSegmentMemories();
+        SegmentMemory sm = tm.getSegmentMemory();
+        int smemIndex = 0;
+        for (SegmentMemory smem : smems) {
+            if (smem == sm) {
+                break;
+            }
+            smemIndex++;
+        }
+
+        long bit = 1;
+        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource) node).getSinkPropagator()
+                .getFirstLeftTupleSink()) {
+            //update the bit to the correct node position.
+            bit = nextNodePosMask(bit);
+        }
+
+        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), pmem, smems,
+                smemIndex, bit, tm, sink, trgLeftTuples, true);
+    }
+    
+    
+    @Override
+    public void forceFlushWhenSubnetwork(PathMemory pmem) {
+        for (PathMemory outPmem : findPathsToFlushFromSubnetwork(pmem)) {
+            forceFlushPath(outPmem);
+        }
+    }
+    
+    @Override
+    public List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem) {
+        List<PathMemory> paths = null;
+        if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.TupleToObjectNode) {
+            for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
+                if (NodeTypeEnums.isTerminalNode(pnode)) {
+                    PathMemory outPmem = nodeMemories.getNodeMemory(pnode);
+                    if (outPmem.isDataDriven()) {
+                        if (paths == null) {
+                            paths = new ArrayList<>();
+                        }
+                        paths.add(outPmem);
+                    }
+                }
+            }
+        }
+        return paths == null ? Collections.emptyList() : paths;
+    }
+    
+    
+    @Override
+    public void forceFlushPath(PathMemory outPmem) {
+        SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
+        if (outSmem != null) {
+            forceFlushLeftTuple(outPmem, outSmem, new TupleSetsImpl());
+        }
+    }
+    
+    
+    @Override
     public void forceFlushLeftTuple(PathMemory pmem,
                                     SegmentMemory sm, 
                                     TupleSets leftTupleSets) {
@@ -197,8 +268,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     }
 
 
-    @Override
-    public void outerEval(ActivationsManager activationsManager,
+    private void outerEval(ActivationsManager activationsManager,
                           RuleExecutor executor,
                           PathMemory pmem,
                           SegmentMemory[] smems,
@@ -256,9 +326,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 bit = nextNodePosMask(bit); // update bit to new node
             } else {
                 // Reached end of segment, start on new segment.
-                SegmentPropagator.propagate(smem,
-                                            trgTuples,
-                                            reteEvaluator);
+                propagate(smem, trgTuples);
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples().takeAll();
                 node = smem.getRootNode();
@@ -384,7 +452,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 // Reached end of segment, start on new segment.
                 smem.getFirst().getStagedLeftTuples().addAll(stagedLeftTuples); // must put back all the LTs
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
-                SegmentPropagator.propagate(smem, trgTuples, reteEvaluator);
+                propagate(smem, trgTuples);
                 bit = 1;
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples().takeAll();
@@ -799,6 +867,131 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
         srcTuples.resetAll();
     }
+    
+    public void propagate(SegmentMemory sourceSegment, TupleSets leftTuples) {
+        if (leftTuples.isEmpty()) {
+            return;
+        }
+
+        LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
+        
+        if ( sourceSegment.isEmpty() ) {
+            segmentMemorySupport.createChildSegments(source.getSinkPropagator(), sourceSegment);
+        }
+                
+        processPeers(sourceSegment, leftTuples);
+
+        Iterator<SegmentMemory> peersIterator = sourceSegment.getPeersWithDataDrivenPathMemoriesIterator();
+        while (peersIterator.hasNext()) {
+            SegmentMemory smem = peersIterator.next();
+            for (PathMemory dataDrivenPmem : smem.getDataDrivenPathMemories()) {
+                if (smem.getStagedLeftTuples().getDeleteFirst() == null &&
+                    smem.getStagedLeftTuples().getUpdateFirst() == null &&
+                    !dataDrivenPmem.isRuleLinked()) {
+                    // skip flushing segments that have only inserts staged and the path is not linked
+                    continue;
+                }
+                forceFlushLeftTuple(dataDrivenPmem, smem, smem.getStagedLeftTuples());
+                forceFlushWhenSubnetwork(dataDrivenPmem);
+            }
+        }
+    }
+
+    private static void processPeers(SegmentMemory sourceSegment, TupleSets leftTuples) {
+        SegmentMemory firstSmem = sourceSegment.getFirst();
+
+        processPeerDeletes( leftTuples.getDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples.getNormalizedDeleteFirst(), firstSmem );
+        processPeerUpdates( leftTuples, firstSmem );
+        processPeerInserts( leftTuples, firstSmem );
+
+        firstSmem.getStagedLeftTuples().addAll( leftTuples );
+        leftTuples.resetAll();
+    }
+
+    private static void processPeerInserts(TupleSets leftTuples, SegmentMemory firstSmem) {
+        for (TupleImpl leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple =  leftTuple.getStagedNext()) {
+            SegmentMemory smem = firstSmem.getNext();
+            if ( smem != null ) {
+                // It's possible for a deleted tuple and set of peers, to be cached on a delete (such as with accumulates).
+                // So we should check if the instances already exist and use them if they do.
+                if (leftTuple.getPeer() == null) {
+                    TupleImpl peer = leftTuple;
+                    // peers do not exist, so create and add them.
+                    for (; smem != null; smem = smem.getNext()) {
+                        LeftTupleSink sink = smem.getSinkFactory();
+                        peer = TupleFactory.createPeer(sink, peer); // pctx is set during peer cloning
+                        smem.getStagedLeftTuples().addInsert( peer );
+                    }
+                } else {
+                    TupleImpl peer = leftTuple.getPeer();
+                    // peers exist, so update them as an insert, which also handles staged clashing.
+                    for (; smem != null; smem = smem.getNext()) {
+                        peer.setPropagationContext( leftTuple.getPropagationContext() );
+                        // ... and update the staged LeftTupleSets according to its current staged state
+                        updateChildLeftTupleDuringInsert(peer, smem.getStagedLeftTuples(), smem.getStagedLeftTuples());
+                        peer = peer.getPeer();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void processPeerUpdates(TupleSets leftTuples, SegmentMemory firstSmem) {
+        for (TupleImpl leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            SegmentMemory smem = firstSmem.getNext();
+            if ( smem != null ) {
+                for ( TupleImpl peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                    // only stage, if not already staged, if insert, leave as insert
+                    if ( peer.getStagedType() == LeftTuple.NONE ) {
+                        peer.setPropagationContext( leftTuple.getPropagationContext() );
+                        smem.getStagedLeftTuples().addUpdate( peer );
+                    }
+
+                    smem = smem.getNext();
+                }
+            }
+        }
+    }
+
+    private static void updateChildLeftTupleDuringInsert(TupleImpl childLeftTuple, TupleSets stagedLeftTuples, TupleSets trgLeftTuples) {
+        switch ( childLeftTuple.getStagedType() ) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                // Was insert before, should continue as insert
+                stagedLeftTuples.removeInsert( childLeftTuple );
+                trgLeftTuples.addInsert( childLeftTuple );
+                break;
+            case LeftTuple.UPDATE:
+                stagedLeftTuples.removeUpdate( childLeftTuple );
+                trgLeftTuples.addUpdate( childLeftTuple );
+                break;
+            default:
+                // no clash, so just add
+                if (childLeftTuple.getSink().getType() == AccumulateNode ) {
+                    trgLeftTuples.addInsert(childLeftTuple);
+                } else {
+                    trgLeftTuples.addUpdate(childLeftTuple);
+                }
+        }
+    }
+
+    private static void processPeerDeletes(TupleImpl leftTuple, SegmentMemory firstSmem) {
+        for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            SegmentMemory smem = firstSmem.getNext();
+            if ( smem != null ) {
+                for ( TupleImpl peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                    peer.setPropagationContext( leftTuple.getPropagationContext() );
+                    TupleSets stagedLeftTuples = smem.getStagedLeftTuples();
+                    // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
+                    stagedLeftTuples.addDelete( peer );
+                    smem = smem.getNext();
+                }
+            }
+        }
+    }
+
+    
 
     private static String indent(int size) {
         StringBuilder sbuilder = new StringBuilder();
