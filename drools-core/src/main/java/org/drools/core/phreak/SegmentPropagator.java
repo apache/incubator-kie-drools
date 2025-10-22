@@ -31,7 +31,6 @@ import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushWhenSubnetwork;
 
 public class SegmentPropagator {
@@ -59,7 +58,7 @@ public class SegmentPropagator {
                     // skip flushing segments that have only inserts staged and the path is not linked
                     continue;
                 }
-                forceFlushLeftTuple(reteEvaluator, dataDrivenPmem, smem, smem.getStagedLeftTuples());
+                reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(dataDrivenPmem, smem, smem.getStagedLeftTuples());
                 forceFlushWhenSubnetwork(reteEvaluator, dataDrivenPmem);
             }
         }

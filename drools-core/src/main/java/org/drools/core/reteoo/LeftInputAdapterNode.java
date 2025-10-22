@@ -56,7 +56,6 @@ import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSet
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromSubnetwork;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
 
 /**
@@ -242,7 +241,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
         PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
         if ( pmem != null ) {
-            forceFlushLeftTuple( reteEvaluator, pmem, sm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
+            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, createLeftTupleTupleSets(leftTuple, Tuple.INSERT));
             if ( linkOrNotify ) {
                 lm.setNodeDirty( );
             }

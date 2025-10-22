@@ -15,6 +15,10 @@ public interface RuleNetworkEvaluator {
     void evaluateNetwork(ActivationsManager activationsManager,
                          RuleExecutor executor,
                          PathMemory pmem);
+    
+    public void forceFlushLeftTuple(PathMemory pmem,
+                                    SegmentMemory sm, 
+                                    TupleSets leftTupleSets); 
 
     void outerEval(ActivationsManager activationsManager,
                    RuleExecutor executor,
