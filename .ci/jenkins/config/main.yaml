@@ -19,6 +19,9 @@ git:
   - name: 10.1.x
     seed:
       branch: seed-optaplanner-10.1.x
+  - name: 1.1.x
+    seed:
+      branch: seed-optaplanner-1.1.x
 seed:
   config_file:
     git:
