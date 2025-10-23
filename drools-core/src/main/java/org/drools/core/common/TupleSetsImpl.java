@@ -23,6 +23,24 @@ import org.drools.core.reteoo.Tuple;
 
 public class TupleSetsImpl implements TupleSets {
 
+    public static TupleSets createLeftTupleTupleSets(TupleImpl leftTuple, short stagedType) {
+        TupleSets leftTupleSets = new TupleSetsImpl();
+        if (leftTuple != null) {
+            switch (stagedType) {
+                case Tuple.INSERT:
+                    leftTupleSets.addInsert(leftTuple);
+                    break;
+                case Tuple.DELETE:
+                    leftTupleSets.addDelete(leftTuple);
+                    break;
+                case Tuple.UPDATE:
+                    leftTupleSets.addUpdate(leftTuple);
+                    break;
+            }
+        }
+        return leftTupleSets;
+    }
+    
     private TupleImpl insertFirst;
     private TupleImpl deleteFirst;
     private TupleImpl updateFirst;

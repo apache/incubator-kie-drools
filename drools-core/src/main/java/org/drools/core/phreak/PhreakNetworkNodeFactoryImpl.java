@@ -18,81 +18,83 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.core.common.ReteEvaluator;
+
 public class PhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFactory {
 
     @Override
-    public PhreakJoinNode createPhreakJoinNode() {
-        return new PhreakJoinNode();
+    public PhreakJoinNode createPhreakJoinNode(ReteEvaluator reteEvaluator) {
+        return new PhreakJoinNode(reteEvaluator);
     }
 
     @Override
-    public PhreakEvalNode createPhreakEvalNode() {
-        return new PhreakEvalNode();
+    public PhreakEvalNode createPhreakEvalNode(ReteEvaluator reteEvaluator) {
+        return new PhreakEvalNode(reteEvaluator);
     }
 
     @Override
-    public PhreakFromNode createPhreakFromNode() {
-        return new PhreakFromNode();
+    public PhreakFromNode createPhreakFromNode(ReteEvaluator reteEvaluator) {
+        return new PhreakFromNode(reteEvaluator);
     }
 
     @Override
-    public PhreakReactiveFromNode createPhreakReactiveFromNode() {
-        return new PhreakReactiveFromNode();
+    public PhreakReactiveFromNode createPhreakReactiveFromNode(ReteEvaluator reteEvaluator) {
+        return new PhreakReactiveFromNode(reteEvaluator);
     }
 
     @Override
-    public PhreakNotNode createPhreakNotNode() {
-        return new PhreakNotNode();
+    public PhreakNotNode createPhreakNotNode(ReteEvaluator reteEvaluator) {
+        return new PhreakNotNode(reteEvaluator);
     }
 
     @Override
-    public PhreakExistsNode createPhreakExistsNode() {
-        return new PhreakExistsNode();
+    public PhreakExistsNode createPhreakExistsNode(ReteEvaluator reteEvaluator) {
+        return new PhreakExistsNode(reteEvaluator);
     }
 
     @Override
-    public PhreakAccumulateNode createPhreakAccumulateNode() {
-        return new PhreakAccumulateNode();
+    public PhreakAccumulateNode createPhreakAccumulateNode(ReteEvaluator reteEvaluator) {
+        return new PhreakAccumulateNode(reteEvaluator);
     }
 
     @Override
-    public PhreakGroupByNode createPhreakGroupByNode() {
-        return new PhreakGroupByNode();
+    public PhreakGroupByNode createPhreakGroupByNode(ReteEvaluator reteEvaluator) {
+        return new PhreakGroupByNode(reteEvaluator);
     }
 
     @Override
-    public PhreakBranchNode createPhreakBranchNode() {
-        return new PhreakBranchNode();
+    public PhreakBranchNode createPhreakBranchNode(ReteEvaluator reteEvaluator) {
+        return new PhreakBranchNode(reteEvaluator);
     }
 
     @Override
-    public PhreakQueryNode createPhreakQueryNode() {
-        return new PhreakQueryNode();
+    public PhreakQueryNode createPhreakQueryNode(ReteEvaluator reteEvaluator) {
+        return new PhreakQueryNode(reteEvaluator);
     }
 
     @Override
-    public PhreakTimerNode createPhreakTimerNode() {
-        return new PhreakTimerNode();
+    public PhreakTimerNode createPhreakTimerNode(ReteEvaluator reteEvaluator) {
+        return new PhreakTimerNode(reteEvaluator);
     }
 
     @Override
-    public PhreakAsyncSendNode createPhreakAsyncSendNode() {
-        return new PhreakAsyncSendNode();
+    public PhreakAsyncSendNode createPhreakAsyncSendNode(ReteEvaluator reteEvaluator) {
+        return new PhreakAsyncSendNode(reteEvaluator);
     }
 
     @Override
-    public PhreakAsyncReceiveNode createPhreakAsyncReceiveNode() {
+    public PhreakAsyncReceiveNode createPhreakAsyncReceiveNode(ReteEvaluator reteEvaluator) {
 
-        return new PhreakAsyncReceiveNode();
+        return new PhreakAsyncReceiveNode(reteEvaluator);
     }
 
     @Override
-    public PhreakRuleTerminalNode createPhreakRuleTerminalNode() {
-        return new PhreakRuleTerminalNode();
+    public PhreakRuleTerminalNode createPhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
+        return new PhreakRuleTerminalNode(reteEvaluator);
     }
 
     @Override
-    public PhreakQueryTerminalNode createPhreakQueryTerminalNode() {
-        return new PhreakQueryTerminalNode();
+    public PhreakQueryTerminalNode createPhreakQueryTerminalNode(ReteEvaluator reteEvaluator) {
+        return new PhreakQueryTerminalNode(reteEvaluator);
     }
 }

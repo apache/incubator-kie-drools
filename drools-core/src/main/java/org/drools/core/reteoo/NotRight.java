@@ -25,8 +25,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.doExistentialUpdatesReorderChildLeftTuple;
-import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.PhreakNodeOperations.doExistentialUpdatesReorderChildLeftTuple;
 
 public class NotRight extends RightInputAdapterNode<NotNode> {
 
@@ -36,7 +35,7 @@ public class NotRight extends RightInputAdapterNode<NotNode> {
 
     @Override
     protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
-        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, (NotNode) betaNode, (RightTuple) rightTuple);
+        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, betaNode, (RightTuple) rightTuple);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class NotRight extends RightInputAdapterNode<NotNode> {
             memory.setNodeDirty(betaNode, reteEvaluator);
         }
 
-        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+        reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
     }
 
     @Override
@@ -104,7 +103,7 @@ public class NotRight extends RightInputAdapterNode<NotNode> {
             memory.setNodeDirty( betaNode, reteEvaluator );
         }
 
-        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+        reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
     }
 
     @Override

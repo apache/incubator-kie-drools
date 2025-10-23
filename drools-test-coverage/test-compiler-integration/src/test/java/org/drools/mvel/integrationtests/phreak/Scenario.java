@@ -24,7 +24,6 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.phreak.SegmentPropagator;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -177,15 +176,15 @@ public class Scenario {
         actualResultLeftTuples = new TupleSetsImpl();
         
         if ( phreakNode == PhreakJoinNode.class ) {
-            new PhreakJoinNode().doNode( wm, (JoinNode) betaNode,
-                                          sinkNode, bm, leftTuples, actualResultLeftTuples, previousResultTuples );
+            new PhreakJoinNode(wm).doNode( (JoinNode) betaNode, sinkNode,
+                                          bm, leftTuples, actualResultLeftTuples, previousResultTuples );
             
         } else if ( phreakNode == PhreakNotNode.class ) {
-            new PhreakNotNode().doNode( wm, (NotNode) betaNode,
-                                        sinkNode, bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
+            new PhreakNotNode(wm).doNode( (NotNode) betaNode, sinkNode,
+                                        bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
         } else if ( phreakNode == PhreakExistsNode.class ) {
-            new PhreakExistsNode().doNode( wm, (ExistsNode) betaNode,
-                                           sinkNode, bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
+            new PhreakExistsNode(wm).doNode( (ExistsNode) betaNode, sinkNode,
+                                           bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
         }
         
         if ( expectedResultBuilder != null ) {
@@ -203,7 +202,7 @@ public class Scenario {
         }        
         
         SegmentMemory smem = bm.getSegmentMemory();
-        SegmentPropagator.propagate(smem, actualResultLeftTuples, wm);
+        wm.getRuleNetworkEvaluator().propagate(smem, actualResultLeftTuples);
         if ( testLeftMemory ) {
             equalsLeftMemory( leftMemory );
         }
