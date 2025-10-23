@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
