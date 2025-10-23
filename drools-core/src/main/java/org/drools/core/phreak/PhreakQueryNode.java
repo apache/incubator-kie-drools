@@ -27,6 +27,9 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+
+import static org.drools.core.phreak.PhreakNodeOperations.unlinkAndDeleteChildLeftTuple;
+
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleImpl;
 
@@ -134,7 +137,7 @@ public class PhreakQueryNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                    unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     childLeftTuple = nextChild;
                 }
             }

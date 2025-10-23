@@ -34,6 +34,11 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesExistentialReorderRightMemory;
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderLeftMemory;
+import static org.drools.core.phreak.PhreakNodeOperations.findLeftTupleBlocker;
+import static org.drools.core.phreak.PhreakNodeOperations.unlinkAndDeleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 
 public class PhreakNotNode {
 
@@ -75,11 +80,11 @@ public class PhreakNotNode {
 
         if (srcLeftTuples.getUpdateFirst() != null) {
             // must happen before right inserts, so it can find left tuples to block.
-            PhreakNodeOperations.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+            doUpdatesReorderLeftMemory(bm, srcLeftTuples);
         }
 
         if ( srcRightTuples.getUpdateFirst() != null) {
-            PhreakNodeOperations.doUpdatesExistentialReorderRightMemory(bm, notNode, srcRightTuples); // this also preserves the next rightTuple
+            doUpdatesExistentialReorderRightMemory(bm, notNode, srcRightTuples); // this also preserves the next rightTuple
         }
 
         if (srcRightTuples.getInsertFirst() != null) {
@@ -124,14 +129,14 @@ public class PhreakNotNode {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(notNode, leftTuple);
+            boolean useLeftMemory = useLeftMemory(notNode, leftTuple);
 
             constraints.updateFromTuple( contextEntry,
                                          reteEvaluator,
                                          leftTuple );
 
             // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
-            PhreakNodeOperations.findLeftTupleBlocker(notNode, rtm, contextEntry, constraints, leftTuple, useLeftMemory);
+            findLeftTupleBlocker(notNode, rtm, contextEntry, constraints, leftTuple, useLeftMemory);
 
             if (leftTuple.getBlocker() == null) {
                 insertChildLeftTuple( sink, trgLeftTuples, ltm, leftTuple, leftTuple.getPropagationContext(), useLeftMemory );
@@ -192,7 +197,7 @@ public class PhreakNotNode {
 
                         if ( childLeftTuple != null ) { // NotNode only has one child
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                            unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
 
@@ -286,7 +291,7 @@ public class PhreakNotNode {
                         // no need to remove, as we removed at the start
                         // to be matched against, as it's now blocked
                         childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext()); // we have the righttuple, so use it for the pctx
-                        PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                        unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     } // else: it's blocked now and no children so blocked before, thus do nothing
                 } else if (childLeftTuple == null) {
                     // not blocked, with no children, must have been previously blocked so assert
@@ -354,7 +359,7 @@ public class PhreakNotNode {
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();
                         if ( childLeftTuple != null ) {
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
+                            unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                         }
                     }
 
@@ -447,7 +452,7 @@ public class PhreakNotNode {
 
                 if (childLeftTuple != null) { // NotNode only has one child
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
-                    PhreakNodeOperations.unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
+                    unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                 }
             } else {
                 blocker.removeBlocked(leftTuple);
