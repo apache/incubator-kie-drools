@@ -18,6 +18,7 @@
  */
 package org.jbpm.bpmn2.rule;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,9 +32,10 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.dmn.DmnDecisionModel;
-import org.kie.kogito.dmn.rest.DMNJSONUtils;
 
 public class DecisionRuleTypeEngineImpl implements DecisionRuleTypeEngine {
 
@@ -51,9 +53,9 @@ public class DecisionRuleTypeEngineImpl implements DecisionRuleTypeEngine {
                                 namespace,
                                 model))
                         .get();
-
-        //Input Binding
-        DMNContext context = DMNJSONUtils.ctx(modelInstance, jsonResolver.resolveAll(getInputs(rsni)));
+        // Input binding
+        Map<String, Object> variables = getDMNAnnotatedAdjustedMap(rsni);
+        DMNContext context = modelInstance.newContext(variables);
         DMNResult dmnResult = modelInstance.evaluateAll(context);
         if (dmnResult.hasErrors()) {
             String errors = dmnResult.getMessages(DMNMessage.Severity.ERROR).stream()
@@ -68,4 +70,33 @@ public class DecisionRuleTypeEngineImpl implements DecisionRuleTypeEngine {
 
         rsni.triggerCompleted();
     }
+
+    Map<String, Object> getDMNAnnotatedAdjustedMap(RuleSetNodeInstance rsni) {
+        // Get inputs
+        Map<String, Object> inputs = getInputs(rsni);
+        // resolve inputs with the JsonResolver' objectMapper
+        Map<String, Object> jsonResolvedInputs = jsonResolver.resolveAll(inputs);
+        return getDMNAnnotatedAdjustedMap(inputs, jsonResolvedInputs);
+    }
+
+    Map<String, Object> getDMNAnnotatedAdjustedMap(Map<String, Object> rsniInputs, Map<String, Object> jsonResolvedInputs) {
+        Map<String, Object> toReturn = new HashMap<>(jsonResolvedInputs);
+        // Retrieving DMN-annotated inputs
+        Map<String, Object> dmnAnnotatedBeans = rsniInputs.entrySet()
+                .stream()
+                .filter(entry -> isDMNAnnotatedBean(entry.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        // replacing/adding DMN-annotated beans inside returned Map
+        toReturn.putAll(dmnAnnotatedBeans);
+        return toReturn;
+    }
+
+    boolean isDMNAnnotatedBean(Object bean) {
+        return bean != null && isDMNAnnotatedClass(bean.getClass());
+    }
+
+    boolean isDMNAnnotatedClass(Class<?> clazz) {
+        return !JavaBackedType.of(clazz).equals(BuiltInType.UNKNOWN);
+    }
+
 }
