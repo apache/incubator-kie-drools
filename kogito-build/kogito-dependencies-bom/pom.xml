@@ -34,6 +34,11 @@
   <description>Third-party dependencies used by Kogito</description>
 
   <properties>
+    <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
+       They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
+    <version.angus.mail>2.0.5</version.angus.mail>
+    <!-- End of various transitive overrides. -->
+
     <!-- this version property is used in plugins but also in dependencies too -->
     <version.io.quarkus>3.20.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
@@ -163,11 +168,20 @@
     <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.27.1</version.apache.commons.commons-compress>
 
-    <version.tomcat.embed.core>10.1.46</version.tomcat.embed.core>
+    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
+     They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
+      <dependency>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-mail</artifactId>
+        <version>${version.angus.mail}</version>
+      </dependency>
+      <!-- End of various transitive overrides. -->
 
       <!-- Not directly used, but used to override transitive versions of Spring dependencies dependencies to fix vulnerabilities -->
       <dependency>
