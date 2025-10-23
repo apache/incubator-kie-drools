@@ -25,6 +25,11 @@ import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
+
+import static org.drools.core.phreak.PhreakNodeOperations.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
+
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -80,7 +85,7 @@ public class PhreakBranchNode {
             boolean breaking = false;
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
-            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(branchNode, leftTuple);
+            boolean useLeftMemory = useLeftMemory(branchNode, leftTuple);
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
@@ -170,7 +175,7 @@ public class PhreakBranchNode {
 
             // Handle main branch
             if (branchTuples.mainLeftTuple != null) {
-                PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, branchTuples.mainLeftTuple);
+                normalizeStagedTuples(stagedLeftTuples, branchTuples.mainLeftTuple);
 
                 if (!breaking) {
                     // default consequence will also be executed
@@ -207,7 +212,7 @@ public class PhreakBranchNode {
             }
 
             if (branchTuples.mainLeftTuple != null) {
-                PhreakNodeOperations.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
+                deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();

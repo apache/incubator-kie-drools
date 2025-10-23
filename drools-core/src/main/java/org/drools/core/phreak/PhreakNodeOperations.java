@@ -230,11 +230,11 @@ public class PhreakNodeOperations {
         }
 
         for (TupleImpl rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            PhreakNodeOperations.doRemoveExistentialRightMemoryForReorder(rtm, (RightTuple) rightTuple, resumeFromCurrent);
+            doRemoveExistentialRightMemoryForReorder(rtm, (RightTuple) rightTuple, resumeFromCurrent);
         }
 
         for (TupleImpl rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            PhreakNodeOperations.doAddExistentialRightMemoryForReorder(rtm, (RightTuple) rightTuple, resumeFromCurrent);
+            doAddExistentialRightMemoryForReorder(rtm, (RightTuple) rightTuple, resumeFromCurrent);
         }
 
         if (rtm.getIndexType() != TupleMemory.IndexType.NONE) {

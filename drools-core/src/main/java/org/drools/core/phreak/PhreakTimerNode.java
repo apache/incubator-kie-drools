@@ -50,6 +50,9 @@ import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.PhreakNodeOperations.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
+
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
 
@@ -194,7 +197,7 @@ public class PhreakTimerNode {
                 TupleImpl childLeftTuple = leftTuple.getFirstChild(); // only has one child
                 if ( childLeftTuple != null ) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
-                    PhreakNodeOperations.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                    deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                     if ( log.isTraceEnabled() ) {
                         log.trace( "Timer Delete {}", leftTuple );
                     }
@@ -345,7 +348,7 @@ public class PhreakTimerNode {
             // This childLeftTuple has been created in this doNode loop, just skip it
             childLeftTuple.setContextObject( null );
         } else {
-            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
+            normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
             trgLeftTuples.addUpdate( childLeftTuple );
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Update {}", childLeftTuple );

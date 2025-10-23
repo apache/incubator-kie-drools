@@ -36,6 +36,8 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
+
 public class PhreakAsyncSendNode {
 
     private ReteEvaluator reteEvaluator;
@@ -75,7 +77,7 @@ public class PhreakAsyncSendNode {
 
             PropagationContext propagationContext = leftTuple.getPropagationContext();
 
-            boolean useLeftMemory = PhreakNodeOperations.useLeftMemory(node, leftTuple);
+            boolean useLeftMemory = useLeftMemory(node, leftTuple);
 
             if (useLeftMemory) {
                 memory.getBetaMemory().getLeftTupleMemory().add(leftTuple);

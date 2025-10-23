@@ -44,6 +44,11 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderLeftMemory;
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderRightMemory;
+import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
+
 public class PhreakAccumulateNode {
 
     protected ReteEvaluator reteEvaluator;
@@ -78,12 +83,12 @@ public class PhreakAccumulateNode {
         }
 
         if (srcRightTuples.getUpdateFirst() != null) {
-            PhreakNodeOperations.doUpdatesReorderRightMemory(bm, srcRightTuples);
+            doUpdatesReorderRightMemory(bm, srcRightTuples);
             doRightUpdates(accNode, am, srcRightTuples, tempLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
-            PhreakNodeOperations.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+            doUpdatesReorderLeftMemory(bm, srcLeftTuples);
             doLeftUpdates(accNode, am, srcLeftTuples, tempLeftTuples);
         }
 
@@ -152,7 +157,7 @@ public class PhreakAccumulateNode {
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = leftTupleMemoryEnabled || PhreakNodeOperations.useLeftMemory(accNode, leftTuple);
+            boolean useLeftMemory = leftTupleMemoryEnabled || useLeftMemory(accNode, leftTuple);
 
             if (useLeftMemory) {
                 ltm.add(leftTuple);
@@ -236,7 +241,7 @@ public class PhreakAccumulateNode {
 
         for (TupleImpl rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             TupleImpl next = rightTuple.getStagedNext();
-            boolean useTupleMemory = tupleMemoryEnabled || PhreakNodeOperations.useLeftMemory(accNode, rightTuple);
+            boolean useTupleMemory = tupleMemoryEnabled || useLeftMemory(accNode, rightTuple);
 
             if (useTupleMemory || !accNode.getRightInput().inputIsTupleToObjectNode()) {
                 // If tuple memory is off, it will still be when it is not a subnetwork.
@@ -568,7 +573,7 @@ public class PhreakAccumulateNode {
     protected void propagateDelete( TupleSets trgLeftTuples, TupleSets stagedLeftTuples, Object accPropCtx ) {
         AccumulateContextEntry entry =  (AccumulateContextEntry) accPropCtx;
         if ( entry.isPropagated() ) {
-            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, (TupleImpl) entry.getResultLeftTuple());
+            normalizeStagedTuples(stagedLeftTuples, (TupleImpl) entry.getResultLeftTuple());
             trgLeftTuples.addDelete( (TupleImpl) entry.getResultLeftTuple() );
         }
     }
@@ -672,7 +677,7 @@ public class PhreakAccumulateNode {
         childLeftTuple.setPropagationContext( propagationContext != null ? propagationContext : leftTuple.getPropagationContext() );
 
         if ( accPropCtx.isPropagated()) {
-            PhreakNodeOperations.normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
+            normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
 
             if (isAllowed) {
                 // modify
