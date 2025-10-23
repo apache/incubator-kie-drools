@@ -8,6 +8,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleImpl;
 
 public interface RuleNetworkEvaluator {
 
@@ -31,6 +32,13 @@ public interface RuleNetworkEvaluator {
                              TupleSets leftTupleSets);
     
     void forceFlushWhenSubnetwork(PathMemory pmem);
+    
+    public boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode);
+    
+    public boolean flushLeftTupleIfNecessary(SegmentMemory sm,
+                                             TupleImpl leftTuple,
+                                             boolean streamMode,
+                                             short stagedType);
     
     List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem);
     

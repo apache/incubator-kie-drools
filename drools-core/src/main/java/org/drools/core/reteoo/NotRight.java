@@ -26,7 +26,6 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
 
 import static org.drools.core.phreak.PhreakNodeOperations.doExistentialUpdatesReorderChildLeftTuple;
-import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public class NotRight extends RightInputAdapterNode<NotNode> {
 
@@ -69,7 +68,7 @@ public class NotRight extends RightInputAdapterNode<NotNode> {
             memory.setNodeDirty(betaNode, reteEvaluator);
         }
 
-        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+        reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
     }
 
     @Override
@@ -104,7 +103,7 @@ public class NotRight extends RightInputAdapterNode<NotNode> {
             memory.setNodeDirty( betaNode, reteEvaluator );
         }
 
-        flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+        reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
     }
 
     @Override
