@@ -40,7 +40,7 @@ import org.drools.core.reteoo.TupleImpl;
 
 public class PhreakBranchNode {
 
-    protected ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakBranchNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

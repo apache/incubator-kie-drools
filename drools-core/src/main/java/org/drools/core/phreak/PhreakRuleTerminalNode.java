@@ -45,7 +45,7 @@ import org.kie.api.event.rule.MatchCancelledCause;
 */
 public class PhreakRuleTerminalNode {
 
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

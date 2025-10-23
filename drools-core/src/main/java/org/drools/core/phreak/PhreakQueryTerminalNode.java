@@ -40,7 +40,7 @@ import org.drools.core.util.LinkedList;
 */
 public class PhreakQueryTerminalNode {
     
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakQueryTerminalNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

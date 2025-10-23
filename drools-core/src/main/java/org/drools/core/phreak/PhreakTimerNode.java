@@ -56,7 +56,7 @@ import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
 
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakTimerNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

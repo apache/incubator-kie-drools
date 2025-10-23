@@ -42,7 +42,7 @@ import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 
 public class PhreakNotNode {
 
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakNotNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

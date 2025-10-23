@@ -108,11 +108,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
     private SegmentMemorySupport segmentMemorySupport;
 
-    private ReteEvaluator reteEvaluator;
-
-
     public RuleNetworkEvaluatorImpl(ReteEvaluator reteEvaluator, NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport) {
-        this.reteEvaluator = reteEvaluator;
         this.nodeMemories = nodeMemories;
         this.segmentMemorySupport = segmentMemorySupport;
         pJoinNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakJoinNode(reteEvaluator);
@@ -259,7 +255,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             mem = sm.getNodeMemories()[0];
         }
 
-        PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : reteEvaluator.getNodeMemory(
+        PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : nodeMemories.getNodeMemory(
                 (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         ActivationsManager activationsManager = pmem.getActualActivationsManager();

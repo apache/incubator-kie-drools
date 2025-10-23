@@ -36,7 +36,7 @@ import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
 public class PhreakAsyncReceiveNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakAsyncReceiveNode.class );
 
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakAsyncReceiveNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
