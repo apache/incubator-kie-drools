@@ -79,6 +79,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
+import static org.drools.core.common.TupleSetsImpl.createLeftTupleTupleSets;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 
 public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
@@ -266,7 +267,34 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 leftTupleSets,
                 true);
     }
+    
+    
+    @Override
+    public boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode) {
+        return flushLeftTupleIfNecessary(sm, null, streamMode, Tuple.NONE);
+    }
 
+    @Override
+    public boolean flushLeftTupleIfNecessary(SegmentMemory sm,
+                                                    TupleImpl leftTuple,
+                                                    boolean streamMode,
+                                                    short stagedType) {
+        PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
+
+        if (pmem == null) {
+            return false;
+        }
+
+        forceFlushLeftTuple(pmem, sm, createLeftTupleTupleSets(leftTuple, stagedType));
+        forceFlushWhenSubnetwork(pmem);
+        return true;
+    }
+
+    public static PathMemory findPathToFlush(SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
+        boolean forceFlush = streamMode || (leftTuple != null && leftTuple.getFactHandle() != null && leftTuple
+                .getFactHandle().isEvent());
+        return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
+    }
 
     private void outerEval(ActivationsManager activationsManager,
                           RuleExecutor executor,
@@ -991,6 +1019,9 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
+    
+    
+    
     
 
     private static String indent(int size) {
