@@ -40,7 +40,7 @@ import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 
 public class PhreakAsyncSendNode {
 
-    private ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakAsyncSendNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

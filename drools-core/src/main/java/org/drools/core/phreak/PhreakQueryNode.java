@@ -35,7 +35,7 @@ import org.drools.core.reteoo.TupleImpl;
 
 public class PhreakQueryNode {
 
-    protected ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakQueryNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;

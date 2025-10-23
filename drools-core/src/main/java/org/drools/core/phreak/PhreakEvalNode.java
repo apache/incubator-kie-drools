@@ -44,7 +44,7 @@ import org.drools.core.reteoo.TupleImpl;
 public class PhreakEvalNode {
 
     private static final String EVAL_LEFT_TUPLE_DELETED = "EVAL_LEFT_TUPLE_DELETED";
-    protected final ReteEvaluator reteEvaluator;
+    private final ReteEvaluator reteEvaluator;
 
     public PhreakEvalNode(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
