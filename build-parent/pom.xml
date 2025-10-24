@@ -221,10 +221,20 @@
     <!-- plugin used to enforce architectural constraints -->
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
+
+    <version.io.vertx>4.5.22</version.io.vertx>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Version overrides to fix vulnerabilities. -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <!-- Version overrides to fix vulnerabilities - end -->
+
       <!-- Keep in sync with groupId org.slf4j -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
