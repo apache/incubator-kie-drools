@@ -102,7 +102,7 @@
 
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.5.18</version.io.vertx>
+    <version.io.vertx>4.5.22</version.io.vertx>
     <version.io.grpc>1.76.0</version.io.grpc>
 
     <version.io.quarkus.camel>3.20.2</version.io.quarkus.camel>
@@ -1163,10 +1163,15 @@
         <version>${version.org.rocksdb}</version>
       </dependency>
 
-      <!-- PostgreSQL -->
+      <!-- Vertx libraries, including PostgreSQL client -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-pg-client</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
 
