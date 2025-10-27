@@ -132,7 +132,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
         if (sink.getType() == NodeTypeEnums.NotNode) {
             bm.linkNode( ( BetaNode ) sink, reteEvaluator );
         } else {
-            bm.unlinkNode(reteEvaluator);
+            bm.unlinkNode();
         }
     }
 

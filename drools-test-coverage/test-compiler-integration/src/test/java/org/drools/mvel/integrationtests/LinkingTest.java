@@ -34,7 +34,6 @@ import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -424,7 +423,7 @@ public class LinkingTest {
         JoinNode eNode = ( JoinNode ) exists1n.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode ) eNode.getSinkPropagator().getSinks()[0];
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, exists1n);
+        wm.getSegmentMemorySupport().getOrCreateSegmentMemory(exists1n);
         BetaMemory existsBm = (BetaMemory) wm.getNodeMemory(exists1n);
 
         assertThat(existsBm.getSegmentMemory().getLinkedNodeMask()).isEqualTo(0);
@@ -1040,7 +1039,7 @@ public class LinkingTest {
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, cNode);
+        wm.getSegmentMemorySupport().getOrCreateSegmentMemory(cNode);
         LiaNodeMemory amem = wm.getNodeMemory(aNode);
 
         // Only NotNode is linked in
@@ -1117,7 +1116,7 @@ public class LinkingTest {
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, cNode);
+        wm.getSegmentMemorySupport().getOrCreateSegmentMemory(cNode);
         LiaNodeMemory amem = wm.getNodeMemory(aNode);
 
         // Only NotNode is linked in

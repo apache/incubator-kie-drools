@@ -84,10 +84,10 @@ public class ScenarioTest {
         
         bm0 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
-        smem = proto1.newSegmentMemory(wm);
+        smem = proto1.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm.setSegmentMemory( smem );
         
-        smem0 = proto2.newSegmentMemory(wm);
+        smem0 = proto2.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 

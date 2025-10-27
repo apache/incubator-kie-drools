@@ -182,7 +182,7 @@ public class PhreakTimerNode {
                     // a expire clashes with insert or update, allow it to propagate once, will handle the expire the second time around
                     doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
                     tm.getDeleteLeftTuples().add( leftTuple );
-                    pmem.doLinkRule( activationsManager ); // make sure it's dirty, so it'll evaluate again
+                    pmem.doLinkRule( ); // make sure it's dirty, so it'll evaluate again
                     if ( log.isTraceEnabled() ) {
                         log.trace( "Timer Postponed Delete {}", leftTuple );
                     }
@@ -415,8 +415,8 @@ public class PhreakTimerNode {
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                ActivationsManager activationsManager = pmem.getActualActivationsManager( reteEvaluator );
-                pmem.doLinkRule( activationsManager );
+                ActivationsManager activationsManager = pmem.getActualActivationsManager( );
+                pmem.doLinkRule( );
 
                 if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {
                     evaluateAndFireRule( pmem, activationsManager );

@@ -239,8 +239,8 @@ public class ProtobufOutputMarshaller {
             // this must clone as re-evaluation will under underlying Collection
             for ( RuleAgendaItem activation : new ArrayList<>(wm.getAgenda().getAgendaGroupsManager().getActivations())) {
                 // evaluate it
-                activation.getRuleExecutor().evaluateNetworkIfDirty( wm );
-                activation.getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
+                activation.getRuleExecutor().evaluateNetworkIfDirty( );
+                activation.getRuleExecutor().removeRuleAgendaItemWhenEmpty( );
             }
             dirty = false;
             // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.

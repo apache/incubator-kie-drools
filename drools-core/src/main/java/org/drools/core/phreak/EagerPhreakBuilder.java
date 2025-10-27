@@ -68,6 +68,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.SegmentNodeMemory;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
@@ -102,7 +103,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
         Set<Integer> visited = new HashSet<>();
         if (tn.getPathNodes()[0].getAssociatedTerminalsSize() == 1) {
-            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
+            BuildtimeSegmentUtilities.createPathProtoMemories(kBase.getSegmentPrototypeRegistry(), tn, null);
 
             // rule added with no sharing, so populate it's lian
             wms.forEach(wm -> Add.insertLiaFacts(wm, tn.getPathNodes()[0], visited, false));
@@ -110,9 +111,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             List<Pair> exclBranchRoots = getExclusiveBranchRoots(tn);
 
             // Process existing branches from the split  points
-            exclBranchRoots.forEach(pair -> Add.processSplit(kBase, wms, pair.parent, smemsToNotify));
+            exclBranchRoots.forEach(pair -> Add.processSplit(kBase.getSegmentPrototypeRegistry(), wms, pair.parent, smemsToNotify));
 
-            Add.addNewPaths(kBase, wms, exclBranchRoots, tn, smemsToNotify);
+            Add.addNewPaths(kBase.getSegmentPrototypeRegistry(), wms, exclBranchRoots, tn, smemsToNotify);
 
             exclBranchRoots.forEach(pair -> processLeftTuples(wms, pair.parent, tn, true));
         }
@@ -122,7 +123,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             Add.insertFacts(wm, tn, visited, false);
         }
 
-        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
+        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment());
     }
 
     /**
@@ -155,14 +156,14 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         if (exclBranchRoots.isEmpty()) {
             LeftTupleNode lian = tn.getPathNodes()[0];
             processLeftTuples(wms, lian, tn, false);
-            Remove.removeExistingPaths(kBase, wms, exclBranchRoots, tn);
+            Remove.removeExistingPaths(kBase.getSegmentPrototypeRegistry(), wms, exclBranchRoots, tn);
         } else {
             exclBranchRoots.forEach(pair -> processLeftTuples(wms, pair.parent, tn, false));
-            Remove.removeExistingPaths(kBase, wms, exclBranchRoots, tn);
+            Remove.removeExistingPaths(kBase.getSegmentPrototypeRegistry(), wms, exclBranchRoots, tn);
 
             // Process existing branches from the split  points
             Set<Integer> visited = new HashSet<>();
-            exclBranchRoots.forEach(pair -> Remove.processMerges(kBase, wms, pair.parent, tn, visited));
+            exclBranchRoots.forEach(pair -> Remove.processMerges(kBase.getSegmentPrototypeRegistry(), wms, pair.parent, tn, visited));
         }
 
         for (InternalWorkingMemory wm : wms) {
@@ -298,15 +299,15 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             detachedTuples.forEach(d -> d.reattachToRight());
         }
 
-        public static SegmentPrototype processSplit(InternalRuleBase kbase,
+        public static SegmentPrototype processSplit(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                     Collection<InternalWorkingMemory> wms,
                                                     LeftTupleNode splitNode,
                                                     Set<SegmentMemoryPair> smemsToNotify) {
             LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode);
-            SegmentPrototype proto1 = kbase.getSegmentPrototype(segmentRoot);
+            SegmentPrototype proto1 = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
             if (proto1.getTipNode() != splitNode) {
                 // split does not already exist, add it.
-                return splitSegment(kbase, wms, proto1, splitNode, smemsToNotify);
+                return splitSegment(segmentPrototypeRegistry, wms, proto1, splitNode, smemsToNotify);
             }
 
             // split already exists, add it.
@@ -328,11 +329,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                     PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(endNode);
                     if (pmem == null) {
-                        pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
+                        pmem = wm.getSegmentMemorySupport().initializePathMemory(endNode);
                     }
                     if (pmem.getSegmentMemories()[proto.getPos()] == null) {
                         // we check null, as this might have been fixed due to eager initialisation
-                        RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
+                        pmem.addSegmentToPathMemory(smem);
                     }
                 }
             }));
@@ -427,7 +428,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             notifyImpactedSegments(wm, sm2, smemsToNotify);
         }
 
-        public static SegmentPrototype splitSegment(InternalRuleBase kbase,
+        public static SegmentPrototype splitSegment(SegmentPrototypeRegistry prototypeRegistry,
                                                     Collection<InternalWorkingMemory> wms,
                                                     SegmentPrototype proto1,
                                                     LeftTupleNode splitNode,
@@ -437,7 +438,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             // Create the new segment proto
             LeftTupleNode proto2RootNode = splitNode.getSinkPropagator().getFirstLeftTupleSink();
             SegmentPrototype proto2 = new SegmentPrototype(proto2RootNode, proto1.getTipNode());
-            kbase.registerSegmentPrototype(proto2RootNode, proto2);
+            prototypeRegistry.registerSegmentPrototype(proto2RootNode, proto2);
             proto2.setPos(proto1.getPos() + 1);
 
             // Split the nodes across proto1 and proto2
@@ -481,13 +482,13 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             return proto2;
         }
 
-        private static void addNewPaths(InternalRuleBase kBase,
+        private static void addNewPaths(SegmentPrototypeRegistry prototypeRegistry,
                                         Collection<InternalWorkingMemory> wms,
                                         List<Pair> exclBranchRoots,
                                         TerminalNode tn,
                                         Set<SegmentMemoryPair> smemsToNotify) {
             // create protos
-            BuildtimeSegmentUtilities.createPathProtoMemories(kBase, tn, null);
+            BuildtimeSegmentUtilities.createPathProtoMemories(prototypeRegistry, tn, null);
 
             // update SegmentProtos with new EndNodes
             for (PathEndNode endNode : tn.getPathEndNodes()) {
@@ -519,7 +520,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             Memory mem = wm.getNodeMemories().peekNodeMemory(sproto.getRootNode());
                             if (mem != null && mem.getSegmentMemory() != null) {
                                 if (pmem == null) {
-                                    pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
+                                    pmem = wm.getSegmentMemorySupport().initializePathMemory(endNode);
                                 }
                                 SegmentMemory sm = mem.getSegmentMemory();
                                 pmem.getSegmentMemories()[sproto.getPos()] = sm;
@@ -531,7 +532,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             SegmentMemory sm = sproto.shallowNewSegmentMemory();
                             sm.setNodeMemories(new Memory[]{pmem});
                             pmem.setSegmentMemory(sm);
-                            RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
+                            pmem.addSegmentToPathMemory(sm);
                             notifyImpactedSegments(wm, sm, smemsToNotify);
                         }
                     }
@@ -551,9 +552,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (parentMem != null && parentMem.getSegmentMemory() != null &&
                         !parentMem.getSegmentMemory().isEmpty()) {
                         SegmentMemory sm = parentMem.getSegmentMemory();
-                        SegmentMemory childSmem = RuntimeSegmentUtilities.createChildSegment(wm, child);
+                        SegmentMemory childSmem = wm.getSegmentMemorySupport().createChildSegment(child);
                         sm.add(childSmem);
-                        sm.notifyRuleLinkSegment(wm);
+                        sm.notifyRuleLinkSegment();
                         notifyImpactedSegments(wm, sm, smemsToNotify);
                         notifyImpactedSegments(wm, childSmem, smemsToNotify);
                     }
@@ -574,7 +575,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
     public static class Remove {
 
-        private static void removeExistingPaths(InternalRuleBase kbase,
+        private static void removeExistingPaths(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                                 Collection<InternalWorkingMemory> wms,
                                                 List<Pair> exclBranchRoots,
                                                 TerminalNode tn) {
@@ -602,7 +603,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         smproto.setPathEndNodes(newNodes);
                     } else {
                         // unregister the segments exclusive to the branch being used
-                        kbase.invalidateSegmentPrototype(smproto.getRootNode());
+                        segmentPrototypeRegistry.invalidateSegmentPrototype(smproto.getRootNode());
                     }
                 }
             }
@@ -674,7 +675,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
-        private static void processMerges(InternalRuleBase kBase,
+        private static void processMerges(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                           Collection<InternalWorkingMemory> wms,
                                           LeftTupleNode splitNode,
                                           TerminalNode tn,
@@ -688,7 +689,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 // with the tn ignored, it's no longer a semgnet tip so it's segment is ready to merge
                 LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode, tn);
 
-                SegmentPrototype proto1 = kBase.getSegmentPrototype(segmentRoot);
+                SegmentPrototype proto1 = segmentPrototypeRegistry.getSegmentPrototype(segmentRoot);
 
                 // find the remaining child and get it's proto
                 LeftTupleNode ltn = null;
@@ -706,12 +707,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     throw new RuntimeException();
                 }
 
-                SegmentPrototype proto2 = kBase.getSegmentPrototype(ltn);
-                mergeSegments(kBase, wms, proto1, proto2);
+                SegmentPrototype proto2 = segmentPrototypeRegistry.getSegmentPrototype(ltn);
+                mergeSegments(segmentPrototypeRegistry, wms, proto1, proto2);
             }
         }
 
-        public static void mergeSegments(InternalRuleBase kbase,
+        public static void mergeSegments(SegmentPrototypeRegistry segmentPrototypeRegistry,
                                          Collection<InternalWorkingMemory> wms,
                                          SegmentPrototype proto1,
                                          SegmentPrototype proto2) {
@@ -751,7 +752,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 updatePaths(wms, newList, proto1, endNode);
             }
 
-            kbase.invalidateSegmentPrototype(proto2.getRootNode());
+            segmentPrototypeRegistry.invalidateSegmentPrototype(proto2.getRootNode());
         }
 
         private static void mergeSegment(ReteEvaluator wm,
@@ -768,12 +769,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             if (sm1 == null) {
                 // To be able to merge sm1 must exist
-                sm1 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto1.getRootNode());
+                sm1 = wm.getSegmentMemorySupport().getOrCreateSegmentMemory(proto1.getRootNode());
             }
 
             if (sm2 == null) {
                 // To be able to merge sm2 must exist
-                sm2 = RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, proto2.getRootNode());
+                sm2 = wm.getSegmentMemorySupport().getOrCreateSegmentMemory(proto2.getRootNode());
             }
 
             // merge the memories and reassign back to sm1
@@ -1131,7 +1132,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(lt.getSink());
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(wm), pmem.getRuleAgendaItem()
+                PhreakRuleTerminalNode.doLeftDelete(pmem.getActualActivationsManager(), pmem.getRuleAgendaItem()
                         .getRuleExecutor(), (RuleTerminalNodeLeftTuple) lt);
             }
         } else {

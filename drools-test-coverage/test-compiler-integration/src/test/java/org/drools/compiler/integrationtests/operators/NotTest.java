@@ -206,7 +206,7 @@ public class NotTest {
 
         StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl) ksession;
         NodeMemories                 nodeMemories = ksessionImpl.getNodeMemories();
-        BetaMemory                   betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode, ksessionImpl);
+        BetaMemory                   betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode);
         TupleMemory                  rightTupleMemory = betaMemory.getRightTupleMemory();
 
         FastIterator<TupleImpl> it = rightTupleMemory.fullFastIterator();

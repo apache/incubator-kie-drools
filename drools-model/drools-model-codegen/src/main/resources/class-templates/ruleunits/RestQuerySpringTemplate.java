@@ -26,12 +26,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitInstance;
 
 import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("/$endpointName$")
+@Tag(name = "Rules - $modelName$")
 public class $unit$Query$name$Endpoint {
 
     @Autowired
@@ -43,7 +47,10 @@ public class $unit$Query$name$Endpoint {
         this.ruleUnit = ruleUnit;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(operationId ="executeRuleQuery_$modelName$",
+            summary="It executes the $modelName$ Rule Query")
     public List<$ReturnType$> executeQuery(@RequestBody(required = true) $UnitTypeDTO$ unitDTO) {
         RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
         // Do not return the result directly to allow post execution codegen (like monitoring)
@@ -52,8 +59,10 @@ public class $unit$Query$name$Endpoint {
         return response;
     }
 
-    @PostMapping(value = "/first", produces = MediaType.APPLICATION_JSON_VALUE, consumes =
-            MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/first", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(operationId ="executeRuleQuerySingleResult-$modelName$",
+            summary="It executes the $modelName$ Rule Query. It returns one single fact (the first) as a result.")
     public $ReturnType$ executeQueryFirst(@RequestBody(required = true) $UnitTypeDTO$ unitDTO) {
         List<$ReturnType$> results = executeQuery(unitDTO);
         $ReturnType$ response = results.isEmpty() ? null : results.get(0);

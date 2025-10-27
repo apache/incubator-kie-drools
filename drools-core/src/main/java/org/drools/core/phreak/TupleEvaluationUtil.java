@@ -136,9 +136,8 @@ public class TupleEvaluationUtil {
         PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : reteEvaluator.getNodeMemory(
                 (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
-        ActivationsManager activationsManager = pmem.getActualActivationsManager(reteEvaluator);
-        RuleNetworkEvaluator.INSTANCE.outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem(
-                activationsManager).getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
+        ActivationsManager activationsManager = pmem.getActualActivationsManager();
+        RuleNetworkEvaluator.INSTANCE.outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
                 leftTupleSets,
                 true);
     }
