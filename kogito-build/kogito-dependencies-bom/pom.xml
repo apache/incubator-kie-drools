@@ -42,8 +42,8 @@
     <!-- this version property is used in plugins but also in dependencies too -->
     <version.io.quarkus>3.20.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
-    <version.org.springframework>6.2.11</version.org.springframework>
-    <version.org.springframework.boot>3.4.10</version.org.springframework.boot>
+    <version.org.springframework>6.2.12</version.org.springframework>
+    <version.org.springframework.boot>3.4.11</version.org.springframework.boot>
     <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
     <version.org.bouncycastle.bc.jdk18on>1.81</version.org.bouncycastle.bc.jdk18on>
@@ -74,12 +74,12 @@
     <version.com.sun.activation>2.0.1</version.com.sun.activation>
     <version.javax.inject>2.0.1</version.javax.inject>
     <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
-    <version.ch.qos.logback>1.5.19</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
-    <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
+    <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
 
-    <version.io.netty>4.1.127.Final</version.io.netty>
+    <version.io.netty>4.1.128.Final</version.io.netty>
 
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <!--
@@ -89,9 +89,9 @@
     -->
     <version.io.fabric8.kubernetes-client>7.1.0</version.io.fabric8.kubernetes-client>
     <version.io.fabric8.openshift-mock>6.13.5</version.io.fabric8.openshift-mock>
-    <version.io.micrometer>1.14.11</version.io.micrometer>
+    <version.io.micrometer>1.14.12</version.io.micrometer>
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
-    <version.org.postgresql>42.7.7</version.org.postgresql>
+    <version.org.postgresql>42.7.8</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
@@ -135,7 +135,7 @@
     <!-- we align to version used by quarkus -->
     <version.org.apache.avro>1.12.0</version.org.apache.avro>
     <version.org.assertj>3.27.3</version.org.assertj>
-    <version.org.glassfish.jaxb>4.0.5</version.org.glassfish.jaxb>
+    <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
     <version.org.junit>4.13.2</version.org.junit>
