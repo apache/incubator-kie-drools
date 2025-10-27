@@ -46,6 +46,7 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -53,6 +54,7 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.ActivationsManagerImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
@@ -101,6 +103,8 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final FactHandleFactory handleFactory;
 
     private final NodeMemories nodeMemories;
+    
+    private final SegmentMemorySupport segmentMemorySupport;
 
     private final ActivationsManager activationsManager;
     private final EntryPointsManager entryPointsManager;
@@ -127,10 +131,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
-        this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
+        this.nodeMemories = new ConcurrentNodeMemories(ruleBase, this);
 
         this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
         this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
+        
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, ruleBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
         this.timerService = sessionConfiguration.createTimerService();
 
         initInitialFact();
@@ -181,7 +187,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     @Override
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
+    }
+    
+    @Override
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return segmentMemorySupport;
     }
 
     @Override

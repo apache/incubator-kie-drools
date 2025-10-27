@@ -176,7 +176,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
             if ( stagedDeleteWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
-            shouldFlush = memory.unlinkNode(reteEvaluator) | shouldFlush;
+            shouldFlush = memory.unlinkNode() | shouldFlush;
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
             shouldFlush = memory.setNodeDirty( betaNode, reteEvaluator ) | shouldFlush;

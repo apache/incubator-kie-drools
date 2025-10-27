@@ -21,14 +21,13 @@ package org.drools.core.common;
 
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * An interface for node memories implementation
  */
 public interface NodeMemories {
 
-    <T extends Memory> T getNodeMemory(MemoryFactory<T> node, ReteEvaluator reteEvaluator);
+    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     void clearNodeMemory( MemoryFactory node );
 
@@ -56,5 +55,5 @@ public interface NodeMemories {
      */
     int length();
 
-    void resetAllMemories(StatefulKnowledgeSession session);
+    void resetAllMemories();
 }

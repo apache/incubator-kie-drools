@@ -33,34 +33,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PathMemory extends AbstractLinkedListNode<Memory>
-        implements
-        Serializable, Memory {
+                        implements
+                        Serializable, Memory {
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private          long              linkedSegmentMask;
-    private          long              allLinkedMaskTest;
-    private final    PathEndNode       pathEndNode;
-    private          RuleAgendaItem    agendaItem;
-    private          SegmentMemory[]   segmentMemories;
-    private          SegmentMemory     segmentMemory;
+    private long linkedSegmentMask;
+    private long allLinkedMaskTest;
+    private final PathEndNode pathEndNode;
+    private RuleAgendaItem agendaItem;
+    private SegmentMemory[] segmentMemories;
+    private SegmentMemory segmentMemory;
 
-    public  final    boolean           dataDriven;
+    public final boolean dataDriven;
+
+    private ActivationsManager activationsManager;
 
     public PathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
         this.pathEndNode = pathEndNode;
         this.linkedSegmentMask = 0L;
-        this.dataDriven = initDataDriven( reteEvaluator );
+        this.dataDriven = initDataDriven(reteEvaluator);
+        this.activationsManager = reteEvaluator.getActivationsManager().getPartitionedAgendaForNode(getPathEndNode());
     }
 
-    protected boolean initDataDriven( ReteEvaluator reteEvaluator ) {
-        return isRuleDataDriven( reteEvaluator, getRule() );
+    protected boolean initDataDriven(ReteEvaluator reteEvaluator) {
+        return isRuleDataDriven(reteEvaluator, getRule());
     }
 
-    protected boolean isRuleDataDriven( ReteEvaluator reteEvaluator, RuleImpl rule ) {
+    protected boolean isRuleDataDriven(ReteEvaluator reteEvaluator, RuleImpl rule) {
         return rule != null &&
-               ( rule.isDataDriven() || ( reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().getForceEagerActivationFilter().accept(rule) ));
+               (rule.isDataDriven() || (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration()
+                       .getForceEagerActivationFilter().accept(rule)));
     }
 
     public PathEndNode getPathEndNode() {
@@ -95,7 +99,7 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
         linkedSegmentMask |= mask;
     }
 
-    public void linkSegment(long mask, ReteEvaluator reteEvaluator) {
+    public void linkSegment(long mask) {
         linkedSegmentMask |= mask;
         if (isLogTraceEnabled) {
             if (NodeTypeEnums.isTerminalNode(getPathEndNode())) {
@@ -106,16 +110,16 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
             }
         }
         if (isRuleLinked()) {
-            doLinkRule(reteEvaluator);
+            doLinkRule();
         }
     }
 
-    public RuleAgendaItem getOrCreateRuleAgendaItem(ActivationsManager activationsManager) {
-        ensureAgendaItemCreated(activationsManager);
+    public RuleAgendaItem getOrCreateRuleAgendaItem() {
+        ensureAgendaItemCreated();
         return agendaItem;
     }
 
-    private TerminalNode ensureAgendaItemCreated(ActivationsManager activationsManager) {
+    private TerminalNode ensureAgendaItemCreated() {
         AbstractTerminalNode rtn = (AbstractTerminalNode) getPathEndNode();
         if (agendaItem == null) {
             int salience = rtn.getRule().getSalience().isDynamic() ? 0 : rtn.getRule().getSalience().getValue();
@@ -124,70 +128,62 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
         return rtn;
     }
 
-    public void doLinkRule(ReteEvaluator reteEvaluator) {
-        doLinkRule( getActualActivationsManager( reteEvaluator ) );
-    }
-
-    public void doLinkRule(ActivationsManager activationsManager) {
-        TerminalNode rtn = ensureAgendaItemCreated(activationsManager);
+    public void doLinkRule() {
+        TerminalNode rtn = ensureAgendaItemCreated();
         if (isLogTraceEnabled) {
             log.trace(" LinkRule name={}", rtn.getRule().getName());
         }
 
-        queueRuleAgendaItem(activationsManager);
+        queueRuleAgendaItem();
     }
 
-    public void doUnlinkRule(ReteEvaluator reteEvaluator) {
-        doUnlinkRule( getActualActivationsManager( reteEvaluator ) );
-    }
-
-    public void doUnlinkRule(ActivationsManager activationsManager) {
-        TerminalNode rtn = ensureAgendaItemCreated(activationsManager);
+    public void doUnlinkRule() {
+        TerminalNode rtn = ensureAgendaItemCreated();
         if (isLogTraceEnabled) {
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
         }
 
         agendaItem.getRuleExecutor().setDirty(true);
-        if ( !agendaItem.isQueued() ) {
-            if ( isLogTraceEnabled ) {
+        if (!agendaItem.isQueued()) {
+            if (isLogTraceEnabled) {
                 log.trace("Queue RuleAgendaItem {}", agendaItem);
             }
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
-            ag.add( agendaItem );
+            ag.add(agendaItem);
         }
     }
 
-    public void queueRuleAgendaItem(ActivationsManager activationsManager) {
+    public void queueRuleAgendaItem() {
         agendaItem.getRuleExecutor().setDirty(true);
 
         ActivationsFilter activationFilter = activationsManager.getActivationsFilter();
-        if ( activationFilter != null ) {
-            activationFilter.accept( agendaItem );
+        if (activationFilter != null) {
+            activationFilter.accept(agendaItem);
         }
 
-        if ( !agendaItem.isQueued() ) {
-            if ( isLogTraceEnabled ) {
+        if (!agendaItem.isQueued()) {
+            if (isLogTraceEnabled) {
                 log.trace("Queue RuleAgendaItem {}", agendaItem);
             }
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
-            ag.add( agendaItem );
+            ag.add(agendaItem);
         }
 
-        if ( agendaItem.getRule().isQuery() ) {
-            activationsManager.addQueryAgendaItem( agendaItem );
-        } else if ( agendaItem.getRule().isEager() ) {
-            activationsManager.addEagerRuleAgendaItem( agendaItem );
+        if (agendaItem.getRule().isQuery()) {
+            activationsManager.addQueryAgendaItem(agendaItem);
+        } else if (agendaItem.getRule().isEager()) {
+            activationsManager.addEagerRuleAgendaItem(agendaItem);
         }
     }
 
-    public void unlinkedSegment(long mask, ReteEvaluator reteEvaluator) {
-        boolean linkedRule =  isRuleLinked();
+    public void unlinkedSegment(long mask) {
+        boolean linkedRule = isRuleLinked();
         linkedSegmentMask &= ~mask;
         if (isLogTraceEnabled) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }
         if (linkedRule && !isRuleLinked()) {
-            doUnlinkRule(reteEvaluator);
+            doUnlinkRule();
         }
     }
 
@@ -237,8 +233,15 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
         this.agendaItem = null;
     }
 
-    public ActivationsManager getActualActivationsManager(ReteEvaluator reteEvaluator) {
-        ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-        return activationsManager.getPartitionedAgendaForNode( getPathEndNode() );
+    public ActivationsManager getActualActivationsManager() {
+        return activationsManager;
+    }
+    
+    public void addSegmentToPathMemory(SegmentMemory smem) {
+        if (smem.getRootNode().getPathIndex() >= getPathEndNode().getStartTupleSource().getPathIndex()) {
+            smem.addPathMemory(this);
+            setSegmentMemory(smem.getPos(), smem);
+        }
+
     }
 }

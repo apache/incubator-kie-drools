@@ -55,6 +55,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -65,6 +66,7 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -174,6 +176,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /** The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
 
+    private SegmentMemorySupport segmentMemorySupport;
+    
     /** Global values which are associated with this memory. */
     protected GlobalResolver globalResolver;
 
@@ -335,7 +339,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = new ConcurrentNodeMemories(kBase, this);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
@@ -345,6 +349,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this, handleFactory);
 
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, kBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
+        
         this.sequential = conf.isSequential();
 
         this.globalResolver = RuntimeComponentFactory.get().createGlobalResolver(this, this.environment);
@@ -836,7 +842,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void reset() {
         if (nodeMemories != null) {
-            nodeMemories.resetAllMemories( this );
+            nodeMemories.resetAllMemories();
         }
 
         this.agenda.reset();
@@ -1340,7 +1346,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * @return The node's memory.
      */
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final MemoryFactory node) {
@@ -1351,6 +1357,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return nodeMemories;
     }
 
+    
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return segmentMemorySupport;
+    }
+    
     public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
         return this.ruleRuntimeEventSupport;
     }

@@ -18,7 +18,6 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.util.DoubleLinkedEntry;
@@ -35,7 +34,7 @@ public interface Memory extends DoubleLinkedEntry<Memory> {
     default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, ReteEvaluator reteEvaluator ) {
         SegmentMemory smem = getSegmentMemory();
         if (smem == null) {
-            smem = RuntimeSegmentUtilities.getOrCreateSegmentMemory(reteEvaluator, tupleSource, this);
+            smem = reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory(tupleSource, this);
         }
         return smem;
     }

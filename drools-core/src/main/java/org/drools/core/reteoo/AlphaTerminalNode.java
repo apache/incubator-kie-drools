@@ -114,7 +114,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, TerminalNode rtn, boolean linkPmem ) {
         PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
         if (linkPmem) {
-            pathMemory.doLinkRule( activationsManager );
+            pathMemory.doLinkRule( );
         }
         return pathMemory.getRuleAgendaItem();
     }
