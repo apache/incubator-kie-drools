@@ -72,7 +72,12 @@ public abstract class AbstractProcessSvgService implements ProcessSvgService {
             try {
                 Path path = PathUtils.getSecuredPath(baseDir, processId + ".svg");
                 if (Files.notExists(path) || !Files.isRegularFile(path) || !path.toRealPath().startsWith(baseDir.toRealPath())) {
-                    LOGGER.warn("Could not find {}.svg file in folder {}", processId, svgResourcesPath.get());
+                    if (LOGGER.isWarnEnabled()) {
+                        // The replace calls are sanitization of the user input. The processId has a way to reach here from the user.
+                        LOGGER.warn("Could not find {}.svg file in folder {}",
+                                processId.replace('\n', '_').replace('\r', '_'),
+                                svgResourcesPath.get());
+                    }
                     return Optional.empty();
                 }
                 return Optional.of(new String(Files.readAllBytes(path)));

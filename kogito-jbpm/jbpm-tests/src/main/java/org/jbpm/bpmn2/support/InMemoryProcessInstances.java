@@ -76,7 +76,10 @@ public class InMemoryProcessInstances<T extends Model> implements MutableProcess
             return Optional.empty();
         }
 
-        LOGGER.info("find by id {}", id);
+        if (LOGGER.isInfoEnabled()) {
+            // The replace calls are sanitization of the user input. The id has a way to reach here from the user.
+            LOGGER.info("find by id {}", id.replace('\n', '_').replace('\r', '_'));
+        }
         AbstractProcessInstance<T> pi = (AbstractProcessInstance<T>) marshaller.unmarshallProcessInstance(data, process, mode);
         connectProcessInstance(pi);
         return Optional.of(pi);

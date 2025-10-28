@@ -107,7 +107,7 @@ class SpringBootExplainableResourceTest {
         ResponseEntity responseEntity = resource.predict(singletonList(input));
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), responseEntity.getStatusCodeValue());
-        assertEquals("Model " + unknownwResourceId + " not found.", responseEntity.getBody());
+        assertEquals("An Exception occurred processing the predict request. Please see the logs for more details.", responseEntity.getBody());
     }
 
     private PredictInput createInput(int speedLimit) {

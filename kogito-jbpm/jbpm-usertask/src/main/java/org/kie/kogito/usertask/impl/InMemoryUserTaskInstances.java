@@ -75,7 +75,8 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
             UserTaskInstance userTaskInstance = mapper.readValue(userTaskInstances.get(userTaskInstanceId), DefaultUserTaskInstance.class);
             return Optional.ofNullable(reconnectUserTaskInstance.apply(userTaskInstance));
         } catch (Exception e) {
-            LOG.error("during find by Id {}", userTaskInstanceId, e);
+            // The replace calls are sanitization of the user input. The userTaskInstanceId has a way to reach here from the user.
+            LOG.error("during find by Id {}", userTaskInstanceId.replace('\n', '_').replace('\r', '_'), e);
             return Optional.empty();
         }
     }

@@ -52,7 +52,7 @@ public class SpringBootExplainableResource {
             return ResponseEntity.ok(explainabilityService.processRequest(application, inputs));
         } catch (Exception e) {
             LOGGER.warn("An Exception occurred processing the predict request", e);
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("An Exception occurred processing the predict request. Please see the logs for more details.");
         }
     }
 }
