@@ -32,6 +32,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -51,6 +52,8 @@ public interface ReteEvaluator extends ValueResolver {
 
     long getIdentifier();
 
+    RuleNetworkEvaluator getRuleNetworkEvaluator();
+    
     ActivationsManager getActivationsManager();
 
     InternalRuleBase getKnowledgeBase();

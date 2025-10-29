@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
-import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderChildLeftTuple;
+import static org.drools.core.reteoo.BetaNode.getBetaMemory;
 
 public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNode
         implements ObjectSinkNode,
@@ -120,7 +120,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+            reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
         }
     }
 
@@ -133,7 +133,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm = BetaNode.getBetaMemory(((RightInputAdapterNode)rightTuple.getSink()).getBetaNode(), reteEvaluator);
+            BetaMemory bm = getBetaMemory(((RightInputAdapterNode)rightTuple.getSink()).getBetaNode(), reteEvaluator);
             ((RightInputAdapterNode) rightTuple.getSink()).doDeleteRightTuple(rightTuple, reteEvaluator, bm);
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
@@ -145,7 +145,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
                 // RightTuple previously existed, so continue as modify
                 rightTuple.setPropagationContext( context );  // only update, if the mask intersects
 
-                BetaMemory bm = BetaNode.getBetaMemory(betaNode, reteEvaluator);
+                BetaMemory bm = getBetaMemory(betaNode, reteEvaluator);
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, reteEvaluator, bm);
             } else if (rightTuple.getMemory() != null) {
@@ -160,7 +160,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
     }
 
     protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
-        BetaNode.getBetaMemory(betaNode, reteEvaluator).getRightTupleMemory().removeAdd(rightTuple);
+        getBetaMemory(betaNode, reteEvaluator).getRightTupleMemory().removeAdd(rightTuple);
         doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
@@ -183,7 +183,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+            reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
         }
     }
 
@@ -200,7 +200,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode() );
+            reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(memory.getOrCreateSegmentMemory( betaNode, reteEvaluator ), isStreamMode());
         }
     }
 
