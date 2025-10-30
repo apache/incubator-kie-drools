@@ -83,6 +83,128 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(RuleNetworkEvaluatorImpl.class);
+    
+
+    
+    static class SegmentCursor {
+        
+        private PathMemory pmem;
+        private SegmentMemory[] smems;
+        private int smemIndex;
+        private long bit;
+        private Memory nodeMem;
+        private NetworkNode node;
+        
+        public SegmentCursor(PathMemory pmem,
+                             SegmentMemory[] smems,
+                             int smemIndex,
+                             long bit,
+                             Memory nodeMem,
+                             NetworkNode node) {
+            this.pmem = pmem;
+            this.smems = smems;
+            this.smemIndex = smemIndex;
+            this.bit = bit;
+            this.nodeMem = nodeMem;
+            this.node = node;
+        }
+        
+        public static SegmentCursor createSegmentCursor(PathMemory pmem, SegmentMemory sm) {
+            if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm.getTipNode())) {
+                return new SegmentCursor(pmem, 
+                        pmem.getSegmentMemories(), 
+                        sm.getPos(),
+                        2L,
+                        sm.getNodeMemories()[1],
+                        // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
+                        sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink());
+            } else {
+                return new SegmentCursor(pmem, 
+                        pmem.getSegmentMemories(), 
+                        sm.getPos(),
+                        1L,
+                        sm.getNodeMemories()[0],
+                        // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
+                        sm.getRootNode());
+            }
+        }
+
+        
+
+        private static SegmentCursor createSegmentCursor(PathMemory pmem, NetworkNode sink, Memory tm) {
+            SegmentMemory[] smems = pmem.getSegmentMemories();
+            SegmentMemory sm = tm.getSegmentMemory();
+            int smemIndex = 0;
+            for (SegmentMemory smem : smems) {
+                if (smem == sm) {
+                    break;
+                }
+                smemIndex++;
+            }
+
+            long bit = 1;
+            for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleNode) node).getSinkPropagator()
+                    .getFirstLeftTupleSink()) {
+                //update the bit to the correct node position.
+                bit = nextNodePosMask(bit);
+            }
+
+            return new SegmentCursor(pmem, 
+                    smems,
+                    smemIndex,
+                    bit,
+                    tm,
+                    sink);
+        }
+
+        public static SegmentCursor createSegmentCursorForStack(PathMemory pmem) {
+            if (pmem.getPathEndNode().getPathNodes()[0] == pmem.getSegmentMemories()[0].getTipNode()) {
+                // segment only has liaNode in it
+                // nothing is staged in the liaNode, so skip to next segment
+                return new SegmentCursor(
+                        pmem, 
+                        pmem.getSegmentMemories(), 
+                        1, 
+                        1L,  
+                        pmem.getSegmentMemories()[1].getNodeMemories()[0], 
+                        pmem.getSegmentMemories()[1].getRootNode());
+            } else {
+                // lia is in shared segment, so point to next node
+                return new SegmentCursor(
+                        pmem, 
+                        pmem.getSegmentMemories(), 
+                        0, 
+                        2L,  
+                        pmem.getSegmentMemories()[0].getNodeMemories()[1], 
+                        pmem.getPathEndNode().getPathNodes()[0].getSinkPropagator().getFirstLeftTupleSink());
+            }
+        }
+
+        private static SegmentCursor createSegmentCursor(PathMemory pmem) {
+            if (pmem.getSegmentMemories()[0].isOnlyLiaSegment()) {
+                return new SegmentCursor(
+                        pmem,
+                        pmem.getSegmentMemories(),
+                        1,
+                        1L,
+                        // segment only has liaNode in it
+                        // nothing is staged in the liaNode, so skip to next segment
+                        pmem.getSegmentMemories()[1].getNodeMemories()[0],
+                        pmem.getSegmentMemories()[1].getRootNode());
+            } else {
+                // lia is in shared segment, so point to next node
+                return new SegmentCursor(
+                        pmem, 
+                        pmem.getSegmentMemories(),
+                        0,
+                        2L,
+                        pmem.getSegmentMemories()[0].getNodeMemories()[1],
+                        pmem.getSegmentMemories()[0].getRootNode().getSinkPropagator().getFirstLeftTupleSink());
+            }
+        }
+        
+    }
+
 
     private final PhreakJoinNode         pJoinNode;
     private final PhreakEvalNode         pEvalNode;
@@ -136,65 +258,33 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     public void evaluateNetwork(ActivationsManager activationsManager,
                                 RuleExecutor executor,
                                 PathMemory pmem) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
 
-
-        SegmentMemory smem = smems[0];
-        if (smem == null) {
-            // if there's no first smem it's a pure alpha firing and then doesn't require any furthe evaluation
+        if (pmem.getSegmentMemories()[0] == null) {
+            // if there's no first smem it's a pure alpha firing and then doesn't require any further evaluation
             return;
         }
+        
+        SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem);
 
-        LeftTupleNode liaNode = smem.getRootNode();
-
-        NetworkNode node;
-        Memory nodeMem;
-        boolean firstSegmentIsOnlyLia = liaNode == smem.getTipNode();
-        if (firstSegmentIsOnlyLia) {
-            // segment only has liaNode in it
-            // nothing is staged in the liaNode, so skip to next segment
-            smem = smems[1];
-            node = smem.getRootNode();
-            nodeMem = smem.getNodeMemories()[0];
-        } else {
-            // lia is in shared segment, so point to next node
-            node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-            nodeMem = smem.getNodeMemories()[1]; // skip the liaNode memory
-        }
-
-        TupleSets srcTuples = smem.getStagedLeftTuples();
+        
+        TupleSets srcTuples = pmem.getSegmentMemories()[segmentCursor.smemIndex].getStagedLeftTuples();
         if (log.isTraceEnabled()) {
-            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
+            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), pmem.getSegmentMemories().length, srcTuples.toStringSizes());
         }
-        outerEval(activationsManager, executor, pmem, smems, firstSegmentIsOnlyLia ? 1 : 0, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, node, srcTuples, true);
+        outerEval(activationsManager, executor, segmentCursor, srcTuples, true);
     }
-    
+
     @Override
     public void evaluate(PathMemory pmem,
                           ActivationsManager activationsManager,
                           NetworkNode sink,
                           Memory tm,
                           TupleSets trgLeftTuples) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
-        SegmentMemory sm = tm.getSegmentMemory();
-        int smemIndex = 0;
-        for (SegmentMemory smem : smems) {
-            if (smem == sm) {
-                break;
-            }
-            smemIndex++;
-        }
-
-        long bit = 1;
-        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleNode) node).getSinkPropagator()
-                .getFirstLeftTupleSink()) {
-            //update the bit to the correct node position.
-            bit = nextNodePosMask(bit);
-        }
-
-        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), pmem, smems,
-                smemIndex, bit, tm, sink, trgLeftTuples, true);
+        SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem, sink, tm);
+        
+        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), segmentCursor, trgLeftTuples, true);
     }
+
     
     
     @Override
@@ -243,31 +333,19 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     public void forceFlushLeftTuple(PathMemory pmem,
                                     SegmentMemory sm, 
                                     TupleSets leftTupleSets) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
 
-        LeftTupleNode node;
-        Memory mem;
-        long bit = 1;
-        if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm
-                .getTipNode())) {
-            // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
-            node = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
-            mem = sm.getNodeMemories()[1];
-            bit = 2; // adjust bit to point to next node
-        } else {
-            node = sm.getRootNode();
-            mem = sm.getNodeMemories()[0];
-        }
+        SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem, sm);
 
         PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : nodeMemories.getNodeMemory(
                 (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         ActivationsManager activationsManager = pmem.getActualActivationsManager();
-        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
-                leftTupleSets,
-                true);
+
+        
+        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), segmentCursor, leftTupleSets, true);
     }
-    
+
+
     
     @Override
     public boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode) {
@@ -295,26 +373,21 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 .getFactHandle().isEvent());
         return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
     }
-
+    
     private void outerEval(ActivationsManager activationsManager,
-                          RuleExecutor executor,
-                          PathMemory pmem,
-                          SegmentMemory[] smems,
-                          int smemIndex,
-                          long bit,
-                          Memory nodeMem,
-                          NetworkNode node,
-                          TupleSets trgTuples,
-                          boolean processSubnetwork) {
+                           RuleExecutor executor,
+                           SegmentCursor sc,
+                           TupleSets trgTuples,
+                           boolean processSubnetwork) {
 
-        LinkedList<StackEntry> stack = new LinkedList<>();
-        innerEval(activationsManager, executor, stack, pmem, smems, smemIndex, bit, nodeMem, node, trgTuples, processSubnetwork);
-        while (!stack.isEmpty()) {
-            // eval
-            StackEntry entry = stack.removeLast();
-            evalStackEntry(activationsManager, executor, stack, entry);
-        }
-    }
+         LinkedList<StackEntry> stack = new LinkedList<>();
+         innerEval(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.bit, sc.nodeMem, sc.node, trgTuples, processSubnetwork);
+         while (!stack.isEmpty()) {
+             // eval
+             StackEntry entry = stack.removeLast();
+             evalStackEntry(activationsManager, executor, stack, entry);
+         }
+     }
 
     private void evalStackEntry(ActivationsManager activationsManager,
                                RuleExecutor executor,
@@ -340,7 +413,15 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         long bit = entry.getBit();
         if (entry.isResumeFromNextNode()) {
             SegmentMemory smem = smems[smemIndex];
-            if (node != smem.getTipNode()) {
+            if (node == smem.getTipNode()) {
+                // Reached end of segment, start on new segment.
+                propagate(smem, trgTuples);
+                smem = smems[++smemIndex];
+                trgTuples = smem.getStagedLeftTuples().takeAll();
+                node = smem.getRootNode();
+                nodeMem = smem.getNodeMemories()[0];
+                bit = 1; // update bit to start of new segment
+            } else {
                 // get next node and node memory in the segment
                 LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
                 if (nextSink == null) {
@@ -352,14 +433,6 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
                 nodeMem = nodeMem.getNext();
                 bit = nextNodePosMask(bit); // update bit to new node
-            } else {
-                // Reached end of segment, start on new segment.
-                propagate(smem, trgTuples);
-                smem = smems[++smemIndex];
-                trgTuples = smem.getStagedLeftTuples().takeAll();
-                node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories()[0];
-                bit = 1; // update bit to start of new segment
             }
         }
 
@@ -471,12 +544,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
             }
 
-            if (node != smem.getTipNode()) {
-                // get next node and node memory in the segment
-                node = sink;
-                nodeMem = nodeMem.getNext();
-                bit = nextNodePosMask(bit);
-            } else {
+            if (node == smem.getTipNode()) {
                 // Reached end of segment, start on new segment.
                 smem.getFirst().getStagedLeftTuples().addAll(stagedLeftTuples); // must put back all the LTs
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
@@ -491,6 +559,11 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 }
                 node = smem.getRootNode();
                 nodeMem = smem.getNodeMemories()[0];
+            } else {
+                // get next node and node memory in the segment
+                node = sink;
+                nodeMem = nodeMem.getNext();
+                bit = nextNodePosMask(bit);
             }
             processSubnetwork = true; //  make sure it's reset, so ria nodes are processed
         }
@@ -629,30 +702,11 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         for (int i = 0; i < qpmems.size() ; i++) {
             PathMemory qpmem = qpmems.get(i);
 
-            pmem = qpmem;
-            smems = qpmem.getSegmentMemories();
-            smemIndex = 0;
-            SegmentMemory smem = smems[smemIndex]; // 0
+            SegmentCursor sc = SegmentCursor.createSegmentCursorForStack(qpmem);
 
-            LeftTupleNode liaNode = qpmem.getPathEndNode().getPathNodes()[0];
-
-            if (liaNode == smem.getTipNode()) {
-                // segment only has liaNode in it
-                // nothing is staged in the liaNode, so skip to next segment
-                smem = smems[++smemIndex]; // 1
-                node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories()[0];
-                bit = 1;
-            } else {
-                // lia is in shared segment, so point to next node
-                node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-                nodeMem = smem.getNodeMemories()[1]; // skip the liaNode memory
-                bit = 2;
-            }
-
-            trgTuples = smem.getStagedLeftTuples().takeAll();
-            stackEntry = new StackEntry(node, bit, null, pmem,
-                                        nodeMem, smems, smemIndex,
+            trgTuples = qpmem.getSegmentMemories()[sc.smemIndex].getStagedLeftTuples().takeAll();
+            stackEntry = new StackEntry(sc.node, sc.bit, null, sc.pmem,
+                                        sc.nodeMem, sc.pmem.getSegmentMemories(), sc.smemIndex,
                                         trgTuples, false, true);
             if (log.isTraceEnabled()) {
                 int offset = getOffset(stackEntry.getNode());
@@ -663,6 +717,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         return true;
 
     }
+
 
     private boolean evalBetaNode(ActivationsManager activationsManager,
                                  RuleExecutor executor,
