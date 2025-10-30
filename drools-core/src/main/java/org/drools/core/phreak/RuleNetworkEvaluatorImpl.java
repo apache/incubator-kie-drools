@@ -145,7 +145,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             return;
         }
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
+        LeftTupleNode liaNode = smem.getRootNode();
 
         NetworkNode node;
         Memory nodeMem;
@@ -186,7 +186,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
 
         long bit = 1;
-        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource) node).getSinkPropagator()
+        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleNode) node).getSinkPropagator()
                 .getFirstLeftTupleSink()) {
             //update the bit to the correct node position.
             bit = nextNodePosMask(bit);
@@ -199,7 +199,12 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     
     @Override
     public void forceFlushWhenSubnetwork(PathMemory pmem) {
-        for (PathMemory outPmem : findPathsToFlushFromSubnetwork(pmem)) {
+        forceFlushPaths(findPathsToFlushFromSubnetwork(pmem));
+    }
+    
+    @Override
+    public void forceFlushPaths(Collection<PathMemory> pmems) {
+        for (PathMemory outPmem : pmems) {
             forceFlushPath(outPmem);
         }
     }
