@@ -197,9 +197,11 @@ public class ReteDumper {
 
     private void dumpNode( BaseNode node, String ident, Set<BaseNode> visitedNodes, BiConsumer<BaseNode, String> consumer ) {
         consumer.accept( node, ident );
+        
         if (!visitedNodes.add( node )) {
             return;
         }
+        
         NetworkNode[] sinks = node.getSinks();
         if (sinks != null) {
             for (NetworkNode sink : sinks) {

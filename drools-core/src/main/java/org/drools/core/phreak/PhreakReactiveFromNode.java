@@ -25,15 +25,21 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNode.ReactiveFromMemory;
 
 public class PhreakReactiveFromNode extends PhreakFromNode {
+    
+    
+    
+    public PhreakReactiveFromNode(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     public void doNode(ReactiveFromNode fromNode,
                        ReactiveFromMemory fm,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
 
-        super.doNode(fromNode, fm, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        super.doNode(fromNode, fm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         trgLeftTuples.addAll(fm.getStagedLeftTuples().takeAll());
     }
 }

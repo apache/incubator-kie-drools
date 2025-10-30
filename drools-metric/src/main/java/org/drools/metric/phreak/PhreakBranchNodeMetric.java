@@ -19,22 +19,26 @@
 package org.drools.metric.phreak;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakBranchNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakBranchNodeMetric extends PhreakBranchNode {
 
+    public PhreakBranchNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(ConditionalBranchNode branchNode,
+    public void doNode(ActivationsManager activationsManager,
+                       ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,
@@ -43,7 +47,7 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
         try {
             MetricLogUtils.getInstance().startMetrics(branchNode);
 
-            super.doNode(branchNode, cbm, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            super.doNode(activationsManager, branchNode, cbm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

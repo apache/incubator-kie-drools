@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.yard.core;
 
-package org.drools.compiler.test;
+import java.util.Map;
 
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.Person;
+import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.dsl.SyntheticRuleUnit;
 
-query "find stinky cheeses"
-        Cheese(type == "stinky")
-end 
+public class SyntheticRuleUnitWrapper implements Firable {
 
-query "find pensioners"
-        Person(age > 65)
-end 
+    private final SyntheticRuleUnit wrapped;
+
+    public SyntheticRuleUnitWrapper(SyntheticRuleUnit wrapped) {
+        this.wrapped = wrapped;
+    }
+
+    @Override
+    public int fire(Map<String, Object> context, YaRDDefinitions units) {
+        RuleUnitInstance<SyntheticRuleUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(wrapped);
+        int fire = unitInstance.fire();
+        RuleUnitProvider.get().invalidateRuleUnits(wrapped.getClass());
+        return fire;
+    }
+}

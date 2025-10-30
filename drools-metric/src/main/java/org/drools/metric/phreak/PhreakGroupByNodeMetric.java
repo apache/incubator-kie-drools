@@ -22,17 +22,19 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakGroupByNode;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
 
+    public PhreakGroupByNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
     public void doNode( AccumulateNode accNode,
                         LeftTupleSink sink,
                         AccumulateNode.AccumulateMemory am,
-                        ReteEvaluator reteEvaluator,
                         TupleSets srcLeftTuples,
                         TupleSets trgLeftTuples,
                         TupleSets stagedLeftTuples) {
@@ -40,7 +42,7 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);
 
-            super.doNode(accNode, sink, am, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(accNode, sink, am, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

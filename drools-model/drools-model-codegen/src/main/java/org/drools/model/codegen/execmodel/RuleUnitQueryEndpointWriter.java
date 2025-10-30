@@ -191,7 +191,8 @@ public class RuleUnitQueryEndpointWriter {
                 .replace("$name$", queryName)
                 .replace("$endpointName$", endpointName)
                 .replace("$queryName$", query.model().getName())
-                .replace("$prometheusName$", endpointName);
+                .replace("$prometheusName$", endpointName)
+                .replace("$modelName$", query.model().getName());
         vv.setString(interpolated);
     }
 

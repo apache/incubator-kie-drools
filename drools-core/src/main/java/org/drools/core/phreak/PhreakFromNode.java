@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.BetaConstraints;
@@ -41,12 +42,20 @@ import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.unlinkAndDeleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 
 public class PhreakFromNode {
+    
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakFromNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+    
     public void doNode(FromNode fromNode,
                        FromMemory fm,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
@@ -56,11 +65,11 @@ public class PhreakFromNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(fromNode, fm, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(fromNode, fm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(fromNode, fm, sink, reteEvaluator, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(fromNode, fm, sink, srcLeftTuples, trgLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -69,7 +78,6 @@ public class PhreakFromNode {
     public void doLeftInserts(FromNode fromNode,
                               FromMemory fm,
                               LeftTupleSink sink,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples) {
 
@@ -86,7 +94,7 @@ public class PhreakFromNode {
             PropagationContext propagationContext = leftTuple.getPropagationContext();
 
             Map<Object, RightTuple> matches       = null;
-            boolean                 useLeftMemory = RuleNetworkEvaluator.useLeftMemory(fromNode, leftTuple);
+            boolean                 useLeftMemory = useLeftMemory(fromNode, leftTuple);
 
             if (useLeftMemory) {
                 fm.getBetaMemory().getLeftTupleMemory().add(leftTuple);
@@ -124,7 +132,6 @@ public class PhreakFromNode {
     public void doLeftUpdates(FromNode fromNode,
                               FromMemory fm,
                               LeftTupleSink sink,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               TupleSets stagedLeftTuples) {
@@ -205,7 +212,7 @@ public class PhreakFromNode {
                 while (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
                     TupleImpl nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                     childLeftTuple = nextChild;
                 }
             }
@@ -217,11 +224,11 @@ public class PhreakFromNode {
 
     public static boolean isAllowed( FactHandle factHandle,
                                      AlphaNodeFieldConstraint[] alphaConstraints,
-                                     ReteEvaluator reteEvaluator,
+                                     ValueResolver valueResolver,
                                      FromMemory fm ) {
         if (alphaConstraints != null) {
             for (int i = 0, length = alphaConstraints.length; i < length; i++) {
-                if (!alphaConstraints[i].isAllowed(factHandle, reteEvaluator)) {
+                if (!alphaConstraints[i].isAllowed(factHandle, valueResolver)) {
                     return false;
                 }
             }
@@ -266,7 +273,7 @@ public class PhreakFromNode {
                                             TupleImpl childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.setPropagationContext( propagationContext );
-            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+            unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
         }
     }
 }

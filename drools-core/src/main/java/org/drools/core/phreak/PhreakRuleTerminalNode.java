@@ -44,10 +44,17 @@ import org.kie.api.event.rule.MatchCancelledCause;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakRuleTerminalNode {
-    public void doNode(TerminalNode rtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       RuleExecutor executor) {
+
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
+                       TerminalNode rtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(activationsManager, srcLeftTuples, executor);
         }
@@ -111,7 +118,7 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.createAgendaItem( leftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
+        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, reteEvaluator);
 
         if (  rtnNode.getRule().isLockOnActive() &&
                 leftTuple.getPropagationContext().getType() != PropagationContext.Type.RULE_ADDITION ) {

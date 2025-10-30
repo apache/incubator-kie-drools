@@ -79,7 +79,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.betaConstraints.init(context, getType());
 
-        initMasks( context, tupleSource );
+        initMasks( context );
 
         hashcode = calculateHashCode();
     }
@@ -131,7 +131,7 @@ public class AsyncReceiveNode extends LeftTupleSource
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                pmem.doLinkRule( reteEvaluator );
+                pmem.doLinkRule();
             }
         }
     }

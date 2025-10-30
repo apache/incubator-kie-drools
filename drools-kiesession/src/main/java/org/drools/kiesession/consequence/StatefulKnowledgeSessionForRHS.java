@@ -41,10 +41,12 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -435,6 +437,10 @@ public class StatefulKnowledgeSessionForRHS
     public NodeMemories getNodeMemories() {
         return delegate.getNodeMemories();
     }
+    
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return delegate.getSegmentMemorySupport();
+    }
 
     public long getNextPropagationIdCounter() {
         return delegate.getNextPropagationIdCounter();
@@ -495,6 +501,11 @@ public class StatefulKnowledgeSessionForRHS
 
     public GlobalResolver getGlobalResolver() {
         return delegate.getGlobalResolver();
+    }
+    
+    @Override
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return delegate.getRuleNetworkEvaluator();
     }
 
     @Override

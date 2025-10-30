@@ -77,8 +77,8 @@ public class RuleExecutor {
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
-        evaluateNetworkIfDirty( reteEvaluator );
-        return fire(reteEvaluator, pmem.getActualActivationsManager( reteEvaluator ), filter, fireCount, fireLimit);
+        evaluateNetworkIfDirty( );
+        return fire(reteEvaluator, pmem.getActualActivationsManager( ), filter, fireCount, fireLimit);
     }
 
     public int evaluateNetworkAndFire( ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit ) {
@@ -185,7 +185,7 @@ public class RuleExecutor {
             }
         }
 
-        removeRuleAgendaItemWhenEmpty(reteEvaluator);
+        removeRuleAgendaItemWhenEmpty();
 
         fireExitedEarly = false;
         return localFireCount;
@@ -212,27 +212,27 @@ public class RuleExecutor {
         return pmem;
     }
 
-    public void removeRuleAgendaItemWhenEmpty(ReteEvaluator reteEvaluator) {
+    public void removeRuleAgendaItemWhenEmpty() {
         if (!dirty && activeMatches.isEmpty()) {
             if (log.isTraceEnabled()) {
                 log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
             }
             ruleAgendaItem.remove();
             if ( ruleAgendaItem.getRule().isQuery() ) {
-                pmem.getActualActivationsManager( reteEvaluator ).removeQueryAgendaItem( ruleAgendaItem );
+                pmem.getActualActivationsManager( ).removeQueryAgendaItem( ruleAgendaItem );
             } else if ( ruleAgendaItem.getRule().isEager() ) {
-                pmem.getActualActivationsManager( reteEvaluator ).removeEagerRuleAgendaItem(ruleAgendaItem);
+                pmem.getActualActivationsManager( ).removeEagerRuleAgendaItem(ruleAgendaItem);
             }
         }
     }
 
     public void evaluateNetwork(ActivationsManager activationsManager) {
-        RuleNetworkEvaluator.INSTANCE.evaluateNetwork( pmem, this, activationsManager );
+        activationsManager.getReteEvaluator().getRuleNetworkEvaluator().evaluateNetwork( activationsManager, this, pmem );
         setDirty( false );
     }
 
-    public void evaluateNetworkIfDirty(ReteEvaluator reteEvaluator) {
-        evaluateNetworkIfDirty(pmem.getActualActivationsManager( reteEvaluator ));
+    public void evaluateNetworkIfDirty() {
+        evaluateNetworkIfDirty(pmem.getActualActivationsManager( ));
     }
 
     public void evaluateNetworkIfDirty(ActivationsManager activationsManager) {

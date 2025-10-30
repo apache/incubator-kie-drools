@@ -18,27 +18,38 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
+
+import static org.drools.core.phreak.PhreakNodeOperations.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
+
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 
 public class PhreakBranchNode {
-    public void doNode(ConditionalBranchNode branchNode,
+
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakBranchNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(ActivationsManager activationsManager,
+                       ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,
@@ -72,9 +83,9 @@ public class PhreakBranchNode {
             TupleImpl next = leftTuple.getStagedNext();
 
             boolean breaking = false;
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
-            boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(branchNode, leftTuple);
+            boolean useLeftMemory = useLeftMemory(branchNode, leftTuple);
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
@@ -118,7 +129,7 @@ public class PhreakBranchNode {
                 oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getSink();
             }
 
-            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
+            ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, reteEvaluator, cbm.context);
 
             RuleTerminalNode newRtn = null;
             boolean breaking = false;
@@ -164,13 +175,10 @@ public class PhreakBranchNode {
 
             // Handle main branch
             if (branchTuples.mainLeftTuple != null) {
-                normalizeStagedTuples( stagedLeftTuples, branchTuples.mainLeftTuple );
+                normalizeStagedTuples(stagedLeftTuples, branchTuples.mainLeftTuple);
 
-                if (breaking && !NodeTypeEnums.isTerminalNode(branchTuples.mainLeftTuple.getSink())) {
-                    // child exist, new one does not, so delete
-                    trgLeftTuples.addDelete(branchTuples.mainLeftTuple);
-                } else {
-                    // child exist, new one does, so update
+                if (!breaking) {
+                    // default consequence will also be executed
                     trgLeftTuples.addUpdate(branchTuples.mainLeftTuple);
                 }
             } else if (!breaking) {
@@ -204,7 +212,7 @@ public class PhreakBranchNode {
             }
 
             if (branchTuples.mainLeftTuple != null) {
-                RuleNetworkEvaluator.deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
+                deleteChildLeftTuple(branchTuples.mainLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();

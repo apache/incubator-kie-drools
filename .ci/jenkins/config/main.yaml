@@ -20,6 +20,9 @@ git:
   - name: 10.1.x
     seed:
       branch: seed-drools-10.1.x
+  - name: 2.2.x
+    seed:
+      branch: seed-drools-2.2.x
 seed:
   config_file:
     git:
