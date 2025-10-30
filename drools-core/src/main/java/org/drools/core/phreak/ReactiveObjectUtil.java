@@ -36,6 +36,7 @@ import org.drools.core.reteoo.TupleImpl;
 import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
 import static org.drools.core.phreak.PhreakFromNode.isAllowed;
 import static org.drools.core.phreak.PhreakFromNode.propagate;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
 
 public class ReactiveObjectUtil {
 
@@ -101,7 +102,7 @@ public class ReactiveObjectUtil {
                            betaConstraints,
                            propagationContext,
                            context,
-                           RuleNetworkEvaluator.useLeftMemory( node, leftTuple ),
+                           useLeftMemory(node, leftTuple),
                            mem.getStagedLeftTuples(),
                            null );
             } else {

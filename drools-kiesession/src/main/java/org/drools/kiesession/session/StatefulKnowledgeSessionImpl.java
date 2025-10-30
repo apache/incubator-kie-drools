@@ -66,6 +66,8 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluatorImpl;
 import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
@@ -173,6 +175,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public    byte[] bytes;
     protected Long    id;
 
+    private RuleNetworkEvaluator ruleNetworkEvaluator;
+    
     /** The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
 
@@ -354,6 +358,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.sequential = conf.isSequential();
 
         this.globalResolver = RuntimeComponentFactory.get().createGlobalResolver(this, this.environment);
+        
+        this.ruleNetworkEvaluator = new RuleNetworkEvaluatorImpl(this, nodeMemories, segmentMemorySupport);
 
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(null);
@@ -398,6 +404,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return runtimeFactory.get(cls);
     }
 
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return ruleNetworkEvaluator;
+    }
+    
     public WorkingMemoryEntryPoint getEntryPoint(String name) {
         return this.entryPointsManager.getEntryPoint(name);
     }

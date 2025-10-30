@@ -54,6 +54,8 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.ActivationsManagerImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluatorImpl;
 import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -114,7 +116,9 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final GlobalResolver globalResolver = new MapGlobalResolver();
 
     private final TimerService timerService;
-
+    
+    private final RuleNetworkEvaluator ruleNetworkEvaluator;
+    
     private Calendars calendars;
 
     private RuleUnits ruleUnits;
@@ -138,6 +142,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         
         this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, ruleBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
         this.timerService = sessionConfiguration.createTimerService();
+        this.ruleNetworkEvaluator = new RuleNetworkEvaluatorImpl(this, nodeMemories, segmentMemorySupport);
 
         initInitialFact();
     }
@@ -160,6 +165,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         return this.identifier;
     }
 
+    @Override
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return ruleNetworkEvaluator;
+    }
+    
     @Override
     public ActivationsManager getActivationsManager() {
         return activationsManager;
