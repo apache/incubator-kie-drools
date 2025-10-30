@@ -18,6 +18,7 @@
  */
 package org.drools.core.phreak;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.base.common.NetworkNode;
@@ -51,15 +52,18 @@ public interface RuleNetworkEvaluator {
     
     void forceFlushWhenSubnetwork(PathMemory pmem);
     
-    public boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode);
+    boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode);
     
-    public boolean flushLeftTupleIfNecessary(SegmentMemory sm,
+    boolean flushLeftTupleIfNecessary(SegmentMemory sm,
                                              TupleImpl leftTuple,
                                              boolean streamMode,
                                              short stagedType);
     
     List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem);
     
-    void propagate(SegmentMemory sourceSegment, TupleSets leftTuples);
+
+    void forceFlushPaths(Collection<PathMemory> pathsToFlush);
+
+    void propagate(SegmentMemory smem, TupleSets actualResultLeftTuples);
 
 }
