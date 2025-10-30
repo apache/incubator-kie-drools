@@ -19,6 +19,7 @@
 package org.kie.kogito.codegen.process.persistence;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -48,12 +49,14 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ThrowStmt;
@@ -230,18 +233,24 @@ public class PersistenceGenerator extends AbstractGenerator {
             BlockStmt body = new BlockStmt();
             Expression newFileDescriptorSource = new ObjectCreationExpr(null, new ClassOrInterfaceType(null, FileDescriptorSource.class.getCanonicalName()), NodeList.nodeList());
             Expression getClassLoader = new MethodCallExpr(new MethodCallExpr(null, "getClass", NodeList.nodeList()), "getClassLoader", NodeList.nodeList());
+            ClassOrInterfaceType inputStreamType = StaticJavaParser.parseClassOrInterfaceType(InputStream.class.getSimpleName());
 
             Expression chainExpression = newFileDescriptorSource;
+            NodeList<Expression> resourceList = new NodeList<>();
             for (GeneratedFile generatedFile : protoFiles) {
                 String path = generatedFile.relativePath();
                 String name = generatedFile.path().getFileName().toString();
+                String nameIS = name.replace(".", "").replace("-", "");
                 if (!name.endsWith(".proto")) {
                     continue;
                 }
                 Expression getISKogito = new MethodCallExpr(getClassLoader, "getResourceAsStream", NodeList.nodeList(new StringLiteralExpr(path)));
+                VariableDeclarator isDeclarator = new VariableDeclarator(inputStreamType, nameIS, getISKogito);
+                VariableDeclarationExpr resourceDeclaration = new VariableDeclarationExpr(isDeclarator);
+                resourceList.add(resourceDeclaration);
                 chainExpression =
                         new MethodCallExpr(new EnclosedExpr(chainExpression), "addProtoFile",
-                                NodeList.nodeList(new StringLiteralExpr(name), getISKogito));
+                                NodeList.nodeList(new StringLiteralExpr(name), new NameExpr(nameIS)));
             }
 
             body.addStatement(new MethodCallExpr(new NameExpr("context"), "registerProtoFiles", NodeList.nodeList(chainExpression)));
@@ -252,7 +261,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             CatchClause catchClause = new CatchClause(new Parameter().setType(IOException.class).setName("e"), new BlockStmt(NodeList.nodeList(new ThrowStmt(new ObjectCreationExpr(
                     null, StaticJavaParser.parseClassOrInterfaceType("java.io.UncheckedIOException"),
                     NodeList.nodeList(new NameExpr("e")))))));
-            TryStmt tryStmt = new TryStmt(body, NodeList.nodeList(catchClause), null);
+            TryStmt tryStmt = new TryStmt(resourceList, body, NodeList.nodeList(catchClause), null);
             constructor.getBody().addStatement(tryStmt);
             String fqnProtoStreamMarshaller = packageName + "." + clazz.getName().toString();
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE,

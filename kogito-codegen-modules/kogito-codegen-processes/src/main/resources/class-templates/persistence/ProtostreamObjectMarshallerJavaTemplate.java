@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.codegen.process.persistence;
 
+import java.io.InputStream;
 import java.io.IOException;
 
 import org.infinispan.protostream.ProtobufUtil;
