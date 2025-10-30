@@ -178,7 +178,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public void cancelMatch(Match act) {
         InternalMatch match = (InternalMatch) act;
-        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
+        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match);
     }
 
     public FactHandle getFactHandle(Object object) {

@@ -40,7 +40,6 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -285,7 +284,7 @@ public class NodeSegmentUnlinkingTest {
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(ksession, liaNode);
+        ksession.getSegmentMemorySupport().getOrCreateSegmentMemory(liaNode);
         liaNode.assertObject((InternalFactHandle) ksession.insert("str"), context, ksession);
         
 
@@ -318,7 +317,7 @@ public class NodeSegmentUnlinkingTest {
         // Initialise from lian
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(ksession, liaNode);
+        ksession.getSegmentMemorySupport().getOrCreateSegmentMemory(liaNode);
         
         InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( "str1" );
         n1.getRightInput().assertObject( fh1, context, ksession );
@@ -510,7 +509,7 @@ public class NodeSegmentUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory(node);
         if ( betaMemory.getSegmentMemory() == null ) {
-            RuntimeSegmentUtilities.getOrCreateSegmentMemory(wm, node);
+            wm.getSegmentMemorySupport().getOrCreateSegmentMemory(node);
         }
         return betaMemory;
 
@@ -532,7 +531,7 @@ public class NodeSegmentUnlinkingTest {
         n3.getRightInput().assertObject( f1, context, ksession );
                 
         // this doesn't unlink on the assertObject, as the node's memory must be processed. So use the helper method the main network evaluator uses.
-        PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm, ksession );
+        PhreakNotNode.unlinkNotNodeOnRightInsert( (NotNode) n3, bm );
         assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();                
 
         n3.getRightInput().retractRightTuple( f1.getFirstRightTuple(), context, ksession );

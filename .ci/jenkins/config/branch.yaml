@@ -21,10 +21,10 @@ environments:
       - sonarcloud
       - coverage
 repositories:
-  - name: incubator-kie-drools
-    job_display_name: drools
-    branch: 10.1.x
-    is_branch_config_repo: true
+- name: incubator-kie-drools
+  job_display_name: drools
+  branch: 2.2.x
+  is_branch_config_repo: true
 git:
   author:
     name: apache
@@ -79,8 +79,8 @@ cloud:
 release:
   gpg:
     sign:
-      key_credentials_id: GPG_KEY_FILE
-      passphrase_credentials_id: ''
+      key-credentials-id: GPG_KEY_FILE
+      passphrase-credentials-id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:

@@ -27,11 +27,11 @@ import java.util.List;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemories;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
                            implements
@@ -150,7 +149,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return sbuilder.toString();
     }
 
-    public boolean linkNode(long mask, ReteEvaluator reteEvaluator) {
+    public boolean linkNode(long mask) {
         linkedNodeMask |= mask;
         dirtyNodeMask |= mask;
         if (IS_LOG_TRACE_ENABLED) {
@@ -158,7 +157,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                     getRuleNames());
         }
 
-        return notifyRuleLinkSegment(reteEvaluator);
+        return notifyRuleLinkSegment();
     }
 
     public boolean linkNodeWithoutRuleNotify(long mask) {
@@ -190,29 +189,29 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return dataDrivePmemLinked;
     }
 
-    public boolean notifyRuleLinkSegment(ReteEvaluator reteEvaluator, long mask) {
+    public boolean notifyRuleLinkSegment(long mask) {
         dirtyNodeMask |= mask;
-        return notifyRuleLinkSegment(reteEvaluator);
+        return notifyRuleLinkSegment();
     }
 
-    public boolean notifyRuleLinkSegment(ReteEvaluator reteEvaluator) {
+    public boolean notifyRuleLinkSegment() {
         boolean dataDrivePmemLinked = false;
         if (isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 PathMemory pmem = pathMemories.get(i);
-                notifyRuleLinkSegment(reteEvaluator, pmem);
+                notifyRuleLinkSegment(pmem);
                 dataDrivePmemLinked |= (pmem.isDataDriven() && pmem.isRuleLinked());
             }
         }
         return dataDrivePmemLinked;
     }
 
-    public void notifyRuleLinkSegment(ReteEvaluator reteEvaluator, PathMemory pmem) {
-        pmem.linkSegment(segmentPosMaskBit, reteEvaluator);
+    public void notifyRuleLinkSegment(PathMemory pmem) {
+        pmem.linkSegment(segmentPosMaskBit);
     }
 
-    public boolean unlinkNode(long mask, ReteEvaluator reteEvaluator) {
+    public boolean unlinkNode(long mask) {
         boolean dataDrivePmemLinked = false;
         boolean linked = isSegmentLinked();
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
@@ -230,24 +229,24 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 PathMemory pmem = pathMemories.get(i);
                 // the data driven pmem has to be flushed only if the pmem was formerly linked
                 dataDrivePmemLinked |= (pmem.isDataDriven() && pmem.isRuleLinked());
-                pmem.unlinkedSegment(segmentPosMaskBit, reteEvaluator);
+                pmem.unlinkedSegment(segmentPosMaskBit);
             }
         } else {
             // if not unlinked, then we still need to notify if the rule is linked
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 if (pathMemories.get(i).isRuleLinked()) {
-                    pathMemories.get(i).doLinkRule(reteEvaluator);
+                    pathMemories.get(i).doLinkRule();
                 }
             }
         }
         return dataDrivePmemLinked;
     }
 
-    public void unlinkSegment(ReteEvaluator reteEvaluator) {
+    public void unlinkSegment() {
         for (int i = 0, length = pathMemories.size(); i < length; i++) {
             // do not use foreach, don't want Iterator object creation
-            pathMemories.get(i).unlinkedSegment(segmentPosMaskBit, reteEvaluator);
+            pathMemories.get(i).unlinkedSegment(segmentPosMaskBit);
         }
     }
 
@@ -684,9 +683,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             this.tipNode = tipNode;
         }
 
-        public SegmentMemory newSegmentMemory(ReteEvaluator reteEvaluator) {
+        public SegmentMemory newSegmentMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport) {
             SegmentMemory smem = new SegmentMemory();
-            updateSegmentMemory(smem, reteEvaluator);
+            updateSegmentMemory(nodeMemories, segmentMemorySupport, smem);
             return smem;
         }
 
@@ -696,23 +695,23 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             return smem;
         }
 
-        public void updateSegmentMemory(SegmentMemory smem, ReteEvaluator reteEvaluator) {
+        public void updateSegmentMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, SegmentMemory smem) {
             smem.updateFromPrototype(this);
-            Memory[] nodeMemories = new Memory[getNodesInSegment().length];
+            Memory[] updatedMemories = new Memory[getNodesInSegment().length];
             for (int i = 0; i < memories.length; i++) {
-                Memory mem = reteEvaluator.getNodeMemory((MemoryFactory) getNodesInSegment()[i]);
+                Memory mem = nodeMemories.getNodeMemory((MemoryFactory) getNodesInSegment()[i]);
                 if (i > 0) {
-                    mem.setPrevious(nodeMemories[i - 1]);
-                    nodeMemories[i - 1].setNext(mem);
+                    mem.setPrevious(updatedMemories[i - 1]);
+                    updatedMemories[i - 1].setNext(mem);
                 }
-                nodeMemories[i] = mem;
+                updatedMemories[i] = mem;
                 mem.setSegmentMemory(smem);
                 MemoryPrototype proto = memories[i];
                 if (proto != null) {
-                    proto.populateMemory(reteEvaluator, mem);
+                    proto.populateMemory(nodeMemories, segmentMemorySupport, mem);
                 }
             }
-            smem.setNodeMemories(nodeMemories);
+            smem.setNodeMemories(updatedMemories);
         }
 
         public SegmentPrototype initFromSegmentMemory(SegmentMemory smem) {
@@ -1029,7 +1028,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             return null;
         }
 
-        public abstract void populateMemory(ReteEvaluator reteEvaluator, Memory memory);
+        public abstract void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory);
 
         public void setNodePosMaskBit(long nodePosMaskBit) {
             this.nodePosMaskBit = nodePosMaskBit;
@@ -1050,14 +1049,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {
             BetaMemory betaMemory = (BetaMemory) memory;
             betaMemory.setNodePosMaskBit(nodePosMaskBit);
             if (tton != null) {
-                SubnetworkPathMemory riaMem = (SubnetworkPathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(
+                SubnetworkPathMemory riaMem = (SubnetworkPathMemory) nodeMemories.peekNodeMemory(
                         tton);
                 if (riaMem == null) {
-                    riaMem = (SubnetworkPathMemory) RuntimeSegmentUtilities.initializePathMemory(reteEvaluator, tton);
+                    riaMem = (SubnetworkPathMemory) segmentMemorySupport.initializePathMemory(tton);
                 }
                 betaMemory.setSubnetworkPathMemory(riaMem);
             }
@@ -1071,7 +1070,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory liaMemory) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory liaMemory) {
             ((SegmentNodeMemory) liaMemory).setNodePosMaskBit(nodePosMaskBit);
         }
     }
@@ -1083,7 +1082,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {
             ((ReactiveFromNode.ReactiveFromMemory) memory).setNodePosMaskBit(nodePosMaskBit);
         }
     }
@@ -1093,7 +1092,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public ConditionalBranchMemoryPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {}
     }
 
     public static class RightInputAdapterPrototype extends MemoryPrototype {
@@ -1101,7 +1100,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public RightInputAdapterPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {}
     }
 
     public static class TerminalPrototype extends MemoryPrototype {
@@ -1109,7 +1108,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public TerminalPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {}
     }
 
     public static class FromMemoryPrototype extends MemoryPrototype {
@@ -1117,7 +1116,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public FromMemoryPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {}
     }
 
     public static class EvalMemoryPrototype extends MemoryPrototype {
@@ -1125,7 +1124,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public EvalMemoryPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory memory) {}
     }
 
     public static class QueryMemoryPrototype extends MemoryPrototype {
@@ -1138,9 +1137,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory mem) {
             QueryElementNodeMemory qmem = (QueryElementNodeMemory) mem;
-            SegmentMemory querySmem = getQuerySegmentMemory(reteEvaluator, queryNode);
+            SegmentMemory querySmem = segmentMemorySupport.getQuerySegmentMemory(queryNode);
             qmem.setQuerySegmentMemory(querySmem);
             qmem.setNodePosMaskBit(nodePosMaskBit);
         }
@@ -1153,7 +1152,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory mem) {
             TimerNodeMemory tmem = (TimerNodeMemory) mem;
             tmem.setNodePosMaskBit(nodePosMaskBit);
         }
@@ -1164,7 +1163,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public AsyncSendMemoryPrototype() {}
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {}
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory mem) {}
     }
 
     public static class AsyncReceiveMemoryPrototype extends MemoryPrototype {
@@ -1174,7 +1173,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory mem) {
             AsyncReceiveMemory amem = (AsyncReceiveMemory) mem;
             amem.setNodePosMaskBit(nodePosMaskBit);
         }
@@ -1189,8 +1188,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         @Override
-        public void populateMemory(ReteEvaluator reteEvaluator, Memory accMemory) {
-            betaProto.populateMemory(reteEvaluator, ((AccumulateNode.AccumulateMemory) accMemory).getBetaMemory());
+        public void populateMemory(NodeMemories nodeMemories, SegmentMemorySupport segmentMemorySupport, Memory accMemory) {
+            betaProto.populateMemory(nodeMemories, segmentMemorySupport, ((AccumulateNode.AccumulateMemory) accMemory).getBetaMemory());
         }
     }
 }

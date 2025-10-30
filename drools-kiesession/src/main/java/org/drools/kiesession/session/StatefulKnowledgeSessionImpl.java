@@ -55,6 +55,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -65,6 +66,7 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -174,6 +176,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /** The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
 
+    private SegmentMemorySupport segmentMemorySupport;
+    
     /** Global values which are associated with this memory. */
     protected GlobalResolver globalResolver;
 
@@ -345,6 +349,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this, handleFactory);
 
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, kBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
+        
         this.sequential = conf.isSequential();
 
         this.globalResolver = RuntimeComponentFactory.get().createGlobalResolver(this, this.environment);
@@ -1351,6 +1357,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return nodeMemories;
     }
 
+    
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return segmentMemorySupport;
+    }
+    
     public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
         return this.ruleRuntimeEventSupport;
     }

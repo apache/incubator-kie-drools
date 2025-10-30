@@ -19,17 +19,13 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;
@@ -46,22 +42,23 @@ import org.kie.api.definition.rule.Rule;
  * the main network.
  */
 public class TupleToObjectNode extends ObjectSource
-    implements
-    LeftTupleSinkNode,
-    PathEndNode {
+                               implements
+                               LeftTupleSinkNode,
+                               PathEndNode {
 
     private static final long serialVersionUID = 510l;
 
-    private LeftTupleSource   tupleSource;
+    private LeftTupleSource tupleSource;
 
     /**
      * This is first node inside of the subnetwork. The split, with two outs, would be the parent node.
      */
-    private LeftTupleSource   startTupleSource;
+    private LeftTupleSource startTupleSource;
 
-    private boolean           tupleMemoryEnabled;
+    private boolean tupleMemoryEnabled;
 
     private LeftTupleSinkNode previousTupleSinkNode;
+
     private LeftTupleSinkNode nextTupleSinkNode;
 
     private LeftTupleNode[] pathNodes;
@@ -76,8 +73,7 @@ public class TupleToObjectNode extends ObjectSource
 
     private int objectCount;
 
-    public TupleToObjectNode() {
-    }
+    public TupleToObjectNode() {}
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -92,20 +88,19 @@ public class TupleToObjectNode extends ObjectSource
                              final LeftTupleSource source,
                              final LeftTupleSource startTupleSource,
                              final BuildContext context) {
-        super( id, context.getPartitionId() );
+        super(id, context.getPartitionId());
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;
 
         hashcode = calculateHashCode();
-        initMemoryId( context );
+        initMemoryId(context);
     }
 
     @Override
     public PathMemSpec getPathMemSpec() {
         return getPathMemSpec(null);
     }
-
 
     /**
      * used during network build time, potentially during rule removal time.
@@ -115,11 +110,10 @@ public class TupleToObjectNode extends ObjectSource
     @Override
     public PathMemSpec getPathMemSpec(TerminalNode removingTN) {
         if (pathMemSpec == null) {
-            pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
+            pathMemSpec = calculatePathMemSpec(startTupleSource, removingTN);
         }
         return pathMemSpec;
     }
-
 
     @Override
     public void nullPathMemSpec() {
@@ -185,23 +179,23 @@ public class TupleToObjectNode extends ObjectSource
 
     /**
      * Creates and return the node memory
-     */    
+     */
     public SubnetworkPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return (SubnetworkPathMemory) AbstractTerminalNode.initPathMemory(this, new SubnetworkPathMemory(this, reteEvaluator));
+        return (SubnetworkPathMemory) AbstractTerminalNode.initPathMemory(this, new SubnetworkPathMemory(this,
+                reteEvaluator));
     }
 
-    public void doAttach( BuildContext context ) {
-        this.tupleSource.addTupleSink( this, context );
+    public void doAttach(BuildContext context) {
+        this.tupleSource.addTupleSink(this, context);
     }
 
     public void networkUpdated(UpdateContext updateContext) {
         this.tupleSource.networkUpdated(updateContext);
     }
 
-
     protected boolean doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder) {
-        if ( !isInUse() ) {
+                               final ReteooBuilder builder) {
+        if (!isInUse()) {
             tupleSource.removeTupleSink(this);
             return true;
         }
@@ -262,22 +256,24 @@ public class TupleToObjectNode extends ObjectSource
             return true;
         }
 
-        return ((NetworkNode)object).getType() == NodeTypeEnums.TupleToObjectNode && this.hashCode() == object.hashCode() &&
-               this.tupleSource.getId() == ((TupleToObjectNode)object).tupleSource.getId() &&
-               this.tupleMemoryEnabled == ( (TupleToObjectNode) object ).tupleMemoryEnabled;
+        return ((NetworkNode) object).getType() == NodeTypeEnums.TupleToObjectNode && this.hashCode() == object
+                .hashCode() &&
+               this.tupleSource.getId() == ((TupleToObjectNode) object).tupleSource.getId() &&
+               this.tupleMemoryEnabled == ((TupleToObjectNode) object).tupleMemoryEnabled;
     }
 
     @Override
     public String toString() {
-        return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" + tupleSource + ", source="
-               + source + ", associations=" + associations + ", partitionId=" + partitionId + "]";
+        return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" +
+                tupleSource + ", source=" + source + ", associations=" + associations + ", partitionId=" + partitionId +
+                "]";
     }
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
     }
 
-    public void setTupleSource( LeftTupleSource tupleSource ) {
+    public void setTupleSource(LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
     }
 
@@ -287,8 +283,8 @@ public class TupleToObjectNode extends ObjectSource
 
     public void setInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         throw new UnsupportedOperationException();
-    }      
-    
+    }
+
     @Override
     public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         throw new UnsupportedOperationException();
@@ -296,16 +292,19 @@ public class TupleToObjectNode extends ObjectSource
 
     public static class SubnetworkPathMemory extends PathMemory implements Memory {
 
+        private ReteEvaluator reteEvaluator;
+
         public SubnetworkPathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
             super(pathEndNode, reteEvaluator);
+            this.reteEvaluator = reteEvaluator;
         }
 
         @Override
-        protected boolean initDataDriven( ReteEvaluator reteEvaluator ) {
+        protected boolean initDataDriven(ReteEvaluator reteEvaluator) {
             for (PathEndNode pnode : getPathEndNode().getPathEndNodes()) {
                 if (NodeTypeEnums.isTerminalNode(pnode)) {
-                    RuleImpl rule = ( (TerminalNode) pnode ).getRule();
-                    if ( isRuleDataDriven( reteEvaluator, rule ) ) {
+                    RuleImpl rule = ((TerminalNode) pnode).getRule();
+                    if (isRuleDataDriven(reteEvaluator, rule)) {
                         return true;
                     }
                 }
@@ -318,17 +317,12 @@ public class TupleToObjectNode extends ObjectSource
         }
 
         @Override
-        public void doLinkRule(ReteEvaluator reteEvaluator) {
+        public void doLinkRule() {
             getTupleToObjectNode().getObjectSinkPropagator().doLinkSubnetwork(reteEvaluator);
         }
 
         @Override
-        public void doLinkRule(ActivationsManager activationsManager) {
-            doLinkRule(activationsManager.getReteEvaluator());
-        }
-
-        @Override
-        public void doUnlinkRule(ReteEvaluator reteEvaluator) {
+        public void doUnlinkRule() {
             getTupleToObjectNode().getObjectSinkPropagator().doUnlinkSubnetwork(reteEvaluator);
         }
 
@@ -338,8 +332,8 @@ public class TupleToObjectNode extends ObjectSource
         }
 
         public String toString() {
-            return "TupleToObjectNodeMem(" + getTupleToObjectNode().getId() + ") ["
-                    + RuleNameExtractor.getRuleNames(getTupleToObjectNode().getObjectSinkPropagator().getSinks()) + "]";
+            return "TupleToObjectNodeMem(" + getTupleToObjectNode().getId() + ") [" + RuleNameExtractor.getRuleNames(
+                    getTupleToObjectNode().getObjectSinkPropagator().getSinks()) + "]";
         }
     }
 
@@ -354,7 +348,7 @@ public class TupleToObjectNode extends ObjectSource
 
     public LeftTupleNode[] getPathNodes() {
         if (pathNodes == null) {
-            pathNodes = AbstractTerminalNode.getPathNodes( this );
+            pathNodes = AbstractTerminalNode.getPathNodes(this);
         }
         return pathNodes;
     }
@@ -375,11 +369,11 @@ public class TupleToObjectNode extends ObjectSource
     @Override
     public void addAssociation(Rule rule, BuildContext context) {
         super.addAssociation(rule, context);
-        context.addPathEndNode( this );
+        context.addPathEndNode(this);
     }
 
     @Override
-    public boolean removeAssociation( Rule rule, RuleRemovalContext context ) {
+    public boolean removeAssociation(Rule rule, RuleRemovalContext context) {
         boolean result = super.associations.remove(rule);
         if (getAssociationsSize() == 0) {
             // avoid to recalculate the pathEndNodes if this node is going to be removed
@@ -392,7 +386,7 @@ public class TupleToObjectNode extends ObjectSource
                 remainingPathNodes.add(pathEndNode);
             }
         }
-        pathEndNodes = remainingPathNodes.toArray( new PathEndNode[remainingPathNodes.size()] );
+        pathEndNodes = remainingPathNodes.toArray(new PathEndNode[remainingPathNodes.size()]);
         return result;
     }
 

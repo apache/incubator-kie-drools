@@ -68,6 +68,8 @@ public interface ReteEvaluator extends ValueResolver {
     <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     NodeMemories getNodeMemories();
+    
+    SegmentMemorySupport getSegmentMemorySupport();
 
     default Object getGlobal(String identifier) {
         return getGlobalResolver().resolveGlobal( identifier );
