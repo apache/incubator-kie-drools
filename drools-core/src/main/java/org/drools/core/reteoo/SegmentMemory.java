@@ -79,6 +79,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return proto.getRootNode();
     }
 
+    public boolean isOnlyLiaSegment() {
+        return getRootNode() == getTipNode();
+    }
+    
     public SegmentPrototype getSegmentPrototype() {
         return proto;
     }

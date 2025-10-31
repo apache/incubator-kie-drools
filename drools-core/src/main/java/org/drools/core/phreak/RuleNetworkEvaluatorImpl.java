@@ -19,6 +19,7 @@
 package org.drools.core.phreak;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -49,12 +50,10 @@ import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.PathEndNode;
@@ -73,7 +72,6 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleToObjectNode;
-import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +145,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             return;
         }
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
+        LeftTupleNode liaNode = smem.getRootNode();
 
         NetworkNode node;
         Memory nodeMem;
@@ -188,7 +186,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
 
         long bit = 1;
-        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource) node).getSinkPropagator()
+        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleNode) node).getSinkPropagator()
                 .getFirstLeftTupleSink()) {
             //update the bit to the correct node position.
             bit = nextNodePosMask(bit);
@@ -201,10 +199,16 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     
     @Override
     public void forceFlushWhenSubnetwork(PathMemory pmem) {
-        for (PathMemory outPmem : findPathsToFlushFromSubnetwork(pmem)) {
+        forceFlushPaths(findPathsToFlushFromSubnetwork(pmem));
+    }
+    
+    @Override
+    public void forceFlushPaths(Collection<PathMemory> pmems) {
+        for (PathMemory outPmem : pmems) {
             forceFlushPath(outPmem);
         }
     }
+    
     
     @Override
     public List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem) {
@@ -399,8 +403,8 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
-                        if (smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode())) {
-                            segmentMemorySupport.createChildSegments(smem.getTipNode().getSinkPropagator(), smem);
+                        if (!NodeTypeEnums.isTerminalNode(smem.getTipNode())) {
+                            segmentMemorySupport.initializeChildSegmentsIfNeeded(smem);
                         }
                         
                         smem = smems[i];
@@ -436,7 +440,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                         log.trace("{} Skip Node {}", indent(offset), node);
                     }
                     bit = nextNodePosMask(bit); // shift to check the next node
-                    node = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
+                    node = ((LeftTupleNode) node).getSinkPropagator().getFirstLeftTupleSink();
                     nodeMem = nodeMem.getNext();
                 }
             }
@@ -460,7 +464,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             }
 
             stagedLeftTuples = getTargetStagedLeftTuples(smem, node);
-            LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
+            LeftTupleSinkNode sink = ((LeftTupleNode) node).getSinkPropagator().getFirstLeftTupleSink();
 
             trgTuples = evalNode(activationsManager, executor, stack, pmem, smems, smem, smemIndex, bit, nodeMem, node, sink, srcTuples, stagedLeftTuples, processSubnetwork);
             if (trgTuples == null) {
@@ -569,9 +573,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                                                        NetworkNode node) {
         if (node == smem.getTipNode()) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
-            if (smem.isEmpty()) {
-                segmentMemorySupport.createChildSegments(((LeftTupleSource) node).getSinkPropagator(), smem);
-            }
+            segmentMemorySupport.initializeChildSegmentsIfNeeded(smem);
             return smem.getFirst().getStagedLeftTuples().takeAll();
         } else {
             return null;
@@ -749,7 +751,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                               BetaMemory bm,
                               BetaNode betaNode,
                               LeftTupleSinkNode sink) {
-        SubnetworkPathMemory pathMem         = bm.getSubnetworkPathMemory();
+        PathMemory pathMem = bm.getSubnetworkPathMemory();
         SegmentMemory[]      subnetworkSmems = pathMem.getSegmentMemories();
         SegmentMemory subSmem = null;
         for (int i = 0; subSmem == null; i++) {
@@ -767,6 +769,8 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             log.trace("{} SubnetworkQueue {} {}", indent(offset), betaNode.toString(), srcTuples.toStringSizes());
         }
 
+        
+        
 
         TupleSets subLts = subSmem.getStagedLeftTuples().takeAll();
         // node is first in the segment, so bit is 1
@@ -892,16 +896,13 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         srcTuples.resetAll();
     }
     
+    @Override
     public void propagate(SegmentMemory sourceSegment, TupleSets leftTuples) {
         if (leftTuples.isEmpty()) {
             return;
         }
-
-        LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
-        if ( sourceSegment.isEmpty() ) {
-            segmentMemorySupport.createChildSegments(source.getSinkPropagator(), sourceSegment);
-        }
+        segmentMemorySupport.initializeChildSegmentsIfNeeded(sourceSegment);
                 
         processPeers(sourceSegment, leftTuples);
 
@@ -1030,7 +1031,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     }
 
     private static int getOffset(NetworkNode node) {
-        LeftTupleSource lt;
+        LeftTupleNode lt;
         int offset = 1;
         if (NodeTypeEnums.isTerminalNode(node)) {
             lt = ((TerminalNode) node).getLeftTupleSource();
@@ -1038,7 +1039,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         } else if (node.getType() == NodeTypeEnums.TupleToObjectNode) {
             lt = ((TupleToObjectNode) node).getLeftTupleSource();
         } else {
-            lt = (LeftTupleSource) node;
+            lt = (LeftTupleNode) node;
         }
         while (!NodeTypeEnums.isLeftInputAdapterNode(lt)) {
             offset++;
