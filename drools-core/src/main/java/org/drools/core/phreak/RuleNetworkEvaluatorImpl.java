@@ -185,6 +185,14 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             return srcTuples.isEmpty();
         }
 
+        public void restoreStagedLeftTuples() {
+            getCurrentSegment().getFirst().getStagedLeftTuples().addAll(stagedLeftTuples);
+        }
+
+        public boolean stagedLeftTuplesAreNotEmpty() {
+            return stagedLeftTuples != null && !stagedLeftTuples.isEmpty();
+        }
+
         public static SegmentCursor createSegmentCursor(PathMemory pmem, SegmentMemory sm, TupleSets tupleSets) {
             if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm.getTipNode())) {
                 return new SegmentCursor(pmem, 
@@ -564,35 +572,22 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             if (sc.hasNoSourceTuples()) {
                 sc.moveToNextAvailableSegment();
             }
-
-            boolean terminalNode = true;
-            switch (sc.node.getType()) {
-                case NodeTypeEnums.RuleTerminalNode:
-                    pRtNode.doNode(activationsManager, executor, (AbstractTerminalNode) sc.node, sc.srcTuples);
-                    break;
-                case NodeTypeEnums.QueryTerminalNode:
-                    pQtNode.doNode(stack, (QueryTerminalNode) sc.node, sc.srcTuples);
-                    break;
-                case NodeTypeEnums.TupleToObjectNode:
-                    doSubnetwork2((TupleToObjectNode) sc.node, sc.srcTuples);
-                    break;
-                default:
-                    terminalNode = false;
-            }
-            if (terminalNode) {
+            
+            if (NodeTypeEnums.isTerminalNode(sc.node)) {
+                evaluateTerminalNode(activationsManager, executor, stack, sc);
                 break;
             }
 
-            sc.stagedLeftTuples = getTargetStagedLeftTuples(sc.getCurrentSegment(), sc.node);
+            prepareStagedLeftTuples(sc);
 
-            sc.srcTuples = evalNode(activationsManager, executor, stack, sc, sc.stagedLeftTuples, processSubnetwork);
+            sc.srcTuples = evaluateNonTerminalNode(activationsManager, executor, stack, sc, processSubnetwork);
             if (sc.srcTuples == null) {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
             }
             
             if (sc.isAtEndOfSegmentMemory()) {
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
-                restoreStagedTuples(sc); // must put back all the LTs
+                sc.restoreStagedLeftTuples(); // must put back all the LTs
                 propagate(sc.getCurrentSegment(), sc.srcTuples);
             }
 
@@ -600,13 +595,28 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             processSubnetwork = true; //  make sure it's reset, so ria nodes are processed
         }
 
-        if (sc.stagedLeftTuples != null && !sc.stagedLeftTuples.isEmpty()) {
-            restoreStagedTuples(sc);
+        if (sc.stagedLeftTuplesAreNotEmpty()) {
+            sc.restoreStagedLeftTuples(); // must put back all the LTs
         }
     }
 
-    public void restoreStagedTuples(SegmentCursor sc) {
-        sc.getCurrentSegment().getFirst().getStagedLeftTuples().addAll(sc.stagedLeftTuples);
+    public void evaluateTerminalNode(ActivationsManager activationsManager,
+                          RuleExecutor executor,
+                          LinkedList<StackEntry> stack,
+                          SegmentCursor sc) {
+        switch (sc.node.getType()) {
+            case NodeTypeEnums.RuleTerminalNode:
+                pRtNode.doNode(activationsManager, executor, (AbstractTerminalNode) sc.node, sc.srcTuples);
+                break;
+            case NodeTypeEnums.QueryTerminalNode:
+                pQtNode.doNode(stack, (QueryTerminalNode) sc.node, sc.srcTuples);
+                break;
+            case NodeTypeEnums.TupleToObjectNode:
+                doSubnetwork2((TupleToObjectNode) sc.node, sc.srcTuples);
+                break;
+            default:
+                // Nothing to do
+        }
     }
 
     public boolean moveToFirstDirtyOrNonEmptySegment(SegmentCursor sc) {
@@ -632,16 +642,15 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         return false;
     }
 
-    private TupleSets evalNode(ActivationsManager activationsManager,
+    private TupleSets evaluateNonTerminalNode(ActivationsManager activationsManager,
                               RuleExecutor executor,
                               LinkedList<StackEntry> stack,
                               SegmentCursor sc, 
-                              TupleSets stagedLeftTuples,
                               boolean processSubnetwork) {
         TupleSets trgTuples = new TupleSetsImpl();
         LeftTupleSinkNode sink = ((LeftTupleNode) sc.node).getSinkPropagator().getFirstLeftTupleSink();
         if (NodeTypeEnums.isBetaNode(sc.node)) {
-            boolean exitInnerEval = evalBetaNode(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.nodeMem, sc.node, sink, trgTuples, sc.srcTuples, stagedLeftTuples, processSubnetwork);
+            boolean exitInnerEval = evalBetaNode(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.nodeMem, sc.node, sink, trgTuples, sc.srcTuples, sc.stagedLeftTuples, processSubnetwork);
             if (exitInnerEval) {
                 return null;
             }
@@ -650,32 +659,32 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             switch (sc.node.getType()) {
                 case NodeTypeEnums.EvalConditionNode: {
                     pEvalNode.doNode((EvalConditionNode) sc.node, (EvalMemory) sc.nodeMem, sink,
-                            sc.srcTuples, trgTuples, stagedLeftTuples);
+                            sc.srcTuples, trgTuples, sc.stagedLeftTuples);
                     break;
 
                 }
                 case NodeTypeEnums.FromNode: {
                     pFromNode.doNode((FromNode) sc.node, (FromMemory) sc.nodeMem, sink,
-                            sc.srcTuples, trgTuples, stagedLeftTuples);
+                            sc.srcTuples, trgTuples, sc.stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ReactiveFromNode: {
                     pReactiveFromNode.doNode((ReactiveFromNode) sc.node, (ReactiveFromNode.ReactiveFromMemory) sc.nodeMem, sink,
-                                             sc.srcTuples, trgTuples, stagedLeftTuples);
+                                             sc.srcTuples, trgTuples, sc.stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.QueryElementNode: {
                     exitInnerEval =  evalQueryNode(stack, sc.pmem, sc.smems, sc.smemIndex, sc.bit, sc.nodeMem, sc.node,
-                                                   sink, trgTuples, sc.srcTuples, stagedLeftTuples);
+                                                   sink, trgTuples, sc.srcTuples, sc.stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.TimerConditionNode: {
-                    pTimerNode.doNode((TimerNode) sc.node, (TimerNodeMemory) sc.nodeMem, sc.pmem, sc.smems[sc.smemIndex], sink, activationsManager, sc.srcTuples, trgTuples, stagedLeftTuples);
+                    pTimerNode.doNode((TimerNode) sc.node, (TimerNodeMemory) sc.nodeMem, sc.pmem, sc.smems[sc.smemIndex], sink, activationsManager, sc.srcTuples, trgTuples, sc.stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ConditionalBranchNode: {
                     pBranchNode.doNode(activationsManager, (ConditionalBranchNode) sc.node, (ConditionalBranchMemory) sc.nodeMem,
-                            sink, sc.srcTuples, trgTuples, stagedLeftTuples, executor);
+                            sink, sc.srcTuples, trgTuples, sc.stagedLeftTuples, executor);
                     break;
                 }
                 case NodeTypeEnums.AsyncSendNode: {
@@ -694,13 +703,13 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         return trgTuples;
     }
 
-    private TupleSets getTargetStagedLeftTuples(SegmentMemory smem, NetworkNode node) {
-        if (node == smem.getTipNode()) {
+    private void prepareStagedLeftTuples(SegmentCursor sc) {
+        if (sc.node == sc.getCurrentSegment().getTipNode()) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
-            segmentMemorySupport.initializeChildSegmentsIfNeeded(smem);
-            return smem.getFirst().getStagedLeftTuples().takeAll();
+            segmentMemorySupport.initializeChildSegmentsIfNeeded(sc.getCurrentSegment());
+            sc.stagedLeftTuples = sc.getCurrentSegment().getFirst().getStagedLeftTuples().takeAll();
         } else {
-            return null;
+            sc.stagedLeftTuples = null;
         }
     }
 
