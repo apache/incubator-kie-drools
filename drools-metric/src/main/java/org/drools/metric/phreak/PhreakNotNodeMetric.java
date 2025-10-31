@@ -28,9 +28,12 @@ import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakNotNodeMetric extends PhreakNotNode {
 
+    public PhreakNotNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(ReteEvaluator reteEvaluator,
-                       NotNode notNode,
+    public void doNode(NotNode notNode,
                        LeftTupleSink sink,
                        BetaMemory bm,
                        TupleSets srcLeftTuples,
@@ -40,7 +43,7 @@ public class PhreakNotNodeMetric extends PhreakNotNode {
         try {
             MetricLogUtils.getInstance().startMetrics(notNode);
 
-            super.doNode(reteEvaluator, notNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(notNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();
