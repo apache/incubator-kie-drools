@@ -76,6 +76,7 @@ import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesOb
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesString;
 import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 import static org.kie.kogito.codegen.decision.DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY;
+import static org.kie.kogito.codegen.decision.DecisionRestResourceGenerator.DMN_DEFINITIONS_JSON_REFS;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class DecisionCodegenUtils {
@@ -235,7 +236,7 @@ public class DecisionCodegenUtils {
         }
         try {
             String jsonContent = new ObjectMapper().writeValueAsString(oasResult.getJsonSchemaNode());
-            final String DMN_DEFINITIONS_JSON = getDefinitionsFileFromModel(dmnModel);
+            final String DMN_DEFINITIONS_JSON = DMN_DEFINITIONS_JSON_REFS + getDefinitionsFileFromModel(dmnModel);
             storeFile(generatedFiles, GeneratedFileType.STATIC_HTTP_RESOURCE, DMN_DEFINITIONS_JSON, jsonContent);
         } catch (Exception e) {
             LOGGER.warn("Failed to write OAS schema");

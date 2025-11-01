@@ -38,12 +38,12 @@ public class DMNIT {
     @Test
     public void testOASdmnDefinitions() {
         RestAssured.given()
-                .get("/OneOfEachType.json")
+                .get("/refs/OneOfEachType.json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));
         RestAssured.given()
-                .get("/a.json")
+                .get("/refs/a.json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));

@@ -88,6 +88,8 @@ public class DecisionRestResourceGenerator {
     private static final String DMN_RESULT_ENDPOINT_OPERATION_ID = "evaluateDmnFullResults_";
     private static final String DECISION_SERVICE_ENDPOINT_OPERATION_ID = "evaluateDmnService_";
     private static final String DECISION_SERVICE_RESULT_ENDPOINT_OPERATION_ID = "evaluateDmnServiceFullResults_";
+    public static final String DMN_DEFINITIONS_JSON_REFS = "refs/";
+    private static final String DMN_DEFINITIONS_JSON_ROOT = "/" + DMN_DEFINITIONS_JSON_REFS;
 
     public DecisionRestResourceGenerator(KogitoBuildContext context, DMNModel model, String appCanonicalName) {
         this.context = context;
@@ -221,7 +223,7 @@ public class DecisionRestResourceGenerator {
             inputRef = withOASResult.getNamingPolicy().getRef(identifyInputSet);
             outputRef = withOASResult.getNamingPolicy().getRef(identifyOutputSet);
         }
-        final String DMN_DEFINITIONS_JSON = "/" + getDefinitionsFileFromModel(dmnModel);
+        final String DMN_DEFINITIONS_JSON = DMN_DEFINITIONS_JSON_ROOT + getDefinitionsFileFromModel(dmnModel);
         // MP / Quarkus
         final String Q_CTX_PATH = context.getApplicationProperty("quarkus.http.root-path").filter(not("/"::equals)).orElse("");
         processAnnForRef(dmnMethod,

@@ -70,7 +70,7 @@ public class EndpointsIT {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/a.json")
+                .get("/refs/a.json")
                 .then()
                 .statusCode(200)
                 .body("definitions.tAddress.type", is("object"));

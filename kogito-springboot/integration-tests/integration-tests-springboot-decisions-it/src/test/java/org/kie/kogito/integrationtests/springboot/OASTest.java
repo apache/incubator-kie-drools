@@ -81,8 +81,8 @@ class OASTest extends BaseRestTest {
         OpenAPI openAPI = result.getOpenAPI();
         PathItem p1 = openAPI.getPaths().get("/" + DMN_MODEL_NAME);
         assertThat(p1).isNotNull();
-        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
-        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
+        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/refs/basicAdd.json#");
+        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/refs/basicAdd.json#");
     }
 
     @ParameterizedTest
@@ -97,7 +97,7 @@ class OASTest extends BaseRestTest {
             "StatusService" })
     public void testOASdmnDefinitions(String name) {
         RestAssured.given()
-                .get("/" + name + ".json")
+                .get("/refs/" + name + ".json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));
