@@ -113,6 +113,34 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             return smems[smemIndex];
         }
         
+        public void moveToNextAvailableSegment() {
+            while ((getCurrentSegment().getDirtyNodeMask() & bit) == 0 && node != getCurrentSegment().getTipNode() && !NodeTypeEnums.isBetaNodeWithSubnetwork(node)) {
+            //while ((dirtyMask & bit) == 0 && node != smem.getTipNode() && NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
+                if (RuleNetworkEvaluatorImpl.log.isTraceEnabled()) {
+                    int offset = RuleNetworkEvaluatorImpl.getOffset(node);
+                    RuleNetworkEvaluatorImpl.log.trace("{} Skip Node {}", RuleNetworkEvaluatorImpl.indent(offset), node);
+                }
+                bit = nextNodePosMask(bit); // shift to check the next node
+                node = ((LeftTupleNode) node).getSinkPropagator().getFirstLeftTupleSink();
+                nodeMem = nodeMem.getNext();
+            }
+        }
+
+        public void moveToNextNodeInSegment() {
+            node = ((LeftTupleNode) node).getSinkPropagator().getFirstLeftTupleSink();
+            nodeMem = nodeMem.getNext();
+            bit = nextNodePosMask(bit);
+        }
+
+        public void moveToNextSegment() {
+            // Reached end of segment, start on new segment.
+            bit = 1;
+            smemIndex = smemIndex + 1;
+        
+            node = getCurrentSegment().getRootNode();
+            nodeMem = getCurrentSegment().getNodeMemories()[0];
+        }
+
         public static SegmentCursor createSegmentCursor(PathMemory pmem, SegmentMemory sm) {
             if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm.getTipNode())) {
                 return new SegmentCursor(pmem, 
@@ -456,14 +484,13 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                           long bit,
                           Memory nodeMem,
                           NetworkNode node,
-                          TupleSets trgTuples,
+                          TupleSets srcTuples,
                           boolean processSubnetwork) {
         
         SegmentCursor sc = new SegmentCursor(pmem, smems, smemIndex, bit, nodeMem, node);
         
         TupleSets stagedLeftTuples = null;
         while (true) {
-            TupleSets srcTuples = trgTuples; // previous target, is now the source
             if (log.isTraceEnabled()) {
                 int offset = getOffset(sc.node);
                 log.trace("{} {} {} {}", indent(offset), ++cycle, sc.node.toString(), srcTuples.toStringSizes());
@@ -474,8 +501,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 if (srcTuples.isEmpty() && sc.getCurrentSegment().getDirtyNodeMask() == 0) {
                     // empty sources and segment is not dirty, skip to non empty src tuples or dirty segment.
                     boolean foundDirty = false;
-                    sc.smemIndex = sc.smemIndex + 1;
-                    for (int i = sc.smemIndex, length = sc.smems.length; i < length; i++) {
+                    for (int i = sc.smemIndex + 1, length = sc.smems.length; i < length; i++) {
                         if (log.isTraceEnabled()) {
                             int offset = getOffset(sc.node);
                             log.trace("{} Skip Segment {}", indent(offset), i-1);
@@ -513,16 +539,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             }
 
             if (srcTuples.isEmpty()) {
-                while ((sc.getCurrentSegment().getDirtyNodeMask() & sc.bit) == 0 && sc.node != sc.getCurrentSegment().getTipNode() && !NodeTypeEnums.isBetaNodeWithSubnetwork(sc.node)) {
-                //while ((dirtyMask & bit) == 0 && node != smem.getTipNode() && NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
-                    if (log.isTraceEnabled()) {
-                        int offset = getOffset(sc.node);
-                        log.trace("{} Skip Node {}", indent(offset), sc.node);
-                    }
-                    sc.bit = nextNodePosMask(sc.bit); // shift to check the next node
-                    sc.node = ((LeftTupleNode) sc.node).getSinkPropagator().getFirstLeftTupleSink();
-                    sc.nodeMem = sc.nodeMem.getNext();
-                }
+                sc.moveToNextAvailableSegment();
             }
 
             boolean terminalNode = true;
@@ -544,36 +561,31 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
             }
 
             stagedLeftTuples = getTargetStagedLeftTuples(sc.getCurrentSegment(), sc.node);
-            LeftTupleSinkNode sink = ((LeftTupleNode) sc.node).getSinkPropagator().getFirstLeftTupleSink();
 
-            trgTuples = evalNode(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.bit, sc.nodeMem, sc.node, sink, srcTuples, stagedLeftTuples, processSubnetwork);
-            if (trgTuples == null) {
+            srcTuples = evalNode(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, 
+                    sc.bit, sc.nodeMem, sc.node, 
+                    ((LeftTupleNode) sc.node).getSinkPropagator().getFirstLeftTupleSink(), 
+                    srcTuples, stagedLeftTuples, processSubnetwork);
+            if (srcTuples == null) {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
             }
             
             if (sc.node == sc.getCurrentSegment().getTipNode()) {
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
                 sc.getCurrentSegment().getFirst().getStagedLeftTuples().addAll(stagedLeftTuples); // must put back all the LTs
-                propagate(sc.getCurrentSegment(), trgTuples);
+                propagate(sc.getCurrentSegment(), srcTuples);
             }
 
             if (sc.node == sc.getCurrentSegment().getTipNode()) {
-                // Reached end of segment, start on new segment.
-                trgTuples = sc.getCurrentSegment().getStagedLeftTuples().takeAll();
-                sc.bit = 1;
-                sc.smemIndex = sc.smemIndex + 1;
-
+                sc.moveToNextSegment();
+                srcTuples = sc.getCurrentSegment().getStagedLeftTuples().takeAll();
                 if (log.isTraceEnabled()) {
                     int offset = getOffset(sc.node);
                     log.trace("{} Segment {}", indent(offset), sc.smemIndex);
                 }
-                sc.node = sc.getCurrentSegment().getRootNode();
-                sc.nodeMem = sc.getCurrentSegment().getNodeMemories()[0];
             } else {
                 // get next node and node memory in the segment
-                sc.node = sink;
-                sc.nodeMem = sc.nodeMem.getNext();
-                sc.bit = nextNodePosMask(sc.bit);
+                sc.moveToNextNodeInSegment();
             }
             processSubnetwork = true; //  make sure it's reset, so ria nodes are processed
         }
