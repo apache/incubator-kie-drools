@@ -573,7 +573,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 sc.moveToNextAvailableSegment();
             }
             
-            if (NodeTypeEnums.isTerminalNode(sc.node)) {
+            if (NodeTypeEnums.isEndNode(sc.node)) {
                 evaluateTerminalNode(activationsManager, executor, stack, sc);
                 break;
             }
