@@ -390,7 +390,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), pmem.getSegmentMemories().length, segmentCursor.srcTuples.toStringSizes());
         }
-        outerEval(activationsManager, executor, segmentCursor, segmentCursor.srcTuples, true);
+        outerEval(activationsManager, executor, segmentCursor, true);
     }
 
     @Override
@@ -401,7 +401,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                           TupleSets trgLeftTuples) {
         SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem, sink, tm, trgLeftTuples);
         
-        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), segmentCursor, trgLeftTuples, true);
+        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), segmentCursor, true);
     }
 
     
@@ -461,7 +461,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         ActivationsManager activationsManager = pmem.getActualActivationsManager();
 
         
-        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), segmentCursor, leftTupleSets, true);
+        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), segmentCursor, true);
     }
 
 
@@ -496,11 +496,10 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     private void outerEval(ActivationsManager activationsManager,
                            RuleExecutor executor,
                            SegmentCursor sc,
-                           TupleSets trgTuples,
                            boolean processSubnetwork) {
 
          LinkedList<StackEntry> stack = new LinkedList<>();
-         innerEval(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.bit, sc.nodeMem, sc.node, trgTuples, processSubnetwork);
+         innerEval(activationsManager, executor, stack, sc, processSubnetwork);
          while (!stack.isEmpty()) {
              // eval
              StackEntry entry = stack.removeLast();
@@ -622,6 +621,15 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
+    private void innerEval(ActivationsManager activationsManager,
+                           RuleExecutor executor,
+                           LinkedList<StackEntry> stack,
+                           SegmentCursor sc,
+                           boolean processSubnetwork) {
+        
+        innerEval(activationsManager, executor, stack, sc.pmem, sc.smems, sc.smemIndex, sc.bit, sc.nodeMem, sc.node, sc.srcTuples, processSubnetwork);
+         
+     }
     private void evaluateTerminalNode(ActivationsManager activationsManager,
                           RuleExecutor executor,
                           LinkedList<StackEntry> stack,
