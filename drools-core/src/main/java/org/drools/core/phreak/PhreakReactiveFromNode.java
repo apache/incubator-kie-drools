@@ -36,10 +36,10 @@ public class PhreakReactiveFromNode extends PhreakFromNode {
                        ReactiveFromMemory fm,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
-        super.doNode(fromNode, fm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        super.doNode(fromNode, fm, sink, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
         trgLeftTuples.addAll(fm.getStagedLeftTuples().takeAll());
     }
 }
