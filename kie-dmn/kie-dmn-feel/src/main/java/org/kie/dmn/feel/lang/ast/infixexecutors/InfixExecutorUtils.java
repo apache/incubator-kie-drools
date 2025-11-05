@@ -136,7 +136,7 @@ public class InfixExecutorUtils {
         }
     }
 
-    static LocalDate addLocalDateAndDuration(LocalDate left, Duration right) {
+    public static LocalDate addLocalDateAndDuration(LocalDate left, Duration right) {
         LocalDateTime leftLDT = LocalDateTime.of(left, LocalTime.MIDNIGHT);
         LocalDateTime evaluated = leftLDT.plus(right);
         return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());

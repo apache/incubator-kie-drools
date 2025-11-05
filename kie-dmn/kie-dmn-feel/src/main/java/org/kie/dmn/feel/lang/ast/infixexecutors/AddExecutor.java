@@ -29,6 +29,8 @@ import java.time.temporal.TemporalAmount;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.addLocalDateAndDuration;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.commonManageInvalidParameters;
@@ -51,7 +53,9 @@ public class AddExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return add(left, right, ctx);
+        //return add(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx.getFEELDialect());
+        return handler.executeAdd(left, right, ctx);
     }
 
     @Override
@@ -59,7 +63,8 @@ public class AddExecutor implements InfixExecutor {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
-    private Object add(Object left, Object right, EvaluationContext ctx) {
+    /*private Object add(Object left, Object right, EvaluationContext ctx) {
+        //return InfixExecutorUtils.executeAdd(left, right, ctx);
         if ((left instanceof String || right instanceof String)) {
             return getSummedString(left, right, ctx);
         }
@@ -115,7 +120,7 @@ public class AddExecutor implements InfixExecutor {
 
         commonManageInvalidParameters(ctx);
         return null;
-    }
+    }*/
 
     private String getSummedString(Object left, Object right, EvaluationContext ctx) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {

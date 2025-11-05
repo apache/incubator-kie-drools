@@ -23,7 +23,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,45 +38,58 @@ class InfixOperatorTest {
 
     @Test
     void addLocalDateAndDuration() {
+        FEELEventListenersManager manager = new FEELEventListenersManager();
+        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.BFEEL, DMNVersion.getLatest());
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
-        LocalDate retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        LocalDate retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-24, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
         right = Duration.of(1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
 
         left = LocalDate.of(2021, 1, 2);
         right = Duration.of(1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2));
         right = Duration.of(24, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
         right = Duration.of(25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
 
         left = LocalDate.of(2021, 1, 3);
         right = Duration.of(25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4));
 
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 28));
 
         left = LocalDate.of(2020, 12, 31);
         right = Duration.of(-1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
+    }
+
+    @Test
+    void addStringAndNumber_shouldReturnConcatenatedString() {
+        FEELEventListenersManager manager = new FEELEventListenersManager();
+        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.BFEEL, DMNVersion.getLatest());
+        String left = "Total: ";
+        Integer right = 100;
+        Object result = InfixOperator.ADD.evaluate(left, right, ctx);
+        assertThat(result).isEqualTo("Total: 100");
+        //assertThat(result).isNull();
     }
 
     @Test
