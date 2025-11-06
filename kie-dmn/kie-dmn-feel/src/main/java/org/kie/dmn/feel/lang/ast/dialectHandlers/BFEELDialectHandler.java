@@ -19,16 +19,16 @@ import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 public class BFEELDialectHandler extends DefaultDialectHandler implements DialectHandler {
 
     @Override
-    public Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx) {
-        Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         // coerce to String if either is a String
         map.put(
-                (left, right) -> left instanceof String || right instanceof String,
+                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
                 (left, right) -> getString(left) + getString(right)
         );
         // null + Number → treat null as 0
         map.put(
-                (left, right) -> left == null && right instanceof Number,
+                new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
                 (left, right) -> {
                     BigDecimal leftNum = BigDecimal.ZERO;
                     BigDecimal rightNum = getBigDecimalOrNull(right);
@@ -37,7 +37,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         );
         // Number + null → treat null as 0
         map.put(
-                (left, right) -> left instanceof Number && right == null,
+                new CheckedPredicate((left, right) -> left instanceof Number && right == null, false),
                 (left, right) -> {
                     BigDecimal leftNum = getBigDecimalOrNull(left);
                     BigDecimal rightNum = BigDecimal.ZERO;
@@ -46,12 +46,12 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         );
         // (Number + String) → coerce both to string
         map.put(
-                (left, right) -> (left instanceof Number && right instanceof String) || (left instanceof String && right instanceof Number),
+                new CheckedPredicate((left, right) -> (left instanceof Number && right instanceof String) || (left instanceof String && right instanceof Number), false),
                 (left, right) -> getString(left) + getString(right)
         );
         // Temporal + Number → treat non-numeric as 0
         map.put(
-                (left, right) -> left instanceof Temporal && right instanceof Number,
+                new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof Number, false),
                 (left, right) -> {
                     BigDecimal leftNumber = left instanceof Number
                             ? getBigDecimalOrNull(left)
@@ -64,12 +64,12 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         );
         // Temporal + non-TemporalAmount → treat as Duration.ZERO
         map.put(
-                (left, right) -> left instanceof Temporal && !(right instanceof TemporalAmount),
+                new CheckedPredicate((left, right) -> left instanceof Temporal && !(right instanceof TemporalAmount), false),
                 (left, right) -> ((Temporal) left).plus(Duration.ZERO)
         );
         // TemporalAmount + non-Temporal → treat as no-op
         map.put(
-                (left, right) -> left instanceof TemporalAmount && !(right instanceof Temporal || right instanceof ChronoPeriod),
+                new CheckedPredicate((left, right) -> left instanceof TemporalAmount && !(right instanceof Temporal || right instanceof ChronoPeriod), false),
                 (left, right) -> left
         );
 
@@ -77,7 +77,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
 
         // null + any → concatenate as strings
         map.put(
-                (left, right) -> left == null || right == null,
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> getString(left) + getString(right)
         );
         return map;

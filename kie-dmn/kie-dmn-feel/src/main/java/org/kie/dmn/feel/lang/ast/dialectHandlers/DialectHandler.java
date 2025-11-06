@@ -9,7 +9,7 @@ import java.util.function.BiPredicate;
 
 public interface DialectHandler {
 
-    Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx);
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx);
 
     Object executeAdd(Object left, Object right, EvaluationContext ctx);
 

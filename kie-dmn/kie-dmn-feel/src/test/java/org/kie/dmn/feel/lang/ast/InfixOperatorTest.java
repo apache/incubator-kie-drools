@@ -38,49 +38,48 @@ class InfixOperatorTest {
 
     @Test
     void addLocalDateAndDuration() {
-        FEELEventListenersManager manager = new FEELEventListenersManager();
-        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.BFEEL, DMNVersion.getLatest());
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
-        LocalDate retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        LocalDate retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-24, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
         right = Duration.of(1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
 
         left = LocalDate.of(2021, 1, 2);
         right = Duration.of(1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2));
         right = Duration.of(24, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
         right = Duration.of(25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
 
         left = LocalDate.of(2021, 1, 3);
         right = Duration.of(25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4));
 
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 28));
 
         left = LocalDate.of(2020, 12, 31);
         right = Duration.of(-1, ChronoUnit.HOURS);
-        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, ctx);
+        retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
     }
 
+    //TODO : Added for testing purpose. Need to move to Bfeel specific test class
     @Test
     void addStringAndNumber_shouldReturnConcatenatedString() {
         FEELEventListenersManager manager = new FEELEventListenersManager();

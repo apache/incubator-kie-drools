@@ -1,5 +1,6 @@
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 
 import java.util.Map;
@@ -18,8 +19,12 @@ public class DialectHandlerFactory {
             FEELDialect.BFEEL, new BFEELDialectHandler()
     );
 
-    public static DialectHandler getHandler(FEELDialect dialect) {
-        return DIALECT_HANDLERS.get(dialect);
+    public static DialectHandler getHandler(EvaluationContext ctx) {
+        if(ctx == null) {
+            return new FEELDialectHandler();
+        }
+        FEELDialect dialect = ctx.getFEELDialect();
+        return DIALECT_HANDLERS.getOrDefault(dialect, new FEELDialectHandler());
     }
 
 }

@@ -54,7 +54,7 @@ public class AddExecutor implements InfixExecutor {
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
         //return add(left, right, ctx);
-        DialectHandler handler = DialectHandlerFactory.getHandler(ctx.getFEELDialect());
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         return handler.executeAdd(left, right, ctx);
     }
 

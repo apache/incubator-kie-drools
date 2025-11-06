@@ -21,70 +21,70 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
     private static final BiPredicate<Object, Object> TEMPORAL_PLUS_TEMPORAL = (left, right) -> left instanceof Temporal && right instanceof Temporal;
 
     @Override
-    public Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx) {
-        Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
         // String + null or null + String → return null
         map.put(
-                (left, right) -> (left instanceof String && right == null) || (right instanceof String && left == null),
-                (left, right) -> null
+                new CheckedPredicate((left, right) -> (left instanceof String && right == null) ||
+                        (right instanceof String && left == null), false), (left, right) -> null
         );
         // null + Number or Number + null
         map.put(
-                (left, right) -> (left == null && right instanceof Number) || (left instanceof Number && right == null),
-                (left, right) -> null
+                new CheckedPredicate((left, right) -> (left == null && right instanceof Number) ||
+                        (left instanceof Number && right == null), false), (left, right) -> null
         );
         //(Number + String) or (String + Number) → return null
         map.put(
-                (left, right) -> (left instanceof Number && right instanceof String) || (left instanceof String && right instanceof Number),
-                (left, right) -> null
+                new CheckedPredicate((left, right) -> (left instanceof Number && right instanceof String) ||
+                        (left instanceof String && right instanceof Number), false), (left, right) -> null
         );
 
         //temporal + number
         map.put(
-                TEMPORAL_PLUS_NUMBER,
+                new CheckedPredicate(TEMPORAL_PLUS_NUMBER, true),
                 (left, right) -> null
         );
 
         // TemporalAmount + String → invalid
         map.put(
-                (left, right) -> left instanceof TemporalAmount && right instanceof String,
-                (left, right) -> null
+                new CheckedPredicate((left, right) -> left instanceof TemporalAmount &&
+                        right instanceof String, false), (left, right) -> null
         );
         map.put(
-                TEMPORAL_PLUS_TEMPORAL,
+                new CheckedPredicate(TEMPORAL_PLUS_TEMPORAL, true),
                 (left, right) -> null
         );
         // Temporal + non-TemporalAmount → invalid
         map.put(
-                (left, right) -> left instanceof Temporal && !(right instanceof TemporalAmount || right instanceof Number),
-                (left, right) -> null
+                new CheckedPredicate((left, right) -> left instanceof Temporal &&
+                        !(right instanceof TemporalAmount || right instanceof Number), false), (left, right) -> null
         );
 
         // TemporalAmount + non-Temporal → invalid
         map.put(
-                (left, right) -> left instanceof TemporalAmount && !(right instanceof Temporal || right instanceof ChronoPeriod || right instanceof Duration),
+                new CheckedPredicate((left, right) -> left instanceof TemporalAmount && !(right instanceof Temporal || right instanceof ChronoPeriod || right instanceof Duration), false),
                 (left, right) -> null
         );
         // LocalDate + Number → invalid
         map.put(
-                DATE_PLUS_NUMBER, (left, right) -> null
+                new CheckedPredicate(DATE_PLUS_NUMBER, true), (left, right) -> null
         );
 
         // LocalDateTime + Number → invalid
         map.put(
-                (left, right) -> left instanceof LocalDateTime && right instanceof Number,
+                new CheckedPredicate((left, right) -> left instanceof LocalDateTime && right instanceof Number, false),
                 (left, right) -> null
         );
         // Temporal + Number → invalid
         map.put(
-                (left, right) -> left instanceof Temporal && right instanceof Number,
+                new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof Number, false),
                 (left, right) -> null
         );
 
         // String + String -> concat string
         map.put(
-                (left, right) -> left instanceof String && right instanceof String,
+                new CheckedPredicate((left, right) -> left instanceof String && right instanceof String, false),
                 (left, right) -> ((String) left) + ((String) right)
         );
 
@@ -93,7 +93,7 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
 
         // null + any → only concatenate if both are strings
         map.put(
-                (left, right) -> left == null || right == null,
+                new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> {
                     if (left instanceof String stringLeft && right instanceof String stringRight) {
                         return stringLeft + stringRight;

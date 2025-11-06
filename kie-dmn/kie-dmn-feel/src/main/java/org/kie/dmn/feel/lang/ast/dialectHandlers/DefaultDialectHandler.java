@@ -11,10 +11,7 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -23,26 +20,26 @@ import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public abstract class DefaultDialectHandler implements DialectHandler {
 
-    protected Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> getCommonAddOperations() {
-        Map<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+    protected Map<CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAddOperations() {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         // String + String → concatenate
         map.put(
-                (left, right) -> left instanceof String && right instanceof String,
+                new CheckedPredicate((left, right) -> left instanceof String && right instanceof String, false),
                 (left, right) -> getString(left) + getString(right)
         );
         // Number + Number
         map.put(
-                (left, right) -> left instanceof Number && right instanceof Number,
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Number, false),
                 (left, right) -> getBigDecimalOrNull(left).add(getBigDecimalOrNull(right), MathContext.DECIMAL128)
         );
         // Duration + Duration → Duration
         map.put(
-                (left, right) -> left instanceof Duration && right instanceof Duration,
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
                 (left, right) -> ((Duration) left).plus((Duration) right)
         );
         // Duration + LocalDate → LocalDate
         map.put(
-                (left, right) -> left instanceof Duration && right instanceof LocalDate,
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof LocalDate, false),
                 (left, right) -> {
                     Duration leftDuration = (Duration) left;
                     LocalDate localDate = (LocalDate) right;
@@ -51,7 +48,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         );
         // LocalDate + Duration → LocalDate
         map.put(
-                (left, right) -> left instanceof LocalDate && right instanceof Duration,
+                new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Duration, false),
                 (left, right) -> {
                     LocalDate localDate = (LocalDate) left;
                     Duration duration = (Duration) right;
@@ -61,26 +58,51 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
         // Temporal + TemporalAmount → normal addition
         map.put(
-                (left, right) -> left instanceof Temporal && right instanceof TemporalAmount,
+                new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof TemporalAmount, false),
                 (left, right) -> ((Temporal) left).plus((TemporalAmount) right)
         );
         //TemporalAmount +Temporal
         map.put(
-                (left, right) -> left instanceof TemporalAmount && right instanceof Temporal,
+                new CheckedPredicate((left, right) -> left instanceof TemporalAmount && right instanceof Temporal, false),
                 (left, right) -> ((Temporal) right).plus((TemporalAmount) left)
         );
 
         // TemporalAmount + ChronoPeriod → combine periods
         map.put(
-                (left, right) -> left instanceof TemporalAmount && right instanceof ChronoPeriod,
+                new CheckedPredicate((left, right) -> left instanceof TemporalAmount && right instanceof ChronoPeriod, false),
                 (left, right) -> ((ChronoPeriod) right).plus((TemporalAmount) left)
         );
         return map;
     }
 
+    public static class CheckedPredicate {
+        final BiPredicate<Object, Object> predicate;
+        final boolean toNotify;
+
+        CheckedPredicate(BiPredicate<Object, Object> predicate, boolean toNotify) {
+            this.predicate = predicate;
+            this.toNotify = toNotify;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!(obj instanceof CheckedPredicate))
+                return false;
+            CheckedPredicate other = (CheckedPredicate) obj;
+            return Objects.equals(this.predicate, other.predicate);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(predicate);
+        }
+    }
+
     @Override
     public Object executeAdd(Object left, Object right, EvaluationContext ctx) {
-        List<BiPredicate<Object, Object> > notifiedPredicates = getNotifiedPredicates();
+       // List<BiPredicate<Object, Object> > notifiedPredicates = getNotifiedPredicates();
         /*for (Map.Entry<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> entry : getAddOperationMap(ctx).entrySet()) {
             if (entry.getKey().test(left, right)) {
                 Object result = entry.getValue().apply(left, right);
@@ -97,14 +119,14 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         ctx.notifyEvt(() -> new InvalidParametersEvent(severity, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
         return null;*/
 
-        Optional<Map.Entry<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>>> match =
+        Optional<Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>>> match =
                 getAddOperationMap(ctx).entrySet().stream()
-                        .filter(entry -> entry.getKey().test(left, right))
+                        .filter(entry -> entry.getKey().predicate.test(left, right))
                         .findFirst();
         if (match.isPresent()) {
-            Map.Entry<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> entry = match.get();
+            Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>> entry = match.get();
             Object result = entry.getValue().apply(left, right);
-            if (result == null && notifiedPredicates.contains(entry.getKey())) {
+            if (result == null && entry.getKey().toNotify) {
                 ctx.notifyEvt(() -> new InvalidParametersEvent(
                         FEELEvent.Severity.ERROR,
                         Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
