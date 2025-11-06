@@ -25,8 +25,12 @@ import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseProcessInstanceMigrationResource<T> implements ProcessInstanceMigration<T> {
+
+    Logger logger = LoggerFactory.getLogger(BaseProcessInstanceMigrationResource.class);
 
     private Supplier<Processes> processes;
 
@@ -50,7 +54,8 @@ public abstract class BaseProcessInstanceMigrationResource<T> implements Process
             message.put("processInstanceId", processInstanceId);
             return buildOkResponse(message);
         } catch (Exception e) {
-            return badRequestResponse(e.getMessage());
+            logger.error("An exception occurred during migration of a process instance. ", e);
+            return badRequestResponse("An exception occurred during migration of a process instance. Please check the logs for more information.");
         }
     }
 
@@ -63,7 +68,8 @@ public abstract class BaseProcessInstanceMigrationResource<T> implements Process
             message.put("numberOfProcessInstanceMigrated", numberOfProcessInstanceMigrated);
             return buildOkResponse(message);
         } catch (Exception e) {
-            return badRequestResponse(e.getMessage());
+            logger.error("An exception occurred during migration of process instances. ", e);
+            return badRequestResponse("An exception occurred during migration of process instances. Please check the logs for more information.");
         }
     }
 
