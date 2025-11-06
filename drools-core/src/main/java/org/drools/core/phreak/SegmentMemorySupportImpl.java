@@ -210,11 +210,13 @@ public class SegmentMemorySupportImpl implements SegmentMemorySupport {
         return memory.getSegmentMemory();
     }
 
-    public void createChildSegments(LeftTupleSinkPropagator sinkProp, SegmentMemory smem) {
+    @Override
+    public void initializeChildSegmentsIfNeeded(SegmentMemory smem) {
+        LeftTupleSinkPropagator sinkPropagator = smem.getTipNode().getSinkPropagator();
         if (!smem.isEmpty()) {
             return; // this can happen when multiple threads are trying to initialize the segment
         }
-        for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink
+        for (LeftTupleSinkNode sink = sinkPropagator.getFirstLeftTupleSink(); sink != null; sink = sink
                 .getNextLeftTupleSinkNode()) {
             SegmentMemory childSmem = PhreakBuilder.isEagerSegmentCreation() ? createChildSegment(sink)
                     : createChildSegmentLazily(sink);

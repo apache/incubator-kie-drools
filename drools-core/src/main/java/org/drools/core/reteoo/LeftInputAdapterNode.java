@@ -18,6 +18,7 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -173,10 +174,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       boolean useLeftMemory) {
         SegmentMemory sm = lm.getOrCreateSegmentMemory( liaNode, reteEvaluator );
         if ( sm.getTipNode() == liaNode) {
-            // liaNode in its own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
@@ -199,8 +197,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         TupleImpl leftTuple = TupleFactory.createLeftTuple( sink, factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
 
+        Collection<PathMemory> pathsToFlush;
         if ( sm.getRootNode() == liaNode ) {
-            doInsertSegmentMemoryWithFlush(reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode());
+            pathsToFlush = doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
         } else {
             // sm points to lia child sm, so iterate for all remaining children
             // all peer tuples must be created before propagation, or eager evaluation subnetworks have problem
@@ -210,9 +209,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sink =  sm.getSinkFactory();
                 peer = TupleFactory.createPeer( sink, peer ); // pctx is set during peer cloning
             }
-
             sm = originaSm;
-            Set<PathMemory> pathsToFlush = new HashSet<>();
+            pathsToFlush = new HashSet<>();
             pathsToFlush.addAll( doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() ) );
             if ( sm.getRootNode() != liaNode ) {
                 // sm points to lia child sm, so iterate for all remaining children
@@ -223,16 +221,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 }
             }
 
-            for (PathMemory outPmem : pathsToFlush) {
-                reteEvaluator.getRuleNetworkEvaluator().forceFlushPath(outPmem);
-            }
         }
-    }
-
-    public static void doInsertSegmentMemoryWithFlush(ReteEvaluator reteEvaluator, boolean notifySegment, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
-        for (PathMemory outPmem : doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, streamMode )) {
-            reteEvaluator.getRuleNetworkEvaluator().forceFlushPath(outPmem);
-        }
+        reteEvaluator.getRuleNetworkEvaluator().forceFlushPaths(pathsToFlush);
     }
 
     public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
@@ -263,10 +253,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final boolean linkOrNotify,
                                       final LiaNodeMemory lm) {
         if ( sm.getTipNode() == liaNode ) {
-            // liaNode in it's own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
@@ -321,10 +308,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final LiaNodeMemory lm,
                                       SegmentMemory sm) {
         if ( sm.getTipNode() == liaNode) {
-            // liaNode in it's own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                reteEvaluator.getSegmentMemorySupport().createChildSegments(liaNode.getSinkPropagator(), sm);
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
