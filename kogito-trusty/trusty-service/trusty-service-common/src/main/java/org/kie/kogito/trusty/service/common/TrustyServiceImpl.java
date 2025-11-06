@@ -222,7 +222,9 @@ public class TrustyServiceImpl implements TrustyService {
         //This is returned as null under Redis, so play safe
         Collection<DecisionInput> decisionInputs = Objects.nonNull(decision.getInputs()) ? decision.getInputs() : Collections.emptyList();
         if (!isStructureIdentical(decisionInputs, searchDomains)) {
-            String error = buildCounterfactualErrorMessage(String.format("The structure of the Search Domains do not match the structure of the original Inputs for decision with ID %s.", executionId),
+            // The replace calls are sanitization of the user input. The executionId has a way to reach here from the user.
+            String error = buildCounterfactualErrorMessage(
+                    String.format("The structure of the Search Domains do not match the structure of the original Inputs for decision with ID %s.", executionId.replace('\n', '_').replace('\r', '_')),
                     "Decision inputs:-", decisionInputs,
                     "Search domains:-", searchDomains);
             LOG.error(error);
@@ -232,8 +234,11 @@ public class TrustyServiceImpl implements TrustyService {
         //This is returned as null under Redis, so play safe
         Collection<DecisionOutcome> decisionOutcomes = Objects.nonNull(decision.getOutcomes()) ? decision.getOutcomes() : Collections.emptyList();
         if (!isStructureSubset(decisionOutcomes, goals)) {
+            // The replace calls are sanitization of the user input. The executionId has a way to reach here from the user.
             String error =
-                    buildCounterfactualErrorMessage(String.format("The structure of the Goals is not comparable to the structure of the original Outcomes for decision with ID %s.", executionId),
+                    buildCounterfactualErrorMessage(
+                            String.format("The structure of the Goals is not comparable to the structure of the original Outcomes for decision with ID %s.",
+                                    executionId.replace('\n', '_').replace('\r', '_')),
                             "Decision outcomes:-", decisionOutcomes,
                             "Goals:-", goals);
             LOG.error(error);

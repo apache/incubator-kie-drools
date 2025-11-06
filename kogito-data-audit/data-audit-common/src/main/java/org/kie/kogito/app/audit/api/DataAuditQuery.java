@@ -52,7 +52,13 @@ public class DataAuditQuery {
 
     @Override
     public String toString() {
-        return "DataAuditQuery [identifier=" + identifier + ", graphQLDefinition=" + graphQLDefinition + ", query=" + query + "]";
+        return "DataAuditQuery [identifier="
+                + identifier.replace('\n', '_').replace('\r', '_')
+                + ", graphQLDefinition="
+                + graphQLDefinition.replace('\n', '_').replace('\r', '_')
+                + ", query="
+                + query.replace('\n', '_').replace('\r', '_')
+                + "]";
     }
 
 }

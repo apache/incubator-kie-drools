@@ -95,6 +95,6 @@ public class GraphQLAuditDataRouteMapping {
 
     @ExceptionHandler({ Throwable.class })
     public ResponseEntity<String> handleException(Throwable th) {
-        return ResponseEntity.badRequest().body(th.getLocalizedMessage());
+        return ResponseEntity.badRequest().body("An Exception occurred processing the request. Please see the logs for more details.");
     }
 }
