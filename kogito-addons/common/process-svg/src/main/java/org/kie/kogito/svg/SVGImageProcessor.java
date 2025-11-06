@@ -53,6 +53,7 @@ public class SVGImageProcessor {
             // or disable entity expansion but keep in mind that this doesn't prevent fetching external entities
             // and this solution is not correct for OpenJDK < 13 due to a bug: https://bugs.openjdk.java.net/browse/JDK-8206132
             factory.setExpandEntityReferences(false);
+            factory.setNamespaceAware(true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(svg);
