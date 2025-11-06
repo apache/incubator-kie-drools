@@ -19,6 +19,7 @@
 package org.drools.traits.persistence;
 
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -99,6 +100,9 @@ public class PersistenceTest {
     @ParameterizedTest(name="{0}")
     @MethodSource("parameters")
     public void testTraitsSerialization(String locking) throws Exception {
+
+        System.out.println("InputArguments : " + ManagementFactory.getRuntimeMXBean().getInputArguments());
+
     	setUpLocking(locking);
         String drl = "package org.drools.persistence.kie.persistence.session\n" +
                 "\n" +
