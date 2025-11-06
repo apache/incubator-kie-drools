@@ -22,19 +22,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.sql.DataSource;
+
+import static java.util.Arrays.stream;
 
 public class GenericRepository extends Repository {
 
@@ -323,15 +319,26 @@ public class GenericRepository extends Repository {
     }
 
     @Override
-    void migrate(String processId, String processVersion, String targetProcessId, String targetProcessVersion, String[] processIds) {
+    void migrate(String processId, String processVersion, String targetProcessId, String targetProcessVersion, String[] processInstanceIds) {
+        String sqlParamsPlaceHolders = stream(processInstanceIds).map(processInstanceId -> "?")
+                .collect(Collectors.joining(", "));
+
+        String migrateProcessInstancesSQLStatement = MIGRATE_INSTANCES_SQL_TEMPLATE.formatted(sqlParamsPlaceHolders);
+
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(Repository.MIGRATE_INSTANCE, processVersion))) {
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(migrateProcessInstancesSQLStatement, processVersion))) {
+
             statement.setString(1, targetProcessId);
             statement.setString(2, targetProcessVersion);
-            statement.setObject(3, connection.createArrayOf("VARCHAR", processIds));
-            statement.setString(4, processId);
+            statement.setString(3, processId);
+
+            int i = 4;
+            for (String processInstanceId : processInstanceIds) {
+                statement.setString(i++, processInstanceId);
+            }
+
             if (processVersion != null) {
-                statement.setString(5, processVersion);
+                statement.setString(i, processVersion);
             }
             statement.executeUpdate();
         } catch (Exception e) {
