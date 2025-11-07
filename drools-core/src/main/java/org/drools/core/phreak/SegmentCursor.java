@@ -40,8 +40,9 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 public class SegmentCursor {
     private static final Logger log = LoggerFactory.getLogger(SegmentCursor.class);
     
-    private PathMemory pmem;
-    private SegmentMemory[] smems;
+    private final PathMemory pmem;
+    private final SegmentMemory[] smems;
+
     private int smemIndex;
     private long bit;
     private Memory nodeMem;
@@ -359,7 +360,6 @@ public class SegmentCursor {
                     sm.getPos(),
                     1L,
                     sm.getNodeMemories()[0],
-                    // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
                     sm.getRootNode(), 
                     tupleSets);
         }
