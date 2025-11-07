@@ -80,24 +80,33 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
             }
         }, Integer.MIN_VALUE).register((ResponseExceptionMapper) response -> new WebApplicationException(fromResponse(response), response.getStatus())).build(clazz);
         try {
-            return internalExecute(ref, parameters);
+            Object result = internalExecute(ref, parameters);
+            if (result instanceof Response response) {
+                result = objectFromResponse(response);
+            }
+            return result;
         } catch (WebApplicationException ex) {
             throw new WorkItemExecutionException(Integer.toString(ex.getResponse().getStatus()), ex.getMessage());
         }
     }
 
-    private String fromResponse(Response response) {
+    private Object objectFromResponse(Response response) {
         Object entity = response.getEntity();
         if (entity instanceof ByteArrayInputStream input) {
             if (MediaType.APPLICATION_JSON_TYPE.equals(response.getMediaType())) {
                 try {
-                    return ObjectMapperFactory.get().readTree(input).toString();
+                    return ObjectMapperFactory.get().readTree(input);
                 } catch (IOException e) {
                     logger.warn("Error parsing json error response {}", e.toString());
                 }
             }
             return new String(input.readAllBytes());
         }
+        return entity != null ? entity.toString() : null;
+    }
+
+    private String fromResponse(Response response) {
+        Object entity = objectFromResponse(response);
         return entity != null ? entity.toString() : response.getStatusInfo().getReasonPhrase();
     }
 
