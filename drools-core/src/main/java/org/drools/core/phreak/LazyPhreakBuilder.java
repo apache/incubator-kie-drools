@@ -1032,8 +1032,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
             memory.getSegmentMemory().getStagedLeftTuples().addInsert(peer);
         } else {
             // If parent is Lian, then this must be called, so that any linking or unlinking can be done.
-            LeftInputAdapterNode.doInsertSegmentMemoryWithFlush(wm, true, liaMem, memory.getSegmentMemory(), peer, node
-                    .getLeftTupleSource().isStreamMode());
+            List<PathMemory> pathsToFlush = LeftInputAdapterNode.doInsertSegmentMemory(wm, true, liaMem, memory.getSegmentMemory(), peer, node
+                                .getLeftTupleSource().isStreamMode() );
+            wm.getRuleNetworkEvaluator().forceFlushPaths(pathsToFlush);
         }
 
         return peer;
