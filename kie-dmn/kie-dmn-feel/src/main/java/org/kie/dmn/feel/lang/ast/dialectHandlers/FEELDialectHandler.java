@@ -1,6 +1,8 @@
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -105,12 +107,22 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
         return map;
     }
 
+
     @Override
-    public List<BiPredicate<Object, Object>> getNotifiedPredicates() {
-        return List.of(
-                DATE_PLUS_NUMBER,
-                TEMPORAL_PLUS_NUMBER,
-                TEMPORAL_PLUS_TEMPORAL
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map =new LinkedHashMap<>();
+
+        // FEEL: if either operand is null and the other is true, result is null
+        map.put(
+                new CheckedPredicate((left, right) ->
+                        (left == null && Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(right, FEELDialect.FEEL))) ||
+                                (right == null && Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, FEELDialect.FEEL))),
+                        false
+                ),
+                (left, right) -> null
         );
+        map.putAll(getCommonAndOperations(ctx));
+
+        return map;
     }
 }

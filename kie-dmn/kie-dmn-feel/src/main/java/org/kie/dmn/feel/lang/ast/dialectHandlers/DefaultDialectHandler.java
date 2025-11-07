@@ -2,7 +2,9 @@ package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import java.math.MathContext;
@@ -75,6 +77,44 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         return map;
     }
 
+
+    protected Map<CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+        // Even though AndExecutor short-circuits right-side evaluation,
+        // this rule ensures correct logical interpretation when both operands are passed
+        // left is Boolean false → false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    return Boolean.FALSE.equals(l);
+                }, false),
+                (left, right) -> Boolean.FALSE
+        );
+        // left is Boolean true → evaluate right
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    return Boolean.TRUE.equals(l);
+                }, false),
+                (left, right) -> {
+                    Boolean r = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    return r != null ? r : BooleanEvalHelper.getFalseOrDialectDefault(right, dialect);
+                }
+        );
+
+        // left is null → fallback to getFalseOrDialectDefault(right)
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    return l == null;
+                }, false),
+                (left, right) -> BooleanEvalHelper.getFalseOrDialectDefault(right, dialect)
+        );
+
+        return map;
+    }
+
     public static class CheckedPredicate {
         final BiPredicate<Object, Object> predicate;
         final boolean toNotify;
@@ -102,31 +142,28 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
     @Override
     public Object executeAdd(Object left, Object right, EvaluationContext ctx) {
-       // List<BiPredicate<Object, Object> > notifiedPredicates = getNotifiedPredicates();
-        /*for (Map.Entry<BiPredicate<Object, Object>, BiFunction<Object, Object, Object>> entry : getAddOperationMap(ctx).entrySet()) {
-            if (entry.getKey().test(left, right)) {
-                Object result = entry.getValue().apply(left, right);
-                if (result == null && notifiedPredicates.contains(entry.getKey())) {
-                    ctx.notifyEvt(() -> new InvalidParametersEvent(
-                            FEELEvent.Severity.ERROR,
-                            Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
-                    ));
-                }
-                return result;
-            }
-        }
-        FEELEvent.Severity severity = FEELEvent.Severity.ERROR;
-        ctx.notifyEvt(() -> new InvalidParametersEvent(severity, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
-        return null;*/
+        return executeOperation(left, right, ctx, getAddOperationMap(ctx));
+    }
 
+    @Override
+    public Object executeAnd(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getAndOperationMap(ctx));
+    }
+
+    private Object executeOperation(
+            Object left,
+            Object right,
+            EvaluationContext ctx,
+            Map<CheckedPredicate, BiFunction<Object, Object, Object>> operationMap
+    ) {
         Optional<Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>>> match =
-                getAddOperationMap(ctx).entrySet().stream()
+                operationMap.entrySet().stream()
                         .filter(entry -> entry.getKey().predicate.test(left, right))
                         .findFirst();
+
         if (match.isPresent()) {
-            Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>> entry = match.get();
-            Object result = entry.getValue().apply(left, right);
-            if (result == null && entry.getKey().toNotify) {
+            Object result = match.get().getValue().apply(left, right);
+            if (result == null && match.get().getKey().toNotify) {
                 ctx.notifyEvt(() -> new InvalidParametersEvent(
                         FEELEvent.Severity.ERROR,
                         Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
@@ -134,11 +171,11 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             }
             return result;
         }
+
         ctx.notifyEvt(() -> new InvalidParametersEvent(
                 FEELEvent.Severity.ERROR,
                 Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
         ));
         return null;
     }
-
 }

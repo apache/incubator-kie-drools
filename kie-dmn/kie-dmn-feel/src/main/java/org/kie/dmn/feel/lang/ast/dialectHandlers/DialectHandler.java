@@ -13,7 +13,9 @@ public interface DialectHandler {
 
     Object executeAdd(Object left, Object right, EvaluationContext ctx);
 
-    default List<BiPredicate<Object, Object>> getNotifiedPredicates() {
-        return List.of();
-    }
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperationMap(EvaluationContext ctx);
+
+    Object executeAnd(Object left, Object right, EvaluationContext ctx);
+
+
 }

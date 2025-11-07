@@ -20,9 +20,9 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.and;
 
 public class AndExecutor implements InfixExecutor {
 
@@ -37,23 +37,21 @@ public class AndExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return and(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeAnd(left, right, ctx);
+        //return and(left, right, ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        Boolean leftAND = BooleanEvalHelper.getBooleanOrDialectDefault(infixNode.getLeft().evaluate(ctx),
-                                                                       ctx.getFEELDialect());
-        if (leftAND != null) {
-            if (leftAND.booleanValue()) {
-                return BooleanEvalHelper.getBooleanOrDialectDefault(infixNode.getRight().evaluate(ctx),
-                                                                    ctx.getFEELDialect());
-            } else {
-                return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
-            }
-        } else {
-            return BooleanEvalHelper.getFalseOrDialectDefault(infixNode.getRight().evaluate(ctx), ctx.getFEELDialect());
+        Object leftRaw = infixNode.getLeft().evaluate(ctx);
+        Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(leftRaw, ctx.getFEELDialect());
+
+        if (Boolean.FALSE.equals(leftBool)) {
+            return Boolean.FALSE; // short-circuit: no need to evaluate right
         }
+        Object rightRaw = infixNode.getRight().evaluate(ctx);
+        return evaluate(leftRaw, rightRaw, ctx);
     }
 
 }

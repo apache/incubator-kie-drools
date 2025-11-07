@@ -11,7 +11,6 @@ import java.time.temporal.TemporalAmount;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
@@ -81,5 +80,10 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 (left, right) -> getString(left) + getString(right)
         );
         return map;
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonAndOperations(ctx));
     }
 }
