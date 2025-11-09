@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>2.2.999-SNAPSHOT</version>
+    <version>2.2.999-20251109-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-todrl</artifactId>
   <name>Drools :: DRL on YAML :: to DRL emitter</name>
