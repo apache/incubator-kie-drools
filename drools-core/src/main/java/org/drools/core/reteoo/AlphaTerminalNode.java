@@ -46,13 +46,13 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         NetworkNode[] sinks = getSinks();
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) sinks[i];
-            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, rtn, true );
             RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(rtn, factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
 
             autoFocusIfNeeded(rtn, agendaItem, activationsManager);
 
-            PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );
+            PhreakRuleTerminalNode.doLeftTupleInsert( reteEvaluator, rtn, agendaItem.getRuleExecutor(), activationsManager, agendaItem, leftTuple );
         }
     }
 
@@ -66,7 +66,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
             ObjectTypeNodeId otnId     = rtn.getInputOtnId();
             TupleImpl        leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
-            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
+            RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, rtn, true );
             RuleExecutor executor = agendaItem.getRuleExecutor();
 
             if ( leftTuple != null && leftTuple.getInputOtnId().equals(otnId) ) {
@@ -74,7 +74,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getInferredMask()) ) {
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleUpdate( reteEvaluator, rtn, executor, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
                     if (leftTuple.isFullMatch()) {
                         ((InternalMatch) leftTuple).setActive(true);
                     }
@@ -86,7 +86,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
 
                     autoFocusIfNeeded(rtn, agendaItem, activationsManager);
 
-                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleInsert( reteEvaluator, rtn, executor, activationsManager, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
                 }
             }
         }
@@ -108,10 +108,10 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         if (((InternalMatch)leftTuple).isMatched()) {
             leftTuple.setStagedType(Tuple.DELETE);
         }
-        PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple );
+        PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, rtn, false ).getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple );
     }
 
-    public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, TerminalNode rtn, boolean linkPmem ) {
+    public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, TerminalNode rtn, boolean linkPmem ) {
         PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
         if (linkPmem) {
             pathMemory.doLinkRule( );
