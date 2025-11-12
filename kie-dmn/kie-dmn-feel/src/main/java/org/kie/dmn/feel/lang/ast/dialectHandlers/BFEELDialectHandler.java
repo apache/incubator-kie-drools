@@ -86,4 +86,19 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperationMap(EvaluationContext ctx) {
         return new LinkedHashMap<>(getCommonAndOperations(ctx));
     }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonEqualOperationMap(ctx));
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonGteOperationMap(ctx));
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonGtOperationMap(ctx));
+    }
 }

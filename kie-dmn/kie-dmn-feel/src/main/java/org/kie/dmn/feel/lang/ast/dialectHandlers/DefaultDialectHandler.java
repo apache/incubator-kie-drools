@@ -3,6 +3,7 @@ package org.kie.dmn.feel.lang.ast.dialectHandlers;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
@@ -115,6 +116,45 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         return map;
     }
 
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonEqualOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> BooleanEvalHelper.isEqual(left, right, dialect)
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonGteOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        // Rule: l > r OR l == r
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> InfixExecutorUtils.or(
+                        BooleanEvalHelper.compare(left, right, dialect, (l, r) -> l.compareTo(r) > 0),
+                        BooleanEvalHelper.isEqual(left, right, dialect),
+                        ctx
+                )
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonGtOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        // Rule: l > r
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (l, r) -> l.compareTo(r) > 0)
+        );
+        return map;
+    }
+
     public static class CheckedPredicate {
         final BiPredicate<Object, Object> predicate;
         final boolean toNotify;
@@ -148,6 +188,21 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     @Override
     public Object executeAnd(Object left, Object right, EvaluationContext ctx) {
         return executeOperation(left, right, ctx, getAndOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeEqual(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getEqualOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeGte(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getGteOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeGt(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getGtOperationMap(ctx));
     }
 
     private Object executeOperation(

@@ -17,5 +17,17 @@ public interface DialectHandler {
 
     Object executeAnd(Object left, Object right, EvaluationContext ctx);
 
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperationMap(EvaluationContext ctx);
+
+    Object executeEqual(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperationMap(EvaluationContext ctx);
+
+    Object executeGte(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperationMap(EvaluationContext ctx);
+
+    Object executeGt(Object left, Object right, EvaluationContext ctx);
+
 
 }
