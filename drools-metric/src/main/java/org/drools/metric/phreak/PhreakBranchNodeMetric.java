@@ -36,18 +36,18 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
 
     @Override
     public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
                        ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,
-                       RuleExecutor executor) {
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(branchNode);
 
-            super.doNode(activationsManager, branchNode, cbm, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            super.doNode(activationsManager, executor, branchNode, cbm, sink, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

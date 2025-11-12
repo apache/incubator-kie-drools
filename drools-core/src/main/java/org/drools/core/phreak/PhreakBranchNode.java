@@ -47,13 +47,13 @@ public class PhreakBranchNode {
     }
 
     public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
                        ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples,
-                       RuleExecutor executor) {
+                       TupleSets trgLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);

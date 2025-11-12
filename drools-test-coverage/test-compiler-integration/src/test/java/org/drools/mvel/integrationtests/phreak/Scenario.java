@@ -177,14 +177,14 @@ public class Scenario {
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode(wm).doNode( (JoinNode) betaNode, sinkNode,
-                                          bm, leftTuples, actualResultLeftTuples, previousResultTuples );
+                                          bm, leftTuples, previousResultTuples, actualResultLeftTuples );
             
         } else if ( phreakNode == PhreakNotNode.class ) {
             new PhreakNotNode(wm).doNode( (NotNode) betaNode, sinkNode,
-                                        bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
+                                        bm, leftTuples, previousResultTuples, actualResultLeftTuples );            
         } else if ( phreakNode == PhreakExistsNode.class ) {
             new PhreakExistsNode(wm).doNode( (ExistsNode) betaNode, sinkNode,
-                                           bm, leftTuples, actualResultLeftTuples, previousResultTuples );            
+                                           bm, leftTuples, previousResultTuples, actualResultLeftTuples );            
         }
         
         if ( expectedResultBuilder != null ) {

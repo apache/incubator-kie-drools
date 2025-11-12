@@ -19,6 +19,7 @@
 package org.drools.core.phreak;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -49,12 +50,9 @@ import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.PathEndNode;
@@ -66,26 +64,19 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleToObjectNode;
-import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.util.LinkedList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
 import static org.drools.core.common.TupleSetsImpl.createLeftTupleTupleSets;
-import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 
 public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
 
-    private static final Logger log = LoggerFactory.getLogger(RuleNetworkEvaluatorImpl.class);
-
+    
     private final PhreakJoinNode         pJoinNode;
     private final PhreakEvalNode         pEvalNode;
     private final PhreakFromNode         pFromNode;
@@ -138,73 +129,44 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     public void evaluateNetwork(ActivationsManager activationsManager,
                                 RuleExecutor executor,
                                 PathMemory pmem) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
 
-
-        SegmentMemory smem = smems[0];
-        if (smem == null) {
-            // if there's no first smem it's a pure alpha firing and then doesn't require any furthe evaluation
+        if (pmem.getSegmentMemories()[0] == null) {
+            // if there's no first smem it's a pure alpha firing and then doesn't require any further evaluation
             return;
         }
+        
+        SegmentCursor sc = SegmentCursor.createSegmentCursor(pmem);
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
-
-        NetworkNode node;
-        Memory nodeMem;
-        boolean firstSegmentIsOnlyLia = liaNode == smem.getTipNode();
-        if (firstSegmentIsOnlyLia) {
-            // segment only has liaNode in it
-            // nothing is staged in the liaNode, so skip to next segment
-            smem = smems[1];
-            node = smem.getRootNode();
-            nodeMem = smem.getNodeMemories()[0];
-        } else {
-            // lia is in shared segment, so point to next node
-            node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-            nodeMem = smem.getNodeMemories()[1]; // skip the liaNode memory
-        }
-
-        TupleSets srcTuples = smem.getStagedLeftTuples();
-        if (log.isTraceEnabled()) {
-            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
-        }
-        outerEval(activationsManager, executor, pmem, smems, firstSegmentIsOnlyLia ? 1 : 0, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, node, srcTuples, true);
+        
+        sc.traceNetworkEvaluation();
+        outerEval(activationsManager, executor, sc);
     }
-    
+
     @Override
     public void evaluate(PathMemory pmem,
                           ActivationsManager activationsManager,
                           NetworkNode sink,
                           Memory tm,
                           TupleSets trgLeftTuples) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
-        SegmentMemory sm = tm.getSegmentMemory();
-        int smemIndex = 0;
-        for (SegmentMemory smem : smems) {
-            if (smem == sm) {
-                break;
-            }
-            smemIndex++;
-        }
-
-        long bit = 1;
-        for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource) node).getSinkPropagator()
-                .getFirstLeftTupleSink()) {
-            //update the bit to the correct node position.
-            bit = nextNodePosMask(bit);
-        }
-
-        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), pmem, smems,
-                smemIndex, bit, tm, sink, trgLeftTuples, true);
+        SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem, sink, tm, trgLeftTuples);
+        
+        outerEval(activationsManager, pmem.getRuleAgendaItem().getRuleExecutor(), segmentCursor);
     }
+
     
     
     @Override
     public void forceFlushWhenSubnetwork(PathMemory pmem) {
-        for (PathMemory outPmem : findPathsToFlushFromSubnetwork(pmem)) {
+        forceFlushPaths(findPathsToFlushFromSubnetwork(pmem));
+    }
+    
+    @Override
+    public void forceFlushPaths(Collection<PathMemory> pmems) {
+        for (PathMemory outPmem : pmems) {
             forceFlushPath(outPmem);
         }
     }
+    
     
     @Override
     public List<PathMemory> findPathsToFlushFromSubnetwork(PathMemory pmem) {
@@ -239,31 +201,19 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
     public void forceFlushLeftTuple(PathMemory pmem,
                                     SegmentMemory sm, 
                                     TupleSets leftTupleSets) {
-        SegmentMemory[] smems = pmem.getSegmentMemories();
 
-        LeftTupleNode node;
-        Memory mem;
-        long bit = 1;
-        if (NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm
-                .getTipNode())) {
-            // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
-            node = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
-            mem = sm.getNodeMemories()[1];
-            bit = 2; // adjust bit to point to next node
-        } else {
-            node = sm.getRootNode();
-            mem = sm.getNodeMemories()[0];
-        }
+        SegmentCursor segmentCursor = SegmentCursor.createSegmentCursor(pmem, sm, leftTupleSets);
 
         PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ? pmem : nodeMemories.getNodeMemory(
                 (AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         ActivationsManager activationsManager = pmem.getActualActivationsManager();
-        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), pmem, smems, sm.getPos(), bit, mem, node,
-                leftTupleSets,
-                true);
+
+        
+        outerEval(activationsManager, rtnPmem.getOrCreateRuleAgendaItem().getRuleExecutor(), segmentCursor);
     }
-    
+
+
     
     @Override
     public boolean flushLeftTupleIfNecessary(SegmentMemory sm, boolean streamMode) {
@@ -291,26 +241,19 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 .getFactHandle().isEvent());
         return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
     }
-
+    
     private void outerEval(ActivationsManager activationsManager,
-                          RuleExecutor executor,
-                          PathMemory pmem,
-                          SegmentMemory[] smems,
-                          int smemIndex,
-                          long bit,
-                          Memory nodeMem,
-                          NetworkNode node,
-                          TupleSets trgTuples,
-                          boolean processSubnetwork) {
+                           RuleExecutor executor,
+                           SegmentCursor sc) {
 
-        LinkedList<StackEntry> stack = new LinkedList<>();
-        innerEval(activationsManager, executor, stack, pmem, smems, smemIndex, bit, nodeMem, node, trgTuples, processSubnetwork);
-        while (!stack.isEmpty()) {
-            // eval
-            StackEntry entry = stack.removeLast();
-            evalStackEntry(activationsManager, executor, stack, entry);
-        }
-    }
+         LinkedList<StackEntry> stack = new LinkedList<>();
+         innerEval(activationsManager, executor, stack, sc, true);
+         while (!stack.isEmpty()) {
+             // eval
+             StackEntry entry = stack.removeLast();
+             evalStackEntry(activationsManager, executor, stack, entry);
+         }
+     }
 
     private void evalStackEntry(ActivationsManager activationsManager,
                                RuleExecutor executor,
@@ -318,462 +261,311 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                                StackEntry entry) {
         NetworkNode node = entry.getNode();
         Memory nodeMem = entry.getNodeMem();
-        TupleSets trgTuples = entry.getTrgTuples();
         if (node.getType() == NodeTypeEnums.QueryElementNode) {
             // copy across the results, if any from the query node memory
             QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
             qmem.setNodeCleanWithoutNotify();
-            qmem.getResultLeftTuples().addTo(trgTuples);
+            qmem.getResultLeftTuples().addTo(entry.getTrgTuples());
         }
 
-        LeftTupleSinkNode sink = entry.getSink();
-        PathMemory pmem = entry.getRmem();
-
-        SegmentMemory[] smems = entry.getSmems();
-        int smemIndex = entry.getSmemIndex();
-        boolean processSubnetwork = entry.isProcessSubnetwork();
-
-        long bit = entry.getBit();
+        SegmentCursor sc;
         if (entry.isResumeFromNextNode()) {
-            SegmentMemory smem = smems[smemIndex];
-            if (node != smem.getTipNode()) {
-                // get next node and node memory in the segment
-                LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
-                if (nextSink == null) {
-                    node = sink;
-                } else {
-                    // there is a nested subnetwork, take out path
-                    node = nextSink;
-                }
-
-                nodeMem = nodeMem.getNext();
-                bit = nextNodePosMask(bit); // update bit to new node
-            } else {
-                // Reached end of segment, start on new segment.
-                propagate(smem, trgTuples);
-                smem = smems[++smemIndex];
-                trgTuples = smem.getStagedLeftTuples().takeAll();
-                node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories()[0];
-                bit = 1; // update bit to start of new segment
+            
+            if (node == entry.getSmems()[entry.getSmemIndex()].getTipNode()) {
+                propagate(entry.getSmems()[entry.getSmemIndex()], entry.getTrgTuples());
             }
-        }
 
-        if (log.isTraceEnabled()) {
-            int offset = getOffset(node);
-            log.trace("{} Resume {} {}", indent(offset), node.toString(), trgTuples.toStringSizes());
+            sc = SegmentCursor.createForResume(entry);
+        } else {
+            sc = SegmentCursor.createForNonResume(entry);
         }
-        innerEval(activationsManager, executor, stack, pmem, smems, smemIndex, bit, nodeMem, node, trgTuples, processSubnetwork);
+        sc.traceResumeFromStack();
+        innerEval(activationsManager, executor, stack, sc, entry.isProcessSubnetwork());
     }
 
     private void innerEval(ActivationsManager activationsManager,
-                          RuleExecutor executor,
-                          LinkedList<StackEntry> stack,
-                          PathMemory pmem,
-                          final SegmentMemory[] smems,
-                          int smemIndex,
-                          long bit,
-                          Memory nodeMem,
-                          NetworkNode node,
-                          TupleSets trgTuples,
-                          boolean processSubnetwork) {
-        SegmentMemory smem = smems[smemIndex];
-        TupleSets stagedLeftTuples = null;
+                           RuleExecutor executor,
+                           LinkedList<StackEntry> stack,
+                           SegmentCursor sc,
+                           boolean processSubnetwork) {
+        
         while (true) {
-            TupleSets srcTuples = trgTuples; // previous target, is now the source
-            if (log.isTraceEnabled()) {
-                int offset = getOffset(node);
-                log.trace("{} {} {} {}", indent(offset), ++cycle, node.toString(), srcTuples.toStringSizes());
-            }
+            sc.traceStartOfEvaluation(++cycle);
 
-            if (!(NodeTypeEnums.isBetaNodeWithSubnetwork(node))) {
+            if (!(NodeTypeEnums.isBetaNodeWithSubnetwork(sc.getCurrentNode()))) {
                 // The engine cannot skip a TupleToObjectNode node, as the dirty might be several levels deep
-                if (srcTuples.isEmpty() && smem.getDirtyNodeMask() == 0) {
+                if (sc.isOnEmptyOrNonDirtySegment()) {
                     // empty sources and segment is not dirty, skip to non empty src tuples or dirty segment.
-                    boolean foundDirty = false;
-                    for (int i = ++smemIndex, length = smems.length; i < length; i++) {
-                        if (log.isTraceEnabled()) {
-                            int offset = getOffset(node);
-                            log.trace("{} Skip Segment {}", indent(offset), i-1);
-                        }
-
-                        // this is needed for subnetworks that feed into a parent network that has no right inputs,
-                        // and may not yet be initialized
-                        if (smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode())) {
-                            segmentMemorySupport.createChildSegments(smem.getTipNode().getSinkPropagator(), smem);
-                        }
-                        
-                        smem = smems[i];
-                        bit = 1;
-                        srcTuples = smem.getStagedLeftTuples().takeAll();
-                        node = smem.getRootNode();
-                        nodeMem = smem.getNodeMemories()[0];
-                        if (!srcTuples.isEmpty() ||
-                             smem.getDirtyNodeMask() != 0 ||
-                             (NodeTypeEnums.isBetaNode(node) && ((BetaNode)node).getRightInput().inputIsTupleToObjectNode())) {
-                            // break if dirty or if we reach a subnetwork. It must break for subnetworks, so they can be searched.
-                            foundDirty = true;
-                            smemIndex = i;
-                            break;
-                        }
-                    }
+                    boolean foundDirty = moveToFirstDirtyOrNonEmptySegment(sc);
                     if (!foundDirty) {
                         break;
                     }
                 }
-                if (log.isTraceEnabled()) {
-                    int offset = getOffset(node);
-                    log.trace("{} Segment {}", indent(offset), smemIndex);
-                    log.trace("{} {} {} {}", indent(offset), cycle, node.toString(), srcTuples.toStringSizes());
-                }
+                sc.traceMoveToDirtySegment(cycle);
             }
 
-            if (srcTuples.isEmpty()) {
-                while ((smem.getDirtyNodeMask() & bit) == 0 && node != smem.getTipNode() && !NodeTypeEnums.isBetaNodeWithSubnetwork(node)) {
-                //while ((dirtyMask & bit) == 0 && node != smem.getTipNode() && NodeTypeEnums.isBetaNodeWithoutSubnetwork(node)) {
-                    if (log.isTraceEnabled()) {
-                        int offset = getOffset(node);
-                        log.trace("{} Skip Node {}", indent(offset), node);
-                    }
-                    bit = nextNodePosMask(bit); // shift to check the next node
-                    node = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
-                    nodeMem = nodeMem.getNext();
-                }
+            if (sc.hasNoSourceTuples()) {
+                sc.moveToNextAvailableSegment();
             }
-
-            boolean terminalNode = true;
-            switch (node.getType()) {
-                case NodeTypeEnums.RuleTerminalNode:
-                    pRtNode.doNode(activationsManager, executor, (AbstractTerminalNode) node, srcTuples);
-                    break;
-                case NodeTypeEnums.QueryTerminalNode:
-                    pQtNode.doNode(stack, (QueryTerminalNode) node, srcTuples);
-                    break;
-                case NodeTypeEnums.TupleToObjectNode:
-                    doSubnetwork2((TupleToObjectNode) node, srcTuples);
-                    break;
-                default:
-                    terminalNode = false;
-            }
-            if (terminalNode) {
+            
+            if (NodeTypeEnums.isEndNode(sc.getCurrentNode())) {
+                evaluateEndNode(activationsManager, executor, stack, sc);
                 break;
             }
 
-            stagedLeftTuples = getTargetStagedLeftTuples(smem, node);
-            LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
+            prepareStagedLeftTuples(sc);
 
-            trgTuples = evalNode(activationsManager, executor, stack, pmem, smems, smem, smemIndex, bit, nodeMem, node, sink, srcTuples, stagedLeftTuples, processSubnetwork);
-            if (trgTuples == null) {
+            sc.setSourceTuples(evaluateNonTerminalNode(activationsManager, executor, stack, sc, processSubnetwork));
+            if (sc.getSourceTuples() == null) {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
             }
-
-            if (node != smem.getTipNode()) {
-                // get next node and node memory in the segment
-                node = sink;
-                nodeMem = nodeMem.getNext();
-                bit = nextNodePosMask(bit);
-            } else {
-                // Reached end of segment, start on new segment.
-                smem.getFirst().getStagedLeftTuples().addAll(stagedLeftTuples); // must put back all the LTs
+            
+            if (sc.isAtEndOfSegmentMemory()) {
                 // end of SegmentMemory, so we know that stagedLeftTuples is not null
-                propagate(smem, trgTuples);
-                bit = 1;
-                smem = smems[++smemIndex];
-                trgTuples = smem.getStagedLeftTuples().takeAll();
-
-                if (log.isTraceEnabled()) {
-                    int offset = getOffset(node);
-                    log.trace("{} Segment {}", indent(offset), smemIndex);
-                }
-                node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories()[0];
+                sc.restoreStagedLeftTuples(); // must put back all the LTs
+                propagate(sc.getCurrentSegment(), sc.getSourceTuples());
             }
+
+            sc.moveToNextNodeOrSegment();
             processSubnetwork = true; //  make sure it's reset, so ria nodes are processed
         }
 
-        if (stagedLeftTuples != null && !stagedLeftTuples.isEmpty()) {
-            smem.getFirst().getStagedLeftTuples().addAll(stagedLeftTuples); // must put back all the LTs
+        if (sc.stagedLeftTuplesAreNotEmpty()) {
+            sc.restoreStagedLeftTuples(); // must put back all the LTs
         }
     }
 
-    private TupleSets evalNode(ActivationsManager activationsManager,
+
+    private void evaluateEndNode(ActivationsManager activationsManager,
+                          RuleExecutor executor,
+                          LinkedList<StackEntry> stack,
+                          SegmentCursor sc) {
+        switch (sc.getCurrentNode().getType()) {
+            case NodeTypeEnums.RuleTerminalNode:
+                pRtNode.doNode(activationsManager, executor, (AbstractTerminalNode) sc.getCurrentNode(), sc.getSourceTuples());
+                break;
+            case NodeTypeEnums.QueryTerminalNode:
+                pQtNode.doNode(stack, (QueryTerminalNode) sc.getCurrentNode(), sc.getSourceTuples());
+                break;
+            case NodeTypeEnums.TupleToObjectNode:
+                doSubnetwork2((TupleToObjectNode) sc.getCurrentNode(), sc.getSourceTuples());
+                break;
+            default:
+                // Nothing to do
+        }
+    }
+
+    private boolean moveToFirstDirtyOrNonEmptySegment(SegmentCursor sc) {
+        for (int i = sc.getSegmentMemoryIndex() + 1, length = sc.getSegmentMemorySize(); i < length; i++) {
+            sc.traceSkipNonDirtySegment(i);
+
+            // this is needed for subnetworks that feed into a parent network that has no right inputs,
+            // and may not yet be initialized
+            if (!NodeTypeEnums.isTerminalNode(sc.getCurrentSegment().getTipNode())) {
+                segmentMemorySupport.initializeChildSegmentsIfNeeded(sc.getCurrentSegment());
+            }
+            
+            sc.moveToSegment(i);
+            if (sc.isDirtySegmentOrIsSubnetwork()) {
+                // break if dirty or if we reach a subnetwork. It must break for subnetworks, so they can be searched.
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private TupleSets evaluateNonTerminalNode(ActivationsManager activationsManager,
                               RuleExecutor executor,
                               LinkedList<StackEntry> stack,
-                              PathMemory pmem,
-                              SegmentMemory[] smems,
-                              SegmentMemory smem,
-                              int smemIndex,
-                              long bit,
-                              Memory nodeMem,
-                              NetworkNode node,
-                              LeftTupleSinkNode sink,
-                              TupleSets srcTuples,
-                              TupleSets stagedLeftTuples,
+                              SegmentCursor sc, 
                               boolean processSubnetwork) {
+        if (NodeTypeEnums.isBetaNode(sc.getCurrentNode())) {
+            return evaluateBetaNode(activationsManager, executor, stack, sc, processSubnetwork);
+        } else {
+            return evaluateNonBetaNonTerminalNode(activationsManager, executor, stack, sc);
+                
+        }
+    }
+
+    public TupleSets evaluateNonBetaNonTerminalNode(ActivationsManager activationsManager,
+                                                    RuleExecutor executor,
+                                                    LinkedList<StackEntry> stack,
+                                                    SegmentCursor sc) {
         TupleSets trgTuples = new TupleSetsImpl();
-        if (NodeTypeEnums.isBetaNode(node)) {
-            boolean exitInnerEval = evalBetaNode(activationsManager, executor, stack, pmem, smems, smemIndex, nodeMem, node, sink, trgTuples, srcTuples, stagedLeftTuples, processSubnetwork);
-            if (exitInnerEval) {
-                return null;
-            }
-        } else {
-            boolean exitInnerEval = false;
-            switch (node.getType()) {
-                case NodeTypeEnums.EvalConditionNode: {
-                    pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
-                            srcTuples, trgTuples, stagedLeftTuples);
-                    break;
+        LeftTupleSinkNode sink = sc.getFirstLeftTupleSink();
+        boolean exitInnerEval = false;
+        switch (sc.getCurrentNode().getType()) {
+            case NodeTypeEnums.EvalConditionNode: {
+                pEvalNode.doNode((EvalConditionNode) sc.getCurrentNode(), (EvalMemory) sc.getCurrentNodeMemory(), sink,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
 
-                }
-                case NodeTypeEnums.FromNode: {
-                    pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
-                            srcTuples, trgTuples, stagedLeftTuples);
-                    break;
-                }
-                case NodeTypeEnums.ReactiveFromNode: {
-                    pReactiveFromNode.doNode((ReactiveFromNode) node, (ReactiveFromNode.ReactiveFromMemory) nodeMem, sink,
-                                             srcTuples, trgTuples, stagedLeftTuples);
-                    break;
-                }
-                case NodeTypeEnums.QueryElementNode: {
-                    exitInnerEval =  evalQueryNode(stack, pmem, smems, smemIndex, bit, nodeMem, node,
-                                                   sink, trgTuples, srcTuples, stagedLeftTuples);
-                    break;
-                }
-                case NodeTypeEnums.TimerConditionNode: {
-                    pTimerNode.doNode((TimerNode) node, (TimerNodeMemory) nodeMem, pmem, smem, sink, activationsManager, srcTuples, trgTuples, stagedLeftTuples);
-                    break;
-                }
-                case NodeTypeEnums.ConditionalBranchNode: {
-                    pBranchNode.doNode(activationsManager, (ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem,
-                            sink, srcTuples, trgTuples, stagedLeftTuples, executor);
-                    break;
-                }
-                case NodeTypeEnums.AsyncSendNode: {
-                    pSendNode.doNode((AsyncSendNode) node, (AsyncSendMemory) nodeMem, srcTuples);
-                    break;
-                }
-                case NodeTypeEnums.AsyncReceiveNode: {
-                    pReceiveNode.doNode((AsyncReceiveNode) node, (AsyncReceiveMemory) nodeMem, sink, srcTuples, trgTuples);
-                    break;
-                }
             }
-            if (exitInnerEval && trgTuples.isEmpty()) {
-                return null;
+            case NodeTypeEnums.FromNode: {
+                pFromNode.doNode((FromNode) sc.getCurrentNode(), (FromMemory) sc.getCurrentNodeMemory(), sink,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
+            }
+            case NodeTypeEnums.ReactiveFromNode: {
+                pReactiveFromNode.doNode((ReactiveFromNode) sc.getCurrentNode(), (ReactiveFromNode.ReactiveFromMemory) sc.getCurrentNodeMemory(), sink,
+                                         sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
+            }
+            case NodeTypeEnums.QueryElementNode: {
+                exitInnerEval =  evaluateQueryNode(stack, sc, trgTuples);
+                break;
+            }
+            case NodeTypeEnums.TimerConditionNode: {
+                pTimerNode.doNode(activationsManager, sc, (TimerNode) sc.getCurrentNode(), (TimerNodeMemory) sc.getCurrentNodeMemory(), sink, sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
+            }
+            case NodeTypeEnums.ConditionalBranchNode: {
+                pBranchNode.doNode(activationsManager, executor, (ConditionalBranchNode) sc.getCurrentNode(),
+                        (ConditionalBranchMemory) sc.getCurrentNodeMemory(), sink, sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
+                break;
+            }
+            case NodeTypeEnums.AsyncSendNode: {
+                pSendNode.doNode((AsyncSendNode) sc.getCurrentNode(), (AsyncSendMemory) sc.getCurrentNodeMemory(), sc.getSourceTuples());
+                break;
+            }
+            case NodeTypeEnums.AsyncReceiveNode: {
+                pReceiveNode.doNode((AsyncReceiveNode) sc.getCurrentNode(), (AsyncReceiveMemory) sc.getCurrentNodeMemory(), sink, sc.getSourceTuples(), trgTuples);
+                break;
             }
         }
-        return trgTuples;
-    }
-
-    private TupleSets getTargetStagedLeftTuples(SegmentMemory smem,
-                                                       NetworkNode node) {
-        if (node == smem.getTipNode()) {
-            // we are about to process the segment tip, allow it to merge insert/update/delete clashes
-            if (smem.isEmpty()) {
-                segmentMemorySupport.createChildSegments(((LeftTupleSource) node).getSinkPropagator(), smem);
-            }
-            return smem.getFirst().getStagedLeftTuples().takeAll();
-        } else {
+        if (exitInnerEval && trgTuples.isEmpty()) {
             return null;
+        } else {
+            return trgTuples;
         }
     }
 
-    private boolean evalQueryNode(LinkedList<StackEntry> stack,
-                                  PathMemory pmem,
-                                  SegmentMemory[] smems,
-                                  int smemIndex,
-                                  long bit,
-                                  Memory nodeMem,
-                                  NetworkNode node,
-                                  LeftTupleSinkNode sink,
-                                  TupleSets trgTuples,
-                                  TupleSets srcTuples,
-                                  TupleSets stagedLeftTuples) {
-        QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
+    private void prepareStagedLeftTuples(SegmentCursor sc) {
+        if (sc.isAtEndOfSegmentMemory()) {
+            // we are about to process the segment tip, allow it to merge insert/update/delete clashes
+            segmentMemorySupport.initializeChildSegmentsIfNeeded(sc.getCurrentSegment());
+            sc.saveStagedLeftTuples();
+        } else {
+            sc.resetStagedLeftTuples();
+        }
+    }
 
-        if (srcTuples.isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
+    private boolean evaluateQueryNode(LinkedList<StackEntry> stack,
+                                      SegmentCursor sc1,
+                                      TupleSets trgTuples) {
+        QueryElementNodeMemory qmem = (QueryElementNodeMemory) sc1.getCurrentNodeMemory();
+
+        if (sc1.getSourceTuples().isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
             // no point in evaluating query element, and setting up stack, if there is nothing to process
             return false;
         }
-
-        QueryElementNode qnode = (QueryElementNode) node;
-
-        if (log.isTraceEnabled()) {
-            int offset = getOffset(node);
-            log.trace("{} query result tuples {}", indent(offset), qmem.getResultLeftTuples().toStringSizes());
-        }
+        sc1.traceQueryResultTuples();
 
         // result tuples can happen when reactivity occurs inside of the query, prior to evaluation
         // we will need special behaviour to add the results again, when this query result resumes
         qmem.getResultLeftTuples().addTo(trgTuples);
         qmem.setNodeCleanWithoutNotify();
 
-        if (srcTuples.isEmpty()) {
+        if (sc1.getSourceTuples().isEmpty()) {
             return false;
         } 
         // only process the Query Node if there are src tuples
-        StackEntry stackEntry = new StackEntry(node, bit, sink, pmem, nodeMem, smems,
-                                               smemIndex, trgTuples, true, true);
-
+        StackEntry stackEntry = sc1.saveForResumeAfterQueryExecution(trgTuples);
         stack.add(stackEntry);
 
-        pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry,
-                srcTuples, trgTuples, stagedLeftTuples);
+        pQueryNode.doNode(stackEntry, (QueryElementNode) sc1.getCurrentNode(), (QueryElementNodeMemory) sc1.getCurrentNodeMemory(),
+                sc1.getSourceTuples(), sc1.getStagedLeftTuples(), trgTuples);
 
-        SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
+        SegmentMemory qsmem = ((QueryElementNodeMemory) sc1.getCurrentNodeMemory()).getQuerySegmentMemory();
         List<PathMemory> qpmems = qsmem.getPathMemories();
 
         // Build the evaluation information for each 'or' branch
         for (int i = 0; i < qpmems.size() ; i++) {
             PathMemory qpmem = qpmems.get(i);
-
-            pmem = qpmem;
-            smems = qpmem.getSegmentMemories();
-            smemIndex = 0;
-            SegmentMemory smem = smems[smemIndex]; // 0
-
-            LeftTupleNode liaNode = qpmem.getPathEndNode().getPathNodes()[0];
-
-            if (liaNode == smem.getTipNode()) {
-                // segment only has liaNode in it
-                // nothing is staged in the liaNode, so skip to next segment
-                smem = smems[++smemIndex]; // 1
-                node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories()[0];
-                bit = 1;
-            } else {
-                // lia is in shared segment, so point to next node
-                node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-                nodeMem = smem.getNodeMemories()[1]; // skip the liaNode memory
-                bit = 2;
-            }
-
-            trgTuples = smem.getStagedLeftTuples().takeAll();
-            stackEntry = new StackEntry(node, bit, null, pmem,
-                                        nodeMem, smems, smemIndex,
-                                        trgTuples, false, true);
-            if (log.isTraceEnabled()) {
-                int offset = getOffset(stackEntry.getNode());
-                log.trace("{} ORQueue branch={} {} {}", indent(offset), i, stackEntry.getNode().toString(), trgTuples.toStringSizes());
-            }
-            stack.add(stackEntry);
+            SegmentCursor scForOrQueries = SegmentCursor.createSegmentCursorForQueryExecution(qpmem);
+            StackEntry stackEntryForQueryBranchEvaluation = scForOrQueries.saveForQueryBranchEvaluation();
+            scForOrQueries.traceOrQueryBranchQueued(i);
+            stack.add(stackEntryForQueryBranchEvaluation);
         }
         return true;
 
     }
 
-    private boolean evalBetaNode(ActivationsManager activationsManager,
+    private TupleSets evaluateBetaNode(ActivationsManager activationsManager,
                                  RuleExecutor executor,
                                  LinkedList<StackEntry> stack,
-                                 PathMemory pmem,
-                                 SegmentMemory[] smems,
-                                 int smemIndex,
-                                 Memory nodeMem,
-                                 NetworkNode node,
-                                 LeftTupleSinkNode sink,
-                                 TupleSets trgTuples,
-                                 TupleSets srcTuples,
-                                 TupleSets stagedLeftTuples,
+                                 SegmentCursor sc,
                                  boolean processSubnetwork) {
-        BetaNode betaNode = (BetaNode) node;
+
         BetaMemory bm;
         AccumulateMemory am = null;
-        if (NodeTypeEnums.AccumulateNode == node.getType()) {
-            am = (AccumulateMemory) nodeMem;
+        if (NodeTypeEnums.AccumulateNode == sc.getCurrentNode().getType()) {
+            am = (AccumulateMemory) sc.getCurrentNodeMemory();
             bm = am.getBetaMemory();
         } else {
-            bm = (BetaMemory) nodeMem;
+            bm = (BetaMemory) sc.getCurrentNodeMemory();
         }
 
-        if (processSubnetwork && betaNode.getRightInput().inputIsTupleToObjectNode()) {
+        if (processSubnetwork && ((BetaNode) sc.getCurrentNode()).getRightInput().inputIsTupleToObjectNode()) {
             // if the subnetwork is nested in this segment, it will create srcTuples containing
             // peer LeftTuples, suitable for the node in the main path.
-            doSubnetwork(activationsManager, executor, stack,
-                         pmem, smems, smemIndex, nodeMem, srcTuples, bm, betaNode, sink);
-            return true; // return here, TupleToObjectNode queues the evaluation on the stack, which is necessary to handled nested query nodes
+            doSubnetwork(activationsManager, executor, stack, sc, bm);
+            return null; // return here, TupleToObjectNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
-
-        switchOnDoBetaNode(bm, am, node, sink, trgTuples, srcTuples, stagedLeftTuples);
-
-        return false;
+        return switchOnDoBetaNode(sc, bm, am);
     }
 
-    private void switchOnDoBetaNode(BetaMemory bm,
-                                    AccumulateMemory am,
-                                    NetworkNode node,
-                                    LeftTupleSinkNode sink,
-                                    TupleSets trgTuples,
-                                    TupleSets srcTuples,
-                                    TupleSets stagedLeftTuples) {
-        if (log.isTraceEnabled()) {
-            int offset = getOffset(node);
-            log.trace("{} rightTuples {}", indent(offset), bm.getStagedRightTuples().toStringSizes());
-        }
+    private TupleSets switchOnDoBetaNode(SegmentCursor sc,
+                                    BetaMemory bm,
+                                    AccumulateMemory am) {
+        TupleSets trgTuples = new TupleSetsImpl();
+        sc.traceSwitchOnBetaNodes(bm);
 
-        switch (node.getType()) {
+        LeftTupleSinkNode sink = sc.getFirstLeftTupleSink();
+        switch (sc.getCurrentNode().getType()) {
             case NodeTypeEnums.JoinNode: {
-                pJoinNode.doNode((JoinNode) node, sink, bm,
-                        srcTuples, trgTuples, stagedLeftTuples);
+                pJoinNode.doNode((JoinNode) sc.getCurrentNode(), sink, bm,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 break;
             }
             case NodeTypeEnums.NotNode: {
-                pNotNode.doNode((NotNode) node, sink, bm,
-                        srcTuples, trgTuples, stagedLeftTuples);
+                pNotNode.doNode((NotNode) sc.getCurrentNode(), sink, bm,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 break;
             }
             case NodeTypeEnums.ExistsNode: {
-                pExistsNode.doNode((ExistsNode) node, sink, bm,
-                        srcTuples, trgTuples, stagedLeftTuples);
+                pExistsNode.doNode((ExistsNode) sc.getCurrentNode(), sink, bm,
+                        sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 break;
             }
             case NodeTypeEnums.AccumulateNode: {
-                AccumulateNode accumulateNode = (AccumulateNode) node;
+                AccumulateNode accumulateNode = (AccumulateNode) sc.getCurrentNode();
                 if (accumulateNode.getAccumulate().isGroupBy()) {
-                    pGroupByNode.doNode(accumulateNode, sink, am, srcTuples, trgTuples, stagedLeftTuples);
+                    pGroupByNode.doNode(accumulateNode, sink, am, sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 } else {
-                    pAccNode.doNode(accumulateNode, sink, am, srcTuples, trgTuples, stagedLeftTuples);
+                    pAccNode.doNode(accumulateNode, sink, am, sc.getSourceTuples(), sc.getStagedLeftTuples(), trgTuples);
                 }
                 break;
             }
         }
+        return trgTuples;
     }
 
     private void doSubnetwork(ActivationsManager activationsManager,
                               RuleExecutor executor,
                               LinkedList<StackEntry> stack,
-                              PathMemory pmem,
-                              SegmentMemory[] smems,
-                              int smemIndex,
-                              Memory nodeMem,
-                              TupleSets srcTuples,
-                              BetaMemory bm,
-                              BetaNode betaNode,
-                              LeftTupleSinkNode sink) {
-        SubnetworkPathMemory pathMem         = bm.getSubnetworkPathMemory();
-        SegmentMemory[]      subnetworkSmems = pathMem.getSegmentMemories();
-        SegmentMemory subSmem = null;
-        for (int i = 0; subSmem == null; i++) {
-            // segment positions outside of the subnetwork, in the parent chain, are null
-            // so we must iterate to find the first non null segment memory
-            subSmem =  subnetworkSmems[i];
-        }
+                              SegmentCursor sc,
+                              BetaMemory bm) {
 
-        // Resume the node after the TupleToObjectNode segment has been processed and the right input memory populated
-        StackEntry stackEntry = new StackEntry(betaNode, bm.getNodePosMaskBit(), sink, pmem, nodeMem, smems,
-                                               smemIndex, srcTuples, false, false);
+
+        StackEntry stackEntry = sc.saveForResumeAfterSubnetworkExecution();
         stack.add(stackEntry);
-        if (log.isTraceEnabled()) {
-            int offset = getOffset(betaNode);
-            log.trace("{} SubnetworkQueue {} {}", indent(offset), betaNode.toString(), srcTuples.toStringSizes());
-        }
+        sc.traceSubnetworkQueue();
 
-
-        TupleSets subLts = subSmem.getStagedLeftTuples().takeAll();
-        // node is first in the segment, so bit is 1
-        innerEval(activationsManager, executor, stack,
-                   pathMem,
-                   subnetworkSmems, subSmem.getPos(),
-                   1, subSmem.getNodeMemories()[0], subSmem.getRootNode(), subLts, true);
+        PathMemory pathMem = bm.getSubnetworkPathMemory();
+        SegmentCursor scNew = SegmentCursor.createForSubNetwork(pathMem);
+        
+        innerEval(activationsManager, executor, stack, scNew, true);
     }
 
     private void doSubnetwork2(TupleToObjectNode tton,
@@ -892,16 +684,13 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         srcTuples.resetAll();
     }
     
+    @Override
     public void propagate(SegmentMemory sourceSegment, TupleSets leftTuples) {
         if (leftTuples.isEmpty()) {
             return;
         }
-
-        LeftTupleSource source = ( LeftTupleSource )  sourceSegment.getTipNode();
         
-        if ( sourceSegment.isEmpty() ) {
-            segmentMemorySupport.createChildSegments(source.getSinkPropagator(), sourceSegment);
-        }
+        segmentMemorySupport.initializeChildSegmentsIfNeeded(sourceSegment);
                 
         processPeers(sourceSegment, leftTuples);
 
@@ -992,7 +781,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
                 break;
             default:
                 // no clash, so just add
-                if (childLeftTuple.getSink().getType() == AccumulateNode ) {
+                if (childLeftTuple.getSink().getType() == NodeTypeEnums.AccumulateNode ) {
                     trgLeftTuples.addInsert(childLeftTuple);
                 } else {
                     trgLeftTuples.addUpdate(childLeftTuple);
@@ -1015,36 +804,5 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
-    
-    
-    
-    
 
-    private static String indent(int size) {
-        StringBuilder sbuilder = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            sbuilder.append("  ");
-        }
-
-        return sbuilder.toString();
-    }
-
-    private static int getOffset(NetworkNode node) {
-        LeftTupleSource lt;
-        int offset = 1;
-        if (NodeTypeEnums.isTerminalNode(node)) {
-            lt = ((TerminalNode) node).getLeftTupleSource();
-            offset++;
-        } else if (node.getType() == NodeTypeEnums.TupleToObjectNode) {
-            lt = ((TupleToObjectNode) node).getLeftTupleSource();
-        } else {
-            lt = (LeftTupleSource) node;
-        }
-        while (!NodeTypeEnums.isLeftInputAdapterNode(lt)) {
-            offset++;
-            lt = lt.getLeftTupleSource();
-        }
-
-        return offset;
-    }
 }

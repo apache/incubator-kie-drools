@@ -22,10 +22,8 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakTimerNode;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.phreak.SegmentCursor;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.metric.util.MetricLogUtils;
@@ -37,20 +35,19 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
     }
 
     @Override
-    public void doNode(TimerNode timerNode,
+    public void doNode(ActivationsManager activationsManager,
+                       SegmentCursor sc,
+                       TimerNode timerNode,
                        TimerNodeMemory tm,
-                       PathMemory pmem,
-                       SegmentMemory smem,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(timerNode);
 
-            super.doNode(timerNode, tm, pmem, smem, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(activationsManager, sc, timerNode, tm, sink, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();
