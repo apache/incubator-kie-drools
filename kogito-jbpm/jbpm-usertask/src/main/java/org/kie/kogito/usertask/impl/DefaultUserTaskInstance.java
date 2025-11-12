@@ -119,6 +119,9 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     private Map<String, Reassignment> notCompletedReassignmentsTimers;
 
+    // preventing unnecessary database updates during batch operations
+    private boolean batchOperation = false;
+
     public DefaultUserTaskInstance() {
         this.inputs = new HashMap<>();
         this.outputs = new HashMap<>();
@@ -262,23 +265,40 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     @Override
     public void transition(String transitionId, Map<String, Object> data, IdentityProvider identity) {
-        Optional<UserTaskTransitionToken> next = Optional.of(this.userTaskLifeCycle.newTransitionToken(transitionId, this, data));
-        while (next.isPresent()) {
-            UserTaskTransitionToken transition = next.get();
-            next = this.userTaskLifeCycle.transition(this, transition, identity);
-            this.status = transition.target();
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, transition.source(), transition.target());
+        batchUpdate(instance -> {
+            Optional<UserTaskTransitionToken> next = Optional.of(this.userTaskLifeCycle.newTransitionToken(transitionId, instance, data));
+            while (next.isPresent()) {
+                UserTaskTransitionToken transition = next.get();
+                next = this.userTaskLifeCycle.transition(instance, transition, identity);
+                instance.status = transition.target();
+                instance.userTaskEventSupport.fireOneUserTaskStateChange(instance, transition.source(), transition.target());
+            }
+        });
+    }
+
+    public void batchUpdate(Consumer<DefaultUserTaskInstance> batch) {
+        this.batchOperation = true;
+        try {
+            batch.accept(this);
+        } finally {
+            this.batchOperation = false;
         }
         this.updatePersistenceOrRemove();
     }
 
     private void updatePersistence() {
+        if (this.batchOperation) {
+            return;
+        }
         if (this.instances != null) {
             this.instances.update(this);
         }
     }
 
     private void updatePersistenceOrRemove() {
+        if (this.batchOperation) {
+            return;
+        }
         if (this.status.isTerminate()) {
             this.instances.remove(this);
         } else {
@@ -792,5 +812,4 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         return "DefaultUserTaskInstance [id=" + id + ", status=" + status + ", actualOwner=" + actualOwner + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", taskPriority="
                 + taskPriority + ", slaDueDate=" + slaDueDate + "]";
     }
-
 }

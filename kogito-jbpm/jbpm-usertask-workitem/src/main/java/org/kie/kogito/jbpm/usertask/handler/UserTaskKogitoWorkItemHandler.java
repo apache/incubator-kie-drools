@@ -83,39 +83,41 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
 
         userTask.instances().create(instance);
 
-        instance.setTaskName(ofNullable((String) workItem.getParameter(TASK_NAME)).orElse((String) workItem.getParameter(NODE_NAME)));
-        instance.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
-        instance.setTaskPriority(priority != null ? priority.toString() : null);
-        instance.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
+        instance.batchUpdate(task -> {
+            task.setTaskName(ofNullable((String) workItem.getParameter(TASK_NAME)).orElse((String) workItem.getParameter(NODE_NAME)));
+            task.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
+            task.setTaskPriority(priority != null ? priority.toString() : null);
+            task.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
 
-        Map<String, Object> metadata = new HashMap<>();
-        metadata.put("ProcessId", workItem.getProcessInstance().getProcessId());
-        metadata.put("ProcessType", workItem.getProcessInstance().getProcess().getType());
-        metadata.put("ProcessVersion", workItem.getProcessInstance().getProcessVersion());
-        metadata.put("ProcessInstanceId", workItem.getProcessInstance().getId());
-        metadata.put("ProcessInstanceState", workItem.getProcessInstance().getState());
-        metadata.put("RootProcessId", workItem.getProcessInstance().getRootProcessId());
-        metadata.put("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
-        metadata.put("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
-        metadata.put("NodeInstanceId", workItem.getNodeInstance().getId());
+            Map<String, Object> metadata = new HashMap<>();
+            metadata.put("ProcessId", workItem.getProcessInstance().getProcessId());
+            metadata.put("ProcessType", workItem.getProcessInstance().getProcess().getType());
+            metadata.put("ProcessVersion", workItem.getProcessInstance().getProcessVersion());
+            metadata.put("ProcessInstanceId", workItem.getProcessInstance().getId());
+            metadata.put("ProcessInstanceState", workItem.getProcessInstance().getState());
+            metadata.put("RootProcessId", workItem.getProcessInstance().getRootProcessId());
+            metadata.put("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
+            metadata.put("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
+            metadata.put("NodeInstanceId", workItem.getNodeInstance().getId());
 
-        instance.setMetadata(metadata);
+            task.setMetadata(metadata);
 
-        instance.fireInitialStateChange();
-        workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> instance.setInput(e.getKey(), e.getValue()));
+            task.fireInitialStateChange();
+            workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> task.setInput(e.getKey(), e.getValue()));
 
-        ofNullable(workItem.getParameters().get(ACTOR_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setPotentialUsers);
-        ofNullable(workItem.getParameters().get(GROUP_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setPotentialGroups);
-        ofNullable(workItem.getParameters().get(BUSINESSADMINISTRATOR_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setAdminUsers);
-        ofNullable(workItem.getParameters().get(BUSINESSADMINISTRATOR_GROUP_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setAdminGroups);
-        ofNullable(workItem.getParameters().get(EXCLUDED_OWNER_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setExcludedUsers);
+            ofNullable(workItem.getParameters().get(ACTOR_ID)).map(String.class::cast).map(this::toSet).ifPresent(task::setPotentialUsers);
+            ofNullable(workItem.getParameters().get(GROUP_ID)).map(String.class::cast).map(this::toSet).ifPresent(task::setPotentialGroups);
+            ofNullable(workItem.getParameters().get(BUSINESSADMINISTRATOR_ID)).map(String.class::cast).map(this::toSet).ifPresent(task::setAdminUsers);
+            ofNullable(workItem.getParameters().get(BUSINESSADMINISTRATOR_GROUP_ID)).map(String.class::cast).map(this::toSet).ifPresent(task::setAdminGroups);
+            ofNullable(workItem.getParameters().get(EXCLUDED_OWNER_ID)).map(String.class::cast).map(this::toSet).ifPresent(task::setExcludedUsers);
 
-        ofNullable(workItem.getParameters().get(NOT_STARTED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(instance::setNotStartedDeadlines);
-        ofNullable(workItem.getParameters().get(NOT_STARTED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(instance::setNotStartedReassignments);
-        ofNullable(workItem.getParameters().get(NOT_COMPLETED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(instance::setNotCompletedDeadlines);
-        ofNullable(workItem.getParameters().get(NOT_COMPLETED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(instance::setNotCompletedReassignments);
+            ofNullable(workItem.getParameters().get(NOT_STARTED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(task::setNotStartedDeadlines);
+            ofNullable(workItem.getParameters().get(NOT_STARTED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(task::setNotStartedReassignments);
+            ofNullable(workItem.getParameters().get(NOT_COMPLETED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(task::setNotCompletedDeadlines);
+            ofNullable(workItem.getParameters().get(NOT_COMPLETED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(task::setNotCompletedReassignments);
 
-        instance.initialize(emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
+            task.initialize(emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
+        });
 
         if (workItem instanceof InternalKogitoWorkItem ikw) {
             ikw.setExternalReferenceId(instance.getId());
