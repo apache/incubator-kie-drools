@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -147,16 +147,10 @@ public class ActivationGroupReactivateTest extends BaseModelTest {
         // === PHASE 2: Event Listener Setup for Rule Execution Tracking ===
 
         // Track which rules fire during execution for validation
-        final List<String> firedRules = new ArrayList<>();
+        TrackingAgendaEventListener eventListener = new TrackingAgendaEventListener();
 
         // Add event listener to capture rule firing events
-        kSession.addEventListener(new DefaultAgendaEventListener() {
-            @Override
-            public void afterMatchFired(final AfterMatchFiredEvent event) {
-                // Record the name of each rule that fires
-                firedRules.add(event.getMatch().getRule().getName());
-            }
-        });
+        kSession.addEventListener(eventListener);
 
         // === PHASE 3: Fact Insertion - Setting Up the Test Scenario ===
 
@@ -169,9 +163,9 @@ public class ActivationGroupReactivateTest extends BaseModelTest {
 
         // === PHASE 5: Validation - Verify Expected Behavior ===
 
-        final long firstRuleFireCount = firedRules.stream().filter(r -> r.equals("First rule in first activation group")).count();
-		final boolean secondRuleFired = firedRules.contains("Second rule in first activation group");
-        final long thirdRuleFireCount = firedRules.stream().filter(r -> r.equals("Rule without activation group")).count();
+        final long firstRuleFireCount = eventListener.getAfterMatchFired().stream().filter(r -> r.equals("First rule in first activation group")).count();
+		final boolean secondRuleFired = eventListener.getAfterMatchFired().contains("Second rule in first activation group");
+        final long thirdRuleFireCount = eventListener.getAfterMatchFired().stream().filter(r -> r.equals("Rule without activation group")).count();
 
         // Validate the expected execution pattern
         assertThat(firstRuleFireCount).as("First rule should fire twice").isEqualTo(2);
