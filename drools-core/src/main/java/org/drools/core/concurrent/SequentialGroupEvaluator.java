@@ -19,12 +19,13 @@
 package org.drools.core.concurrent;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 
 public class SequentialGroupEvaluator extends AbstractGroupEvaluator {
 
-    public SequentialGroupEvaluator(InternalRuleBase ruleBase, ActivationsManager activationsManager) {
-        super(ruleBase, activationsManager);
+    public SequentialGroupEvaluator(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
+        super(ruleBase, reteEvaluator, activationsManager);
     }
 }
 

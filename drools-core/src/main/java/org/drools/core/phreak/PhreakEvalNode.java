@@ -54,8 +54,8 @@ public class PhreakEvalNode {
                        EvalMemory em,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);

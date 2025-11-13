@@ -23,7 +23,6 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
@@ -88,7 +87,7 @@ public class PhreakSubnetworkNotExistsNode {
             for (TupleImpl rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
                 TupleImpl next = rightTuple.getStagedNext();
 
-                TupleImpl leftTuple = node.getStartTuple((SubnetworkTuple)rightTuple);
+                TupleImpl leftTuple = node.getStartTuple(rightTuple);
                 // don't use matches here, as it may be null, if the LT was also being removed.
                 rightTuple.getMemory().remove(rightTuple);
 

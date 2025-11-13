@@ -239,7 +239,7 @@ public class ProtobufOutputMarshaller {
             // this must clone as re-evaluation will under underlying Collection
             for ( RuleAgendaItem activation : new ArrayList<>(wm.getAgenda().getAgendaGroupsManager().getActivations())) {
                 // evaluate it
-                activation.getRuleExecutor().evaluateNetworkIfDirty( );
+                activation.getRuleExecutor().evaluateNetworkIfDirty(wm);
                 activation.getRuleExecutor().removeRuleAgendaItemWhenEmpty( );
             }
             dirty = false;

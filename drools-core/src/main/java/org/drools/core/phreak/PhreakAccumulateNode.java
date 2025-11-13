@@ -61,8 +61,8 @@ public class PhreakAccumulateNode {
                        LeftTupleSink sink,
                        AccumulateMemory am,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         BetaMemory bm             = am.getBetaMemory();
         TupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();

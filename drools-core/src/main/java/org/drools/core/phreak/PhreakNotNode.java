@@ -52,8 +52,8 @@ public class PhreakNotNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if (!notNode.getRightInput().inputIsTupleToObjectNode()) {
             doNormalNode(notNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);

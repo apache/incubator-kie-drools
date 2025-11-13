@@ -326,7 +326,7 @@ public interface AgendaGroupsManager extends Externalizable {
         private void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup, InternalAgenda agenda) {
             // enforce materialization of all activations of this group before removing them
             for (RuleAgendaItem activation : agendaGroup.getActivations()) {
-                activation.getRuleExecutor().evaluateNetworkIfDirty( agenda );
+                activation.getRuleExecutor().evaluateNetworkIfDirty(workingMemory, agenda );
             }
 
             final EventSupport eventsupport = this.workingMemory;
