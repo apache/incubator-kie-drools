@@ -20,6 +20,8 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.or;
@@ -37,7 +39,10 @@ public class OrExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return or(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeOr(left, right, ctx);
+
+        //return or(left, right, ctx);
     }
 
     @Override

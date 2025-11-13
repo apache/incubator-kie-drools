@@ -141,5 +141,53 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
         return new LinkedHashMap<>(getCommonGtOperationMap(ctx));
     }
 
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonLteOperationMap(ctx));
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonLtOperationMap(ctx));
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getNotEqualOperationMap(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonNotEqualOperationMap(ctx));
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map =new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        //false or string -> returns null
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean r = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    return Boolean.FALSE.equals(l) && r == null;
+                }, false),
+                (left, right) -> null
+        );
+        map.putAll(getCommonOrOperationMap(ctx));
+
+        return map;
+    }
+
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        // Either null → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
+                (left, right) -> null
+        );
+
+        map.putAll(getCommonPowOperationMap(ctx));
+        return map;
+    }
+
 
 }

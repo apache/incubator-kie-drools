@@ -21,6 +21,8 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 import java.math.MathContext;
 
@@ -39,7 +41,9 @@ public class PowExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return math(left, right, ctx, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executePow(left, right, ctx);
+        // return math(left, right, ctx, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
     }
 
     @Override

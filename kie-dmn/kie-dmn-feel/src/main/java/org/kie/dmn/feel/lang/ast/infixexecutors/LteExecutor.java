@@ -20,6 +20,8 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.or;
@@ -37,9 +39,11 @@ public class LteExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return or(BooleanEvalHelper.compare(left, right, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeLte(left, right, ctx);
+        /*return or(BooleanEvalHelper.compare(left, right, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
                   BooleanEvalHelper.isEqual(left, right, ctx.getFEELDialect()),
-                  ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+                  ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.*/
     }
 
     @Override

@@ -120,7 +120,7 @@ public class InfixExecutorUtils {
         }
     }
 
-    static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
+    public static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
         BigDecimal l = left instanceof String ? null : NumberEvalHelper.getBigDecimalOrNull(left);
         BigDecimal r = right instanceof String ? null : NumberEvalHelper.getBigDecimalOrNull(right);
         if (l == null || r == null) {

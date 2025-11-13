@@ -29,5 +29,25 @@ public interface DialectHandler {
 
     Object executeGt(Object left, Object right, EvaluationContext ctx);
 
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperationMap(EvaluationContext ctx);
+
+    Object executeLte(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperationMap(EvaluationContext ctx);
+
+    Object executeLt(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getNotEqualOperationMap(EvaluationContext ctx);
+
+    Object executeNotEqual(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperationMap(EvaluationContext ctx);
+
+    Object executeOr(Object left, Object right, EvaluationContext ctx);
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperationMap(EvaluationContext ctx);
+
+    Object executePow(Object left, Object right, EvaluationContext ctx);
+
 
 }

@@ -1,5 +1,6 @@
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -155,6 +156,81 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         return map;
     }
 
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonLteOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        // Rule: l < r OR l == r
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> InfixExecutorUtils.or(
+                        BooleanEvalHelper.compare(left, right, dialect, (l, r) -> l.compareTo(r) < 0),
+                        BooleanEvalHelper.isEqual(left, right, dialect),
+                        ctx
+                )
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonLtOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        // Rule: l > r
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (l, r) -> l.compareTo(r) < 0)
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonNotEqualOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean result = BooleanEvalHelper.isEqual(left, right, dialect);
+                    return result != null ? !result : null;
+                }
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonOrOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        map.put(
+            new CheckedPredicate((left, right) -> true, false),
+            (left, right) -> {
+                Boolean leftOR = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                if (leftOR != null) {
+                    if (!leftOR.booleanValue()) {
+                        return BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    } else {
+                        return Boolean.TRUE;
+                    }
+                } else {
+                    return BooleanEvalHelper.getTrueOrDialectDefault(right, dialect);
+                }
+            }
+
+        );
+        return map;
+    }
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonPowOperationMap(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> math(left, right, ctx,
+                        (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128))
+        );
+        return map;
+    }
+
     public static class CheckedPredicate {
         final BiPredicate<Object, Object> predicate;
         final boolean toNotify;
@@ -203,6 +279,31 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     @Override
     public Object executeGt(Object left, Object right, EvaluationContext ctx) {
         return executeOperation(left, right, ctx, getGtOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeLte(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getLteOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeLt(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getLtOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeNotEqual(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getNotEqualOperationMap(ctx));
+    }
+
+    @Override
+    public Object executeOr(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getOrOperationMap(ctx));
+    }
+
+    @Override
+    public Object executePow(Object left, Object right, EvaluationContext ctx) {
+        return executeOperation(left, right, ctx, getPowOperationMap(ctx));
     }
 
     private Object executeOperation(
