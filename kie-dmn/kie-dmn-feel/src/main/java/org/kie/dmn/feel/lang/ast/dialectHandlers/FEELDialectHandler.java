@@ -6,113 +6,77 @@ import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
+/**
+ *  Handler implementation of the DialectHandler interface providing FEEL specific
+ *  functionalities
+ */
 public class FEELDialectHandler extends DefaultDialectHandler implements DialectHandler {
 
-    private static final BiPredicate<Object, Object> DATE_PLUS_NUMBER = (left, right) -> left instanceof LocalDate && right instanceof Number;
-    private static final BiPredicate<Object, Object> TEMPORAL_PLUS_NUMBER = (left, right) -> left instanceof Temporal && right instanceof Number;
-    private static final BiPredicate<Object, Object> TEMPORAL_PLUS_TEMPORAL = (left, right) -> left instanceof Temporal && right instanceof Temporal;
-
+    /**
+     * Builds the Feel specific 'Addition' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'Addition' operations
+     */
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperationMap(EvaluationContext ctx) {
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAddOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
-        // String + null or null + String → return null
+        // String + String concatenates, else null
         map.put(
-                new CheckedPredicate((left, right) -> (left instanceof String && right == null) ||
-                        (right instanceof String && left == null), false), (left, right) -> null
-        );
-        // null + Number or Number + null
-        map.put(
-                new CheckedPredicate((left, right) -> (left == null && right instanceof Number) ||
-                        (left instanceof Number && right == null), false), (left, right) -> null
-        );
-        //(Number + String) or (String + Number) → return null
-        map.put(
-                new CheckedPredicate((left, right) -> (left instanceof Number && right instanceof String) ||
-                        (left instanceof String && right instanceof Number), false), (left, right) -> null
-        );
-
-        //temporal + number
-        map.put(
-                new CheckedPredicate(TEMPORAL_PLUS_NUMBER, true),
-                (left, right) -> null
-        );
-
-        // TemporalAmount + String → invalid
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof TemporalAmount &&
-                        right instanceof String, false), (left, right) -> null
-        );
-        map.put(
-                new CheckedPredicate(TEMPORAL_PLUS_TEMPORAL, true),
-                (left, right) -> null
-        );
-        // Temporal + non-TemporalAmount → invalid
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof Temporal &&
-                        !(right instanceof TemporalAmount || right instanceof Number), false), (left, right) -> null
-        );
-
-        // TemporalAmount + non-Temporal → invalid
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof TemporalAmount && !(right instanceof Temporal || right instanceof ChronoPeriod || right instanceof Duration), false),
-                (left, right) -> null
-        );
-        // LocalDate + Number → invalid
-        map.put(
-                new CheckedPredicate(DATE_PLUS_NUMBER, true), (left, right) -> null
-        );
-
-        // LocalDateTime + Number → invalid
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof LocalDateTime && right instanceof Number, false),
-                (left, right) -> null
-        );
-        // Temporal + Number → invalid
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof Number, false),
-                (left, right) -> null
-        );
-
-        // String + String -> concat string
-        map.put(
-                new CheckedPredicate((left, right) -> left instanceof String && right instanceof String, false),
-                (left, right) -> ((String) left) + ((String) right)
-        );
-
-        //Adding default rules
-        map.putAll(getCommonAddOperations());
-
-        // null + any → only concatenate if both are strings
-        map.put(
-                new CheckedPredicate((left, right) -> left == null || right == null, false),
+                new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
                 (left, right) -> {
-                    if (left instanceof String stringLeft && right instanceof String stringRight) {
-                        return stringLeft + stringRight;
+                    if (left instanceof String leftString && right instanceof String rightString) {
+                        return leftString + rightString;
                     }
                     return null;
                 }
         );
 
+        // date + number → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Number, true),
+                (left, right) -> null
+        );
+
+        // number + date → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof LocalDate, true),
+                (left, right) -> null
+        );
+
+        // Number + null → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right == null, false),
+                (left, right) -> null
+        );
+
+        // null + Number → null
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right instanceof Number, false),
+                (left, right) -> null
+        );
+
+        map.putAll(getCommonAddOperations(ctx));
         return map;
     }
 
 
+    /**
+     * Builds the Feel specific 'And' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'And' operations
+     */
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperationMap(EvaluationContext ctx) {
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map =new LinkedHashMap<>();
 
-        // FEEL: if either operand is null and the other is true, result is null
+        // if either operand is null and the other is true, result is null
         map.put(
                 new CheckedPredicate((left, right) ->
                         (left == null && Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(right, FEELDialect.FEEL))) ||
@@ -127,56 +91,66 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonEqualOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonEqualOperations(ctx));
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonGteOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonGteOperations(ctx));
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonGtOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonGtOperations(ctx));
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonLteOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonLteOperations(ctx));
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonLtOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonLtOperations(ctx));
     }
 
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getNotEqualOperationMap(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonNotEqualOperationMap(ctx));
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getNotEqualOperations(EvaluationContext ctx) {
+        return new LinkedHashMap<>(getCommonNotEqualOperations(ctx));
     }
 
+    /**
+     * Builds the Feel specific 'OR' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'OR' operations
+     */
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperationMap(EvaluationContext ctx) {
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map =new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
 
         //false or string -> returns null
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    Boolean r = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
-                    return Boolean.FALSE.equals(l) && r == null;
+                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    return Boolean.FALSE.equals(leftBool) && leftBool == null;
                 }, false),
                 (left, right) -> null
         );
-        map.putAll(getCommonOrOperationMap(ctx));
+        map.putAll(getCommonOrOperations(ctx));
 
         return map;
     }
 
+    /**
+     * Builds the Feel specific 'Power' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'Power' operations
+     */
     @Override
-    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperationMap(EvaluationContext ctx) {
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getPowOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
 
         // Either null → null
@@ -185,8 +159,156 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
                 (left, right) -> null
         );
 
-        map.putAll(getCommonPowOperationMap(ctx));
+        map.putAll(getCommonPowOperations(ctx));
         return map;
+    }
+
+    /**
+     * Builds the Feel specific 'Substraction' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'Substraction' operations
+     */
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getSubOperations(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        map.put(
+                new CheckedPredicate((left, right) ->
+                                (left instanceof String || right instanceof String), false),
+                (left, right) -> null
+        );
+        map.putAll(getCommonSubOperations(ctx));
+        return map;
+    }
+
+    /**
+     * Builds the Feel specific 'Multiplication' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'Multiplication' operations
+     */
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getMultOperations(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        // String * Number or Number * String → invalid
+        map.put(
+                new CheckedPredicate((left, right) ->
+                        (left instanceof Number && right instanceof String) ||
+                                (left instanceof String && right instanceof Number), false),
+                (left, right) -> null
+        );
+
+        // String * String → invalid
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof String && right instanceof String, false),
+                (left, right) -> null
+        );
+
+        // Temporal * Number → invalid
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof Number, false),
+                (left, right) -> null
+        );
+
+        // Number * Temporal → invalid
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Temporal, false),
+                (left, right) -> null
+        );
+
+        // Duration * null → null + error
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right == null, true),
+                (left, right) -> null
+        );
+
+        // null * Duration → null + error
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right instanceof Duration, true),
+                (left, right) -> null
+        );
+
+       // ChronoPeriod * null → null + error
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right == null, true),
+                (left, right) -> null
+        );
+
+        // null * ChronoPeriod → null + error
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right instanceof ChronoPeriod, true),
+                (left, right) -> null
+        );
+
+        // FEEL-specific: Duration * Duration → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, true),
+                (left, right) -> null
+        );
+
+        // ChronoPeriod * ChronoPeriod → null
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, true),
+                (left, right) -> null
+        );
+
+        map.putAll(getCommonMultOperations(ctx));
+        return map;
+    }
+
+    /**
+     * Builds the Feel specific 'Division' operations.
+     * @param ctx : Current Evaluation context
+     * @return : a Map of CheckedPredicate to BiFunction representing the Feel specific 'Division' operations
+     */
+    @Override
+    public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getDivisionOperations(EvaluationContext ctx) {
+            Map<CheckedPredicate, BiFunction<Object,Object,Object>> map = new LinkedHashMap<>();
+
+            // string ÷ number or number ÷ string → null
+            map.put(new CheckedPredicate((left,right) -> (left instanceof Number && right instanceof String) ||
+                            (left instanceof String && right instanceof Number), false),
+                    (left,right) -> null);
+
+            // string ÷ string → null
+            map.put(new CheckedPredicate((left,right) -> left instanceof String && right instanceof String, false),
+                    (left,right) -> null);
+
+            // number ÷ duration → invalid
+            map.put(new CheckedPredicate((left,right) -> left instanceof Number && right instanceof Duration, true),
+                    (left,right) -> null);
+
+            // number ÷ period → invalid
+            map.put(new CheckedPredicate((left,right) -> left instanceof Number && right instanceof ChronoPeriod, true),
+                    (left,right) -> null);
+
+            // temporal ÷ number (other than Duration/Period) → invalid
+            map.put(new CheckedPredicate((left,right) -> left instanceof Temporal && right instanceof Number, false),
+                    (left,right) -> null);
+
+            // duration ÷ null → null
+            map.put(new CheckedPredicate((left,right) -> left instanceof Duration && right == null, false),
+                    (left,right) -> null);
+
+            // null ÷ duration → null
+            map.put(new CheckedPredicate((left,right) -> left == null && right instanceof Duration, false),
+                    (left,right) -> null);
+
+            // period ÷ null → null
+            map.put(new CheckedPredicate((left,right) -> left instanceof ChronoPeriod && right == null, false),
+                    (left,right) -> null);
+
+            // null ÷ period → null
+            map.put(new CheckedPredicate((left,right) -> left == null && right instanceof ChronoPeriod, false),
+                    (left,right) -> null);
+
+            // null ÷ Number → null
+            map.put(new CheckedPredicate((left,right) -> left == null && right instanceof Number, false),
+                    (left,right) -> null
+            );
+
+            map.putAll(getCommonDivisionOperations(ctx));
+
+            return map;
     }
 
 
