@@ -18,22 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.Msg;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.addLocalDateAndDuration;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class AddExecutor implements InfixExecutor {
 
@@ -49,57 +37,12 @@ public class AddExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return add(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeAdd(left, right, ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
-
-    private Object add(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
-        }
-
-        if (left instanceof Number) {
-            BigDecimal leftNumber = getBigDecimalOrNull(left);
-            return leftNumber != null && right instanceof Number ?
-                    leftNumber.add(getBigDecimalOrNull(right), MathContext.DECIMAL128) :
-                    null;
-        }
-
-        if (left instanceof String stringLeft) {
-            return right instanceof String stringRight ? stringLeft + stringRight : null;
-        }
-
-        if (left instanceof Duration leftDuration) {
-            if (right instanceof LocalDate localDate) {
-                return addLocalDateAndDuration(localDate, leftDuration);
-            }
-            if (right instanceof Duration rightDuration) {
-                return leftDuration.plus(rightDuration);
-            }
-        }
-        if (right instanceof Duration duration && left instanceof LocalDate localDate) {
-            return addLocalDateAndDuration(localDate, duration);
-        }
-
-        if (left instanceof Temporal temporal) {
-            if (right instanceof TemporalAmount temporalAmount) {
-                return temporal.plus(temporalAmount);
-            }
-        } else if (left instanceof TemporalAmount temporalAmount) {
-            if (right instanceof Temporal temporal) {
-                return temporal.plus(temporalAmount);
-            }
-            if (right instanceof ChronoPeriod chronoPeriod) {
-                return chronoPeriod.plus(temporalAmount);
-            }
-        }
-        ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
-        return null;
-    }
-
-
 }
