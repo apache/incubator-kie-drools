@@ -185,7 +185,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     /**
      * Builds the BFeel specific 'Multiplication' operations.
      * @param ctx : Current Evaluation context
-     * @return : a Map of CheckedPredicate to BiFunction representing the BFeel specific 'Multiplicationj' operations
+     * @return : a Map of CheckedPredicate to BiFunction representing the BFeel specific 'Multiplication' operations
      */
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getMultOperations(EvaluationContext ctx) {

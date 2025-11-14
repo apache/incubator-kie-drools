@@ -93,7 +93,7 @@ public class InfixExecutorUtils {
 
     public static BigDecimal getBigDecimal(Object object, EvaluationContext ctx) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
-            if (! (object instanceof Number)) {
+            if (!(object instanceof Number)) {
                 return BigDecimal.ZERO;
             } else  {
                 return getBigDecimalOrNull(object);

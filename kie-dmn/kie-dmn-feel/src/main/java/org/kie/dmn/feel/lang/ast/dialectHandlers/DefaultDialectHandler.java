@@ -105,7 +105,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> ((ChronoPeriod) right).plus((TemporalAmount) left)
         );
 
-        // nleft or right -> null
+        // left or right -> null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> null

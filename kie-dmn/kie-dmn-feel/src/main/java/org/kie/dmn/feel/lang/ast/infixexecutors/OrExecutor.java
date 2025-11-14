@@ -48,7 +48,7 @@ public class OrExecutor implements InfixExecutor {
             if (!leftOR.booleanValue()) {
                 return BooleanEvalHelper.getBooleanOrDialectDefault(infixNode.getRight().evaluate(ctx), ctx.getFEELDialect());
             } else {
-                return Boolean.TRUE; //No need to evaluate right side
+                return Boolean.TRUE; //left hand operand is true, we do not need to evaluate right side.
             }
         } else {
             return BooleanEvalHelper.getTrueOrDialectDefault(infixNode.getRight().evaluate(ctx), ctx.getFEELDialect());

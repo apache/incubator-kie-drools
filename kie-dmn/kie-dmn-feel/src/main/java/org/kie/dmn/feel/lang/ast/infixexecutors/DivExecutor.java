@@ -40,7 +40,7 @@ public class DivExecutor implements InfixExecutor {
         return handler.executeDivision(left, right, ctx);
     }
 
-   @Override
+    @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }

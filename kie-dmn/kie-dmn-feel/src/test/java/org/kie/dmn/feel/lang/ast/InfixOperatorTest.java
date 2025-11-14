@@ -79,18 +79,6 @@ class InfixOperatorTest {
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
     }
 
-    //TODO : Added for testing purpose. Need to move to Bfeel specific test class
-    @Test
-    void addStringAndNumber_shouldReturnConcatenatedString() {
-        FEELEventListenersManager manager = new FEELEventListenersManager();
-        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.BFEEL, DMNVersion.getLatest());
-        String left = "Total: ";
-        Integer right = 100;
-        Object result = InfixOperator.ADD.evaluate(left, right, ctx);
-        assertThat(result).isEqualTo("Total: 100");
-        //assertThat(result).isNull();
-    }
-
     @Test
     void subLocalDateAndDuration() {
         LocalDate left = LocalDate.of(2021, 1, 1);
