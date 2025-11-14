@@ -12,7 +12,7 @@ public class DialectHandlerFactory {
     );
 
     public static DialectHandler getHandler(EvaluationContext ctx) {
-        if(ctx == null) {
+        if(ctx == null || ctx.getFEELDialect() == null) {
             return new FEELDialectHandler();
         }
         FEELDialect dialect = ctx.getFEELDialect();

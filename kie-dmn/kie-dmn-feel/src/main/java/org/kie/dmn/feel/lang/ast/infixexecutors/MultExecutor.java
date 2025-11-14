@@ -18,19 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.Duration;
-import java.time.chrono.ChronoPeriod;
-
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.isAllowedMultiplicationBasedOnSpec;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class MultExecutor implements InfixExecutor {
 
@@ -45,7 +36,8 @@ public class MultExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return mult(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeMult(left, right, ctx);
     }
 
     @Override
@@ -53,7 +45,8 @@ public class MultExecutor implements InfixExecutor {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
-    private Object mult(Object left, Object right, EvaluationContext ctx) {
+    // TODO To be removed
+    /*private Object mult(Object left, Object right, EvaluationContext ctx) {
         if (!isAllowedMultiplicationBasedOnSpec(left, right, ctx)) {
             return null;
         }
@@ -121,5 +114,5 @@ public class MultExecutor implements InfixExecutor {
         } else {
             return null;
         }
-    }
+    }*/
 }

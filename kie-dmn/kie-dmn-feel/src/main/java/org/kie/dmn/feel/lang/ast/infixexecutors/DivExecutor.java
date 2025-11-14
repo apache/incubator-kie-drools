@@ -18,24 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.TemporalAmount;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.Msg;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.commonManageInvalidParameters;
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class DivExecutor implements InfixExecutor {
 
@@ -50,15 +36,17 @@ public class DivExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return div(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeDivision(left, right, ctx);
     }
 
-    @Override
+   @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
-    private Object div(Object left, Object right, EvaluationContext ctx) {
+    // TODO To be removed
+     /*private Object div(Object left, Object right, EvaluationContext ctx) {
         if (left instanceof Number) {
             if (right == null) {
                 right = getBigDecimal(right, ctx);
@@ -118,5 +106,5 @@ public class DivExecutor implements InfixExecutor {
         }
 
         return null;
-    }
+    }*/
 }

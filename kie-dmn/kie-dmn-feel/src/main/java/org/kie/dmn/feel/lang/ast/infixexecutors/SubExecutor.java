@@ -18,23 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtractTemporals;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class SubExecutor implements InfixExecutor {
 
@@ -49,7 +36,8 @@ public class SubExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return sub(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeSub(left, right, ctx);
     }
 
     @Override
@@ -57,7 +45,8 @@ public class SubExecutor implements InfixExecutor {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
-    private Object sub(Object left, Object right, EvaluationContext ctx) {
+    // TODO To be removed
+    /*private Object sub(Object left, Object right, EvaluationContext ctx) {
         if ((left == null && right instanceof Number) || (right == null && left instanceof Number)) {
             BigDecimal leftNumber = getBigDecimal(left, ctx);
             BigDecimal rightNumber = getBigDecimal(right, ctx);
@@ -118,5 +107,5 @@ public class SubExecutor implements InfixExecutor {
         } else {
             return null;
         }
-    }
+    }*/
 }

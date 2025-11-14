@@ -39,7 +39,6 @@ public class AndExecutor implements InfixExecutor {
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
         DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         return handler.executeAnd(left, right, ctx);
-        //return and(left, right, ctx);
     }
 
     @Override
@@ -47,8 +46,9 @@ public class AndExecutor implements InfixExecutor {
         Object leftRaw = infixNode.getLeft().evaluate(ctx);
         Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(leftRaw, ctx.getFEELDialect());
 
+        // short circuit : No need to evaluate right
         if (Boolean.FALSE.equals(leftBool)) {
-            return Boolean.FALSE; // short-circuit: no need to evaluate right
+            return Boolean.FALSE;
         }
         Object rightRaw = infixNode.getRight().evaluate(ctx);
         return evaluate(leftRaw, rightRaw, ctx);

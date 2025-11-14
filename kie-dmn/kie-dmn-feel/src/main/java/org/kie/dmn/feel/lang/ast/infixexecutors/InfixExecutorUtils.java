@@ -142,7 +142,7 @@ public class InfixExecutorUtils {
         return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
     }
 
-    static Object subtractTemporals(final Temporal left, final Temporal right, final EvaluationContext ctx) {
+    public static Object subtractTemporals(final Temporal left, final Temporal right, final EvaluationContext ctx) {
         // Based on the Table 57 in the spec, if it is only date, convert to date and time.
         final Temporal leftTemporal = getTemporalForSubtraction(left);
         final Temporal rightTemporal = getTemporalForSubtraction(right);
