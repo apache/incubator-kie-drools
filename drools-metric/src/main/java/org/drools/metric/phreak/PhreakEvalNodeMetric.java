@@ -37,13 +37,13 @@ public class PhreakEvalNodeMetric extends PhreakEvalNode {
                        EvalMemory em,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(evalNode);
 
-            super.doNode(evalNode, em, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(evalNode, em, sink, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

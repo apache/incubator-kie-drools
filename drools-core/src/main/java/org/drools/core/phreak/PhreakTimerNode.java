@@ -62,26 +62,25 @@ public class PhreakTimerNode {
         this.reteEvaluator = reteEvaluator;
     }
 
-    public void doNode(TimerNode timerNode,
+    public void doNode(ActivationsManager activationsManager,
+                       SegmentCursor sc, 
+                       TimerNode timerNode,
                        TimerNodeMemory tm,
-                       PathMemory pmem,
-                       SegmentMemory smem,
                        LeftTupleSink sink,
-                       ActivationsManager activationsManager,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if ( srcLeftTuples.getDeleteFirst() != null ) {
-            doLeftDeletes( timerNode, tm, pmem, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
+            doLeftDeletes( timerNode, tm, sc.getPathMemory(), sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
         }
 
         if ( srcLeftTuples.getUpdateFirst() != null ) {
-            doLeftUpdates( timerNode, tm, pmem, smem, sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
+            doLeftUpdates( timerNode, tm, sc.getPathMemory(), sc.getCurrentSegment(), sink, activationsManager, srcLeftTuples, trgLeftTuples, stagedLeftTuples );
         }
 
         if ( srcLeftTuples.getInsertFirst() != null ) {
-            doLeftInserts( timerNode, tm, pmem, smem, sink, activationsManager, srcLeftTuples, trgLeftTuples );
+            doLeftInserts( timerNode, tm, sc.getPathMemory(), sc.getCurrentSegment(), sink, activationsManager, srcLeftTuples, trgLeftTuples );
         }
 
         doPropagateChildLeftTuples( tm, sink, trgLeftTuples, stagedLeftTuples );
@@ -419,15 +418,15 @@ public class PhreakTimerNode {
                 pmem.doLinkRule( );
 
                 if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {
-                    evaluateAndFireRule( pmem, activationsManager );
+                    evaluateAndFireRule( pmem, reteEvaluator, activationsManager );
                 }
             }
         }
 
-        private void evaluateAndFireRule(PathMemory pmem, ActivationsManager activationsManager) {
+        private void evaluateAndFireRule(PathMemory pmem, ReteEvaluator reteEvaluator, ActivationsManager activationsManager) {
             RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
-            ruleExecutor.evaluateNetworkIfDirty( activationsManager );
-            ruleExecutor.fire( activationsManager );
+            ruleExecutor.evaluateNetworkIfDirty(reteEvaluator, activationsManager);
+            ruleExecutor.fire( reteEvaluator, activationsManager );
         }
     }
 

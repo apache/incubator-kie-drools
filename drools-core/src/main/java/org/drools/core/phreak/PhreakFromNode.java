@@ -57,8 +57,8 @@ public class PhreakFromNode {
                        FromMemory fm,
                        LeftTupleSink sink,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);

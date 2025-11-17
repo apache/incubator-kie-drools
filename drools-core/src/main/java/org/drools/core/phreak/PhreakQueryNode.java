@@ -41,12 +41,12 @@ public class PhreakQueryNode {
         this.reteEvaluator = reteEvaluator;
     }
 
-    public void doNode(QueryElementNode queryNode,
+    public void doNode(StackEntry stackEntry,
+                       QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
-                       StackEntry stackEntry,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qmem, srcLeftTuples, trgLeftTuples, stagedLeftTuples);

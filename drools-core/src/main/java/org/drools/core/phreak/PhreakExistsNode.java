@@ -51,8 +51,8 @@ public class PhreakExistsNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
         if (!existsNode.getRightInput().inputIsTupleToObjectNode()) {
             doNormalNode(existsNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {

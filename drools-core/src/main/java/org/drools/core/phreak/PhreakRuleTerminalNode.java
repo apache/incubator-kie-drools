@@ -83,7 +83,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(reteEvaluator, rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -99,10 +99,12 @@ public class PhreakRuleTerminalNode {
         return rule1.getName().equals(rule2.getName()) && rule1.getPackageName().equals(rule2.getPackageName()) &&
                ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
     }
-    public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
+    public static void doLeftTupleInsert(ReteEvaluator reteEvaluator,
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addActiveTuple(leftTuple);
             return;
@@ -169,16 +171,18 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleUpdate(rtnNode, executor, activationsManager, leftTuple);
+            doLeftTupleUpdate(reteEvaluator, rtnNode, executor, activationsManager, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
         }
     }
 
-    public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
+    public static void doLeftTupleUpdate(ReteEvaluator reteEvaluator, 
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleTerminalNodeLeftTuple leftTuple) {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {

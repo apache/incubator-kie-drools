@@ -37,13 +37,13 @@ public class PhreakAccumulateNodeMetric extends PhreakAccumulateNode {
                        LeftTupleSink sink,
                        AccumulateMemory am,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);
 
-            super.doNode(accNode, sink, am, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(accNode, sink, am, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

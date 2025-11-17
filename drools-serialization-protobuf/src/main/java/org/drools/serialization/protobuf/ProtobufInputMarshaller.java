@@ -755,7 +755,7 @@ public class ProtobufInputMarshaller {
 
         public void evaluateRNEAs(final InternalWorkingMemory wm) {
             for ( RuleAgendaItem rai : rneaToFire ) {
-                rai.getRuleExecutor().evaluateNetworkIfDirty( );
+                rai.getRuleExecutor().evaluateNetworkIfDirty(wm);
             }
         }
 
@@ -769,7 +769,7 @@ public class ProtobufInputMarshaller {
         public void fireRNEAs(final InternalWorkingMemory wm) {
             for ( RuleAgendaItem rai : rneaToFire ) {
                 RuleExecutor ruleExecutor = rai.getRuleExecutor();
-                ruleExecutor.evaluateNetworkIfDirty( );
+                ruleExecutor.evaluateNetworkIfDirty(wm);
                 ruleExecutor.removeRuleAgendaItemWhenEmpty( );
             }
             rneaToFire.clear();

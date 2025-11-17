@@ -37,13 +37,13 @@ public class PhreakExistsNodeMetric extends PhreakExistsNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(existsNode);
 
-            super.doNode(existsNode, sink, bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(existsNode, sink, bm, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();
