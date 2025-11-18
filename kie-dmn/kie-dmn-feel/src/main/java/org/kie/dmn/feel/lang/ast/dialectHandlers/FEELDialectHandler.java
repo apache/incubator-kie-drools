@@ -146,17 +146,6 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map =new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
-
-        //false or string -> returns null
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
-                    return Boolean.FALSE.equals(leftBool) && leftBool == null;
-                }, false),
-                (left, right) -> null
-        );
         map.putAll(getCommonOrOperations(ctx));
 
         return map;

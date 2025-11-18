@@ -36,7 +36,6 @@ public class GteExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-
         DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         return handler.executeGte(left, right, ctx);
     }

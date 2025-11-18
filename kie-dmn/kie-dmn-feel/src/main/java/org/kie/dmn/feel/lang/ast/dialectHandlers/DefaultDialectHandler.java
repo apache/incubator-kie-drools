@@ -22,6 +22,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -277,22 +279,54 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
 
+        // true OR anything → true (short‑circuit)
         map.put(
-            new CheckedPredicate((left, right) -> true, false),
-            (left, right) -> {
-                Boolean leftOR = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                if (leftOR != null) {
-                    if (!leftOR.booleanValue()) {
-                        return BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
-                    } else {
-                        return Boolean.TRUE;
-                    }
-                } else {
-                    return BooleanEvalHelper.getTrueOrDialectDefault(right, dialect);
-                }
-            }
-
+                new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect)), false),
+                (left, right) -> Boolean.TRUE
         );
+
+        // false OR true → true
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && Boolean.TRUE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.TRUE
+        );
+
+        // false OR false → false
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && Boolean.FALSE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // false OR otherwise → null
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && evalRight(right, ctx) == null, false),
+                (left, right) -> null
+        );
+
+        // otherwise OR true → true
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && Boolean.TRUE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.TRUE
+        );
+
+        // otherwise OR false → null
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && Boolean.FALSE.equals(evalRight(right, ctx)), false),
+                (left, right) -> null
+        );
+
+        // otherwise OR otherwise → null
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && evalRight(right, ctx) == null, false),
+                (left, right) -> null
+        );
+
         return map;
     }
 
@@ -662,5 +696,16 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
         ));
         return null;
+    }
+
+    // Evaluate right operand if it’s a node
+    private Object evalRight(Object right, EvaluationContext ctx) {
+        if (right instanceof InfixOpNode) {
+            return ((InfixOpNode) right).evaluate(ctx);
+        } else if (right instanceof BaseNode) {
+            return ((BaseNode) right).evaluate(ctx);
+        } else {
+            return right;
+        }
     }
 }

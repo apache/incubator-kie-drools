@@ -24,18 +24,14 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 /**
  *  Handler implementation of the DialectHandler interface providing BFEEL specific
@@ -132,16 +128,17 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
-        // false OR null → false
+
+        // Special case: false OR null/otherwise → false (BFEEL override)
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean l = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    Boolean r = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
-                    return Boolean.FALSE.equals(l) && r == null;
+                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE
         );
-
+        // Fall back to FEEL semantics for all other cases
         map.putAll(getCommonOrOperations(ctx));
         return map;
     }
@@ -157,7 +154,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         //TODO Change pow behaviour for BFeel
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof String || right instanceof String, false),
-                (left, right) -> null
+                (left, right) -> Boolean.FALSE
         );
 
         map.putAll(getCommonPowOperations(ctx));
