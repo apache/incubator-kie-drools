@@ -92,10 +92,10 @@ public class FEELCodeMarshallerTest {
                 { ComparablePeriod.of( 0, 0, -4 ), "duration( \"P0M\" )" },
                 { ComparablePeriod.of( 0, 0, 0 ), "duration( \"P0M\" )" },
                 // lists
-                { Arrays.asList( 1, 2, 3, 4 ), "[ 1, 2, 3, 4 ]" },
-                { Arrays.asList( "foo", "bar", "baz" ), "[ \"foo\", \"bar\", \"baz\" ]" },
-                { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[ duration( \"P4D\" ), duration( \"P2D\" ), duration( \"P1DT1H\" ) ]" },
-                { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[ [ 1, 2 ], [ 3, 4 ] ]" },
+                { Arrays.asList( 1, 2, 3, 4 ), "[1, 2, 3, 4]" },
+                { Arrays.asList( "foo", "bar", "baz" ), "[\"foo\", \"bar\", \"baz\"]" },
+                { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[duration( \"P4D\" ), duration( \"P2D\" ), duration( \"P1DT1H\" )]" },
+                { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[[1, 2], [3, 4]]" },
                 // ranges
                 { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN), "[ \"a\" .. \"z\" )" },
                 { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN), "[ duration( \"P1DT6H\" ) .. duration( \"P2DT2H\" ) )" },

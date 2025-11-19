@@ -168,7 +168,7 @@ class StringFunctionTest {
 
     @Test
     void invokeListEmpty() {
-        FunctionTestUtil.assertResult(stringFunction.invoke(Collections.emptyList()), "[ ]");
+        FunctionTestUtil.assertResult(stringFunction.invoke(Collections.emptyList()), "[]");
     }
 
     @Test
@@ -177,7 +177,7 @@ class StringFunctionTest {
         values.add(1);
         values.add(BigDecimal.valueOf(10.5));
         values.add("test");
-        FunctionTestUtil.assertResult(stringFunction.invoke(values), "[ 1, 10.5, test ]");
+        FunctionTestUtil.assertResult(stringFunction.invoke(values), "[1, 10.5, test]");
     }
 
     @Test

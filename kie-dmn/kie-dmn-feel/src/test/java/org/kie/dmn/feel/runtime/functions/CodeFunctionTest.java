@@ -165,7 +165,7 @@ class CodeFunctionTest {
 
     @Test
     void invokeListEmpty() {
-        FunctionTestUtil.assertResult(codeFunction.invoke(Collections.emptyList()), "[ ]");
+        FunctionTestUtil.assertResult(codeFunction.invoke(Collections.emptyList()), "[]");
     }
 
     @Test
@@ -174,7 +174,7 @@ class CodeFunctionTest {
         values.add(1);
         values.add(BigDecimal.valueOf(10.5));
         values.add("test");
-        FunctionTestUtil.assertResult(codeFunction.invoke(values), "[ 1, 10.5, \"test\" ]");
+        FunctionTestUtil.assertResult(codeFunction.invoke(values), "[1, 10.5, \"test\"]");
     }
 
     @Test
