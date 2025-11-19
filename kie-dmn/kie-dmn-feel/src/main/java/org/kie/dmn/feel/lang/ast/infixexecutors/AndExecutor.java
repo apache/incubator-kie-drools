@@ -22,7 +22,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
 import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 public class AndExecutor implements InfixExecutor {
 

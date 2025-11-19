@@ -22,8 +22,6 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -122,44 +120,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'And' operations
      */
-    /*protected Map<CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
-        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
-        *//* Even though AndExecutor short-circuits right-side evaluation,
-        this rule ensures correct logical interpretation when both operands are passed *//*
-
-        // left is false → false
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    return Boolean.FALSE.equals(leftBool);
-                }, false),
-                (left, right) -> Boolean.FALSE
-        );
-        // left is true → evaluate right
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    return Boolean.TRUE.equals(leftBool);
-                }, false),
-                (left, right) -> {
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
-                    return rightBool != null ? rightBool : BooleanEvalHelper.getFalseOrDialectDefault(right, dialect);
-                }
-        );
-
-        // left is null → fallback to getFalseOrDialectDefault(right)
-        map.put(
-                new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    return leftBool == null;
-                }, false),
-                (left, right) -> BooleanEvalHelper.getFalseOrDialectDefault(right, dialect)
-        );
-
-        return map;
-    }*/
-
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
