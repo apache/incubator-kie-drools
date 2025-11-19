@@ -399,10 +399,20 @@ class TaskIT {
                 Collections.singleton("managers"), Collections.singleton("Javierito"), Collections.emptySet(),
                 Collections.emptySet(), Collections.emptyMap());
 
+        //at first we try with user that doesn't have rights
         given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
-                .queryParam("group", "managers")
+                .pathParam("taskId", taskId)
+                .body(upTaskInfo)
+                .put("/management/usertasks/{taskId}")
+                .then()
+                .statusCode(403); //should fail, because there is not an "admin" user assigned to User Task
+
+        //"manager" should have rights
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
                 .pathParam("taskId", taskId)
                 .body(upTaskInfo)
                 .put("/management/usertasks/{taskId}")

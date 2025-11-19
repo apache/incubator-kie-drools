@@ -20,6 +20,7 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
+import org.kie.kogito.auth.IdentityProviderFactory;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
@@ -54,6 +55,9 @@ public class TaskManagementResource {
     @Inject
     private ProcessConfig processConfig;
 
+    @Inject
+    IdentityProviderFactory identityProviderFactory;
+
     @PostConstruct
     private void init() {
         taskService = new TaskManagementService(userTasks, userTaskConfig, processConfig);
@@ -68,7 +72,7 @@ public class TaskManagementResource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        taskService.updateTask(taskId, taskInfo, true);
+        taskService.updateTask(taskId, taskInfo, true, identityProviderFactory.getIdentity(user, groups));
         return Response.ok().build();
     }
 
@@ -76,12 +80,12 @@ public class TaskManagementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{taskId}")
-    public TaskInfo partialUpdateTask(
+    public Response partialUpdateTask(
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        return taskService.updateTask(taskId, taskInfo, false);
+        return Response.ok(taskService.updateTask(taskId, taskInfo, false, identityProviderFactory.getIdentity(user, groups))).build();
     }
 
     @GET

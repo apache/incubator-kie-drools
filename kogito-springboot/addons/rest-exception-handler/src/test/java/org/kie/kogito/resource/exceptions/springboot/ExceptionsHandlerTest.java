@@ -33,6 +33,8 @@ import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.resource.exceptions.ExceptionBodyMessage;
+import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
+import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -109,7 +111,19 @@ class ExceptionsHandlerTest {
     }
 
     @Test
+    void testUserTaskInstanceNotFoundException(@Mock UserTaskInstanceNotFoundException exception) {
+        tested.toResponse(exception);
+        verify(tested).mapException(exception);
+    }
+
+    @Test
     void testNotAuthorizedException(@Mock NotAuthorizedException exception) {
+        tested.toResponse(exception);
+        verify(tested).mapException(exception);
+    }
+
+    @Test
+    void testUserTaskInstanceNotAuthorizedException(@Mock UserTaskInstanceNotAuthorizedException exception) {
         tested.toResponse(exception);
         verify(tested).mapException(exception);
     }

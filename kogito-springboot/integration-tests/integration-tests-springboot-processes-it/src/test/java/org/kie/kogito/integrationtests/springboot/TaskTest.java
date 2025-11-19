@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.acme.travels.Address;
 import org.acme.travels.Traveller;
 import org.jbpm.util.JsonSchemaUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.task.management.service.TaskInfo;
@@ -56,6 +57,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 public class TaskTest extends BaseRestTest {
+
+    @AfterEach
+    public void cleanUp() {
+        String processId = "";
+        do {
+            processId = given()
+                    .when()
+                    .contentType(ContentType.JSON)
+                    .queryParam("user", "admin")
+                    .queryParam("group", "managers")
+                    .get("/approvals")
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .path("[0].id");
+            if (processId != null && !processId.isBlank()) {
+                given()
+                        .when()
+                        .contentType(ContentType.JSON)
+                        .queryParam("user", "admin")
+                        .queryParam("group", "managers")
+                        .pathParam("processId", processId)
+                        .delete("/approvals/{processId}")
+                        .then();
+            }
+        } while (processId != null && !processId.isBlank());
+    }
 
     @Test
     void testJsonSchema() {
@@ -278,8 +306,7 @@ public class TaskTest extends BaseRestTest {
                 .then()
                 .statusCode(200);
 
-        given().contentType(
-                ContentType.JSON)
+        given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
@@ -390,7 +417,7 @@ public class TaskTest extends BaseRestTest {
 
         String taskId = given()
                 .contentType(ContentType.JSON)
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .when()
                 .get("/usertasks/instance")
@@ -402,9 +429,21 @@ public class TaskTest extends BaseRestTest {
         TaskInfo upTaskInfo = new TaskInfo("firstAproval", "high", Collections.singleton("admin"),
                 Collections.singleton("managers"), Collections.singleton("Javierito"), Collections.emptySet(),
                 Collections.emptySet(), Collections.emptyMap());
+
+        //at first, we try with user that doesn't have rights
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "jsnow")
+                .pathParam("taskId", taskId)
+                .body(upTaskInfo)
+                .put("/management/usertasks/{taskId}")
+                .then()
+                .statusCode(403); //should fail, because there is not an "jsnow" user assigned to User Task
+
+        //"managers" should have rights
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("taskId", taskId)
                 .body(upTaskInfo)

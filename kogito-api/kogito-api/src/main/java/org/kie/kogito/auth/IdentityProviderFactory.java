@@ -37,4 +37,6 @@ public interface IdentityProviderFactory {
     String KOGITO_SECURITY_AUTH_IMPERSONATION_ALLOWED_FOR_ROLES = "kogito.security.auth.impersonation.allowed-for-roles";
 
     IdentityProvider getOrImpersonateIdentity(String user, Collection<String> roles);
+
+    IdentityProvider getIdentity(String user, Collection<String> roles);
 }

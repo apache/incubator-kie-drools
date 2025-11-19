@@ -20,6 +20,7 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
+import org.kie.kogito.auth.IdentityProviderFactory;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
@@ -43,6 +44,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/management/usertasks/")
 public class TaskManagementRestController {
 
+    @Autowired
+    IdentityProviderFactory identityProviderFactory;
+
     TaskManagementOperations taskService;
 
     @Autowired
@@ -56,18 +60,17 @@ public class TaskManagementRestController {
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody TaskInfo taskInfo) {
-        taskService.updateTask(taskId, taskInfo, true);
+        taskService.updateTask(taskId, taskInfo, true, identityProviderFactory.getIdentity(user, groups));
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping(value = "{taskId}", produces = APPLICATION_JSON_VALUE)
-    public TaskInfo partialUpdateTask(
+    public ResponseEntity<TaskInfo> partialUpdateTask(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody TaskInfo taskInfo) {
-        return taskService.updateTask(taskId, taskInfo, false);
-
+        return ResponseEntity.ok(taskService.updateTask(taskId, taskInfo, false, identityProviderFactory.getIdentity(user, groups)));
     }
 
     @GetMapping(value = "{taskId}", produces = APPLICATION_JSON_VALUE)

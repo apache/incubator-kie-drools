@@ -18,19 +18,16 @@
  */
 package org.kie.kogito.task.management.service;
 
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.usertask.UserTaskConfig;
-import org.kie.kogito.usertask.UserTaskInstance;
-import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
-import org.kie.kogito.usertask.UserTasks;
+import org.kie.kogito.usertask.*;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public class TaskManagementService implements TaskManagementOperations {
 
     private static final Logger LOG = LoggerFactory.getLogger(TaskManagementService.class);
+    public static final String WORKFLOW_ENGINE_USER = "WORKFLOW_ENGINE_USER";
 
     private UserTasks userTasks;
     // unit of work needs to add the publisher and this is not shared.
@@ -51,9 +49,10 @@ public class TaskManagementService implements TaskManagementOperations {
     }
 
     @Override
-    public TaskInfo updateTask(String taskId, TaskInfo taskInfo, boolean shouldReplace) {
-        UserTaskInstance userTaskInstance = UnitOfWorkExecutor.executeInUnitOfWork(processesConfig.unitOfWorkManager(), () -> {
+    public TaskInfo updateTask(String taskId, TaskInfo taskInfo, boolean shouldReplace, IdentityProvider identity) {
+        UserTaskInstance updatedUserTaskInstance = UnitOfWorkExecutor.executeInUnitOfWork(processesConfig.unitOfWorkManager(), () -> {
             DefaultUserTaskInstance ut = (DefaultUserTaskInstance) getUserTaskInstance(taskId);
+            enforceAdminOrOwner(ut, identity);
             setField(ut::setTaskDescription, taskInfo::getDescription, shouldReplace);
             setField(ut::setTaskPriority, taskInfo::getPriority, shouldReplace);
             setField(ut::setAdminGroups, taskInfo::getAdminGroups, shouldReplace);
@@ -64,8 +63,8 @@ public class TaskManagementService implements TaskManagementOperations {
             setMap(ut::setInputs, ut::setInput, taskInfo.getInputParams(), shouldReplace);
             return ut;
         });
-        LOG.trace("updated task through management endpoint to {}", userTaskInstance);
-        return convert(userTaskInstance);
+        LOG.trace("updated task through management endpoint to {}", updatedUserTaskInstance);
+        return convert(updatedUserTaskInstance);
     }
 
     private <T> boolean setField(Consumer<T> consumer, Supplier<T> supplier, boolean shouldReplace) {
@@ -120,4 +119,45 @@ public class TaskManagementService implements TaskManagementOperations {
         return userTaskInstance.get();
     }
 
+    private void enforceAdminOrOwner(UserTaskInstance userTaskInstance, IdentityProvider identity) {
+        String user = identity.getName();
+        Collection<String> roles = identity.getRoles();
+        String taskId = userTaskInstance.getId();
+
+        if (WORKFLOW_ENGINE_USER.equals(user)) {
+            LOG.debug("User {} authorized for user task {} as system user.", user, taskId);
+            return;
+        }
+
+        if (user == null) {
+            LOG.debug("No user defined to perform update on user task {}", userTaskInstance.getId());
+            throw new UserTaskInstanceNotAuthorizedException("No user defined to perform update on user task " + userTaskInstance.getId());
+        }
+
+        Set<String> adminUsers = userTaskInstance.getAdminUsers();
+        if (adminUsers.contains(user)) {
+            LOG.debug("User {} authorized for user task {} as admin user.", user, taskId);
+            return;
+        }
+
+        Set<String> userAdminGroups = new HashSet<>(userTaskInstance.getAdminGroups());
+        userAdminGroups.retainAll(roles);
+        if (!userAdminGroups.isEmpty()) {
+            LOG.debug("User {} with roles {} authorized for user task {} as a member of admin group.", user, roles, taskId);
+            return;
+        }
+
+        if (user.equals(userTaskInstance.getActualOwner())) {
+            LOG.debug("User {} authorized for user task {} as owner.", user, taskId);
+            return;
+        }
+
+        LOG.debug("identity {} with roles {} not authorized for user task {} with adminUsers {} and adminGroups {}",
+                identity.getName(),
+                identity.getRoles(),
+                userTaskInstance.getId(),
+                userTaskInstance.getAdminUsers(),
+                userTaskInstance.getAdminGroups());
+        throw new UserTaskInstanceNotAuthorizedException("User " + user + " with roles " + identity.getRoles() + " not authorized to perform an operation on user task " + userTaskInstance.getId());
+    }
 }

@@ -49,4 +49,13 @@ public class IdentityProviderFactoryImpl implements IdentityProviderFactory {
 
         return identityProvider;
     }
+
+    @Override
+    public IdentityProvider getIdentity(String user, Collection<String> roles) {
+
+        if (!config.isEnabled()) {
+            return IdentityProviders.of(user, roles);
+        }
+        return identityProvider;
+    }
 }
