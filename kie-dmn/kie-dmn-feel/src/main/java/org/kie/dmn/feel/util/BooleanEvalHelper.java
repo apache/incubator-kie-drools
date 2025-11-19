@@ -289,15 +289,4 @@ public class BooleanEvalHelper {
         return true;
     }
 
-    // Evaluate right operand if it’s a node
-    public static Object evalRight(Object right, EvaluationContext ctx) {
-        if (right instanceof InfixOpNode) {
-            return ((InfixOpNode) right).evaluate(ctx);
-        } else if (right instanceof BaseNode) {
-            return ((BaseNode) right).evaluate(ctx);
-        } else {
-            return right;
-        }
-    }
-
 }

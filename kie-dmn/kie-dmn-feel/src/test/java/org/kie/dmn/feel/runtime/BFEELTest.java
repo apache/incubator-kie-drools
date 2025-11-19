@@ -43,7 +43,8 @@ public class BFEELTest extends BaseFEELTest {
     @ParameterizedTest
     @MethodSource("data")
     protected void instanceTest(String expression, Object result, FEELEvent.Severity severity,
-            BaseFEELTest.FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect feelDialect) {
+            BaseFEELTest.FEEL_TARGET testFEELTarget, Boolean useExtendedProfile,
+            FEELDialect feelDialect) {
         try {
             expression(expression, result, severity, testFEELTarget, useExtendedProfile, feelDialect);
         } catch (UnsupportedOperationException e) {

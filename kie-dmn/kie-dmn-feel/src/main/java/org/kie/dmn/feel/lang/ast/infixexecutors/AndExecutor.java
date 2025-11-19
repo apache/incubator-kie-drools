@@ -40,6 +40,17 @@ public class AndExecutor implements InfixExecutor {
         return handler.executeAnd(left, right, ctx);
     }
 
+    /**
+     * Evaluates the AND operation with short-circuit logic.
+     * <p>
+     * Note: The right-hand side is passed as an AST node (not an evaluated value)
+     * to enable short-circuit evaluation. The handler must be able to handle both
+     * evaluated values and AST nodes for the right argument.
+     *
+     * @param infixNode the infix operation node
+     * @param ctx the evaluation context
+     * @return the result of the AND operation
+     */
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight(), ctx);

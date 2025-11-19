@@ -133,7 +133,7 @@ class InfixExecutorUtilsTest {
         bigDecimalTranslated.forEach(object -> {
             BigDecimal expected = NumberEvalHelper.getBigDecimalOrNull(object);
             assertThat(expected).isNotNull();
-            assertThat(InfixExecutorUtils.getBigDecimal(expected, evaluationContext)).isEqualTo(expected);
+            assertThat(InfixExecutorUtils.getBigDecimal(object, evaluationContext)).isEqualTo(expected);
         });
     }
 

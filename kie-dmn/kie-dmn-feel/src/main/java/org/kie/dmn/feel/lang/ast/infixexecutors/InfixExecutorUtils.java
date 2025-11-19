@@ -19,13 +19,7 @@
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -86,16 +80,20 @@ public class InfixExecutorUtils {
      * @param ctx
      */
     public static void commonManageInvalidParameters(final EvaluationContext ctx) {
-        FEELEvent.Severity severity = ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? FEELEvent.Severity.WARN
-                : FEELEvent.Severity.ERROR;
-        ctx.notifyEvt(() -> new InvalidParametersEvent(severity, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+        FEELDialect dialect = (ctx == null ? null : ctx.getFEELDialect());
+        FEELEvent.Severity severity =
+                FEELDialect.BFEEL.equals(dialect) ? FEELEvent.Severity.WARN : FEELEvent.Severity.ERROR;
+        if (ctx != null) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(severity,
+                    Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+        }
     }
 
     public static BigDecimal getBigDecimal(Object object, EvaluationContext ctx) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
             if (!(object instanceof Number)) {
                 return BigDecimal.ZERO;
-            } else  {
+            } else {
                 return getBigDecimalOrNull(object);
             }
         }
@@ -166,11 +164,11 @@ public class InfixExecutorUtils {
      * Checks if the multiplication is supported by the DMN specification based on the objects specified as parameters.
      * 
      * @param left
-     *            Left parameter of the subtraction expression.
+     *        Left parameter of the subtraction expression.
      * @param right
-     *            Right parameter of the subtraction expression.
+     *        Right parameter of the subtraction expression.
      * @param ctx
-     *            Context that is used to notify about not allowed set of parameters.
+     *        Context that is used to notify about not allowed set of parameters.
      * 
      * @return True, if the parameters are valid for multiplication based on the DMN specification. False, when
      *         multiplication is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>
@@ -191,11 +189,11 @@ public class InfixExecutorUtils {
      * Checks if the subtraction is supported by the DMN specification based on the temporals specified as parameters.
      * 
      * @param leftTemporal
-     *            Left temporal parameter of the subtraction expression.
+     *        Left temporal parameter of the subtraction expression.
      * @param rightTemporal
-     *            Right temporal parameter of the subtraction expression.
+     *        Right temporal parameter of the subtraction expression.
      * @param ctx
-     *            Context that is used to notify about not allowed set of parameters.
+     *        Context that is used to notify about not allowed set of parameters.
      * 
      * @return True, if the temporal parameters are valid for subtraction based on the DMN specification. False, when
      *         subtraction is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>

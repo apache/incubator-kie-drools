@@ -18,16 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
-import ch.obermuhlner.math.big.BigDecimalMath;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
-import org.kie.dmn.feel.util.Msg;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -38,22 +28,35 @@ import java.time.LocalTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
+
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
-import static org.kie.dmn.feel.util.BooleanEvalHelper.evalRight;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
+
 /**
- *  Base implementation of the DialectHandler interface providing common
- *  functionality for all dialects.
+ * Base implementation of the DialectHandler interface providing common
+ * functionality for all dialects.
  */
 public abstract class DefaultDialectHandler implements DialectHandler {
 
     /**
      * Builds the common 'Addition' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Addition' operations
      */
@@ -67,56 +70,48 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     BigDecimal leftNum = getBigDecimalOrNull(left);
                     BigDecimal rightNum = getBigDecimal(right, ctx);
                     return leftNum != null && rightNum != null ? leftNum.add(rightNum, MathContext.DECIMAL128) : null;
-                }
-        );
+                });
 
         // Duration + LocalDate
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof LocalDate, false),
-                (left, right) -> addLocalDateAndDuration((LocalDate) right, (Duration) left)
-        );
+                (left, right) -> addLocalDateAndDuration((LocalDate) right, (Duration) left));
 
         // LocalDate + Duration
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof LocalDate && right instanceof Duration, false),
-                (left, right) -> addLocalDateAndDuration((LocalDate) left, (Duration) right)
-        );
+                (left, right) -> addLocalDateAndDuration((LocalDate) left, (Duration) right));
 
         // Duration + Duration
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
-                (left, right) -> ((Duration) left).plus((Duration) right)
-        );
+                (left, right) -> ((Duration) left).plus((Duration) right));
 
         // Temporal + TemporalAmount
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof TemporalAmount, false),
-                (left, right) -> ((Temporal) left).plus((TemporalAmount) right)
-        );
+                (left, right) -> ((Temporal) left).plus((TemporalAmount) right));
 
         // TemporalAmount + Temporal
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof TemporalAmount && right instanceof Temporal, false),
-                (left, right) -> ((Temporal) right).plus((TemporalAmount) left)
-        );
+                (left, right) -> ((Temporal) right).plus((TemporalAmount) left));
 
         // TemporalAmount + ChronoPeriod
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof TemporalAmount && right instanceof ChronoPeriod, false),
-                (left, right) -> ((ChronoPeriod) right).plus((TemporalAmount) left)
-        );
+                (left, right) -> ((ChronoPeriod) right).plus((TemporalAmount) left));
 
         // left or right -> null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
         return map;
     }
 
-
     /**
      * Builds the common 'And' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'And' operations
      */
@@ -127,56 +122,50 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         // false AND anything → false (short‑circuit)
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect)), false),
-                (left, right) -> Boolean.FALSE
-        );
+                (left, right) -> Boolean.FALSE);
 
         // true AND true → true
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && Boolean.TRUE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.TRUE
-        );
+                (left, right) -> Boolean.TRUE);
 
         // true AND false → false
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && Boolean.FALSE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.FALSE
-        );
+                (left, right) -> Boolean.FALSE);
 
         // true AND otherwise → null
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && evalRight(right, ctx) == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         // otherwise AND true → null
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && Boolean.TRUE.equals(evalRight(right, ctx)), false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         // otherwise AND false → false
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && Boolean.FALSE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.FALSE
-        );
+                (left, right) -> Boolean.FALSE);
 
         // otherwise AND otherwise → null
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && evalRight(right, ctx) == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         return map;
     }
 
     /**
      * Builds the common 'Equal' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Equal' operations
      */
@@ -186,13 +175,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> BooleanEvalHelper.isEqual(left, right, dialect)
-        );
+                (left, right) -> BooleanEvalHelper.isEqual(left, right, dialect));
         return map;
     }
 
     /**
      * Builds the common 'Greater than Or EqualTo' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Greater than Or EqualTo' operations
      */
@@ -206,14 +195,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> InfixExecutorUtils.or(
                         BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0),
                         BooleanEvalHelper.isEqual(left, right, dialect),
-                        ctx
-                )
-        );
+                        ctx));
         return map;
     }
 
     /**
      * Builds the common 'Greater than' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Greater than' operations
      */
@@ -224,13 +212,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         // left > right
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0)
-        );
+                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0));
         return map;
     }
 
     /**
      * Builds the common 'Less than Or EqualTo' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Less than Or EqualTo' operations
      */
@@ -244,14 +232,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> InfixExecutorUtils.or(
                         BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) < 0),
                         BooleanEvalHelper.isEqual(left, right, dialect),
-                        ctx
-                )
-        );
+                        ctx));
         return map;
     }
 
     /**
      * Builds the common 'Less than' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Less than Or EqualTo' operations
      */
@@ -262,13 +249,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         // left < right
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) < 0)
-        );
+                (left, right) -> BooleanEvalHelper.compare(left, right, dialect, (leftNum, rightNum) -> leftNum.compareTo(rightNum) < 0));
         return map;
     }
 
     /**
      * Builds the common 'Not EqualTo' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Not EqualTo' operations
      */
@@ -281,13 +268,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> {
                     Boolean result = BooleanEvalHelper.isEqual(left, right, dialect);
                     return result != null ? !result : null;
-                }
-        );
+                });
         return map;
     }
 
     /**
      * Builds the common 'Or' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Or operations
      */
@@ -298,56 +285,50 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         // true OR anything → true (short‑circuit)
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect)), false),
-                (left, right) -> Boolean.TRUE
-        );
+                (left, right) -> Boolean.TRUE);
 
         // false OR true → true
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && Boolean.TRUE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.TRUE
-        );
+                (left, right) -> Boolean.TRUE);
 
         // false OR false → false
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && Boolean.FALSE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.FALSE
-        );
+                (left, right) -> Boolean.FALSE);
 
         // false OR otherwise → null
         map.put(
                 new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
                         && evalRight(right, ctx) == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         // otherwise OR true → true
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && Boolean.TRUE.equals(evalRight(right, ctx)), false),
-                (left, right) -> Boolean.TRUE
-        );
+                (left, right) -> Boolean.TRUE);
 
         // otherwise OR false → null
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && Boolean.FALSE.equals(evalRight(right, ctx)), false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         // otherwise OR otherwise → null
         map.put(
                 new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
                         && evalRight(right, ctx) == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         return map;
     }
 
     /**
      * Builds the common 'Power of' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Power of' operations
      */
@@ -356,13 +337,13 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> math(left, right, ctx,
-                        (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128))
-        );
+                        (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128)));
         return map;
     }
 
     /**
      * Builds the common 'Substraction' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Substraction' operations
      */
@@ -370,14 +351,12 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         // null - Number
         map.put(
-                new CheckedPredicate((left, right) ->
-                        (left == null && right instanceof Number) || (right == null && left instanceof Number), false),
+                new CheckedPredicate((left, right) -> (left == null && right instanceof Number) || (right == null && left instanceof Number), false),
                 (left, right) -> {
                     BigDecimal leftNum = getBigDecimal(left, ctx);
                     BigDecimal rightNum = getBigDecimal(right, ctx);
                     return leftNum != null && rightNum != null ? leftNum.subtract(rightNum, MathContext.DECIMAL128) : null;
-                }
-        );
+                });
 
         // Number - Number
         map.put(
@@ -386,8 +365,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     BigDecimal leftNum = getBigDecimal(left, ctx);
                     BigDecimal rightNum = getBigDecimal(right, ctx);
                     return leftNum != null && rightNum != null ? leftNum.subtract(rightNum, MathContext.DECIMAL128) : null;
-                }
-        );
+                });
 
         // LocalDate - Duration
         map.put(
@@ -396,45 +374,39 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     LocalDateTime leftLDT = LocalDateTime.of((LocalDate) left, LocalTime.MIDNIGHT);
                     LocalDateTime evaluated = leftLDT.minus((Duration) right);
                     return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
-                }
-        );
+                });
 
         // Duration - Duration
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
-                (left, right) -> ((Duration) left).minus((Duration) right)
-        );
+                (left, right) -> ((Duration) left).minus((Duration) right));
 
         // Temporal - Temporal
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof Temporal, false),
-                (left, right) -> subtractTemporals((Temporal) left, (Temporal) right, ctx)
-        );
+                (left, right) -> subtractTemporals((Temporal) left, (Temporal) right, ctx));
 
         // Temporal - TemporalAmount
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Temporal && right instanceof TemporalAmount, false),
-                (left, right) -> ((Temporal) left).minus((TemporalAmount) right)
-        );
+                (left, right) -> ((Temporal) left).minus((TemporalAmount) right));
 
         // ChronoPeriod - ChronoPeriod
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, false),
-                (left, right) -> new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right))
-        );
-
+                (left, right) -> new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right)));
 
         // left == null || right == null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
         return map;
     }
 
     /**
      * Builds the common 'Multiplication' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Multiplication operations
      */
@@ -448,8 +420,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     BigDecimal leftNum = getBigDecimalOrNull(left);
                     BigDecimal rightNum = getBigDecimal(right, ctx);
                     return leftNum != null && rightNum != null ? leftNum.multiply(rightNum, MathContext.DECIMAL128) : null;
-                }
-        );
+                });
 
         // Number * Duration
         map.put(
@@ -457,9 +428,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> Duration.ofSeconds(
                         getBigDecimalOrNull(left)
                                 .multiply(BigDecimal.valueOf(((Duration) right).getSeconds()), MathContext.DECIMAL128)
-                                .longValue()
-                )
-        );
+                                .longValue()));
 
         // Number * ChronoPeriod
         map.put(
@@ -467,9 +436,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 (left, right) -> ComparablePeriod.ofMonths(
                         getBigDecimalOrNull(left)
                                 .multiply(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128)
-                                .intValue()
-                )
-        );
+                                .intValue()));
 
         // Duration * Number
         map.put(
@@ -478,8 +445,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
                     BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
                     return Duration.ofNanos(durationNumericValue.multiply(rightDecimal).longValue());
-                }
-        );
+                });
         // ChronoPeriod * Number
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Number, false),
@@ -488,23 +454,20 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     return ComparablePeriod.ofMonths(
                             getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left))
                                     .multiply(rightNumber, MathContext.DECIMAL128)
-                                    .intValue()
-                    );
-                }
-        );
-
+                                    .intValue());
+                });
 
         // left or right == null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
-                (left, right) -> null
-        );
+                (left, right) -> null);
 
-       return map;
+        return map;
     }
 
     /**
      * Builds the common 'Division' operation map used by the dialect handlers.
+     * 
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'Division' operations
      */
@@ -513,79 +476,77 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
         // Number ÷ Number
         map.put(
-                new CheckedPredicate((left,right) -> left instanceof Number && right instanceof Number
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Number
                         && getBigDecimalOrNull(right) != null
                         && getBigDecimalOrNull(right).compareTo(BigDecimal.ZERO) != 0,
                         false),
-                (left,right) -> {
+                (left, right) -> {
                     BigDecimal leftBD = getBigDecimalOrNull(left);
                     BigDecimal rightBD = getBigDecimalOrNull(right);
                     return leftBD.divide(rightBD, MathContext.DECIMAL128);
-                }
-        );
+                });
 
         // Number ÷ Number , Division by zero case → notify
         map.put(
-                new CheckedPredicate((left,right) -> left instanceof Number && right instanceof Number
+                new CheckedPredicate((left, right) -> left instanceof Number && right instanceof Number
                         && getBigDecimalOrNull(right) != null
                         && getBigDecimalOrNull(right).compareTo(BigDecimal.ZERO) == 0,
                         true),
-                (left,right) -> null
-        );
+                (left, right) -> null);
 
         // duration ÷ number
-        map.put(new CheckedPredicate((left,right) -> left instanceof Duration && right instanceof Number, false),
-                (left,right) -> {
+        map.put(new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Number, false),
+                (left, right) -> {
                     Duration dur = (Duration) left;
                     BigDecimal nanos = BigDecimal.valueOf(dur.toNanos());
                     BigDecimal divisor = getBigDecimalOrNull(right);
-                    if (divisor==null || divisor.compareTo(BigDecimal.ZERO)==0) return null;
+                    if (divisor == null || divisor.compareTo(BigDecimal.ZERO) == 0)
+                        return null;
                     BigDecimal scaled = nanos.divide(divisor, 0, RoundingMode.HALF_EVEN);
                     return Duration.ofNanos(scaled.longValue());
-                }
-        );
+                });
 
         // duration ÷ duration → number
-        map.put(new CheckedPredicate((left,right) -> left instanceof Duration && right instanceof Duration, false),
-                (left,right) -> {
+        map.put(new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
+                (left, right) -> {
                     BigDecimal leftSecs = getBigDecimalOrNull(((Duration) left).getSeconds());
                     BigDecimal rightSecs = getBigDecimalOrNull(((Duration) right).getSeconds());
-                    if (leftSecs==null || rightSecs==null || rightSecs.compareTo(BigDecimal.ZERO)==0) return null;
+                    if (leftSecs == null || rightSecs == null || rightSecs.compareTo(BigDecimal.ZERO) == 0)
+                        return null;
                     return leftSecs.divide(rightSecs, MathContext.DECIMAL128);
-                }
-        );
+                });
 
         // period ÷ number
-        map.put(new CheckedPredicate((left,right) -> left instanceof ChronoPeriod && right instanceof Number, true),
-                (left,right) -> {
+        map.put(new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Number, true),
+                (left, right) -> {
                     BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
                     BigDecimal divisor = getBigDecimalOrNull(right);
-                    if (months==null || divisor==null || divisor.compareTo(BigDecimal.ZERO)==0) return null;
+                    if (months == null || divisor == null || divisor.compareTo(BigDecimal.ZERO) == 0)
+                        return null;
                     BigDecimal scaled = months.divide(divisor, MathContext.DECIMAL128);
                     return ComparablePeriod.ofMonths(scaled.intValue());
-                }
-        );
+                });
 
         // period ÷ period → number
-        map.put(new CheckedPredicate((left,right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, false),
-                (left,right) -> {
+        map.put(new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, false),
+                (left, right) -> {
                     BigDecimal leftMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
                     BigDecimal rightMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
-                    if (leftMonths==null || rightMonths==null || rightMonths.compareTo(BigDecimal.ZERO)==0) return null;
+                    if (leftMonths == null || rightMonths == null || rightMonths.compareTo(BigDecimal.ZERO) == 0)
+                        return null;
                     return leftMonths.divide(rightMonths, MathContext.DECIMAL128);
-                }
-        );
+                });
 
         // left or right == null --> null
-        map.put(new CheckedPredicate((left,right) -> left==null || right==null, false), (left,right) -> null);
+        map.put(new CheckedPredicate((left, right) -> left == null || right == null, false), (left, right) -> null);
 
         return map;
     }
 
     /**
      * A wrapper around a BiPredicate used to determine whether a given pair of operands
-     *  Matches a particular operation rule, with an additional flag indicating whether an error
-     *  notification should be raised when the operation result is null.
+     * Matches a particular operation rule, with an additional flag indicating whether an error
+     * notification should be raised when the operation result is null.
      */
     public static class CheckedPredicate {
         final BiPredicate<Object, Object> predicate;
@@ -679,6 +640,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
     /**
      * Executes a binary operation defined in the given operation map against the provided operands.
+     * 
      * @param left : the left operand of the operation;
      * @param right : the right operand of the operation;
      * @param ctx : the current EvaluationContext
@@ -689,8 +651,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             Object left,
             Object right,
             EvaluationContext ctx,
-            Map<CheckedPredicate, BiFunction<Object, Object, Object>> operationMap
-    ) {
+            Map<CheckedPredicate, BiFunction<Object, Object, Object>> operationMap) {
         Optional<Map.Entry<CheckedPredicate, BiFunction<Object, Object, Object>>> match =
                 operationMap.entrySet().stream()
                         .filter(entry -> entry.getKey().predicate.test(left, right))
@@ -699,18 +660,22 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         if (match.isPresent()) {
             Object result = match.get().getValue().apply(left, right);
             if (result == null && match.get().getKey().toNotify) {
-                ctx.notifyEvt(() -> new InvalidParametersEvent(
-                        FEELEvent.Severity.ERROR,
-                        Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
-                ));
+                commonManageInvalidParameters(ctx);
             }
             return result;
         }
-
-        ctx.notifyEvt(() -> new InvalidParametersEvent(
-                FEELEvent.Severity.ERROR,
-                Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
-        ));
+        commonManageInvalidParameters(ctx);
         return null;
+    }
+
+    // Evaluate right operand if it’s a node
+    static Object evalRight(Object right, EvaluationContext ctx) {
+        if (right instanceof InfixOpNode) {
+            return ((InfixOpNode) right).evaluate(ctx);
+        } else if (right instanceof BaseNode) {
+            return ((BaseNode) right).evaluate(ctx);
+        } else {
+            return right;
+        }
     }
 }

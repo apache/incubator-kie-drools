@@ -40,10 +40,20 @@ public class OrExecutor implements InfixExecutor {
         return handler.executeOr(left, right, ctx);
     }
 
+    /**
+     * Evaluates the OR operation with short-circuit logic.
+     * <p>
+     * Note: The right-hand side is passed as an AST node (not an evaluated value)
+     * to enable short-circuit evaluation. The handler must be able to handle both
+     * evaluated values and AST nodes for the right argument.
+     *
+     * @param infixNode the infix operation node
+     * @param ctx the evaluation context
+     * @return the result of the OR operation
+     */
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight(), ctx);
     }
-
 
 }
