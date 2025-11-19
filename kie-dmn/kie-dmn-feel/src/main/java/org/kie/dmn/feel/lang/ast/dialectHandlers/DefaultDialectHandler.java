@@ -45,6 +45,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
+import static org.kie.dmn.feel.util.BooleanEvalHelper.evalRight;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 /**
@@ -121,11 +122,11 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      * @param ctx : Current Evaluation context
      * @return : a Map of CheckedPredicate to BiFunction representing the common 'And' operations
      */
-    protected Map<CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
+    /*protected Map<CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
-        /* Even though AndExecutor short-circuits right-side evaluation,
-        this rule ensures correct logical interpretation when both operands are passed */
+        *//* Even though AndExecutor short-circuits right-side evaluation,
+        this rule ensures correct logical interpretation when both operands are passed *//*
 
         // left is false → false
         map.put(
@@ -154,6 +155,61 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     return leftBool == null;
                 }, false),
                 (left, right) -> BooleanEvalHelper.getFalseOrDialectDefault(right, dialect)
+        );
+
+        return map;
+    }*/
+
+    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonAndOperations(EvaluationContext ctx) {
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+
+        // false AND anything → false (short‑circuit)
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.FALSE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect)), false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // true AND true → true
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && Boolean.TRUE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.TRUE
+        );
+
+        // true AND false → false
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && Boolean.FALSE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // true AND otherwise → null
+        map.put(
+                new CheckedPredicate((left, right) -> Boolean.TRUE.equals(BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect))
+                        && evalRight(right, ctx) == null, false),
+                (left, right) -> null
+        );
+
+        // otherwise AND true → null
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && Boolean.TRUE.equals(evalRight(right, ctx)), false),
+                (left, right) -> null
+        );
+
+        // otherwise AND false → false
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && Boolean.FALSE.equals(evalRight(right, ctx)), false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // otherwise AND otherwise → null
+        map.put(
+                new CheckedPredicate((left, right) -> BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect) == null
+                        && evalRight(right, ctx) == null, false),
+                (left, right) -> null
         );
 
         return map;
@@ -696,16 +752,5 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()
         ));
         return null;
-    }
-
-    // Evaluate right operand if it’s a node
-    private Object evalRight(Object right, EvaluationContext ctx) {
-        if (right instanceof InfixOpNode) {
-            return ((InfixOpNode) right).evaluate(ctx);
-        } else if (right instanceof BaseNode) {
-            return ((BaseNode) right).evaluate(ctx);
-        } else {
-            return right;
-        }
     }
 }

@@ -43,15 +43,7 @@ public class AndExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        Object leftRaw = infixNode.getLeft().evaluate(ctx);
-        Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(leftRaw, ctx.getFEELDialect());
-
-        // short circuit : No need to evaluate right
-        if (Boolean.FALSE.equals(leftBool)) {
-            return Boolean.FALSE;
-        }
-        Object rightRaw = infixNode.getRight().evaluate(ctx);
-        return evaluate(leftRaw, rightRaw, ctx);
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight(), ctx);
     }
 
 }

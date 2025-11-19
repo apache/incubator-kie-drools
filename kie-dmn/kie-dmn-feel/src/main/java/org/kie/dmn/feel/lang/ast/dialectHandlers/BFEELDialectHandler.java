@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
+import static org.kie.dmn.feel.util.BooleanEvalHelper.evalRight;
 
 /**
  *  Handler implementation of the DialectHandler interface providing BFEEL specific
@@ -86,7 +87,42 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonAndOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        FEELDialect dialect = ctx.getFEELDialect();
+        // Special case: true AND otherwise → false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
+                    return Boolean.TRUE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // Special case: otherwise AND true → false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
+                    return leftBool == null && Boolean.TRUE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE
+        );
+
+        // Special case: otherwise AND otherwise → false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
+                    return leftBool == null && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE
+        );
+        map.putAll(getCommonAddOperations(ctx));
+        return map;
     }
 
     @Override
@@ -133,7 +169,8 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> {
                     Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(right, dialect);
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
                     return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE
