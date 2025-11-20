@@ -40,7 +40,7 @@ public abstract class AbstractSVGProcessor implements SVGProcessor {
     protected Document svgDocument;
     protected SVGSummary summary = new SVGSummary();
     protected boolean mapById = true;
-    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private TransformerFactory transformerFactory = TransformerFactory.newDefaultInstance();
 
     public AbstractSVGProcessor(Document svgDocument, boolean mapById) {
         this.svgDocument = svgDocument;
