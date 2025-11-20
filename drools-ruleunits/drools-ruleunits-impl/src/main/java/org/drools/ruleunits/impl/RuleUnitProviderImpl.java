@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -66,21 +68,29 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     private static final boolean USE_EXEC_MODEL = true;
 
-    private final Map<String, RuleUnit> ruleUnitMap;
+    private final ConcurrentMap<String, RuleUnit> ruleUnitMap;
+    private final Object generationLock = new Object();
 
     public RuleUnitProviderImpl() {
-        this.ruleUnitMap = loadRuleUnits(Thread.currentThread().getContextClassLoader());
+        this.ruleUnitMap = new ConcurrentHashMap<>(loadRuleUnits(Thread.currentThread().getContextClassLoader()));
     }
 
     @Override
     public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
         String ruleUnitName = getRuleUnitName(ruleUnitData);
-        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitName);
+        RuleUnit<T> ruleUnit = (RuleUnit<T>) ruleUnitMap.get(ruleUnitName);
         if (ruleUnit != null) {
             return ruleUnit;
         }
-        ruleUnitMap.putAll(generateRuleUnit(ruleUnitData));
-        return ruleUnitMap.get(ruleUnitName);
+        synchronized (generationLock) {
+            ruleUnit = (RuleUnit<T>) ruleUnitMap.get(ruleUnitName);
+            if (ruleUnit == null) {
+                Map<String, RuleUnit> generated = generateRuleUnit(ruleUnitData);
+                ruleUnitMap.putAll(generated);
+                ruleUnit = (RuleUnit<T>) generated.get(ruleUnitName);
+            }
+        }
+        return ruleUnit;
     }
 
     protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
@@ -249,19 +259,21 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     @Override
     public <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass) {
-        if (NamedRuleUnitData.class.isAssignableFrom(ruleUnitDataClass)) {
-            // NamedRuleUnitData may create multiple RuleUnits
-            List<String> invalidateKeys = ruleUnitMap.entrySet()
-                    .stream()
-                    .filter(entry -> hasSameRuleUnitDataClass(entry.getValue(), ruleUnitDataClass))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-            invalidateKeys.forEach(ruleUnitMap::remove);
-            return invalidateKeys.size();
-        } else {
-            String ruleUnitName = getRuleUnitName(ruleUnitDataClass);
-            RuleUnit remove = ruleUnitMap.remove(ruleUnitName);
-            return remove == null ? 0 : 1;
+        synchronized (generationLock) {
+            if (NamedRuleUnitData.class.isAssignableFrom(ruleUnitDataClass)) {
+                // NamedRuleUnitData may create multiple RuleUnits
+                List<String> invalidateKeys = ruleUnitMap.entrySet()
+                        .stream()
+                        .filter(entry -> hasSameRuleUnitDataClass(entry.getValue(), ruleUnitDataClass))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+                invalidateKeys.forEach(ruleUnitMap::remove);
+                return invalidateKeys.size();
+            } else {
+                String ruleUnitName = getRuleUnitName(ruleUnitDataClass);
+                RuleUnit remove = ruleUnitMap.remove(ruleUnitName);
+                return remove == null ? 0 : 1;
+            }
         }
     }
 
