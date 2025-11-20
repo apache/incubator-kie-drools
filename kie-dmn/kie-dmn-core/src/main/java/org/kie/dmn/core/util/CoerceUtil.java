@@ -49,7 +49,9 @@ public class CoerceUtil {
             // and vice-versa
             return ((Collection) valueToCoerce).toArray()[0];
         }
-        if (requiredType.isCollection() && !(valueToCoerce instanceof Collection)) {
+        if (requiredType.isCollection() && !(valueToCoerce instanceof Collection) &&
+                requiredType instanceof SimpleTypeImpl simpleType &&
+                !(simpleType.getFeelType() == BuiltInType.UNKNOWN)) {
             return Collections.singletonList(valueToCoerce);
         }
         if (valueToCoerce instanceof LocalDate localDate &&
