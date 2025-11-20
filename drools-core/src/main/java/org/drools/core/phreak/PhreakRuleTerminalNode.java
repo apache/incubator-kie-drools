@@ -232,6 +232,7 @@ public class PhreakRuleTerminalNode {
 
                     leftTuple.update( salienceInt, pctx );
                     executor.modifyActiveTuple(leftTuple );
+                    activationsManager.addItemToActivationGroup( leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
             }
