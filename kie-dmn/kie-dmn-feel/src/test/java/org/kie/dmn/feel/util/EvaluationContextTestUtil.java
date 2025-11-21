@@ -32,11 +32,11 @@ public class EvaluationContextTestUtil {
 
     public static EvaluationContext newEmptyEvaluationContext(FEELEventListenersManager mgr) {
         // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL, DMNVersion.getLatest());
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL);
     }
 
     public static EvaluationContext newEmptyEvaluationContext() {
         // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL, DMNVersion.getLatest());
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
     }
 }
