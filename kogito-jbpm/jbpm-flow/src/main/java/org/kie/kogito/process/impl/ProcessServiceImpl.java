@@ -132,7 +132,6 @@ public class ProcessServiceImpl implements ProcessService {
                             pi.abort();
                             return pi;
                         })
-                        .map(ProcessInstance::checkError)
                         .map(ProcessInstance::variables)
                         .map(MappableToModel::toModel));
     }

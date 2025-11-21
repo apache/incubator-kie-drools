@@ -271,7 +271,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                             getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
                     throw executionException;
                 }
-                logger.error("Error executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a transactional environment (Wrapping)", getStringId(), getNodeName(),
+                logger.error("Error {} executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a transactional environment (Wrapping)", e.getMessage(),
+                        getStringId(), getNodeName(),
                         getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
                 throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
             }

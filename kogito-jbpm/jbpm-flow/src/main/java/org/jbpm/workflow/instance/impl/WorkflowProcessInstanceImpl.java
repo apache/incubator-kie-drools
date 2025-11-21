@@ -681,7 +681,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     public void signalEvent(String type, Object event) {
         logger.debug("Signal {} received with data {} in process instance {}", type, event, getStringId());
         synchronized (this) {
-            if (getState() != KogitoProcessInstance.STATE_ACTIVE) {
+            if (getState() != KogitoProcessInstance.STATE_ACTIVE && getState() != KogitoProcessInstance.STATE_ERROR) {
                 return;
             }
 
