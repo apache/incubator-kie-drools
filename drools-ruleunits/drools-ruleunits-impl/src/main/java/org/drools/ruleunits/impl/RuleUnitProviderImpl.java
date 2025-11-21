@@ -34,6 +34,8 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -69,7 +71,7 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     private static final boolean USE_EXEC_MODEL = true;
 
     private final ConcurrentMap<String, RuleUnit> ruleUnitMap;
-    private final Object generationLock = new Object();
+    private final Lock generationLock = new ReentrantLock();
 
     public RuleUnitProviderImpl() {
         this.ruleUnitMap = new ConcurrentHashMap<>(loadRuleUnits(Thread.currentThread().getContextClassLoader()));
@@ -86,13 +88,16 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         // double-check inside the lock so concurrent cache misses don't re-generate the same unit twice.
         // computeIfAbsent cannot express this because invalidateRuleUnits may remove entries while another thread is computing;
         // we need the whole read-check-generate-publish sequence under one lock.
-        synchronized (generationLock) {
+        generationLock.lock();
+        try {
             ruleUnit = (RuleUnit<T>) ruleUnitMap.get(ruleUnitName);
             if (ruleUnit == null) {
                 Map<String, RuleUnit> generated = generateRuleUnit(ruleUnitData);
                 ruleUnitMap.putAll(generated);
                 ruleUnit = (RuleUnit<T>) generated.get(ruleUnitName);
             }
+        } finally {
+            generationLock.unlock();
         }
         return ruleUnit;
     }
@@ -263,7 +268,8 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     @Override
     public <T extends RuleUnitData> int invalidateRuleUnits(Class<T> ruleUnitDataClass) {
-        synchronized (generationLock) {
+        generationLock.lock();
+        try {
             if (NamedRuleUnitData.class.isAssignableFrom(ruleUnitDataClass)) {
                 // NamedRuleUnitData may create multiple RuleUnits
                 List<String> invalidateKeys = ruleUnitMap.entrySet()
@@ -278,6 +284,8 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
                 RuleUnit remove = ruleUnitMap.remove(ruleUnitName);
                 return remove == null ? 0 : 1;
             }
+        } finally {
+            generationLock.unlock();
         }
     }
 
