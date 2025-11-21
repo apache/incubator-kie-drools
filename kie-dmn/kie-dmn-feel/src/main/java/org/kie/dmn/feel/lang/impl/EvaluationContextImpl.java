@@ -64,7 +64,7 @@ public class EvaluationContextImpl implements EvaluationContext {
      * Creates a new {@code EvaluationContextImpl} instance aligned with the latest DMN specification
      */
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect) {
-        this(cl, eventsManager, 32, feelDialect, DMNVersion.getLatest());
+        this(cl, eventsManager, feelDialect, DMNVersion.getLatest());
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion) {
