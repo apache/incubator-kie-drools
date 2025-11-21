@@ -76,12 +76,16 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     }
 
     @Override
+    @SuppressWarnings("unchecked") // safe because ruleUnitMap keys are the canonical names of their matching RuleUnitData types
     public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
         String ruleUnitName = getRuleUnitName(ruleUnitData);
         RuleUnit<T> ruleUnit = (RuleUnit<T>) ruleUnitMap.get(ruleUnitName);
         if (ruleUnit != null) {
             return ruleUnit;
         }
+        // double-check inside the lock so concurrent cache misses don't re-generate the same unit twice.
+        // computeIfAbsent cannot express this because invalidateRuleUnits may remove entries while another thread is computing;
+        // we need the whole read-check-generate-publish sequence under one lock.
         synchronized (generationLock) {
             ruleUnit = (RuleUnit<T>) ruleUnitMap.get(ruleUnitName);
             if (ruleUnit == null) {
