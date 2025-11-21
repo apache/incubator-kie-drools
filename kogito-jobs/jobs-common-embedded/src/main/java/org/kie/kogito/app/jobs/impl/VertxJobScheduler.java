@@ -354,10 +354,9 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         JobDetails rescheduledJobDetails = JobDetailsHelper.newScheduledJobDetails(jobDescription);
         LOG.trace("doSchedule {}", rescheduledJobDetails);
         fireEvents(rescheduledJobDetails);
-
         jobSchedulerListeners.forEach(l -> l.onReschedule(rescheduledJobDetails));
         jobStore.update(jobContextFactory.newContext(), rescheduledJobDetails);
-        updateTxTimer(rescheduledJobDetails);
+        addOrUpdateTxTimer(rescheduledJobDetails);
 
         return rescheduledJobDetails.getId();
     }
@@ -432,7 +431,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
             case RETRY:
                 LOG.trace("Timeout {} with jobId {} will be updated and scheduled", timerId, jobId);
                 jobStore.update(jobContext, nextJobDetails);
-                doNextSchedule(nextJobDetails);
+                doSchedule(nextJobDetails);
                 break;
             case ERROR:
                 LOG.trace("Timeout {} with jobId {} will be set to error", timerId, jobId);
@@ -446,23 +445,14 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
     }
 
     // add tx timer and remove tx timer
-    private void updateTxTimer(JobDetails jobDetails) {
+    private void addOrUpdateTxTimer(JobDetails jobDetails) {
         this.jobSynchronization.synchronize(new Runnable() {
             @Override
             public void run() {
-                // if the timer info does not exist we should not reschedule as it was executed or cancelled by 
                 jobsScheduled.computeIfPresent(jobDetails.getId(), (jobId, timerInfo) -> {
                     removeTimerInfo(timerInfo);
                     return addTimerInfo(jobDetails);
                 });
-            }
-        });
-    }
-
-    private void addTxTimer(JobDetails jobDetails) {
-        this.jobSynchronization.synchronize(new Runnable() {
-            @Override
-            public void run() {
                 jobsScheduled.computeIfAbsent(jobDetails.getId(), jobId -> {
                     return addTimerInfo(jobDetails);
                 });
@@ -506,15 +496,8 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
     }
 
     // lifecycle calls
-    private JobDetails doNextSchedule(JobDetails jobDetails) {
-        updateTxTimer(jobDetails);
-        LOG.trace("doNextSchedule {}", jobDetails);
-        fireEvents(jobDetails);
-        return jobDetails;
-    }
-
     private JobDetails doSchedule(JobDetails jobDetails) {
-        addTxTimer(jobDetails);
+        addOrUpdateTxTimer(jobDetails);
         LOG.trace("doSchedule {}", jobDetails);
         fireEvents(jobDetails);
         return jobDetails;
