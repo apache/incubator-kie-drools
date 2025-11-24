@@ -36,8 +36,6 @@ public interface ActivationsManager {
     String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
     String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
 
-    ReteEvaluator getReteEvaluator();
-
     AgendaGroupsManager getAgendaGroupsManager();
 
     AgendaEventSupport getAgendaEventSupport();

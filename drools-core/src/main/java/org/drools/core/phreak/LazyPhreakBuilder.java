@@ -1010,8 +1010,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
             if (insert) {
                 TerminalNode rtn = (TerminalNode) node;
                 InternalAgenda agenda = wm.getAgenda();
-                RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem(wm, agenda, rtn, insert);
-                PhreakRuleTerminalNode.doLeftTupleInsert(rtn, agendaItem.getRuleExecutor(), agenda, agendaItem,
+                RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem(wm, rtn, insert);
+                PhreakRuleTerminalNode.doLeftTupleInsert(wm, rtn, agendaItem.getRuleExecutor(), agenda, agendaItem,
                         (RuleTerminalNodeLeftTuple) peer);
             }
             return peer;

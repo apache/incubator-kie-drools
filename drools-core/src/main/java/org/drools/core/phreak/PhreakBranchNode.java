@@ -92,7 +92,7 @@ public class PhreakBranchNode {
                 RuleTerminalNodeLeftTuple branchedLeftTuple = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(leftTuple,
                                                                            rtn,
                                                                            leftTuple.getPropagationContext(), useLeftMemory);
-                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager,
+                PhreakRuleTerminalNode.doLeftTupleInsert( reteEvaluator, rtn, executor, activationsManager,
                                                           executor.getRuleAgendaItem(), branchedLeftTuple) ;
                 breaking = conditionalExecution.isBreaking();
             }
@@ -149,7 +149,7 @@ public class PhreakBranchNode {
 
                 } else if (newRtn == oldRtn) {
                     // old and new on same branch, so update
-                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, activationsManager, branchTuples.rtnLeftTuple) ;
+                    PhreakRuleTerminalNode.doLeftTupleUpdate(reteEvaluator, newRtn, executor, activationsManager, branchTuples.rtnLeftTuple) ;
 
                 } else {
                     // old and new on different branches, delete one and insert the other
@@ -161,7 +161,7 @@ public class PhreakBranchNode {
                     branchTuples.rtnLeftTuple = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(leftTuple,
                                                                              newRtn,
                                                                              leftTuple.getPropagationContext(), true);
-                    PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, activationsManager,
+                    PhreakRuleTerminalNode.doLeftTupleInsert( reteEvaluator, newRtn, executor, activationsManager,
                                                               executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
                 }
 
@@ -169,7 +169,7 @@ public class PhreakBranchNode {
                 // old does not exist, new exists, so insert
                 branchTuples.rtnLeftTuple = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(leftTuple, newRtn,
                                                                          leftTuple.getPropagationContext(), true);
-                PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, activationsManager,
+                PhreakRuleTerminalNode.doLeftTupleInsert( reteEvaluator, newRtn, executor, activationsManager,
                                                           executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
             }
 
