@@ -107,13 +107,7 @@ public abstract class BaseFEELFunction
 
                     return result;
                 } else {
-                    // CandidateMethod cm could be null also if reflection failed on Platforms not supporting
-                    // getClass().getDeclaredMethods()
-                    String ps = getClass().toString();
-                    logger.error("Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) +
-                            " )'");
-                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() +
-                            "( " + ps.substring(1, ps.length() - 1) + " )'", null));
+                    conditionallyManageSFeelInvalidExpressions(ctx);
                 }
             } else {
                 if (isNamedParams) {
@@ -316,7 +310,19 @@ public abstract class BaseFEELFunction
         } else {
             return source;
         }
+    }
 
+    private void conditionallyManageSFeelInvalidExpressions(EvaluationContext ctx) {
+        FEELEvent.Severity severity = ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? FEELEvent.Severity.WARN : FEELEvent.Severity.ERROR;
+        String ps = getClass().toString();
+        if (!ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+            // CandidateMethod cm could be null also if reflection failed on Platforms not supporting
+            // getClass().getDeclaredMethods()
+            logger.error("Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) +
+                                 " )'");
+        }
+        ctx.notifyEvt(() -> new FEELEventBase(severity, "Unable to find function '" + getName() +
+                "( " + ps.substring(1, ps.length() - 1) + " )'", null));
     }
 
     /**

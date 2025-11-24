@@ -16,26 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.util;
+package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 
-public class EvaluationContextTestUtil {
+import java.util.Map;
 
-    private EvaluationContextTestUtil() {
-        // only static methods for util class.
+public class DialectHandlerFactory {
+    private static final Map<FEELDialect, DialectHandler> DIALECT_HANDLERS = Map.of(
+            FEELDialect.FEEL, new FEELDialectHandler(),
+            FEELDialect.BFEEL, new BFEELDialectHandler());
+
+    public static DialectHandler getHandler(EvaluationContext ctx) {
+        if (ctx == null || ctx.getFEELDialect() == null) {
+            return new FEELDialectHandler();
+        }
+        FEELDialect dialect = ctx.getFEELDialect();
+        return DIALECT_HANDLERS.getOrDefault(dialect, new FEELDialectHandler());
     }
 
-    public static EvaluationContext newEmptyEvaluationContext(FEELEventListenersManager mgr) {
-        // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL);
-    }
-
-    public static EvaluationContext newEmptyEvaluationContext() {
-        // Defaulting FEELDialect to FEEL
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
-    }
 }
