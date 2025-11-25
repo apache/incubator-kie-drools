@@ -70,6 +70,7 @@ import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.StreamUtils.optionalToStream;
 
+import org.drools.drl.ast.descr.FromDescr;
 public class ClassPatternDSL extends PatternDSL {
 
     private Class<?> patternType;
@@ -123,6 +124,13 @@ public class ClassPatternDSL extends PatternDSL {
 
         if (pattern.isQuery()) {
             patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
+        } else if (pattern.getSource() instanceof FromDescr fromDescr) {
+            String dataSourceText = fromDescr.getDataSource().getText();
+            boolean isEntryPoint = context.hasEntryPoint(dataSourceText);
+            boolean isRuleUnitVar = context.getRuleUnitVarType(dataSourceText) != null;
+            if (!isEntryPoint && !isRuleUnitVar) {
+                patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
+            }
         }
 
         context.addExpression( addWatchToPattern( patternExpression ) );
