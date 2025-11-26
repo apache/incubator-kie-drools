@@ -96,7 +96,9 @@ public final class OpenApiModelSchemaGenerator {
     }
 
     private static Schema createOutputSchema(Schema schema) {
-        return OASFactory.createSchema().addProperty("workflowdata", schema).addProperty("id", ID_SCHEMA).title(schema.getTitle());
+        String schemaTitle = schema.getTitle();
+        schema.setTitle(schemaTitle + "_workflowdata");
+        return OASFactory.createSchema().addProperty("workflowdata", schema).addProperty("id", ID_SCHEMA).title(schemaTitle);
     }
 
     public static void mergeSchemas(OpenAPI targetSchema, Map<String, Schema> schemas, Map<String, Schema> defsSchemas) {
