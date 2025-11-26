@@ -27,11 +27,11 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -167,8 +167,8 @@ public class AsyncReceiveNode extends LeftTupleSource
         return this.leftInput.getId() != other.leftInput.getId() && this.messageId.equals( other.messageId );
     }
 
-    public AsyncReceiveMemory createMemory( final RuleBaseConfiguration config, ReteEvaluator reteEvaluator ) {
-        return new AsyncReceiveMemory(this, reteEvaluator);
+    public AsyncReceiveMemory createMemory( NodeMemoryFactory nodeMemoryFactory ) {
+        return nodeMemoryFactory.createAsyncReceiveMemory(this);
     }
 
     protected boolean doRemove( final RuleRemovalContext context,

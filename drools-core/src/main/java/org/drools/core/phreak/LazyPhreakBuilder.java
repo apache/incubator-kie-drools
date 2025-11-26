@@ -36,12 +36,12 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaTerminalNode;
@@ -694,7 +694,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
             PathEndNode pathEndNode = pmem.getPathEndNode();
             pathEndNode.resetPathMemSpec(removingTN); // re-initialise the PathMemory
-            AbstractTerminalNode.initPathMemory(pathEndNode, pmem);
+            NodeMemoryFactory.initPathMemory(pathEndNode, pmem);
         }
         return previousSmems;
     }

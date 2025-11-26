@@ -29,10 +29,9 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.RuleComponent;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.AbstractLinkedListNode;
@@ -126,7 +125,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.leftInput.getId() == other.leftInput.getId() && this.condition.equals( other.condition );
     }
 
-    public EvalMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public EvalMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
         return new EvalMemory( this.condition.createContext() );
     }
 

@@ -21,11 +21,10 @@ package org.drools.mvel.compiler.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTuple;
@@ -133,7 +132,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public Memory createMemory(NodeMemoryFactory nodeMemoryFactory) {
         return null;
     }
 

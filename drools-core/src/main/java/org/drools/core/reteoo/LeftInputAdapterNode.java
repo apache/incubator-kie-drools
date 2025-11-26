@@ -31,12 +31,12 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SuperCacheFixer;
@@ -490,7 +490,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    public LiaNodeMemory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public LiaNodeMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
         return new LiaNodeMemory();
     }
 

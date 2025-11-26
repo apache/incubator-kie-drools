@@ -27,12 +27,12 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.QueryArgument;
 import org.drools.base.rule.QueryElement;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -448,7 +448,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     }
 
     @Override
-    public QueryElementNodeMemory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public QueryElementNodeMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
         return new QueryElementNodeMemory(this);
     }
     

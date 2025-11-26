@@ -22,9 +22,8 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.From;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -44,7 +43,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
         super(id, dataProvider, tupleSource, constraints, binder, tupleMemoryEnabled, context, from);
     }
 
-    public ReactiveFromMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public ReactiveFromMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
         BetaMemory beta = new BetaMemory(new TupleList(),
                                          null,
                                          this.betaConstraints.createContext(),

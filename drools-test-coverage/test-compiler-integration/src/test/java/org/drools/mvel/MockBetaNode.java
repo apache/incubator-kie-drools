@@ -18,10 +18,10 @@
  */
 package org.drools.mvel;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -66,7 +66,7 @@ public class MockBetaNode extends BetaNode {
         return 0;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return super.createMemory( config, reteEvaluator);
+    public Memory createMemory(NodeMemoryFactory nodeMemoryFactory) {
+        return super.createMemory( nodeMemoryFactory);
     }
 }

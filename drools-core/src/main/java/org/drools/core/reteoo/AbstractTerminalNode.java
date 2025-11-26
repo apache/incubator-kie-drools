@@ -31,9 +31,8 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.Pattern;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -254,15 +253,8 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return tupleSource.getType() == NodeTypeEnums.FromNode ? tupleSource.getLeftTupleSource() : tupleSource;
     }
 
-    public PathMemory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return initPathMemory( this, new PathMemory(this, reteEvaluator) );
-    }
-
-    public static PathMemory initPathMemory( PathEndNode pathEndNode, PathMemory pmem ) {
-        PathMemSpec pathMemSpec = pathEndNode.getPathMemSpec();
-        pmem.setAllLinkedMaskTest(pathMemSpec.allLinkedTestMask );
-        pmem.setSegmentMemories( new SegmentMemory[pathEndNode.getPathMemSpec().smemCount()] );
-        return pmem;
+    public PathMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
+        return nodeMemoryFactory.createPathMemory(this);
     }
 
     protected boolean doRemove(final RuleRemovalContext context,

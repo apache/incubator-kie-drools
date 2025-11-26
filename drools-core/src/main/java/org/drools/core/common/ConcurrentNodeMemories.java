@@ -36,12 +36,13 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final InternalRuleBase ruleBase;
-    private final ReteEvaluator reteEvaluator;
+
+    private final NodeMemoryFactory nodeMemoryFactory;
 
     public ConcurrentNodeMemories( InternalRuleBase ruleBase, ReteEvaluator reteEvaluator) {
         this.ruleBase = ruleBase;
-        this.reteEvaluator = reteEvaluator;
         this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
+        this.nodeMemoryFactory = new NodeMemoryFactory(ruleBase.getRuleBaseConfiguration(), reteEvaluator);
     }
 
     public void clearNodeMemory( MemoryFactory node ) {
@@ -102,7 +103,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             this.lock.readLock().lock();
             // need to try again in a synchronized code block to make sure
             // it was not created yet
-            Memory memory = node.createMemory( this.ruleBase.getRuleBaseConfiguration(), reteEvaluator );
+            Memory memory = node.createMemory( nodeMemoryFactory );
             return this.memories.compareAndSet( node.getMemoryId(), null, memory ) ?
                     memory :
                     this.memories.get( node.getMemoryId() );
