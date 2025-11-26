@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -70,7 +71,6 @@ import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.StreamUtils.optionalToStream;
 
-import org.drools.drl.ast.descr.FromDescr;
 public class ClassPatternDSL extends PatternDSL {
 
     private Class<?> patternType;
