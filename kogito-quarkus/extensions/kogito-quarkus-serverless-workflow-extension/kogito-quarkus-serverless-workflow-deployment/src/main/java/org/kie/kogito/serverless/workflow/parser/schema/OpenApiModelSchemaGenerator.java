@@ -132,26 +132,31 @@ public final class OpenApiModelSchemaGenerator {
         return id + suffix;
     }
 
+    private final static String PROCESS_PREFIX = "Process - ";
+
     private static void processOperation(Map<String, Schema> schemas, Operation operation) {
         if (operation != null) {
             List<String> tags = operation.getTags();
             if (tags != null) {
                 for (String tag : tags) {
-                    if (operation.getRequestBody() != null) {
-                        Schema schema = schemas.get(getSchemaName(tag, INPUT_SUFFIX));
-                        if (schema != null) {
-                            getMediaTypes(operation.getRequestBody().getContent()).stream().filter(OpenApiModelSchemaGenerator::isInput).forEach(mediaType -> mediaType.setSchema(schema));
+                    if (tag.startsWith(PROCESS_PREFIX)) {
+                        String processName = tag.substring(PROCESS_PREFIX.length());
+                        if (operation.getRequestBody() != null) {
+                            Schema schema = schemas.get(getSchemaName(processName, INPUT_SUFFIX));
+                            if (schema != null) {
+                                getMediaTypes(operation.getRequestBody().getContent()).stream().filter(OpenApiModelSchemaGenerator::isInput).forEach(mediaType -> mediaType.setSchema(schema));
+                            }
                         }
-                    }
-                    if (operation.getResponses() != null && operation.getResponses().getAPIResponses() != null) {
-                        Schema schema = schemas.get(getSchemaName(tag, OUTPUT_SUFFIX));
-                        if (schema != null) {
-                            for (APIResponse response : operation.getResponses().getAPIResponses().values()) {
-                                Content content = response.getContent();
-                                if (content == null) {
-                                    response.setContent(OASFactory.createContent().addMediaType("application/json", OASFactory.createMediaType().schema(schema)));
-                                } else {
-                                    getMediaTypes(content).stream().filter(OpenApiModelSchemaGenerator::isOutput).forEach(mediaType -> mediaType.setSchema(schema));
+                        if (operation.getResponses() != null && operation.getResponses().getAPIResponses() != null) {
+                            Schema schema = schemas.get(getSchemaName(processName, OUTPUT_SUFFIX));
+                            if (schema != null) {
+                                for (APIResponse response : operation.getResponses().getAPIResponses().values()) {
+                                    Content content = response.getContent();
+                                    if (content == null) {
+                                        response.setContent(OASFactory.createContent().addMediaType("application/json", OASFactory.createMediaType().schema(schema)));
+                                    } else {
+                                        getMediaTypes(content).stream().filter(OpenApiModelSchemaGenerator::isOutput).forEach(mediaType -> mediaType.setSchema(schema));
+                                    }
                                 }
                             }
                         }

@@ -46,28 +46,21 @@ public class JsonSchemaImpl extends SchemaImpl {
 
     private Map<String, Schema> defs;
 
-    private List<Schema.SchemaType> type;
-
     @JsonSetter("type")
     public void setType(JsonNode typeNode) {
+        List<Schema.SchemaType> types = new ArrayList<>();
         if (typeNode.isArray()) {
-            List<Schema.SchemaType> types = new ArrayList<>();
             for (JsonNode node : typeNode) {
-                types.add(Schema.SchemaType.valueOf(node.asText().toUpperCase()));
+                types.add(from(node));
             }
-            this.type = types;
         } else if (typeNode.isTextual()) {
-            this.type = new ArrayList<>();
-            this.type.add(Schema.SchemaType.valueOf(typeNode.asText().toUpperCase()));
+            types.add(from(typeNode));
         }
+        super.setType(types);
     }
 
-    public List<Schema.SchemaType> getType() {
-        return type;
-    }
-
-    public void setType(List<Schema.SchemaType> type) {
-        this.type = type;
+    private static SchemaType from(JsonNode node) {
+        return Schema.SchemaType.valueOf(node.asText().toUpperCase());
     }
 
     @JsonSetter("$defs")
