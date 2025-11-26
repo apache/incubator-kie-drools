@@ -19,68 +19,26 @@
     under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-quarkus-bom</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-addons-quarkus-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../bom/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie</groupId>
-  <artifactId>kogito-addons-quarkus-parent</artifactId>
-  <name>Kogito :: Add-Ons :: Quarkus</name>
-  <description>Parent Module for Kogito Quarkus Add-Ons. All add-ons are Quarkus Extensions.</description>
-  <packaging>pom</packaging>
-
+  <groupId>org.apache.kie.sonataflow</groupId>
+  <artifactId>sonataflow-addons-quarkus-jwt-parser-parent</artifactId>
+  <name>SonataFlow :: Add-Ons :: Quarkus :: JWT Parser :: Parent</name>
+  <description>SonataFlow Quarkus JWT Token Parser for Serverless Workflow</description>
   <modules>
-    <module>messaging</module>
-    <module>common</module>
-    <module>rest-exception-handler</module>
-    <module>flyway</module>
-    <module>persistence</module>
-    <module>process-management</module>
-    <module>source-files</module>
-    <module>knative</module>
-    <module>kubernetes</module>
-    <module>events</module>
-    <module>camel</module>
-    <module>fabric8-kubernetes-service-catalog</module>
-    <module>microprofile-config-service-catalog</module>
-    <module>jobs</module>
-    <module>explainability</module>
-    <module>mail</module>
-    <module>monitoring</module>
-    <module>process-svg</module>
-    <module>task-notification</module>
-    <module>task-management</module>
-    <module>marshallers</module>
-    <module>process-definitions</module>
-    <module>dynamic</module>
-    <module>jbpm-usertask-storage-jpa</module>
-    <module>jwt-parser</module>
-    <module>token-exchange</module>
-    <module>process-instance-migration</module>
-    <module>openapi</module>
+    <module>deployment</module>
+    <module>runtime</module>
+    <module>integration-tests</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>full</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>python</module>
-       </modules>
-     </profile>
-  </profiles>
-
+  <packaging>pom</packaging>
   <build>
     <pluginManagement>
       <plugins>
@@ -91,7 +49,6 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.surefire.plugin}</version>
           <configuration>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -102,7 +59,6 @@
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.maven-surefire}</version>
           <configuration>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -114,6 +70,11 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${version.compiler.plugin}</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
