@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,45 +16,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.impl.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+package org.drools.verifier.definition
 
-public class Person {
+declare Person
+    name : String
+    age : Integer
+    address : Address
+end
 
-    private String name;
+declare Address
+    street : String
+    city : String
+    zipCode : String
+end
 
-    private int age;
+declare Vehicle
+    make : String
+    model : String
+    owner : Person
+end
 
-    private List<Address> addresses = new ArrayList<>();
+rule "Adult persons"
+when
+    $p : Person( age >= 18 )
+then
+    System.out.println("Adult: " + $p.getName());
+end
 
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
+rule "City residents"
+when
+    $p : Person( address.city == "New York" )
+then
+    System.out.println("NYC resident: " + $p.getName());
+end
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-}
+rule "Vehicle owners"
+when
+    $v : Vehicle( owner.age > 21 )
+then
+    System.out.println("Vehicle owned by adult: " + $v.getOwner().getName());
+end

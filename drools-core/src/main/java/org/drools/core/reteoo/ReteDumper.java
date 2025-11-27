@@ -203,6 +203,9 @@ public class ReteDumper {
         }
         
         NetworkNode[] sinks = node.getSinks();
+        if (node instanceof RightInputAdapterNode<?> ria) {
+            sinks = new Sink[] { ria.getBetaNode() };
+        }
         if (sinks != null) {
             for (NetworkNode sink : sinks) {
                 BaseNode sinkNode = ( BaseNode ) sink;

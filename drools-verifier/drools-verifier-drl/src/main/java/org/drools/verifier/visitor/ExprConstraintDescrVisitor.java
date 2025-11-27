@@ -88,6 +88,7 @@ public class ExprConstraintDescrVisitor {
     private void createRestriction(int currentOrderNumber, String value, Operator operator) {
         LiteralRestriction restriction = LiteralRestriction.createRestriction(pattern, value);
         restriction.setFieldPath(field.getPath());
+        restriction.setFieldName(field.getName());
         restriction.setPatternIsNot(pattern.isPatternNot());
         restriction.setParentPath(pattern.getPath());
         restriction.setParentType(pattern.getVerifierComponentType());

@@ -34,8 +34,8 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesExistentialReorderLeftMemory;
 import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesExistentialReorderRightMemory;
-import static org.drools.core.phreak.PhreakNodeOperations.doUpdatesReorderLeftMemory;
 import static org.drools.core.phreak.PhreakNodeOperations.findLeftTupleBlocker;
 import static org.drools.core.phreak.PhreakNodeOperations.unlinkAndDeleteChildLeftTuple;
 import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
@@ -80,7 +80,7 @@ public class PhreakNotNode {
 
         if (srcLeftTuples.getUpdateFirst() != null) {
             // must happen before right inserts, so it can find left tuples to block.
-            doUpdatesReorderLeftMemory(bm, srcLeftTuples);
+            doUpdatesExistentialReorderLeftMemory(bm, srcLeftTuples);
         }
 
         if ( srcRightTuples.getUpdateFirst() != null) {

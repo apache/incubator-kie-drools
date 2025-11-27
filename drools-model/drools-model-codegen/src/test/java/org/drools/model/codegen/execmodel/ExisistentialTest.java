@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
+import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -397,5 +398,32 @@ public class ExisistentialTest extends BaseModelTest {
         // therefore both matches should have been removed.
         Assertions.assertThat(matchCount).hasValue(0);
         // Yet only one was removed.
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    void joinFromExistsNot(RUN_TYPE runType) {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import " + Address.class.getCanonicalName() + ";\n" +
+                        """
+                                rule R1
+                                when
+                                    String()
+                                    $person: Person()
+                                    exists Address(number > 18) from $person.addresses
+                                    not Integer()
+                                then
+                                end
+                                """;
+
+        KieSession ksession = getKieSession(runType, drl);
+
+        ksession.insert("test");
+        Person person = new Person();
+        Address address = new Address("ABC st.", 20, "London");
+        person.getAddresses().add(address);
+        ksession.insert(person);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

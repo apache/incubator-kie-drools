@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,45 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.impl.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+package org.drools.verifier.definition
 
-public class Person {
+declare Person
+    name : String
+    age : Integer
+end
 
-    private String name;
+declare Vehicle
+    make : String
+    model : String
+end
 
-    private int age;
+rule "Person with undefined field"
+when
+    $p : Person( name != null, age > 18, salary > 50000 )  // salary not defined
+then
+    System.out.println("Person: " + $p.getName());
+end
 
-    private List<Address> addresses = new ArrayList<>();
+rule "Vehicle with undefined fields"
+when
+    $v : Vehicle( make == "Toyota", year > 2020, owner.age > 25 )  // year and owner not defined
+then
+    System.out.println("Vehicle: " + $v.getMake());
+end
 
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-}
+rule "Multiple undefined fields"
+when
+    $p : Person( department == "IT", experience > 5 )  // department and experience not defined
+then
+    System.out.println("Employee: " + $p.getName());
+end

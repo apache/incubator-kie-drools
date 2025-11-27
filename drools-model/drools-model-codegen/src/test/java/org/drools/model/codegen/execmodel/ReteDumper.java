@@ -25,13 +25,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import org.drools.core.common.BaseNode;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.Sink;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -101,6 +103,9 @@ public class ReteDumper {
         } else if (node instanceof LeftTupleSource ) {
             LeftTupleSource source = (LeftTupleSource) node;
             sinks = source.getSinkPropagator().getSinks();
+        } else if (node instanceof RightInputAdapterNode<?> ria) {
+            BetaNode betaNode = ria.getBetaNode();
+            sinks = new Sink[] { betaNode };
         }
         return sinks;
     }

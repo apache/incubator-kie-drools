@@ -16,45 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.impl.domain;
+package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 
-public class Person {
+import java.util.Map;
 
-    private String name;
+public class DialectHandlerFactory {
+    private static final Map<FEELDialect, DialectHandler> DIALECT_HANDLERS = Map.of(
+            FEELDialect.FEEL, new FEELDialectHandler(),
+            FEELDialect.BFEEL, new BFEELDialectHandler());
 
-    private int age;
-
-    private List<Address> addresses = new ArrayList<>();
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public static DialectHandler getHandler(EvaluationContext ctx) {
+        if (ctx == null || ctx.getFEELDialect() == null) {
+            return new FEELDialectHandler();
+        }
+        FEELDialect dialect = ctx.getFEELDialect();
+        return DIALECT_HANDLERS.getOrDefault(dialect, new FEELDialectHandler());
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
 }
