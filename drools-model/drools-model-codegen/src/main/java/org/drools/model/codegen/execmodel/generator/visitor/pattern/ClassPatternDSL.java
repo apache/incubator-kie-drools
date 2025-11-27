@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -123,6 +124,13 @@ public class ClassPatternDSL extends PatternDSL {
 
         if (pattern.isQuery()) {
             patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
+        } else if (pattern.getSource() instanceof FromDescr fromDescr) {
+            String dataSourceText = fromDescr.getDataSource().getText();
+            boolean isEntryPoint = context.hasEntryPoint(dataSourceText);
+            boolean isRuleUnitVar = context.getRuleUnitVarType(dataSourceText) != null;
+            if (!isEntryPoint && !isRuleUnitVar) {
+                patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
+            }
         }
 
         context.addExpression( addWatchToPattern( patternExpression ) );

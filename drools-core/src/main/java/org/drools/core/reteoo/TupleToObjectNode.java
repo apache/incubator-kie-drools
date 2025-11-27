@@ -264,9 +264,7 @@ public class TupleToObjectNode extends ObjectSource
 
     @Override
     public String toString() {
-        return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" +
-                tupleSource + ", source=" + source + ", associations=" + associations + ", partitionId=" + partitionId +
-                "]";
+        return "[TupleToObjectNode(" + id + ")]";
     }
 
     public LeftTupleSource getLeftTupleSource() {
