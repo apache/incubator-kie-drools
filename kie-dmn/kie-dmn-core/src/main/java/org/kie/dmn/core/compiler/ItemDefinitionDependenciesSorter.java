@@ -91,12 +91,12 @@ public class ItemDefinitionDependenciesSorter {
     private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
         QName typeRef = retrieveTypeRef(o1, dmnVersion);
         return (typeRef != null)
-                ? extFastEqUsingNSPrefix(o1, typeRef, qname2)
+                ? matchesQNameUsingNamespacePrefixes(o1, typeRef, qname2)
                 : o1.getItemComponent().stream()
                 .anyMatch(component -> recurseFind(component, qname2, dmnVersion));
     }
     
-    private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName typeRef, QName qname2) {
+    private static boolean matchesQNameUsingNamespacePrefixes(ItemDefinition o1, QName typeRef, QName qname2) {
         if (typeRef.equals(qname2)) {
             return true;
         }
@@ -121,7 +121,7 @@ public class ItemDefinitionDependenciesSorter {
 
     private static boolean directFind(ItemDefinition o1, QName qname2) {
         if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, o1.getTypeRef(), qname2);
+            return matchesQNameUsingNamespacePrefixes(o1, o1.getTypeRef(), qname2);
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
             if ( ic.getTypeRef() == null ) {
