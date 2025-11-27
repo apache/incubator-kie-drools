@@ -18,43 +18,48 @@
  */
 package org.drools.ruleunits.impl.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Address {
 
-public class Person {
+    private String street;
+    private int number;
+    private String city;
 
-    private String name;
-
-    private int age;
-
-    private List<Address> addresses = new ArrayList<>();
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public Address() {
+        this("", 0, "");
     }
 
-    public String getName() {
-        return name;
+    public Address(String city) {
+        this("", 0, city);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Address(final String street, final int number, final String city) {
+        super();
+        this.street = street;
+        this.number = number;
+        this.city = city;
     }
 
-    public int getAge() {
-        return age;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setStreet(final String street) {
+        this.street = street;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public int getNumber() {
+        return number;
     }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public void setNumber(final int number) {
+        this.number = number;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(final String city) {
+        this.city = city;
     }
 }
