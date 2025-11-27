@@ -95,12 +95,10 @@ public class ItemDefinitionDependenciesSorter {
         if (typeRef.equals(qname2)) {
             return true;
         }
-        if (typeRef.getLocalPart().equals(qname2.getLocalPart())) {
+        if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
             if (typeRef.getNamespaceURI().isEmpty() || qname2.getNamespaceURI().isEmpty() || typeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
                 return true;
             }
-        }
-        if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
             for (String nsKey : o1.recurseNsKeys()) {
                 String ns = o1.getNamespaceURI(nsKey);
                 if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
