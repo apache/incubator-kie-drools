@@ -24,9 +24,10 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.infixexecutors.GteExecutor;
 import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
+import org.kie.dmn.feel.lang.ast.infixexecutors.LteExecutor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class BetweenNode
@@ -89,7 +90,8 @@ public class BetweenNode
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")));
             problem = true;
         }
-        if (problem) return null;
+        if (problem)
+            return null;
 
         Object o_val = value.evaluate(ctx);
         Object o_s = start.evaluate(ctx);
@@ -107,18 +109,27 @@ public class BetweenNode
             ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "end")));
             problem = true;
         }
-        if (problem && ctx.getFEELDialect() != FEELDialect.BFEEL) return null;
+        if (problem && ctx.getFEELDialect() != FEELDialect.BFEEL)
+            return null;
 
-        Object gte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_s, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) > 0),
-                                           BooleanEvalHelper.isEqual(o_val, o_s, ctx.getFEELDialect()),
-                                           ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        /*
+         * Object gte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_s, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) > 0),
+         * BooleanEvalHelper.isEqual(o_val, o_s, ctx.getFEELDialect()),
+         * ctx);
+         */ // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        Object gte = GteExecutor.instance().evaluate(o_val, o_s, ctx);
+
         if (gte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")));
         }
 
-        Object lte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_e, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
-                BooleanEvalHelper.isEqual(o_val, o_e, ctx.getFEELDialect()),
-                ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        /*
+         * Object lte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_e, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
+         * BooleanEvalHelper.isEqual(o_val, o_e, ctx.getFEELDialect()),
+         * ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+         */
+        Object lte = LteExecutor.instance().evaluate(o_val, o_e, ctx);
+
         if (lte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")));
         }
@@ -133,7 +144,7 @@ public class BetweenNode
 
     @Override
     public ASTNode[] getChildrenNode() {
-        return new ASTNode[]{value, start, end};
+        return new ASTNode[] { value, start, end };
     }
 
     @Override
