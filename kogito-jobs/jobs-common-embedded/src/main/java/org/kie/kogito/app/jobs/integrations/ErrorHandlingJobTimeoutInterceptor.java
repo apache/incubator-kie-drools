@@ -50,7 +50,8 @@ public class ErrorHandlingJobTimeoutInterceptor implements JobTimeoutInterceptor
             @Override
             public JobTimeoutExecution call() throws Exception {
                 JobTimeoutExecution execution = callable.call();
-                if (execution.getJobDetails() != null && JobStatus.ERROR.equals(execution.getJobDetails().getStatus())) {
+                if (execution.getJobDetails() != null
+                        && (JobStatus.ERROR.equals(execution.getJobDetails().getStatus()) || (JobStatus.RETRY.equals(execution.getJobDetails().getStatus()) && execution.getException() != null))) {
                     if (exceptionHandlers.isEmpty()) {
                         LOG.warn("there was an error in job {} but not handler were registered", execution.getJobDetails());
                     } else {
