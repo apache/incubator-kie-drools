@@ -21,10 +21,11 @@ package org.kie.dmn.core.compiler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.api.core.DMNVersion;
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 
 public class ItemDefinitionDependenciesSorter {
@@ -38,7 +39,7 @@ public class ItemDefinitionDependenciesSorter {
     /**
      * Return a new list of ItemDefinition sorted by dependencies (required dependencies comes first)
      */
-    public List<ItemDefinition> sort(List<ItemDefinition> ins) {
+    public List<ItemDefinition> sort(List<ItemDefinition> ins, DMNVersion dmnVersion) {
         // In a graph A -> B -> {C, D}
         // showing that A requires B, and B requires C,D
         // then a depth-first visit would satisfy required ordering, for example a valid depth first visit is also a valid sort here: C, D, B, A.
@@ -47,7 +48,7 @@ public class ItemDefinitionDependenciesSorter {
 
         for (ItemDefinition node : ins) {
             if (!visited.contains(node)) {
-                dfVisit(node, ins, visited, dfv);
+                dfVisit(node, ins, visited, dfv, dmnVersion);
             }
         }
 
@@ -57,27 +58,33 @@ public class ItemDefinitionDependenciesSorter {
     /**
      * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
      */
-    private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv) {
+    private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv, DMNVersion dmnVersion) {
         visited.add(node);
         List<ItemDefinition> neighbours = allNodes.stream()
                                                   .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
-                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()))) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
-                                                  .collect(Collectors.toList());
+                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()), dmnVersion)) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
+                                                  .toList();
         for (ItemDefinition n : neighbours) {
             if (!visited.contains(n)) {
-                dfVisit(n, allNodes, visited, dfv);
+                dfVisit(n, allNodes, visited, dfv, dmnVersion);
             }
         }
 
         dfv.add(node);
     }
     
-    private static boolean recurseFind(ItemDefinition o1, QName qname2) {
+    private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
         if ( o1.getTypeRef() != null ) {
             return extFastEqUsingNSPrefix(o1, qname2);
         }
+        if (dmnVersion != null && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
+            FunctionItem fi = o1.getFunctionItem();
+            if (fi != null && fi.getOutputTypeRef() != null) {
+                return matchesFunctionOutputType(o1, qname2);
+            }
+        }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
-            if ( recurseFind(ic, qname2) ) {
+            if ( recurseFind(ic, qname2, dmnVersion) ) {
                 return true;
             }
         }
@@ -120,8 +127,34 @@ public class ItemDefinitionDependenciesSorter {
         }
         return false;
     }
-    
-    public static void displayDependencies(List<ItemDefinition> ins, String namespaceURI) {
+
+    private static boolean matchesFunctionOutputType(ItemDefinition o1, QName qname2) {
+        QName outputTypeRef = o1.getFunctionItem().getOutputTypeRef();
+        if (outputTypeRef.equals(qname2)) {
+            return true;
+        }
+        if (outputTypeRef.getLocalPart().equals(qname2.getLocalPart())) {
+            if (outputTypeRef.getNamespaceURI().isEmpty() || qname2.getNamespaceURI().isEmpty() || outputTypeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
+                return true;
+            }
+        }
+        if (o1.getFunctionItem().getOutputTypeRef().getLocalPart().endsWith(qname2.getLocalPart())) {
+            for (String nsKey : o1.recurseNsKeys()) {
+                String ns = o1.getNamespaceURI(nsKey);
+                if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
+                    continue;
+                }
+                String prefix = nsKey + ".";
+                if (o1.getFunctionItem().getOutputTypeRef().getLocalPart().startsWith(prefix) &&
+                        o1.getFunctionItem().getOutputTypeRef().getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void displayDependencies(List<ItemDefinition> ins, String namespaceURI, DMNVersion dmnVersion) {
         for ( ItemDefinition in : ins ) {
             System.out.println(in.getName());
             List<ItemDefinition> others = new ArrayList<>(ins);
@@ -130,7 +163,7 @@ public class ItemDefinitionDependenciesSorter {
                 QName otherQName = new QName(namespaceURI, other.getName());
                 if ( directFind(in, otherQName) ) {
                     System.out.println(" direct depends on: "+other.getName());
-                } else if ( recurseFind(in, otherQName) ) {
+                } else if ( recurseFind(in, otherQName, dmnVersion) ) {
                     System.out.println(" indir. depends on: "+other.getName());
                 }
             }

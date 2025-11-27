@@ -24,8 +24,9 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.model.v1_1.TItemDefinition;
+import org.kie.dmn.model.v1_6.TItemDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,7 +52,7 @@ class ItemDefinitionDependenciesTest {
     }
 
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
-        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
+        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.V1_2);
     }
 
     @Test
