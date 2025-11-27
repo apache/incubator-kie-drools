@@ -174,7 +174,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
     }
 
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
-        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.V1_4);
+        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.getLatest());
     }
 
     @MethodSource("generateParameters")

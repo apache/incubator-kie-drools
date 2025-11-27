@@ -38,27 +38,29 @@ public class ItemDefinitionDependenciesSorter {
     
     /**
      * Return a new list of ItemDefinition sorted by dependencies (required dependencies comes first)
+     * @param itemDefinitions list of ItemDefinitions available in the model
+     * @param dmnVersion version of dmn in the current model
      */
-    public List<ItemDefinition> sort(List<ItemDefinition> ins, DMNVersion dmnVersion) {
+    public List<ItemDefinition> sort(List<ItemDefinition> itemDefinitions, DMNVersion dmnVersion) {
         // In a graph A -> B -> {C, D}
         // showing that A requires B, and B requires C,D
         // then a depth-first visit would satisfy required ordering, for example a valid depth first visit is also a valid sort here: C, D, B, A.
-        Collection<ItemDefinition> visited = new ArrayList<>(ins.size());
-        List<ItemDefinition> dfv = new ArrayList<>(ins.size());
+        Collection<ItemDefinition> visited = new ArrayList<>(itemDefinitions.size());
+        List<ItemDefinition> sortedItemDefinitions = new ArrayList<>(itemDefinitions.size());
 
-        for (ItemDefinition node : ins) {
+        for (ItemDefinition node : itemDefinitions) {
             if (!visited.contains(node)) {
-                dfVisit(node, ins, visited, dfv, dmnVersion);
+                populateSortedItemDefinitions(node, itemDefinitions, visited, sortedItemDefinitions, dmnVersion);
             }
         }
 
-        return dfv;
+        return sortedItemDefinitions;
     }
         
     /**
      * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
      */
-    private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv, DMNVersion dmnVersion) {
+    private void populateSortedItemDefinitions(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> sortedItemDefinitions, DMNVersion dmnVersion) {
         visited.add(node);
         List<ItemDefinition> neighbours = allNodes.stream()
                                                   .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
@@ -66,29 +68,32 @@ public class ItemDefinitionDependenciesSorter {
                                                   .toList();
         for (ItemDefinition n : neighbours) {
             if (!visited.contains(n)) {
-                dfVisit(n, allNodes, visited, dfv, dmnVersion);
+                populateSortedItemDefinitions(n, allNodes, visited, sortedItemDefinitions, dmnVersion);
             }
         }
 
-        dfv.add(node);
+        sortedItemDefinitions.add(node);
     }
-    
-    private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
+
+    static QName retrieveTypeRef(ItemDefinition o1, DMNVersion dmnVersion) {
         if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, o1.getTypeRef(), qname2);
+            return o1.getTypeRef();
         }
         if (dmnVersion != null && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
             FunctionItem fi = o1.getFunctionItem();
             if (fi != null && fi.getOutputTypeRef() != null) {
-                return extFastEqUsingNSPrefix(o1, o1.getFunctionItem().getOutputTypeRef(), qname2);
+                return fi.getOutputTypeRef();
             }
         }
-        for ( ItemDefinition ic : o1.getItemComponent() ) {
-            if ( recurseFind(ic, qname2, dmnVersion) ) {
-                return true;
-            }
-        }
-        return false;
+        return null;
+    }
+    
+    private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
+        QName typeRef = retrieveTypeRef(o1, dmnVersion);
+        return (typeRef != null)
+                ? extFastEqUsingNSPrefix(o1, typeRef, qname2)
+                : o1.getItemComponent().stream()
+                .anyMatch(component -> recurseFind(component, qname2, dmnVersion));
     }
     
     private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName typeRef, QName qname2) {
@@ -96,7 +101,7 @@ public class ItemDefinitionDependenciesSorter {
             return true;
         }
         if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
-            if (typeRef.getNamespaceURI().isEmpty() || qname2.getNamespaceURI().isEmpty() || typeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
+            if (typeRef.getNamespaceURI().isEmpty() || typeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
                 return true;
             }
             for (String nsKey : o1.recurseNsKeys()) {

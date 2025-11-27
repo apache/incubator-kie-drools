@@ -25,11 +25,13 @@ import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNVersion;
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.v1_6.TFunctionItem;
 import org.kie.dmn.model.v1_6.TItemDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.kie.dmn.core.compiler.ItemDefinitionDependenciesSorter.retrieveTypeRef;
 
 class ItemDefinitionDependenciesTest {
     
@@ -52,7 +54,7 @@ class ItemDefinitionDependenciesTest {
     }
 
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
-        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.V1_2);
+        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.getLatest());
     }
 
     @Test
@@ -60,13 +62,13 @@ class ItemDefinitionDependenciesTest {
         final ItemDefinition a = build("a");
         
         final ItemDefinition b = build("b");
-        
+
         final ItemDefinition c = build("c", a, b);
-        
+
         final ItemDefinition d = build("d", c);
         
         final List<ItemDefinition> originalList = Arrays.asList(d, c, b, a);
-        
+
         final List<ItemDefinition> orderedList = orderingStrategy(originalList);
 
         assertThat(orderedList.subList(0, 2)).contains(a,b);
@@ -228,4 +230,53 @@ class ItemDefinitionDependenciesTest {
         assertThat(orderedList.subList(0, 2)).contains(fhirAge, fhirExtension);
         assertThat(orderedList.subList(2, 3)).contains(fhirT1);
     }
+
+    @Test
+    void testTypeRefWhenPresent() {
+        QName expected = new QName("ns", "date");
+        ItemDefinition item = new TItemDefinition();
+        item.setTypeRef(expected);
+
+        QName result = retrieveTypeRef(item, DMNVersion.V1_2);
+        assertThat(expected).isEqualTo(result);
+    }
+
+    @Test
+    void testTypeRefNull() {
+        ItemDefinition item = new TItemDefinition();
+
+        QName result = retrieveTypeRef(item, DMNVersion.V1_2);
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void testRetrieveTypeRef_dmnVersionNull() {
+        ItemDefinition item = new TItemDefinition();
+
+        QName result = retrieveTypeRef(item, null);
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void testRetrieveTypeRefFromFunctionItem() {
+        ItemDefinition id = new TItemDefinition();
+        FunctionItem fi = new TFunctionItem();
+        QName type = new QName("ns", "date");
+        fi.setOutputTypeRef(type);
+        id.setFunctionItem(fi);
+        QName result = retrieveTypeRef(id, DMNVersion.V1_3);
+        assertThat(type).isEqualTo(result);
+    }
+
+    @Test
+    void retrieveTypeRef_withUnsupportedDMNVersion() {
+        ItemDefinition id = new TItemDefinition();
+        FunctionItem fi = new TFunctionItem();
+        QName type = new QName("ns", "date");
+        fi.setOutputTypeRef(type);
+        id.setFunctionItem(fi);
+        QName result = retrieveTypeRef(id, DMNVersion.V1_2);
+        assertThat(result).isNull();
+    }
+
 }
