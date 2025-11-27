@@ -75,12 +75,12 @@ public class ItemDefinitionDependenciesSorter {
     
     private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
         if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, qname2);
+            return extFastEqUsingNSPrefix(o1, o1.getTypeRef(), qname2);
         }
         if (dmnVersion != null && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
             FunctionItem fi = o1.getFunctionItem();
             if (fi != null && fi.getOutputTypeRef() != null) {
-                return matchesFunctionOutputType(o1, qname2);
+                return extFastEqUsingNSPrefix(o1, o1.getFunctionItem().getOutputTypeRef(), qname2);
             }
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
@@ -91,19 +91,24 @@ public class ItemDefinitionDependenciesSorter {
         return false;
     }
     
-    private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName qname2) {
-        if (o1.getTypeRef().equals(qname2)) {
+    private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName typeRef, QName qname2) {
+        if (typeRef.equals(qname2)) {
             return true;
         }
-        if (o1.getTypeRef().getLocalPart().endsWith(qname2.getLocalPart())) {
+        if (typeRef.getLocalPart().equals(qname2.getLocalPart())) {
+            if (typeRef.getNamespaceURI().isEmpty() || qname2.getNamespaceURI().isEmpty() || typeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
+                return true;
+            }
+        }
+        if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
             for (String nsKey : o1.recurseNsKeys()) {
                 String ns = o1.getNamespaceURI(nsKey);
                 if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
                     continue;
                 }
                 String prefix = nsKey + ".";
-                if (o1.getTypeRef().getLocalPart().startsWith(prefix) &&
-                    o1.getTypeRef().getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
+                if (typeRef.getLocalPart().startsWith(prefix) &&
+                        typeRef.getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
                     return true;
                 }
             }
@@ -113,7 +118,7 @@ public class ItemDefinitionDependenciesSorter {
 
     private static boolean directFind(ItemDefinition o1, QName qname2) {
         if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, qname2);
+            return extFastEqUsingNSPrefix(o1, o1.getTypeRef(), qname2);
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
             if ( ic.getTypeRef() == null ) {
@@ -123,32 +128,6 @@ public class ItemDefinitionDependenciesSorter {
                 }
             } else if ( ic.getTypeRef().equals(qname2) ) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean matchesFunctionOutputType(ItemDefinition o1, QName qname2) {
-        QName outputTypeRef = o1.getFunctionItem().getOutputTypeRef();
-        if (outputTypeRef.equals(qname2)) {
-            return true;
-        }
-        if (outputTypeRef.getLocalPart().equals(qname2.getLocalPart())) {
-            if (outputTypeRef.getNamespaceURI().isEmpty() || qname2.getNamespaceURI().isEmpty() || outputTypeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
-                return true;
-            }
-        }
-        if (o1.getFunctionItem().getOutputTypeRef().getLocalPart().endsWith(qname2.getLocalPart())) {
-            for (String nsKey : o1.recurseNsKeys()) {
-                String ns = o1.getNamespaceURI(nsKey);
-                if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
-                    continue;
-                }
-                String prefix = nsKey + ".";
-                if (o1.getFunctionItem().getOutputTypeRef().getLocalPart().startsWith(prefix) &&
-                        o1.getFunctionItem().getOutputTypeRef().getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
-                    return true;
-                }
             }
         }
         return false;
