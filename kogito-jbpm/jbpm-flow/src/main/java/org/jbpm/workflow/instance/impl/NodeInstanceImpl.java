@@ -265,17 +265,23 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 captureError(e);
             } else {
                 // Checking if the exception has been already wrapped by the actual node instance to avoid unnecessary wrappings.
-                if (e instanceof ProcessInstanceExecutionException executionException && getId().equals(executionException.getFailedNodeInstanceId())) {
-                    logger.debug("Exception already wrapped by node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}')... propagating exception.", getStringId(),
-                            getNodeName(),
-                            getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
-                    throw executionException;
+                if (e instanceof ProcessInstanceExecutionException executionException) {
+                    wrapException(executionException);
                 }
                 logger.error("Error {} executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a transactional environment (Wrapping)", e.getMessage(),
                         getStringId(), getNodeName(),
                         getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
                 throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
             }
+        }
+    }
+
+    protected void wrapException(ProcessInstanceExecutionException executionException) {
+        if (getId().equals(executionException.getFailedNodeInstanceId())) {
+            logger.debug("Exception already wrapped by node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}')... propagating exception.", getStringId(),
+                    getNodeName(),
+                    getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+            throw executionException;
         }
     }
 

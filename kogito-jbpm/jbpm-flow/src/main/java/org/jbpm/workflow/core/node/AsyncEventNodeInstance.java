@@ -37,6 +37,7 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.TimerDescription;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.services.uow.BaseWorkUnit;
 import org.kie.kogito.timer.TimerInstance;
 import org.kie.kogito.uow.WorkUnit;
@@ -194,5 +195,13 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
         //trigger the actual node
         triggerNodeInstance((org.jbpm.workflow.instance.NodeInstance) actualInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         clearAsyncStatus();
+    }
+
+    @Override
+    protected void wrapException(ProcessInstanceExecutionException executionException) {
+        logger.debug("Exception already wrapped by node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}')... propagating exception.", getStringId(),
+                getNodeName(),
+                getNodeDefinitionId(), getProcessInstance().getId(), getProcessInstance().getProcessId());
+        throw executionException;
     }
 }
