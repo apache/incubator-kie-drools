@@ -79,7 +79,7 @@ public class ItemDefinitionDependenciesSorter {
         if ( o1.getTypeRef() != null ) {
             return o1.getTypeRef();
         }
-        if (dmnVersion != null && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
+        if (dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
             FunctionItem fi = o1.getFunctionItem();
             if (fi != null && fi.getOutputTypeRef() != null) {
                 return fi.getOutputTypeRef();

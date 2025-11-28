@@ -250,14 +250,6 @@ class ItemDefinitionDependenciesTest {
     }
 
     @Test
-    void testRetrieveTypeRef_dmnVersionNull() {
-        ItemDefinition item = new TItemDefinition();
-
-        QName result = retrieveTypeRef(item, null);
-        assertThat(result).isNull();
-    }
-
-    @Test
     void testRetrieveTypeRefFromFunctionItem() {
         ItemDefinition id = new TItemDefinition();
         FunctionItem fi = new TFunctionItem();
