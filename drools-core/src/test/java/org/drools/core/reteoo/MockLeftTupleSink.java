@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NodeMemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 
@@ -62,7 +63,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void ruleAttached() {
     }
 
-    public Memory createMemory(NodeMemoryFactory nodeMemoryFactory) {
+    public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return new PathMemory(null, null);
     }
 

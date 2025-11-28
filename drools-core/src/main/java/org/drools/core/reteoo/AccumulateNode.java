@@ -36,10 +36,10 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
-import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
@@ -184,8 +184,15 @@ public class AccumulateNode extends BetaNode {
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Memory createMemory(NodeMemoryFactory nodeMemoryFactory) {
-        return nodeMemoryFactory.createAccumulateMemory(constraints, this);
+    public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+        BetaMemory betaMemory = this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
+        AccumulateMemory memory = this.accumulate.isMultiFunction() ?
+                                  new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
+                                  new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
+
+        memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
+        memory.resultsContext = this.resultBinder.createContext();
+        return memory;
     }
 
     public static abstract class AccumulateMemory extends AbstractLinkedListNode<Memory>

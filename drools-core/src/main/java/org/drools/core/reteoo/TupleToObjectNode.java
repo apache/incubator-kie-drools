@@ -25,9 +25,9 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
@@ -180,8 +180,9 @@ public class TupleToObjectNode extends ObjectSource
     /**
      * Creates and return the node memory
      */
-    public SubnetworkPathMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
-        return nodeMemoryFactory.createSubnetworkPathMemory(this);
+    public SubnetworkPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+        return (SubnetworkPathMemory) AbstractTerminalNode.initPathMemory(this, new SubnetworkPathMemory(this,
+                reteEvaluator));
     }
 
     public void doAttach(BuildContext context) {

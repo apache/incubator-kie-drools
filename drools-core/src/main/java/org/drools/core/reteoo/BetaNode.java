@@ -29,6 +29,7 @@ import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.util.index.IndexUtil;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DoubleBetaConstraints;
@@ -36,7 +37,6 @@ import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
@@ -332,8 +332,8 @@ public abstract class BetaNode extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
-    public Memory createMemory(NodeMemoryFactory nodeMemoryFactory) {
-        return nodeMemoryFactory.createBetaMemory(constraints, this);
+    public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+        return (Memory) constraints.createBetaMemory(config, getType());
     }
 
     public String toString() {

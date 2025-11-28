@@ -25,9 +25,10 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.time.impl.Timer;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NodeMemoryFactory;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.AbstractLinkedListNode;
@@ -148,7 +149,7 @@ public class TimerNode extends LeftTupleSource
                 this.timer.equals(other.timer);
     }
 
-    public TimerNodeMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
+    public TimerNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return new TimerNodeMemory();
     }
 

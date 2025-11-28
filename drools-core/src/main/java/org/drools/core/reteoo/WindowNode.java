@@ -28,12 +28,12 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
@@ -233,7 +233,7 @@ public class WindowNode extends ObjectSource
     /**
      * Creates the WindowNode's memory.
      */
-    public WindowMemory createMemory(NodeMemoryFactory nodeMemoryFactory) {
+    public WindowMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         WindowMemory memory = new WindowMemory();
         memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;

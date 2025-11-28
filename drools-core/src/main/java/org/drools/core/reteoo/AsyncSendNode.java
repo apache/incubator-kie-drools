@@ -27,12 +27,12 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncSend;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NodeMemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
@@ -168,7 +168,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         return objectTypeConf;
     }
 
-    public T createMemory(NodeMemoryFactory nodeMemoryFactory) {
+    public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         BetaMemory beta = new BetaMemory(new TupleList(),
                                          null,
                                          this.betaConstraints.createContext(),
