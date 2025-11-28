@@ -29,8 +29,9 @@ import javax.xml.namespace.QName;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.model.v1_1.TItemDefinition;
+import org.kie.dmn.model.v1_6.TItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,7 +174,7 @@ public class ItemDefinitionDependenciesGeneratedTest {
     }
 
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
-        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
+        return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins, DMNVersion.getLatest());
     }
 
     @MethodSource("generateParameters")
