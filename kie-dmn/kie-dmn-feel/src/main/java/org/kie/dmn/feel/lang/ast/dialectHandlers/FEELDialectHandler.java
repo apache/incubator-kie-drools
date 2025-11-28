@@ -95,15 +95,6 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        // Shortcut: null = null → true
-        //        map.put(
-        //                new CheckedPredicate((left, right) -> left == null && right == null, false),
-        //                (left, right) -> Boolean.TRUE);
-        //        map.put(
-        //                new CheckedPredicate((left, right) -> true, false),
-        //                (left, right) -> BooleanEvalHelper.isEqual(left, right,
-        //                        () -> Boolean.FALSE, () -> Boolean.FALSE));
-
         map.put(
                 new CheckedPredicate((left, right) -> left == null && right == null, false),
                 (left, right) -> Boolean.TRUE);
@@ -233,7 +224,6 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
                     return Boolean.TRUE; // null + true → true
                 });
 
-        // Fall back to common < operations
         map.putAll(getCommonLtOperations(ctx));
         return map;
     }

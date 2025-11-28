@@ -124,7 +124,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 new CheckedPredicate((left, right) -> left instanceof Boolean && Boolean.FALSE.equals(left), false),
                 (left, right) -> Boolean.FALSE);
 
-        // dialect BFEEL and left not Boolean → treat as false
+        // left not Boolean → treat as false
         map.put(
                 new CheckedPredicate((left, right) -> !(left instanceof Boolean) && dialect.equals(FEELDialect.BFEEL), false),
                 (left, right) -> Boolean.FALSE);
@@ -169,37 +169,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     }
 
     /**
-     * Builds the common 'Equal' operation map used by the dialect handlers.
-     * 
-     * @param ctx : Current Evaluation context
-     * @return : a Map of CheckedPredicate to BiFunction representing the common 'Equal' operations
-     */
-    /*
-     * Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonEqualOperations(EvaluationContext ctx) {
-     * Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-     *
-     * map.put(
-     * new CheckedPredicate((left, right) -> true, false),
-     * (left, right) -> BooleanEvalHelper.isEqual(left, right,
-     * () -> null, // default FEEL semantics
-     * () -> null));
-     * return map;
-     * }
-     */
-
-    //    Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonEqualOperations(EvaluationContext ctx) {
-    //        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-    //        map.put(
-    //                new CheckedPredicate((left, right) -> left == null && right == null, false),
-    //                (left, right) -> Boolean.TRUE);
-    //        map.put(
-    //                new CheckedPredicate((left, right) -> true, false),
-    //                (left, right) -> BooleanEvalHelper.isEqual(left, right,
-    //                        () -> Boolean.FALSE, () -> null));
-    //        return map;
-    //    }
-
-    /**
      * Builds the common 'Greater than Or EqualTo' operation map used by the dialect handlers.
      * 
      * @param ctx : Current Evaluation context
@@ -209,12 +178,12 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
 
-        // Predicate 0: left or right is null → null
+        // left or right is null → null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> null);
 
-        // Predicate 1: both results are Boolean
+        // both results are Boolean
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Boolean && right instanceof Boolean, false),
                 (left, right) -> {
@@ -223,7 +192,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     return leftBool || rightBool;
                 });
 
-        // Final predicate: numeric/comparable >= logic
+        // numeric/comparable >= logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -236,8 +205,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                     Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
                             ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
                             : null;
-
-                    // At this point, greater/equal are already Booleans or null.
                     if (greater == null && equal == null)
                         return null;
                     if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal))
@@ -256,8 +223,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonGtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
-
-        // Final predicate: numeric/comparable > logic
+        // numeric/comparable > logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -279,24 +245,22 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      */
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonLteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
 
-        // Predicate 0: left or right is null → null
+        // left or right is null → null
         map.put(
                 new CheckedPredicate((left, right) -> left == null || right == null, false),
                 (left, right) -> null);
 
-        // Predicate 1: both results are Boolean
+        // both results are Boolean
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Boolean && right instanceof Boolean, false),
                 (left, right) -> {
                     Boolean leftBool = (Boolean) left;
                     Boolean rightBool = (Boolean) right;
-                    // For ≤, treat as logical OR (same as ≥ in your design)
                     return leftBool || rightBool;
                 });
 
-        // Final predicate: numeric/comparable ≤ logic
+        // numeric/comparable ≤ logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
@@ -310,7 +274,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                             : null;
 
                     if (less == null && equal == null) {
-                        return null; // default dialect: keep null
+                        return null;
                     }
                     if (Boolean.TRUE.equals(less) || Boolean.TRUE.equals(equal)) {
                         return Boolean.TRUE;
@@ -328,14 +292,11 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      */
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonLtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
 
-        // Final predicate: numeric/comparable < logic
+        // numeric/comparable < logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-
-                    // default dialect: keep null
                     return BooleanEvalHelper.compare(left, right,
                             (l, r) -> l.compareTo(r) < 0,
                             () -> null,
@@ -343,25 +304,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 });
         return map;
     }
-
-    /**
-     * Builds the common 'Not EqualTo' operation map used by the dialect handlers.
-     * 
-     * @param ctx : Current Evaluation context
-     * @return : a Map of CheckedPredicate to BiFunction representing the common 'Not EqualTo' operations
-     */
-    /*
-     * Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonNotEqualOperations(EvaluationContext ctx) {
-     * Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-     * map.put(
-     * new CheckedPredicate((left, right) -> true, false),
-     * (left, right) -> {
-     * Boolean result = BooleanEvalHelper.isEqual(left, right, () -> null, () -> null);
-     * return result != null ? !result : null;
-     * });
-     * return map;
-     * }
-     */
 
     /**
      * Builds the common 'Or' operation map used by the dialect handlers.
@@ -372,13 +314,12 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonOrOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
-
         // true OR anything → true (short‑circuit)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Boolean && Boolean.TRUE.equals(left), false),
                 (left, right) -> Boolean.TRUE);
 
-        // dialect BFEEL and left not Boolean → treat as false
+        // left not Boolean → false
         map.put(
                 new CheckedPredicate((left, right) -> !(left instanceof Boolean) && dialect.equals(FEELDialect.BFEEL), false),
                 (left, right) -> Boolean.FALSE);

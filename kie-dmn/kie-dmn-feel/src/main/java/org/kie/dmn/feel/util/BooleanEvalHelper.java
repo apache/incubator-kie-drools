@@ -243,7 +243,7 @@ public class BooleanEvalHelper {
     /**
      * This method consider if the <code>value</code> object is a <code>String</code>
      * In that case, return the {@link String#equals(Object)} result
-     * Otherwise, default to the {@link #isEqual(Object, Object, FEELDialect)}
+     * Otherwise, default to the isEqual method
      *
      * @param value
      * @param itemFromList
