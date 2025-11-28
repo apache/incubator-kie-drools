@@ -271,4 +271,25 @@ class ItemDefinitionDependenciesTest {
         assertThat(result).isNull();
     }
 
+    @Test
+    public void testFunctionItemTypeRefDependency() {
+        ItemDefinition functionReturningDateList = new TItemDefinition();
+        ItemDefinition dateList = new TItemDefinition();
+        FunctionItem functionItem = new TFunctionItem();
+        functionItem.setOutputTypeRef(QName.valueOf("dateList"));
+
+        functionReturningDateList.setName("functionReturningDateList");
+        functionReturningDateList.setFunctionItem(functionItem);
+
+        dateList.setName("dateList");
+        dateList.setTypeRef(QName.valueOf("date"));
+
+        ItemDefinitionDependenciesSorter sorter = new ItemDefinitionDependenciesSorter(TEST_NS);
+        List<ItemDefinition> input = Arrays.asList(functionReturningDateList, dateList);
+        List<ItemDefinition> sorted = sorter.sort(input, DMNVersion.V1_6);
+
+        assertThat(sorted).hasSize(2);
+        assertThat(sorted.indexOf(dateList)).isLessThan(sorted.indexOf(functionReturningDateList));
+    }
+
 }
