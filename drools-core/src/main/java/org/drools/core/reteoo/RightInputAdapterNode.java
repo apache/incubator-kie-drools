@@ -406,8 +406,7 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
 
     @Override
     public String toString() {
-        return "RightInputAdapterNode(" + id + ")[ source="
-               + source + ", associations=" + associations + ", partitionId=" + partitionId + "]";
+        return "[RightInputAdapterNode(" + id + ")]";
     }
 
     public void networkUpdated(UpdateContext updateContext) {

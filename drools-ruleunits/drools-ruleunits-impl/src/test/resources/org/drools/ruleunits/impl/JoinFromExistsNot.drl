@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,45 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.ruleunits.impl.domain;
+package org.drools.ruleunits.impl;
+unit JoinFromExistsNotUnit;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.drools.ruleunits.impl.domain.Person;
+import org.drools.ruleunits.impl.domain.Address;
 
-public class Person {
-
-    private String name;
-
-    private int age;
-
-    private List<Address> addresses = new ArrayList<>();
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-}
+rule R1
+when
+    String() from entry-point strings
+    $person: Person() from entry-point persons
+    exists Address(number > 18) from $person.addresses
+    not Integer() from entry-point integers
+then
+end

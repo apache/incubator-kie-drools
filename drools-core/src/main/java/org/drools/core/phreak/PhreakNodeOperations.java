@@ -230,6 +230,34 @@ public class PhreakNodeOperations {
         }
     }
     
+    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm,
+                                                             TupleSets srcLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+
+        // sides must first be re-ordered, to ensure iteration integrity
+        for (TupleImpl leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            if (leftTuple.getMemory() != null) {
+                ltm.remove(leftTuple);
+            }
+        }
+
+        for (TupleImpl leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            RightTuple blocker = leftTuple.getBlocker();
+            if (blocker == null) {
+                ltm.add(leftTuple);
+                for (TupleImpl childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null;) {
+                    TupleImpl childNext = childLeftTuple.getHandleNext();
+                    childLeftTuple.reAddRight();
+                    childLeftTuple = childNext;
+                }
+            } else if (blocker.getStagedType() != LeftTuple.NONE) {
+                // it's blocker is also being updated, so remove to force it to start from the beginning
+                blocker.removeBlocked((LeftTuple) leftTuple);
+            }
+        }
+    }
+
+    
     public static void doUpdatesExistentialReorderRightMemory(BetaMemory bm,
                                                               BetaNode betaNode,
                                                               TupleSets srcRightTuples) {

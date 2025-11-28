@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/"
+             namespace="https://kie.org/dmn/_71957705-0381-4AEB-9BFD-59059D89A18C"
+             id="_05A0A322-816C-408F-B6FD-554582BA2E11"
+             name="DMN_E73F88CE-4E67-4B67-BFB2-7977441F2343">
+  <decision name="DayOfWeek" id="_736053CD-85F4-4BFD-B3EB-5FAE386393B6">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD7430F" typeRef="Any" name="DayOfWeek" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390ED9C">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD1281E" typeRef="Any" label="DayOfWeek">
+      <text>day of week("a")</text>
+    </literalExpression>
+  </decision>
+  <decision name="Split" id="_736053CD-85F4-4BFD-B3EB-5FAE386393B7">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74310" typeRef="Any" name="Split" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390ED9D">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD1281F" typeRef="Any" label="Split">
+      <text>split("abc", 22)</text>
+    </literalExpression>
+  </decision>
+  <decision name="Today" id="_736053CD-85F4-4BFD-B3EB-5FAE386393B8">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74311" typeRef="Any" name="Today" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390ED9E">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12820" typeRef="Any" label="Today">
+      <text>"Today is " + today()</text>
+    </literalExpression>
+  </decision>
+  <decision name="ResultIs" id="_736053CD-85F4-4BFD-B3EB-5FAE386393B9">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74312" typeRef="Any" name="ResultIs" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390ED9F">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12821" typeRef="Any" label="ResultIs">
+      <text>"The result is: " + 1</text>
+    </literalExpression>
+  </decision>
+  <decision name="FiveMinutes" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BA">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74313" typeRef="Any" name="FiveMinutes" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA0">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12822" typeRef="Any" label="FiveMinutes">
+      <text>5 + " minutes"</text>
+    </literalExpression>
+  </decision>
+  <decision name="ThisIsNull" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BB">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74314" typeRef="Any" name="ThisIsNull" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA1">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12823" typeRef="Any" label="ThisIsNull">
+      <text>"This is " + null</text>
+    </literalExpression>
+  </decision>
+  <decision name="OnePlusNull" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BC">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74315" typeRef="Any" name="OnePlusNull" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA2">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12824" typeRef="Any" label="OnePlusNull">
+      <text>1 + null</text>
+    </literalExpression>
+  </decision>
+  <decision name="NullMinusSix" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BD">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74316" typeRef="Any" name="NullMinusSix" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA3">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12825" typeRef="Any" label="NullMinusSix">
+      <text>null - 6</text>
+    </literalExpression>
+  </decision>
+  <decision name="DatePlusSeven" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BE">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74317" typeRef="Any" name="DatePlusSeven" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA4">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12826" typeRef="Any" label="DatePlusSeven">
+      <text>date("2021-01-01") + 7</text>
+    </literalExpression>
+  </decision>
+  <decision name="AbcMinusTwo" id="_736053CD-85F4-4BFD-B3EB-5FAE386393BF">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74318" typeRef="Any" name="AbcMinusTwo" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA5">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12827" typeRef="Any" label="AbcMinusTwo">
+      <text>"abc" - 2</text>
+    </literalExpression>
+  </decision>
+  <decision name="TwentytwoTimesA" id="_736053CD-85F4-4BFD-B3EB-5FAE386393C0">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74319" typeRef="Any" name="TwentytwoTimesA" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA6">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12828" typeRef="Any" label="TwentytwoTimesA">
+      <text>22 * "a"</text>
+    </literalExpression>
+  </decision>
+  <decision name="DurationTimesNull" id="_736053CD-85F4-4BFD-B3EB-5FAE386393C2">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74321" typeRef="Any" name="DurationTimesNull" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA8">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD1282A" typeRef="Any" label="DurationTimesNull">
+      <text>duration("P1Y") * null</text>
+    </literalExpression>
+  </decision>
+  <decision name="NullDividedTwentytwo" id="_736053CD-85F4-4BFD-B3EB-5FAE386393C1">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74320" typeRef="Any" name="NullDividedTwentytwo" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA7">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD12829" typeRef="Any" label="NullDividedTwentytwo">
+      <text>null / 22</text>
+    </literalExpression>
+  </decision>
+  <decision name="DecimalAZero" id="_736053CD-85F4-4BFD-B3EB-5FAE386393C3">
+    <variable id="_93EF61F6-52A4-4DF7-AF4F-7D907CD74322" typeRef="Any" name="DecimalAZero" />
+    <informationRequirement id="_02381030-7849-45CB-9950-1AD2F390EDA9">
+      <requiredInput href="#_FABD7430-C887-443F-878A-362E66EC206D" />
+    </informationRequirement>
+    <literalExpression id="_BC01F2D0-B90D-4B9B-869D-8DAC9FD1282B" typeRef="Any" label="DecimalAZero">
+      <text>decimal("a", 0)</text>
+    </literalExpression>
+  </decision>
+  <inputData name="String constant" id="_FABD7430-C887-443F-878A-362E66EC206D">
+    <variable name="String constant" id="_E936CA5A-67FB-45CF-97CA-73280E875CDC" typeRef="string" />
+  </inputData>
+</definitions>
