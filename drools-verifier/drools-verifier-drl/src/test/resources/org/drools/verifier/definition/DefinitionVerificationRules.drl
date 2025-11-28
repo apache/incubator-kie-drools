@@ -1,0 +1,152 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+//Verification rules for checking DRL type definitions
+package org.drools.verifier.definition
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.drools.verifier.components.Definition;
+import org.drools.verifier.components.ObjectType;
+import org.drools.verifier.components.LiteralRestriction;
+import org.drools.verifier.components.Pattern;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.report.components.MessageType;
+
+import org.drools.verifier.data.VerifierReport
+import org.drools.verifier.components.Field;
+
+global VerifierReport result;
+
+rule "Missing Definition for ObjectType"
+    when
+        $objectType : ObjectType( $typeName : name )
+        not Definition( typeName == $typeName )
+    then
+        result.add(new VerifierMessage(
+                        new HashMap(),
+                        Severity.ERROR,
+                        MessageType.MISSING_COMPONENT,
+                        $objectType,
+                        "Missing type definition for fact type: " + $typeName
+                        ,
+                        new ArrayList() ) );
+end
+
+
+declare FinalField
+    patternName: String
+    fieldName: String
+end
+
+declare Split
+    patternName: String
+    fieldName: String
+    leftOver: String[]
+end
+
+rule "Split"
+    when
+        LiteralRestriction( fieldPath != null, $fieldName : fieldName, $patternName : patternName )
+    then
+        if($fieldName.contains(".")) {
+            Split split = new Split();
+
+            String[] array = $fieldName.split("\\.");
+            split.setFieldName(array[0]);
+            split.setPatternName( $patternName );
+            split.setLeftOver( java.util.Arrays.copyOfRange(array, 1, array.length) );
+            insert( split );
+        } else {
+            FinalField ff = new FinalField();
+            ff.setPatternName( $patternName );
+            ff.setFieldName( $fieldName );
+            insert( ff );
+        }
+end
+
+rule "Trim split"
+    when
+        $split :Split( $fieldName :fieldName, eval( leftOver.length > 0) )
+        $definition : Definition( typeName == $split.patternName, fieldNames contains $fieldName)
+    then
+        String fieldType = $definition.getDeclaredFields().get($fieldName);
+        String[] oldArray = $split.getLeftOver();
+        String[] newArray = java.util.Arrays.copyOfRange(oldArray, 1, oldArray.length);
+        $split.setFieldName(oldArray[0]);
+        $split.setPatternName( fieldType );
+        $split.setLeftOver( newArray );
+        update( $split );
+
+end
+
+rule "Add final field"
+    when
+        Split( $patternName : patternName, $fieldName : fieldName, eval( leftOver.length == 0))
+    then
+        FinalField ff = new FinalField();
+        ff.setPatternName( $patternName );
+        ff.setFieldName( $fieldName );
+        insert( ff );
+end
+
+rule "Missing Field in Definition"
+    when
+        $restriction : FinalField( $fieldName : fieldName )
+        $definition : Definition( typeName == $restriction.patternName, fieldNames not contains $fieldName )
+    then
+        result.add(new VerifierMessage(
+                          new HashMap(),
+                          Severity.ERROR,
+                          MessageType.MISSING_COMPONENT,
+                          $definition,
+                          "Field '" + $fieldName  + "' used in rule but not declared in definition of type '" + $restriction.getPatternName() + "'",
+                          new ArrayList() ) );
+end
+
+rule "Missing Field in a missing Definition"
+    when
+        $restriction : FinalField( $fieldName : fieldName )
+        not Definition( typeName == $restriction.patternName )
+    then
+        result.add(new VerifierMessage(
+                          new HashMap(),
+                          Severity.ERROR,
+                          MessageType.MISSING_COMPONENT,
+                          null,
+                          "Field '" + $fieldName  + "' used in rule but not declared in definition of type '" + $restriction.getPatternName() + "'",
+                          new ArrayList() ) );
+end
+
+rule "Error when Definition exists, but it is lacking a field"
+    when
+        $split :Split( $fieldName :fieldName, $patternName :patternName)
+        $definition : Definition( typeName == $split.patternName, fieldNames not contains $split.fieldName)
+    then
+          result.add(new VerifierMessage(
+                              new HashMap(),
+                              Severity.ERROR,
+                              MessageType.MISSING_COMPONENT,
+                              null,
+                              "Field '" + $fieldName  + "' used in rule but not declared in definition of type '" + $patternName + "'",
+                              new ArrayList() ) );
+end
+
