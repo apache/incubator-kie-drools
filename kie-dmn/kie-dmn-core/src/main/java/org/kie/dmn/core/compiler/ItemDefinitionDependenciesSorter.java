@@ -25,7 +25,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNVersion;
-import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 
 public class ItemDefinitionDependenciesSorter {
@@ -64,7 +63,7 @@ public class ItemDefinitionDependenciesSorter {
         visited.add(node);
         List<ItemDefinition> neighbours = allNodes.stream()
                                                   .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
-                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()), dmnVersion)) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
+                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()), modelNamespace, dmnVersion)) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
                                                   .toList();
         for (ItemDefinition n : neighbours) {
             if (!visited.contains(n)) {
@@ -75,35 +74,32 @@ public class ItemDefinitionDependenciesSorter {
         sortedItemDefinitions.add(node);
     }
 
-    static QName retrieveTypeRef(ItemDefinition o1, DMNVersion dmnVersion) {
-        if ( o1.getTypeRef() != null ) {
-            return o1.getTypeRef();
-        }
-        if (dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()) {
-            FunctionItem fi = o1.getFunctionItem();
-            if (fi != null && fi.getOutputTypeRef() != null) {
-                return fi.getOutputTypeRef();
-            }
-        }
-        return null;
-    }
-    
-    private static boolean recurseFind(ItemDefinition o1, QName qname2, DMNVersion dmnVersion) {
-        QName typeRef = retrieveTypeRef(o1, dmnVersion);
+    private static boolean recurseFind(ItemDefinition o1, QName qname2, String modelNamespace, DMNVersion dmnVersion) {
+        QName typeRef = retrieveTypeRef(o1, modelNamespace, dmnVersion);
         return (typeRef != null)
                 ? matchesQNameUsingNamespacePrefixes(o1, typeRef, qname2)
                 : o1.getItemComponent().stream()
-                .anyMatch(component -> recurseFind(component, qname2, dmnVersion));
+                .anyMatch(component -> recurseFind(component, qname2, modelNamespace, dmnVersion));
     }
-    
+
+    static QName retrieveTypeRef(ItemDefinition o1, String  modelNamespace, DMNVersion dmnVersion) {
+        QName toReturn = o1.getTypeRef();
+        if (toReturn == null
+                && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()
+                && o1.getFunctionItem() != null) {
+            toReturn = o1.getFunctionItem().getOutputTypeRef();
+            if (toReturn != null && toReturn.getNamespaceURI().isEmpty()) {
+                toReturn = new QName(modelNamespace, toReturn.getLocalPart());
+            }
+        }
+        return toReturn;
+    }
+
     private static boolean matchesQNameUsingNamespacePrefixes(ItemDefinition o1, QName typeRef, QName qname2) {
         if (typeRef.equals(qname2)) {
             return true;
         }
         if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
-            if (typeRef.getNamespaceURI().isEmpty() || typeRef.getNamespaceURI().equals(qname2.getNamespaceURI())) {
-                return true;
-            }
             for (String nsKey : o1.recurseNsKeys()) {
                 String ns = o1.getNamespaceURI(nsKey);
                 if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
@@ -145,7 +141,7 @@ public class ItemDefinitionDependenciesSorter {
                 QName otherQName = new QName(namespaceURI, other.getName());
                 if ( directFind(in, otherQName) ) {
                     System.out.println(" direct depends on: "+other.getName());
-                } else if ( recurseFind(in, otherQName, dmnVersion) ) {
+                } else if ( recurseFind(in, otherQName, namespaceURI, dmnVersion) ) {
                     System.out.println(" indir. depends on: "+other.getName());
                 }
             }

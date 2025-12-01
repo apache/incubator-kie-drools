@@ -237,7 +237,7 @@ class ItemDefinitionDependenciesTest {
         ItemDefinition item = new TItemDefinition();
         item.setTypeRef(expected);
 
-        QName result = retrieveTypeRef(item, DMNVersion.V1_2);
+        QName result = retrieveTypeRef(item, TEST_NS, DMNVersion.V1_2);
         assertThat(expected).isEqualTo(result);
     }
 
@@ -245,7 +245,7 @@ class ItemDefinitionDependenciesTest {
     void testTypeRefNull() {
         ItemDefinition item = new TItemDefinition();
 
-        QName result = retrieveTypeRef(item, DMNVersion.V1_2);
+        QName result = retrieveTypeRef(item, TEST_NS, DMNVersion.V1_2);
         assertThat(result).isNull();
     }
 
@@ -256,7 +256,7 @@ class ItemDefinitionDependenciesTest {
         QName type = new QName("ns", "date");
         fi.setOutputTypeRef(type);
         id.setFunctionItem(fi);
-        QName result = retrieveTypeRef(id, DMNVersion.V1_3);
+        QName result = retrieveTypeRef(id, TEST_NS, DMNVersion.V1_3);
         assertThat(type).isEqualTo(result);
     }
 
@@ -267,7 +267,7 @@ class ItemDefinitionDependenciesTest {
         QName type = new QName("ns", "date");
         fi.setOutputTypeRef(type);
         id.setFunctionItem(fi);
-        QName result = retrieveTypeRef(id, DMNVersion.V1_2);
+        QName result = retrieveTypeRef(id, TEST_NS, DMNVersion.V1_2);
         assertThat(result).isNull();
     }
 
