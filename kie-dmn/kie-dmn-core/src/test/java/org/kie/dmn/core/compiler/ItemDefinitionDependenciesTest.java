@@ -276,13 +276,13 @@ class ItemDefinitionDependenciesTest {
         ItemDefinition functionReturningDateList = new TItemDefinition();
         ItemDefinition dateList = new TItemDefinition();
         FunctionItem functionItem = new TFunctionItem();
-        functionItem.setOutputTypeRef(QName.valueOf("dateList"));
+        functionItem.setOutputTypeRef(new QName("dateList"));
 
         functionReturningDateList.setName("functionReturningDateList");
         functionReturningDateList.setFunctionItem(functionItem);
 
         dateList.setName("dateList");
-        dateList.setTypeRef(QName.valueOf("date"));
+        dateList.setTypeRef(new QName(TEST_NS, "date"));
 
         ItemDefinitionDependenciesSorter sorter = new ItemDefinitionDependenciesSorter(TEST_NS);
         List<ItemDefinition> input = Arrays.asList(functionReturningDateList, dateList);
