@@ -155,7 +155,12 @@ public class UnaryTestNode
             Object right = value.evaluate(context);
             //TODO -> If we need to hardcode FEEL like in the above method, pass 'null' instead of 'context'
             Object result = executor.evaluate(left, right, context);
-            return (result instanceof Boolean) ? (Boolean) result : null;
+            //return (result instanceof Boolean) ? (Boolean) result : null;
+            if (result == null) {
+                // treat null comparison as false
+                return Boolean.FALSE;
+            }
+            return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
         };
     }
 
@@ -165,11 +170,18 @@ public class UnaryTestNode
      * If the RIGHT is a LIST, then the semantic is "right contains left"
      */
     private Boolean utEqualSemantic(Object left, Object right) {
+        /*
+         * if (right == null) {
+         * return left == null; // true if both null, false otherwise
+         * }
+         */
         if (right instanceof Collection) {
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            return DefaultDialectHandler.isEqual(left, right, () -> null, () -> null);
+            //return DefaultDialectHandler.isEqual(left, right, () -> null, () -> null);
+            return DefaultDialectHandler.isEqual(left, right, () -> (left == null && right == null), () -> Boolean.FALSE);
+
         }
     }
 
