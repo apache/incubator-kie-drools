@@ -2688,38 +2688,38 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Not working")).isEqualTo(Boolean.FALSE);
     }
 
-//    @ParameterizedTest
-//    @MethodSource("params")
-//    void dMNv12Ch11Modified(boolean useExecModelCompiler) {
-//        init(useExecModelCompiler);
-//        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_2/ch11MODIFIED.dmn", this.getClass());
-//        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f81f47", "DMN Specification Chapter 11 Example");
-//        assertThat(dmnModel).isNotNull();
-//        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
-//
-//        final DMNContext context = DMNFactory.newContext();
-//        context.set("Applicant data", mapOf(entry("Age", new BigDecimal(51)),
-//                entry("MaritalStatus", "M"),
-//                entry("EmploymentStatus", "EMPLOYED"),
-//                entry("ExistingCustomer", Boolean.FALSE),
-//                entry("Monthly", mapOf(entry("Income", new BigDecimal(100_000)),
-//                        entry("Repayments", new BigDecimal(2_500)),
-//                        entry("Expenses", new BigDecimal(10_000)))))); // DMN v1.2 spec page 181, first image: errata corrige values for Income and Expenses are likely inverted, corrected here.
-//        context.set("Bureau data", mapOf(entry("Bankrupt", Boolean.FALSE),
-//                entry("CreditScore", new BigDecimal(600))));
-//        context.set("Requested product", mapOf(entry("ProductType", "STANDARD LOAN"),
-//                entry("Rate", new BigDecimal(0.08)),
-//                entry("Term", new BigDecimal(36)),
-//                entry("Amount", new BigDecimal(100_000))));
-//        context.set("Supporting documents", null);
-//        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-//        LOG.debug("{}", dmnResult);
-//        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-//
-//        final DMNContext result = dmnResult.getContext();
-//        assertThat(result.get("Strategy")).isEqualTo("THROUGH");
-//        assertThat(result.get("Routing")).isEqualTo("ACCEPT");
-//    }
+    @ParameterizedTest
+    @MethodSource("params")
+    void dMNv12Ch11Modified(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_2/ch11MODIFIED.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f81f47", "DMN Specification Chapter 11 Example");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Applicant data", mapOf(entry("Age", new BigDecimal(51)),
+                entry("MaritalStatus", "M"),
+                entry("EmploymentStatus", "EMPLOYED"),
+                entry("ExistingCustomer", Boolean.FALSE),
+                entry("Monthly", mapOf(entry("Income", new BigDecimal(100_000)),
+                        entry("Repayments", new BigDecimal(2_500)),
+                        entry("Expenses", new BigDecimal(10_000)))))); // DMN v1.2 spec page 181, first image: errata corrige values for Income and Expenses are likely inverted, corrected here.
+        context.set("Bureau data", mapOf(entry("Bankrupt", Boolean.FALSE),
+                entry("CreditScore", new BigDecimal(600))));
+        context.set("Requested product", mapOf(entry("ProductType", "STANDARD LOAN"),
+                entry("Rate", new BigDecimal(0.08)),
+                entry("Term", new BigDecimal(36)),
+                entry("Amount", new BigDecimal(100_000))));
+        context.set("Supporting documents", null);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Strategy")).isEqualTo("THROUGH");
+        assertThat(result.get("Routing")).isEqualTo("ACCEPT");
+    }
 
     @ParameterizedTest
     @MethodSource("params")
@@ -3791,14 +3791,5 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(resolvedId).isEqualTo("ImportedModel#_D57E59F9-FC14-4B53-888C-CAADBA0AEFF6");
         assertThat(resolvedId2).isEqualTo("ImportedModel#_CE7D37D7-FC33-4C3A-AD3D-6EB6BECBC2B7");
     }
-
-//    @Test
-//    void testDecisionServices() {
-//        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/Implicit-conversions.dmn", this.getClass());
-//        runtime.addListener(new DecisionLoggingListener());
-//        DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_F9BB5760-8BCA-4216-AAD9-8BD4FB70802D", "1157-implicit-conversions");
-//        assertThat(dmnModel).isNotNull();
-//        assertThat(dmnModel.hasErrors()).isFalse();
-//    }
 
 }
