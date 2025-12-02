@@ -161,9 +161,6 @@ public final class TypeUtil {
             sb.append(formatValue(val, wrapDateTimeValuesInFunctions));
             count++;
         }
-//        if (!list.isEmpty()) {
-//            sb.append(" ");
-//        }
         sb.append("]");
         return sb.toString();
     }
