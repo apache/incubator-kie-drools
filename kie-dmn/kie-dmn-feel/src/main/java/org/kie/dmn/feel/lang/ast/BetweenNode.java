@@ -24,9 +24,9 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.infixexecutors.GteExecutor;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
-import org.kie.dmn.feel.lang.ast.infixexecutors.LteExecutor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
 
@@ -117,7 +117,9 @@ public class BetweenNode
          * BooleanEvalHelper.isEqual(o_val, o_s, ctx.getFEELDialect()),
          * ctx);
          */ // do not use Java || to avoid potential NPE due to FEEL 3vl.
-        Object gte = GteExecutor.instance().evaluate(o_val, o_s, ctx);
+        //Object gte = GteExecutor.instance().evaluate(o_val, o_s, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        Object gte = handler.executeGte(o_val, o_s, ctx);
 
         if (gte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")));
@@ -128,7 +130,8 @@ public class BetweenNode
          * BooleanEvalHelper.isEqual(o_val, o_e, ctx.getFEELDialect()),
          * ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
          */
-        Object lte = LteExecutor.instance().evaluate(o_val, o_e, ctx);
+        //Object lte = LteExecutor.instance().evaluate(o_val, o_e, ctx);
+        Object lte = handler.executeLte(o_val, o_e, ctx);
 
         if (lte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")));

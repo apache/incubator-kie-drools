@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 /**
  * Handler implementation of the DialectHandler interface providing FEEL specific
@@ -100,7 +99,7 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
                 (left, right) -> Boolean.TRUE);
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> BooleanEvalHelper.isEqual(left, right,
+                (left, right) -> isEqual(left, right,
                         () -> Boolean.FALSE, () -> null));
 
         return map;
@@ -239,7 +238,7 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean result = BooleanEvalHelper.isEqual(left, right, () -> Boolean.FALSE, () -> null);
+                    Boolean result = isEqual(left, right, () -> Boolean.FALSE, () -> null);
                     return result != null ? !result : null;
                 });
         return map;

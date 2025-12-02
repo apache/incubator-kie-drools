@@ -18,15 +18,13 @@
  */
 package org.kie.dmn.feel.runtime;
 
-import org.kie.dmn.feel.lang.FEELDialect;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public interface Range {
 
     enum RangeBoundary {
-        OPEN, CLOSED;
+        OPEN,
+        CLOSED;
     }
 
     RangeBoundary getLowBoundary();
@@ -37,13 +35,14 @@ public interface Range {
 
     RangeBoundary getHighBoundary();
 
-    Boolean includes(FEELDialect feelDialect, Object param);
+    //Boolean includes(FEELDialect feelDialect, Object param);
+
+    Boolean includes(EvaluationContext ctx, Object param);
 
     boolean isWithUndefined();
 
     Comparable getStart();
 
     Comparable getEnd();
-
 
 }

@@ -31,7 +31,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
 
@@ -131,7 +130,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 (left, right) -> Boolean.TRUE);
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
-                (left, right) -> BooleanEvalHelper.isEqual(left, right,
+                (left, right) -> isEqual(left, right,
                         () -> Boolean.FALSE, () -> Boolean.FALSE));
         return map;
     }
@@ -161,7 +160,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean greater = BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) > 0,
+                    Boolean greater = compare(left, right, (l, r) -> l.compareTo(r) > 0,
                             () -> Boolean.FALSE,
                             () -> Boolean.FALSE);
                     //Boolean equal = BooleanEvalHelper.isEqual(left, right, ctx.getFEELDialect());
@@ -210,7 +209,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean greater = BooleanEvalHelper.compare(left, right,
+                    Boolean greater = compare(left, right,
                             (l, r) -> l.compareTo(r) > 0,
                             () -> Boolean.FALSE,
                             () -> Boolean.FALSE);
@@ -248,7 +247,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean less = BooleanEvalHelper.compare(left, right,
+                    Boolean less = compare(left, right,
                             (l, r) -> l.compareTo(r) < 0,
                             () -> Boolean.FALSE,
                             () -> Boolean.FALSE);
@@ -296,7 +295,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean less = BooleanEvalHelper.compare(left, right,
+                    Boolean less = compare(left, right,
                             (l, r) -> l.compareTo(r) < 0,
                             () -> Boolean.FALSE,
                             () -> Boolean.FALSE);
@@ -316,7 +315,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean result = BooleanEvalHelper.isEqual(left, right,
+                    Boolean result = isEqual(left, right,
                             () -> Boolean.FALSE, // nullFallback
                             () -> Boolean.FALSE // defaultFallback
                     );

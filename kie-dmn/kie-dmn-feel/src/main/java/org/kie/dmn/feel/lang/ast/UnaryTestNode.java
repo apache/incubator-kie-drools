@@ -24,11 +24,11 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DefaultDialectHandler;
 import org.kie.dmn.feel.lang.ast.infixexecutors.*;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class UnaryTestNode
@@ -169,7 +169,7 @@ public class UnaryTestNode
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            return BooleanEvalHelper.isEqual(left, right, () -> null, () -> null);
+            return DefaultDialectHandler.isEqual(left, right, () -> null, () -> null);
         }
     }
 
@@ -196,7 +196,7 @@ public class UnaryTestNode
             Object val = value.evaluate(c);
             if (val instanceof Range) {
                 try {
-                    return ((Range) val).includes(c.getFEELDialect(), o);
+                    return ((Range) val).includes(c, o);
                 } catch (Exception e) {
                     c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, val)));
                     throw e;
@@ -231,7 +231,7 @@ public class UnaryTestNode
                     }
                 } else if (test instanceof Range) {
                     try {
-                        if (((Range) test).includes(c.getFEELDialect(), o)) {
+                        if (((Range) test).includes(c, o)) {
                             return false;
                         }
                     } catch (Exception e) {

@@ -27,23 +27,29 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.temporal.TemporalQueries;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
+import org.kie.dmn.feel.util.DateTimeEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
+import static org.kie.dmn.feel.util.DateTimeEvalHelper.valuedt;
+import static org.kie.dmn.feel.util.DateTimeEvalHelper.valuet;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -176,7 +182,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      */
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonGteOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
+        //        FEELDialect dialect = ctx.getFEELDialect();
 
         // left or right is null → null
         map.put(
@@ -196,7 +202,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean greater = BooleanEvalHelper.compare(left, right,
+                    Boolean greater = compare(left, right,
                             (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0,
                             () -> null, // nullFallback for Default dialect
                             () -> null // defaultFallback for unknown types
@@ -222,14 +228,14 @@ public abstract class DefaultDialectHandler implements DialectHandler {
      */
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getCommonGtOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
+        //  FEELDialect dialect = ctx.getFEELDialect();
         // numeric/comparable > logic
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
 
                     // default dialect: keep null
-                    return BooleanEvalHelper.compare(left, right,
+                    return compare(left, right,
                             (l, r) -> l.compareTo(r) > 0,
                             () -> null,
                             () -> null);
@@ -264,7 +270,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean less = BooleanEvalHelper.compare(left, right,
+                    Boolean less = compare(left, right,
                             (l, r) -> l.compareTo(r) < 0,
                             () -> null,
                             () -> null);
@@ -297,7 +303,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    return BooleanEvalHelper.compare(left, right,
+                    return compare(left, right,
                             (l, r) -> l.compareTo(r) < 0,
                             () -> null,
                             () -> null);
@@ -715,4 +721,106 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             return right;
         }
     }
+
+    /**
+     * Compares left and right operands using the given predicate and returns TRUE/FALSE accordingly
+     *
+     * @param left
+     * @param right
+     * @param op
+     * @return
+     */
+    public static Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op, Supplier<Boolean> nullFallback,
+            Supplier<Boolean> defaultFallback) {
+        if (nullFallback == null || defaultFallback == null) {
+            throw new IllegalArgumentException("Fallback suppliers must not be null");
+        }
+        if (left == null || right == null) {
+            return nullFallback.get();
+        }
+        if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
+            Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
+            Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
+            return op.test(l, r);
+        }
+        if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
+            // Handle specific cases when both time / datetime
+            TemporalAccessor l = (TemporalAccessor) left;
+            TemporalAccessor r = (TemporalAccessor) right;
+            if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.TIME) {
+                return op.test(valuet(l), valuet(r));
+            } else if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+                return op.test(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
+            }
+        }
+        if (left instanceof Number && right instanceof Number) {
+            // Handle specific cases when both are Number, converting both to BigDecimal
+            BigDecimal l = getBigDecimalOrNull(left);
+            BigDecimal r = getBigDecimalOrNull(right);
+            return op.test(l, r);
+        }
+        // last fallback:
+        if ((left instanceof String && right instanceof String) ||
+                (left instanceof Boolean && right instanceof Boolean) ||
+                (left instanceof Comparable && left.getClass().isAssignableFrom(right.getClass()))) {
+            Comparable<?> l = (Comparable<?>) left;
+            Comparable<?> r = (Comparable<?>) right;
+            return op.test(l, r);
+        }
+        return defaultFallback.get();
+    }
+
+    /**
+     * Compares left and right for equality applying FEEL semantics to specific data types
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static Boolean isEqual(Object left, Object right, Supplier<Boolean> nullFallback, Supplier<Boolean> defaultFallback) {
+        if (nullFallback == null || defaultFallback == null) {
+            throw new IllegalArgumentException("Fallback suppliers must not be null");
+        }
+        if (left == null || right == null) {
+            return nullFallback.get();
+        }
+
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
+        if (left instanceof Collection && !(right instanceof Collection) && ((Collection) left).size() == 1) {
+            left = ((Collection) left).toArray()[0];
+        } else if (right instanceof Collection && !(left instanceof Collection) && ((Collection) right).size() == 1) {
+            right = ((Collection) right).toArray()[0];
+        }
+
+        if (left instanceof Range && right instanceof Range) {
+            return BooleanEvalHelper.isEqual((Range) left, (Range) right);
+        } else if (left instanceof Iterable && right instanceof Iterable) {
+            return BooleanEvalHelper.isEqual((Iterable) left, (Iterable) right);
+        } else if (left instanceof Map && right instanceof Map) {
+            return BooleanEvalHelper.isEqual((Map) left, (Map) right);
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
+            Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
+            Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
+            return isEqual(l, r, nullFallback, defaultFallback);
+        } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
+            // Handle specific cases when both time / datetime
+            TemporalAccessor l = (TemporalAccessor) left;
+            TemporalAccessor r = (TemporalAccessor) right;
+            if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.TIME) {
+                return isEqual(DateTimeEvalHelper.valuet(l), DateTimeEvalHelper.valuet(r), nullFallback, defaultFallback);
+            } else if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+                return isEqual(DateTimeEvalHelper.valuedt(l, r.query(TemporalQueries.zone())), DateTimeEvalHelper.valuedt(r, l.query(TemporalQueries.zone())), nullFallback, defaultFallback);
+            } // fallback; continue:
+        }
+        //return compare(left, right, feelDialect, (l, r) -> l.compareTo(r) == 0);
+        // Fallback: Comparable equality
+        return compare(left, right,
+                (l, r) -> l.compareTo(r) == 0,
+                nullFallback,
+                defaultFallback);
+    }
+
 }
