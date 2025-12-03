@@ -177,28 +177,6 @@ public class RangeImpl
         return p != null ? p.getClass().toString() : "null";
     }
 
-    /*
-     * // TODO to be removed
-     * private static Boolean compare(FEELDialect feelDialect, Comparable left, Object right, BiPredicate<Comparable, Comparable> op) {
-     * if (left.getClass().isAssignableFrom(right.getClass())) { // short path
-     * return op.test(left, (Comparable) right);
-     * }
-     * // TODO to be removed
-     * //return BooleanEvalHelper.compare(left, right, feelDialect, op); // defer to full DMN/FEEL semantic
-     * if (feelDialect == FEELDialect.BFEEL) {
-     * // BFEEL: nulls and unknowns → FALSE
-     * return BooleanEvalHelper.compare(left, right, op,
-     * () -> Boolean.FALSE,
-     * () -> Boolean.FALSE);
-     * } else {
-     * // FEEL and Default dialects: nulls and unknowns → null
-     * return BooleanEvalHelper.compare(left, right, op,
-     * () -> null,
-     * () -> null);
-     * }
-     * }
-     */
-
     @Override
     public boolean equals(Object o) {
         if (this == o)

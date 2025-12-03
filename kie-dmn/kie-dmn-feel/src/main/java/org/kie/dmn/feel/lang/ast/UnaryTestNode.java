@@ -25,7 +25,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.dialectHandlers.DefaultDialectHandler;
-import org.kie.dmn.feel.lang.ast.infixexecutors.*;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
@@ -116,53 +117,58 @@ public class UnaryTestNode
     }
 
     public UnaryTest getUnaryTest() {
-        switch (operator) {
-            case LTE:
-                return new UnaryTestImpl(createCompareUnaryTest(LteExecutor.instance()), value.getText());
-            case LT:
-                return new UnaryTestImpl(createCompareUnaryTest(LtExecutor.instance()), value.getText());
-            case GT:
-                return new UnaryTestImpl(createCompareUnaryTest(GtExecutor.instance()), value.getText());
-            case GTE:
-                return new UnaryTestImpl(createCompareUnaryTest(GteExecutor.instance()), value.getText());
-            case EQ:
-                return new UnaryTestImpl(createIsEqualUnaryTest(), value.getText());
-            case NE:
-                return new UnaryTestImpl(createIsNotEqualUnaryTest(), value.getText());
-            case IN:
-                return new UnaryTestImpl(createInUnaryTest(), value.getText());
-            case NOT:
-                return new UnaryTestImpl(createNotUnaryTest(), value.getText());
-            case TEST:
-                return new UnaryTestImpl(createBooleanUnaryTest(), value.getText());
-        }
-        return null;
+        return new UnaryTestImpl((context, left) -> {
+            Object right = value.evaluate(context);
+            DialectHandler handler = DialectHandlerFactory.getHandler(context);
+
+            Object result;
+            switch (operator) {
+                case LTE:
+                    result = handler.executeLte(left, right, context);
+                    break;
+                case LT:
+                    result = handler.executeLt(left, right, context);
+                    break;
+                case GT:
+                    result = handler.executeGt(left, right, context);
+                    break;
+                case GTE:
+                    result = handler.executeGte(left, right, context);
+                    break;
+                case EQ:
+                    return createIsEqualUnaryTest().apply(context, left);
+                case NE:
+                    return createIsNotEqualUnaryTest().apply(context, left);
+                case IN:
+                    return createInUnaryTest().apply(context, left);
+                case NOT:
+                    return createNotUnaryTest().apply(context, left);
+                case TEST:
+                    return createBooleanUnaryTest().apply(context, left);
+
+                default:
+                    throw new UnsupportedOperationException("Unsupported operator: " + operator);
+            }
+
+            return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
+        }, value.getText());
     }
 
-    //TODO to be removed
     /*
-     * private UnaryTest createCompareUnaryTest( BiPredicate<Comparable, Comparable> op ) {
+     * private UnaryTest createCompareUnaryTest(InfixExecutor executor) {
      * return (context, left) -> {
-     * Object right = value.evaluate( context );
-     * // Defaulting FEELDialect to FEEL
-     * return BooleanEvalHelper.compare(left, right, FEELDialect.FEEL, op );
+     * Object right = value.evaluate(context);
+     *
+     * Object result = executor.evaluate(left, right, context);
+     * //return (result instanceof Boolean) ? (Boolean) result : null;
+     * if (result == null) {
+     * // treat null comparison as false
+     * return Boolean.FALSE;
+     * }
+     * return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
      * };
      * }
      */
-
-    private UnaryTest createCompareUnaryTest(InfixExecutor executor) {
-        return (context, left) -> {
-            Object right = value.evaluate(context);
-            //TODO -> If we need to hardcode FEEL like in the above method, pass 'null' instead of 'context'
-            Object result = executor.evaluate(left, right, context);
-            //return (result instanceof Boolean) ? (Boolean) result : null;
-            if (result == null) {
-                // treat null comparison as false
-                return Boolean.FALSE;
-            }
-            return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
-        };
-    }
 
     /**
      * For a Unary Test an = (equal) semantic depends on the RIGHT value.
@@ -170,11 +176,6 @@ public class UnaryTestNode
      * If the RIGHT is a LIST, then the semantic is "right contains left"
      */
     private Boolean utEqualSemantic(Object left, Object right) {
-        /*
-         * if (right == null) {
-         * return left == null; // true if both null, false otherwise
-         * }
-         */
         if (right instanceof Collection) {
             return ((Collection) right).contains(left);
         } else {
