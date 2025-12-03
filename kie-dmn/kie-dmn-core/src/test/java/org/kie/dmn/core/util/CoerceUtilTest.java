@@ -168,6 +168,23 @@ class CoerceUtilTest {
     }
 
     @Test
+    void testCoerceValueToCollection() {
+        Object item = "TESTED_OBJECT";
+        Object value = Collections.singletonList(item);
+        DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
+                "string",
+                null,
+                true,
+                null,
+                null,
+                null,
+                BuiltInType.STRING);
+        Object retrieved = CoerceUtil.actualCoerceValue(requiredType, item);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(value);
+    }
+
+    @Test
     void actualCoerceValueDateToDateTime() {
         Object value = LocalDate.now();
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
