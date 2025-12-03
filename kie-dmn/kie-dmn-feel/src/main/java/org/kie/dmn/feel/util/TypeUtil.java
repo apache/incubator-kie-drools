@@ -152,7 +152,7 @@ public final class TypeUtil {
 
     public static String formatList(final List list, final boolean wrapDateTimeValuesInFunctions) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("[");
+        sb.append("[ ");
         int count = 0;
         for (final Object val : list) {
             if (count > 0) {
@@ -160,6 +160,9 @@ public final class TypeUtil {
             }
             sb.append(formatValue(val, wrapDateTimeValuesInFunctions));
             count++;
+        }
+        if (!list.isEmpty()) {
+            sb.append(" ");
         }
         sb.append("]");
         return sb.toString();

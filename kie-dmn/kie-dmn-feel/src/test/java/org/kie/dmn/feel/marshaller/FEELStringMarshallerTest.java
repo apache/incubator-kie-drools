@@ -91,11 +91,11 @@ public class FEELStringMarshallerTest {
                 { ComparablePeriod.of( 0, 0, -4 ), "P0M" },
                 { ComparablePeriod.of( 0, 0, 0 ), "P0M" },
                 // lists
-                {Arrays.asList( null, null ), "[null, null]"},
-                { Arrays.asList( 1, 2, 3, 4 ), "[1, 2, 3, 4]" },
-                { Arrays.asList( "foo", "bar", "baz" ), "[foo, bar, baz]" },
-                { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[P4D, P2D, P1DT1H]" },
-                { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[[1, 2], [3, 4]]" },
+                {Arrays.asList( null, null ), "[ null, null ]"},
+                { Arrays.asList( 1, 2, 3, 4 ), "[ 1, 2, 3, 4 ]" },
+                { Arrays.asList( "foo", "bar", "baz" ), "[ foo, bar, baz ]" },
+                { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[ P4D, P2D, P1DT1H ]" },
+                { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[ [ 1, 2 ], [ 3, 4 ] ]" },
                 // ranges
                 { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN ), "[ a .. z )" },
                 { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN ), "[ P1DT6H .. P2DT2H )" },

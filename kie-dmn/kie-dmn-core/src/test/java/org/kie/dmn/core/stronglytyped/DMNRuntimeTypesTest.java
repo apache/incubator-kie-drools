@@ -301,12 +301,12 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-        assertThat(dmnResult.getDecisionResultByName("highlights").getResult()).isEqualTo("John Doe: reports to John's Manager and is manager of 2 : [Bob, Carl]");
+        assertThat(dmnResult.getDecisionResultByName("highlights").getResult()).isEqualTo("John Doe: reports to John's Manager and is manager of 2 : [ Bob, Carl ]");
 
         if (isTypeSafe()) {
             FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)dmnResult.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties.get("highlights")).isEqualTo("John Doe: reports to John's Manager and is manager of 2 : [Bob, Carl]");
+            assertThat(allProperties.get("highlights")).isEqualTo("John Doe: reports to John's Manager and is manager of 2 : [ Bob, Carl ]");
         }
     }
 
