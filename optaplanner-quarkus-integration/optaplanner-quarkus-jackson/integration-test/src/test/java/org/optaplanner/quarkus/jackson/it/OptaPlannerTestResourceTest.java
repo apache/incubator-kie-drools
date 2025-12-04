@@ -19,6 +19,7 @@
 
 package org.optaplanner.quarkus.jackson.it;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
@@ -43,8 +44,11 @@ class OptaPlannerTestResourceTest {
                 .body("{\"valueList\":[\"v1\",\"v2\"],\"entityList\":[{},{}]}")
                 .post("/optaplanner/test/solver-factory")
                 .then()
-                .body(is(
-                        "{\"valueList\":[\"v1\",\"v2\"],\"entityList\":[{\"value\":\"v1\"},{\"value\":\"v2\"}],\"score\":\"0\"}"));
+                .statusCode(200)
+                .body("valueList", contains("v1", "v2"))
+                .body("entityList[0].value", is("v1"))
+                .body("entityList[1].value", is("v2"))
+                .body("score", is("0"));
     }
 
 }
