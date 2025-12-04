@@ -185,16 +185,9 @@ class CoerceUtilTest {
     }
 
     @Test
-    void testCoerceValueToCollectionTypeAny() {
+    void testCoerceUnknownType() {
         Object item = "TESTED_OBJECT";
-        DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
-                "Any",
-                null,
-                true,
-                null,
-                null,
-                null,
-                BuiltInType.UNKNOWN);
+        DMNType requiredType = SimpleTypeImpl.UNKNOWN_DMNTYPE("http://www.omg.org/spec/DMN/20180521/FEEL/");
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, item);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(item);
