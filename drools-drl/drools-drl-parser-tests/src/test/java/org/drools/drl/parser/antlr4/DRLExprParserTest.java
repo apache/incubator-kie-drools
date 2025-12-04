@@ -22,9 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.drl.ast.descr.AtomicExprDescr;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.parser.DrlParser;
@@ -619,5 +621,14 @@ class DRLExprParserTest {
 
         AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
         assertThat(right.getExpression()).isEqualTo("$list");
+    }
+
+    @Test
+    void octalDigit() {
+        final String source = "age == 013";
+        ConstraintConnectiveDescr result = parser.parse(source);
+        RelationalExprDescr relationalExprDescr = (RelationalExprDescr) result.getDescrs().get(0);
+        AtomicExprDescr right = (AtomicExprDescr) relationalExprDescr.getRight();
+        assertThat(right.getExpression()).isEqualTo("013");
     }
 }
