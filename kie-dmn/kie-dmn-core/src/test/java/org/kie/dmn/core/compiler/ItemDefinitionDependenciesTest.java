@@ -233,7 +233,7 @@ class ItemDefinitionDependenciesTest {
 
     @Test
     void testTypeRefWhenPresent() {
-        QName expected = new QName("ns", "date");
+        QName expected = new QName(TEST_NS, "date");
         ItemDefinition item = new TItemDefinition();
         item.setTypeRef(expected);
 
@@ -253,7 +253,7 @@ class ItemDefinitionDependenciesTest {
     void testRetrieveTypeRefFromFunctionItem() {
         ItemDefinition id = new TItemDefinition();
         FunctionItem fi = new TFunctionItem();
-        QName type = new QName("ns", "date");
+        QName type = new QName(TEST_NS, "date");
         fi.setOutputTypeRef(type);
         id.setFunctionItem(fi);
         QName result = retrieveTypeRef(id, TEST_NS, DMNVersion.V1_3);
@@ -264,7 +264,7 @@ class ItemDefinitionDependenciesTest {
     void retrieveTypeRef_withUnsupportedDMNVersion() {
         ItemDefinition id = new TItemDefinition();
         FunctionItem fi = new TFunctionItem();
-        QName type = new QName("ns", "date");
+        QName type = new QName(TEST_NS, "date");
         fi.setOutputTypeRef(type);
         id.setFunctionItem(fi);
         QName result = retrieveTypeRef(id, TEST_NS, DMNVersion.V1_2);
