@@ -61,25 +61,6 @@ class BooleanEvalHelperTest {
         assertThat(getBooleanOrDialectDefault(null, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
     }
 
-    //TODO to be removed
-    /*
-     * @Test
-     * void getFalseOrDialectDefaultFEEL() {
-     * assertThat(getFalseOrDialectDefault(false, FEELDialect.FEEL)).isEqualTo(Boolean.FALSE);
-     * assertThat(getFalseOrDialectDefault(true, FEELDialect.FEEL)).isNull();
-     * assertThat(getFalseOrDialectDefault("true", FEELDialect.FEEL)).isNull();
-     * assertThat(getFalseOrDialectDefault(null, FEELDialect.FEEL)).isNull();
-     * }
-     * 
-     * @Test
-     * void getFalseOrDialectDefaultBFEEL() {
-     * assertThat(getFalseOrDialectDefault(false, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
-     * assertThat(getFalseOrDialectDefault(true, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
-     * assertThat(getFalseOrDialectDefault("true", FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
-     * assertThat(getFalseOrDialectDefault(null, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
-     * }
-     */
-
     @Test
     void isEqualsSCWithStringValue() {
         assertThat(BooleanEvalHelper.isEqualsStringCompare("", "")).isTrue();

@@ -20,14 +20,16 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
 import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.runtime.Range;
 
-import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.*;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GTE;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LTE;
 
 public class RangeImpl
         implements Range {
@@ -240,10 +242,4 @@ public class RangeImpl
         return sb.toString();
     }
 
-    private static Boolean checkIsAssignable(Comparable left, Object right, BiPredicate<Comparable, Comparable> op) {
-        if (right != null && left.getClass().isAssignableFrom(right.getClass())) { // short path
-            return op.test(left, (Comparable) right);
-        }
-        return null; // shortcut not applicable
-    }
 }

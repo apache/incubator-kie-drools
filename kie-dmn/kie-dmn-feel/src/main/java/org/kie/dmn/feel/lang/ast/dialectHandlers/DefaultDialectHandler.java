@@ -30,7 +30,11 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalQueries;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
@@ -47,7 +51,11 @@ import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.DateTimeEvalHelper;
 
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.*;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.addLocalDateAndDuration;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.commonManageInvalidParameters;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getBigDecimal;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtractTemporals;
 import static org.kie.dmn.feel.util.DateTimeEvalHelper.valuedt;
 import static org.kie.dmn.feel.util.DateTimeEvalHelper.valuet;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
@@ -774,9 +782,11 @@ public abstract class DefaultDialectHandler implements DialectHandler {
     /**
      * Compares left and right for equality applying FEEL semantics to specific data types
      *
-     * @param left
-     * @param right
-     * @return
+     * @param left : the first object to compare
+     * @param right : the second object to compare
+     * @param nullFallback : supplier invoked when either argument is null; must not be null
+     * @param defaultFallback supplier invoked when no comparison rule applies or comparison fails; must not be null
+     * @return : result of the provided fallback suppliers depending on the case
      */
     public static Boolean isEqual(Object left, Object right, Supplier<Boolean> nullFallback, Supplier<Boolean> defaultFallback) {
         if (nullFallback == null || defaultFallback == null) {

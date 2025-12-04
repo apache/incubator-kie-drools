@@ -154,22 +154,6 @@ public class UnaryTestNode
         }, value.getText());
     }
 
-    /*
-     * private UnaryTest createCompareUnaryTest(InfixExecutor executor) {
-     * return (context, left) -> {
-     * Object right = value.evaluate(context);
-     *
-     * Object result = executor.evaluate(left, right, context);
-     * //return (result instanceof Boolean) ? (Boolean) result : null;
-     * if (result == null) {
-     * // treat null comparison as false
-     * return Boolean.FALSE;
-     * }
-     * return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
-     * };
-     * }
-     */
-
     /**
      * For a Unary Test an = (equal) semantic depends on the RIGHT value.
      * If the RIGHT is NOT a list, then standard equals semantic applies
@@ -180,7 +164,6 @@ public class UnaryTestNode
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            //return DefaultDialectHandler.isEqual(left, right, () -> null, () -> null);
             return DefaultDialectHandler.isEqual(left, right, () -> (left == null && right == null), () -> Boolean.FALSE);
 
         }
