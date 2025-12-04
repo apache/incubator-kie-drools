@@ -290,7 +290,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();
         
-        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
+        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition(), model.getDMNVersion());
         
         Set<String> names = new HashSet<>();
         for (ItemDefinition id : ordered) {

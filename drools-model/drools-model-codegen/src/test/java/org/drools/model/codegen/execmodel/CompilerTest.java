@@ -43,7 +43,9 @@ import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.domain.StockTick;
 import org.drools.model.codegen.execmodel.domain.Toy;
 import org.drools.model.codegen.execmodel.domain.Woman;
+import org.drools.modelcompiler.util.EvaluationUtil;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -3336,5 +3338,23 @@ public class CompilerTest extends BaseModelTest {
         public int someMethod() {
             return 4;
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void octalDigit(RUN_TYPE runType) {
+        final String str =
+                "package org.example\n" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule r1 when\n" +
+                        "    Person( age == 013 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(runType, str);
+
+        ksession.insert(new Person("John", 11)); // Octal 013 = Decimal 11
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
     }
 }
