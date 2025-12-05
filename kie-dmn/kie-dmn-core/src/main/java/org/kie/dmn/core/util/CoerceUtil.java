@@ -20,6 +20,7 @@ package org.kie.dmn.core.util;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
@@ -47,6 +48,11 @@ public class CoerceUtil {
             // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
             // and vice-versa
             return ((Collection) valueToCoerce).toArray()[0];
+        }
+        if (requiredType.isCollection() && !(valueToCoerce instanceof Collection) &&
+                (!(requiredType instanceof SimpleTypeImpl simpleType)
+                || simpleType.getFeelType() != BuiltInType.UNKNOWN)) {
+            return Collections.singletonList(valueToCoerce);
         }
         if (valueToCoerce instanceof LocalDate localDate &&
                 requiredType instanceof SimpleTypeImpl simpleType &&
