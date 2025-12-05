@@ -211,10 +211,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean greater = compare(left, right,
-                            (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0,
-                            () -> null, // nullFallback for Default dialect
-                            () -> null // defaultFallback for unknown types
-                    );
+                            (leftNum, rightNum) -> leftNum.compareTo(rightNum) > 0);
                     //Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
                     Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
                             ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
@@ -244,9 +241,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
 
                     // default dialect: keep null
                     return compare(left, right,
-                            (l, r) -> l.compareTo(r) > 0,
-                            () -> null,
-                            () -> null);
+                            (l, r) -> l.compareTo(r) > 0);
                 });
         return map;
     }
@@ -279,9 +274,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean less = compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0,
-                            () -> null,
-                            () -> null);
+                            (l, r) -> l.compareTo(r) < 0);
                     // Boolean equal = BooleanEvalHelper.isEqual(left, right, dialect);
                     Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
                             ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
@@ -312,9 +305,7 @@ public abstract class DefaultDialectHandler implements DialectHandler {
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     return compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0,
-                            () -> null,
-                            () -> null);
+                            (l, r) -> l.compareTo(r) < 0);
                 });
         return map;
     }
@@ -768,6 +759,15 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             BigDecimal r = getBigDecimalOrNull(right);
             return op.test(l, r);
         }
+        //        if (left instanceof Boolean && right instanceof Boolean) {
+        //            return (left).equals(right);
+        //
+        //        }
+        //
+        //        if (left instanceof Comparable && right != null
+        //                && left.getClass().isAssignableFrom(right.getClass())) {
+        //            return op.test((Comparable) left, (Comparable) right);
+        //        }
         // last fallback:
         if ((left instanceof String && right instanceof String) ||
                 (left instanceof Boolean && right instanceof Boolean) ||
@@ -776,6 +776,12 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             Comparable<?> r = (Comparable<?>) right;
             return op.test(l, r);
         }
+
+        // --- last fallback: strings or other comparables not caught above ---
+        //        if (left instanceof String && right instanceof String) {
+        //            return op.test((Comparable) left, (Comparable) right);
+        //        }
+
         return defaultFallback.get();
     }
 
