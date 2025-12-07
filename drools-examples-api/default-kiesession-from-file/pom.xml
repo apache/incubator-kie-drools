@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-examples-api</artifactId>
-    <version>2.2.999-SNAPSHOT</version>
+    <version>2.2.999-20251207-SNAPSHOT</version>
   </parent>
 
   <artifactId>default-kiesession-from-file</artifactId>
