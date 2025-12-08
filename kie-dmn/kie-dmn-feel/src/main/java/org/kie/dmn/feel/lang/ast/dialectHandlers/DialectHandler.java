@@ -78,6 +78,6 @@ public interface DialectHandler {
 
     Object executeDivision(Object left, Object right, EvaluationContext ctx);
 
-    public Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op);
+    Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op);
 
 }

@@ -132,16 +132,12 @@ public class RangeImpl
         DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
             return bothOrThrow(handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0), handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) > 0), param);
-            //return bothOrThrow((Boolean) handler.executeLt(lowEndPoint, param, ctx), (Boolean) handler.executeGt(highEndPoint, param, ctx), param);
         } else if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED) {
             return bothOrThrow(handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0), handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) >= 0), param);
-            //return bothOrThrow((Boolean) handler.executeLt(lowEndPoint, param, ctx), (Boolean) handler.executeGte(highEndPoint, param, ctx), param);
         } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.OPEN) {
             return bothOrThrow(handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0), handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) > 0), param);
-            //return bothOrThrow((Boolean) handler.executeLte(lowEndPoint, param, ctx), (Boolean) handler.executeGt(highEndPoint, param, ctx), param);
         } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.CLOSED) {
             return bothOrThrow(handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0), handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) >= 0), param);
-            //return bothOrThrow((Boolean) handler.executeLte(lowEndPoint, param, ctx), (Boolean) handler.executeGte(highEndPoint, param, ctx), param);
         }
         throw new RuntimeException("unknown boundary combination");
     }
@@ -150,10 +146,8 @@ public class RangeImpl
         DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         if (lowBoundary == RangeBoundary.OPEN) {
             return handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0);
-            //return (Boolean) handler.executeLt(lowEndPoint, param, ctx);
         } else {
             return handler.compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0);
-            //return (Boolean) handler.executeLte(lowEndPoint, param, ctx);
         }
     }
 
@@ -161,10 +155,8 @@ public class RangeImpl
         DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
         if (highBoundary == RangeBoundary.OPEN) {
             return handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) > 0);
-            //return (Boolean) handler.executeGt(highEndPoint, param, ctx);
         } else {
             return handler.compare(highEndPoint, param, (l, r) -> l.compareTo(r) >= 0);
-            //return (Boolean) handler.executeGte(highEndPoint, param, ctx);
         }
     }
 
@@ -241,5 +233,4 @@ public class RangeImpl
         sb.append(" )");
         return sb.toString();
     }
-
 }

@@ -759,16 +759,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             BigDecimal r = getBigDecimalOrNull(right);
             return op.test(l, r);
         }
-        //        if (left instanceof Boolean && right instanceof Boolean) {
-        //            return (left).equals(right);
-        //
-        //        }
-        //
-        //        if (left instanceof Comparable && right != null
-        //                && left.getClass().isAssignableFrom(right.getClass())) {
-        //            return op.test((Comparable) left, (Comparable) right);
-        //        }
-        // last fallback:
         if ((left instanceof String && right instanceof String) ||
                 (left instanceof Boolean && right instanceof Boolean) ||
                 (left instanceof Comparable && left.getClass().isAssignableFrom(right.getClass()))) {
@@ -776,12 +766,6 @@ public abstract class DefaultDialectHandler implements DialectHandler {
             Comparable<?> r = (Comparable<?>) right;
             return op.test(l, r);
         }
-
-        // --- last fallback: strings or other comparables not caught above ---
-        //        if (left instanceof String && right instanceof String) {
-        //            return op.test((Comparable) left, (Comparable) right);
-        //        }
-
         return defaultFallback.get();
     }
 
