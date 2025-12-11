@@ -118,7 +118,7 @@ public class IndexingService {
     }
 
     public void indexJob(Job job) {
-        manager.getJobsStorage().put(job.getId(), job);
+        manager.getJobsStorage().indexJob(job);
     }
 
     public void indexModel(ObjectNode updateData) {

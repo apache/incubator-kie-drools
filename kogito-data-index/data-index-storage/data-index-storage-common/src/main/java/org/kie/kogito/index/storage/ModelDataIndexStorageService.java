@@ -59,8 +59,8 @@ public class ModelDataIndexStorageService implements DataIndexStorageService {
     }
 
     @Override
-    public Storage<String, Job> getJobsStorage() {
-        return storageService.getCache(JOBS_STORAGE, Job.class);
+    public JobInstanceStorage getJobsStorage() {
+        return new ModelJobInstanceStorage(storageService.getCache(JOBS_STORAGE, Job.class));
     }
 
     @Override
