@@ -18,13 +18,13 @@
  */
 package org.kie.dmn.feel.runtime.impl;
 
-import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.runtime.Range;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,47 +79,48 @@ class RangeImplTest {
     @Test
     void includes() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, -15)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 5)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 10)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 12)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 15)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 156)).isFalse();
+        EvaluationContext ctx = null;
+        assertThat(rangeImpl.includes(null, -15)).isFalse();
+        assertThat(rangeImpl.includes(null, 5)).isFalse();
+        assertThat(rangeImpl.includes(null, 10)).isFalse();
+        assertThat(rangeImpl.includes(null, 12)).isTrue();
+        assertThat(rangeImpl.includes(null, 15)).isFalse();
+        assertThat(rangeImpl.includes(null, 156)).isFalse();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 10)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 12)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 15)).isFalse();
+        assertThat(rangeImpl.includes(null, 10)).isTrue();
+        assertThat(rangeImpl.includes(null, 12)).isTrue();
+        assertThat(rangeImpl.includes(null, 15)).isFalse();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 10)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 12)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 15)).isTrue();
+        assertThat(rangeImpl.includes(null, 10)).isFalse();
+        assertThat(rangeImpl.includes(null, 12)).isTrue();
+        assertThat(rangeImpl.includes(null, 15)).isTrue();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 10)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 12)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 15)).isTrue();
+        assertThat(rangeImpl.includes(null, 10)).isTrue();
+        assertThat(rangeImpl.includes(null, 12)).isTrue();
+        assertThat(rangeImpl.includes(null, 15)).isTrue();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), 15, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, -1456)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 20)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, null)).isNull();
+        assertThat(rangeImpl.includes(null, -1456)).isTrue();
+        assertThat(rangeImpl.includes(null, 20)).isFalse();
+        assertThat(rangeImpl.includes(null, null)).isNull();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 15, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, -1456)).isFalse();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 20)).isTrue();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, null)).isNull();
+        assertThat(rangeImpl.includes(null, -1456)).isFalse();
+        assertThat(rangeImpl.includes(null, 20)).isTrue();
+        assertThat(rangeImpl.includes(null, null)).isNull();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, -1456)).isNull();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 20)).isNull();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, null)).isNull();
+        assertThat(rangeImpl.includes(null, -1456)).isNull();
+        assertThat(rangeImpl.includes(null, 20)).isNull();
+        assertThat(rangeImpl.includes(null, null)).isNull();
 
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), null, Range.RangeBoundary.CLOSED);
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, -1456)).isNull();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, 20)).isNull();
-        assertThat(rangeImpl.includes(FEELDialect.FEEL, null)).isNull();
+        assertThat(rangeImpl.includes(null, -1456)).isNull();
+        assertThat(rangeImpl.includes(null, 20)).isNull();
+        assertThat(rangeImpl.includes(null, null)).isNull();
     }
 
     @Test

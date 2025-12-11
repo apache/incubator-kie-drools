@@ -30,6 +30,7 @@ import java.time.chrono.ChronoPeriod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -2045,7 +2046,7 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
                 .anyMatch(m -> m.getSourceId().equals("_b2205027-d06c-41b5-8419-e14b501e14a6"))).isTrue();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide Vowel a")).isEqualTo("a");
+        assertThat(result.get("Decide Vowel a")).isEqualTo(Collections.singletonList("a"));
         assertThat(result.get("Decide BAD")).isNull();
     }
 

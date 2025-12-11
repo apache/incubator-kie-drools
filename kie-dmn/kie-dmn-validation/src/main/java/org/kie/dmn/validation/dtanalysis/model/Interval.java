@@ -18,16 +18,11 @@
  */
 package org.kie.dmn.validation.dtanalysis.model;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
@@ -83,7 +78,8 @@ public class Interval {
     private Interval(Bound<?> lowerBound, Bound<?> upperBound) {
         this.lowerBound = new Bound(lowerBound.getValue(), lowerBound.getBoundaryType(), this);
         this.upperBound = new Bound(upperBound.getValue(), upperBound.getBoundaryType(), this);
-        if (lowerBound.getParent() != null && upperBound.getParent() != null && lowerBound.getParent().rule == upperBound.getParent().rule && lowerBound.getParent().col == upperBound.getParent().col) {
+        if (lowerBound.getParent() != null && upperBound.getParent() != null && lowerBound.getParent().rule == upperBound.getParent().rule
+                && lowerBound.getParent().col == upperBound.getParent().col) {
             this.rule = lowerBound.getParent().rule;
             this.col = lowerBound.getParent().col;
         } else {
@@ -108,9 +104,9 @@ public class Interval {
     @Override
     public String toString() {
         return (lowerBound.getBoundaryType() == RangeBoundary.OPEN ? "(" : "[") +
-               " " + Bound.boundValueToString(lowerBound.getValue()) +
-               " .. " + Bound.boundValueToString(upperBound.getValue()) +
-               " " + (upperBound.getBoundaryType() == RangeBoundary.OPEN ? ")" : "]");
+                " " + Bound.boundValueToString(lowerBound.getValue()) +
+                " .. " + Bound.boundValueToString(upperBound.getValue()) +
+                " " + (upperBound.getBoundaryType() == RangeBoundary.OPEN ? ")" : "]");
     }
 
     public Bound<?> getLowerBound() {
@@ -171,13 +167,14 @@ public class Interval {
 
     public boolean asRangeIncludes(Object param) {
         // Defaulting FEELDialect to FEEL
-        Boolean result = this.asRange.includes(FEELDialect.FEEL, param);
+        EvaluationContext ctx = null;
+        Boolean result = this.asRange.includes(ctx, param);
         if (result != null) {
             return result;
         } else if (this.lowerBound.getValue() == NEG_INF &&
-                   this.lowerBound.getBoundaryType() == RangeBoundary.CLOSED &&
-                   this.upperBound.getValue() == POS_INF &&
-                   this.upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                this.lowerBound.getBoundaryType() == RangeBoundary.CLOSED &&
+                this.upperBound.getValue() == POS_INF &&
+                this.upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
             return true;
         } else {
             return false;
@@ -196,7 +193,7 @@ public class Interval {
         return thisLeftLower && oRightHigher && (chained || adj);
     }
 
-    public static Range.RangeBoundary invertBoundary(Range.RangeBoundary b) {
+    public static RangeBoundary invertBoundary(RangeBoundary b) {
         if (b == RangeBoundary.OPEN) {
             return RangeBoundary.CLOSED;
         } else if (b == RangeBoundary.CLOSED) {
@@ -250,26 +247,26 @@ public class Interval {
         List<Interval> results = new ArrayList<>();
         if (!domain.lowerBound.equals(interval.lowerBound)) {
             Interval left = new Interval(domain.lowerBound.getBoundaryType(),
-                                         domain.lowerBound.getValue(),
-                                         interval.lowerBound.getValue(),
-                                         invertBoundary(interval.lowerBound.getBoundaryType()),
-                                         interval.rule,
-                                         interval.col);
+                    domain.lowerBound.getValue(),
+                    interval.lowerBound.getValue(),
+                    invertBoundary(interval.lowerBound.getBoundaryType()),
+                    interval.rule,
+                    interval.col);
             results.add(left);
         }
         if (!domain.upperBound.equals(interval.upperBound)) {
             Interval right = new Interval(invertBoundary(interval.upperBound.getBoundaryType()),
-                                          interval.upperBound.getValue(),
-                                          domain.upperBound.getValue(),
-                                          domain.upperBound.getBoundaryType(),
-                                          interval.rule,
-                                          interval.col);
+                    interval.upperBound.getValue(),
+                    domain.upperBound.getValue(),
+                    domain.upperBound.getBoundaryType(),
+                    interval.rule,
+                    interval.col);
             results.add(right);
         }
         LOG.debug("results {}", results);
         return results;
     }
-    
+
     public static List<Interval> invertOverDomain(List<Interval> intervals, Interval domain) {
         List<Interval> results = new ArrayList<>();
         final List<Interval> is = flatten(intervals);
@@ -281,11 +278,11 @@ public class Interval {
         Interval firstInterval = iterator.next();
         if (!domain.lowerBound.equals(firstInterval.lowerBound)) {
             Interval left = new Interval(domain.lowerBound.getBoundaryType(),
-                                         domain.lowerBound.getValue(),
-                                         firstInterval.lowerBound.getValue(),
-                                         invertBoundary(firstInterval.lowerBound.getBoundaryType()),
-                                         firstInterval.rule,
-                                         firstInterval.col);
+                    domain.lowerBound.getValue(),
+                    firstInterval.lowerBound.getValue(),
+                    invertBoundary(firstInterval.lowerBound.getBoundaryType()),
+                    firstInterval.rule,
+                    firstInterval.col);
             results.add(left);
         }
         Interval previousInterval = firstInterval;
@@ -294,22 +291,22 @@ public class Interval {
             if ((!previousInterval.upperBound.getValue().equals(nextInterval.lowerBound.getValue()))
                     || (previousInterval.upperBound.getBoundaryType() == RangeBoundary.OPEN && nextInterval.lowerBound.getBoundaryType() == RangeBoundary.OPEN)) {
                 Interval iNew = new Interval(invertBoundary(previousInterval.upperBound.getBoundaryType()),
-                                              previousInterval.upperBound.getValue(),
-                                              nextInterval.lowerBound.getValue(),
-                                              invertBoundary(nextInterval.lowerBound.getBoundaryType()),
-                                              previousInterval.rule,
-                                              previousInterval.col);
+                        previousInterval.upperBound.getValue(),
+                        nextInterval.lowerBound.getValue(),
+                        invertBoundary(nextInterval.lowerBound.getBoundaryType()),
+                        previousInterval.rule,
+                        previousInterval.col);
                 results.add(iNew);
             }
             previousInterval = nextInterval;
         }
         if (!domain.upperBound.equals(previousInterval.upperBound)) {
             Interval right = new Interval(invertBoundary(previousInterval.upperBound.getBoundaryType()),
-                                          previousInterval.upperBound.getValue(),
-                                          domain.upperBound.getValue(),
-                                          domain.upperBound.getBoundaryType(),
-                                          previousInterval.rule,
-                                          previousInterval.col);
+                    previousInterval.upperBound.getValue(),
+                    domain.upperBound.getValue(),
+                    domain.upperBound.getBoundaryType(),
+                    previousInterval.rule,
+                    previousInterval.col);
             results.add(right);
         }
         LOG.debug("results {}", results);
@@ -317,21 +314,21 @@ public class Interval {
     }
 
     public String asHumanFriendly(Domain domain) {
-        if (lowerBound.getValue().equals(upperBound.getValue()) 
-                && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
+        if (lowerBound.getValue().equals(upperBound.getValue())
+                && lowerBound.getBoundaryType() == RangeBoundary.CLOSED
                 && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
             return Bound.boundValueToString(lowerBound.getValue());
         } else if (domain.isDiscreteDomain()) {
             List<?> dValues = domain.getDiscreteValues();
             int posL = dValues.indexOf(lowerBound.getValue());
             if (posL < dValues.size() - 1
-                && dValues.get(posL + 1).equals(upperBound.getValue())
-                    && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
+                    && dValues.get(posL + 1).equals(upperBound.getValue())
+                    && lowerBound.getBoundaryType() == RangeBoundary.CLOSED
                     && upperBound.getBoundaryType() == RangeBoundary.OPEN) {
                 return Bound.boundValueToString(lowerBound.getValue());
             } else if (posL == dValues.size() - 1
-                       && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
-                       && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                    && lowerBound.getBoundaryType() == RangeBoundary.CLOSED
+                    && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
                 return Bound.boundValueToString(lowerBound.getValue());
             } else {
                 return this.toString();
@@ -376,8 +373,8 @@ public class Interval {
 
     public boolean isSingularity() {
         return lowerBound.getBoundaryType() == RangeBoundary.CLOSED &&
-               upperBound.getBoundaryType() == RangeBoundary.CLOSED &&
-               BoundValueComparator.compareValueDispatchingToInf(lowerBound, upperBound) == 0;
+                upperBound.getBoundaryType() == RangeBoundary.CLOSED &&
+                BoundValueComparator.compareValueDispatchingToInf(lowerBound, upperBound) == 0;
     }
 
     public static boolean adjOrOverlap(List<Interval> intervalsA, List<Interval> intervalsB) {

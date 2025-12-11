@@ -35,7 +35,7 @@ public class InNode
     private BaseNode exprs;
 
     public InNode(ParserRuleContext ctx, BaseNode value, BaseNode exprs) {
-        super( ctx );
+        super(ctx);
         this.value = value;
         this.exprs = exprs;
     }
@@ -64,42 +64,43 @@ public class InNode
 
     @Override
     public Boolean evaluate(EvaluationContext ctx) {
-        if (exprs == null) return null;
-        Object value = this.value.evaluate( ctx );
-        Object expr = this.exprs.evaluate( ctx );
-        if ( expr != null ) {
-            if ( expr instanceof Iterable ) {
+        if (exprs == null)
+            return null;
+        Object value = this.value.evaluate(ctx);
+        Object expr = this.exprs.evaluate(ctx);
+        if (expr != null) {
+            if (expr instanceof Iterable) {
                 // evaluate in the collection
-                for ( Object e : ((Iterable) expr) ) {
+                for (Object e : ((Iterable) expr)) {
                     // have to compare to Boolean.TRUE because in() might return null
-                    if ( in( ctx, value, e ) == Boolean.TRUE ) {
+                    if (in(ctx, value, e) == Boolean.TRUE) {
                         return true;
                     }
                 }
                 return false;
             } else {
                 // evaluate single entity
-                return in( ctx, value, expr );
+                return in(ctx, value, expr);
             }
         }
-        ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Expression")) );
+        ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Expression")));
         return null;
     }
 
     private Boolean in(EvaluationContext ctx, Object value, Object expr) {
         // need to improve this to work with unary tests
-        if ( expr == null ) {
+        if (expr == null) {
             return value == expr;
-        } else if ( expr instanceof UnaryTest ) {
-            return ((UnaryTest) expr).apply( ctx, value );
-        } else if ( expr instanceof Range ) {
+        } else if (expr instanceof UnaryTest) {
+            return ((UnaryTest) expr).apply(ctx, value);
+        } else if (expr instanceof Range) {
             try {
-                return ((Range) expr).includes(ctx.getFEELDialect(), value );
-            } catch ( Exception e ) {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
+                return ((Range) expr).includes(ctx, value);
+            } catch (Exception e) {
+                ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString()), e));
                 return null;
             }
-        } else if ( value != null ) {
+        } else if (value != null) {
             return BooleanEvalHelper.isEqualsStringCompare(value, expr);
         } else {
             // value == null, expr != null
