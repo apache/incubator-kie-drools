@@ -26,6 +26,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.buffer.Buffer;
@@ -34,6 +36,8 @@ import io.vertx.mutiny.ext.web.client.HttpResponse;
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
 
 public class RestWorkItemHandlerUtils {
+
+    private final static Logger logger = LoggerFactory.getLogger(RestWorkItemHandlerUtils.class);
 
     private RestWorkItemHandlerUtils() {
     }
@@ -53,6 +57,7 @@ public class RestWorkItemHandlerUtils {
 
     public static <T> T getParam(Map<String, Object> parameters, String paramName, Class<T> type, T defaultValue) {
         Object value = parameters.remove(paramName);
+        logger.debug("Rest parameter name {} value is {}", paramName, value);
         return value == null ? defaultValue : convert(value, type, v -> v.toString().toUpperCase());
     }
 

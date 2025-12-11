@@ -83,6 +83,12 @@ public class RestWorkItemHandlerTest {
     @Mock
     private HttpRequest<Buffer> request;
 
+    @Mock
+    private HttpRequest<Buffer> sslRequest;
+
+    @Mock
+    private HttpResponse<Buffer> sslResponse;
+
     private KogitoWorkItemImpl workItem;
 
     @Mock
@@ -111,6 +117,10 @@ public class RestWorkItemHandlerTest {
         ObjectMapper mapper = new ObjectMapper();
         when(webClient.request(any(HttpMethod.class), eq(8080), eq("localhost"), anyString()))
                 .thenReturn(request);
+        when(sslClient.request(any(HttpMethod.class), eq(443), eq("localhost"), anyString())).thenReturn(sslRequest);
+        when(sslRequest.sendAndAwait()).thenReturn(sslResponse);
+        when(sslResponse.bodyAsJson(ObjectNode.class)).thenReturn(ObjectMapperFactory.get().createObjectNode().put("num", 2));
+        when(sslResponse.statusCode()).thenReturn(200);
 
         when(request.sendJsonAndAwait(any())).thenReturn(response);
         when(request.sendAndAwait()).thenReturn(response);
@@ -120,6 +130,7 @@ public class RestWorkItemHandlerTest {
         workItem = new KogitoWorkItemImpl();
         workItem.setId("2");
         parameters = workItem.getParameters();
+        parameters.put(RestWorkItemHandler.PROTOCOL, "http");
         parameters.put(RestWorkItemHandler.HOST, "localhost");
         parameters.put(RestWorkItemHandler.PORT, 8080);
         parameters.put(RestWorkItemHandler.URL, "/results/sum");
@@ -272,7 +283,20 @@ public class RestWorkItemHandlerTest {
         ObjectNode bodyMap = bodyCaptor.getValue();
         assertThat(bodyMap.get("id").asInt()).isEqualTo(26);
         assertThat(bodyMap.get("name").asText()).isEqualTo("pepe");
+    }
 
+    @Test
+    public void testSSLRequestProtocol() {
+        parameters.remove(RestWorkItemHandler.PORT);
+        parameters.put(RestWorkItemHandler.PROTOCOL, "https");
+        assertSSLResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
+    }
+
+    @Test
+    public void testSSLRequestPort() {
+        parameters.remove(RestWorkItemHandler.PROTOCOL);
+        parameters.put(RestWorkItemHandler.PORT, 443);
+        assertSSLResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
     }
 
     public void assertResult(Optional<WorkItemTransition> transition) {
@@ -281,5 +305,13 @@ public class RestWorkItemHandlerTest {
         Object result = results.get(RestWorkItemHandler.RESULT);
         assertThat(result).isInstanceOf(ObjectNode.class);
         assertThat(((ObjectNode) result).get("num").asInt()).isOne();
+    }
+
+    public void assertSSLResult(Optional<WorkItemTransition> transition) {
+        Map<String, Object> results = transition.get().data();
+        assertThat(results).hasSize(1).containsKey(RestWorkItemHandler.RESULT);
+        Object result = results.get(RestWorkItemHandler.RESULT);
+        assertThat(result).isInstanceOf(ObjectNode.class);
+        assertThat(((ObjectNode) result).get("num").asInt()).isEqualTo(2);
     }
 }

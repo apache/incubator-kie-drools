@@ -91,6 +91,8 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
     public static final String PATH_PARAM_RESOLVER = "PathParamResolver";
     public static final String AUTH_METHOD = "AuthMethod";
     public static final String TARGET_TYPE = "TargetType";
+    private static final String HTTP_PROTOCOL = "http";
+    private static final String HTTPS_PROTOCOL = "https";
 
     public static final String REQUEST_TIMEOUT_IN_MILLIS = "RequestTimeout";
 
@@ -162,28 +164,24 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         } catch (MalformedURLException ex) {
             logger.debug("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
         }
-
         if (isEmpty(protocol)) {
-            protocol = getParam(parameters, PROTOCOL, String.class, "http");
-            logger.debug("Protocol not specified, using {}", protocol);
+            protocol = getParam(parameters, PROTOCOL);
         }
-
-        boolean isSsl = protocol.equalsIgnoreCase("https");
-
         if (isEmpty(host)) {
             host = getParam(parameters, HOST, String.class, "localhost");
-            logger.debug("Host not specified, using {}", host);
         }
         if (port == -1) {
-            port = getParam(parameters, PORT, Integer.class, isSsl ? DEFAULT_SSL_PORT : DEFAULT_PORT);
-            logger.debug("Port not specified, using {}", port);
+            port = getParam(parameters, PORT, Integer.class, isHttps(protocol) ? DEFAULT_SSL_PORT : DEFAULT_PORT);
         }
         if (isEmpty(path)) {
             path = endPoint;
             logger.debug("Path is empty, using whole endpoint {}", endPoint);
         }
+        if (isEmpty(protocol)) {
+            protocol = port == DEFAULT_SSL_PORT ? HTTPS_PROTOCOL : HTTP_PROTOCOL;
+        }
         logger.debug("Invoking request with protocol {} host {} port {} and endpoint {}", protocol, host, port, path);
-        WebClient client = isSsl ? httpsClient : httpClient;
+        WebClient client = isHttps(protocol) ? httpsClient : httpClient;
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
@@ -194,6 +192,10 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
                 : send(request, requestTimeout);
         return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(),
                 Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo, ContextFactory.fromItem(workItem)))));
+    }
+
+    private boolean isHttps(String protocol) {
+        return HTTPS_PROTOCOL.equalsIgnoreCase(protocol);
     }
 
     private static HttpResponse<Buffer> sendBody(HttpRequest<Buffer> request, Object body, Duration requestTimeout) {
@@ -258,5 +260,4 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         logger.info("Cannot find definition for variable {}", varName);
         return null;
     }
-
 }

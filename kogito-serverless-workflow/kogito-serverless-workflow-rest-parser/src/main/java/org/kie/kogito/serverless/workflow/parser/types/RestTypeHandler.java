@@ -66,6 +66,7 @@ public class RestTypeHandler extends WorkItemTypeHandler {
                 .workParameter(RestWorkItemHandler.METHOD, method)
                 .workParameter(RestWorkItemHandler.USER, runtimeRestApi(functionDef, USER_PROP, context.getContext()))
                 .workParameter(RestWorkItemHandler.PASSWORD, runtimeRestApi(functionDef, PASSWORD_PROP, context.getContext()))
+                .workParameter(RestWorkItemHandler.PROTOCOL, runtimeRestApi(functionDef, "protocol", context.getContext()))
                 .workParameter(RestWorkItemHandler.HOST, runtimeRestApi(functionDef, "host", context.getContext()))
                 .workParameter(RestWorkItemHandler.PORT, runtimeRestApi(functionDef, PORT, context.getContext(), Integer.class,
                         context.getContext().getApplicationProperty(APP_PROPERTIES_FUNCTIONS_BASE + PORT).map(Integer::parseInt).orElse(null)))

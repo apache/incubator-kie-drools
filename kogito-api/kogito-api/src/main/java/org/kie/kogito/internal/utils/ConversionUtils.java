@@ -228,7 +228,7 @@ public class ConversionUtils {
      * @return
      */
     public static boolean isEmpty(String value) {
-        return Objects.isNull(value) || value.isBlank();
+        return value == null || value.isBlank();
     }
 
     /**
