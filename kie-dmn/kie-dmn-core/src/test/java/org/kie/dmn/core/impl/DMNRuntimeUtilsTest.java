@@ -291,7 +291,7 @@ class DMNRuntimeUtilsTest {
 
         when(type.isCollection()).thenReturn(true);
         retrieved = DMNRuntimeUtils.coerceSingleItemCollectionToValue(value, type);
-        assertThat(retrieved).isEqualTo(value);
+        assertThat(retrieved).isEqualTo(Collections.singletonList(value));
     }
 
     @Test

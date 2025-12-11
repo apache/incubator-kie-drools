@@ -101,6 +101,10 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
             if (c == null) {
                 ctx.clear();
                 decisionResults.forEach(it -> ((DMNDecisionResultImpl) it).setResult(null));
+            } else {
+                if (decisionResults.size()== 1) {
+                    ((DMNDecisionResultImpl) decisionResults.get(0)).setResult(c);
+                }
             }
         }
         for (DMNDecisionResult dr : decisionResults) {

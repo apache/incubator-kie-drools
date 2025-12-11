@@ -41,15 +41,18 @@ import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.core.util.NamespaceUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,7 +278,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         QName fiReturnType = fi.getOutputTypeRef();
         if (ni.getDecisionService().getOutputDecision().size() == 1) {
             QName fdReturnType = outputDecisions.get(0).getDecision().getVariable().getTypeRef();
-            if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
+            if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType) && !isReturnTypeCollectionCompatible(fiReturnType, fdReturnType, model)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ni.getDecisionService(),
@@ -325,6 +328,57 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       fdComposite);
             }
         }
+    }
+
+    private boolean isReturnTypeCollectionCompatible(QName fiReturnType, QName fdReturnType, DMNModelImpl model) {
+        DMNType fiType = resolveDMNType(fiReturnType, model);
+        DMNType fdType = resolveDMNType(fdReturnType, model);
+
+        if (!fiType.isCollection() && fdType.isCollection()) {
+            DMNType base = fdType.getBaseType();
+            return base == null || DMNTypeUtils.getFEELBuiltInType(base)
+                    == DMNTypeUtils.getFEELBuiltInType(fiType);
+        }
+        if (fiType.isCollection() && !fdType.isCollection()) {
+            DMNType base = fiType.getBaseType();
+            return base != null && DMNTypeUtils.getFEELBuiltInType(base)
+                    == DMNTypeUtils.getFEELBuiltInType(fdType);
+        }
+        return false;
+    }
+
+    private DMNType resolveDMNType(QName qName, DMNModelImpl model) {
+        DMNType type = model.getTypeRegistry().resolveType(model.getNamespace(), qName.getLocalPart());
+        if (type == null) {
+            BuiltInType bi = resolveBuiltInType(qName.getLocalPart());
+            if (bi != null) {
+                boolean isCollection = (bi == BuiltInType.LIST);
+                type = new SimpleTypeImpl(
+                        model.getNamespace(),
+                        bi.getName(),
+                        null,
+                        isCollection,
+                        null,
+                        null,
+                        null,
+                        bi
+                );
+            }
+        }
+        return type;
+    }
+
+
+    private BuiltInType resolveBuiltInType(String name) {
+        if (name == null) return null;
+        for (BuiltInType t : BuiltInType.values()) {
+            for (String n : t.getNames()) {
+                if (n.equalsIgnoreCase(name)) {
+                    return t;
+                }
+            }
+        }
+        return null;
     }
 
 }

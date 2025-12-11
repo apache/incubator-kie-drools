@@ -19,6 +19,7 @@
 package org.kie.dmn.core.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -217,6 +219,10 @@ public class DMNRuntimeUtils {
         if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
             // as per Decision evaluation result.
             return ((Collection<?>) value).toArray()[0];
+        } else if (type.isCollection() && ! (value instanceof Collection) &&
+                (!(type instanceof SimpleTypeImpl simpleType)
+                        || simpleType.getFeelType() != BuiltInType.UNKNOWN)) {
+            return Collections.singletonList(value);
         } else {
             return value;
         }
