@@ -121,6 +121,36 @@ class RangeImplTest {
         assertThat(rangeImpl.includes(null, -1456)).isNull();
         assertThat(rangeImpl.includes(null, 20)).isNull();
         assertThat(rangeImpl.includes(null, null)).isNull();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, false, false, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isTrue();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, false, false, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isFalse();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, false, false, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isFalse();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, false, false, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isFalse();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, false, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(null, true)).isTrue();
+        assertThat(rangeImpl.includes(null, false)).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, false, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(null, true)).isTrue();
+        assertThat(rangeImpl.includes(null, false)).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), false, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isTrue();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), false, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.includes(null, true)).isFalse();
+        assertThat(rangeImpl.includes(null, false)).isFalse();
     }
 
     @Test
