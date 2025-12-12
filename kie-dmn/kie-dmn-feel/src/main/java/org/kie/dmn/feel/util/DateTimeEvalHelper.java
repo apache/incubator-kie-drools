@@ -18,13 +18,7 @@
  */
 package org.kie.dmn.feel.util;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
@@ -36,12 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DateTimeEvalHelper {
-    public static final Logger LOG = LoggerFactory.getLogger( DateTimeEvalHelper.class );
+    public static final Logger LOG = LoggerFactory.getLogger(DateTimeEvalHelper.class);
 
     public static ZonedDateTime coerceDateTime(final LocalDate value) {
         return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
     }
-    
+
     public static String toParsableString(TemporalAccessor temporalAccessor) {
         int hour = temporalAccessor.get(ChronoField.HOUR_OF_DAY);
         int minute = temporalAccessor.get(ChronoField.MINUTE_OF_HOUR);
@@ -51,10 +45,10 @@ public class DateTimeEvalHelper {
     }
 
     /**
-     * DMNv1.2 10.3.2.3.6 date-time, valuedt(date and time), for use in this {@link BooleanEvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
+     * DMNv1.2 10.3.2.3.6 date-time, valuedt(date and time), for use in this compare method
      * DMNv1.3 also used for equality DMN13-35
      */
-     static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
+    public static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
         if (datetime instanceof LocalDateTime) {
             return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
@@ -71,7 +65,7 @@ public class DateTimeEvalHelper {
      * DMNv1.2 10.3.2.3.4 time, valuet(time), for use in this {@link BooleanEvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
      * DMNv1.3 also used for equality DMN13-35
      */
-     static long valuet(TemporalAccessor time) {
+    public static long valuet(TemporalAccessor time) {
         long result = 0;
         result += time.get(ChronoField.HOUR_OF_DAY) * (60 * 60);
         result += time.get(ChronoField.MINUTE_OF_HOUR) * (60);

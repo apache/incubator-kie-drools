@@ -24,12 +24,13 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
 
@@ -84,67 +85,245 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getAndOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
         FEELDialect dialect = ctx.getFEELDialect();
+
         // Special case: true AND otherwise → false
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
                     Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
                     return Boolean.TRUE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE);
 
-        // Special case: otherwise AND true → false
+        // Special case: false AND true → false
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
                     Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
-                    return leftBool == null && Boolean.TRUE.equals(rightBool);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.TRUE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE);
 
-        // Special case: otherwise AND otherwise → false
+        // Special case: false AND false → false
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
                     Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
-                    return leftBool == null && Boolean.FALSE.equals(rightBool);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE);
+
         map.putAll(getCommonAndOperations(ctx));
         return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getEqualOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonEqualOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        // Shortcut: null = null → false
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right == null, false),
+                (left, right) -> Boolean.TRUE);
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> isEqual(left, right,
+                        () -> Boolean.FALSE, () -> Boolean.FALSE));
+        return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGteOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonGteOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        // Any non-Boolean coerces to false, so (false,false) --> false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE);
+
+        // non-Boolean coercion to false
+        map.put(
+                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
+                (left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
+                    return leftBool || rightBool;
+                });
+        // numeric/comparable >= logic
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean greater = compare(left, right, (l, r) -> l.compareTo(r) > 0,
+                            () -> Boolean.FALSE,
+                            () -> Boolean.FALSE);
+                    //Boolean equal = BooleanEvalHelper.isEqual(left, right, ctx.getFEELDialect());
+                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
+                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
+                            : null;
+
+                    if (greater == null && equal == null) {
+                        return Boolean.FALSE; // BFEEL default
+                    }
+                    if (Boolean.TRUE.equals(greater) || Boolean.TRUE.equals(equal)) {
+                        return Boolean.TRUE;
+                    }
+                    return Boolean.FALSE;
+                });
+
+        // Fall back to common >= operations for all other cases
+        map.putAll(getCommonGteOperations(ctx));
+        return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getGtOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonGtOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        // Any non-Boolean coerces to false, so (false,false) --> false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE);
+
+        // non-Boolean coercion to false
+        map.put(
+                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
+                (left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
+                    return leftBool || rightBool;
+                });
+
+        // numeric/comparable > logic
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean greater = compare(left, right,
+                            (l, r) -> l.compareTo(r) > 0,
+                            () -> Boolean.FALSE,
+                            () -> Boolean.FALSE);
+                    return Objects.requireNonNullElse(greater, Boolean.FALSE);
+                });
+
+        map.putAll(getCommonGtOperations(ctx));
+        return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLteOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonLteOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        // Any non-Boolean coerces to false, so (false,false) --> false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE);
+
+        // General non-Boolean coercion to false
+        map.put(
+                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
+                (left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
+                    return leftBool || rightBool;
+                });
+
+        // Numeric/comparable ≤ logic
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean less = compare(left, right,
+                            (l, r) -> l.compareTo(r) < 0,
+                            () -> Boolean.FALSE,
+                            () -> Boolean.FALSE);
+                    Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
+                            ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
+                            : null;
+
+                    if (less == null && equal == null) {
+                        return Boolean.FALSE; // BFEEL default
+                    }
+                    if (Boolean.TRUE.equals(less) || Boolean.TRUE.equals(equal)) {
+                        return Boolean.TRUE;
+                    }
+                    return Boolean.FALSE;
+                });
+
+        map.putAll(getCommonLteOperations(ctx));
+        return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getLtOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonLtOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+
+        // Non-Boolean coerces to false, so (false,false) --> false
+        map.put(
+                new CheckedPredicate((left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Object rightValue = evalRight(right, ctx);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
+                    return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
+                }, false),
+                (left, right) -> Boolean.FALSE);
+
+        // General non-Boolean coercion to false
+        map.put(
+                new CheckedPredicate((left, right) -> (!(left instanceof Boolean) || !(right instanceof Boolean)), false),
+                (left, right) -> {
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
+                    Boolean rightBool = (right instanceof Boolean) ? (Boolean) right : Boolean.FALSE;
+                    return leftBool || rightBool;
+                });
+
+        // Numeric/comparable < logic
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean less = compare(left, right,
+                            (l, r) -> l.compareTo(r) < 0,
+                            () -> Boolean.FALSE,
+                            () -> Boolean.FALSE);
+                    return Objects.requireNonNullElse(less, Boolean.FALSE);
+                });
+        map.putAll(getCommonLtOperations(ctx));
+        return map;
     }
 
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getNotEqualOperations(EvaluationContext ctx) {
-        return new LinkedHashMap<>(getCommonNotEqualOperations(ctx));
+        Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
+        // Shortcut: null != null → true
+        map.put(
+                new CheckedPredicate((left, right) -> left == null && right == null, false),
+                (left, right) -> Boolean.FALSE);
+        map.put(
+                new CheckedPredicate((left, right) -> true, false),
+                (left, right) -> {
+                    Boolean result = isEqual(left, right,
+                            () -> Boolean.FALSE, // nullFallback
+                            () -> Boolean.FALSE // defaultFallback
+                    );
+                    // If result is null, treat as false
+                    return result != null ? !result : Boolean.FALSE;
+                });
+
+        return map;
     }
 
     /**
@@ -156,18 +335,16 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getOrOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        FEELDialect dialect = ctx.getFEELDialect();
-
-        // Special case: false OR null/otherwise → false (BFEEL override)
+        // false OR otherwise → false
         map.put(
                 new CheckedPredicate((left, right) -> {
-                    Boolean leftBool = BooleanEvalHelper.getBooleanOrDialectDefault(left, dialect);
+                    Boolean leftBool = (left instanceof Boolean) ? (Boolean) left : Boolean.FALSE;
                     Object rightValue = evalRight(right, ctx);
-                    Boolean rightBool = BooleanEvalHelper.getBooleanOrDialectDefault(rightValue, dialect);
+                    Boolean rightBool = (rightValue instanceof Boolean) ? (Boolean) rightValue : Boolean.FALSE;
                     return Boolean.FALSE.equals(leftBool) && Boolean.FALSE.equals(rightBool);
                 }, false),
                 (left, right) -> Boolean.FALSE);
-        // Fall back to FEEL semantics for all other cases
+
         map.putAll(getCommonOrOperations(ctx));
         return map;
     }
@@ -199,7 +376,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
     @Override
     public Map<CheckedPredicate, BiFunction<Object, Object, Object>> getSubOperations(EvaluationContext ctx) {
         Map<CheckedPredicate, BiFunction<Object, Object, Object>> map = new LinkedHashMap<>();
-        //subtraction with Strings → empty string
+        // empty string
         map.put(
                 new CheckedPredicate((left, right) -> (left instanceof String || right instanceof String), false),
                 (left, right) -> "");
@@ -235,12 +412,12 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> left == null && right instanceof Duration, false),
                 (left, right) -> Duration.ZERO);
 
-        // BFEEL-specific: ChronoPeriod * null → zero period
+        // ChronoPeriod * null → zero period
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right == null, false),
                 (left, right) -> ComparablePeriod.ofMonths(0));
 
-        // BFEEL-specific: null * ChronoPeriod → zero period
+        // null * ChronoPeriod → zero period
         map.put(
                 new CheckedPredicate((left, right) -> left == null && right instanceof ChronoPeriod, false),
                 (left, right) -> ComparablePeriod.ofMonths(0));

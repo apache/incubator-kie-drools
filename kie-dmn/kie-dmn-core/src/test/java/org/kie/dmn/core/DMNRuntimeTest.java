@@ -2343,7 +2343,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                 .isTrue();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide Vowel a")).isEqualTo("a");
+        assertThat(result.get("Decide Vowel a")).isEqualTo(Collections.singletonList("a"));
         assertThat(result.get("Decide BAD")).isNull();
     }
 
