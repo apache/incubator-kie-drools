@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.workflow.core.DroolsAction;
+import org.kie.api.definition.process.NodeType;
 
 public class ExtendedNodeImpl extends NodeImpl {
 
@@ -34,6 +35,10 @@ public class ExtendedNodeImpl extends NodeImpl {
     private static final long serialVersionUID = 510l;
 
     private Map<String, List<DroolsAction>> actions = new HashMap<>();
+
+    protected ExtendedNodeImpl(NodeType nodeType) {
+        super(nodeType);
+    }
 
     public void setActions(String type, List<DroolsAction> actions) {
         this.actions.put(type, actions);

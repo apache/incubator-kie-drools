@@ -21,6 +21,7 @@ package org.jbpm.workflow.core.node;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 /**
  * Default implementation of a join.
@@ -60,11 +61,22 @@ public class Join extends NodeImpl {
     private String n;
 
     public Join() {
+        super(NodeType.COMPLEX_GATEWAY);
         this.type = TYPE_UNDEFINED;
     }
 
     public void setType(final int type) {
         this.type = type;
+        this.setNodeType(fromType(type));
+    }
+
+    private static NodeType fromType(int type) {
+        return switch (type) {
+            case TYPE_AND -> NodeType.PARALLEL_GATEWAY;
+            case TYPE_OR -> NodeType.INCLUSIVE_GATEWAY;
+            case TYPE_XOR -> NodeType.EXCLUSIVE_GATEWAY;
+            default -> NodeType.COMPLEX_GATEWAY;
+        };
     }
 
     public int getType() {

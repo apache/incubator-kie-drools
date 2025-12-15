@@ -26,6 +26,7 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -46,6 +47,7 @@ public class StartNode extends ExtendedNodeImpl {
     private Timer timer;
 
     public StartNode() {
+        super(NodeType.START);
         setMetaData(Metadata.EVENT_TYPE, Metadata.EVENT_TYPE_NONE);
     }
 

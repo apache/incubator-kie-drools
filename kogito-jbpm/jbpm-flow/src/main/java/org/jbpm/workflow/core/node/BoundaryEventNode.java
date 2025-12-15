@@ -21,12 +21,17 @@ package org.jbpm.workflow.core.node;
 import java.util.function.Function;
 
 import org.jbpm.process.core.event.EventFilter;
+import org.kie.api.definition.process.NodeType;
 
 public class BoundaryEventNode extends EventNode {
 
     private static final long serialVersionUID = 3448981074702415561L;
 
     private String attachedToNodeId;
+
+    public BoundaryEventNode() {
+        super(NodeType.BOUNDARY_EVENT);
+    }
 
     public String getAttachedToNodeId() {
         return attachedToNodeId;

@@ -73,10 +73,10 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
         List<Class<?>> reflectiveClasses = new ArrayList<>();
         reflectiveClasses.addAll(org.kie.kogito.jobs.api.utils.ReflectionUtils.apiReflectiveClasses());
         reflectiveClasses.addAll(org.kie.kogito.jobs.service.api.utils.ReflectionUtils.apiReflectiveClasses());
-        return new ReflectiveClassBuildItem(true,
-                true,
-                true,
-                reflectiveClasses.toArray(new Class[] {}));
+        return ReflectiveClassBuildItem.builder(reflectiveClasses.toArray(new Class[] {}))
+                .constructors()
+                .fields()
+                .build();
     }
 
     @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasWorkflowExtension.class)

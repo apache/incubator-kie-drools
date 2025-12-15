@@ -42,6 +42,7 @@ import org.jbpm.workflow.core.impl.IOSpecification;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
+import org.kie.api.definition.process.NodeType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.Attributes;
@@ -70,7 +71,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
     @Override
     protected Node createNode(Attributes attrs) {
-        return new ActionNode();
+        return new ActionNode(NodeType.THROW_EVENT);
     }
 
     @Override

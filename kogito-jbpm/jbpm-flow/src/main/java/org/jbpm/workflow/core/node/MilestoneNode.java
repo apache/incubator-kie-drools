@@ -22,6 +22,7 @@ import java.util.function.Predicate;
 
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 import org.kie.api.runtime.process.ProcessContext;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
@@ -38,6 +39,10 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
      */
     private String condition;
     private Predicate<ProcessContext> conditionPredicate;
+
+    public MilestoneNode() {
+        super(NodeType.MILESTONE);
+    }
 
     public void setCondition(String condition) {
         this.condition = condition;

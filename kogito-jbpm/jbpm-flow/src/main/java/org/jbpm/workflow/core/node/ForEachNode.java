@@ -32,6 +32,7 @@ import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.api.definition.process.NodeType;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
@@ -63,6 +64,8 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     public ForEachNode(WorkflowElementIdentifier id) {
+        super(NodeType.FOR_EACH);
+
         setId(id);
         // Split
         ForEachSplitNode split = new ForEachSplitNode();
@@ -298,11 +301,18 @@ public class ForEachNode extends CompositeContextNode {
 
     public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
+
+        public ForEachSplitNode() {
+            super(NodeType.INTERNAL);
+        }
     }
 
     public static class ForEachJoinNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
 
+        public ForEachJoinNode() {
+            super(NodeType.INTERNAL);
+        }
     }
 
     @Override

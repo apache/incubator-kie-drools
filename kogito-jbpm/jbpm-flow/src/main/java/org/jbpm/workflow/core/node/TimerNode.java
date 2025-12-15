@@ -22,6 +22,7 @@ import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -30,6 +31,10 @@ public class TimerNode extends ExtendedNodeImpl {
     private static final long serialVersionUID = 510l;
 
     private Timer timer;
+
+    public TimerNode() {
+        super(NodeType.TIMER);
+    }
 
     public void setTimer(Timer timer) {
         this.timer = timer;

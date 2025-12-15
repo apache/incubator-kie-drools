@@ -33,7 +33,6 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -246,10 +245,10 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
      */
     private static KogitoWorkflowProcess mockProcess7() {
         Node startNode = new StartNode();
-        StateBasedNode stateBasedNode = new StateBasedNode();
-        stateBasedNode.setTimeout(DURATION);
+        HumanTaskNode humanTaskNode = new HumanTaskNode();
+        humanTaskNode.setTimeout(DURATION);
         Node endNode = new EndNode();
-        return mockProcess(PROCESS7_ID, startNode, stateBasedNode, endNode);
+        return mockProcess(PROCESS7_ID, startNode, humanTaskNode, endNode);
     }
 
     /**

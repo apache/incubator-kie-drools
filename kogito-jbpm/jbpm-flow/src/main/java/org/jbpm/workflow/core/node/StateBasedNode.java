@@ -28,10 +28,11 @@ import org.jbpm.process.instance.impl.actions.CompleteStateBasedNodeInstanceActi
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 
-public class StateBasedNode extends ExtendedNodeImpl {
+public abstract class StateBasedNode extends ExtendedNodeImpl {
 
     private static final long serialVersionUID = 510l;
 
@@ -40,6 +41,10 @@ public class StateBasedNode extends ExtendedNodeImpl {
     private List<String> boundaryEvents;
 
     private transient String duration;
+
+    protected StateBasedNode(NodeType nodeType) {
+        super(nodeType);
+    }
 
     public Map<Timer, DroolsAction> getTimers() {
         return timers;

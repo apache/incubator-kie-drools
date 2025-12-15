@@ -38,6 +38,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.NodeType;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
@@ -62,13 +63,19 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
 
     private IOSpecification ioSpecification;
     private MultiInstanceSpecification multiInstanceSpecification;
+    private NodeType nodeType;
 
     public NodeImpl() {
+        this(NodeType.INTERNAL);
+    }
+
+    protected NodeImpl(NodeType nodeType) {
         this.id = WorkflowElementIdentifierFactory.newRandom();
         this.incomingConnections = new HashMap<>();
         this.outgoingConnections = new HashMap<>();
         this.ioSpecification = new IOSpecification();
         this.multiInstanceSpecification = new MultiInstanceSpecification();
+        this.nodeType = nodeType;
     }
 
     public void setMultiInstanceSpecification(MultiInstanceSpecification multiInstanceSpecification) {
@@ -150,6 +157,15 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     @Override
     public WorkflowElementIdentifier getId() {
         return this.id;
+    }
+
+    @Override
+    public NodeType getNodeType() {
+        return nodeType;
+    }
+
+    protected void setNodeType(NodeType nodeType) {
+        this.nodeType = nodeType;
     }
 
     @Override

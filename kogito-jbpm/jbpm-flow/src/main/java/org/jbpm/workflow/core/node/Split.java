@@ -25,6 +25,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -65,15 +66,28 @@ public class Split extends NodeImpl implements Constrainable {
     private int type;
 
     public Split() {
+        super(NodeType.COMPLEX_GATEWAY);
         this.type = TYPE_UNDEFINED;
     }
 
     public Split(final int type) {
+        super(fromType(type));
         this.type = type;
     }
 
     public void setType(final int type) {
         this.type = type;
+        setNodeType(fromType(type));
+    }
+
+    private static NodeType fromType(int type) {
+        return switch (type) {
+            case TYPE_AND -> NodeType.PARALLEL_GATEWAY;
+            case TYPE_XAND -> NodeType.EVENT_BASED_GATEWAY;
+            case TYPE_OR -> NodeType.INCLUSIVE_GATEWAY;
+            case TYPE_XOR -> NodeType.EXCLUSIVE_GATEWAY;
+            default -> NodeType.COMPLEX_GATEWAY;
+        };
     }
 
     public int getType() {

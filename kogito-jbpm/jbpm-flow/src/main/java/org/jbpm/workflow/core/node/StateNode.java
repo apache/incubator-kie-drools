@@ -18,8 +18,13 @@
  */
 package org.jbpm.workflow.core.node;
 
+import org.kie.api.definition.process.NodeType;
+
 public class StateNode extends CompositeContextNode implements Constrainable {
 
     private static final long serialVersionUID = 510l;
 
+    public StateNode() {
+        super(NodeType.CONDITIONAL);
+    }
 }

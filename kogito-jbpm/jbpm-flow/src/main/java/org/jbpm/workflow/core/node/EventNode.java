@@ -27,6 +27,7 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -38,6 +39,14 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
     private String inputVariableName;
     private String variableName;
     private String scope;
+
+    public EventNode() {
+        super(NodeType.CATCH_EVENT);
+    }
+
+    protected EventNode(NodeType nodeType) {
+        super(nodeType);
+    }
 
     public String getVariableName() {
         return variableName;

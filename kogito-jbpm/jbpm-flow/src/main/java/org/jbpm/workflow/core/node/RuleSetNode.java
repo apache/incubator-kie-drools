@@ -32,6 +32,7 @@ import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.rule.RuleType;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.decision.DecisionModel;
 
@@ -57,6 +58,10 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     private Supplier<DecisionModel> decisionModel;
     private Supplier<KieRuntime> kieRuntime;
     private RuleUnitFactory<RuleUnitData> ruleUnitFactory;
+
+    public RuleSetNode() {
+        super(NodeType.BUSINESS_RULE);
+    }
 
     public void setRuleType(RuleType ruleType) {
         this.ruleType = ruleType;

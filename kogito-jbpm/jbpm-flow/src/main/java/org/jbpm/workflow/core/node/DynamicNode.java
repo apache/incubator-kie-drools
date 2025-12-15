@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeType;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
@@ -47,6 +48,7 @@ public class DynamicNode extends CompositeContextNode {
     private String language;
 
     public DynamicNode() {
+        super(NodeType.AD_HOC_SUBPROCESS);
         setAutoComplete(false);
     }
 

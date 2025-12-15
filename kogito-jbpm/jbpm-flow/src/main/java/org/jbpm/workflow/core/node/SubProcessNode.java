@@ -26,6 +26,7 @@ import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -46,6 +47,10 @@ public class SubProcessNode extends StateBasedNode implements ContextContainer {
 
     private boolean independent = true;
     private SubProcessFactory<?> subProcessFactory;
+
+    public SubProcessNode() {
+        super(NodeType.SUBPROCESS);
+    }
 
     public void setProcessId(final String processId) {
         this.processId = processId;

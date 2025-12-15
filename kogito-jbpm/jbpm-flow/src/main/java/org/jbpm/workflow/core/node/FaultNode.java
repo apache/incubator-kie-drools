@@ -21,6 +21,7 @@ package org.jbpm.workflow.core.node;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 /**
  * Default implementation of a fault node.
@@ -36,6 +37,10 @@ public class FaultNode extends ExtendedNodeImpl {
     private String faultName;
     private String faultVariable;
     private boolean terminateParent = false;
+
+    public FaultNode() {
+        super(NodeType.FAULT);
+    }
 
     public String getFaultVariable() {
         return faultVariable;

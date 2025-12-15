@@ -26,6 +26,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -38,6 +39,14 @@ public class ActionNode extends ExtendedNodeImpl {
     private static final long serialVersionUID = 510l;
 
     private DroolsAction action;
+
+    public ActionNode() {
+        super(NodeType.SCRIPT_TASK);
+    }
+
+    public ActionNode(NodeType nodeType) {
+        super(nodeType);
+    }
 
     public DroolsAction getAction() {
         return action;

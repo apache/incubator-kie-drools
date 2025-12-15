@@ -27,6 +27,7 @@ import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeType;
 
 import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
 
@@ -43,6 +44,14 @@ public class WorkItemNode extends StateBasedNode implements ContextContainer {
     private Work work;
 
     private boolean waitForCompletion = true;
+
+    public WorkItemNode() {
+        super(NodeType.WORKITEM_TASK);
+    }
+
+    protected WorkItemNode(NodeType nodeType) {
+        super(nodeType);
+    }
 
     public Work getWork() {
         return work;
