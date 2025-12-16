@@ -25,7 +25,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.ChannelType;
 import org.kie.kogito.event.Topic;
+import org.kie.kogito.test.springboot.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -39,6 +41,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers = { KafkaSpringBootTestResource.class })
 public class PingPongMessageTest extends BaseRestTest {
+
+    @Autowired
+    private KafkaTestClient kafkaClient;
 
     @Test
     void testPingPongBetweenProcessInstances() throws InterruptedException {
@@ -108,6 +113,27 @@ public class PingPongMessageTest extends BaseRestTest {
                 .get("/pong_message/{pId}", pId)
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    void testPongWithValidMessage() throws InterruptedException {
+        kafkaClient.produce(
+                "{\"specversion\": \"1.0\", \"id\":\"id1\", \"source\": \"junit\", \"type\": \"pong_start\",  \"event\": \"Hello World\" }",
+                "pingpong");
+        validateSubProcess();
+    }
+
+    @Test
+    void testPongAfterInvalidMessage() throws InterruptedException {
+        // sending invalid message
+        kafkaClient.produce(
+                "{ \"event\": \"Hello World\" }",
+                "pingpong");
+        // sending valid message
+        kafkaClient.produce(
+                "{\"specversion\": \"1.0\", \"id\":\"id1\", \"source\": \"junit\", \"type\": \"pong_start\",  \"event\": \"Hello World\" }",
+                "pingpong");
+        validateSubProcess();
     }
 
     @Test

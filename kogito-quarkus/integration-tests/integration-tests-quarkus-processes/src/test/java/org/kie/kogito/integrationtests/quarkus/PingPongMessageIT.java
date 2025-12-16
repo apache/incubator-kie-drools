@@ -20,7 +20,10 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.time.Duration;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.test.quarkus.QuarkusTestProperty;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -35,6 +38,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 @QuarkusIntegrationTest
 @QuarkusTestResource(KafkaQuarkusTestResource.class)
 public class PingPongMessageIT {
+
+    public KafkaTestClient kafkaClient;
+
+    @QuarkusTestProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
+    private String kafkaBootstrapServers;
+
+    @BeforeEach
+    public void setup() {
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
+    }
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -109,4 +122,26 @@ public class PingPongMessageIT {
                 .then()
                 .statusCode(404);
     }
+
+    @Test
+    void testPongWithValidMessage() throws InterruptedException {
+        kafkaClient.produce(
+                "{\"specversion\": \"1.0\", \"id\":\"id1\", \"source\": \"junit\", \"type\": \"pong_start\",  \"event\": \"Hello World\" }",
+                "kogito_it_test");
+        validateSubProcess();
+    }
+
+    @Test
+    void testPongAfterInvalidMessage() throws InterruptedException {
+        // sending invalid message
+        kafkaClient.produce(
+                "{ \"event\": \"Hello World\" }",
+                "kogito_it_test");
+        // sending valid message
+        kafkaClient.produce(
+                "{\"specversion\": \"1.0\", \"id\":\"id1\", \"source\": \"junit\", \"type\": \"pong_start\",  \"event\": \"Hello World\" }",
+                "kogito_it_test");
+        validateSubProcess();
+    }
+
 }

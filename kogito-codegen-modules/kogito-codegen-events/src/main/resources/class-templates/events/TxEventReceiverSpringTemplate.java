@@ -82,6 +82,7 @@ public class $ClassName$ implements EventReceiver {
             try {
                 DataEvent<?> object = subscription.getConverter().convert(message.value());
                 subscription.getConsumer().accept(object);
+                ack.acknowledge();
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }

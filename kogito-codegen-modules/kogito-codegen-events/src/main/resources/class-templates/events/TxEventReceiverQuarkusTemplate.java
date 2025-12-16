@@ -49,7 +49,11 @@ public class $ClassName$ extends AbstractQuarkusCloudEventReceiver<$Type$> {
     @Transactional
     @Blocking
     public CompletionStage<Void> onEvent(Message<$Type$> payload) {
-        produce(payload);
+        try {
+            produce(payload);
+        } catch (Exception ex) {
+            return payload.nack(ex);
+        }
         return payload.ack();
     }
 
