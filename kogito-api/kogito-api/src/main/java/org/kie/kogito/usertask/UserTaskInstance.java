@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
+import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
@@ -153,4 +154,7 @@ public interface UserTaskInstance {
 
     void stopNotCompletedReassignments();
 
+    void setPotentialUsers(Set<String> potentialUsers);
+
+    UserTaskLifeCycle getUserTaskLifeCycle();
 }

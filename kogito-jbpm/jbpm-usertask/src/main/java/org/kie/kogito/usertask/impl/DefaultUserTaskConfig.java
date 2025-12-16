@@ -33,8 +33,8 @@ import org.kie.kogito.usertask.UserTaskAssignmentStrategyConfig;
 import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTaskEventListenerConfig;
 import org.kie.kogito.usertask.UserTaskInstances;
-import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
-import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
+import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycles;
+import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
     private UnitOfWorkManager unitOfWorkManager;
     private JobsService jobService;
     private IdentityProvider identityProvider;
-    private UserTaskLifeCycle userTaskLifeCycle;
+    private UserTaskLifeCycles userTaskLifeCycles;
     private UserTaskAssignmentStrategyConfig userTaskAssignmentStrategyConfig;
     private UserTaskInstances userTaskInstances;
 
@@ -57,7 +57,7 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
                 staticJobService(),
                 new NoOpIdentityProvider(),
-                new DefaultUserTaskLifeCycle(),
+                new DefaultUserTaskLifeCycles(),
                 new DefaultUserTaskAssignmentStrategyConfig(),
                 new InMemoryUserTaskInstances());
     }
@@ -67,7 +67,7 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
             Iterable<UnitOfWorkManager> unitOfWorkManager,
             Iterable<JobsService> jobService,
             Iterable<IdentityProvider> identityProvider,
-            Iterable<UserTaskLifeCycle> userTaskLifeCycle,
+            Iterable<UserTaskLifeCycles> userTaskLifeCycles,
             Iterable<UserTaskAssignmentStrategyConfig> userTaskAssignmentStrategyConfig,
             Iterable<UserTaskInstances> userTaskInstances) {
 
@@ -75,10 +75,9 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
         this.unitOfWorkManager = singleton(unitOfWorkManager, StaticUnitOfWorkManger::staticUnitOfWorkManager);
         this.jobService = singleton(jobService, StaticJobService::staticJobService);
         this.identityProvider = singleton(identityProvider, NoOpIdentityProvider::new);
-        this.userTaskLifeCycle = singleton(userTaskLifeCycle, DefaultUserTaskLifeCycle::new);
+        this.userTaskLifeCycles = singleton(userTaskLifeCycles, DefaultUserTaskLifeCycles::new);
         this.userTaskAssignmentStrategyConfig = singleton(userTaskAssignmentStrategyConfig, DefaultUserTaskAssignmentStrategyConfig::new);
         this.userTaskInstances = singleton(userTaskInstances, InMemoryUserTaskInstances::new);
-
     }
 
     private <T> T singleton(Iterable<T> values, Supplier<T> defaultValue) {
@@ -98,14 +97,14 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
             UnitOfWorkManager unitOfWorkManager,
             JobsService jobService,
             IdentityProvider identityProvider,
-            UserTaskLifeCycle userTaskLifeCycle,
+            UserTaskLifeCycles userTaskLifeCycles,
             DefaultUserTaskAssignmentStrategyConfig userTaskAssignmentStrategyConfig,
             UserTaskInstances userTaskInstances) {
         this.userTaskEventListeners = userTaskEventListenerConfig;
         this.unitOfWorkManager = unitOfWorkManager;
         this.jobService = jobService;
         this.identityProvider = identityProvider;
-        this.userTaskLifeCycle = userTaskLifeCycle;
+        this.userTaskLifeCycles = userTaskLifeCycles;
         this.userTaskAssignmentStrategyConfig = userTaskAssignmentStrategyConfig;
         this.userTaskInstances = userTaskInstances;
     }
@@ -131,8 +130,8 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
     }
 
     @Override
-    public UserTaskLifeCycle userTaskLifeCycle() {
-        return userTaskLifeCycle;
+    public UserTaskLifeCycles userTaskLifeCycles() {
+        return userTaskLifeCycles;
     }
 
     @Override

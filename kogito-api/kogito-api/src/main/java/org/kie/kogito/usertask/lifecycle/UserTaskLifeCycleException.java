@@ -16,28 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.usertask;
+package org.kie.kogito.usertask.lifecycle;
 
-import org.kie.kogito.KogitoConfig;
-import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycles;
+public class UserTaskLifeCycleException extends RuntimeException {
 
-public interface UserTaskConfig extends KogitoConfig {
-
-    UserTaskEventListenerConfig userTaskEventListeners();
-
-    UserTaskAssignmentStrategyConfig userTaskAssignmentStrategies();
-
-    UserTaskLifeCycles userTaskLifeCycles();
-
-    UnitOfWorkManager unitOfWorkManager();
-
-    JobsService jobsService();
-
-    IdentityProvider identityProvider();
-
-    UserTaskInstances userTaskInstances();
+    public UserTaskLifeCycleException(String message) {
+        super(message);
+    }
 
 }

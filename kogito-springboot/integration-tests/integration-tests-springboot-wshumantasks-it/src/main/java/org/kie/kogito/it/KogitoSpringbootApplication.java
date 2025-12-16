@@ -16,28 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.usertask;
+package org.kie.kogito.it;
 
-import org.kie.kogito.KogitoConfig;
-import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.uow.UnitOfWorkManager;
-import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycles;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public interface UserTaskConfig extends KogitoConfig {
+@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**", "com.example.**" })
+public class KogitoSpringbootApplication {
 
-    UserTaskEventListenerConfig userTaskEventListeners();
-
-    UserTaskAssignmentStrategyConfig userTaskAssignmentStrategies();
-
-    UserTaskLifeCycles userTaskLifeCycles();
-
-    UnitOfWorkManager unitOfWorkManager();
-
-    JobsService jobsService();
-
-    IdentityProvider identityProvider();
-
-    UserTaskInstances userTaskInstances();
-
+    public static void main(String[] args) {
+        SpringApplication.run(KogitoSpringbootApplication.class, args);
+    }
 }

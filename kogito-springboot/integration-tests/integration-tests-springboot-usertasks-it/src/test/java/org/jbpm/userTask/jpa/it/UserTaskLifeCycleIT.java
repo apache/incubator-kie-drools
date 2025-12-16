@@ -83,7 +83,8 @@ public class UserTaskLifeCycleIT extends BaseUserTaskIT {
                 .body("metadata.ProcessVersion", equalTo("1.0"))
                 .body("metadata.ProcessId", equalTo(PROCESS_ID))
                 .body("metadata.ProcessInstanceId", equalTo(pid))
-                .body("metadata.ProcessInstanceState", equalTo(1));
+                .body("metadata.ProcessInstanceState", equalTo(1))
+                .body("metadata.Lifecycle", equalTo("kogito"));
 
         given()
                 .contentType(ContentType.JSON)

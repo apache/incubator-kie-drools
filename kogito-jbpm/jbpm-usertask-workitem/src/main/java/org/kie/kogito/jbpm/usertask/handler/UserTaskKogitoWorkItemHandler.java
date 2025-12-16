@@ -30,6 +30,7 @@ import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.usertask.UserTask;
+import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTasks;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
@@ -53,6 +54,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
     private static final String NODE_NAME = "NodeName";
     private static final String ACTOR_ID = "ActorId";
     private static final String GROUP_ID = "GroupId";
+    private static final String SKIPPABLE = "Skippable";
     private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
     private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
     private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
@@ -80,6 +82,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         DefaultUserTaskInstance instance = (DefaultUserTaskInstance) userTask.createInstance();
 
         instance.setExternalReferenceId(workItem.getStringId());
+        instance.getMetadata().put("Lifecycle", handler.getApplication().config().get(UserTaskConfig.class).userTaskLifeCycles().getDefaultUserTaskLifeCycleId());
 
         userTask.instances().create(instance);
 
@@ -99,8 +102,9 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
             metadata.put("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
             metadata.put("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
             metadata.put("NodeInstanceId", workItem.getNodeInstance().getId());
+            metadata.put("Skippable", workItem.getParameters().get(SKIPPABLE));
 
-            task.setMetadata(metadata);
+            task.addMetadata(metadata);
 
             task.fireInitialStateChange();
             workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> task.setInput(e.getKey(), e.getValue()));
@@ -154,7 +158,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
             if (workItem instanceof InternalKogitoWorkItem ikw) {
                 ikw.setActualOwner(ut.getActualOwner());
             }
-            ut.transition(DefaultUserTaskLifeCycle.FAIL, Collections.singletonMap(PARAMETER_NOTIFY, Boolean.FALSE), IdentityProviders.of(WORKFLOW_ENGINE_USER));
+            ut.transition(ut.getUserTaskLifeCycle().abortTransition(), Collections.singletonMap(PARAMETER_NOTIFY, Boolean.FALSE), IdentityProviders.of(WORKFLOW_ENGINE_USER));
         });
         return Optional.empty();
     }

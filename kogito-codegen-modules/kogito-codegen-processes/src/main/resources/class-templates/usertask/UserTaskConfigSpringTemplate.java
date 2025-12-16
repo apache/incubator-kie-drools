@@ -29,7 +29,7 @@ import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 import org.kie.kogito.usertask.impl.DefaultUserTaskConfig;
-import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
+import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycles;
 import org.kie.kogito.usertask.UserTaskAssignmentStrategyConfig;
 import org.kie.kogito.usertask.UserTaskEventListenerConfig;
 import org.kie.kogito.usertask.UserTaskInstances;
@@ -43,7 +43,7 @@ public class UserTaskConfig extends DefaultUserTaskConfig {
             List<UnitOfWorkManager> unitOfWorkManager,
             List<JobsService> jobsService,
             List<IdentityProvider> identityProvider,
-            List<UserTaskLifeCycle> userTaskLifeCycle,
+            List<UserTaskLifeCycles> userTaskLifeCycles,
             List<UserTaskAssignmentStrategyConfig> userTaskAssignmentStrategyConfigs,
             List<UserTaskInstances> userTaskInstances) {
 
@@ -51,7 +51,7 @@ public class UserTaskConfig extends DefaultUserTaskConfig {
                 unitOfWorkManager,
                 jobsService,
                 identityProvider,
-                userTaskLifeCycle,
+                userTaskLifeCycles,
                 userTaskAssignmentStrategyConfigs,
                 userTaskInstances);
     }

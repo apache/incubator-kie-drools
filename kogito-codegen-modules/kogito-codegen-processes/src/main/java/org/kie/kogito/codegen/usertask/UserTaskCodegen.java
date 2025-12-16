@@ -98,6 +98,8 @@ public class UserTaskCodegen extends AbstractGenerator {
     private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
     private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
 
+    private static final Set<String> USERTASK_LIFECYCLES = Set.of("kogito", "ws-human-task");
+
     private static final SemanticModules BPMN_SEMANTIC_MODULES;
 
     static {
@@ -113,6 +115,7 @@ public class UserTaskCodegen extends AbstractGenerator {
     private List<Work> descriptors;
     private TemplatedGenerator producerTemplateGenerator;
     private TemplatedGenerator restTemplateGenerator;
+    private TemplatedGenerator lifeCyclesGenerator;
 
     public UserTaskCodegen(KogitoBuildContext context, List<Work> collectedResources) {
         super(context, "usertasks");
@@ -132,6 +135,11 @@ public class UserTaskCodegen extends AbstractGenerator {
                 .withTemplateBasePath("/class-templates/usertask")
                 .withTargetTypeName(SECTION_CLASS_NAME)
                 .build(context, "RestResourceUserTask");
+
+        lifeCyclesGenerator = TemplatedGenerator.builder()
+                .withTemplateBasePath("/class-templates/usertask")
+                .withTargetTypeName(SECTION_CLASS_NAME)
+                .build(context, "UserTaskLifeCycles");
     }
 
     @Override
@@ -157,6 +165,7 @@ public class UserTaskCodegen extends AbstractGenerator {
 
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         generatedFiles.addAll(generateUserTask());
+        generatedFiles.add(generateLifeCycles());
         if (context().hasDI()) {
             generatedFiles.add(generateProducer());
         }
@@ -166,6 +175,30 @@ public class UserTaskCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private GeneratedFile generateLifeCycles() {
+        String packageName = context().getPackageName();
+
+        CompilationUnit compilationUnit = lifeCyclesGenerator.compilationUnitOrThrow("No lifecycle template found for user tasks");
+        compilationUnit.setPackageDeclaration(packageName);
+
+        var template = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new ProcessCodegenException("UserTaskLifeCyclesTemplate doesn't contain a class or interface declaration!"));
+
+        String userTaskLifeCycleId = context().getApplicationProperty("kogito.usertasks.lifecycle").orElse("kogito");
+        if (!USERTASK_LIFECYCLES.contains(userTaskLifeCycleId)) {
+            throw new ProcessCodegenException(String.format("Invalid user task lifecycle '%s'", userTaskLifeCycleId));
+        }
+
+        template.findAll(StringLiteralExpr.class)
+                .stream()
+                .filter(stringExpression -> stringExpression.getValue().contains("$userTaskLifeCycleId$"))
+                .forEach(stringExpression -> stringExpression.setString(stringExpression.getValue().replace("$userTaskLifeCycleId$", userTaskLifeCycleId)));
+
+        var className = template.getNameAsString();
+        Path basePath = UserTaskCodegenHelper.path(packageName);
+        return new GeneratedFile(GeneratedFileType.SOURCE, basePath.resolve(className + ".java"), compilationUnit.toString());
     }
 
     public GeneratedFile generateRestEndpoint() {
