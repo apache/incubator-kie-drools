@@ -33,7 +33,6 @@ import org.drools.base.rule.Declaration;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.base.time.TimeUtils;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Match;
@@ -97,7 +96,7 @@ public class MVELSalienceExpression
                                                            null, valueResolver, valueResolver.getGlobalResolver() );
         
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = ((InternalKnowledgeBase)valueResolver.getRuleBase()).getPackage("MAIN");
+        InternalKnowledgePackage pkg = valueResolver.getRuleBase().getPackage("MAIN");
         if ( pkg != null ) {
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

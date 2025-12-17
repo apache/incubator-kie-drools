@@ -19,7 +19,6 @@
 package org.drools.mvel.field;
 
 import org.drools.base.common.DroolsObjectInput;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.base.rule.accessor.FieldValue;
 
 import java.io.Externalizable;
@@ -63,15 +62,6 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
     }
 
     public Object getValue() {
-        return type;
-    }
-
-    public Object resolve( InternalWorkingMemory workingMemory ) {
-        try {
-            type = workingMemory.getKnowledgeBase().getRootClassLoader().loadClass( className );
-        } catch (Exception e) {
-
-        }
         return type;
     }
 

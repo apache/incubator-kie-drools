@@ -37,13 +37,12 @@ import org.kie.dmn.feel.util.MsgUtil;
 public class FunctionInvocationNode
         extends BaseNode {
 
-
     private BaseNode name;
     private ListNode params;
     private TemporalConstantNode tcFolded; // this is NOT a child node intentionally.
 
     public FunctionInvocationNode(ParserRuleContext ctx, BaseNode name, ListNode params) {
-        super( ctx );
+        super(ctx);
         this.name = name;
         this.params = params;
     }
@@ -86,22 +85,22 @@ public class FunctionInvocationNode
         }
         FEELFunction function;
         Object value;
-        if ( name instanceof NameRefNode ) {
+        if (name instanceof NameRefNode) {
             // simple name
-            value = ctx.getValue( name.getText() );
+            value = ctx.getValue(name.getText());
         } else if (name instanceof QualifiedNameNode) {
             QualifiedNameNode qn = (QualifiedNameNode) name;
             String[] qns = qn.getPartsAsStringArray();
-            value = ctx.getValue( qns );
+            value = ctx.getValue(qns);
         } else if (name instanceof PathExpressionNode) {
             PathExpressionNode pathExpressionNode = (PathExpressionNode) name;
             value = pathExpressionNode.evaluate(ctx);
         } else {
             value = name.evaluate(ctx);
         }
-        if ( value instanceof FEELFunction ) {
+        if (value instanceof FEELFunction) {
             function = (FEELFunction) value;
-            Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
+            Object[] p = params.getElements().stream().map(e -> e.evaluate(ctx)).toArray(Object[]::new);
             List<String> functionNameParts;
             if (name instanceof NameRefNode) {
                 functionNameParts = Collections.singletonList(name.getText());
@@ -114,17 +113,17 @@ public class FunctionInvocationNode
             }
             Object result = invokeTheFunction(functionNameParts, function, ctx, p);
             return result;
-        } else if( value instanceof UnaryTest ) {
-            if( params.getElements().size() == 1 ) {
-                Object p = params.getElements().get( 0 ).evaluate( ctx );
-                return ((UnaryTest) value).apply( ctx, p );
+        } else if (value instanceof UnaryTest) {
+            if (params.getElements().size() == 1) {
+                Object p = params.getElements().get(0).evaluate(ctx);
+                return ((UnaryTest) value).apply(ctx, p);
             } else {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, params.getElements().size()) ) );
+                ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, params.getElements().size())));
             }
         } else if (value instanceof Range) {
             if (params.getElements().size() == 1) {
                 Object p = params.getElements().get(0).evaluate(ctx);
-                return ((Range) value).includes(ctx.getFEELDialect(), p);
+                return ((Range) value).includes(ctx, p);
             } else {
                 ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, params.getElements().size())));
             }

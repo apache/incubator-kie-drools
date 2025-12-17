@@ -363,7 +363,11 @@ public class RuleContext {
     }
 
     public Class<?> getRuleUnitVarType(String name) {
-        Class<?> varType = ruleUnitVars.get( name );
+        return ruleUnitVars.get( name );
+    }
+
+    public Class<?> getTypeFromRuleUnitVarsAndScopedDeclarations(String name) {
+        Class<?> varType = getRuleUnitVarType( name );
         if (varType != null) {
             return varType;
         }

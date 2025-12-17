@@ -18,7 +18,7 @@
  */
 package org.drools.testcoverage.common;
 
-import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.*;
 import org.junit.jupiter.api.AfterEach;
 import org.kie.api.io.Resource;

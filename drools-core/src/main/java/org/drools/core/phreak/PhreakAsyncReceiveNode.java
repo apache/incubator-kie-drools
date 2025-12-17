@@ -18,14 +18,12 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
@@ -38,10 +36,15 @@ import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
 public class PhreakAsyncReceiveNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakAsyncReceiveNode.class );
 
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakAsyncReceiveNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
     public void doNode(AsyncReceiveNode node,
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples) {
 
@@ -49,7 +52,7 @@ public class PhreakAsyncReceiveNode {
             doLeftInserts( memory, srcLeftTuples );
         }
 
-        doPropagateChildLeftTuples( node, memory, reteEvaluator, sink, trgLeftTuples );
+        doPropagateChildLeftTuples( node, memory, sink, trgLeftTuples );
 
         srcLeftTuples.resetAll();
     }
@@ -65,9 +68,8 @@ public class PhreakAsyncReceiveNode {
         }
     }
 
-    private static void doPropagateChildLeftTuples(AsyncReceiveNode node,
+    private void doPropagateChildLeftTuples(AsyncReceiveNode node,
                                                    AsyncReceiveMemory memory,
-                                                   ReteEvaluator reteEvaluator,
                                                    LeftTupleSink sink,
                                                    TupleSets trgLeftTuples) {
 

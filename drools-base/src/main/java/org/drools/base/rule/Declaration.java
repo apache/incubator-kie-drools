@@ -235,42 +235,17 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
 
     public Object getValue(ValueResolver valueResolver,
                            final Object object) {
-        return this.readAccessor.getValue( valueResolver, object );
+        return this.readAccessor.getValue(valueResolver, object);
     }
 
-    public char getCharValue(ValueResolver valueResolver,
-                           final Object object) {
-        return this.readAccessor.getCharValue(valueResolver, object);
-    }
-
-    public int getIntValue(ValueResolver valueResolver,
-                           final Object object) {
-        return this.readAccessor.getIntValue(valueResolver, object);
-    }
-
-    public byte getByteValue(ValueResolver valueResolver,
+    public long getWholeNumberValue(ValueResolver valueResolver,
                              final Object object) {
-        return this.readAccessor.getByteValue(valueResolver, object);
+        return this.readAccessor.getWholeNumberValue(valueResolver, object);
     }
 
-    public short getShortValue(ValueResolver valueResolver,
-                               final Object object) {
-        return this.readAccessor.getShortValue(valueResolver, object);
-    }
-
-    public long getLongValue(ValueResolver valueResolver,
-                             final Object object) {
-        return this.readAccessor.getLongValue(valueResolver, object);
-    }
-
-    public float getFloatValue(ValueResolver valueResolver,
-                               final Object object) {
-        return this.readAccessor.getFloatValue(valueResolver, object);
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver,
+    public double getDecimalValue(ValueResolver valueResolver,
                                  final Object object) {
-        return this.readAccessor.getDoubleValue(valueResolver, object);
+        return this.readAccessor.getDecimalValue(valueResolver, object);
     }
 
     public boolean getBooleanValue(ValueResolver valueResolver,

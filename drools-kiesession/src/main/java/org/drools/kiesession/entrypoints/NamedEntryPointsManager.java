@@ -29,6 +29,7 @@ import org.drools.core.EntryPointsManager;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.base.rule.EntryPointId;
 
 public class NamedEntryPointsManager implements EntryPointsManager {
@@ -39,10 +40,12 @@ public class NamedEntryPointsManager implements EntryPointsManager {
     InternalWorkingMemoryEntryPoint defaultEntryPoint;
 
     private final Map<String, WorkingMemoryEntryPoint> entryPoints = new ConcurrentHashMap<>();
+	private FactHandleFactory factHandleFactory;
 
-    public NamedEntryPointsManager(ReteEvaluator reteEvaluator) {
+    public NamedEntryPointsManager(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory) {
         this.reteEvaluator = reteEvaluator;
-        this.ruleBase = reteEvaluator.getKnowledgeBase();
+        this.ruleBase = ruleBase;
+		this.factHandleFactory = factHandleFactory;
         initDefaultEntryPoint();
         updateEntryPointsCache();
     }
@@ -60,7 +63,7 @@ public class NamedEntryPointsManager implements EntryPointsManager {
     }
 
     private InternalWorkingMemoryEntryPoint createNamedEntryPoint(EntryPointNode addedNode) {
-        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(addedNode, addedNode.getEntryPoint(), reteEvaluator);
+        return RuntimeComponentFactory.get().getEntryPointFactory().createEntryPoint(ruleBase, reteEvaluator, factHandleFactory, addedNode.getEntryPoint(), addedNode);
     }
 
     public void updateEntryPointsCache() {

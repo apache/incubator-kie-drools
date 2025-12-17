@@ -102,7 +102,7 @@ when
     $definitions : Definitions($nsContext : nsContext)
     $import : Import(DMNImportsUtil.whichImportType(this) == DMNImportsUtil.ImportType.DMN, namespace == $nsContext[$prefix])
     $importDef : Definitions(namespace == $import.namespace) from entry-point "DMNImports"
-    $importRelatedDefinitions :  Definitions(drgElement[0].id == $localPart) from entry-point "RelatedImports"
+    $importRelatedDefinitions :  Definitions(drgElement.empty == false, drgElement[0].id == $localPart) from entry-point "RelatedImports"
     not DRGElement(id == $localPart) from $importDef.drgElement
     not DRGElement(id == $localPart) from $importRelatedDefinitions.drgElement
     not DRGElement(id == $localPart)

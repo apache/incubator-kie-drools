@@ -153,7 +153,38 @@ public class POJOGenerator implements CompilationPhase {
                                                                                    MARKER_INTERFACES)
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
-        addTypeMetadata(typeDescr.getTypeName());
+        
+        // Add type metadata including custom annotations
+        String fullTypeName = pkg.getName() + "." + typeDescr.getTypeName();
+        MethodCallExpr typeMetaDataCall = registerTypeMetaData(fullTypeName);
+        
+        // Add custom metadata from non-defined annotations
+        Map<String, Object> classMetaData = descrDeclaredTypeDefinition.getClassMetaData();
+        for (Map.Entry<String, Object> entry : classMetaData.entrySet()) {
+            typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
+            typeMetaDataCall.addArgument(toStringLiteral(entry.getKey()));
+            addAnnotationValueIfNotNull(typeMetaDataCall, entry.getValue());
+        }
+
+        // Add field metadata
+        for (DescrFieldDefinition field : descrDeclaredTypeDefinition.getFields()) {
+            Map<String, Object> fieldMetaData = field.getFieldMetaData();
+            if (!fieldMetaData.isEmpty()) {
+                // First, add the field to the TypeMetaData
+                typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "withField");
+                typeMetaDataCall.addArgument(toStringLiteral(field.getFieldName()));
+
+                // Then add each annotation as field metadata
+                for (Map.Entry<String, Object> entry : fieldMetaData.entrySet()) {
+                    typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, "withFieldAnnotation");
+                    typeMetaDataCall.addArgument(toStringLiteral(field.getFieldName()));
+                    typeMetaDataCall.addArgument(toStringLiteral(entry.getKey()));
+                    addAnnotationValueIfNotNull(typeMetaDataCall, entry.getValue());
+                }
+            }
+        }
+        
+        packageModel.addTypeMetaDataExpressions(typeMetaDataCall);
     }
 
     private void addTypeMetadata(String typeName) {
@@ -191,6 +222,15 @@ public class POJOGenerator implements CompilationPhase {
         MethodCallExpr typeMetaDataCall = createDslTopLevelMethod(TYPE_META_DATA_CALL);
         typeMetaDataCall.addArgument(className + ".class");
         return typeMetaDataCall;
+    }
+
+    private static void addAnnotationValueIfNotNull(MethodCallExpr typeMetaDataCall, Object value) {
+        if (value != null) {
+            MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
+            annotationValueCall.addArgument(toStringLiteral("value"));
+            annotationValueCall.addArgument(quote(value.toString()));
+            typeMetaDataCall.addArgument(annotationValueCall);
+        }
     }
 
     public static String quote(String str) {

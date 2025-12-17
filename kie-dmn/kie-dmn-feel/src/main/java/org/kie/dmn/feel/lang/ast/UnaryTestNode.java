@@ -20,34 +20,34 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiPredicate;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DefaultDialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class UnaryTestNode
         extends BaseNode {
 
     private UnaryOperator operator;
-    private BaseNode      value;
+    private BaseNode value;
 
     public enum UnaryOperator {
-        LTE( "<=" ),
-        LT( "<" ),
-        GT( ">" ),
-        GTE( ">=" ),
-        NE( "!=" ),
-        EQ( "=" ),
-        NOT( "not" ),
-        IN( "in" ),
-        TEST( "test");
+        LTE("<="),
+        LT("<"),
+        GT(">"),
+        GTE(">="),
+        NE("!="),
+        EQ("="),
+        NOT("not"),
+        IN("in"),
+        TEST("test");
 
         public final String symbol;
 
@@ -56,39 +56,39 @@ public class UnaryTestNode
         }
 
         public static UnaryOperator determineOperator(String symbol) {
-            for ( UnaryOperator op : UnaryOperator.values() ) {
-                if ( op.symbol.equals( symbol ) ) {
+            for (UnaryOperator op : UnaryOperator.values()) {
+                if (op.symbol.equals(symbol)) {
                     return op;
                 }
             }
-            throw new IllegalArgumentException( "No operator found for symbol '" + symbol + "'" );
+            throw new IllegalArgumentException("No operator found for symbol '" + symbol + "'");
         }
     }
 
-    public UnaryTestNode( String op, BaseNode value ) {
+    public UnaryTestNode(String op, BaseNode value) {
         super();
-        setText( op+" "+value.getText() );
-        this.operator = UnaryOperator.determineOperator( op );
+        setText(op + " " + value.getText());
+        this.operator = UnaryOperator.determineOperator(op);
         this.value = value;
     }
 
-    public UnaryTestNode( UnaryOperator op, BaseNode value ) {
+    public UnaryTestNode(UnaryOperator op, BaseNode value) {
         super();
-        setText( op.symbol+" "+value.getText() );
+        setText(op.symbol + " " + value.getText());
         this.operator = op;
         this.value = value;
     }
 
     public UnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
-        super( ctx );
-        this.operator = UnaryOperator.determineOperator( op );
+        super(ctx);
+        this.operator = UnaryOperator.determineOperator(op);
         this.value = value;
     }
 
-    public UnaryTestNode( UnaryOperator op, BaseNode value, String text ) {
+    public UnaryTestNode(UnaryOperator op, BaseNode value, String text) {
         this.operator = op;
         this.value = value;
-        this.setText( text);
+        this.setText(text);
     }
 
     public UnaryOperator getOperator() {
@@ -117,35 +117,41 @@ public class UnaryTestNode
     }
 
     public UnaryTest getUnaryTest() {
-        switch ( operator ) {
-            case LTE:
-                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) <= 0 ) , value.getText() );
-            case LT:
-                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) < 0 ) , value.getText() );
-            case GT:
-                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) > 0 ) , value.getText() );
-            case GTE:
-                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) >= 0 ) , value.getText() );
-            case EQ:
-                return new UnaryTestImpl( createIsEqualUnaryTest( ) , value.getText() );
-            case NE:
-                return new UnaryTestImpl( createIsNotEqualUnaryTest( ) , value.getText() );
-            case IN:
-                return new UnaryTestImpl( createInUnaryTest() , value.getText() );
-            case NOT:
-                return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
-            case TEST:
-                return new UnaryTestImpl( createBooleanUnaryTest(), value.getText() );
-        }
-        return null;
-    }
+        return new UnaryTestImpl((context, left) -> {
+            Object right = value.evaluate(context);
+            DialectHandler handler = DialectHandlerFactory.getHandler(context);
 
-    private UnaryTest createCompareUnaryTest( BiPredicate<Comparable, Comparable> op ) {
-        return (context, left) -> {
-            Object right = value.evaluate( context );
-            // Defaulting FEELDialect to FEEL
-            return BooleanEvalHelper.compare(left, right, FEELDialect.FEEL, op );
-        };
+            Object result;
+            switch (operator) {
+                case LTE:
+                    result = handler.executeLte(left, right, context);
+                    break;
+                case LT:
+                    result = handler.executeLt(left, right, context);
+                    break;
+                case GT:
+                    result = handler.executeGt(left, right, context);
+                    break;
+                case GTE:
+                    result = handler.executeGte(left, right, context);
+                    break;
+                case EQ:
+                    return createIsEqualUnaryTest().apply(context, left);
+                case NE:
+                    return createIsNotEqualUnaryTest().apply(context, left);
+                case IN:
+                    return createInUnaryTest().apply(context, left);
+                case NOT:
+                    return createNotUnaryTest().apply(context, left);
+                case TEST:
+                    return createBooleanUnaryTest().apply(context, left);
+
+                default:
+                    throw new UnsupportedOperationException("Unsupported operator: " + operator);
+            }
+
+            return (result instanceof Boolean) ? (Boolean) result : Boolean.FALSE;
+        }, value.getText());
     }
 
     /**
@@ -158,22 +164,23 @@ public class UnaryTestNode
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            return BooleanEvalHelper.isEqual(left, right, FEELDialect.FEEL);
+            return DefaultDialectHandler.isEqual(left, right, () -> (left == null && right == null), () -> Boolean.FALSE);
+
         }
     }
 
-    private UnaryTest createIsEqualUnaryTest( ) {
+    private UnaryTest createIsEqualUnaryTest() {
         return (context, left) -> {
-            Object right = value.evaluate( context );
+            Object right = value.evaluate(context);
             return utEqualSemantic(left, right);
         };
     }
 
-    private UnaryTest createIsNotEqualUnaryTest( ) {
+    private UnaryTest createIsNotEqualUnaryTest() {
         return (context, left) -> {
-            Object right = value.evaluate( context );
+            Object right = value.evaluate(context);
             Boolean result = utEqualSemantic(left, right);
-            return result != null ? ! result : null;
+            return result != null ? !result : null;
         };
     }
 
@@ -182,10 +189,10 @@ public class UnaryTestNode
             if (o == null) {
                 return false;
             }
-            Object val = value.evaluate( c );
+            Object val = value.evaluate(c);
             if (val instanceof Range) {
                 try {
-                    return ((Range) val).includes(c.getFEELDialect(), o);
+                    return ((Range) val).includes(c, o);
                 } catch (Exception e) {
                     c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, val)));
                     throw e;
@@ -200,38 +207,38 @@ public class UnaryTestNode
 
     private UnaryTest createNotUnaryTest() {
         return (c, o) -> {
-            Object val = value.evaluate( c );
-            if( val == null ) {
+            Object val = value.evaluate(c);
+            if (val == null) {
                 return null;
             }
             List<Object> tests = (List<Object>) val;
-            for( Object test : tests ) {
-                if( test == null ) {
-                    if( o == null ) {
+            for (Object test : tests) {
+                if (test == null) {
+                    if (o == null) {
                         return false;
                     }
-                } else if( test instanceof UnaryTest ) {
-                    if( ((UnaryTest)test).apply( c, o ) ) {
+                } else if (test instanceof UnaryTest) {
+                    if (((UnaryTest) test).apply(c, o)) {
                         return false;
                     }
-                } else if( o == null ) {
-                    if( test == null ) {
+                } else if (o == null) {
+                    if (test == null) {
                         return false;
                     }
-                } else if( test instanceof Range ) {
+                } else if (test instanceof Range) {
                     try {
-                        if( ((Range)test).includes(c.getFEELDialect(), o ) ) {
+                        if (((Range) test).includes(c, o)) {
                             return false;
                         }
-                    } catch ( Exception e ) {
-                        c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, test ) ) );
+                    } catch (Exception e) {
+                        c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, test)));
                         throw e;
                     }
                 } else if (test instanceof Collection) {
                     return !((Collection) test).contains(o);
                 } else {
                     // test is a constant, so return false if it is equal to "o"
-                    if( test.equals( o ) ) {
+                    if (test.equals(o)) {
                         return false;
                     }
                 }
@@ -240,13 +247,13 @@ public class UnaryTestNode
         };
     }
 
-    private UnaryTest createBooleanUnaryTest( ) {
+    private UnaryTest createBooleanUnaryTest() {
         return (context, left) -> {
-            Object right = value.evaluate( context );
-            if( right instanceof Boolean ) {
+            Object right = value.evaluate(context);
+            if (right instanceof Boolean) {
                 return (Boolean) right;
             } else {
-                context.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, value.getText(), right ) ) );
+                context.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, value.getText(), right)));
                 return Boolean.FALSE;
             }
         };

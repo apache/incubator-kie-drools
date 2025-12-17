@@ -40,6 +40,7 @@ import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.ASTORE;
 import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.drools.mvel.asm.TypeConversionHelper.*;
 import static org.mvel2.asm.Opcodes.INVOKESTATIC;
 import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
 import static org.mvel2.asm.Opcodes.RETURN;
@@ -99,10 +100,18 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitVarInsn(ALOAD, factPos); // fact[i]
                     invokeInterface(FactHandle.class, "getObject", Object.class);
                     String readMethod = declarations[i].getNativeReadMethodName();
-                    boolean isObject = readMethod.equals("getValue");
-                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
+                    boolean isObject = readMethod.equals(GET_VALUE);
+                    
+                    // Determine conversion type and actual return type using helper
+                    TypeConversionHelper.ConversionType conversionType = TypeConversionHelper.determineConversionType(readMethod, declarations[i].getTypeName());
+                    String actualReturnType = TypeConversionHelper.getActualReturnType(readMethod, isObject, typeDescr(declarations[i].getTypeName()));
+                    
                     mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
-                                       "(L" + ValueResolver.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
+                                       "(L" + ValueResolver.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + actualReturnType);
+                    
+                    // Emit type conversion instructions if needed
+                    TypeConversionHelper.emitTypeConversion(mv, conversionType);
+                    
                     if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
                     offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 

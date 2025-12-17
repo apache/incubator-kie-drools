@@ -40,6 +40,7 @@ import org.kie.dmn.core.impl.DMNDecisionResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.DMNRuntimeUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionService(eventManager, dsNode, result);
         DMNRuntime dmnRuntime = eventManager.getRuntime();
         DMNModel dmnModel = dmnRuntime.getModel(dsNode.getModelNamespace(), dsNode.getModelName());
-        List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(DMNCompilerImpl::getReferenceId).toList();
         DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
         Map<String, Object> ctx = new HashMap<>();
         List<DMNDecisionResult> decisionResults = new ArrayList<>();
@@ -84,10 +85,10 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         }
         boolean typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         if (typeCheck) {
-            Object c = DMNRuntimeImpl.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
-                                                      dsNode.getResultType(),
-                                                      typeCheck,
-                                                      (rx, tx) -> MsgUtil.reportMessage(LOG,
+            Object c = DMNRuntimeUtils.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
+                                                       dsNode.getResultType(),
+                                                       typeCheck,
+                                                       (rx, tx) -> MsgUtil.reportMessage(LOG,
                                                                                         DMNMessage.Severity.WARN,
                                                                                         dsNode.getDecisionService(),
                                                                                         result,

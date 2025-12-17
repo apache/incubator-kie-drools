@@ -18,6 +18,7 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
@@ -39,9 +41,10 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.DetachedTuple;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
+import org.drools.core.phreak.RuleNetworkEvaluatorImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractLinkedListNode;
@@ -52,12 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
-import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
-import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia;
-import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
-import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -102,15 +99,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.setObjectCount(1); // 'lia' start at 1
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
-        ObjectSource current = source;
+        BaseNode current = source;
         while (current.getType() != NodeTypeEnums.ObjectTypeNode) {
-            current = current.getParentObjectSource();
+            current = current.getParent();
         }
 
         setStreamMode( context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent() );
         sinkMask = calculateSinkMask(context);
 
         hashcode = calculateHashCode();
+    }
+
+    public ObjectSource getParent() {
+        return objectSource;
     }
 
     private BitMask calculateSinkMask(BuildContext context) {
@@ -173,12 +174,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       boolean useLeftMemory) {
         SegmentMemory sm = lm.getOrCreateSegmentMemory( liaNode, reteEvaluator );
         if ( sm.getTipNode() == liaNode) {
-            // liaNode in its own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
@@ -190,7 +186,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // if there is no left memory, then there is no linking or notification
             if ( linkOrNotify ) {
                 // link and notify
-                lm.linkNode( reteEvaluator );
+                lm.linkNode( );
             } else {
                 // link without notify, when driven by a query, as we don't want it, placed on the agenda
                 lm.linkNodeWithoutRuleNotify();
@@ -201,8 +197,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         TupleImpl leftTuple = TupleFactory.createLeftTuple( sink, factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
 
+        Collection<PathMemory> pathsToFlush;
         if ( sm.getRootNode() == liaNode ) {
-            doInsertSegmentMemoryWithFlush(reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode());
+            pathsToFlush = doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
         } else {
             // sm points to lia child sm, so iterate for all remaining children
             // all peer tuples must be created before propagation, or eager evaluation subnetworks have problem
@@ -212,9 +209,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sink =  sm.getSinkFactory();
                 peer = TupleFactory.createPeer( sink, peer ); // pctx is set during peer cloning
             }
-
             sm = originaSm;
-            Set<PathMemory> pathsToFlush = new HashSet<>();
+            pathsToFlush = new HashSet<>();
             pathsToFlush.addAll( doInsertSegmentMemory( reteEvaluator, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() ) );
             if ( sm.getRootNode() != liaNode ) {
                 // sm points to lia child sm, so iterate for all remaining children
@@ -225,26 +221,18 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 }
             }
 
-            for (PathMemory outPmem : pathsToFlush) {
-                forceFlushPath(reteEvaluator, outPmem);
-            }
         }
-    }
-
-    public static void doInsertSegmentMemoryWithFlush(ReteEvaluator reteEvaluator, boolean notifySegment, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
-        for (PathMemory outPmem : doInsertSegmentMemory(reteEvaluator, notifySegment, lm, sm, leftTuple, streamMode )) {
-            forceFlushPath(reteEvaluator, outPmem);
-        }
+        reteEvaluator.getRuleNetworkEvaluator().forceFlushPaths(pathsToFlush);
     }
 
     public static List<PathMemory> doInsertSegmentMemory(ReteEvaluator reteEvaluator, boolean linkOrNotify, LiaNodeMemory lm, SegmentMemory sm, TupleImpl leftTuple, boolean streamMode) {
-        PathMemory pmem = findPathToFlush(sm, leftTuple, streamMode);
+        PathMemory pmem = RuleNetworkEvaluatorImpl.findPathToFlush(sm, leftTuple, streamMode);
         if ( pmem != null ) {
-            forceFlushLeftTuple( pmem, sm, reteEvaluator, createLeftTupleTupleSets(leftTuple, Tuple.INSERT) );
+            reteEvaluator.getRuleNetworkEvaluator().forceFlushLeftTuple(pmem, sm, TupleSetsImpl.createLeftTupleTupleSets(leftTuple, Tuple.INSERT));
             if ( linkOrNotify ) {
-                lm.setNodeDirty( reteEvaluator );
+                lm.setNodeDirty( );
             }
-            return findPathsToFlushFromRia(reteEvaluator, pmem);
+            return reteEvaluator.getRuleNetworkEvaluator().findPathsToFlushFromSubnetwork(pmem);
         }
 
         // mask check is necessary if insert is a result of a modify
@@ -252,7 +240,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if ( stagedInsertWasEmpty && linkOrNotify  ) {
             // staged is empty, so notify rule, to force re-evaluation.
-            lm.setNodeDirty(reteEvaluator);
+            lm.setNodeDirty();
         }
         return Collections.emptyList();
     }
@@ -265,12 +253,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final boolean linkOrNotify,
                                       final LiaNodeMemory lm) {
         if ( sm.getTipNode() == liaNode ) {
-            // liaNode in it's own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
@@ -291,7 +274,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if ( lm.getAndDecreaseCounter() == 1 ) {
             if ( linkOrNotify ) {
-                lm.unlinkNode( reteEvaluator );
+                lm.unlinkNode( );
             } else {
                 lm.unlinkNodeWithoutRuleNotify();
             }
@@ -301,9 +284,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
     private static void doDeleteSegmentMemory(TupleImpl leftTuple, PropagationContext pctx, final LiaNodeMemory lm,
                                               SegmentMemory sm, ReteEvaluator reteEvaluator, boolean linkOrNotify, boolean streamMode) {
         leftTuple.setPropagationContext( pctx );
-        if ( flushLeftTupleIfNecessary( reteEvaluator, sm, leftTuple, streamMode, Tuple.DELETE ) ) {
+        if ( reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(sm, leftTuple, streamMode, Tuple.DELETE) ) {
             if ( linkOrNotify ) {
-                lm.setNodeDirty( reteEvaluator );
+                lm.setNodeDirty( );
             }
             return;
         }
@@ -313,7 +296,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         if (  stagedDeleteWasEmpty && linkOrNotify ) {
             // staged is empty, so notify rule, to force re-evaluation
-            lm.setNodeDirty(reteEvaluator);
+            lm.setNodeDirty();
         }
     }
 
@@ -325,12 +308,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final LiaNodeMemory lm,
                                       SegmentMemory sm) {
         if ( sm.getTipNode() == liaNode) {
-            // liaNode in it's own segment and child segments not yet created
-            if ( sm.isEmpty() ) {
-                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
-                                                            sm,
-                                                            liaNode.getSinkPropagator());
-            }
+            reteEvaluator.getSegmentMemorySupport().initializeChildSegmentsIfNeeded(sm);
             sm = sm.getFirst(); // repoint to the child sm
         }
 
@@ -353,9 +331,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         TupleSets leftTuples = sm.getStagedLeftTuples();
 
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
-            if ( flushLeftTupleIfNecessary( reteEvaluator, sm, leftTuple, streamMode, Tuple.UPDATE ) ) {
+            if ( reteEvaluator.getRuleNetworkEvaluator().flushLeftTupleIfNecessary(sm, leftTuple, streamMode, Tuple.UPDATE) ) {
                 if ( linkOrNotify ) {
-                    lm.setNodeDirty( reteEvaluator );
+                    lm.setNodeDirty( );
                 }
                 return;
             }
@@ -365,7 +343,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
             if ( stagedUpdateWasEmpty  && linkOrNotify ) {
                 // staged is empty, so notify rule, to force re-evaluation
-                lm.setNodeDirty(reteEvaluator);
+                lm.setNodeDirty();
             }
         }
     }
@@ -389,13 +367,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              ReteEvaluator reteEvaluator) {
-        ObjectTypeNodeId otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
+        ObjectTypeNodeId otnId = this.sink.getFirstLeftTupleSink().getInputOtnId();
 
         TupleImpl     leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
         LiaNodeMemory lm        = reteEvaluator.getNodeMemory( this );
 
         LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-        BitMask mask = sink.getLeftInferredMask();
+        BitMask mask = sink.getInferredMask();
 
         if ( leftTuple != null && leftTuple.getInputOtnId().equals(otnId) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
@@ -567,12 +545,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
             segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
         }
 
-        public void linkNode(ReteEvaluator reteEvaluator) {
-            segmentMemory.linkNode(nodePosMaskBit, reteEvaluator);
+        public void linkNode() {
+            segmentMemory.linkNode(nodePosMaskBit);
         }
 
-        public boolean unlinkNode(ReteEvaluator reteEvaluator) {
-            return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
+        public boolean unlinkNode() {
+            return segmentMemory.unlinkNode(nodePosMaskBit);
         }
 
         public void unlinkNodeWithoutRuleNotify() {
@@ -583,8 +561,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 
-        public void setNodeDirty(ReteEvaluator reteEvaluator) {
-            segmentMemory.notifyRuleLinkSegment(reteEvaluator, nodePosMaskBit);
+        public void setNodeDirty() {
+            segmentMemory.notifyRuleLinkSegment(nodePosMaskBit);
         }
 
         public void reset() {
@@ -617,7 +595,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final ReteEvaluator reteEvaluator) {
-            ObjectTypeNodeId otnId = liaNode.getSinkPropagator().getFirstLeftTupleSink().getLeftInputOtnId();
+            ObjectTypeNodeId otnId = liaNode.getSinkPropagator().getFirstLeftTupleSink().getInputOtnId();
             TupleImpl detached = factHandle.getLinkedTuples().detachLeftTupleAfter(getPartitionId(), otnId);
             if (detached != null) {
                 detachedTuples.add(new DetachedTuple((DefaultFactHandle) factHandle, detached));

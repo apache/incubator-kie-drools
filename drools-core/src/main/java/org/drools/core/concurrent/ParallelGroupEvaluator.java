@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
 
 import static org.drools.base.common.PartitionsManager.MIN_PARALLEL_THRESHOLD;
@@ -33,8 +35,8 @@ import static org.drools.base.common.PartitionsManager.doOnForkJoinPool;
 
 public class ParallelGroupEvaluator extends AbstractGroupEvaluator {
 
-    public ParallelGroupEvaluator(ActivationsManager activationsManager ) {
-        super(activationsManager);
+    public ParallelGroupEvaluator(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, ActivationsManager activationsManager ) {
+        super(ruleBase, reteEvaluator, activationsManager);
     }
 
     protected void startEvaluation(InternalAgendaGroup group) {
@@ -61,7 +63,7 @@ public class ParallelGroupEvaluator extends AbstractGroupEvaluator {
         doOnForkJoinPool(() ->
                 partitionedActivations.values().parallelStream()
                         .forEach( items -> items
-                                .forEach( item -> item.getRuleExecutor().evaluateNetworkIfDirty(activationsManager) ) )
+                                .forEach( item -> item.getRuleExecutor().evaluateNetworkIfDirty(reteEvaluator, activationsManager) ) )
         );
     }
 }

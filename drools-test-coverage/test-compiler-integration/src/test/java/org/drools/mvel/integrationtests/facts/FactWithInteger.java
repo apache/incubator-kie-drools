@@ -35,4 +35,8 @@ public class FactWithInteger {
     public Integer getIntegerValue() {
         return integerValue;
     }
+
+    public long getLongValue() {
+        return intValue;
+    }
 }

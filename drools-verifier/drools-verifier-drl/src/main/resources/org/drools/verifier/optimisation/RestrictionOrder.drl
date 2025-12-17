@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import org.drools.drl.parser.impl.Operator;
-import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
@@ -63,14 +62,14 @@ rule "Optimise restrictions inside operator"
         (
                 $r1 :Restriction(
                     this memberOf $sp.items,
-                    ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == MatchesEvaluatorsDefinition.MATCHES )
+                    ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.determineOperator("matches", false) )
                 )
             and
                 $r2 :Restriction(
                     this memberOf $sp.items,
                     path != $r1.path,
                     orderNumber < $r1.orderNumber,
-                    ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
+                    ( operator == Operator.BuiltInOperator.GREATER.getOperator() || == Operator.BuiltInOperator.LESS.getOperator() || == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.determineOperator("matches", true) || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         ) or (
                 $r1 :Restriction(
@@ -82,7 +81,7 @@ rule "Optimise restrictions inside operator"
                     this memberOf $sp.items,
                     path != $r1.path,
                     orderNumber < $r1.orderNumber,
-                    ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
+                    ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() || == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() || == Operator.determineOperator("matches", true) || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         ) or (
                 $r1 :Restriction(
@@ -94,7 +93,7 @@ rule "Optimise restrictions inside operator"
                     this memberOf $sp.items,
                     path != $r1.path,
                     orderNumber < $r1.orderNumber,
-                    ( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
+                    ( operator == Operator.determineOperator("matches", true) || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         )
 
@@ -130,7 +129,7 @@ rule "Optimise restrictions inside constraint"
     when
         (
                 $r1 :Restriction(
-                    ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == MatchesEvaluatorsDefinition.MATCHES )
+                    ( operator == Operator.BuiltInOperator.EQUAL.getOperator() || == Operator.determineOperator("matches", false) )
                 )
             and
                 $r2 :Restriction(
@@ -141,7 +140,7 @@ rule "Optimise restrictions inside constraint"
                                == Operator.BuiltInOperator.LESS.getOperator() ||
                                == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ||
                                == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ||
-                               == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                               == Operator.determineOperator("matches", true) ||
                                == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         ) or (
@@ -156,7 +155,7 @@ rule "Optimise restrictions inside constraint"
                     orderNumber < $r1.orderNumber,
                     ( operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator() ||
                                == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator() ||
-                               == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                               == Operator.determineOperator("matches", true) ||
                                == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         )
@@ -169,7 +168,7 @@ rule "Optimise restrictions inside constraint"
                     parentPath == $r1.parentPath,
                     parentType == $r1.parentType,
                     orderNumber < $r1.orderNumber,
-                    ( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
+                    ( operator == Operator.determineOperator("matches", true) || == Operator.BuiltInOperator.NOT_EQUAL.getOperator() )
                 )
         )
 

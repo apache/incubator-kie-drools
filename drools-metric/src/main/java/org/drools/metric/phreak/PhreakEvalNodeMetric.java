@@ -23,25 +23,27 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakEvalNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakEvalNodeMetric extends PhreakEvalNode {
 
+    public PhreakEvalNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
     public void doNode(EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(evalNode);
 
-            super.doNode(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(evalNode, em, sink, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

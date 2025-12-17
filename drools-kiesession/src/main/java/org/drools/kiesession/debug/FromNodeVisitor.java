@@ -21,7 +21,6 @@ package org.drools.kiesession.debug;
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.FastIterator;
 

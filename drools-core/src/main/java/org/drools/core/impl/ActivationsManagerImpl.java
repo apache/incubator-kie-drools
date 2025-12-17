@@ -52,6 +52,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -81,20 +82,17 @@ public class ActivationsManagerImpl implements ActivationsManager {
     private final Map<QueryImpl, RuleAgendaItem> queries = new ConcurrentHashMap<>();
 
     private List<PropagationContext> expirationContexts;
+	private FactHandleFactory factHandleFactory;
 
-    public ActivationsManagerImpl(ReteEvaluator reteEvaluator) {
+    public ActivationsManagerImpl(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory) {
         this.reteEvaluator = reteEvaluator;
-        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(reteEvaluator);
+		this.factHandleFactory = factHandleFactory;
+        this.agendaGroupsManager = new AgendaGroupsManager.SimpleAgendaGroupsManager(ruleBase, reteEvaluator, factHandleFactory);
         this.propagationList = new SynchronizedPropagationList(reteEvaluator);
-        this.groupEvaluator = new SequentialGroupEvaluator( this );
-        if (reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
+        this.groupEvaluator = new SequentialGroupEvaluator( ruleBase, reteEvaluator, this );
+        if (ruleBase.getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }
-    }
-
-    @Override
-    public ReteEvaluator getReteEvaluator() {
-        return reteEvaluator;
     }
 
     @Override
@@ -136,7 +134,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void removeQueryAgendaItem(RuleAgendaItem item) {
-        queries.remove( (QueryImpl) item.getRule() );
+        queries.remove(item.getRule());
     }
 
     @Override
@@ -156,7 +154,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void clearAndCancelActivationGroup(final InternalActivationGroup activationGroup) {
-        activationGroup.setTriggeredForRecency( this.reteEvaluator.getFactHandleFactory().getRecency() );
+        activationGroup.setTriggeredForRecency(factHandleFactory.getRecency() );
 
         for (final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();
@@ -237,7 +235,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
                 evaluateQueriesForRule( item );
                 RuleExecutor ruleExecutor = item.getRuleExecutor();
-                ruleExecutor.evaluateNetwork( this );
+                ruleExecutor.evaluateNetwork(reteEvaluator, this);
             }
         }
     }
@@ -249,7 +247,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             for (QueryImpl query : rule.getDependingQueries()) {
                 RuleAgendaItem queryAgendaItem = queries.remove(query);
                 if (queryAgendaItem != null) {
-                    queryAgendaItem.getRuleExecutor().evaluateNetwork(this);
+                    queryAgendaItem.getRuleExecutor().evaluateNetwork(reteEvaluator, this);
                 }
             }
         }

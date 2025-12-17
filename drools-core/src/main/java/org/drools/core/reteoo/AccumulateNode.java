@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
@@ -69,7 +70,7 @@ public class AccumulateNode extends BetaNode {
 
     public AccumulateNode(final int id,
                           final LeftTupleSource leftInput,
-                          final ObjectSource rightInput,
+                          final RightInputAdapterNode rightInput,
                           final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
@@ -98,7 +99,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     private void addAccFunctionDeclarationsToLeftMask(InternalRuleBase ruleBase, LeftTupleSource leftInput, Accumulate accumulate) {
-        BitMask leftMask = getLeftInferredMask();
+        BitMask leftMask = getInferredMask();
         ObjectType leftObjectType = leftInput.getObjectType();
         if (leftObjectType instanceof ClassObjectType ) {
             TypeDeclaration typeDeclaration = ruleBase.getExactTypeDeclaration(((ClassObjectType) leftObjectType).getClassType() );
@@ -111,12 +112,12 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
-        setLeftInferredMask( leftMask );
+        setInferredMask(leftMask);
     }
 
     @Override
     protected ObjectType getObjectTypeForPropertyReactivity( LeftInputAdapterNode leftInput, Pattern pattern ) {
-        return pattern != null && isRightInputIsRiaNode() ?
+        return pattern != null && rightInput.inputIsTupleToObjectNode() ?
                pattern.getObjectType() :
                leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
     }
@@ -173,7 +174,7 @@ public class AccumulateNode extends BetaNode {
         }
 
         AccumulateNode other = (AccumulateNode) object;
-        return this.leftInput.getId() == other.leftInput.getId() && this.rightInput.getId() == other.rightInput.getId() &&
+        return this.leftInput.getId() == other.leftInput.getId() && this.rightInput.equals(other.rightInput)&&
                this.constraints.equals( other.constraints ) &&
                this.accumulate.equals( other.accumulate ) &&
                this.resultBinder.equals( other.resultBinder ) &&
@@ -184,7 +185,7 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory betaMemory = (BetaMemory) this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
+        BetaMemory betaMemory = this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
                                   new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
                                   new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
@@ -320,7 +321,7 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleListWithContext<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, BaseTuple leftTuple,
-                                                          Object key, ReteEvaluator reteEvaluator) {
+                                                          Object key, ValueResolver reteEvaluator) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
                 entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, reteEvaluator) );
@@ -368,36 +369,5 @@ public class AccumulateNode extends BetaNode {
             toPropagateList = null;
             lastTupleList = null;
         }
-    }
-
-    /**
-     *  @inheritDoc
-     *
-     *  If an object is retract, call modify tuple for each
-     *  tuple match.
-     */
-    public void retractRightTuple( final TupleImpl rightTuple,
-                                   final PropagationContext pctx,
-                                   final ReteEvaluator reteEvaluator ) {
-        final AccumulateMemory memory = (AccumulateMemory) reteEvaluator.getNodeMemory( this );
-
-        BetaMemory bm = memory.getBetaMemory();
-        rightTuple.setPropagationContext( pctx );
-        doDeleteRightTuple( rightTuple, reteEvaluator, bm );
-    }
-
-    @Override
-    public void modifyRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder) {
-        if ( !isInUse() ) {
-            getLeftTupleSource().removeTupleSink( this );
-            getRightInput().removeObjectSink( this );
-            return true;
-        }
-        return false;
     }
 }

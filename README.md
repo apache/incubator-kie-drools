@@ -17,21 +17,11 @@
   under the License.
   -->
 
-An open source rule engine, [DMN engine](https://drools.org/learn/dmn.html) and complex event processing (CEP) engine for Java™ and the JVM Platform.
+An open source rule engine, [DMN engine](https://kie.apache.org/docs/components/drools/drools_dmn) and complex event processing (CEP) engine for Java™ and the JVM Platform.
 
 Drools is a business rule management system with a forward-chaining and backward-chaining inference based rules engine, allowing fast and reliable evaluation of business rules and complex event processing. A rule engine is also a fundamental building block to create an expert system which, in artificial intelligence, is a computer system that emulates the decision-making ability of a human expert.
 
-Be sure to check out the Drools' project [website](https://drools.org) and [documentation](https://drools.org/learn/documentation.html)!
-
-Developing Drools and jBPM
-==========================
-
-**If you want to build or contribute to a kiegroup project, [read this document](https://github.com/kiegroup/droolsjbpm-build-bootstrap/blob/main/README.md).**
-
-**It will save you and us a lot of time by setting up your development environment correctly.**
-It solves all known pitfalls that can disrupt your development.
-It also describes all guidelines, tips and tricks.
-If you want your pull requests (or patches) to be merged, please respect those guidelines.
+Be sure to check out the Apache KIE project [website](https://kie.apache.org/docs/components/drools/) and [documentation](https://kie.apache.org/docs/documentation/)!
 
 
 Test execution tip
@@ -47,6 +37,16 @@ The following two commands will execute tests on machine with locale different t
 
 1. `make test -Ptest-en`
 2. `make test -DTestEn`
+
+Troubleshooting
+================
+If the build fails with `UnmappableCharacterException`, set `-Dfile.encoding=UTF-8` for `MAVEN_OPTS` (not as an argument of `mvn` command). Then run `mvn`.
+
+example for Windows:
+```shell
+set MAVEN_OPTS=-Dfile.encoding=UTF-8
+mvn clean install
+```
 
 Documenting tips
 ================

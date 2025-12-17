@@ -28,7 +28,6 @@ import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReturnValueExpression;
 import org.drools.base.rule.accessor.Wireable;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.EvalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
@@ -61,7 +60,7 @@ public class MVELGroupByAccumulate extends Accumulate {
         return innerAccumulate;
     }
 
-    private Object getKey( Tuple tuple, FactHandle handle, ReteEvaluator reteEvaluator ) {
+    private Object getKey( Tuple tuple, FactHandle handle, ValueResolver reteEvaluator ) {
         try {
             Tuple keyTuple = isMvel? tuple : new EvalNodeLeftTuple((InternalFactHandle) handle, (TupleImpl) tuple, tuple
                     .getSink());
@@ -114,7 +113,7 @@ public class MVELGroupByAccumulate extends Accumulate {
             BaseTuple match, FactHandle handle, ValueResolver valueResolver) {
         AccumulateNode.GroupByContext groupByContext = (AccumulateNode.GroupByContext) context;
         TupleListWithContext<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
-                                                                                         match, getKey( (Tuple) match, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
+                                                                                         match, getKey( (Tuple) match, handle, valueResolver), valueResolver);
 
         return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, valueResolver);
     }

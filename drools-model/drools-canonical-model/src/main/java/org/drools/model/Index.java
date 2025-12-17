@@ -18,8 +18,6 @@
  */
 package org.drools.model;
 
-import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import org.drools.model.functions.Function1;

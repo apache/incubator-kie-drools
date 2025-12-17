@@ -290,7 +290,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();
         
-        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
+        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition(), model.getDMNVersion());
         
         Set<String> names = new HashSet<>();
         for (ItemDefinition id : ordered) {
@@ -454,10 +454,10 @@ public class DMNCompilerImpl implements DMNCompiler {
     public void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
         for ( InformationRequirement ir : node.getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
-                String id = getId( ir.getRequiredInput() );
+                String id = getReferenceId( ir.getRequiredInput() );
                 InputDataNode input = model.getInputById( id );
                 if ( input != null ) {
-                    node.addDependency( input.getName(), input );
+                    node.addDependency( input.getModelNamespace() + "." + input.getName(), input );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -465,15 +465,16 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            model,
                                            null,
                                            null,
-                                           Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                           Msg.DETAILED_REQ_INPUT_NOT_FOUND_FOR_NODE,
                                            id,
-                                           node.getName() );
+                                           node.getName(),
+                                           node.getModelNamespace());
                 }
             } else if ( ir.getRequiredDecision() != null ) {
-                String id = getId( ir.getRequiredDecision() );
+                String id = getReferenceId( ir.getRequiredDecision() );
                 DecisionNode dn = model.getDecisionById( id );
                 if ( dn != null ) {
-                    node.addDependency( dn.getName(), dn );
+                    node.addDependency( dn.getModelNamespace() + "." + dn.getName(), dn );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -489,13 +490,13 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         for ( KnowledgeRequirement kr : node.getKnowledgeRequirement() ) {
             if ( kr.getRequiredKnowledge() != null ) {
-                String id = getId( kr.getRequiredKnowledge() );
+                String id = getReferenceId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
                 DecisionServiceNode dsn = model.getDecisionServiceById(id);
                 if ( bkmn != null ) {
-                    node.addDependency( bkmn.getName(), bkmn );
+                    node.addDependency( bkmn.getModelNamespace() + "." + bkmn.getName(), bkmn );
                 } else if (dsn != null) {
-                    node.addDependency(dsn.getName(), dsn);
+                    node.addDependency(dsn.getModelNamespace() + "." + dsn.getName(), dsn);
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -515,9 +516,14 @@ public class DMNCompilerImpl implements DMNCompiler {
      * For the purpose of Compilation, in the DMNModel the DRGElements are stored with their full ID, so an ElementReference might reference in two forms:
      *  - #id (a local to the model ID)
      *  - namespace#id (an imported DRGElement ID)
-     * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
+     *  This method returns:
+     *  The local ID (without the leading {@code #}) when the reference is local to the current model.
+     *  The trimmed ID (with namespace removed) when the reference includes the current model's namespace.
+     *  The full {@code namespace#id} unchanged when the reference targets an imported model.
+     *  This ensures that the returned ID can be reconciled correctly within the DMNModel, while preserving namespace context for imported elements.
+     *
      */
-    public static String getId(DMNElementReference er) {
+    public static String getReferenceId(DMNElementReference er) {
         String href = er.getHref();
         if (href.startsWith("#")) {
             return href.substring(1);

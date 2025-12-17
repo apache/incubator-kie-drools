@@ -30,10 +30,8 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -81,7 +79,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.betaConstraints.init(context, getType());
 
-        initMasks( context, tupleSource );
+        initMasks( context );
 
         hashcode = calculateHashCode();
     }
@@ -133,7 +131,7 @@ public class AsyncReceiveNode extends LeftTupleSource
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }
-                pmem.doLinkRule( reteEvaluator );
+                pmem.doLinkRule();
             }
         }
     }

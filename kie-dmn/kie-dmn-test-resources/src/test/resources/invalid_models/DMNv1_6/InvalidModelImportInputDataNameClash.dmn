@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_CB218CE4-3C32-44EC-986B-2509FD2DB804" id="_AE7757F5-3E9F-4306-9498-4F777597ECB1" name="DMN_F57A0F3D-06A9-4591-AF2F-D4A1CDB33D00" xmlns:included0="https://kie.org/dmn/_19017424-534B-4943-9DD3-3B5C71E64554" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <import id="_5B34C986-A41B-4530-88CE-2ECDC0328F69" name="CLASHING_NAME" importType="https://www.omg.org/spec/DMN/20240513/MODEL/" namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" locationURI="./ParentModel.dmn" />
+  <decision name="InvalidDecision" id="_4570A6F0-A31F-456B-B73C-A82F207AB645">
+    <variable name="InvalidDecision" id="_CDD34C93-2771-4627-BEDB-0130B8AB6968" />
+    <informationRequirement id="_01C626D2-8CC3-4B2E-8647-17D5920AE8F1">
+      <requiredInput href="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_4f6c136c-8512-4d71-8bbf-7c9eb6e74063" />
+    </informationRequirement>
+    <literalExpression id="_1D8D0D0B-80F9-49D3-8C00-E9A82574413D" label="InvalidDecision" typeRef="string">
+      <text>"Hello"</text>
+    </literalExpression>
+  </decision>
+  <inputData name="CLASHING_NAME" id="_BF9A3642-A804-4175-99B1-702C099F26AC">
+    <variable name="CLASHING_NAME" id="_FF16066D-357E-4F89-A7FE-44E36941EAAA" typeRef="number" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_11C7251C-0054-4571-BFBD-663E56C5989F" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_1D8D0D0B-80F9-49D3-8C00-E9A82574413D">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_61FD3C47-BBA8-460E-8E0A-8CE9A94EAA18" dmnElementRef="included0:_D93251BA-B455-4041-9148-4491E3FBFC76">
+        <dc:Bounds x="360" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_76BC9E04-F772-4BCD-A564-B25673B1A189" dmnElementRef="_4570A6F0-A31F-456B-B73C-A82F207AB645" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="600" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_BDE31C3B-6FE5-4A4B-9375-77D25DB4939D" dmnElementRef="_01C626D2-8CC3-4B2E-8647-17D5920AE8F1" sourceElement="_61FD3C47-BBA8-460E-8E0A-8CE9A94EAA18" targetElement="_76BC9E04-F772-4BCD-A564-B25673B1A189">
+        <di:waypoint x="440" y="180" />
+        <di:waypoint x="600" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

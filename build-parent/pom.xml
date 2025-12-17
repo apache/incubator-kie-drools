@@ -35,8 +35,6 @@
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
-    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
-    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
     
     <surefire.forkCount>1</surefire.forkCount>
     <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
@@ -53,7 +51,7 @@
       - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
     -->
-    <version.ch.qos.logback>1.5.18</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
     <version.commons-codec>1.18.0</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
@@ -72,10 +70,10 @@
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
-    <version.io.micrometer>1.14.8</version.io.micrometer>
-    <version.io.quarkus>3.20.1</version.io.quarkus>
-    <version.io.netty>4.1.122.Final</version.io.netty>
-    <version.io.smallrye.openapi.core>4.0.10</version.io.smallrye.openapi.core>
+    <version.io.micrometer>1.14.12</version.io.micrometer>
+    <version.io.quarkus>3.20.3</version.io.quarkus>
+    <version.io.netty>4.1.128.Final</version.io.netty>
+    <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.11.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
 
@@ -86,7 +84,7 @@
     <version.org.antlr>3.5.2</version.org.antlr>
     <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
     <version.org.apache.ant>1.10.11</version.org.apache.ant>
-    <version.org.apache.commons.lang3>3.14.0</version.org.apache.commons.lang3>
+    <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.9.9</version.org.apache.maven>
@@ -94,15 +92,15 @@
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.4.1</version.org.apache.poi>
-    <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
+    <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.27.3</version.org.assertj>
     <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
     <version.org.freemarker>2.3.32</version.org.freemarker>
-    <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
+    <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.15.Final</version.org.infinispan>
+    <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
@@ -111,13 +109,13 @@
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
     <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.activation>2.0.1</version.jakarta.activation>
-    <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
+    <version.jakarta.activation>2.0.3</version.jakarta.activation>
+    <version.jakarta.activation-api>2.1.4</version.jakarta.activation-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
     <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
-    <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
+    <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
     <version.jakarta.json>1.1.5</version.jakarta.json>
     <version.jakarta.json-api>2.1.3</version.jakarta.json-api>
@@ -140,11 +138,9 @@
 
     <version.org.antlr4>4.13.2</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.io.swagger>1.6.2</version.io.swagger>
-    <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
-    <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
-    <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.org.xmlunit>2.10.2</version.org.xmlunit>
+    <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
+    <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
+    <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <!-- therefore the property is rewritten in that repository parent -->
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
@@ -184,7 +180,7 @@
     <!-- replaces findbugs-maven-plugin -->
     <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
 
-    <maven.min.version>3.8.1</maven.min.version>
+    <version.maven.min>3.8.1</version.maven.min>
     <!-- property for productisation to know the last released version -->
     <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
@@ -193,7 +189,7 @@
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
-    <version.org.postgresql>42.7.7</version.org.postgresql>
+    <version.org.postgresql>42.7.8</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.3.0</version.io.smallrye.jandex>
@@ -223,12 +219,22 @@
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- plugin used to enforce architectural constraints -->
-    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+    <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
+
+    <version.io.vertx>4.5.22</version.io.vertx>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Version overrides to fix vulnerabilities. -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <!-- Version overrides to fix vulnerabilities - end -->
+
       <!-- Keep in sync with groupId org.slf4j -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -309,6 +315,82 @@
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
 
+      <!-- Forced version of the majority of general netty dependencies. This is to enforce an aligned netty libraries version in transitive dependencies, due to possible CVEs. -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-dns</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-haproxy</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http2</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-memcache</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-mqtt</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-redis</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-smtp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-socks</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-stomp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-xml</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-dev-tools</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-handler</artifactId>
@@ -316,7 +398,47 @@
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
+        <artifactId>netty-handler-proxy</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler-ssl-ocsp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-resolver-dns</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-rxtx</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-sctp</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-udt</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
 
@@ -958,33 +1080,6 @@
         <classifier>runtime</classifier>
       </dependency>
 
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-core</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-jaxrs</artifactId>
-        <version>${version.io.swagger}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-models</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-
       <!-- OAS v3 -->
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
@@ -1006,13 +1101,6 @@
             <artifactId>jaxb-api</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <!-- swagger parser -->
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-parser</artifactId>
-        <version>${version.io.swagger.swagger-parser}</version>
       </dependency>
 
       <dependency>
@@ -1908,9 +1996,16 @@
           <version>${version.com.github.eirslett}</version>
         </plugin>
         <plugin>
-          <groupId>com.societegenerale.commons</groupId>
-          <artifactId>arch-unit-maven-plugin</artifactId>
-          <version>${archunit.maven.plugin.version}</version>
+        <groupId>com.societegenerale.commons</groupId>
+        <artifactId>arch-unit-maven-plugin</artifactId>
+        <version>${version.archunit.maven.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>arch-test</goal>
+            </goals>
+          </execution>
+        </executions>
         </plugin>
         <plugin>
           <groupId>io.github.download-maven-plugin</groupId>
@@ -2167,7 +2262,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <source>${maven.compiler.source}</source>
+                  <source>${maven.compiler.release}</source>
                 </configuration>
               </execution>
             </executions>
@@ -2412,6 +2507,18 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>archunit-java17</id>
+      <activation>
+        <jdk>[17,21)</jdk>
+      </activation>
+      <properties>
+        <version.archunit.maven.plugin>2.9.1</version.archunit.maven.plugin>
+        <version.archunit.junit5>1.2.0</version.archunit.junit5>
+      </properties>
+    </profile>
+
   </profiles>
 
 </project>

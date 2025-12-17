@@ -21,7 +21,6 @@ package org.drools.mvel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.drools.base.base.DroolsQuery;
@@ -118,7 +116,6 @@ import static org.drools.compiler.rule.builder.PatternBuilder.registerDescrBuild
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
-import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
@@ -545,7 +542,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
     private static MVELAnalysisResult analyzeExpression(String expr, ParserConfiguration conf, BoundIdentifiers availableIdentifiers) {
         if (expr.trim().isEmpty()) {
-            MVELAnalysisResult result = analyze( (Set<String> ) Collections.EMPTY_SET, availableIdentifiers );
+            MVELAnalysisResult result = analyze( Collections.emptySet(), availableIdentifiers );
             result.setMvelVariables( new HashMap<>() );
             result.setTypesafe( true );
             return result;
@@ -628,7 +625,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         MVELAnalysisResult result = analyze( requiredInputs, availableIdentifiers );
         result.setReturnType( returnType );
-        result.setMvelVariables( (Map<String, Class< ? >>) (Map) variables );
+        result.setMvelVariables( (Map) variables );
         result.setTypesafe( true );
         return result;
     }

@@ -29,12 +29,14 @@ public abstract class LiteralRestriction extends Restriction
     implements
     Cause {
 
+    private String fieldName;
+
     public LiteralRestriction(Pattern pattern) {
         super( pattern );
     }
 
     public RestrictionType getRestrictionType() {
-        return Restriction.RestrictionType.LITERAL;
+        return RestrictionType.LITERAL;
     }
 
     public abstract String getValueAsString();
@@ -95,5 +97,13 @@ public abstract class LiteralRestriction extends Restriction
     @Override
     public String toString() {
         return "LiteralRestriction from rule [" + getRuleName() + "] value '" + operator.getOperatorString() + " " + getValueAsString() + "'";
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 }

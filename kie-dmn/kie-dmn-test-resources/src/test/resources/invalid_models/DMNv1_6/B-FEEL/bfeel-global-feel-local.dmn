@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/" namespace="https://kie.org/dmn/_3A640A4E-08C2-4B09-BAAF-866504DC8750" id="_95F556A6-B5F3-466F-9C55-63440FAC8AEE"
+             name="DMN_1D8875EF-E77F-4A89-9495-113D22A02DBA">
+  <itemDefinition id="_6265833E-19AD-40FA-9053-8C766C1FE415" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+    <itemComponent id="_7DA957A9-8F14-4940-A61E-403A94BF546D" name="Age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+      <typeRef>number</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <decision name="Wrong Sum List" id="_D44300BE-2FE4-435C-B6FF-5236589EC0C2">
+    <variable id="_704A66D6-E45E-4D22-A183-0F3D1DB4A129" name="Wrong Sum List" typeRef="number" />
+    <informationRequirement id="_9AECBCC6-8333-47A9-BD06-47DA41D07FB4">
+      <requiredInput href="#_2A8EFAB9-E782-4993-9982-9D8D3E918EF8" />
+    </informationRequirement>
+    <literalExpression id="_40AA06F1-3ABD-4AEC-8F48-B7488181E33D" typeRef="number" label="Wrong Sum List" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+      <text>sum([Person.Age, &quot;1&quot;, 4])</text>
+    </literalExpression>
+  </decision>
+  <decision name="Wrong Boolean" id="_D44300BE-2FE4-435C-B6FF-5236589EC0C3">
+    <variable id="_704A66D6-E45E-4D22-A183-0F3D1DB4A130" name="Wrong Boolean" typeRef="boolean" />
+    <literalExpression id="_40AA06F1-3ABD-4AEC-8F48-B7488181E33E" typeRef="boolean" label="Wrong Boolean" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+      <text>"a" = 1</text>
+    </literalExpression>
+  </decision>
+
+  <decision name="Right Sum List" id="_D44300BE-2FE4-435C-B6FF-5236589EC0C4">
+    <variable id="_704A66D6-E45E-4D22-A183-0F3D1DB4A131" name="Right Sum List" typeRef="number" />
+    <informationRequirement id="_9AECBCC6-8333-47A9-BD06-47DA41D07FB6">
+      <requiredInput href="#_2A8EFAB9-E782-4993-9982-9D8D3E918EF8" />
+    </informationRequirement>
+    <literalExpression id="_40AA06F1-3ABD-4AEC-8F48-B7488181E33F" typeRef="number" label="Right Sum List">
+      <text>sum([Person.Age, &quot;1&quot;, 4])</text>
+    </literalExpression>
+  </decision>
+
+  <decision name="Right Boolean" id="_D44300BE-2FE4-435C-B6FF-5236589EC0C5">
+    <variable id="_704A66D6-E45E-4D22-A183-0F3D1DB4A132" name="Right Boolean" typeRef="boolean" />
+    <literalExpression id="_40AA06F1-3ABD-4AEC-8F48-B7488181E33G" typeRef="boolean" label="Right Boolean">
+      <text>"a" = 1</text>
+    </literalExpression>
+  </decision>
+
+  <decision id="_fc1bff6c-b1ca-4a10-ba9a-23b8f5e86e6a" name="Wrong decision based on Wrong Boolean">
+    <variable name="Wrong decision based on Wrong Boolean" id="_2e323310-3d83-4c51-a256-3082e0ccacea" typeRef="boolean"/>
+    <informationRequirement id="_e848f84a-25ef-432b-b944-2848f11ea91c" >
+      <requiredDecision href="_D44300BE-2FE4-435C-B6FF-5236589EC0C3"/>
+    </informationRequirement>
+    <literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe32" typeRef="boolean"   expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" >
+      <text>is(Wrong Boolean) = true</text>
+    </literalExpression>
+  </decision>
+
+  <decision id="_fc1bff6c-b1ca-4a10-ba9a-23b8f5e86e6b" name="Right decision based on Wrong Boolean">
+    <variable name="Right decision based on Wrong Boolean" id="_2e323310-3d83-4c51-a256-3082e0ccaceb" typeRef="boolean"/>
+    <informationRequirement id="_e848f84a-25ef-432b-b944-2848f11ea91d" >
+      <requiredDecision href="_D44300BE-2FE4-435C-B6FF-5236589EC0C3"/>
+    </informationRequirement>
+    <literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe33" typeRef="boolean" >
+      <text>is(Wrong Boolean) = false</text>
+    </literalExpression>
+  </decision>
+
+  <inputData name="Person" id="_2A8EFAB9-E782-4993-9982-9D8D3E918EF8">
+    <variable name="Person" id="_D8CC72F8-D10C-4A8B-B7AC-C74CA66D4272" typeRef="tPerson" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_D3BA90EC-79E4-45E9-9F9E-540E47C4AE6B" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_40AA06F1-3ABD-4AEC-8F48-B7488181E33D">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_4E15F28B-2232-4F1E-8546-DAC813B4D4D2" dmnElementRef="_2A8EFAB9-E782-4993-9982-9D8D3E918EF8" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="140" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_0AB4DFDB-8B2F-4D4B-ACAA-53C987D1725E" dmnElementRef="_D44300BE-2FE4-435C-B6FF-5236589EC0C2" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="380" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_787BC3EE-6C29-415A-9534-FC3A49F68B92-AUTO-TARGET" dmnElementRef="_9AECBCC6-8333-47A9-BD06-47DA41D07FB4" sourceElement="_4E15F28B-2232-4F1E-8546-DAC813B4D4D2" targetElement="_0AB4DFDB-8B2F-4D4B-ACAA-53C987D1725E">
+        <di:waypoint x="220" y="160" />
+        <di:waypoint x="460" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

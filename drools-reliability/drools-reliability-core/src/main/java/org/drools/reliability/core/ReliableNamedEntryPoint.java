@@ -21,15 +21,17 @@ package org.drools.reliability.core;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public class ReliableNamedEntryPoint extends NamedEntryPoint {
 
-    public ReliableNamedEntryPoint(EntryPointId entryPoint, EntryPointNode entryPointNode, ReteEvaluator reteEvaluator) {
-        super(entryPoint, entryPointNode, reteEvaluator);
+    public ReliableNamedEntryPoint(EntryPointId entryPoint, EntryPointNode entryPointNode, InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory) {
+        super(ruleBase, reteEvaluator, factHandleFactory, entryPoint, entryPointNode);
     }
 
     @Override
