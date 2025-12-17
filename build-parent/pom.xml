@@ -223,6 +223,7 @@
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
     <version.io.vertx>4.5.22</version.io.vertx>
+    <version.org.lz4.java>1.8.1</version.org.lz4.java>
   </properties>
 
   <dependencyManagement>
@@ -232,6 +233,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.java}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
