@@ -22,20 +22,21 @@ package org.kie.kogito.quarkus.config;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class KogitoAuthRuntimeConfig {
+public interface KogitoAuthRuntimeConfig {
 
     /**
      * Enables using the application security context when resolving current User Identity.
      */
-    @ConfigItem(name = "enabled", defaultValue = "false")
-    public boolean enabled;
+    @WithDefault("false")
+    boolean enabled();
 
     /**
      * Comma-separated list of roles that allow identity impersonation when resolving the actual User Identity.
      */
-    @ConfigItem(name = "impersonation.allowed-for-roles")
-    public Optional<String> rolesThatAllowImpersonation;
+    @WithName("impersonation.allowed-for-roles")
+    Optional<String> rolesThatAllowImpersonation();
 }

@@ -45,7 +45,7 @@ class KogitoAddOnEventProcessProcessor extends OneOfCapabilityKogitoAddOnProcess
 
     @BuildStep
     void httpMessageDecorator(BuildProducer<AdditionalBeanBuildItem> beanBuildItem, KogitoBuildTimeConfig buildTimeConfig, KogitoBuildContextBuildItem kogitoContext) {
-        if (buildTimeConfig.useCloudEvents && kogitoContext.getKogitoBuildContext().hasClassAvailable("io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata")) {
+        if (buildTimeConfig.useCloudEvents() && kogitoContext.getKogitoBuildContext().hasClassAvailable("io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata")) {
             beanBuildItem.produce(AdditionalBeanBuildItem.builder().addBeanClass(CloudEventHttpOutgoingDecorator.class).setDefaultScope(DotNames.APPLICATION_SCOPED).build());
         }
     }

@@ -24,6 +24,8 @@ import java.util.Optional;
 import org.kie.kogito.quarkus.workflow.deployment.AbstractDevServicesProcessor;
 import org.kie.kogito.quarkus.workflow.deployment.config.KogitoWorkflowBuildTimeConfig;
 import org.kie.kogito.serverless.workflow.devservices.DevModeServerlessWorkflowLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
@@ -33,13 +35,16 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
-import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
+import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.devui.spi.page.Page;
 
 import static org.kie.kogito.quarkus.workflow.devservices.DataIndexEventPublisher.KOGITO_DATA_INDEX;
 
 public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesProcessor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowDevServicesProcessor.class);
+
     @BuildStep
     public void logger(BuildProducer<AdditionalBeanBuildItem> additionalBean, LaunchModeBuildItem launchMode, KogitoWorkflowBuildTimeConfig config) {
         if (shouldInclude(launchMode, config)) {
@@ -47,15 +52,21 @@ public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesP
         }
     }
 
-    @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
-    CardPageBuildItem createDataIndexDevUILink(Capabilities capabilities,
+    @BuildStep(onlyIf = { DevServicesConfig.Enabled.class, IsDevelopment.class })
+    void createDataIndexDevUILink(BuildProducer<CardPageBuildItem> cardsProducer,
+            Capabilities capabilities,
             KogitoWorkflowBuildTimeConfig kogitoBuildTimeConfig,
             List<SystemPropertyBuildItem> systemPropertyBuildItems) {
 
+        if (!kogitoBuildTimeConfig.devServicesConfig().enabled()) {
+            LOGGER.info("Kogito DevServices are disabled. Skipping Dev UI Card initialization");
+            return;
+        }
+
         Optional<String> dataIndexUrlProp = getProperty(systemPropertyBuildItems, KOGITO_DATA_INDEX);
 
-        if (capabilities.isPresent(DATA_INDEX_CAPABILITY) || !areDevServicesEnabled(kogitoBuildTimeConfig) || dataIndexUrlProp.isEmpty()) {
-            return null;
+        if (capabilities.isPresent(DATA_INDEX_CAPABILITY) || dataIndexUrlProp.isEmpty()) {
+            return;
         }
 
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
@@ -63,10 +74,7 @@ public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesP
                 .url(dataIndexUrlProp.get() + "/q/graphql-ui/")
                 .isHtmlContent()
                 .icon("font-awesome-solid:signs-post"));
-        return cardPageBuildItem;
-    }
 
-    private boolean areDevServicesEnabled(KogitoWorkflowBuildTimeConfig kogitoBuildTimeConfig) {
-        return kogitoBuildTimeConfig.devservices.enabled.orElse(true);
+        cardsProducer.produce(cardPageBuildItem);
     }
 }

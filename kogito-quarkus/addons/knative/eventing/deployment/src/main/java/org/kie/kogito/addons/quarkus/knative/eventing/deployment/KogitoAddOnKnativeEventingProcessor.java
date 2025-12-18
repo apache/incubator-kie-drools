@@ -127,7 +127,7 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
     }
 
     private Optional<Broker> generateBroker() {
-        if (config.autoGenerateBroker) {
+        if (config.autoGenerateBroker()) {
             LOGGER.warn("Generating in memory Knative Broke. Note that this Broker is not meant for production usage!");
             return Optional.of(new BrokerBuilder().withNewMetadata()
                     .withName(SinkConfiguration.DEFAULT_SINK_NAME)
@@ -147,10 +147,10 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
                     .withApiVersion(metadata.getDeployment().getApiVersion())
                     .endSubject()
                     .withNewSink().withNewRef()
-                    .withName(config.sink.name) // from properties
-                    .withApiVersion(config.sink.apiVersion)
-                    .withKind(config.sink.kind)
-                    .withNamespace(config.sink.namespace.orElse(""))
+                    .withName(config.sinkConfig().name()) // from properties
+                    .withApiVersion(config.sinkConfig().apiVersion())
+                    .withKind(config.sinkConfig().kind())
+                    .withNamespace(config.sinkConfig().namespace().orElse(""))
                     .endRef().endSink().endSpec()
                     .build());
         }
@@ -168,7 +168,7 @@ public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnPro
                         .withNewFilter()
                         .addToAttributes(Collections.singletonMap("type", ce.getType()))
                         .endFilter()
-                        .withBroker(config.broker)
+                        .withBroker(config.broker())
                         .withNewSubscriber()
                         .withNewRef()
                         .withKind(metadata.getDeployment().getKind())

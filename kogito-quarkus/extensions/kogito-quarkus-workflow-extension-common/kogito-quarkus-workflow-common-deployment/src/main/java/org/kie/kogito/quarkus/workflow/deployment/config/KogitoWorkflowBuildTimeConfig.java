@@ -18,24 +18,28 @@
  */
 package org.kie.kogito.quarkus.workflow.deployment.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "kogito", phase = ConfigPhase.BUILD_TIME)
-public class KogitoWorkflowBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_TIME)
+@ConfigMapping(prefix = "quarkus.kogito")
+public interface KogitoWorkflowBuildTimeConfig {
 
     /**
      * Configuration for DevServices. DevServices allows Quarkus to automatically start Data Index in dev and test mode.
      */
-    @ConfigItem
-    public KogitoDevServicesBuildTimeConfig devservices;
+    @WithName("devservices")
+    KogitoDevServicesBuildTimeConfig devServicesConfig();
 
     /**
      * Always include the Workflow debug logger. By default, this will only be included in dev and test.
      * Setting this to true will also include the Workflow debug logger in Prod
      */
-    @ConfigItem(name = "logger.always-include", defaultValue = "false")
-    public boolean alwaysInclude;
+    @WithName("logger.always-include")
+    @WithDefault("false")
+    boolean alwaysInclude();
 
 }

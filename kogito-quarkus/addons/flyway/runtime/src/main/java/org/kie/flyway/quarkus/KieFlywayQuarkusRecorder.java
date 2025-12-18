@@ -48,12 +48,12 @@ public class KieFlywayQuarkusRecorder {
 
         KieFlywayQuarkusRuntimeConfig runtimeConfig = config.getValue();
 
-        Collection<KieFlywayNamedModule> kieFlywayNamedModules = runtimeConfig.modules.entrySet()
+        Collection<KieFlywayNamedModule> kieFlywayNamedModules = runtimeConfig.modules().entrySet()
                 .stream()
-                .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().enabled))
+                .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().enabled()))
                 .toList();
 
-        KieFlywayRunnerConfiguration kieFlywayConfig = new KieFlywayRunnerConfiguration(runtimeConfig.enabled, kieFlywayNamedModules);
+        KieFlywayRunnerConfiguration kieFlywayConfig = new KieFlywayRunnerConfiguration(runtimeConfig.enabled(), kieFlywayNamedModules);
         KieFlywayRunner.get(kieFlywayConfig)
                 .runFlyway(dataSource);
     }

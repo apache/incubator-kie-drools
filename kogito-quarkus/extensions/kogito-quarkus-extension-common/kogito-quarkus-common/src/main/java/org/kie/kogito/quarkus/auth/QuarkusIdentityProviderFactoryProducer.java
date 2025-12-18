@@ -49,8 +49,8 @@ public class QuarkusIdentityProviderFactoryProducer {
 
     @Produces
     public IdentityProviderFactory get() {
-        String[] rolesThatAllowImpersonation = config.authConfig.rolesThatAllowImpersonation.map(value -> value.split(",")).orElse(new String[] {});
+        String[] rolesThatAllowImpersonation = config.authConfig().rolesThatAllowImpersonation().map(value -> value.split(",")).orElse(new String[] {});
 
-        return new IdentityProviderFactoryImpl(identityProvider, new KogitoAuthConfig(config.authConfig.enabled, List.of(rolesThatAllowImpersonation)));
+        return new IdentityProviderFactoryImpl(identityProvider, new KogitoAuthConfig(config.authConfig().enabled(), List.of(rolesThatAllowImpersonation)));
     }
 }

@@ -18,23 +18,27 @@
  */
 package org.kie.kogito.quarkus.workflow.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED, prefix = "kogito")
-public class KogitoWorkflowBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigMapping(prefix = "kogito")
+public interface KogitoWorkflowBuildTimeConfig {
 
     /**
      * Strategy to resolve a Process version to use
      */
-    @ConfigItem(name = "workflow.version-strategy", defaultValue = "workflow")
-    public String versionStrategy;
+    @WithName("workflow.version-strategy")
+    @WithDefault("workflow")
+    String versionStrategy();
 
     /**
      * Persistence build time configuration
      */
-    @ConfigItem
-    public KogitoPersistenceBuildTimeConfig persistence;
+    @WithName("persistence")
+    KogitoPersistenceBuildTimeConfig persistenceConfig();
 
 }

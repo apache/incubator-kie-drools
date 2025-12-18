@@ -19,10 +19,11 @@
 package org.kie.kogito.quarkus.serverless.workflow.config;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class KogitoServerlessWorkflowBuildTimeConfig {
+public interface KogitoServerlessWorkflowBuildTimeConfig {
 
     /**
      * Strategy for generating the configuration key of open API specifications.<br>
@@ -34,13 +35,15 @@ public class KogitoServerlessWorkflowBuildTimeConfig {
      * <LI>function_name. Uses the function name</LI>
      * </UL>
      */
-    @ConfigItem(name = "operationIdStrategy", defaultValue = "file_name")
-    public String operationIdStrategy;
+    @WithName("operationIdStrategy")
+    @WithDefault("file_name")
+    String operationIdStrategy();
 
     /**
      * Variable name for foreach loop
      */
-    @ConfigItem(name = "states.foreach.outputVarName", defaultValue = "_swf_eval_temp")
-    public String forEachOutputVarName;
+    @WithName("states.foreach.outputVarName")
+    @WithDefault("_swf_eval_temp")
+    String forEachOutputVarName();
 
 }

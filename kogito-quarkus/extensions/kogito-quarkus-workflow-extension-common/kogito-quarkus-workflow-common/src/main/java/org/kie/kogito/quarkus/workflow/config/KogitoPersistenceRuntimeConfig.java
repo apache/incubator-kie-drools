@@ -21,33 +21,36 @@ package org.kie.kogito.quarkus.workflow.config;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class KogitoPersistenceRuntimeConfig {
+public interface KogitoPersistenceRuntimeConfig {
 
     /**
      * Persistence DB type
      */
-    @ConfigItem
-    public Optional<PersistenceType> type;
+    Optional<PersistenceType> type();
 
     /**
      * Automatically apply database schema changes
      */
-    @ConfigItem(name = "auto.ddl", defaultValue = "true")
-    public boolean autoDDL;
+    @WithName("auto.ddl")
+    @WithDefault("true")
+    boolean autoDDL();
 
     /**
      * Use optimistic locking
      */
-    @ConfigItem(name = "optimistic.lock", defaultValue = "false")
-    public boolean optimisticLock;
+    @WithName("optimistic.lock")
+    @WithDefault("false")
+    boolean optimisticLock();
 
     /**
      * Query execution timeout
      */
-    @ConfigItem(name = "query.timeout.millis", defaultValue = "10000")
-    public long queryTimeout;
+    @WithName("query.timeout.millis")
+    @WithDefault("10000")
+    long queryTimeout();
 
 }

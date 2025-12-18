@@ -18,16 +18,18 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED, prefix = "kogito")
-public class KogitoBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigMapping(prefix = "kogito")
+public interface KogitoBuildTimeConfig {
 
     /**
      * Serverless Workflow build time configuration
      */
-    @ConfigItem
-    public KogitoServerlessWorkflowBuildTimeConfig sw;
+    @WithName("sw")
+    KogitoServerlessWorkflowBuildTimeConfig swConfig();
 }

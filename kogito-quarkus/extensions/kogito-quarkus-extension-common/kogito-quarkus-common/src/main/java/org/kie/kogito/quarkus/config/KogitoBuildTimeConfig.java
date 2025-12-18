@@ -18,54 +18,63 @@
  */
 package org.kie.kogito.quarkus.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED, prefix = "kogito")
-public class KogitoBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigMapping(prefix = "kogito")
+public interface KogitoBuildTimeConfig {
 
     /**
      * If this is enabled the service will use Cloud Events
      * <p>
      * If not defined, true will be used.
      */
-    @ConfigItem(name = "messaging.as-cloudevents", defaultValue = "true")
-    public Boolean useCloudEvents;
+    @WithName("messaging.as-cloudevents")
+    @WithDefault("true")
+    Boolean useCloudEvents();
 
     /**
      * If this property is True, Jackson will fail on an empty bean
      * <p>
      * If not defined, false will be used.
      */
-    @ConfigItem(name = "jackson.fail-on-empty-bean", defaultValue = "false")
-    public Boolean failOnEmptyBean;
+    @WithName("jackson.fail-on-empty-bean")
+    @WithDefault("false")
+    Boolean failOnEmptyBean();
 
     /**
      * Incoming channel default name
      */
-    @ConfigItem(name = "addon.messaging.incoming.defaultName", defaultValue = "kogito_incoming_stream")
-    public String incomingChannelDefaultName;
+    @WithName("addon.messaging.incoming.defaultName")
+    @WithDefault("kogito_incoming_stream")
+    String incomingChannelDefaultName();
 
     /**
      * Outgoing channel default name
      */
-    @ConfigItem(name = "addon.messaging.outgoing.defaultName", defaultValue = "kogito_outgoing_stream")
-    public String outgoingChannelDefaultName;
+    @WithName("addon.messaging.outgoing.defaultName")
+    @WithDefault("kogito_outgoing_stream")
+    String outgoingChannelDefaultName();
 
     /**
      * Whether to ignore hidden files when collecting files for code generation
      * <p>
      * If not defined, true will be used.
      */
-    @ConfigItem(name = "codegen.ignoreHiddenFiles", defaultValue = "true")
-    public Boolean ignoreHiddenFiles;
+    @WithName("codegen.ignoreHiddenFiles")
+    @WithDefault("true")
+    Boolean ignoreHiddenFiles();
 
     /**
      * Whether to fail when there are parsing/validation errors of process assets
      * <p>
      * If not defined, true will be used.
      */
-    @ConfigItem(name = "codegen.process.failOnError", defaultValue = "true")
-    public Boolean failOnError;
+    @WithName("codegen.process.failOnError")
+    @WithDefault("true")
+    Boolean failOnError();
 }

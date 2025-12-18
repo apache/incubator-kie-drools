@@ -44,7 +44,7 @@ public class ProcessDefinitionRegistration {
     public ProcessDefinitionRegistration(Instance<Application> application, KogitoRuntimeConfig runtimeConfig, Instance<Processes> processes, Instance<SourceFilesProvider> sourceFilesProvider) {
         this.processes = processes;
         this.processDefinitionRegistry =
-                new ProcessDefinitionEventRegistry(application.isResolvable() ? application.get() : (new StaticApplication()), runtimeConfig.serviceUrl.orElse(null),
+                new ProcessDefinitionEventRegistry(application.isResolvable() ? application.get() : (new StaticApplication()), runtimeConfig.serviceUrl().orElse(null),
                         sourceFilesProvider.isResolvable() ? Optional.of(sourceFilesProvider.get()) : Optional.empty());
     }
 

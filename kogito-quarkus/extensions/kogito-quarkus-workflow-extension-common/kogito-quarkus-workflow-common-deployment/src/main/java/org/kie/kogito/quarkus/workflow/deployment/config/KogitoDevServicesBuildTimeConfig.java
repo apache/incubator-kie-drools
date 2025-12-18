@@ -21,31 +21,30 @@ package org.kie.kogito.quarkus.workflow.deployment.config;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
 
 @ConfigGroup
-public class KogitoDevServicesBuildTimeConfig {
+public interface KogitoDevServicesBuildTimeConfig {
 
     /**
      * If Dev Services for Kogito has been explicitly enabled or disabled. Dev Services are generally enabled
      * by default, unless there is an existing configuration present.
      */
-    @ConfigItem
-    public Optional<Boolean> enabled = Optional.empty();
+    @WithDefault("true")
+    Boolean enabled();
 
     /**
      * Optional fixed port the dev service will listen to.
      * <p>
      * If not defined, 8180 will be used.
      */
-    @ConfigItem(defaultValue = "8180")
-    public Optional<Integer> port;
+    @WithDefault("8180")
+    Optional<Integer> port();
 
     /**
      * The Data Index image to use.
      */
-    @ConfigItem
-    public Optional<String> imageName;
+    Optional<String> imageName();
 
     /**
      * Indicates if the Data Index instance managed by Quarkus Dev Services is shared.
@@ -58,8 +57,8 @@ public class KogitoDevServicesBuildTimeConfig {
      * <p>
      * Container sharing is only used in dev mode.
      */
-    @ConfigItem(defaultValue = "true")
-    public boolean shared;
+    @WithDefault("true")
+    boolean shared();
 
     /**
      * The value of the {@code kogito-dev-service-data-index} label attached to the started container.
@@ -69,7 +68,7 @@ public class KogitoDevServicesBuildTimeConfig {
      * set to the configured value. If found, it will use this container instead of starting a new one. Otherwise, it
      * starts a new container with the {@code kogito-dev-service-data-index} label set to the specified value.
      */
-    @ConfigItem(defaultValue = "kogito-data-index")
-    public String serviceName;
+    @WithDefault("kogito-data-index")
+    String serviceName();
 
 }

@@ -32,7 +32,6 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.events.config.EventsRuntimeConfig;
-import org.kie.kogito.events.process.AbstractMessagingEventPublisher.AbstractMessageEmitter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -105,7 +104,7 @@ public class GroupingMessagingEventPublisherTest {
         when(decoratorProviderInstance.get()).thenReturn(decoratorProvider);
 
         when(eventsRuntimeConfig.isProcessInstancesPropagateError()).thenReturn(false);
-        when(eventsRuntimeConfig.isProcessDefinitionPropagateError()).thenReturn(false);
+        when(eventsRuntimeConfig.isProcessDefinitionsPropagateErrors()).thenReturn(false);
         when(eventsRuntimeConfig.isUserTasksPropagateError()).thenReturn(false);
 
         when(eventsRuntimeConfig.isProcessInstancesEventsEnabled()).thenReturn(true);

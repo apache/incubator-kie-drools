@@ -19,21 +19,24 @@
 package org.kie.kogito.quarkus.workflow.config;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class KogitoPersistenceBuildTimeConfig {
+public interface KogitoPersistenceBuildTimeConfig {
 
     /**
      * Generate Protobuf marshallers for runtime
      */
-    @ConfigItem(name = "proto.marshaller", defaultValue = "true")
-    public boolean runtimeProtoMarshaller;
+    @WithName("proto.marshaller")
+    @WithDefault("true")
+    boolean runtimeProtoMarshaller();
 
     /**
      * Generate Protobuf marshallers for Data Index
      */
-    @ConfigItem(name = "data-index.proto.generation", defaultValue = "true")
-    public boolean dataIndexProtoMarshaller;
+    @WithName("data-index.proto.generation")
+    @WithDefault("true")
+    boolean dataIndexProtoMarshaller();
 
 }

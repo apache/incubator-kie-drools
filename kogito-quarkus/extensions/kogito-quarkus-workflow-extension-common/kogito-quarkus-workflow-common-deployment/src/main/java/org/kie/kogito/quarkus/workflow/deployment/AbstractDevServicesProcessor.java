@@ -47,7 +47,7 @@ import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
-import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
+import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
 import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
@@ -68,7 +68,7 @@ public abstract class AbstractDevServicesProcessor {
     private final IsDockerWorking isDockerWorking = new IsDockerWorking(true);
 
     protected static boolean shouldInclude(LaunchModeBuildItem launchMode, KogitoWorkflowBuildTimeConfig config) {
-        return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude;
+        return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude();
     }
 
     protected Optional<String> getProperty(List<SystemPropertyBuildItem> systemPropertyBuildItems, String propertyKey) {
@@ -77,7 +77,7 @@ public abstract class AbstractDevServicesProcessor {
                 .map(SystemPropertyBuildItem::getValue);
     }
 
-    @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
+    @BuildStep(onlyIf = { DevServicesConfig.Enabled.class, IsDevelopment.class })
     public void startDataIndexDevService(
             BuildProducer<AdditionalBeanBuildItem> additionalBean,
             BuildProducer<SystemPropertyBuildItem> systemProperties,
@@ -89,6 +89,11 @@ public abstract class AbstractDevServicesProcessor {
             CuratedApplicationShutdownBuildItem applicationShutdown,
             LoggingSetupBuildItem loggingSetup,
             Capabilities capabilities) {
+
+        if (!buildTimeConfig.devServicesConfig().enabled()) {
+            LOGGER.info("Kogito DevServices are disabled. Skipping Ephemeral DataIndex container initialization.");
+            return;
+        }
 
         DataIndexDevServiceConfig configuration = getConfiguration(buildTimeConfig);
 
@@ -209,7 +214,7 @@ public abstract class AbstractDevServicesProcessor {
     }
 
     private DataIndexDevServiceConfig getConfiguration(KogitoWorkflowBuildTimeConfig cfg) {
-        KogitoDevServicesBuildTimeConfig devServicesConfig = cfg.devservices;
+        KogitoDevServicesBuildTimeConfig devServicesConfig = cfg.devServicesConfig();
         return new DataIndexDevServiceConfig(devServicesConfig);
     }
 
@@ -244,16 +249,16 @@ public abstract class AbstractDevServicesProcessor {
         private final String serviceName;
 
         public DataIndexDevServiceConfig(KogitoDevServicesBuildTimeConfig config) {
-            this.devServicesEnabled = config.enabled.orElse(true);
+            this.devServicesEnabled = config.enabled();
             //TODO Revert to ConfigureUtil.getDefaultImageNameFor
-            this.imageName = config.imageName.map(DockerImageName::parse).orElseGet(() -> {
+            this.imageName = config.imageName().map(DockerImageName::parse).orElseGet(() -> {
                 String defaultImageName = ConfigureUtil.getDefaultImageNameFor("data-index");
                 return DockerImageName.parse(defaultImageName);
             });
             this.imageName.assertValid();
-            this.fixedExposedPort = config.port.orElse(0);
-            this.shared = config.shared;
-            this.serviceName = config.serviceName;
+            this.fixedExposedPort = config.port().orElse(0);
+            this.shared = config.shared();
+            this.serviceName = config.serviceName();
         }
 
         @Override

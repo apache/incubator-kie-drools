@@ -16,31 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.persistence.quarkus.rocksdb;
+package org.kie.kogito.quarkus.config;
 
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import io.quarkus.runtime.annotations.StaticInitSafe;
-import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
-import io.smallrye.config.WithName;
+import io.quarkus.runtime.configuration.ConfigBuilder;
+import io.smallrye.config.SmallRyeConfigBuilder;
 
-@ConfigRoot(phase = ConfigPhase.RUN_TIME)
-@ConfigMapping(prefix = "kogito.persistence.rocksdb")
-@StaticInitSafe
-public interface RocksDbConfig {
+import static org.kie.kogito.quarkus.config.KogitoSmallryeConfigBuilderCustomizer.configureSmallRyeConfigBuilder;
 
-    /**
-     * Sets DB data dir
-     */
-    @WithName("data.dir")
-    @WithDefault("rockdstemp")
-    String dataDir();
+/**
+ * {@link ConfigBuilder} to ensure that Smallrye config validation passes when there are kogito-related properties not mapped to a config root.
+ */
+public class KogitoSmallryeConfigBuilder implements ConfigBuilder {
 
-    /**
-     * Clean DB data when shutting down application
-     */
-    @WithName("clean")
-    @WithDefault("false")
-    boolean destroyDB();
+    @Override
+    public SmallRyeConfigBuilder configBuilder(SmallRyeConfigBuilder builder) {
+        return configureSmallRyeConfigBuilder(builder);
+    }
 }

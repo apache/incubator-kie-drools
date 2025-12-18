@@ -44,12 +44,12 @@ public class ConfigBean extends StaticConfigBean {
 
     @Override
     public String getServiceUrl() {
-        return runtimeConfig.get().serviceUrl.orElse("");
+        return runtimeConfig.get().serviceUrl().orElse("");
     }
 
     @Override
     public short processInstanceLimit() {
-        return runtimeConfig.get().processInstanceLimit;
+        return runtimeConfig.get().processInstanceLimit();
     }
 
     @Override
@@ -59,11 +59,11 @@ public class ConfigBean extends StaticConfigBean {
 
     @Override
     public boolean failOnEmptyBean() {
-        return buildTimeConfig.get().failOnEmptyBean;
+        return buildTimeConfig.get().failOnEmptyBean();
     }
 
     @Override
     public boolean useCloudEvents() {
-        return buildTimeConfig.get().useCloudEvents;
+        return buildTimeConfig.get().useCloudEvents();
     }
 }

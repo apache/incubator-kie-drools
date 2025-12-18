@@ -18,17 +18,19 @@
  */
 package org.kie.kogito.quarkus.workflow.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "", phase = ConfigPhase.RUN_TIME, prefix = "kogito")
-public class KogitoWorkflowRuntimeConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "kogito")
+public interface KogitoWorkflowRuntimeConfig {
 
     /**
      * Persistence runtime configuration
      */
-    @ConfigItem
-    public KogitoPersistenceRuntimeConfig persistence;
+    @WithName("persistence")
+    public KogitoPersistenceRuntimeConfig persistenceConfig();
 
 }

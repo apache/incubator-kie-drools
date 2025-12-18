@@ -44,11 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConfigSourceFactory.INCLUDE_PROCESS_EVENTS;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class KogitoAddOnKnativeEventingProcessorTest {
 
@@ -181,16 +177,19 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
     private KogitoAddOnKnativeEventingProcessor buildTestProcessorWithDefaultConfig() {
         final KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
-        final SinkConfiguration sinkConfiguration = new SinkConfiguration();
-        sinkConfiguration.apiVersion = SinkConfiguration.DEFAULT_SINK_API_VERSION;
-        sinkConfiguration.kind = SinkConfiguration.DEFAULT_SINK_KIND;
-        sinkConfiguration.name = SinkConfiguration.DEFAULT_SINK_NAME;
-        sinkConfiguration.namespace = Optional.empty();
+        final SinkConfiguration sinkConfiguration = mock(SinkConfiguration.class);
 
-        eventingProcessor.config = new EventingConfiguration();
-        eventingProcessor.config.autoGenerateBroker = true;
-        eventingProcessor.config.broker = "default";
-        eventingProcessor.config.sink = sinkConfiguration;
+        when(sinkConfiguration.apiVersion()).thenReturn(SinkConfiguration.DEFAULT_SINK_API_VERSION);
+        when(sinkConfiguration.kind()).thenReturn(SinkConfiguration.DEFAULT_SINK_KIND);
+        when(sinkConfiguration.name()).thenReturn(SinkConfiguration.DEFAULT_SINK_NAME);
+        when(sinkConfiguration.namespace()).thenReturn(Optional.empty());
+
+        EventingConfiguration eventingConfiguration = mock(EventingConfiguration.class);
+        when(eventingConfiguration.sinkConfig()).thenReturn(sinkConfiguration);
+        when(eventingConfiguration.autoGenerateBroker()).thenReturn(true);
+        when(eventingConfiguration.broker()).thenReturn("default");
+
+        eventingProcessor.config = eventingConfiguration;
 
         return eventingProcessor;
     }

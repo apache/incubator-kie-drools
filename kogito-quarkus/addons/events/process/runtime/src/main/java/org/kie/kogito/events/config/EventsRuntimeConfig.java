@@ -18,71 +18,55 @@
  */
 package org.kie.kogito.events.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(prefix = "kogito", name = "events", phase = ConfigPhase.RUN_TIME)
-public class EventsRuntimeConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "kogito.events")
+public interface EventsRuntimeConfig {
 
     /**
      * Enable publishing processes instances events
      */
-    @ConfigItem(name = "processinstances.enabled", defaultValue = "true")
-    boolean processInstancesEventsEnabled;
+    @WithName("processinstances.enabled")
+    @WithDefault("true")
+    boolean isProcessInstancesEventsEnabled();
 
     /**
      * Propagate errors for process instance emitter
      */
-    @ConfigItem(name = "processinstances.errors.propagate", defaultValue = "false")
-    boolean processInstancesPropagate;
+    @WithName("processinstances.errors.propagate")
+    @WithDefault("false")
+    boolean isProcessInstancesPropagateError();
 
     /**
      * Enable publishing processes definition events
      */
-    @ConfigItem(name = "processdefinitions.enabled", defaultValue = "true")
-    boolean processDefinitionEventsEnabled;
+    @WithName("processdefinitions.enabled")
+    @WithDefault("true")
+    boolean isProcessDefinitionEventsEnabled();
 
     /**
      * Propagate errors for process definition emitter
      */
-    @ConfigItem(name = "processdefinitions.errors.propagate", defaultValue = "false")
-    boolean processDefinitionPropagate;
+    @WithName("processdefinitions.errors.propagate")
+    @WithDefault("false")
+    boolean isProcessDefinitionsPropagateErrors();
 
     /**
      * Enable publishing user task instances events
      */
-    @ConfigItem(name = "usertasks.enabled", defaultValue = "true")
-    boolean userTasksEventsEnabled;
+    @WithName("usertasks.enabled")
+    @WithDefault("true")
+    boolean isUserTasksEventsEnabled();
 
     /**
      * Propagate errors for user task emitter
      */
-    @ConfigItem(name = "usertasks.errors.propagate", defaultValue = "false")
-    boolean userTasksPropagate;
-
-    public boolean isProcessInstancesEventsEnabled() {
-        return processInstancesEventsEnabled;
-    }
-
-    public boolean isProcessDefinitionEventsEnabled() {
-        return processDefinitionEventsEnabled;
-    }
-
-    public boolean isUserTasksEventsEnabled() {
-        return userTasksEventsEnabled;
-    }
-
-    public boolean isProcessInstancesPropagateError() {
-        return processInstancesPropagate;
-    }
-
-    public boolean isProcessDefinitionPropagateError() {
-        return processDefinitionPropagate;
-    }
-
-    public boolean isUserTasksPropagateError() {
-        return userTasksPropagate;
-    }
-
+    @WithName("usertasks.errors.propagate")
+    @WithDefault("false")
+    boolean isUserTasksPropagateError();
 }

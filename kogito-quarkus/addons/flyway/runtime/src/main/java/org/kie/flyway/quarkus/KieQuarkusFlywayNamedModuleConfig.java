@@ -16,31 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.persistence.quarkus.rocksdb;
 
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import io.quarkus.runtime.annotations.StaticInitSafe;
-import io.smallrye.config.ConfigMapping;
+package org.kie.flyway.quarkus;
+
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.smallrye.config.WithDefault;
-import io.smallrye.config.WithName;
 
-@ConfigRoot(phase = ConfigPhase.RUN_TIME)
-@ConfigMapping(prefix = "kogito.persistence.rocksdb")
-@StaticInitSafe
-public interface RocksDbConfig {
+@ConfigGroup
+public interface KieQuarkusFlywayNamedModuleConfig {
 
     /**
-     * Sets DB data dir
+     * Enables the execution of the Flyway initializer for a specific Kie module
      */
-    @WithName("data.dir")
-    @WithDefault("rockdstemp")
-    String dataDir();
-
-    /**
-     * Clean DB data when shutting down application
-     */
-    @WithName("clean")
-    @WithDefault("false")
-    boolean destroyDB();
+    @WithDefault("true")
+    boolean enabled();
 }

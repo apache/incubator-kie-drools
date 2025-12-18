@@ -22,32 +22,28 @@ package org.kie.flyway.quarkus;
 import java.util.Map;
 
 import io.quarkus.runtime.annotations.*;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithParentName;
 
 /**
  * Configuration for the Kie Flyway initializer
  */
-@ConfigRoot(prefix = "kie", name = "flyway", phase = ConfigPhase.RUN_TIME)
-public class KieFlywayQuarkusRuntimeConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "kie.flyway")
+public interface KieFlywayQuarkusRuntimeConfig {
 
     /**
      * Enables the execution of the Flyway initializer during the application startup
      */
-    @ConfigItem(name = "enabled", defaultValue = "false")
-    boolean enabled;
+    @WithDefault("false")
+    boolean enabled();
 
     /**
-     * List of {@link KieQuarkusFlywayNamedModule} that allow to enable or disable a given modul
+     * List of {@link KieQuarkusFlywayNamedModuleConfig} that allow to enable or disable a given modul
      */
-    @ConfigItem(name = "modules")
-    Map<String, KieQuarkusFlywayNamedModule> modules;
 
-    @ConfigGroup
-    public static class KieQuarkusFlywayNamedModule {
+    @WithParentName
+    Map<String, KieQuarkusFlywayNamedModuleConfig> modules();
 
-        /**
-         * Enables the execution of the Flyway initializer for a specific Kie module
-         */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        boolean enabled;
-    }
 }

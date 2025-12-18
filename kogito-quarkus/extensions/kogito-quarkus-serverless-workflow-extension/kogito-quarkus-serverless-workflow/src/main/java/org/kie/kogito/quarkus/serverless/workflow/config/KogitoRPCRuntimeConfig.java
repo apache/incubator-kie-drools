@@ -19,22 +19,25 @@
 package org.kie.kogito.quarkus.serverless.workflow.config;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class KogitoRPCRuntimeConfig {
+public interface KogitoRPCRuntimeConfig {
 
     /**
      * Indicates if default value of enumerations should be included in grpc response
      * 
      */
-    @ConfigItem(name = "enum.includeDefault", defaultValue = "false")
-    public boolean enumDefault;
+    @WithName("enum.includeDefault")
+    @WithDefault("false")
+    boolean enumDefault();
 
     /**
      * Time to wait for response from server when using streams
      * 
      */
-    @ConfigItem(name = "stream.timeout", defaultValue = "20")
-    public int streamTimeout;
+    @WithName("stream.timeout")
+    @WithDefault("20")
+    int streamTimeout();
 }

@@ -20,10 +20,13 @@ package org.kie.kogito.quarkus.common.deployment;
 
 import org.kie.internal.services.KieRuntimesImpl;
 import org.kie.internal.services.KieWeaversImpl;
+import org.kie.kogito.quarkus.config.KogitoSmallryeConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.StaticInitConfigBuilderBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
@@ -65,5 +68,10 @@ public class KogitoCommonProcessor {
     public ReflectiveClassBuildItem kieWeaversImplReflectiveClass() {
         logger.debug("kieWeaversImplReflectiveClass()");
         return new ReflectiveClassBuildItem(true, true, KieWeaversImpl.class);
+    }
+
+    @BuildStep
+    public void kogitoConfig(BuildProducer<StaticInitConfigBuilderBuildItem> staticInitConfigBuilder) {
+        staticInitConfigBuilder.produce(new StaticInitConfigBuilderBuildItem(KogitoSmallryeConfigBuilder.class));
     }
 }
