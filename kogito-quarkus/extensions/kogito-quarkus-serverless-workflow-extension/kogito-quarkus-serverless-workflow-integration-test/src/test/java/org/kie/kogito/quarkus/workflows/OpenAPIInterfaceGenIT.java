@@ -18,37 +18,77 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Handle integration tests for OpenAPI Spec Interface generation for SW projects.
  */
 @QuarkusIntegrationTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OpenAPIInterfaceGenIT {
+    @TestHTTPResource
+    URL baseUrl;
+    private JsonPath jp;
 
     @BeforeAll
-    static void init() {
+    void init() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
 
-    @Test
-    void verifyOperationIdIsGeneratedByDefault() {
-        given()
+        String openapi = given()
+                .baseUri(baseUrl.toString())
                 .accept(ContentType.JSON)
                 .when()
                 .get("/q/openapi?format=json")
                 .then()
                 .statusCode(200)
-                // verifies the get path in the helloworld SW
-                .body("paths.'/helloworld'.get.operationId", is("getAllProcessInstances_helloworld"));
+                .extract()
+                .asString();
+
+        jp = new JsonPath(openapi);
     }
 
+    @Test
+    void verifyOperationIdIsGeneratedByDefault() {
+        assertThat(jp.getString("paths.'/helloworld'.get.operationId"), is("getAllProcessInstances_helloworld"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "helloworld", "expression", "greet", "long-call", "squareService" })
+    void verifySchemaAndTagsForWorkflows(String processId) {
+        Map<String, Object> schemas = jp.getMap("components.schemas");
+        assertTrue(schemas.containsKey("Expression Input"));
+        assertTrue(schemas.containsKey("Expression Output"));
+
+        Map<String, Object> inputSchema = jp.getMap("components.schemas['Expression Input']");
+        assertNotNull(inputSchema, "Input schema should exist for processId: " + processId);
+        assertTrue(inputSchema.containsKey("type"), "Input schema should contain 'type' field for processId: " + processId);
+
+        List<String> postTags = jp.getList("paths.'/" + processId + "'.post.tags");
+        assertTrue(postTags.contains("Process - " + processId));
+
+        Map<String, Object> getSchema = jp.getMap(
+                "paths.'/" + processId + "'.post.responses.'201'.content.'application/json'.schema");
+
+        assertNotNull(getSchema, "Schema must not be null");
+    }
 }
