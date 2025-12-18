@@ -35,7 +35,7 @@
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
-    
+
     <surefire.forkCount>1</surefire.forkCount>
     <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
 
@@ -223,6 +223,7 @@
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
     <version.io.vertx>4.5.22</version.io.vertx>
+    <version.org.lz4.java>1.8.1</version.org.lz4.java>
   </properties>
 
   <dependencyManagement>
@@ -232,6 +233,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.java}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
@@ -967,10 +973,10 @@
       </dependency>
 
       <dependency>
-	      <groupId>org.mockito</groupId>
-	      <artifactId>mockito-junit-jupiter</artifactId>
-          <version>${version.org.mockito}</version>
-	    </dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.mvel</groupId>
@@ -1564,9 +1570,9 @@
               <configuration>
                 <checkstyleRules>
                   <module name="Checker">
- <module name="BeforeExecutionExclusionFileFilter">
-    <property name="fileNamePattern" value="${drools.exclude.checkstyle}"/>
-  </module>
+                    <module name="BeforeExecutionExclusionFileFilter">
+                      <property name="fileNamePattern" value="${drools.exclude.checkstyle}"/>
+                    </module>
                     <!-- Checks for whitespace. -->
                     <module name="FileTabCharacter">
                       <property name="severity" value="error"/>
@@ -1990,16 +1996,16 @@
           <version>${version.com.github.eirslett}</version>
         </plugin>
         <plugin>
-        <groupId>com.societegenerale.commons</groupId>
-        <artifactId>arch-unit-maven-plugin</artifactId>
-        <version>${version.archunit.maven.plugin}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>arch-test</goal>
-            </goals>
-          </execution>
-        </executions>
+          <groupId>com.societegenerale.commons</groupId>
+          <artifactId>arch-unit-maven-plugin</artifactId>
+          <version>${version.archunit.maven.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>arch-test</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>io.github.download-maven-plugin</groupId>

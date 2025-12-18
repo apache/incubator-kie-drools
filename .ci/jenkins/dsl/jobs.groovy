@@ -70,12 +70,12 @@ KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
 void createProjectSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-setup-branch', JobType.SETUP_BRANCH, "${jenkins_path_project}/Jenkinsfile.setup-branch", 'Drools Setup Branch')
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+            GIT_BRANCH_NAME: "${GIT_BRANCH}",
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
-        DROOLS_STREAM: Utils.getStream(this),
+            IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -89,11 +89,11 @@ void setupProjectNightlyJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
     jobParams.triggers = [cron : isMainStream() ? '@midnight' : 'H 3 * * *']
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+            GIT_BRANCH_NAME: "${GIT_BRANCH}",
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -104,13 +104,13 @@ void setupProjectNightlyJob() {
 
 void setupProjectWeeklyJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-weekly', JobType.OTHER, "${jenkins_path_project}/Jenkinsfile.weekly", 'Drools Weekly')
-    jobParams.triggers = [cron : '0 2 * * 0']
+    jobParams.triggers = [cron : '0 3 * * 0']
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+            GIT_BRANCH_NAME: "${GIT_BRANCH}",
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -122,21 +122,18 @@ void setupProjectWeeklyJob() {
 void setupProjectReleaseJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-drools-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Drools/Kogito Artifacts Release')
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_BRANCH_NAME: "${GIT_BRANCH}",
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
-        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-
-        DROOLS_STREAM: Utils.getStream(this),
+            GIT_BRANCH_NAME: "${GIT_BRANCH}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
 
-            stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
+            stringParam('RELEASE_VERSION', '', 'Drools version to release as Major.minor.micro')
+
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
@@ -147,14 +144,14 @@ void setupProjectPostReleaseJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-post-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.post-release", 'Drools Post Release')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_BRANCH_NAME: "${GIT_BRANCH}",
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+            GIT_BRANCH_NAME: "${GIT_BRANCH}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -171,47 +168,47 @@ void setupProjectPostReleaseJob() {
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     def jobConfig = [
-        parallel: true,
-        buildchain: true,
-        jobs : [
-            [
-                id: 'drools',
-                primary: true,
-                env : [
-                    // Sonarcloud analysis only on main branch
-                    // As we have only Community edition
-                    ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
-                ]
-            ], [
-                id: 'kogito-runtimes',
-                repository: 'incubator-kie-kogito-runtimes'
-            ], [
-                id: 'kogito-apps',
-                repository: 'incubator-kie-kogito-apps',
-            ], [
-                id: 'kogito-quarkus-examples',
-                repository: 'incubator-kie-kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
-                ],
-            ], [
-                id: 'kogito-springboot-examples',
-                repository: 'incubator-kie-kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
-                ],
-            ], [
-                id: 'serverless-workflow-examples',
-                repository: 'incubator-kie-kogito-examples',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                ],
-            // Commented as not migrated
-            // ], [
-            //     id: 'kie-jpmml-integration',
-            //     repository: 'incubator-kie-jpmml-integration'
+            parallel: true,
+            buildchain: true,
+            jobs : [
+                    [
+                            id: 'drools',
+                            primary: true,
+                            env : [
+                                    // Sonarcloud analysis only on main branch
+                                    // As we have only Community edition
+                                    ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
+                            ]
+                    ], [
+                            id: 'kogito-runtimes',
+                            repository: 'incubator-kie-kogito-runtimes'
+                    ], [
+                            id: 'kogito-apps',
+                            repository: 'incubator-kie-kogito-apps',
+                    ], [
+                            id: 'kogito-quarkus-examples',
+                            repository: 'incubator-kie-kogito-examples',
+                            env : [
+                                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
+                            ],
+                    ], [
+                            id: 'kogito-springboot-examples',
+                            repository: 'incubator-kie-kogito-examples',
+                            env : [
+                                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+                            ],
+                    ], [
+                            id: 'serverless-workflow-examples',
+                            repository: 'incubator-kie-kogito-examples',
+                            env : [
+                                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+                            ],
+                            // Commented as not migrated
+                            // ], [
+                            //     id: 'kie-jpmml-integration',
+                            //     repository: 'incubator-kie-jpmml-integration'
+                    ]
             ]
-        ]
     ]
 
     // For Quarkus 3, run only drools PR check... for now
@@ -259,9 +256,9 @@ setupWeeklyDeployJob()
 // Tools job
 if (isMainStream()) {
     KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
-        modules: [ 'drools-build-parent' ],
-        compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
-        properties: [ 'version.io.quarkus' ],
+            modules: [ 'drools-build-parent' ],
+            compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
+            properties: [ 'version.io.quarkus' ],
     ])
 }
 
@@ -281,16 +278,16 @@ void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Drools Setup branch')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
-        DROOLS_STREAM: Utils.getStream(this),
+            IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -309,22 +306,22 @@ void setupDeployJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-deploy', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        PROPERTIES_FILE_NAME: 'deployment.properties',
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            PROPERTIES_FILE_NAME: 'deployment.properties',
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
-        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.RELEASE.name),
-        MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.RELEASE.name),
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
+            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.RELEASE.name),
+            MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.RELEASE.name),
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
 
-        RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
-        RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
+            RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
+            RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -338,6 +335,8 @@ void setupDeployJob() {
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('DROOLS_PR_BRANCH', '', 'PR branch name')
 
+            stringParam('GIT_TAG_NAME', '', 'Optional if not RELEASE. Tag to be created in the repository')
+
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
@@ -347,18 +346,18 @@ void setupPromoteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-promote', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        PROPERTIES_FILE_NAME: 'deployment.properties',
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            PROPERTIES_FILE_NAME: 'deployment.properties',
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
-        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
+            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -378,19 +377,19 @@ void setupWeeklyDeployJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        PROPERTIES_FILE_NAME: 'deployment.properties',
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            PROPERTIES_FILE_NAME: 'deployment.properties',
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+            GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
-        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.NIGHTLY.name),
-        MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.NIGHTLY.name),
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
+            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.NIGHTLY.name),
+            MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.NIGHTLY.name),
 
-        DROOLS_STREAM: Utils.getStream(this),
+            DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {

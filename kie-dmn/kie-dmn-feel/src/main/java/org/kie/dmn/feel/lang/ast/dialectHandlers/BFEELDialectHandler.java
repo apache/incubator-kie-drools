@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -160,9 +161,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
-                    Boolean greater = compare(left, right, (l, r) -> l.compareTo(r) > 0,
-                            () -> Boolean.FALSE,
-                            () -> Boolean.FALSE);
+                    Boolean greater = compare(left, right, (l, r) -> l.compareTo(r) > 0);
                     //Boolean equal = BooleanEvalHelper.isEqual(left, right, ctx.getFEELDialect());
                     Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
                             ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
@@ -210,9 +209,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean greater = compare(left, right,
-                            (l, r) -> l.compareTo(r) > 0,
-                            () -> Boolean.FALSE,
-                            () -> Boolean.FALSE);
+                            (l, r) -> l.compareTo(r) > 0);
                     return Objects.requireNonNullElse(greater, Boolean.FALSE);
                 });
 
@@ -248,9 +245,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean less = compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0,
-                            () -> Boolean.FALSE,
-                            () -> Boolean.FALSE);
+                            (l, r) -> l.compareTo(r) < 0);
                     Boolean equal = (EqExecutor.instance().evaluate(left, right, ctx) instanceof Boolean)
                             ? (Boolean) EqExecutor.instance().evaluate(left, right, ctx)
                             : null;
@@ -296,9 +291,7 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> true, false),
                 (left, right) -> {
                     Boolean less = compare(left, right,
-                            (l, r) -> l.compareTo(r) < 0,
-                            () -> Boolean.FALSE,
-                            () -> Boolean.FALSE);
+                            (l, r) -> l.compareTo(r) < 0);
                     return Objects.requireNonNullElse(less, Boolean.FALSE);
                 });
         map.putAll(getCommonLtOperations(ctx));
@@ -482,5 +475,10 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
 
         map.putAll(getCommonDivisionOperations(ctx));
         return map;
+    }
+
+    @Override
+    public Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op) {
+        return compare(left, right, op, () -> Boolean.FALSE, () -> Boolean.FALSE);
     }
 }

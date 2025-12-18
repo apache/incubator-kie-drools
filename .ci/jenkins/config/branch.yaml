@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 generation_config:
   missing_environment: ignore
 environments:
@@ -30,36 +28,26 @@ environments:
       DROOLS_BUILD_MVN_OPTS: -Dfull
       ADDITIONAL_TIMEOUT: 720
     ids:
-    - native
+      - native
   sonarcloud:
     auto_generation: false
     env_vars:
       ENABLE_SONARCLOUD: true
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
-    - sonarcloud
-    - coverage
+      - sonarcloud
+      - coverage
 repositories:
-- name: incubator-kie-drools
-  job_display_name: drools
-# Not yet migrated to Apache
-# - name: incubator-kie-drools-website
-#   job_display_name: drools-website
-- name: incubator-kie-benchmarks
-  job_display_name: kie-benchmarks
-## TODO to check if should be enabled
-# - name: incubator-kie-jpmml-integration
-#   job_display_name: kie-jpmml-integration
+  - name: incubator-kie-drools
+    job_display_name: drools
 git:
   author:
     name: apache
-    # Taken from https://ci-builds.apache.org/credentials/
-    # Need to be verified
     credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
     token_credentials_id: kie-ci3-token
     push:
-      credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2 # CI Push Access for KIE
-      token_credentials_id: 41128c14-bb63-4708-9074-d20a318ee630 # GitHub Personal Access Token for KIE
+      credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2
+      token_credentials_id: 41128c14-bb63-4708-9074-d20a318ee630
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -106,8 +94,8 @@ cloud:
 release:
   gpg:
     sign:
-      key-credentials-id: 'GPG_KEY_FILE'
-      passphrase-credentials-id: ''
+      key_credentials_id: GPG_KEY_FILE
+      passphrase_credentials_id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:
