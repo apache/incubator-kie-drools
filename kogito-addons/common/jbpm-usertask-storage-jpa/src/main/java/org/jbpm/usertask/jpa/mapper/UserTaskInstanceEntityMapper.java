@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.jbpm.usertask.jpa.model.TaskProcessInfoEntity;
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
+import org.kie.kogito.usertask.model.ProcessInfo;
 
 public class UserTaskInstanceEntityMapper {
 
@@ -46,6 +48,24 @@ public class UserTaskInstanceEntityMapper {
         entity.setTerminationType(userTaskInstance.getStatus().getTerminate() == null ? null : userTaskInstance.getStatus().getTerminate().name());
         entity.setExternalReferenceId(userTaskInstance.getExternalReferenceId());
         entity.setUserTaskId(userTaskInstance.getUserTaskId());
+
+        TaskProcessInfoEntity processInfoEntity = entity.getProcessInfo();
+
+        if (processInfoEntity == null) {
+            processInfoEntity = new TaskProcessInfoEntity();
+            entity.setProcessInfo(processInfoEntity);
+        }
+
+        ProcessInfo processInfo = userTaskInstance.getProcessInfo();
+        if (processInfo != null) {
+            processInfoEntity.setProcessInstanceId(processInfo.getProcessInstanceId());
+            processInfoEntity.setProcessId(processInfo.getProcessId());
+            processInfoEntity.setProcessVersion(processInfo.getProcessVersion());
+
+            processInfoEntity.setParentProcessInstanceId(processInfo.getParentProcessInstanceId());
+            processInfoEntity.setRootProcessInstanceId(processInfo.getRootProcessInstanceId());
+            processInfoEntity.setRootProcessId(processInfo.getRootProcessId());
+        }
 
         entity.setActualOwner(userTaskInstance.getActualOwner());
         entity.setPotentialUsers(Set.copyOf(userTaskInstance.getPotentialUsers()));
@@ -69,6 +89,21 @@ public class UserTaskInstanceEntityMapper {
         instance.setTaskName(entity.getTaskName());
         instance.setTaskDescription(entity.getTaskDescription());
         instance.setTaskPriority(entity.getTaskPriority());
+
+        TaskProcessInfoEntity processInfoEntity = entity.getProcessInfo();
+
+        if (processInfoEntity != null) {
+            ProcessInfo processInfo = ProcessInfo.builder()
+                    .withProcessInstanceId(processInfoEntity.getProcessInstanceId())
+                    .withProcessId(processInfoEntity.getProcessId())
+                    .withProcessVersion(processInfoEntity.getProcessVersion())
+                    .withParentProcessInstanceId(processInfoEntity.getParentProcessInstanceId())
+                    .withRootProcessInstanceId(processInfoEntity.getRootProcessInstanceId())
+                    .withRootProcessId(processInfoEntity.getRootProcessId())
+                    .build();
+
+            instance.setProcessInfo(processInfo);
+        }
 
         UserTaskState.TerminationType terminationType = entity.getTerminationType() == null ? null : UserTaskState.TerminationType.valueOf(entity.getTerminationType());
         instance.setStatus(UserTaskState.of(entity.getStatus(), terminationType));

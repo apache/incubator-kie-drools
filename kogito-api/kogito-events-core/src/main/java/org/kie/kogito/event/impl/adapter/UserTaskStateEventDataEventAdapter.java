@@ -21,11 +21,13 @@ package org.kie.kogito.event.impl.adapter;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
 import org.kie.kogito.usertask.events.UserTaskStateEvent;
+import org.kie.kogito.usertask.model.ProcessInfo;
 
 public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter {
 
@@ -55,12 +57,13 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
                 .state(event.getNewStatus().getName())
                 .actualOwner(event.getUserTaskInstance().getActualOwner())
                 .eventType(isTransition(event) ? event.getNewStatus().getName() : "Modify")
-                .processInstanceId((String) event.getUserTaskInstance().getMetadata().get("ProcessInstanceId"))
+                .processInstanceId(Optional.ofNullable(event.getUserTaskInstance().getProcessInfo()).map(ProcessInfo::getProcessInstanceId).orElse(null))
                 .slaDueDate(event.getUserTaskInstance().getSlaDueDate());
 
         UserTaskInstanceStateEventBody body = builder.build();
         UserTaskInstanceStateDataEvent utEvent =
-                new UserTaskInstanceStateDataEvent(AdapterHelper.buildSource(getConfig().service(), (String) event.getUserTaskInstance().getMetadata().get("ProcessId")),
+                new UserTaskInstanceStateDataEvent(
+                        AdapterHelper.buildSource(getConfig().service(), Optional.ofNullable(event.getUserTaskInstance().getProcessInfo()).map(ProcessInfo::getProcessId).orElse(null)),
                         getConfig().addons().toString(),
                         event.getEventUser(),
                         metadata, body);

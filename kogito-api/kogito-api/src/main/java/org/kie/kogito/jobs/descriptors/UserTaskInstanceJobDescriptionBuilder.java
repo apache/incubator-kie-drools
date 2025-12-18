@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.usertask.model.ProcessInfo;
 
 public class UserTaskInstanceJobDescriptionBuilder {
 
@@ -29,6 +30,11 @@ public class UserTaskInstanceJobDescriptionBuilder {
     private ExpirationTime expirationTime;
     private Integer priority = ProcessInstanceJobDescription.DEFAULT_PRIORITY;
     private String userTaskInstanceId;
+    private String processInstanceId;
+    private ProcessInfo processInfo;
+    private String processId;
+    private String rootProcessInstanceId;
+    private String rootProcessId;
     private Map<String, Object> metadata;
 
     public UserTaskInstanceJobDescriptionBuilder id(String id) {
@@ -55,6 +61,26 @@ public class UserTaskInstanceJobDescriptionBuilder {
         return this;
     }
 
+    public UserTaskInstanceJobDescriptionBuilder processInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+        return this;
+    }
+
+    public UserTaskInstanceJobDescriptionBuilder processId(String processId) {
+        this.processId = processId;
+        return this;
+    }
+
+    public UserTaskInstanceJobDescriptionBuilder rootProcessInstanceId(String rootProcessInstanceId) {
+        this.rootProcessInstanceId = rootProcessInstanceId;
+        return this;
+    }
+
+    public UserTaskInstanceJobDescriptionBuilder rootProcessId(String rootProcessId) {
+        this.rootProcessId = rootProcessId;
+        return this;
+    }
+
     public UserTaskInstanceJobDescriptionBuilder metadata(Map<String, Object> metadata) {
         this.metadata = metadata;
         return this;
@@ -66,10 +92,10 @@ public class UserTaskInstanceJobDescriptionBuilder {
                 expirationTime,
                 priority,
                 userTaskInstanceId,
-                (String) this.metadata.get("ProcessId"),
-                (String) this.metadata.get("ProcessInstanceId"),
+                processId,
+                processInstanceId,
                 (String) this.metadata.get("NodeInstanceId"),
-                (String) this.metadata.get("RootProcessInstanceId"),
-                (String) this.metadata.get("RootProcessId"));
+                rootProcessInstanceId,
+                rootProcessId);
     }
 }

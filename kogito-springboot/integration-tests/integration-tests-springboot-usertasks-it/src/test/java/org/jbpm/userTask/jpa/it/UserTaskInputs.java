@@ -72,10 +72,10 @@ public class UserTaskInputs extends BaseUserTaskIT {
                 .body("inputs.traveller.lastName", equalTo(traveller.getLastName()))
                 .body("inputs.traveller.email", equalTo(traveller.getEmail()))
                 .body("inputs.traveller.nationality", equalTo(traveller.getNationality()))
+                .body("processInfo.processInstanceId", equalTo(pid))
+                .body("processInfo.processId", equalTo(PROCESS_ID))
+                .body("processInfo.processVersion", equalTo("1.0"))
                 .body("metadata.ProcessType", equalTo("BPMN"))
-                .body("metadata.ProcessVersion", equalTo("1.0"))
-                .body("metadata.ProcessId", equalTo(PROCESS_ID))
-                .body("metadata.ProcessInstanceId", equalTo(pid))
                 .body("metadata.ProcessInstanceState", equalTo(1));
 
         Traveller newTraveller = new Traveller("Ned", "Stark", "n.stark@winterfell.com", "Northern", new Address("main street", "Winterfell", "10005", "WF"));

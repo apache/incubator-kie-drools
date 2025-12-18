@@ -35,6 +35,7 @@ import org.kie.kogito.usertask.UserTasks;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
 import org.kie.kogito.usertask.impl.model.DeadlineHelper;
+import org.kie.kogito.usertask.model.ProcessInfo;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
@@ -92,15 +93,20 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
             task.setTaskPriority(priority != null ? priority.toString() : null);
             task.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
 
+            ProcessInfo processInfo = ProcessInfo.builder()
+                    .withProcessInstanceId(workItem.getProcessInstance().getId())
+                    .withProcessId(workItem.getProcessInstance().getProcessId())
+                    .withProcessVersion(workItem.getProcessInstance().getProcessVersion())
+                    .withRootProcessInstanceId(workItem.getProcessInstance().getRootProcessInstanceId())
+                    .withRootProcessId(workItem.getProcessInstance().getRootProcessId())
+                    .withParentProcessInstanceId(workItem.getProcessInstance().getParentProcessInstanceId())
+                    .build();
+
+            instance.setProcessInfo(processInfo);
+
             Map<String, Object> metadata = new HashMap<>();
-            metadata.put("ProcessId", workItem.getProcessInstance().getProcessId());
             metadata.put("ProcessType", workItem.getProcessInstance().getProcess().getType());
-            metadata.put("ProcessVersion", workItem.getProcessInstance().getProcessVersion());
-            metadata.put("ProcessInstanceId", workItem.getProcessInstance().getId());
             metadata.put("ProcessInstanceState", workItem.getProcessInstance().getState());
-            metadata.put("RootProcessId", workItem.getProcessInstance().getRootProcessId());
-            metadata.put("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
-            metadata.put("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
             metadata.put("NodeInstanceId", workItem.getNodeInstance().getId());
             metadata.put("Skippable", workItem.getParameters().get(SKIPPABLE));
 

@@ -53,7 +53,7 @@ public class UserTaskKogitoWorkItemHandlerProcessListener implements UserTaskEve
         }
 
         LOG.debug("onUserTaskState {} on complete work item", event);
-        String processInstanceId = (String) event.getUserTaskInstance().getMetadata().get("ProcessInstanceId");
+        String processInstanceId = event.getUserTaskInstance().getProcessInfo().getProcessInstanceId();
 
         processes.processByProcessInstanceId(processInstanceId).get().instances().findById(processInstanceId).ifPresent(pi -> {
             Map<String, Object> data = new HashMap<>(event.getUserTaskInstance().getOutputs());

@@ -57,6 +57,7 @@ public class UserTaskServiceImpl implements UserTaskService {
     private UserTaskView toUserTaskView(UserTaskInstance instance) {
         UserTaskView view = new UserTaskView();
         view.setId(instance.getId());
+        view.setProcessInfo(instance.getProcessInfo());
         view.setUserTaskId(instance.getUserTaskId());
         view.setStatus(instance.getStatus());
         view.setTaskName(instance.getTaskName());

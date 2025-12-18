@@ -46,12 +46,7 @@ import org.kie.kogito.usertask.impl.model.DeadlineHelper;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
-import org.kie.kogito.usertask.model.Attachment;
-import org.kie.kogito.usertask.model.Comment;
-import org.kie.kogito.usertask.model.DeadlineInfo;
-import org.kie.kogito.usertask.model.Notification;
-import org.kie.kogito.usertask.model.Reassignment;
-import org.kie.kogito.usertask.model.ScheduleInfo;
+import org.kie.kogito.usertask.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +66,8 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     private String id;
 
     private String userTaskId;
+
+    private ProcessInfo processInfo;
 
     private UserTaskState status;
     private String actualOwner;
@@ -210,6 +207,16 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     @Override
     public String getId() {
         return this.id;
+    }
+
+    @Override
+    public ProcessInfo getProcessInfo() {
+        return this.processInfo;
+    }
+
+    public void setProcessInfo(ProcessInfo processInfo) {
+        this.processInfo = processInfo;
+        updatePersistence();
     }
 
     public void setStatus(UserTaskState status) {
@@ -712,6 +719,10 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
                     .generateId()
                     .expirationTime(expirationTime)
                     .userTaskInstanceId(this.id)
+                    .processId(this.processInfo.getProcessId())
+                    .processInstanceId(this.processInfo.getProcessInstanceId())
+                    .rootProcessInstanceId(this.processInfo.getRootProcessInstanceId())
+                    .rootProcessId(this.processInfo.getRootProcessId())
                     .metadata(this.metadata)
                     .build());
         }

@@ -22,7 +22,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
+import org.kie.kogito.usertask.model.ProcessInfo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserTaskView {
 
     private String id;
@@ -30,6 +34,7 @@ public class UserTaskView {
     private String userTaskId;
 
     private UserTaskState status;
+    private ProcessInfo processInfo;
 
     private String taskName;
     private String taskDescription;
@@ -53,6 +58,14 @@ public class UserTaskView {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public ProcessInfo getProcessInfo() {
+        return processInfo;
+    }
+
+    public void setProcessInfo(ProcessInfo processInfo) {
+        this.processInfo = processInfo;
     }
 
     public String getUserTaskId() {

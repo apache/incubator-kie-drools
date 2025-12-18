@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 import org.kie.kogito.usertask.model.TransitionInfo;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -41,6 +42,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
 @QuarkusIntegrationTest
+@TestTransaction
 @QuarkusTestResource(value = PostgreSqlQuarkusTestResource.class, restrictToAnnotatedClass = true)
 public class WsHumanTaskLifeCycleIT {
     public static final String USER_TASKS_ENDPOINT = "/usertasks/instance";
@@ -525,12 +527,12 @@ public class WsHumanTaskLifeCycleIT {
                 .body("status.name", equalTo(state))
                 .body("taskName", equalTo("Task"))
                 .body("potentialUsers", hasItems(potentialUsers))
+                .body("processInfo.processInstanceId", equalTo(pid))
+                .body("processInfo.processId", equalTo(processId))
+                .body("processInfo.processVersion", equalTo("1.0"))
                 .body("metadata.Skippable", equalTo("true"))
                 .body("metadata.Lifecycle", equalTo("ws-human-task"))
                 .body("metadata.ProcessType", equalTo("BPMN"))
-                .body("metadata.ProcessVersion", equalTo("1.0"))
-                .body("metadata.ProcessId", equalTo(processId))
-                .body("metadata.ProcessInstanceId", equalTo(pid))
                 .body("metadata.ProcessInstanceState", equalTo(1));
     }
 
