@@ -169,17 +169,22 @@
     <version.apache.commons.commons-compress>1.27.1</version.apache.commons.commons-compress>
 
     <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
+    <version.org.lz4.java>1.8.1</version.org.lz4.java>
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
-      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
-     They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
+      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities. -->
       <dependency>
         <groupId>org.eclipse.angus</groupId>
         <artifactId>angus-mail</artifactId>
         <version>${version.angus.mail}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.java}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
@@ -1010,7 +1015,7 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-project</artifactId>
         <version>${version.maven.project}</version>
-    </dependency>
+      </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
@@ -1101,13 +1106,13 @@
         <artifactId>swagger-parser</artifactId>
         <version>${version.io.swagger.parser.v3}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-model</artifactId>
         <version>${version.io.swagger.core.v3}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-core</artifactId>
@@ -1235,7 +1240,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
           </exclusion>
-         </exclusions>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
