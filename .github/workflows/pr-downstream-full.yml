@@ -43,7 +43,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java-version: [17]
-        maven-version: ['3.9.6']
+        maven-version: ['3.9.11']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Build Chain (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
