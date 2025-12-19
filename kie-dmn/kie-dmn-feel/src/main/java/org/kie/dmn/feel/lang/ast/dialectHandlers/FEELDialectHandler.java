@@ -25,6 +25,7 @@ import java.time.temporal.Temporal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 
@@ -412,6 +413,11 @@ public class FEELDialectHandler extends DefaultDialectHandler implements Dialect
         map.putAll(getCommonDivisionOperations(ctx));
 
         return map;
+    }
+
+    @Override
+    public Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op) {
+        return compare(left, right, op, () -> null, () -> null);
     }
 
 }

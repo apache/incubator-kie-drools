@@ -18,10 +18,11 @@
  */
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public interface DialectHandler {
 
@@ -76,5 +77,7 @@ public interface DialectHandler {
     Map<DefaultDialectHandler.CheckedPredicate, BiFunction<Object, Object, Object>> getDivisionOperations(EvaluationContext ctx);
 
     Object executeDivision(Object left, Object right, EvaluationContext ctx);
+
+    Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op);
 
 }
