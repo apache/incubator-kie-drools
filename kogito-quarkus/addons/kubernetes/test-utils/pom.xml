@@ -54,10 +54,6 @@
             <artifactId>kubernetes-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>openshift-server-mock</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-addons-kubernetes</artifactId>
         </dependency>

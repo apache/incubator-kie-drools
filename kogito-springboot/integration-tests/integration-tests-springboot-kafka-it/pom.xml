@@ -142,14 +142,6 @@
         </executions>
       </plugin>
       <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${version.compiler.plugin}</version>
-          <configuration>
-            <release>${maven.compiler.release}</release>
-          </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${version.org.springframework.boot}</version>
