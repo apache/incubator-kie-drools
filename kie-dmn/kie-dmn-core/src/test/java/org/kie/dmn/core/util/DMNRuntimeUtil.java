@@ -173,7 +173,7 @@ public final class DMNRuntimeUtil {
             }
 
             @Override
-            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
                 logger.info(event.toString());
             }
         };

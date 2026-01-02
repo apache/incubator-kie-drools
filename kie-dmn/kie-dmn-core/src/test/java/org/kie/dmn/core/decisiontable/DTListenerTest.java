@@ -51,7 +51,7 @@ public class DTListenerTest extends BaseInterpretedVsAlphaNetworkTest {
         private final List<AfterEvaluateDecisionTableEvent> events = new ArrayList<>();
 
         @Override
-        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
             events.add(event);
         }
 

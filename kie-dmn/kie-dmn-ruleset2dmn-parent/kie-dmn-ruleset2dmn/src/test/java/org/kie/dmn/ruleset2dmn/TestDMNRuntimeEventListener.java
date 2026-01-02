@@ -28,7 +28,7 @@ public class TestDMNRuntimeEventListener extends DefaultDMNRuntimeEventListener 
     private static final Logger LOG = LoggerFactory.getLogger(TestDMNRuntimeEventListener.class);
     
     @Override
-    public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+    public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
         LOG.debug("Decision Table selected: {}", event.getSelected());
     }
     @Override

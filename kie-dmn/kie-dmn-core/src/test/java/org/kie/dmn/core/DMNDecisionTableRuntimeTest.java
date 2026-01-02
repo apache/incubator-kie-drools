@@ -71,6 +71,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -148,7 +149,8 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Payment method" )).isEqualTo("Check" );
 
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
-        verify( listener, times( 2 ) ).afterEvaluateDecisionTable( captor.capture() );
+        verify( listener, times( 1 ) ).afterEvaluateDecisionTable( captor.capture(), eq("Car Damage Responsibility"));
+        verify( listener, times( 1 ) ).afterEvaluateDecisionTable( captor.capture(), eq("Payment method"));
 
         final AfterEvaluateDecisionTableEvent first = captor.getAllValues().get( 0 );
         assertThat( first.getMatches()).containsExactly(5);
@@ -247,7 +249,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Approval Status" )).isEqualTo("Declined" );
 
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
-        verify( listener ).afterEvaluateDecisionTable( captor.capture() );
+        verify( listener ).afterEvaluateDecisionTable( captor.capture(), eq("Approval Status"));
 
         assertThat( captor.getValue().getMatches()).isEmpty();
         assertThat( captor.getValue().getSelected()).isEmpty();
@@ -276,7 +278,8 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( (Map<String, Object>) result.get( "Decision Logic 2" )).containsEntry("the 100 analysis", "A number smaller than 100");
 
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
-        verify( listener, times( 2 ) ).afterEvaluateDecisionTable( captor.capture() );
+        verify( listener, times( 2 ) ).afterEvaluateDecisionTable( captor.capture(), eq("Decision Logic 2"));
+
 
         assertThat( captor.getAllValues().get( 0 ).getDecisionTableName()).isEqualTo("a" );
         assertThat( captor.getAllValues().get( 1 ).getDecisionTableName()).isEqualTo("b" );

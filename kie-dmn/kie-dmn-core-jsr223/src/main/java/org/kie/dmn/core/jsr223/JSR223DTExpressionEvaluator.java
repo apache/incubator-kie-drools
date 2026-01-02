@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -76,6 +77,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         final List<FEELEvent> events = new ArrayList<>();
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
+        String decisionName = node instanceof DecisionNode ? node.getName() : dmnr.getDecisionName();;
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result );
             Map<String, Object> contextValues = result.getContext().getAll();
@@ -107,7 +109,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             LOG.debug("failed evaluate", e);
             throw new RuntimeException(e);
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(decisionName, dmrem, node.getName(), node.getName(), dt.getId(), result,
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),

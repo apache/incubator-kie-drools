@@ -128,6 +128,7 @@ public class DMNRuntimeImpl
         Set<DecisionNode> decisions = model.getDecisions().stream()
                 .filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
         for (DecisionNode decision : decisions) {
+            result.setDecisionName(decision.getName());
             evaluateDecision(context, result, decision, performRuntimeTypeCheck, strictMode);
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateAll(eventManager, model, result);
@@ -570,6 +571,7 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck,
                                      boolean strictMode) {
+        result.setDecisionName(d.getName());
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
         String decisionId = d.getModelNamespace().equals(result.getModel().getNamespace()) ? decision.getId() :
                 decision.getModelNamespace() + "#" + decision.getId();

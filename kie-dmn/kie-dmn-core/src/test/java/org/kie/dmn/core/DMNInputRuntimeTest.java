@@ -477,7 +477,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             }
 
             @Override
-            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
                 executedRuleIds.addAll(event.getSelectedIds());
             }
         });

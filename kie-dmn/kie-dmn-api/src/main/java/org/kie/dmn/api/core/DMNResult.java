@@ -68,4 +68,6 @@ public interface DMNResult
      */
     DMNDecisionResult getDecisionResultById( String id );
 
+    String getDecisionName();
+
 }

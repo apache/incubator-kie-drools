@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -74,6 +75,7 @@ public class DMNDTExpressionEvaluator
 
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
+        String decisionName = node instanceof DecisionNode ? node.getName() : dmnr.getDecisionName();;
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList());
@@ -103,7 +105,7 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(decisionName, dmrem, node.getName(), dt.getName(), dtNodeId, result,
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),
