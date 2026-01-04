@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>2.2.999-SNAPSHOT</version>
+    <version>2.2.999-20260104-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-cli-tests</artifactId>
   <name>Drools :: DRL on YAML :: CLI tests</name>
