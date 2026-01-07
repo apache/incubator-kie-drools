@@ -26,6 +26,7 @@ import org.kie.kogito.internal.process.runtime.HeadersPersistentConfig;
 import org.kie.kogito.persistence.jdbc.AbstractProcessInstancesFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,7 +37,9 @@ public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory
             @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock,
             @Value("${kogito.persistence.headers.enabled:false}") Boolean headersEnabled,
             @Value("${kogito.persistence.headers.excluded:}") List<String> headersExcluded) {
-        super(dataSource, lock, new HeadersPersistentConfig(headersEnabled, headersExcluded));
+
+        // Wrap the original DataSource so operations use the transactional Connection
+        super(new TransactionAwareDataSourceProxy(dataSource), lock, new HeadersPersistentConfig(headersEnabled, headersExcluded));
     }
 
 }

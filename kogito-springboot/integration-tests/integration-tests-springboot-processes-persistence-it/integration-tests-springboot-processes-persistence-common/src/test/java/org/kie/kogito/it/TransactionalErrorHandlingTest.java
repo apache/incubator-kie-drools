@@ -39,6 +39,7 @@ public abstract class TransactionalErrorHandlingTest {
     private static final String MANAGEMENT_INSTANCE_PATH = "/management/processes/{processId}/instances/{processInstanceId}";
 
     private static final String ERRORS_PROCESS = "transactional_errors";
+    private static final String ERRORS_PROCESS_NO_WAIT_STATE = "transactional_errors_no_wait_state";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -164,6 +165,45 @@ public abstract class TransactionalErrorHandlingTest {
                 .accept(ContentType.JSON)
                 .when()
                 .pathParam("processId", ERRORS_PROCESS)
+                .get("/{processId}")
+                .then()
+                .statusCode(200)
+                .body("size()", is(0));
+    }
+
+    @Test
+    void testTransactionalProcessNoWaitStateSuccess() {
+        String pId = given().contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("fail", false))
+                .post("/{processId}", ERRORS_PROCESS_NO_WAIT_STATE)
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .extract()
+                .path("id");
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .pathParam("processId", ERRORS_PROCESS_NO_WAIT_STATE)
+                .get("/{processId}")
+                .then()
+                .statusCode(200)
+                .body("size()", is(0));
+    }
+
+    @Test
+    void testTransactionalProcessNoWaitStateFailure() {
+        given().contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("fail", true))
+                .post("/{processId}", ERRORS_PROCESS_NO_WAIT_STATE)
+                .then()
+                .statusCode(500);
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .pathParam("processId", ERRORS_PROCESS_NO_WAIT_STATE)
                 .get("/{processId}")
                 .then()
                 .statusCode(200)
