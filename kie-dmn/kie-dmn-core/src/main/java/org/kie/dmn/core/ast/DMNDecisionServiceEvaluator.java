@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -30,6 +29,8 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -41,6 +42,7 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.impl.DMNRuntimeUtils;
+import org.kie.dmn.core.util.CoerceUtil;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
@@ -73,7 +75,14 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         for (String id : decisionIDs) {
             DMNDecisionResult decisionResultById = evaluateById.getDecisionResultById(id);
             String decisionName = dmnModel.getDecisionById(id).getName();
-            ctx.put(decisionName, decisionResultById.getResult());
+
+            DMNType expectedType = dsNode.getResultType();
+            Object originalResult = decisionResultById.getResult();
+            Object coercedResult = CoerceUtil.coerceValue(expectedType, originalResult);
+            if (coercedResult != originalResult) {
+                ((DMNDecisionResultImpl) decisionResultById).setResult(coercedResult);
+            }
+            ctx.put(decisionName, coercedResult);
             decisionResults.add(decisionResultById);
         }
         boolean errors = false;
@@ -84,8 +93,9 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
             }
         }
         boolean typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
+        Object finalResult = decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx;
         if (typeCheck) {
-            Object c = DMNRuntimeUtils.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
+            Object c = DMNRuntimeUtils.coerceUsingType(finalResult,
                                                        dsNode.getResultType(),
                                                        typeCheck,
                                                        (rx, tx) -> MsgUtil.reportMessage(LOG,
@@ -101,10 +111,6 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
             if (c == null) {
                 ctx.clear();
                 decisionResults.forEach(it -> ((DMNDecisionResultImpl) it).setResult(null));
-            } else {
-                if (decisionResults.size()== 1) {
-                    ((DMNDecisionResultImpl) decisionResults.get(0)).setResult(c);
-                }
             }
         }
         for (DMNDecisionResult dr : decisionResults) {

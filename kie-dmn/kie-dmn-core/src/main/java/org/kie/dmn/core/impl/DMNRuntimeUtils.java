@@ -219,10 +219,6 @@ public class DMNRuntimeUtils {
         if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
             // as per Decision evaluation result.
             return ((Collection<?>) value).toArray()[0];
-        } else if (type.isCollection() && ! (value instanceof Collection) &&
-                (!(type instanceof SimpleTypeImpl simpleType)
-                        || simpleType.getFeelType() != BuiltInType.UNKNOWN)) {
-            return Collections.singletonList(value);
         } else {
             return value;
         }

@@ -344,7 +344,8 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             return base != null && DMNTypeUtils.getFEELBuiltInType(base)
                     == DMNTypeUtils.getFEELBuiltInType(fdType);
         }
-        return false;
+        return fiType instanceof SimpleTypeImpl simpleType && simpleType.getFeelType() == BuiltInType.DATE_TIME &&
+                fdType instanceof SimpleTypeImpl fdSimple && fdSimple.getFeelType() == BuiltInType.DATE;
     }
 
     private DMNType resolveDMNType(QName qName, DMNModelImpl model) {
