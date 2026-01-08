@@ -247,7 +247,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Approval Status" )).isEqualTo("Declined" );
 
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
-        verify( listener ).afterEvaluateDecisionTable( captor.capture());
+        verify( listener ).afterEvaluateDecisionTable( captor.capture() );
 
         assertThat( captor.getValue().getMatches()).isEmpty();
         assertThat( captor.getValue().getSelected()).isEmpty();

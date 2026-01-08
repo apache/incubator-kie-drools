@@ -57,4 +57,8 @@ public interface DMNRuntimeEventManager {
 
     DMNRuntime getRuntime();
 
+    String getCurrentEvaluatingDecisionName();
+
+    void setCurrentEvaluatingDecisionName(String decisionName);
+
 }

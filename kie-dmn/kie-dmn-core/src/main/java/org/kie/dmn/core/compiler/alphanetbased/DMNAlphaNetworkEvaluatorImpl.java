@@ -82,7 +82,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
-        String decisionName = node instanceof DecisionNode ? node.getName() : ((DMNResultImpl) dmnResult).getDecisionName();
+        String decisionName = node instanceof DecisionNode ? node.getName() : eventManager.getCurrentEvaluatingDecisionName();
         try {
 
             Optional<InvalidInputEvent> potentialError = compiledNetwork.validate(evalCtx);

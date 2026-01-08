@@ -77,7 +77,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         final List<FEELEvent> events = new ArrayList<>();
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
-        String decisionName = node instanceof DecisionNode ? node.getName() : result.getDecisionName();;
+        String decisionName = node instanceof DecisionNode ? node.getName() : dmrem.getCurrentEvaluatingDecisionName();
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result );
             Map<String, Object> contextValues = result.getContext().getAll();

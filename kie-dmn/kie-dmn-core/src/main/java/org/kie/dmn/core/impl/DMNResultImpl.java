@@ -39,20 +39,11 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private DMNMessageManager messages;
     private Map<String, DMNDecisionResult> decisionResults;
     private final DMNModel model;
-    private String decisionName;
 
     public DMNResultImpl(DMNModel model) {
         this.model = model;
         messages = new DefaultDMNMessagesManager(model != null ? model.getResource() : null);
         decisionResults = new HashMap<>(  );
-    }
-
-    public void setDecisionName(String decisionName) {
-        this.decisionName = decisionName;
-    }
-
-    public String getDecisionName() {
-        return decisionName;
     }
 
     public void setContext(DMNContext context) {
