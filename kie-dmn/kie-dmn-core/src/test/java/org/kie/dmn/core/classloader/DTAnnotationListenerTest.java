@@ -50,7 +50,7 @@ public class DTAnnotationListenerTest {
         private List<AfterEvaluateDecisionTableEvent> events = new ArrayList<>();
 
         @Override
-        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
+        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
             events.add(event);
         }
 

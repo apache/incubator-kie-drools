@@ -59,6 +59,4 @@ public interface DMNRuntimeEventListener {
      *
      */
     default void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {}
-
-    default void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {}
 }

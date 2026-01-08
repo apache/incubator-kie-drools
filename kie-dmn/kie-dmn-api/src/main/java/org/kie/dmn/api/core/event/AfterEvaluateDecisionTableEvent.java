@@ -34,6 +34,8 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
         return null;
     }
 
+    String getDecisionName();
+
     List<Integer> getMatches();
 
     List<Integer> getSelected();

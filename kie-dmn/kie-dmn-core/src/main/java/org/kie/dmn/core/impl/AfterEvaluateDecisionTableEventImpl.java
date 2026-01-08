@@ -35,8 +35,9 @@ public class AfterEvaluateDecisionTableEventImpl
     private final List<Integer> fired;
     private final List<String> matchesIds;
     private final List<String> firedIds;
+    private final String decisionName;
 
-    public AfterEvaluateDecisionTableEventImpl(String nodeName, String decisionTableName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String decisionTableName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds, String decisionName) {
         this.nodeName = nodeName;
         this.decisionTableName = decisionTableName;
         this.dtId = dtId;
@@ -45,6 +46,7 @@ public class AfterEvaluateDecisionTableEventImpl
         this.fired = fired;
         this.matchesIds = matchesIds;
         this.firedIds = firedIds;
+        this.decisionName = decisionName;
     }
 
     @Override
@@ -84,6 +86,11 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public List<String> getSelectedIds() {return firedIds == null ? Collections.emptyList() : firedIds;
+    }
+
+    @Override
+    public String getDecisionName() {
+        return decisionName;
     }
 
     @Override

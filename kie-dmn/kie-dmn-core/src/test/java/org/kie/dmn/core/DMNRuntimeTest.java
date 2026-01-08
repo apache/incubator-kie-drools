@@ -258,10 +258,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                 .afterEvaluateDecision(any(AfterEvaluateDecisionEvent.class));
         verify(listener, times(2))
                 .beforeEvaluateDecisionTable(any(BeforeEvaluateDecisionTableEvent.class));
-        verify(listener, times(1))
-                .afterEvaluateDecisionTable(argument.capture(), eq("Car Damage Responsibility"));
-        verify(listener, times(1))
-                .afterEvaluateDecisionTable(argument.capture(), eq("Payment method"));
+        verify(listener, times(2))
+                .afterEvaluateDecisionTable(argument.capture());
 
         AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get(0);
         assertThat(dte.getDecisionTableName()).isEqualTo("Car Damage Responsibility");

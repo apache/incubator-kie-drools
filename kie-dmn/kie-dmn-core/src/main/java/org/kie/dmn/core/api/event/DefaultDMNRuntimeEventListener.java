@@ -57,7 +57,7 @@ public class DefaultDMNRuntimeEventListener implements DMNRuntimeEventListener {
     }
 
     @Override
-    public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
+    public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
     }
 
     @Override

@@ -103,7 +103,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         public final List<Integer> selectedRule = new ArrayList<>();
 
         @Override
-        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event, String decisionName) {
+        public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
             selectedRule.addAll(event.getSelected());
         }
 
