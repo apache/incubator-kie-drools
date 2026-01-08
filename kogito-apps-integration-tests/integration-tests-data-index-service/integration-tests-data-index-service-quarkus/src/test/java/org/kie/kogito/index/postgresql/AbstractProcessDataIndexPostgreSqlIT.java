@@ -18,9 +18,16 @@
  */
 package org.kie.kogito.index.postgresql;
 
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
+import io.restassured.http.ContentType;
+
+import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 public abstract class AbstractProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
@@ -42,4 +49,19 @@ public abstract class AbstractProcessDataIndexPostgreSqlIT extends AbstractProce
     public boolean validateGetProcessInstanceSource() {
         return true;
     }
+
+    @Test
+    public void testJsonQueryVariablesAndMetadata() throws Exception {
+        String pId = createTestProcessInstance();
+
+        await().atMost(TIMEOUT).untilAsserted(() -> given().spec(dataIndexSpec())
+                .contentType(ContentType.JSON)
+                .body("{ \"query\": \"{ ProcessInstances(where: { id: { equal: \\\"" + pId + "\\\" } }) { id variables state } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessInstances[0].id", containsString(pId))
+                .body("data.ProcessInstances[0].variables.traveller.firstName", containsString("Darth"))
+                .body("data.ProcessInstances[0].state", is("ACTIVE")));
+    }
+
 }

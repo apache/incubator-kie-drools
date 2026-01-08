@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractProcessDataIndexIT {
 
-    private static Duration TIMEOUT = Duration.ofSeconds(30);
+    protected static Duration TIMEOUT = Duration.ofSeconds(30);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
