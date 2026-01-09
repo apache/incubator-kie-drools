@@ -33,13 +33,17 @@ import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.PrimitiveType.Primitive;
@@ -141,17 +145,18 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
     @Override
     protected void handleParametersForServiceCall(final BlockStmt executeWorkItemBody, final MethodCallExpr callServiceMethod) {
         Parameter[] methodParameter = method.getParameters();
+        MethodCallExpr recordCall = new MethodCallExpr(new NameExpr(WorkItemRecordParameters.class.getName()), "recordInputParameters").addArgument(new NameExpr("workItem"));
         for (int i = 0; i < this.parameters.size(); i++) {
             Argument argument = this.parameters.get(i);
-            MethodCallExpr getParamMethod = new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(argument.getName()));
             Class<?> clazz = methodParameter[i].getType();
-
-            callServiceMethod.addArgument(
-                    new CastExpr(clazz.isPrimitive() ? new PrimitiveType(Primitive.valueOf(clazz.getCanonicalName().toUpperCase())) : parseClassOrInterfaceType(clazz.getCanonicalName()),
-                            getParamMethod));
-
+            com.github.javaparser.ast.type.Type type =
+                    clazz.isPrimitive() ? new PrimitiveType(Primitive.valueOf(clazz.getCanonicalName().toUpperCase())) : parseClassOrInterfaceType(clazz.getCanonicalName());
+            executeWorkItemBody.addStatement(new AssignExpr(new VariableDeclarationExpr(type, argument.getName()),
+                    new CastExpr(type, new MethodCallExpr(new NameExpr("workItem"), "getParameter").addArgument(new StringLiteralExpr(argument.getName()))), Operator.ASSIGN));
+            recordCall.addArgument(new StringLiteralExpr(argument.getName()));
+            callServiceMethod.addArgument(new NameExpr(argument.getName()));
         }
-
+        executeWorkItemBody.addStatement(recordCall);
         // adding a dynamic argument at the end of all parameters of the class
         if (methodParameter.length > this.parameters.size() && KogitoProcessContext.class.isAssignableFrom(methodParameter[this.parameters.size()].getType())) {
             callServiceMethod.addArgument(new MethodCallExpr(new TypeExpr(parseClassOrInterfaceType(ContextFactory.class.getCanonicalName())), "fromItem").addArgument(new NameExpr("workItem")));

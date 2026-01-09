@@ -30,6 +30,7 @@ import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.internal.process.workitem.WorkItemLifeCycle;
 import org.kie.kogito.internal.process.workitem.WorkItemLifeCyclePhase;
 import org.kie.kogito.internal.process.workitem.WorkItemPhaseState;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 import org.kie.kogito.internal.process.workitem.WorkItemTerminationType;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.slf4j.Logger;
@@ -122,6 +123,7 @@ public class DefaultKogitoWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     public Optional<WorkItemTransition> completeWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
+        WorkItemRecordParameters.recordOutputParameters(workitem, transition.data());
         return Optional.empty();
     }
 

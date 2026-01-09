@@ -210,6 +210,11 @@ public class ServerlessWorkflowUtils {
                 : context.getApplicationProperty(getPropKey(getFunctionPrefix(function), metadataKey), clazz).orElse(defaultValue);
     }
 
+    public static <T> T resolveFunctionProperty(FunctionDefinition function, String key, KogitoBuildContext context, Class<T> clazz, T defaultValue) {
+        return context.getApplicationProperty(getPropKey(getFunctionPrefix(function), key), clazz)
+                .orElseGet(() -> context.getApplicationProperty(APP_PROPERTIES_FUNCTIONS_BASE + key, clazz).orElse(defaultValue));
+    }
+
     public interface ExpressionBuilder<T> {
         Supplier<Expression> create(String key, Class<T> clazz, T defaultValue);
     }

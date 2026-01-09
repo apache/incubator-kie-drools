@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
@@ -38,12 +39,12 @@ public abstract class WorkflowWorkItemHandler extends DefaultKogitoWorkItemHandl
 
     @Override
     public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
-        Map<String, Object> parameters = new LinkedHashMap<>(workItem.getParameters());
-        parameters.remove(SWFConstants.MODEL_WORKFLOW_VAR);
-        logger.debug("Workflow workitem {} will be invoked with parameters {}", workItem.getName(), parameters);
-
-        Map<String, Object> params = Collections.singletonMap("Result", JsonObjectUtils.fromValue(internalExecute(workItem, parameters)));
-        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), params));
+        Map<String, Object> inputParameters = new LinkedHashMap<>(workItem.getParameters());
+        inputParameters.remove(SWFConstants.MODEL_WORKFLOW_VAR);
+        logger.debug("Workflow workitem {} will be invoked with parameters {}", workItem.getName(), inputParameters);
+        Map<String, Object> outputParameters = Collections.singletonMap("Result", JsonObjectUtils.fromValue(internalExecute(workItem, inputParameters)));
+        WorkItemRecordParameters.recordInputParameters(workItem, inputParameters);
+        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), outputParameters));
     }
 
     protected abstract Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters);

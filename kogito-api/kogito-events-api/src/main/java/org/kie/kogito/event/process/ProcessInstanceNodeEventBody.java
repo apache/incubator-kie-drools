@@ -89,6 +89,10 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
     private Boolean retrigger;
 
+    private Object inputParameters;
+
+    private Object outputParameters;
+
     private Map<String, Object> data;
 
     @Override
@@ -103,6 +107,8 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
         writeDate(out, slaDueDate);
         writeObject(out, data);
         writeObject(out, retrigger);
+        writeObject(out, inputParameters);
+        writeObject(out, outputParameters);
     }
 
     @Override
@@ -118,6 +124,10 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
         data = (Map<String, Object>) readObject(in);
         if (flags.contains(KogitoMarshallEventFlag.RETRIGGER)) {
             retrigger = (Boolean) readObject(in);
+        }
+        if (flags.contains(KogitoMarshallEventFlag.FUNCTION_ARGS)) {
+            inputParameters = readObject(in);
+            outputParameters = readObject(in);
         }
     }
 
@@ -192,6 +202,14 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
     public Map<String, Object> getData() {
         return data;
+    }
+
+    public Object getInputParameters() {
+        return inputParameters;
+    }
+
+    public Object getOutputParameters() {
+        return outputParameters;
     }
 
     @Override
@@ -306,6 +324,16 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
         public Builder workItemId(String workItemId) {
             instance.workItemId = workItemId;
+            return this;
+        }
+
+        public Builder inputParameters(Object inputParameters) {
+            instance.inputParameters = inputParameters;
+            return this;
+        }
+
+        public Builder outputParameters(Object outputParameters) {
+            instance.outputParameters = outputParameters;
             return this;
         }
 

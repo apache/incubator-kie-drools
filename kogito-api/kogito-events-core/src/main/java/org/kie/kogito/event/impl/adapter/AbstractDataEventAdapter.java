@@ -35,6 +35,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 
 public abstract class AbstractDataEventAdapter implements DataEventAdapter {
 
@@ -141,7 +142,9 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .nodeType(nodeInstance.getNode().getClass().getSimpleName())
                 .nodeInstanceId(nodeInstance.getId())
                 .nodeDefinitionId(nodeInstance.getNode().getUniqueId())
-                .slaDueDate(nodeInstance.getSlaDueDate());
+                .slaDueDate(nodeInstance.getSlaDueDate())
+                .inputParameters(WorkItemRecordParameters.getInputParameters(nodeInstance))
+                .outputParameters(WorkItemRecordParameters.getOutputParameters(nodeInstance));
         consumer.accept(builder, event);
         if (nodeInstance instanceof KogitoWorkItemNodeInstance workItemNodeInstance && workItemNodeInstance.getWorkItem() != null) {
             KogitoWorkItem workItem = workItemNodeInstance.getWorkItem();

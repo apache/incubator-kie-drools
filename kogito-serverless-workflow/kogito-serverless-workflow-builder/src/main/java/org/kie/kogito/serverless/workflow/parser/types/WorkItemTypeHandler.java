@@ -21,9 +21,11 @@ package org.kie.kogito.serverless.workflow.parser.types;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.VariableInfo;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.utils.WorkItemBuilder;
 
 import io.serverlessworkflow.api.Workflow;
@@ -35,8 +37,12 @@ public abstract class WorkItemTypeHandler extends WorkItemBuilder implements Fun
     public NodeFactory<?, ?> getActionNode(Workflow workflow, ParserContext context, RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, FunctionDefinition functionDef, FunctionRef functionRef,
             VariableInfo varInfo) {
         validateArgs(functionRef);
+        WorkItemNodeFactory<?> workItemFactory =
+                fillWorkItemHandler(workflow, context, buildWorkItem(embeddedSubProcess, context, varInfo.getInputVar(), varInfo.getOutputVar()).name(functionDef.getName()), functionDef);
+        workItemFactory.metaData(WorkItemRecordParameters.RECORD_ARGS,
+                ServerlessWorkflowUtils.resolveFunctionProperty(functionDef, WorkItemRecordParameters.RECORD_ARGS, context.getContext(), Boolean.class, true));
         return addFunctionArgs(workflow,
-                fillWorkItemHandler(workflow, context, buildWorkItem(embeddedSubProcess, context, varInfo.getInputVar(), varInfo.getOutputVar()).name(functionDef.getName()), functionDef),
+                workItemFactory,
                 functionRef);
     }
 

@@ -24,7 +24,8 @@ import java.util.Set;
 
 public enum KogitoMarshallEventFlag {
     RETRIGGER(1),
-    CLOUDEVENT_ID(2);
+    CLOUDEVENT_ID(2),
+    FUNCTION_ARGS(4);
 
     private int value;
 

@@ -42,6 +42,7 @@ import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemRecordParameters;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
@@ -181,8 +182,10 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
             protocol = port == DEFAULT_SSL_PORT ? HTTPS_PROTOCOL : HTTP_PROTOCOL;
         }
         logger.debug("Invoking request with protocol {} host {} port {} and endpoint {}", protocol, host, port, path);
+
         WebClient client = isHttps(protocol) ? httpsClient : httpClient;
         HttpRequest<Buffer> request = client.request(method, port, host, path);
+        WorkItemRecordParameters.recordInputParameters(workItem, parameters);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         paramsDecorator.decorate(workItem, parameters, request);
@@ -190,8 +193,9 @@ public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)
                 ? sendBody(request, bodyBuilder.apply(parameters), requestTimeout)
                 : send(request, requestTimeout);
+        Object outputParams = resultHandler.apply(response, targetInfo, ContextFactory.fromItem(workItem));
         return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(),
-                Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo, ContextFactory.fromItem(workItem)))));
+                Collections.singletonMap(RESULT, outputParams)));
     }
 
     private boolean isHttps(String protocol) {
