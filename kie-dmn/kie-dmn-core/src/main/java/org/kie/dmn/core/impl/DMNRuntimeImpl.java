@@ -255,11 +255,6 @@ public class DMNRuntimeImpl
         return this.eventManager.getCurrentEvaluatingDecisionName();
     }
 
-    @Override
-    public void setCurrentEvaluatingDecisionName(String decisionName) {
-        this.eventManager.setCurrentEvaluatingDecisionName(decisionName);
-    }
-
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResultImpl(model, context);
 
