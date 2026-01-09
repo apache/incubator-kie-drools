@@ -42,7 +42,7 @@ jobs:
         job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
         os: [ubuntu-latest]
         java-version: [17]
-        maven-version: ['3.9.6']
+        maven-version: ['3.9.11']
         include:
           - job_name: optaplanner
             repository: incubator-kie-optaplanner

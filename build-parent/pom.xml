@@ -87,7 +87,7 @@
     <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.maven>3.9.6</version.org.apache.maven>
+    <version.org.apache.maven>3.9.11</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
