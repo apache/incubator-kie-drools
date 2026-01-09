@@ -25,7 +25,7 @@ import java.util.Set;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryConverter;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -78,7 +78,7 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     private Set<String> annotations;
     @Convert(converter = JsonBinaryConverter.class)
     @Column(columnDefinition = "jsonb")
-    private ObjectNode metadata;
+    private JsonNode metadata;
 
     @Override
     public String getId() {
@@ -169,11 +169,11 @@ public class ProcessDefinitionEntity extends AbstractEntity {
         this.annotations = annotations;
     }
 
-    public ObjectNode getMetadata() {
+    public JsonNode getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(ObjectNode metadata) {
+    public void setMetadata(JsonNode metadata) {
         this.metadata = metadata;
     }
 

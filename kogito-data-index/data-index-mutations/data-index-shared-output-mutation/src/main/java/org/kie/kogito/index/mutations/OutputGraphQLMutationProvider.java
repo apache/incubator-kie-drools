@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -63,7 +64,11 @@ public class OutputGraphQLMutationProvider implements GraphQLMutationsProvider {
         if (completedInstanceId != null) {
             ProcessInstance processInstance = cacheService.getProcessInstanceStorage().get(completedInstanceId);
             if (processInstance != null) {
-                input = MergeUtils.merge(input, processInstance.getVariables().remove(env.getArgumentOrDefault("excludeProperties", Set.of("workflowdatainput"))));
+                JsonNode variables = processInstance.getVariables();
+                if (variables instanceof ObjectNode objectNode) {
+                    objectNode.remove(env.getArgumentOrDefault("excludeProperties", Set.of("workflowdatainput")));
+                }
+                input = MergeUtils.merge(input, variables);
             } else {
                 logger.warn("Completed Instance Id {} cannot be found, using user input as it is", completedInstanceId);
             }

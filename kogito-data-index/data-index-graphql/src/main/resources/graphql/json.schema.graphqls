@@ -5,3 +5,8 @@ extend input ProcessInstanceArgument {
 extend input ProcessDefinitionArgument {
   metadata: JSON
 }
+
+extend input NodeInstanceArgument {
+  inputArgs: JSON
+  outputArgs: JSON
+}

@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryConverter;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -76,7 +76,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
 
     @Convert(converter = JsonBinaryConverter.class)
     @Column(columnDefinition = "jsonb")
-    private ObjectNode variables;
+    private JsonNode variables;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<NodeInstanceEntity> nodes;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
@@ -225,11 +225,11 @@ public class ProcessInstanceEntity extends AbstractEntity {
         this.slaDueDate = slaDueDate;
     }
 
-    public ObjectNode getVariables() {
+    public JsonNode getVariables() {
         return variables;
     }
 
-    public void setVariables(ObjectNode variables) {
+    public void setVariables(JsonNode variables) {
         this.variables = variables;
     }
 

@@ -21,6 +21,7 @@ package org.kie.kogito.index.model;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class NodeInstance {
 
@@ -45,6 +46,9 @@ public class NodeInstance {
     private String errorMessage;
 
     private CancelType cancelType;
+
+    private JsonNode inputArgs;
+    private JsonNode outputArgs;
 
     public Boolean isRetrigger() {
         return retrigger;
@@ -135,6 +139,22 @@ public class NodeInstance {
 
     public void setCancelType(CancelType cancelType) {
         this.cancelType = cancelType;
+    }
+
+    public JsonNode getInputArgs() {
+        return inputArgs;
+    }
+
+    public void setInputArgs(JsonNode jsonNode) {
+        this.inputArgs = jsonNode;
+    }
+
+    public JsonNode getOutputArgs() {
+        return outputArgs;
+    }
+
+    public void setOutputArgs(JsonNode outputArgs) {
+        this.outputArgs = outputArgs;
     }
 
     @Override

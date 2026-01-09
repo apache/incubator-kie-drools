@@ -24,6 +24,7 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -44,7 +45,7 @@ public final class JsonUtils {
         return objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(JsonFormat.getCloudEventJacksonModule()).findAndRegisterModules();
     }
 
-    public static ObjectNode mergeVariable(String variableName, Object variableValue, ObjectNode variables) {
+    public static ObjectNode mergeVariable(String variableName, Object variableValue, JsonNode variables) {
         return (ObjectNode) MergeUtils.merge(createObjectNode(variableName, variableValue), variables);
     }
 

@@ -23,14 +23,14 @@ import java.io.UncheckedIOException;
 
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.AttributeConverter;
 
-public class JsonBinaryConverter implements AttributeConverter<ObjectNode, String> {
+public class JsonBinaryConverter implements AttributeConverter<JsonNode, String> {
 
     @Override
-    public String convertToDatabaseColumn(ObjectNode attribute) {
+    public String convertToDatabaseColumn(JsonNode attribute) {
         try {
             return attribute == null ? null : ObjectMapperFactory.get().writeValueAsString(attribute);
         } catch (IOException e) {
@@ -39,9 +39,9 @@ public class JsonBinaryConverter implements AttributeConverter<ObjectNode, Strin
     }
 
     @Override
-    public ObjectNode convertToEntityAttribute(String dbData) {
+    public JsonNode convertToEntityAttribute(String dbData) {
         try {
-            return dbData == null ? null : ObjectMapperFactory.get().readValue(dbData, ObjectNode.class);
+            return dbData == null ? null : ObjectMapperFactory.get().readValue(dbData, JsonNode.class);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -56,7 +56,7 @@ public abstract class AbstractProcessDataIndexPostgreSqlIT extends AbstractProce
 
         await().atMost(TIMEOUT).untilAsserted(() -> given().spec(dataIndexSpec())
                 .contentType(ContentType.JSON)
-                .body("{ \"query\": \"{ ProcessInstances(where: { id: { equal: \\\"" + pId + "\\\" } }) { id variables state } }\" }")
+                .body("{ \"query\": \"{ ProcessInstances(where: { id: { equal: \\\"" + pId + "\\\" } }) { id variables state nodes {inputArgs outputArgs}} }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessInstances[0].id", containsString(pId))

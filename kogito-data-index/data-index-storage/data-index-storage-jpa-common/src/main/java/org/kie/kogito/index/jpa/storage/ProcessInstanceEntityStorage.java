@@ -50,6 +50,7 @@ import org.kie.kogito.index.model.CancelType;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.StorageServiceCapabilityProvider;
 
@@ -216,6 +217,12 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         nodeInstance.setSlaDueDate(toZonedDateTime(body.getSlaDueDate()));
         if (body.isRetrigger() != null) {
             nodeInstance.setRetrigger(body.isRetrigger());
+        }
+        if (body.getInputParameters() != null) {
+            nodeInstance.setInputArgs(JsonObjectUtils.fromValue(body.getInputParameters()));
+        }
+        if (body.getOutputParameters() != null) {
+            nodeInstance.setOutputArgs(JsonObjectUtils.fromValue(body.getOutputParameters()));
         }
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {

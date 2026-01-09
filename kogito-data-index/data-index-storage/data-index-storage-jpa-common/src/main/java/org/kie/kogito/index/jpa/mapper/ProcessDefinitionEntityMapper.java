@@ -55,7 +55,7 @@ public interface ProcessDefinitionEntityMapper {
         return entity == null || !entity.isObject() ? null : (ObjectNode) entity;
     }
 
-    default Map<String, Object> map(ObjectNode entity) {
+    default Map<String, Object> map(JsonNode entity) {
         return (Map<String, Object>) JsonObjectUtils.convertValue(entity, Map.class);
     }
 

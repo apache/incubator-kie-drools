@@ -24,8 +24,13 @@ import java.util.Objects;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.kie.kogito.index.model.CancelType;
+import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryConverter;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -57,6 +62,14 @@ public class NodeInstanceEntity extends AbstractEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "processInstanceId", foreignKey = @ForeignKey(name = "fk_nodes_process"))
     private ProcessInstanceEntity processInstance;
+
+    @Convert(converter = JsonBinaryConverter.class)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode inputArgs;
+
+    @Convert(converter = JsonBinaryConverter.class)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode outputArgs;
 
     public Boolean isRetrigger() {
         return retrigger;
@@ -153,6 +166,22 @@ public class NodeInstanceEntity extends AbstractEntity {
 
     public void setProcessInstance(ProcessInstanceEntity processInstance) {
         this.processInstance = processInstance;
+    }
+
+    public JsonNode getInputArgs() {
+        return inputArgs;
+    }
+
+    public void setInputArgs(JsonNode inputArgs) {
+        this.inputArgs = inputArgs;
+    }
+
+    public JsonNode getOutputArgs() {
+        return outputArgs;
+    }
+
+    public void setOutputArgs(JsonNode outputArgs) {
+        this.outputArgs = outputArgs;
     }
 
     @Override

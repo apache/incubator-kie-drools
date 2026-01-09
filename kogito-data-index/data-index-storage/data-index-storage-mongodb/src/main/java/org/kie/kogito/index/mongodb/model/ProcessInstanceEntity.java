@@ -310,6 +310,10 @@ public class ProcessInstanceEntity {
 
         private String errorMessage;
 
+        private Document inputArgs;
+
+        private Document outputArgs;
+
         public String getId() {
             return id;
         }
@@ -380,6 +384,22 @@ public class ProcessInstanceEntity {
 
         public void setCancelType(CancelType cancelType) {
             this.cancelType = cancelType;
+        }
+
+        public Document getInputArgs() {
+            return inputArgs;
+        }
+
+        public void setInputArgs(Document inputArgs) {
+            this.inputArgs = inputArgs;
+        }
+
+        public Document getOutputArgs() {
+            return outputArgs;
+        }
+
+        public void setOutputArgs(Document outputArgs) {
+            this.outputArgs = outputArgs;
         }
 
         @Override

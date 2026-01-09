@@ -156,6 +156,8 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setRetrigger(entity.isRetrigger());
         instance.setErrorMessage(entity.getErrorMessage());
         instance.setCancelType(entity.getCancelType());
+        instance.setInputArgs(documentToJsonNode(entity.getInputArgs()));
+        instance.setOutputArgs(documentToJsonNode(entity.getOutputArgs()));
         return instance;
     }
 
@@ -176,6 +178,8 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setRetrigger(instance.isRetrigger());
         entity.setErrorMessage(instance.getErrorMessage());
         entity.setCancelType(instance.getCancelType());
+        entity.setInputArgs(jsonNodeToDocument(instance.getInputArgs()));
+        entity.setOutputArgs(jsonNodeToDocument(instance.getOutputArgs()));
         return entity;
     }
 

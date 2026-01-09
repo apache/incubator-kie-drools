@@ -32,6 +32,7 @@ import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,12 @@ public class ProcessInstanceNodeDataEventMerger extends ProcessInstanceEventMerg
         nodeInstance.setSlaDueDate(toZonedDateTime(body.getSlaDueDate()));
         if (body.isRetrigger() != null) {
             nodeInstance.setRetrigger(body.isRetrigger());
+        }
+        if (body.getInputParameters() != null) {
+            nodeInstance.setInputArgs(JsonObjectUtils.fromValue(body.getInputParameters()));
+        }
+        if (body.getOutputParameters() != null) {
+            nodeInstance.setOutputArgs(JsonObjectUtils.fromValue(body.getOutputParameters()));
         }
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {

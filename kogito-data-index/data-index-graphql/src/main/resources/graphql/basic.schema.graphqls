@@ -160,6 +160,8 @@ type NodeInstance {
     retrigger: Boolean
     errorMessage: String
     cancelType: CancelType
+    inputArgs: JSON
+    outputArgs: JSON
 }
 
 enum CancelType {
