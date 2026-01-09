@@ -21,6 +21,8 @@ package org.kie.dmn.core.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -166,4 +168,33 @@ class DMNRuntimeEventManagerUtilsTest {
         assertThat(evaluateDecisionTableEvent.getSelected()).isNotEmpty();
         assertThat(evaluateDecisionTableEvent.getSelectedIds()).contains("_4FCA6937-8E97-4513-8D43-460E6B7D5686");
     }
+
+    @Test
+    void testThreadLocalValue() throws Exception {
+        DMNRuntimeEventManagerImpl eventManager = new DMNRuntimeEventManagerImpl();
+
+        AtomicReference<String> thread1Value = new AtomicReference<>();
+        AtomicReference<String> thread2Value = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(2);
+
+        Thread t1 = new Thread(() -> {
+            eventManager.setCurrentEvaluatingDecisionName("New Decision");
+            thread1Value.set(eventManager.getCurrentEvaluatingDecisionName());
+            latch.countDown();
+        });
+
+        Thread t2 = new Thread(() -> {
+            eventManager.setCurrentEvaluatingDecisionName("New Decision 2");
+            thread2Value.set(eventManager.getCurrentEvaluatingDecisionName());
+            latch.countDown();
+        });
+
+        t1.start();
+        t2.start();
+        latch.await();
+
+        assertThat(thread1Value.get()).isEqualTo("New Decision");
+        assertThat(thread2Value.get()).isEqualTo("New Decision 2");
+    }
+
 }
