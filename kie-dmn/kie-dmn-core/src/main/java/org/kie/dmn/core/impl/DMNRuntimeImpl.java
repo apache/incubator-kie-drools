@@ -250,6 +250,11 @@ public class DMNRuntimeImpl
         return this.eventManager.getListeners();
     }
 
+    @Override
+    public String getCurrentEvaluatingDecisionName() {
+        return this.eventManager.getCurrentEvaluatingDecisionName();
+    }
+
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResultImpl(model, context);
 
@@ -570,6 +575,7 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck,
                                      boolean strictMode) {
+        eventManager.setCurrentEvaluatingDecisionName(d.getName());
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
         String decisionId = d.getModelNamespace().equals(result.getModel().getNamespace()) ? decision.getId() :
                 decision.getModelNamespace() + "#" + decision.getId();
@@ -703,6 +709,7 @@ public class DMNRuntimeImpl
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, decision, result,
                                                                   beforeEvaluateDecisionEvent);
+            eventManager.clearCurrentEvaluatingDecisionName();
         }
     }
 

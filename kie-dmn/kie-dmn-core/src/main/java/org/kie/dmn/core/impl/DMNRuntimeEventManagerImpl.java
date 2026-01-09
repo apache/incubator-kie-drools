@@ -31,6 +31,8 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
 
     private DMNRuntime dmnRuntime;
 
+    private final ThreadLocal<String> currentEvaluatingDecisionName = new ThreadLocal<>();
+
     public DMNRuntimeEventManagerImpl() {
 
     }
@@ -66,4 +68,16 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
         return dmnRuntime;
     }
 
+    @Override
+    public String getCurrentEvaluatingDecisionName() {
+        return currentEvaluatingDecisionName.get();
+    }
+
+    void setCurrentEvaluatingDecisionName(String decisionName) {
+        currentEvaluatingDecisionName.set(decisionName);
+    }
+
+    void clearCurrentEvaluatingDecisionName() {
+        currentEvaluatingDecisionName.remove();
+    }
 }

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -81,6 +82,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
+        String decisionName = node instanceof DecisionNode ? node.getName() : eventManager.getCurrentEvaluatingDecisionName();
         try {
 
             Optional<InvalidInputEvent> potentialError = compiledNetwork.validate(evalCtx);
@@ -114,7 +116,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
                                                                        (eventResults != null ? eventResults.matchedRules : null),
                                                                        (eventResults != null ? eventResults.fired : null),
                                                                        (eventResults != null ? eventResults.matchedIds : null),
-                                                                       (eventResults != null ? eventResults.firedIds : null));
+                                                                       (eventResults != null ? eventResults.firedIds : null), decisionName);
         }
     }
 
