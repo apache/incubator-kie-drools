@@ -57,6 +57,10 @@ public interface DMNRuntimeEventManager {
 
     DMNRuntime getRuntime();
 
+    /**
+     * Returns the name of the decision that is currently being evaluated
+     * @return the name of the decision currently being evaluated
+     */
     String getCurrentEvaluatingDecisionName();
 
 }

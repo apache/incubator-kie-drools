@@ -709,6 +709,7 @@ public class DMNRuntimeImpl
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, decision, result,
                                                                   beforeEvaluateDecisionEvent);
+            eventManager.setCurrentEvaluatingDecisionName(null);
         }
     }
 

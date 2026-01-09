@@ -34,6 +34,11 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
         return null;
     }
 
+    /**
+     * Returns the name of the decision for which this decision table is being evaluated.
+     * @return the name of the decision associated with decision table
+     */
+
     String getDecisionName();
 
     List<Integer> getMatches();

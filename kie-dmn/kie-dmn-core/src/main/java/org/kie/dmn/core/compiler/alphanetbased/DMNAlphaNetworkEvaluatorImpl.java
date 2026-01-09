@@ -112,11 +112,11 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
             throw e;
         } finally {
             evalCtx.exitFrame();
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(decisionName, eventManager, node.getName(), decisionTableName, decisionTableId, dmnResult,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, decisionTableId, dmnResult,
                                                                        (eventResults != null ? eventResults.matchedRules : null),
                                                                        (eventResults != null ? eventResults.fired : null),
                                                                        (eventResults != null ? eventResults.matchedIds : null),
-                                                                       (eventResults != null ? eventResults.firedIds : null));
+                                                                       (eventResults != null ? eventResults.firedIds : null), decisionName);
         }
     }
 

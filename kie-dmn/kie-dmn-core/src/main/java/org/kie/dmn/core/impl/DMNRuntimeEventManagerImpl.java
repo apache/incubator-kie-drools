@@ -73,7 +73,7 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
         return currentEvaluatingDecisionName;
     }
 
-    public void setCurrentEvaluatingDecisionName(String decisionName) {
+    void setCurrentEvaluatingDecisionName(String decisionName) {
         this.currentEvaluatingDecisionName = decisionName;
     }
 }

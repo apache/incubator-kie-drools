@@ -105,11 +105,11 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(decisionName, dmrem, node.getName(), dt.getName(), dtNodeId, result,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(dmrem, node.getName(), dt.getName(), dtNodeId, result,
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),
-                                                                        (r != null ? r.firedIds : null));
+                                                                        (r != null ? r.firedIds : null), decisionName);
         }
     }
 

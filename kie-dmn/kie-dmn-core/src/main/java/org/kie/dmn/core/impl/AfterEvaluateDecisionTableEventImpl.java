@@ -95,7 +95,7 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ nodeName='"+ nodeName +"' decisionTableName='" + decisionTableName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
+        return "AfterEvaluateDecisionTableEvent{ nodeName='"+ nodeName +"' decisionTableName='" + decisionTableName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " decisionName='" + decisionName + "' }";
     }
 
 }
