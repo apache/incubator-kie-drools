@@ -709,7 +709,7 @@ public class DMNRuntimeImpl
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, decision, result,
                                                                   beforeEvaluateDecisionEvent);
-            eventManager.setCurrentEvaluatingDecisionName(null);
+            eventManager.clearCurrentEvaluatingDecisionName();
         }
     }
 
@@ -854,5 +854,4 @@ public class DMNRuntimeImpl
     public DMNRuntimeKB getRuntimeKB() {
         return runtimeKB;
     }
-
 }
