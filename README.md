@@ -39,7 +39,7 @@
 **GitHub Issues:** https://github.com/apache/incubator-kie-issues/issues
 
 ## Requirements
-- [Maven](https://maven.apache.org/) 3.9.6 or later
+- [Maven](https://maven.apache.org/) 3.9.11 or later
 - [Java](https://openjdk.java.net/install/) 17 or later (devel package)
 - optional: Docker installation for running integration tests
 

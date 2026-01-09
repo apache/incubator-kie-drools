@@ -153,7 +153,7 @@
     <version.org.reflections>0.10.2</version.org.reflections>
     <version.org.slf4j>2.0.6</version.org.slf4j>
 
-    <version.maven>3.9.6</version.maven>
+    <version.maven>3.9.11</version.maven>
     <version.maven.project>2.2.1</version.maven.project>
     <version.maven.plugin>3.7.1</version.maven.plugin>
     <version.maven.invoker>3.2.0</version.maven.invoker>
