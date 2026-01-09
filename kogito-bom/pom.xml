@@ -2454,6 +2454,28 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-grpc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-grpc</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-grpc-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-addons-quarkus-grpc-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-serverless-workflow-executor-grpc</artifactId>
         <version>${project.version}</version>

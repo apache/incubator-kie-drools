@@ -26,11 +26,11 @@ import io.quarkus.bootstrap.prebuild.CodeGenException;
 import io.quarkus.deployment.CodeGenContext;
 import io.quarkus.deployment.CodeGenProvider;
 
-abstract class LiveReloadableCodeGenProviderBase<T extends CodeGenProvider> implements LiveReloadableCodeGenProvider {
+public abstract class LiveReloadableCodeGenProviderBase<T extends CodeGenProvider> implements LiveReloadableCodeGenProvider {
 
     private final T delegate;
 
-    LiveReloadableCodeGenProviderBase(T delegate) {
+    public LiveReloadableCodeGenProviderBase(T delegate) {
         this.delegate = delegate;
     }
 

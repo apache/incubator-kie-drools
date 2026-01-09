@@ -16,18 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.config;
+package org.kie.kogito.serverless.workflow.config;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.runtime.annotations.ConfigPhase;
+import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
-@ConfigGroup
-public interface KogitoRPCRuntimeConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "kogito.grpc")
+public interface KogitoServerlessRPCWorkflowRuntimeConfig {
 
     /**
      * Indicates if default value of enumerations should be included in grpc response
-     * 
+     *
      */
     @WithName("enum.includeDefault")
     @WithDefault("false")
@@ -35,7 +38,7 @@ public interface KogitoRPCRuntimeConfig {
 
     /**
      * Time to wait for response from server when using streams
-     * 
+     *
      */
     @WithName("stream.timeout")
     @WithDefault("20")

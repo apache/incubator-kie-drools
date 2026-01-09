@@ -18,14 +18,23 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment.livereload;
 
-import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiGeneratorStreamCodeGen;
+import java.nio.file.Path;
+
+import org.eclipse.microprofile.config.Config;
+
+import io.quarkus.bootstrap.prebuild.CodeGenException;
+import io.quarkus.deployment.CodeGenContext;
 
 /**
- * Wrapper for {@link OpenApiGeneratorStreamCodeGen} that implements the {@link LiveReloadableCodeGenProvider} Service Provider Interface.
+ * Service Provider Interface for {@link io.quarkus.deployment.CodeGenProvider} objects that need to be invoked on live reloads.
  */
-public class LiveReloadableOpenApiGeneratorStreamCodeGen extends LiveReloadableCodeGenProviderBase<OpenApiGeneratorStreamCodeGen> {
+public interface LiveReloadableCodeGenProvider {
 
-    public LiveReloadableOpenApiGeneratorStreamCodeGen() {
-        super(new OpenApiGeneratorStreamCodeGen());
-    }
+    boolean trigger(CodeGenContext context) throws CodeGenException;
+
+    String providerId();
+
+    String inputDirectory();
+
+    boolean shouldRun(Path sourceDir, Config config);
 }

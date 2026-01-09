@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.ServiceLoader.Provider;
-import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -51,7 +50,6 @@ import org.kie.kogito.quarkus.common.deployment.LiveReloadExecutionBuildItem;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
-import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
 import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
@@ -79,7 +77,7 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
     // Injecting Instance<WorkflowOpenApiHandlerGenerator> does not work here
 
     private static Collection<WorkflowHandlerGenerator> generators =
-            Stream.concat(Stream.of(WorkflowRPCHandlerGenerator.instance), ServiceLoader.load(WorkflowHandlerGenerator.class).stream().map(Provider::get)).toList();
+            ServiceLoader.load(WorkflowHandlerGenerator.class).stream().map(Provider::get).toList();
 
     @BuildStep
     @Override

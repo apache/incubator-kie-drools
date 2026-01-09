@@ -55,9 +55,6 @@ public class WorkflowRPCHandlerGenerator implements WorkflowHandlerGenerator {
 
     public static final WorkflowRPCHandlerGenerator instance = new WorkflowRPCHandlerGenerator();
 
-    private WorkflowRPCHandlerGenerator() {
-    }
-
     private WorkflowHandlerGeneratedFile generateHandler(KogitoBuildContext context, String serviceName) {
         final String packageName = context.getPackageName();
         final String className = RPCWorkflowUtils.getRPCClassName(serviceName);

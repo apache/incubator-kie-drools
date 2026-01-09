@@ -16,25 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.deployment.livereload;
+package org.kie.kogito.quarkus.serverless.workflow.rpc;
 
-import java.nio.file.Path;
-
-import org.eclipse.microprofile.config.Config;
-
-import io.quarkus.bootstrap.prebuild.CodeGenException;
-import io.quarkus.deployment.CodeGenContext;
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProvider;
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProviderBase;
 
 /**
- * Service Provider Interface for {@link io.quarkus.deployment.CodeGenProvider} objects that need to be invoked on live reloads.
+ * Wrapper for {@link WorkflowRPCCodeGenProvider} that implements the {@link LiveReloadableCodeGenProvider} Service Provider Interface.
  */
-interface LiveReloadableCodeGenProvider {
+public class LiveReloadableWorkflowRPCCodeGenProvider extends LiveReloadableCodeGenProviderBase<WorkflowRPCCodeGenProvider> {
 
-    boolean trigger(CodeGenContext context) throws CodeGenException;
-
-    String providerId();
-
-    String inputDirectory();
-
-    boolean shouldRun(Path sourceDir, Config config);
+    public LiveReloadableWorkflowRPCCodeGenProvider() {
+        super(new WorkflowRPCCodeGenProvider());
+    }
 }

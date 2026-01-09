@@ -16,21 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.config;
+package org.kie.kogito.quarkus.serverless.workflow.openapi;
 
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithName;
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProvider;
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProviderBase;
 
-@ConfigRoot(phase = ConfigPhase.RUN_TIME)
-@ConfigMapping(prefix = "kogito")
-public interface KogitoServerlessWorkflowRuntimeConfig {
+import io.quarkiverse.openapi.generator.deployment.codegen.OpenApiGeneratorStreamCodeGen;
 
-    /**
-     * grpc runtime configuration
-     */
-    @WithName("grpc")
-    KogitoRPCRuntimeConfig grpcConfig();
+/**
+ * Wrapper for {@link OpenApiGeneratorStreamCodeGen} that implements the {@link LiveReloadableCodeGenProvider} Service Provider Interface.
+ */
+public class LiveReloadableOpenApiGeneratorStreamCodeGen extends LiveReloadableCodeGenProviderBase<OpenApiGeneratorStreamCodeGen> {
 
+    public LiveReloadableOpenApiGeneratorStreamCodeGen() {
+        super(new OpenApiGeneratorStreamCodeGen());
+    }
 }

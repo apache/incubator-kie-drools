@@ -65,6 +65,7 @@
     <module>token-exchange</module>
     <module>process-instance-migration</module>
     <module>openapi</module>
+    <module>grpc</module>
   </modules>
 
   <profiles>
