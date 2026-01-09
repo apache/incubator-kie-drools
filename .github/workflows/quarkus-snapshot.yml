@@ -37,8 +37,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ 11 ]
-        maven-version: [ '3.8.7' ]
+        java-version: [ 17 ]
+        maven-version: [ '3.9.11' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     if: github.actor == 'quarkusbot'
