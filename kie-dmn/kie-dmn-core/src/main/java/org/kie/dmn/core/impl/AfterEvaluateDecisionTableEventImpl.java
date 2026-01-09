@@ -85,7 +85,7 @@ public class AfterEvaluateDecisionTableEventImpl
     }
 
     @Override
-    public List<String> getSelectedIds() {return firedIds == null ? Collections.emptyList() : firedIds;
+    public List<String> getSelectedIds() { return firedIds == null ? Collections.emptyList() : firedIds;
     }
 
     @Override

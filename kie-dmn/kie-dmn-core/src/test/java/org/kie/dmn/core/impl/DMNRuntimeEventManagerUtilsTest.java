@@ -19,10 +19,14 @@
 package org.kie.dmn.core.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -172,29 +176,26 @@ class DMNRuntimeEventManagerUtilsTest {
     @Test
     void testThreadLocalValue() throws Exception {
         DMNRuntimeEventManagerImpl eventManager = new DMNRuntimeEventManagerImpl();
+        int elements = 6;
+        Set<Thread> threads = new HashSet<>();
+        Map<Integer, AtomicReference<String>> mappedThreadValues = new HashMap<>();
+        CountDownLatch latch = new CountDownLatch(elements);
 
-        AtomicReference<String> thread1Value = new AtomicReference<>();
-        AtomicReference<String> thread2Value = new AtomicReference<>();
-        CountDownLatch latch = new CountDownLatch(2);
-
-        Thread t1 = new Thread(() -> {
-            eventManager.setCurrentEvaluatingDecisionName("New Decision");
-            thread1Value.set(eventManager.getCurrentEvaluatingDecisionName());
-            latch.countDown();
+        IntStream.range(0, elements).forEach(i -> {
+            AtomicReference<String> threadValue = new AtomicReference<>();
+            Thread thread = new Thread(() -> {
+                eventManager.setCurrentEvaluatingDecisionName("New Decision " + i);
+                threadValue.set(eventManager.getCurrentEvaluatingDecisionName());
+                latch.countDown();
+            });
+            mappedThreadValues.put(i, threadValue);
+            threads.add(thread);
         });
 
-        Thread t2 = new Thread(() -> {
-            eventManager.setCurrentEvaluatingDecisionName("New Decision 2");
-            thread2Value.set(eventManager.getCurrentEvaluatingDecisionName());
-            latch.countDown();
-        });
-
-        t1.start();
-        t2.start();
+        threads.forEach(Thread::start);
         latch.await();
 
-        assertThat(thread1Value.get()).isEqualTo("New Decision");
-        assertThat(thread2Value.get()).isEqualTo("New Decision 2");
+        mappedThreadValues.forEach((i, threadValue) -> assertThat(threadValue.get()).isEqualTo("New Decision " + i));
     }
 
 }
