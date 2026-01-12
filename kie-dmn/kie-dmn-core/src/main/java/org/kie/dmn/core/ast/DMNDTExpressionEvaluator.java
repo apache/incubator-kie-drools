@@ -74,7 +74,6 @@ public class DMNDTExpressionEvaluator
 
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
-        String decisionName = node instanceof DecisionNode ? node.getName() : dmrem.getCurrentEvaluatingDecisionName();
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).toList();
@@ -108,7 +107,7 @@ public class DMNDTExpressionEvaluator
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),
-                                                                        (r != null ? r.firedIds : null), decisionName);
+                                                                        (r != null ? r.firedIds : null), dmrem.getCurrentEvaluatingDecisionName());
         }
     }
 

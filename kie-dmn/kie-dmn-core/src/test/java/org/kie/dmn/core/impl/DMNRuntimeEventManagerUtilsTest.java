@@ -186,6 +186,8 @@ class DMNRuntimeEventManagerUtilsTest {
             Thread thread = new Thread(() -> {
                 eventManager.setCurrentEvaluatingDecisionName("New Decision " + i);
                 threadValue.set(eventManager.getCurrentEvaluatingDecisionName());
+                eventManager.clearCurrentEvaluatingDecisionName();
+                assertThat(eventManager.getCurrentEvaluatingDecisionName()).isNull();
                 latch.countDown();
             });
             mappedThreadValues.put(i, threadValue);
