@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.kie.kogito.addons.quarkus.token.exchange.utils.CacheUtils;
 import org.kie.kogito.addons.quarkus.token.exchange.utils.ConfigReaderUtils;
+import org.kie.kogito.services.context.ProcessInstanceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class TokenPolicyManager {
      * Creates an expiry policy that uses each token's actual expiration time
      */
     public static Expiry<String, CachedTokens> createTokenExpiryPolicy() {
-        return new Expiry<String, CachedTokens>() {
+        return new Expiry<>() {
             @Override
             public long expireAfterCreate(String key, CachedTokens value, long currentTime) {
                 return calculateTimeToExpiration(key, value);
@@ -55,25 +56,34 @@ public class TokenPolicyManager {
     }
 
     /**
-     * Calculate time to expiration based on token's actual expiration time minus proactive refresh buffer
+     * Calculate time to expiration based on token's actual expiration time minus proactive refresh buffer.
+     * This method sets the process instance context from the cache key for proper logging.
      */
     private static long calculateTimeToExpiration(String cacheKey, CachedTokens tokens) {
-        String authName = CacheUtils.extractAuthNameFromCacheKey(cacheKey);
-        long proactiveRefreshSeconds = Math.max(0, ConfigReaderUtils.getProactiveRefreshSeconds(authName));
+        // Extract process instance ID from cache key and set context for logging
+        ProcessInstanceContext.setProcessInstanceId(CacheUtils.extractProcessInstanceIdFromCacheKey(cacheKey));
 
-        long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-        long tokenExpirationSeconds = tokens.expirationTime();
+        try {
+            String authName = CacheUtils.extractAuthNameFromCacheKey(cacheKey);
+            long proactiveRefreshSeconds = Math.max(0, ConfigReaderUtils.getProactiveRefreshSeconds(authName));
 
-        // Schedule refresh proactiveRefreshSeconds before actual expiration
-        long refreshTimeSeconds = tokenExpirationSeconds - proactiveRefreshSeconds;
-        long timeToRefreshSeconds = Math.max(0, refreshTimeSeconds - currentTimeSeconds);
+            long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+            long tokenExpirationSeconds = tokens.expirationTime();
 
-        // Convert to nanoseconds for Caffeine
-        long timeToRefreshNanos = TimeUnit.SECONDS.toNanos(timeToRefreshSeconds);
+            // Schedule refresh proactiveRefreshSeconds before actual expiration
+            long refreshTimeSeconds = tokenExpirationSeconds - proactiveRefreshSeconds;
+            long timeToRefreshSeconds = Math.max(0, refreshTimeSeconds - currentTimeSeconds);
 
-        LOGGER.info("Token for key '{}' will be refreshed in {} seconds (expires at {}, refresh buffer {} seconds)",
-                cacheKey, timeToRefreshSeconds, tokenExpirationSeconds, proactiveRefreshSeconds);
+            // Convert to nanoseconds for Caffeine
+            long timeToRefreshNanos = TimeUnit.SECONDS.toNanos(timeToRefreshSeconds);
 
-        return timeToRefreshNanos;
+            LOGGER.info("Token for key '{}' will be refreshed in {} seconds (expires at {}, refresh buffer {} seconds, currentTimeSeconds: {})",
+                    cacheKey, timeToRefreshSeconds, tokenExpirationSeconds, proactiveRefreshSeconds, java.time.Instant.now().getEpochSecond());
+
+            return timeToRefreshNanos;
+        } finally {
+            // Reset to general context after logging
+            ProcessInstanceContext.clear();
+        }
     }
 }

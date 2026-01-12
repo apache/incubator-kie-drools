@@ -73,6 +73,7 @@ import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
+import org.kie.kogito.process.impl.lock.ContextAwareProcessInstanceLockStrategy;
 import org.kie.kogito.process.impl.lock.ProcessInstanceAtomicLockStrategy;
 import org.kie.kogito.process.impl.lock.ProcessInstanceLockStrategy;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
@@ -122,7 +123,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.process = process;
         this.rt = (InternalProcessRuntime) rt;
         this.variables = variables;
-        this.processInstanceLockStrategy = ProcessInstanceAtomicLockStrategy.instance();
+        this.processInstanceLockStrategy = new ContextAwareProcessInstanceLockStrategy(ProcessInstanceAtomicLockStrategy.instance());
         setCorrelationKey(businessKey);
         Map<String, Object> map = bind(variables);
 
@@ -160,7 +161,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.process = process;
         this.rt = (InternalProcessRuntime) rt;
         this.variables = variables;
-        this.processInstanceLockStrategy = ProcessInstanceAtomicLockStrategy.instance();
+        this.processInstanceLockStrategy = new ContextAwareProcessInstanceLockStrategy(ProcessInstanceAtomicLockStrategy.instance());
 
         syncWorkflowInstanceState((WorkflowProcessInstance) wpi);
     }
@@ -225,7 +226,33 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
         getProcessRuntime().getProcessInstanceManager().setLock(((MutableProcessInstances<T>) process.instances()).lock());
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
+
+        restoreProcessInstanceContext();
+
         processInstance.reconnect();
+    }
+
+    private void restoreProcessInstanceContext() {
+        Map<String, List<String>> headers = processInstance.getHeaders();
+        if (headers != null && !headers.isEmpty()) {
+            Map<String, String> contextMap = convertHeadersToContextMap(headers);
+            if (!contextMap.isEmpty()) {
+                org.kie.kogito.services.context.ProcessInstanceContext.setContextFromAsync(contextMap);
+                LOG.debug("Restored process instance context for {} with {} keys", id, contextMap.size());
+            }
+        }
+    }
+
+    private Map<String, String> convertHeadersToContextMap(Map<String, List<String>> headers) {
+        Map<String, String> contextMap = new java.util.HashMap<>();
+
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                contextMap.put(entry.getKey(), entry.getValue().get(0));
+            }
+        }
+
+        return contextMap;
     }
 
     public void internalUnloadProcessInstanceState() {

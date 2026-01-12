@@ -1,0 +1,81 @@
+{
+  "id": "complexGreetSubflow",
+  "version": "1.0",
+  "name": "Complex Greeting Subflow",
+  "description": "Subflow for complex greeting with event waiting for restart testing",
+  "start": "GreetPersonSubflow",
+  "events": [
+    {
+      "name": "loudEvent",
+      "source": "",
+      "type": "loud"
+    }
+  ],
+  "functions": [
+    {
+      "name": "greetFunction",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "GreetPersonSubflow",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "greetAction",
+          "functionRef": {
+            "refName": "greetFunction",
+            "arguments": {
+              "message": "\"Subflow greeting\""
+            }
+          }
+        }
+      ],
+      "transition": "WaitForLoudEvent"
+    },
+    {
+      "name": "WaitForLoudEvent",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["loudEvent"],
+          "eventDataFilter": {
+            "data": ".data"
+          },
+          "actions": [
+            {
+              "name": "logLoudReceived",
+              "functionRef": {
+                "refName": "greetFunction",
+                "arguments": {
+                  "message": "\"Loud event received in subflow\""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "transition": "GreetPersonAfterWait"
+    },
+    {
+      "name": "GreetPersonAfterWait",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "finalGreetAction",
+          "functionRef": {
+            "refName": "greetFunction",
+            "arguments": {
+              "message": "\"Subflow completed after event\""
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": true
+      }
+    }
+  ]
+}

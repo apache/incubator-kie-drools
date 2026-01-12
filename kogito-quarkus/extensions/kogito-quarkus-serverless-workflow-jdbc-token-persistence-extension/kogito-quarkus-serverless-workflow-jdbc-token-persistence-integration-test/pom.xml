@@ -156,6 +156,11 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-token-exchange</artifactId>
     </dependency>
+    <!-- JSON logging support for process instance logging tests -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-logging-json</artifactId>
+    </dependency>
 
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>

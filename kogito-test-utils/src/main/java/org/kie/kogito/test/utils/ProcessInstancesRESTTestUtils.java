@@ -141,6 +141,31 @@ public class ProcessInstancesRESTTestUtils {
     }
 
     /**
+     * Checks if a process instance has finished by executing the getProcessById query.
+     * Returns true if the process instance returns a 404 status code (meaning it has finished),
+     * false otherwise or if an exception occurs.
+     *
+     * @param getProcessByIdQuery a query in the form /my-process/{id}.
+     * @param processInstanceId the id of the process to find.
+     * @return true if the process instance has finished (404 status), false otherwise.
+     */
+    public static boolean isProcessInstanceFinished(String getProcessByIdQuery, String processInstanceId) {
+        try {
+            int statusCode = given()
+                    .contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .when()
+                    .get(getProcessByIdQuery, processInstanceId)
+                    .then()
+                    .extract()
+                    .statusCode();
+            return statusCode == 404;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * Asserts that a process instance has finished by executing the getProcessById query during the specified interval
      * of time. If the http status code 404 is not returned during that time the timeout condition is raised and the
      * assertion fails.

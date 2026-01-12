@@ -38,6 +38,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.internal.utils.KogitoTags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Counter.Builder;
@@ -46,9 +47,15 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 
+/**
+ * Process event listener that records metrics for process instances.
+ * Enhanced with process instance context correlation for better observability.
+ * Metrics can be correlated with logs and distributed traces via process instance ID.
+ */
 public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsProcessEventListener.class);
+    private static final String MDC_PROCESS_INSTANCE_KEY = "processInstanceId";
     private static Map<String, AtomicInteger> gaugeMap = new ConcurrentHashMap<>();
     private final String identifier;
     private final KogitoGAV gav;
@@ -134,10 +141,34 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         return millis / 1000.0;
     }
 
+    /**
+     * Gets the current process instance ID from MDC for correlation.
+     *
+     * @return the process instance ID, or null if not available
+     */
+    private String getProcessInstanceIdFromContext() {
+        return MDC.get(MDC_PROCESS_INSTANCE_KEY);
+    }
+
+    /**
+     * Logs metric correlation information for debugging and observability.
+     *
+     * @param metricName the name of the metric being recorded
+     * @param processId the process ID
+     * @param processInstanceId the process instance ID (may be null)
+     */
+    private void logMetricCorrelation(String metricName, String processId, String processInstanceId) {
+        LOGGER.debug("Metric {} for process {} instance {}",
+                metricName, processId, processInstanceId);
+    }
+
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         LOGGER.debug("After process started event: {}", event);
         final ProcessInstance processInstance = event.getProcessInstance();
+
+        logMetricCorrelation("process_started", processInstance.getProcessId(), getProcessInstanceIdFromContext());
+
         getNumberOfProcessInstancesStartedCounter(processInstance.getProcessId()).increment();
         recordRunningProcessInstance(processInstance.getProcessId());
     }
@@ -146,6 +177,9 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     public void afterProcessCompleted(ProcessCompletedEvent event) {
         LOGGER.debug("After process completed event: {}", event);
         final KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+
+        logMetricCorrelation("process_completed", processInstance.getProcessId(), getProcessInstanceIdFromContext());
+
         getRunningProcessInstancesGauge(processInstance.getProcessId()).decrementAndGet();
 
         getNumberOfProcessInstancesCompletedCounter(processInstance.getProcessId(), fromState(processInstance.getState())).increment();
@@ -153,7 +187,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         if (processInstance.getStartDate() != null) {
             final double duration = millisToSeconds(processInstance.getEndDate().getTime() - processInstance.getStartDate().getTime());
             getProcessInstancesDurationSummary(processInstance.getProcessId()).record(duration);
-            LOGGER.debug("Process Instance duration: {}s", duration);
+            LOGGER.debug("Process Instance {} duration: {}s", getProcessInstanceIdFromContext(), duration);
         }
     }
 
@@ -161,6 +195,9 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     public void onError(ErrorEvent event) {
         LOGGER.debug("After Error event: {}", event);
         final KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+
+        logMetricCorrelation("process_error", processInstance.getProcessId(), getProcessInstanceIdFromContext());
+
         getErrorCounter(processInstance.getProcessId(), processInstance.getErrorMessage()).increment();
     }
 

@@ -1,0 +1,196 @@
+{
+  "id": "token_propagation",
+  "version": "1.0",
+  "name": "Token propagation SW",
+  "description": "Executes different external services at the time it combines the different token propagation options",
+  "start": "Execution1",
+  "errors": [
+    {
+      "name": "execution_error",
+      "code": "jakarta.ws.rs.ProcessingException"
+    }
+  ],
+  "functions": [
+    {
+      "name": "executeQuery1",
+      "type": "rest",
+      "operation": "specs/token-propagation-external-service1.yaml#executeQuery1"
+    },
+    {
+      "name": "executeQuery2",
+      "type": "rest",
+      "operation": "specs/token-propagation-external-service2.yaml#executeQuery2"
+    },
+    {
+      "name": "executeQuery3",
+      "type": "rest",
+      "operation": "specs/token-propagation-external-service3.yaml#executeQuery3"
+    },
+    {
+      "name": "executeQuery4",
+      "type": "rest",
+      "operation": "specs/token-propagation-external-service4.yaml#executeQuery4"
+    },
+    {
+      "name": "executeQuery5",
+      "type": "rest",
+      "operation": "specs/token-propagation-external-service5.yaml#executeQuery5"
+    }
+  ],
+  "states": [
+    {
+      "name": "Execution1",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery1Action",
+          "functionRef": {
+            "refName": "executeQuery1",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "Execution2",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "Execution2",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery2Action",
+          "functionRef": {
+            "refName": "executeQuery2",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "Execution3",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "Execution3",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery3Action",
+          "functionRef": {
+            "refName": "executeQuery3",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "Execution4",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "Execution4",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery4Action",
+          "functionRef": {
+            "refName": "executeQuery4",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "Execution5",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "Execution5",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery5Action",
+          "sleep": {
+            "before": "PT5S"
+          },
+          "functionRef": {
+            "refName": "executeQuery5",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "ExecuteSubflow",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "ExecuteSubflow",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeSubflow",
+          "subFlowRef": "tokenPropagationSubflow",
+          "actionDataFilter": {
+            "useResults": false
+          }
+        }
+      ],
+      "transition": "End",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "EndWithError"
+        }
+      ]
+    },
+    {
+      "name": "EndWithError",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Service execution failed"
+      },
+      "transition": "End"
+    },
+    {
+      "name": "End",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Service execution successful"
+      },
+      "end": true
+    }
+  ]
+}

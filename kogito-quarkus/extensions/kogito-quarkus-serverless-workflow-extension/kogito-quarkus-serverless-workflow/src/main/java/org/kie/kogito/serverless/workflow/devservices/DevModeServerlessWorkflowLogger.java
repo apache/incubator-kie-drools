@@ -26,6 +26,7 @@ import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.kie.kogito.services.context.ProcessInstanceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,10 @@ public class DevModeServerlessWorkflowLogger extends DefaultKogitoProcessEventLi
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
-        LOGGER.info("Starting workflow '{}' ({})", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+        String processInstanceId = ((KogitoProcessInstance) event.getProcessInstance()).getStringId();
+        ProcessInstanceContext.setProcessInstanceId(processInstanceId);
+        org.slf4j.MDC.put("processInstanceId", processInstanceId);
+        LOGGER.info("Starting workflow '{}' ({})", event.getProcessInstance().getProcessId(), processInstanceId);
         JsonNode node = (JsonNode) ((KogitoProcessInstance) event.getProcessInstance()).getVariables().get(SWFConstants.DEFAULT_WORKFLOW_VAR);
         if (!node.isEmpty()) {
             LOGGER.info("Workflow data \n{}", node.toPrettyString());
@@ -47,28 +51,37 @@ public class DevModeServerlessWorkflowLogger extends DefaultKogitoProcessEventLi
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         if (event.getProcessInstance().getState() != 2) {
-            LOGGER.info("Workflow '{}' ({}) was started, now '{}'", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId(),
+            String processInstanceId = ((KogitoProcessInstance) event.getProcessInstance()).getStringId();
+            ProcessInstanceContext.setProcessInstanceId(processInstanceId);
+            LOGGER.info("Workflow '{}' ({}) was started, now '{}'", event.getProcessInstance().getProcessId(), processInstanceId,
                     ProcessMeta.fromState(event.getProcessInstance().getState()));
         }
     }
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
-        LOGGER.info("Workflow '{}' ({}) completed", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+        String processInstanceId = ((KogitoProcessInstance) event.getProcessInstance()).getStringId();
+        ProcessInstanceContext.setProcessInstanceId(processInstanceId);
+        LOGGER.info("Workflow '{}' ({}) completed", event.getProcessInstance().getProcessId(), processInstanceId);
+        // Clear context after process completion to avoid leaking to other processes
+        ProcessInstanceContext.clear();
     }
 
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         String nodeName = event.getNodeInstance().getNodeName();
         if (!"EmbeddedStart".equals(nodeName) && !"EmbeddedEnd".equals(nodeName) && !"Script".equals(nodeName)) {
-            LOGGER.info("Triggered node '{}' for process '{}' ({})", nodeName, event.getProcessInstance().getProcessId(),
-                    ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+            String processInstanceId = ((KogitoProcessInstance) event.getProcessInstance()).getStringId();
+            ProcessInstanceContext.setProcessInstanceId(processInstanceId);
+            LOGGER.info("Triggered node '{}' for process '{}' ({})", nodeName, event.getProcessInstance().getProcessId(), processInstanceId);
         }
     }
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         if (event.getVariableId().startsWith(SWFConstants.DEFAULT_WORKFLOW_VAR) && event.getNewValue() instanceof JsonNode) {
+            String processInstanceId = ((KogitoProcessInstance) event.getProcessInstance()).getStringId();
+            ProcessInstanceContext.setProcessInstanceId(processInstanceId);
             if (event.getVariableId().length() == SWFConstants.DEFAULT_WORKFLOW_VAR.length()) {
                 if (event.getOldValue() != null) {
                     LOGGER.info("Workflow data change\n{}", ((JsonNode) event.getNewValue()).toPrettyString());

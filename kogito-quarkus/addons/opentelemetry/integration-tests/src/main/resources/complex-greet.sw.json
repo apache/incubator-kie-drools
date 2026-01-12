@@ -1,0 +1,113 @@
+{
+  "id": "complexGreet",
+  "version": "1.0",
+  "name": "Complex Greeting workflow with events",
+  "description": "Workflow with subflow invocation and event waiting for restart testing",
+  "start": "ChooseOnLanguage",
+  "events": [
+    {
+      "name": "quietEvent",
+      "source": "",
+      "type": "quiet"
+    }
+  ],
+  "functions": [
+    {
+      "name": "greetFunction",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "ChooseOnLanguage",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": ".language == \"English\"",
+          "transition": "GreetInEnglish"
+        },
+        {
+          "condition": ".language == \"Spanish\"",
+          "transition": "GreetInSpanish"
+        }
+      ],
+      "defaultCondition": {
+        "transition": "GreetInEnglish"
+      }
+    },
+    {
+      "name": "GreetInEnglish",
+      "type": "inject",
+      "data": {
+        "greeting": "Hello from Complex Workflow"
+      },
+      "transition": "ExecuteSubflow"
+    },
+    {
+      "name": "GreetInSpanish",
+      "type": "inject",
+      "data": {
+        "greeting": "Saludos desde Complex Workflow"
+      },
+      "transition": "ExecuteSubflow"
+    },
+    {
+      "name": "ExecuteSubflow",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "invokeSubflow",
+          "subFlowRef": "complexGreetSubflow",
+          "actionDataFilter": {
+            "useResults": false
+          },
+          "sleep": {
+            "before": "PT5S"
+          }
+        }
+      ],
+      "transition": "WaitForQuietEvent"
+    },
+    {
+      "name": "WaitForQuietEvent",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["quietEvent"],
+          "eventDataFilter": {
+            "data": ".data"
+          },
+          "actions": [
+            {
+              "name": "logQuietReceived",
+              "functionRef": {
+                "refName": "greetFunction",
+                "arguments": {
+                  "message": "\"Quiet event received\""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "transition": "GreetPerson"
+    },
+    {
+      "name": "GreetPerson",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "finalGreet",
+          "functionRef": {
+            "refName": "greetFunction",
+            "arguments": {
+              "message": ".greeting + \" \" + .name"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

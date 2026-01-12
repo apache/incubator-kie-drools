@@ -1,0 +1,176 @@
+{
+  "id": "tokenPropagationSubflow",
+  "version": "1.0",
+  "name": "Token propagation subflow SW",
+  "description": "Executes different external services at the time it combines the different token propagation options",
+  "start": "SubflowExecution1",
+  "errors": [
+    {
+      "name": "execution_error",
+      "code": "jakarta.ws.rs.ProcessingException"
+    }
+  ],
+  "functions": [
+    {
+      "name": "executeQuery1",
+      "type": "rest",
+      "operation": "../specs/token-propagation-external-service1.yaml#executeQuery1"
+    },
+    {
+      "name": "executeQuery2",
+      "type": "rest",
+      "operation": "../specs/token-propagation-external-service2.yaml#executeQuery2"
+    },
+    {
+      "name": "executeQuery3",
+      "type": "rest",
+      "operation": "../specs/token-propagation-external-service3.yaml#executeQuery3"
+    },
+    {
+      "name": "executeQuery4",
+      "type": "rest",
+      "operation": "../specs/token-propagation-external-service4.yaml#executeQuery4"
+    },
+    {
+      "name": "executeQuery5",
+      "type": "rest",
+      "operation": "../specs/token-propagation-external-service5.yaml#executeQuery5"
+    }
+  ],
+  "states": [
+    {
+      "name": "SubflowExecution1",
+      "type": "operation",
+      "actions": [
+        {
+          "sleep": {
+            "before": "PT5S"
+          },
+          "name": "executeQuery1Action",
+          "functionRef": {
+            "refName": "executeQuery1",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "SubflowExecution2",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "SubflowEndWithError"
+        }
+      ]
+    },
+    {
+      "name": "SubflowExecution2",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery2Action",
+          "functionRef": {
+            "refName": "executeQuery2",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "SubflowExecution3",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "SubflowEndWithError"
+        }
+      ]
+    },
+    {
+      "name": "SubflowExecution3",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery3Action",
+          "functionRef": {
+            "refName": "executeQuery3",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "SubflowExecution4",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "SubflowEndWithError"
+        }
+      ]
+    },
+    {
+      "name": "SubflowExecution4",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery4Action",
+          "functionRef": {
+            "refName": "executeQuery4",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "SubflowExecution5",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "SubflowEndWithError"
+        }
+      ]
+    },
+    {
+      "name": "SubflowExecution5",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "executeQuery5Action",
+          "functionRef": {
+            "refName": "executeQuery5",
+            "arguments": {
+              "processInstanceId": "$WORKFLOW.instanceId",
+              "query": ".query"
+            }
+          }
+        }
+      ],
+      "transition": "SubflowEnd",
+      "onErrors": [
+        {
+          "errorRef": "execution_error",
+          "transition": "SubflowEndWithError"
+        }
+      ]
+    },
+    {
+      "name": "SubflowEndWithError",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Subflow Service execution failed"
+      },
+      "transition": "SubflowEnd"
+    },
+    {
+      "name": "SubflowEnd",
+      "type": "inject",
+      "data": {
+        "executionStatus": "Subflow Service execution successful"
+      },
+      "end": true
+    }
+  ]
+}
