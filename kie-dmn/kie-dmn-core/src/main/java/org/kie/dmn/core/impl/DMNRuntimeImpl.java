@@ -575,7 +575,6 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d, boolean typeCheck,
                                      boolean strictMode) {
-        eventManager.setCurrentEvaluatingDecisionName(d.getName());
         DecisionNodeImpl decision = (DecisionNodeImpl) d;
         String decisionId = d.getModelNamespace().equals(result.getModel().getNamespace()) ? decision.getId() :
                 decision.getModelNamespace() + "#" + decision.getId();
@@ -631,6 +630,7 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
+                eventManager.setCurrentEvaluatingDecisionName(d.getName());
                 EvaluatorResult er = decision.getEvaluator().evaluate(this, result);
                 // if result messages contains errors && runtime mode = strict -> stop execution and return null
                 if (strictMode && result.hasErrors()) {
