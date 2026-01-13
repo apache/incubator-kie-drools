@@ -174,7 +174,7 @@ class DMNRuntimeEventManagerUtilsTest {
     }
 
     @Test
-    void testMultipleDependantDecisions() {
+    void verifyDependentDecisionEvaluationEvents() {
         String decisionName = "Loan Pre-Qualification";
         String nodeName = "Loan Pre-Qualification";
         String dtId = "_EF7F404A-939E-4889-95D8-E4053DD1EED9";
