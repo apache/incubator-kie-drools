@@ -174,6 +174,68 @@ class DMNRuntimeEventManagerUtilsTest {
     }
 
     @Test
+    void testMultipleDependantDecisions() {
+        String decisionName = "Loan Pre-Qualification";
+        String nodeName = "Loan Pre-Qualification";
+        String dtId = "_EF7F404A-939E-4889-95D8-E4053DD1EED9";
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/Sample.dmn");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(resource))
+                .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(spiedListener);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "loan_pre_qualification");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set("Credit Score", Map.of("FICO", 700));
+
+        Map<String, Object> monthly = new HashMap<>();
+        monthly.put("Income", 121233);
+        monthly.put("Repayments", 33);
+        monthly.put("Expenses", 123);
+        monthly.put("Tax", 32);
+        monthly.put("Insurance", 55);
+        Map<String, Object> applicantData = new HashMap<>();
+        applicantData.put("Age", 32);
+        applicantData.put("Marital Status", "S");
+        applicantData.put("Employment Status", "Employed");
+        applicantData.put("Existing Customer", false);
+        applicantData.put("Monthly", monthly);
+        context.set("Applicant Data", applicantData);
+
+        Map<String, Object> requestedProduct = new HashMap<>();
+        requestedProduct.put("Type", "Special Loan");
+        requestedProduct.put("Rate", 1);
+        requestedProduct.put("Term", 2);
+        requestedProduct.put("Amount", 333);
+        context.set("Requested Product", requestedProduct);
+
+        context.set("id", "_0A185BAC-7692-45FA-B722-7C86C626BD51");
+
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.getDecisionResultByName(decisionName)).isNotNull();
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> evaluateDecisionTableEventCaptor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify(spiedListener, times(2)).afterEvaluateDecisionTable(evaluateDecisionTableEventCaptor.capture());
+
+        AfterEvaluateDecisionTableEvent evaluateDecisionTableEvent = evaluateDecisionTableEventCaptor.getAllValues().stream()
+                .filter(event -> decisionName.equals(event.getDecisionName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No event found for decision: " + decisionName));
+
+        assertThat(evaluateDecisionTableEvent).isNotNull();
+        assertThat(evaluateDecisionTableEvent.getDecisionName()).isEqualTo(decisionName);
+        assertThat(evaluateDecisionTableEvent.getNodeName()).isEqualTo(nodeName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableName()).isEqualTo(nodeName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableId()).isEqualTo(dtId);
+        assertThat(evaluateDecisionTableEvent.getSelected()).isNotEmpty();
+        assertThat(evaluateDecisionTableEvent.getSelectedIds()).contains("_C8FA33B1-AF6E-4A59-B7B9-6FDF1F495C44");
+    }
+
+    @Test
     void testThreadLocalValue() throws Exception {
         DMNRuntimeEventManagerImpl eventManager = new DMNRuntimeEventManagerImpl();
         int elements = 6;
