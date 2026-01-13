@@ -55,6 +55,10 @@
       <artifactId>sonataflow-addons-quarkus-grpc-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-asyncapi-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-rest-parser</artifactId>
     </dependency>
@@ -100,10 +104,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.asyncapi</groupId>
-      <artifactId>quarkus-asyncapi-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

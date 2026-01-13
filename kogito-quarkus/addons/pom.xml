@@ -67,6 +67,7 @@
     <module>openapi</module>
     <module>opentelemetry</module>
     <module>grpc</module>
+    <module>asyncapi</module>
   </modules>
 
   <profiles>

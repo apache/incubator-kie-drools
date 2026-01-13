@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.quarkus.serverless.workflow.deployment.livereload;
+package org.kie.kogito.quarkus.serverless.workflow.asyncapi.livereload;
+
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProvider;
+import org.kie.kogito.quarkus.serverless.workflow.deployment.livereload.LiveReloadableCodeGenProviderBase;
 
 import io.quarkiverse.asyncapi.generator.input.AsyncApiGeneratorStreamCodeGen;
 
