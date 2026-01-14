@@ -18,20 +18,20 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
+import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class UserTaskInstanceNotFoundExceptionMapper extends BaseExceptionMapper<UserTaskInstanceNotAuthorizedException> {
+public class UserTaskInstanceNotFoundExceptionMapper extends BaseExceptionMapper<UserTaskInstanceNotFoundException> {
 
     @Inject
     ExceptionsHandler exceptionsHandler;
 
     @Override
-    public Response toResponse(UserTaskInstanceNotAuthorizedException e) {
+    public Response toResponse(UserTaskInstanceNotFoundException e) {
         return exceptionsHandler.mapException(e);
     }
 }
