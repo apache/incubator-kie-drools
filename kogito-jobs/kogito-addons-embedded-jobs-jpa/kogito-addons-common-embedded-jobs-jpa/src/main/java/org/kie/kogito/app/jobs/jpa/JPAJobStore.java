@@ -67,7 +67,10 @@ public class JPAJobStore implements JobStore {
     @Override
     public void remove(JobContext jobContext, String jobId) {
         EntityManager entityManager = jobContext.getContext();
-        entityManager.createQuery("DELETE FROM JobDetailsEntity o WHERE o.id = :jobId").setParameter("jobId", jobId).executeUpdate();
+        JobDetailsEntity entity = entityManager.find(JobDetailsEntity.class, jobId);
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
     }
 
     @Override
