@@ -311,4 +311,33 @@ public class JITDMNServiceImplTest {
         assertThat(response.salienciesResponse.getSaliencies()).hasSize(1);
         assertThat(response.salienciesResponse.getSaliencies().get(0).getFeatureImportance()).hasSize(17);
     }
+
+    @Test
+    void testEvaluationHitIdsWithBKM() throws IOException {
+        final String ruleId1 = "_4FCA6937-8E97-4513-8D43-460E6B7D5686";
+        final String ruleId2 = "_1B2F0690-03E4-4BC0-82C1-D4A9F2379269";
+        String model = getModelFromIoUtils("valid_models/DMNv1_6/decisionsInBKMWithNameInput.dmn");
+
+        final Map<String, Object> context = new HashMap<>();
+        context.put("name", "2");
+        context.put("id", "_05C83B3C-2DE3-43F7-82DF-3C71433E3155");
+
+        final Map<String, Object> context2 = new HashMap<>();
+        context2.put("name", "1");
+        context2.put("id", "_8377E2EC-82E5-4475-B4E6-2B15225D7BD9");
+
+        JITDMNResult retrieved = jitdmnService.evaluateModel(model, context, false);
+        assertThat(retrieved.getMessages()).isEmpty();
+        JITDMNDecisionResult retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("New Decision 2");
+        assertThat(retrievedDecisionResult.getResult()).isEqualTo("bbb");
+        Map<String, Integer> evaluationHitIds = retrievedDecisionResult.getEvaluationHitIds();
+        assertThat(evaluationHitIds).isNotNull().containsOnlyKeys(ruleId1);
+
+        JITDMNResult retrieved2 = jitdmnService.evaluateModel(model, context2, false);
+        JITDMNDecisionResult retrievedDecisionResult2 = (JITDMNDecisionResult) retrieved2.getDecisionResultByName("New Decision");
+        assertThat(retrievedDecisionResult2.getResult()).isEqualTo("aa");
+        Map<String, Integer> evaluationHitIds2 = retrievedDecisionResult2.getEvaluationHitIds();
+        assertThat(evaluationHitIds2).isNotNull().containsOnlyKeys(ruleId2);
+    }
+
 }

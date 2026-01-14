@@ -44,7 +44,7 @@ public class JITDMNListener implements DMNRuntimeEventListener {
     @Override
     public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
         logEvent(event);
-        populateDecisionAndEvaluationHitIdMaps(event.getNodeName(), event.getSelectedIds());
+        populateDecisionAndEvaluationHitIdMaps(event.getDecisionName(), event.getSelectedIds());
     }
 
     @Override
