@@ -250,6 +250,11 @@ public class DMNRuntimeImpl
         return this.eventManager.getListeners();
     }
 
+    @Override
+    public String getCurrentEvaluatingDecisionName() {
+        return this.eventManager.getCurrentEvaluatingDecisionName();
+    }
+
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResultImpl(model, context);
 
@@ -625,6 +630,7 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
+                eventManager.setCurrentEvaluatingDecisionName(d.getName());
                 EvaluatorResult er = decision.getEvaluator().evaluate(this, result);
                 // if result messages contains errors && runtime mode = strict -> stop execution and return null
                 if (strictMode && result.hasErrors()) {
@@ -703,6 +709,7 @@ public class DMNRuntimeImpl
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, decision, result,
                                                                   beforeEvaluateDecisionEvent);
+            eventManager.clearCurrentEvaluatingDecisionName();
         }
     }
 

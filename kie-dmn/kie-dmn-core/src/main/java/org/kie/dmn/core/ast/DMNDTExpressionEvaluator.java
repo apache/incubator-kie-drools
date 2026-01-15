@@ -23,11 +23,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -76,7 +76,7 @@ public class DMNDTExpressionEvaluator
         EventResults r = null;
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
-            List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList());
+            List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).toList();
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap());
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
@@ -103,11 +103,11 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(dmrem, node.getName(), dt.getName(), dtNodeId, result,
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),
-                                                                        (r != null ? r.firedIds : null));
+                                                                        (r != null ? r.firedIds : null), dmrem.getCurrentEvaluatingDecisionName());
         }
     }
 
