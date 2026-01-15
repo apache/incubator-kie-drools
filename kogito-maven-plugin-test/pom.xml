@@ -149,7 +149,6 @@
         <version>${project.version}</version>
         <executions>
           <execution>
-            <phase>compile</phase>
             <goals>
               <goal>generateModel</goal>
             </goals>

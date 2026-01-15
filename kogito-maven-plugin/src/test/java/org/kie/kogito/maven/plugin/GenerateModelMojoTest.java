@@ -30,12 +30,10 @@ import org.kie.kogito.codegen.manager.GenerateModelHelper;
 import org.kie.kogito.codegen.manager.processes.PersistenceGenerationHelper;
 import org.kie.kogito.codegen.manager.util.CodeGenManagerUtil;
 import org.mockito.MockedStatic;
-import org.mockito.verification.VerificationMode;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @MojoTest
@@ -43,15 +41,8 @@ class GenerateModelMojoTest {
 
     @Test
     @InjectMojo(goal = "generateModel", pom = "src/test/resources/unit/generate-model/pom.xml")
-    void generateModelWithOnDemand(GenerateModelMojo mojo) {
-        commonSetup(mojo, true);
-        commonGenerateModel(mojo);
-    }
-
-    @Test
-    @InjectMojo(goal = "generateModel", pom = "src/test/resources/unit/generate-model/pom.xml")
-    void generateModelWithoutOnDemand(GenerateModelMojo mojo) {
-        commonSetup(mojo, false);
+    void generateModel(GenerateModelMojo mojo) {
+        commonSetup(mojo);
         commonGenerateModel(mojo);
     }
 
@@ -67,8 +58,7 @@ class GenerateModelMojoTest {
             builderManagerMockedStatic.verify(() -> BuilderManager.build(any(BuilderManager.BuildInfo.class)), times(1));
             codeGenManagerUtilMockedStatic.verify(() -> CodeGenManagerUtil.setSystemProperties(any()), times(1));
             generateModelHelperMockedStatic.verify(() -> GenerateModelHelper.generateModel(any(GenerateModelHelper.GenerateModelInfo.class)), times(1));
-            VerificationMode expectedGeneratedModelFiles = mojo.onDemand ? never() : times(1);
-            generateModelHelperMockedStatic.verify(() -> GenerateModelHelper.generateModelFiles(any(GenerateModelHelper.GenerateModelFilesInfo.class)), expectedGeneratedModelFiles);
+            generateModelHelperMockedStatic.verify(() -> GenerateModelHelper.generateModelFiles(any(GenerateModelHelper.GenerateModelFilesInfo.class)), times(1));
             compilerHelperMockedStatic.verify(() -> CompilerHelper.compileAndDump(any(CompilerHelper.CompileInfo.class)), times(2));
             persistenceGenerationHelperMockedStatic.verify(() -> PersistenceGenerationHelper.generatePersistenceFiles(any(),
                     any(),
@@ -78,10 +68,9 @@ class GenerateModelMojoTest {
         }
     }
 
-    private void commonSetup(GenerateModelMojo mojo, boolean onDemand) {
+    private void commonSetup(GenerateModelMojo mojo) {
         mojo.projectBuildOutputDirectory = new File(mojo.project.getModel().getBuild().getOutputDirectory());
         mojo.projectBaseDir = mojo.project.getBasedir();
         mojo.projectSourceEncoding = "UTF-8";
-        mojo.onDemand = onDemand;
     }
 }

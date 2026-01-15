@@ -18,22 +18,16 @@
  */
 package org.kie.kogito.codegen.manager.util;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
@@ -57,7 +51,6 @@ import org.slf4j.LoggerFactory;
 public class CodeGenManagerUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenManagerUtil.class);
-    public static final PathMatcher DRL_FILE_MATCHER = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
     public enum Framework {
         QUARKUS("quarkus"),
@@ -204,25 +197,6 @@ public class CodeGenManagerUtil {
             return true;
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    /**
-     * It deletes all DRL files in a given Path directory
-     */
-    public static void deleteDrlFiles(Path directory) {
-        try (final Stream<Path> drlFiles = Files.find(directory,
-                Integer.MAX_VALUE,
-                (p, f) -> DRL_FILE_MATCHER.matches(p))) {
-            drlFiles.forEach(p -> {
-                try {
-                    Files.delete(p);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error during .drl files deletion", e);
         }
     }
 }

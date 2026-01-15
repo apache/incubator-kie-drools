@@ -75,11 +75,8 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.build.sourceEncoding}")
     protected String projectSourceEncoding;
 
-    @Parameter(property = "kogito.jsonSchema.version", required = false) //TODO double check this required false
+    @Parameter(property = "kogito.jsonSchema.version")
     protected String jsonSchemaVersion;
-
-    @Parameter(property = "kogito.codegen.ondemand", defaultValue = "false")
-    protected boolean onDemand;
 
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     protected boolean keepSources;
@@ -91,11 +88,10 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     protected MavenProject mavenProject;
 
     public void buildProject() throws MojoExecutionException {
-        getLog().info("buildProject");
-        executionLog();
         try {
             Set<URI> projectFilesUris = MojoUtil.getProjectFiles(mavenProject, null);
-            BuilderManager.BuildInfo buildInfo = new BuilderManager.BuildInfo(projectFilesUris,
+            BuilderManager.BuildInfo buildInfo = new BuilderManager.BuildInfo(
+                    projectFilesUris,
                     projectBaseDir.toPath(),
                     projectBuildOutputDirectory.toPath(),
                     mavenProject.getGroupId(),
@@ -106,7 +102,6 @@ public abstract class AbstractKieMojo extends AbstractMojo {
                     jsonSchemaVersion,
                     generatePartial,
                     persistence,
-                    onDemand,
                     keepSources,
                     mavenProject.getRuntimeClasspathElements(),
                     discoverFramework(),
@@ -115,16 +110,6 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         } catch (DependencyResolutionRequiredException | IOException e) {
             throw new MojoExecutionException("Error building project", e);
         }
-    }
-
-    protected void executionLog() {
-        getLog().info("Compiler Java Version: " + mavenCompilerJavaVersion);
-        getLog().info("Compiler Source Encoding: " + projectSourceEncoding);
-        getLog().info("Project base directory: " + projectBaseDir.getAbsolutePath());
-        getLog().info("Build output directory: " + projectBuildOutputDirectory);
-        getLog().info("Partial generation is enabled: " + generatePartial);
-        getLog().info("Json schema version: " + jsonSchemaVersion);
-        getLog().info("===================================");
     }
 
     CodeGenManagerUtil.Framework discoverFramework() {

@@ -57,7 +57,6 @@ public class BuilderManager {
             String jsonSchemaVersion,
             boolean generatePartial,
             boolean enablePersistence,
-            boolean onDemand,
             boolean keepSources,
             List<String> runtimeClassPathElements,
             CodeGenManagerUtil.Framework framework,
@@ -65,6 +64,7 @@ public class BuilderManager {
     }
 
     public static void build(BuildInfo buildInfo) throws MalformedURLException {
+        executeConfigurationLog(buildInfo);
         LOGGER.info("Building project: {}:{}:{}", buildInfo.projectGroupId(), buildInfo.projectArtifactId(), buildInfo.projectVersion());
         CodeGenManagerUtil.setSystemProperties(buildInfo.properties());
         ClassLoader projectClassLoader = CodeGenManagerUtil.projectClassLoader(buildInfo.projectFilesUris());
@@ -76,6 +76,21 @@ public class BuilderManager {
         LOGGER.info("Project build done");
     }
 
+    static void executeConfigurationLog(BuildInfo buildInfo) {
+        LOGGER.info("========================================");
+        LOGGER.info("  Kogito Code Generation Configuration");
+        LOGGER.info("========================================");
+        LOGGER.info("  Java Version        : {}", buildInfo.javaVersion());
+        LOGGER.info("  Source Encoding     : {}", buildInfo.javaSourceEncoding());
+        LOGGER.info("  Base Directory      : {}", buildInfo.projectBaseAbsolutePath());
+        LOGGER.info("  Output Directory    : {}", buildInfo.outputDirectory());
+        LOGGER.info("  JSON Schema Version : {}", buildInfo.jsonSchemaVersion() != null ? buildInfo.jsonSchemaVersion() : "nd");
+        LOGGER.info("  Persistence Enabled : {}", buildInfo.enablePersistence());
+        LOGGER.info("  Keep Sources        : {}", buildInfo.keepSources());
+        LOGGER.info("  Framework           : {}", buildInfo.framework());
+        LOGGER.info("========================================");
+    }
+
     static KogitoBuildContext getKogitoBuildContext(ClassLoader projectClassLoader, KogitoGAV kogitoGAV, KogitoBuildContextInfo kogitoBuildContextInfo) {
         return CodeGenManagerUtil.discoverKogitoRuntimeContext(projectClassLoader, kogitoBuildContextInfo.projectBaseAbsolutePath(), kogitoGAV,
                 new CodeGenManagerUtil.ProjectParameters(kogitoBuildContextInfo.framework(), "", "", "", "", kogitoBuildContextInfo.enablePersistence()),
@@ -83,7 +98,7 @@ public class BuilderManager {
                     try {
                         return CodeGenManagerUtil.isClassNameInUrlClassLoader(kogitoBuildContextInfo.projectFilesUris(), className);
                     } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                 });
     }

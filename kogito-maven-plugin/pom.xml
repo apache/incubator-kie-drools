@@ -35,6 +35,7 @@
   <packaging>maven-plugin</packaging>
 
   <name>Kogito :: Maven Plugin</name>
+  <description>Maven plugin for Kogito code generation from DMN, BPMN, DRL, and PMML assets</description>
 
   <properties>
     <java.module.name>org.kie.kogito.maven.plugin</java.module.name>

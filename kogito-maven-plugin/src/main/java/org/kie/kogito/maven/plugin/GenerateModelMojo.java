@@ -25,15 +25,33 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
+/**
+ * Maven Mojo for generating Kogito model code from various asset types.
+ * <p>
+ * This goal generates Java code from Kogito assets including:
+ * <ul>
+ * <li>Business Process Models (BPMN)</li>
+ * <li>Decision Models (DMN)</li>
+ * <li>Business Rules (DRL)</li>
+ * <li>Predictive Models (PMML)</li>
+ * </ul>
+ * <p>
+ * The generated code includes process implementations, decision services, rule units,
+ * and prediction models that are required for runtime execution of Kogito applications.
+ * <p>
+ * This mojo is bound to the {@code process-classes} phase. This is required to ensure that
+ * the project's static classes written by the end user in the src directory are compiled
+ * prior to code generation.
+ * 
+ */
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
-        defaultPhase = LifecyclePhase.COMPILE,
+        defaultPhase = LifecyclePhase.PROCESS_CLASSES,
         threadSafe = true)
 public class GenerateModelMojo extends AbstractKieMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        getLog().info("execute");
         buildProject();
     }
 }

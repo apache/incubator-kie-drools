@@ -45,7 +45,6 @@ In your Kogito project root `pom.xml` file, add the following plugin declaration
     <version>${version.org.kie.kogito}</version>
     <executions>
         <execution>
-            <phase>compile</phase>
             <goals>
               <goal>generateModel</goal>
             </goals>
