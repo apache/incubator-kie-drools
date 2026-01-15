@@ -118,6 +118,10 @@ public interface KogitoBuildContext extends DroolsModelBuildContext {
         return hasClassAvailable(KogitoCodeGenConstants.OPENAPI_SPEC_CLASS);
     }
 
+    default boolean isTransactionSupported() {
+        return hasClassAvailable(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS) || hasClassAvailable(KogitoCodeGenConstants.SPRING_TRANSACTION_MANAGER_CLASS);
+    }
+
     /**
      * Whether to ignore hidden files when collecting resources to generate code.
      * Platforms should provide a property named #IGNORE_HIDDEN_FILES_PROP.

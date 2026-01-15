@@ -26,6 +26,8 @@ public class KogitoCodeGenConstants {
 
     public static final String VALIDATION_CLASS = "jakarta.validation.constraints.NotNull";
     public static final String OPENAPI_SPEC_CLASS = "org.eclipse.microprofile.openapi.annotations.media.Schema";
+    public static final String QUARKUS_TRANSACTION_MANAGER_CLASS = "io.quarkus.narayana.jta.QuarkusTransaction";
+    public static final String SPRING_TRANSACTION_MANAGER_CLASS = "org.springframework.transaction.PlatformTransactionManager";
     /**
      * Property that controls whether Kogito Codegen should ignore hidden files. Defaults to true.
      */

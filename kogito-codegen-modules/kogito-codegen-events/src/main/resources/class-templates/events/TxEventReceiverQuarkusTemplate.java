@@ -26,6 +26,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.SystemException;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -45,13 +47,17 @@ import io.quarkus.runtime.Startup;
 @Named("Receiver-$ChannelName$")
 public class $ClassName$ extends AbstractQuarkusCloudEventReceiver<$Type$> {
 
+    @Inject
+    TransactionManager transactionManager;
+
     @Incoming("$ChannelName$")
     @Transactional
     @Blocking
-    public CompletionStage<Void> onEvent(Message<$Type$> payload) {
+    public CompletionStage<Void> onEvent(Message<$Type$> payload) throws SystemException {
         try {
             produce(payload);
         } catch (Exception ex) {
+            transactionManager.setRollbackOnly();
             return payload.nack(ex);
         }
         return payload.ack();

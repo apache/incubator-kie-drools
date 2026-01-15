@@ -27,6 +27,7 @@ import org.drools.codegen.common.rest.RestAnnotator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
 import org.kie.kogito.codegen.core.utils.CodegenUtil;
 import org.kie.kogito.codegen.process.ProcessCodegenException;
 
@@ -34,8 +35,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.mockClassAvailabilityResolver;
 import static org.kie.kogito.codegen.process.ProcessResourceGeneratorTest.*;
 
 public class UserTaskCodegenTest {
@@ -43,6 +46,8 @@ public class UserTaskCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     void testUserTaskManageTransactionalEnabledByDefault(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
         KogitoBuildContext context = contextBuilder.build();
         UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
         CompilationUnit compilationUnit = userTaskCodegen.createRestEndpointCompilationUnit();
@@ -79,6 +84,8 @@ public class UserTaskCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     void testUserTaskManageTransactionalEnabled(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
         KogitoBuildContext context = contextBuilder.build();
         UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
         context.setApplicationProperty(CodegenUtil.globalProperty(CodegenUtil.TRANSACTION_ENABLED), "true");
@@ -115,6 +122,8 @@ public class UserTaskCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     void testUserTaskFaultToleranceEnabled(KogitoBuildContext.Builder contextBuilder) {
+        contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton(KogitoCodeGenConstants.QUARKUS_TRANSACTION_MANAGER_CLASS), emptyList()));
         KogitoBuildContext context = contextBuilder.build();
         UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
         CompilationUnit compilationUnit = userTaskCodegen.createRestEndpointCompilationUnit();

@@ -81,7 +81,14 @@ public final class CodegenUtil {
         boolean propertyValue = getProperty(generator, context, TRANSACTION_ENABLED, Boolean::parseBoolean, defaultValue);
         LOG.debug("Compute property {} for generator {} property with value {}", TRANSACTION_ENABLED, generator.name(), propertyValue);
         // java implementation does not have transactions
-        return !JavaKogitoBuildContext.CONTEXT_NAME.equals(context.name()) && propertyValue;
+        if (JavaKogitoBuildContext.CONTEXT_NAME.equals(context.name())) {
+            return false;
+        }
+        if (propertyValue && !context.isTransactionSupported()) {
+            LOG.warn("Disabling Transaction because runtime support for transaction is not available.");
+            return false;
+        }
+        return context.isTransactionSupported() && propertyValue;
     }
 
     /**
