@@ -63,7 +63,10 @@ public class AppPaths {
         }
 
         public static AppPaths.BuildTool findBuildTool() {
-            return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
+            String gradleAppName = System.getProperty("org.gradle.appname");
+            String classPath = System.getProperty("java.class.path");
+            boolean isGradle = gradleAppName != null || classPath.contains("gradle");
+            return isGradle ? GRADLE : MAVEN;
         }
     }
 
