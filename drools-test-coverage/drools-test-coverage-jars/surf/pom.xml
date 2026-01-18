@@ -25,7 +25,7 @@
 
   <groupId>org.drools.testcoverage</groupId>
   <artifactId>surf</artifactId>
-  <version>2.2.999-SNAPSHOT</version>
+  <version>2.2.999-20260118-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Drools :: Test Coverage :: Jar with simple pojo</name>
