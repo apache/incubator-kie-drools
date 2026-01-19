@@ -113,6 +113,7 @@ literal
     :	STRING_LITERAL  {	helper.emit($STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
     |	DRL_STRING_LITERAL  {	helper.emit($DRL_STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
     |	DECIMAL_LITERAL {	helper.emit($DECIMAL_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |   OCT_LITERAL     {	helper.emit($OCT_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	DRL_BIG_INTEGER_LITERAL {	helper.emit($DRL_BIG_INTEGER_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	HEX_LITERAL     {	helper.emit($HEX_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	FLOAT_LITERAL   {	helper.emit($FLOAT_LITERAL, DroolsEditorType.NUMERIC_CONST);	}

@@ -196,7 +196,6 @@ public class ASTBuilderVisitor
         }
         switch (UnaryOperator.determineOperator(op)) {
             case EQ:
-                RangeNode rangeNode = ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
             case GT:
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);

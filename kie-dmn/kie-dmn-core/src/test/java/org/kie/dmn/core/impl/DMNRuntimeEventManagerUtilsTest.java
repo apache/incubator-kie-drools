@@ -19,8 +19,14 @@
 package org.kie.dmn.core.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +39,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNFactory;
@@ -44,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -72,7 +80,7 @@ class DMNRuntimeEventManagerUtilsTest {
         String executedId = "EXECUTED_ID";
         DMNRuntimeEventManagerUtils.fireAfterEvaluateConditional(eventManagerMock, evaluatorResult, executedId);
         ArgumentCaptor<AfterEvaluateConditionalEvent> evaluateConditionalEventArgumentCaptor = ArgumentCaptor.forClass(AfterEvaluateConditionalEvent.class);
-        verify(spiedListener).afterEvaluateConditional (evaluateConditionalEventArgumentCaptor.capture());
+        verify(spiedListener).afterEvaluateConditional(evaluateConditionalEventArgumentCaptor.capture());
         AfterEvaluateConditionalEvent evaluateConditionalEvent = evaluateConditionalEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
@@ -87,7 +95,7 @@ class DMNRuntimeEventManagerUtilsTest {
         String executedId = "EXECUTED_ID";
         DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, conditionalName, decisionName, evaluatorResult, executedId);
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
-        verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
+        verify(spiedListener).afterConditionalEvaluation(conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(conditionalName);
@@ -117,7 +125,7 @@ class DMNRuntimeEventManagerUtilsTest {
         assertThat(dmnResult.getDecisionResultByName(decisionName).getResult()).isEqualTo(List.of("pos"));
 
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
-        verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
+        verify(spiedListener).afterConditionalEvaluation(conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getDecisionName()).isEqualTo(decisionName);
@@ -125,4 +133,133 @@ class DMNRuntimeEventManagerUtilsTest {
         assertThat(retrieved).isNotNull();
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
+
+    @Test
+    void testEvaluateDecisionTableEvent() {
+        String decisionName = "New Decision";
+        String bkmName = "New BKM";
+        String dtId = "_46B46F91-5810-452F-B1D4-A0B0304737B1";
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_6/decisionsInBKMWithNameInput.dmn");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(resource))
+                .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(spiedListener);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_8010864B-CC05-4DB2-A6CB-B19968FD56BC";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_DE9C9FE9-DF27-43B7-917C-96765C61467F");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set("name", "2");
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.getDecisionResultByName(decisionName)).isNotNull();
+        assertThat(dmnResult.getDecisionResultByName(decisionName).getResult()).isEqualTo("bb");
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> evaluateDecisionTableEventCaptor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify(spiedListener, times(5)).afterEvaluateDecisionTable(evaluateDecisionTableEventCaptor.capture());
+        
+        AfterEvaluateDecisionTableEvent evaluateDecisionTableEvent = evaluateDecisionTableEventCaptor.getAllValues().stream()
+                .filter(event -> decisionName.equals(event.getDecisionName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No event found for decision: " + decisionName));
+
+        assertThat(evaluateDecisionTableEvent).isNotNull();
+        assertThat(evaluateDecisionTableEvent.getDecisionName()).isEqualTo(decisionName);
+        assertThat(evaluateDecisionTableEvent.getNodeName()).isEqualTo(bkmName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableName()).isEqualTo(bkmName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableId()).isEqualTo(dtId);
+        assertThat(evaluateDecisionTableEvent.getSelected()).isNotEmpty();
+        assertThat(evaluateDecisionTableEvent.getSelectedIds()).contains("_4FCA6937-8E97-4513-8D43-460E6B7D5686");
+    }
+
+    @Test
+    void verifyDependentDecisionEvaluationEvents() {
+        String decisionName = "Loan Pre-Qualification";
+        String nodeName = "Loan Pre-Qualification";
+        String dtId = "_EF7F404A-939E-4889-95D8-E4053DD1EED9";
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/Sample.dmn");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(resource))
+                .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(spiedListener);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "loan_pre_qualification");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set("Credit Score", Map.of("FICO", 700));
+
+        Map<String, Object> monthly = new HashMap<>();
+        monthly.put("Income", 121233);
+        monthly.put("Repayments", 33);
+        monthly.put("Expenses", 123);
+        monthly.put("Tax", 32);
+        monthly.put("Insurance", 55);
+        Map<String, Object> applicantData = new HashMap<>();
+        applicantData.put("Age", 32);
+        applicantData.put("Marital Status", "S");
+        applicantData.put("Employment Status", "Employed");
+        applicantData.put("Existing Customer", false);
+        applicantData.put("Monthly", monthly);
+        context.set("Applicant Data", applicantData);
+
+        Map<String, Object> requestedProduct = new HashMap<>();
+        requestedProduct.put("Type", "Special Loan");
+        requestedProduct.put("Rate", 1);
+        requestedProduct.put("Term", 2);
+        requestedProduct.put("Amount", 333);
+        context.set("Requested Product", requestedProduct);
+
+        context.set("id", "_0A185BAC-7692-45FA-B722-7C86C626BD51");
+
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.getDecisionResultByName(decisionName)).isNotNull();
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> evaluateDecisionTableEventCaptor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify(spiedListener, times(2)).afterEvaluateDecisionTable(evaluateDecisionTableEventCaptor.capture());
+
+        AfterEvaluateDecisionTableEvent evaluateDecisionTableEvent = evaluateDecisionTableEventCaptor.getAllValues().stream()
+                .filter(event -> decisionName.equals(event.getDecisionName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No event found for decision: " + decisionName));
+
+        assertThat(evaluateDecisionTableEvent).isNotNull();
+        assertThat(evaluateDecisionTableEvent.getDecisionName()).isEqualTo(decisionName);
+        assertThat(evaluateDecisionTableEvent.getNodeName()).isEqualTo(nodeName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableName()).isEqualTo(nodeName);
+        assertThat(evaluateDecisionTableEvent.getDecisionTableId()).isEqualTo(dtId);
+        assertThat(evaluateDecisionTableEvent.getSelected()).isNotEmpty();
+        assertThat(evaluateDecisionTableEvent.getSelectedIds()).contains("_C8FA33B1-AF6E-4A59-B7B9-6FDF1F495C44");
+    }
+
+    @Test
+    void testThreadLocalValue() throws Exception {
+        DMNRuntimeEventManagerImpl eventManager = new DMNRuntimeEventManagerImpl();
+        int elements = 6;
+        Set<Thread> threads = new HashSet<>();
+        Map<Integer, AtomicReference<String>> mappedThreadValues = new HashMap<>();
+        CountDownLatch latch = new CountDownLatch(elements);
+
+        IntStream.range(0, elements).forEach(i -> {
+            AtomicReference<String> threadValue = new AtomicReference<>();
+            Thread thread = new Thread(() -> {
+                eventManager.setCurrentEvaluatingDecisionName("New Decision " + i);
+                threadValue.set(eventManager.getCurrentEvaluatingDecisionName());
+                eventManager.clearCurrentEvaluatingDecisionName();
+                assertThat(eventManager.getCurrentEvaluatingDecisionName()).isNull();
+                latch.countDown();
+            });
+            mappedThreadValues.put(i, threadValue);
+            threads.add(thread);
+        });
+
+        threads.forEach(Thread::start);
+        latch.await();
+
+        mappedThreadValues.forEach((i, threadValue) -> assertThat(threadValue.get()).isEqualTo("New Decision " + i));
+    }
+
 }
