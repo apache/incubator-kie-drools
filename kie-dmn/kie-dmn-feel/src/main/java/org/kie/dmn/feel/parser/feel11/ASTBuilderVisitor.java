@@ -184,16 +184,20 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
-        UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
-        return unaryOperator.equals(UnaryOperator.EQ) ? ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED) :
-                ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
+        return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
     @Override
     public BaseNode visitPositiveUnaryTestIneqInterval(FEEL_1_1Parser.PositiveUnaryTestIneqIntervalContext ctx) {
         BaseNode value = visit(ctx.endpoint());
         String op = ctx.op.getText();
+        if (value instanceof ListNode) {
+            return ASTBuilderFactory.newUnaryTestNode(ctx, op, value);
+        }
         switch (UnaryOperator.determineOperator(op)) {
+            case EQ:
+                RangeNode rangeNode = ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
             case GT:
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
             case GTE:
