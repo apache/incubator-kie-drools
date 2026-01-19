@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -107,11 +108,11 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             LOG.debug("failed evaluate", e);
             throw new RuntimeException(e);
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(dmrem, node.getName(), node.getName(), dt.getId(), result,
                                                                         (r != null ? r.matchedRules : null),
                                                                         (r != null ? r.fired : null),
                                                                         (r != null ? r.matchedIds : null),
-                                                                        (r != null ? r.firedIds : null));
+                                                                        (r != null ? r.firedIds : null), dmrem.getCurrentEvaluatingDecisionName());
         }
     }
     

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_8010864B-CC05-4DB2-A6CB-B19968FD56BC" id="_728A50FD-CCEC-43E0-ACB1-0F2461B7FAF1" name="DMN_DE9C9FE9-DF27-43B7-917C-96765C61467F">
+  <decision name="New Decision" id="_8377E2EC-82E5-4475-B4E6-2B15225D7BD9">
+    <variable id="_B7D83BCF-2B6D-4A6B-A136-6C911CC05ABB" typeRef="string" name="New Decision" />
+    <informationRequirement id="_9FA66027-794F-41B4-9C89-BFF30CD0736C">
+      <requiredInput href="#_12359977-D958-4485-83C5-D79AF3FF8863" />
+    </informationRequirement>
+    <knowledgeRequirement id="_1315758F-AD90-4216-B54E-EC96C31329FD">
+      <requiredKnowledge href="#_93668164-47E9-4A97-AA50-67C31645D2D7" />
+    </knowledgeRequirement>
+    <literalExpression id="_71FC6055-83B3-4669-8DA6-49596A1011DD" typeRef="string" label="New Decision">
+      <text>New BKM(name) + New BKM(name)</text>
+    </literalExpression>
+  </decision>
+  <decision name="New Decision 2" id="_6A689F06-1D94-470B-B24E-702B79F1C4A9">
+    <variable name="New Decision 2" id="_0FC0CF47-B754-440D-A1E5-44F328AE9A3D" typeRef="string" />
+    <informationRequirement id="_99556EFA-7C2F-4683-8A5B-9B9B67B26994">
+      <requiredInput href="#_12359977-D958-4485-83C5-D79AF3FF8863" />
+    </informationRequirement>
+    <knowledgeRequirement id="_2D31AC83-821C-4E2E-850C-8E0E0DC6A4AC">
+      <requiredKnowledge href="#_93668164-47E9-4A97-AA50-67C31645D2D7" />
+    </knowledgeRequirement>
+    <literalExpression id="_D885169F-4023-4AAF-A4D1-E8BEA0B7D6A6" typeRef="string" label="New Decision 2">
+      <text>New BKM(name) + New BKM(name) + New BKM(name)</text>
+    </literalExpression>
+  </decision>
+  <businessKnowledgeModel name="New BKM" id="_93668164-47E9-4A97-AA50-67C31645D2D7">
+    <variable name="New BKM" id="_1C01DB54-70D6-4D54-B718-F9CA030EC396" typeRef="string" />
+    <encapsulatedLogic label="New BKM" typeRef="string" id="_8A70C3DA-7940-4384-9F8D-EA52F24838A2" kind="FEEL">
+      <formalParameter id="_8BC2757D-AE9D-46C4-9346-8152C917BED2" name="name" typeRef="string" />
+      <decisionTable id="_46B46F91-5810-452F-B1D4-A0B0304737B1" typeRef="string" hitPolicy="UNIQUE" label="Return">
+        <input id="_E833CBD2-9DA2-4CD8-9D27-E7B3482AABB2">
+          <inputExpression id="_B59142DC-D45D-41A3-AF99-1836D1F833BF" typeRef="string">
+            <text>name</text>
+          </inputExpression>
+        </input>
+        <output id="_5FF999A4-4B03-43DE-A258-EF87A27CA201" />
+        <annotation name="Annotations" />
+        <rule id="_1B2F0690-03E4-4BC0-82C1-D4A9F2379269">
+          <inputEntry id="_5EB126DB-BBEE-47EA-9F0E-E147F7CE9FEB">
+            <text>&quot;1&quot;</text>
+          </inputEntry>
+          <outputEntry id="_5136ECF6-629F-48AB-83EC-42B6AF95B1D7">
+            <text>&quot;a&quot;</text>
+          </outputEntry>
+          <annotationEntry>
+            <text></text>
+          </annotationEntry>
+        </rule>
+        <rule id="_4FCA6937-8E97-4513-8D43-460E6B7D5686">
+          <inputEntry id="_854C2344-64D1-40BC-8963-7979C31B4BEC">
+            <text>&quot;2&quot;</text>
+          </inputEntry>
+          <outputEntry id="_6026F313-1ED2-4153-99DE-1F7236E2942B">
+            <text>&quot;b&quot;</text>
+          </outputEntry>
+          <annotationEntry>
+            <text></text>
+          </annotationEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <inputData name="name" id="_12359977-D958-4485-83C5-D79AF3FF8863">
+    <variable name="name" id="_D5727689-B3DD-4E50-AB00-59E4D8EC7C74" typeRef="string" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_C41A0576-32B3-44F6-9BAA-34A8F2301FD6" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_71FC6055-83B3-4669-8DA6-49596A1011DD">
+            <kie:width>345</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_46B46F91-5810-452F-B1D4-A0B0304737B1">
+            <kie:width>60</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D885169F-4023-4AAF-A4D1-E8BEA0B7D6A6">
+            <kie:width>383</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_350D0412-78E3-45EA-83F4-EB9FEB02976E" dmnElementRef="_8377E2EC-82E5-4475-B4E6-2B15225D7BD9" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="160" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_970774E6-8C1F-4527-A94A-1BF59FEE7F66" dmnElementRef="_93668164-47E9-4A97-AA50-67C31645D2D7" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="420" y="80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_15507C8E-7792-4369-A5D3-88677AB2A297" dmnElementRef="_6A689F06-1D94-470B-B24E-702B79F1C4A9" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="160" y="160" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_CDA349BC-98B9-4B6A-9269-F40BA3C4F117" dmnElementRef="_12359977-D958-4485-83C5-D79AF3FF8863" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="560" y="320" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_97F1A8D9-FA34-4721-AD0F-5E10DF7A2330" dmnElementRef="_1315758F-AD90-4216-B54E-EC96C31329FD" sourceElement="_970774E6-8C1F-4527-A94A-1BF59FEE7F66" targetElement="_350D0412-78E3-45EA-83F4-EB9FEB02976E">
+        <di:waypoint x="500" y="120" />
+        <di:waypoint x="320" y="80" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_054F4FED-8333-453D-81F6-5B5155144BD1" dmnElementRef="_2D31AC83-821C-4E2E-850C-8E0E0DC6A4AC" sourceElement="_970774E6-8C1F-4527-A94A-1BF59FEE7F66" targetElement="_15507C8E-7792-4369-A5D3-88677AB2A297">
+        <di:waypoint x="500" y="120" />
+        <di:waypoint x="320" y="200" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_3589E9F9-C8FC-4F14-BD54-612645A3AABA" dmnElementRef="_99556EFA-7C2F-4683-8A5B-9B9B67B26994" sourceElement="_CDA349BC-98B9-4B6A-9269-F40BA3C4F117" targetElement="_15507C8E-7792-4369-A5D3-88677AB2A297">
+        <di:waypoint x="640" y="360" />
+        <di:waypoint x="240" y="240" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_61104987-502A-4BAC-934B-4B1635D5C119" dmnElementRef="_9FA66027-794F-41B4-9C89-BFF30CD0736C" sourceElement="_CDA349BC-98B9-4B6A-9269-F40BA3C4F117" targetElement="_350D0412-78E3-45EA-83F4-EB9FEB02976E">
+        <di:waypoint x="640" y="360" />
+        <di:waypoint x="320" y="80" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
