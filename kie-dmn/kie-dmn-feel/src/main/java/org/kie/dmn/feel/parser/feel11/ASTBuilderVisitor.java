@@ -191,20 +191,20 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneqInterval(FEEL_1_1Parser.PositiveUnaryTestIneqIntervalContext ctx) {
         BaseNode value = visit(ctx.endpoint());
         String op = ctx.op.getText();
-        switch (UnaryOperator.determineOperator(op)) {
-            case EQ:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
-            case GT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
-            case GTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
-            case LT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.OPEN);
-            case LTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.CLOSED);
-            default:
-                throw new UnsupportedOperationException("by the parser rule FEEL grammar rule 7.a for range syntax should not have determined the operator " + op);
-        }
+        return switch (UnaryOperator.determineOperator(op)) {
+            case EQ ->
+                    ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
+            case GT ->
+                    ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
+            case GTE ->
+                    ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
+            case LT ->
+                    ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.OPEN);
+            case LTE ->
+                    ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.CLOSED);
+            default ->
+                    throw new UnsupportedOperationException("by the parser rule FEEL grammar rule 7.a for range syntax should not have determined the operator " + op);
+        };
     }
 
     @Override
