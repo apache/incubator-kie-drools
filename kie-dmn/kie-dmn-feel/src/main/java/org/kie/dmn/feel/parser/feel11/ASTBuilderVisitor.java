@@ -184,7 +184,6 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
-        UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
         return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
