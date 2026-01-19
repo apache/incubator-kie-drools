@@ -1,0 +1,46 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+specVersion: alpha
+kind: YaRD
+name: "Traffic Violation"
+inputs:
+  - name: "Length"
+    type: integer
+  - name: "Width"
+    type: number
+  - name: "Height"
+    type: number
+  - name: "Weight"
+    type: number
+elements:
+  - name: Package
+    type: Decision
+    logic:
+      type: DecisionTable
+      # First matching result will be picked
+      hitPolicy: FIRST
+      inputs: [ "Height", "Width", "Length", "Weight" ]
+      rules:
+        - when: [ '<= 3', '<= 25','<= 35', '<= 2' ]
+          then: '{ "Size": "S", "Cost": 5.90 }'
+        - when: [ '<= 11','<= 32','<= 42', '<=25' ]
+          then: '{ "Size": "M", "Cost": 6.90 }'
+        - when: [ '<= 19', '<= 36', '<= 60', '<= 25' ]
+          then: '{ "Size": "L", "Cost": 8.90 }'
+        - when: [ '<= 37', '<= 36', '<= 60', '<= 25' ]
+          then: '{ "Size": "XL", "Cost": 10.90}'

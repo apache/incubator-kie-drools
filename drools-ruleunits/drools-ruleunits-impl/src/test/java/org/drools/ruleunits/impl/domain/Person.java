@@ -18,11 +18,16 @@
  */
 package org.drools.ruleunits.impl.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Person {
 
     private String name;
 
     private int age;
+
+    private List<Address> addresses = new ArrayList<>();
 
     public Person(String name, int age) {
         this.name = name;
@@ -43,5 +48,13 @@ public class Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }

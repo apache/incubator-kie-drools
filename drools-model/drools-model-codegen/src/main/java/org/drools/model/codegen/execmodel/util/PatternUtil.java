@@ -70,7 +70,7 @@ public class PatternUtil {
             return queryParameter.get().getType().getCanonicalName();
         }
 
-        Class<?> ruleUnitVarType = context.getRuleUnitVarType(firstPart.getField());
+        Class<?> ruleUnitVarType = context.getTypeFromRuleUnitVarsAndScopedDeclarations(firstPart.getField());
         if (ruleUnitVarType == null) {
             throw new IllegalArgumentException("Unknown declaration: " + firstPart.getField());
         }

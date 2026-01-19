@@ -101,16 +101,15 @@ public class ReteooRuleBuilder implements RuleBuilder {
     /**
      * Creates the corresponting Rete network for the given <code>Rule</code> and adds it to
      * the given rule base.
-     * 
-     * @param rule
-     *            The rule to add.
      * @param kBase
      *            The rulebase to add the rule to.
-     *            
+     * @param rule
+     *            The rule to add.
+     * 
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule(RuleImpl rule, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) throws InvalidPatternException {
+    public List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule) throws InvalidPatternException {
 
         // the list of terminal nodes
         final List<TerminalNode> termNodes = new ArrayList<>();
@@ -217,9 +216,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context, terminalNode);
 
-        if (!PhreakBuilder.isEagerSegmentCreation() || context.getRuleBase().hasSegmentPrototypes()) {
+        if (!PhreakBuilder.isEagerSegmentCreation() || context.getRuleBase().getSegmentPrototypeRegistry().hasSegmentPrototypes()) {
             // only need to process this, if segment protos exist
-            PhreakBuilder.get().addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase());
+            PhreakBuilder.get().addRule(context.getRuleBase(), context.getWorkingMemories(), terminalNode);
         }
     }
 
@@ -256,7 +255,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
                           pattern );
     }
 
-    public void addEntryPoint(final String id, final InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) {
+    public void addEntryPoint(final InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, final String id) {
         // creates a clean build context for each subrule
         final BuildContext context = new BuildContext( kBase, workingMemories );
         EntryPointId ep = new EntryPointId( id );
@@ -264,7 +263,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         builder.build(context, utils, ep);
     }
 
-    public WindowNode addWindowNode(WindowDeclaration window, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories) {
+    public WindowNode addWindowNode(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, WindowDeclaration window) {
 
         // creates a clean build context for each subrule
         BuildContext context = new BuildContext( kBase, workingMemories );

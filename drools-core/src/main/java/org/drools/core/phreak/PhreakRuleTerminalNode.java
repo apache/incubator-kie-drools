@@ -44,10 +44,17 @@ import org.kie.api.event.rule.MatchCancelledCause;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakRuleTerminalNode {
-    public void doNode(TerminalNode rtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       RuleExecutor executor) {
+
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
+                       TerminalNode rtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(activationsManager, srcLeftTuples, executor);
         }
@@ -76,7 +83,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(reteEvaluator, rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -92,10 +99,12 @@ public class PhreakRuleTerminalNode {
         return rule1.getName().equals(rule2.getName()) && rule1.getPackageName().equals(rule2.getPackageName()) &&
                ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
     }
-    public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
+    public static void doLeftTupleInsert(ReteEvaluator reteEvaluator,
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addActiveTuple(leftTuple);
             return;
@@ -111,7 +120,7 @@ public class PhreakRuleTerminalNode {
 
         activationsManager.createAgendaItem( leftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
+        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, reteEvaluator);
 
         if (  rtnNode.getRule().isLockOnActive() &&
                 leftTuple.getPropagationContext().getType() != PropagationContext.Type.RULE_ADDITION ) {
@@ -162,16 +171,18 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleUpdate(rtnNode, executor, activationsManager, leftTuple);
+            doLeftTupleUpdate(reteEvaluator, rtnNode, executor, activationsManager, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
         }
     }
 
-    public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
+    public static void doLeftTupleUpdate(ReteEvaluator reteEvaluator, 
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleTerminalNodeLeftTuple leftTuple) {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
@@ -221,6 +232,7 @@ public class PhreakRuleTerminalNode {
 
                     leftTuple.update( salienceInt, pctx );
                     executor.modifyActiveTuple(leftTuple );
+                    activationsManager.addItemToActivationGroup( leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
             }

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -105,7 +104,7 @@ public class ReteooBuilder
      * @throws InvalidPatternException
      */
     public synchronized List<TerminalNode> addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, workingMemories );
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( this.kBase, workingMemories, rule );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -117,11 +116,11 @@ public class ReteooBuilder
     }
 
     public void addEntryPoint( String id, Collection<InternalWorkingMemory> workingMemories ) {
-        this.ruleBuilder.addEntryPoint( id, this.kBase, workingMemories );
+        this.ruleBuilder.addEntryPoint( this.kBase, workingMemories, id );
     }
 
     public synchronized void addNamedWindow( WindowDeclaration window, Collection<InternalWorkingMemory> workingMemories ) {
-        final WindowNode wnode = this.ruleBuilder.addWindowNode( window, this.kBase, workingMemories );
+        final WindowNode wnode = this.ruleBuilder.addWindowNode( this.kBase, workingMemories, window );
 
         this.namedWindows.put( window.getName(), wnode );
     }
@@ -189,7 +188,7 @@ public class ReteooBuilder
 
     public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, Collection<InternalWorkingMemory> workingMemories)  {
         context.setSubRuleIndex(tn.getSubruleIndex());
-        PhreakBuilder.get().removeRule( tn, workingMemories, kBase );
+        PhreakBuilder.get().removeRule( kBase, workingMemories, tn );
 
         tn.visitLeftTupleNodes(n -> n.removeAssociatedTerminal(tn));
 

@@ -22,8 +22,6 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.builder.BuildContext;
 
-import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
-
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.integrationtests;
+package org.drools.mvel.integrationtests.query;
 
 import java.util.stream.Stream;
 
@@ -39,31 +39,30 @@ public class Query2Test {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testEvalRewrite(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
-        String str = "" +
-        "package org.drools.mvel.compiler;\n" +
-        "global java.util.List results;\n" +
-        "rule \"eval rewrite\"\n" +
-        "    when\n" +
-        "        $o1 : OrderItem( order.number == 11, $seq : seq == 1 )\n" +
-        //"        $o2 : OrderItem( order.number == $o1.order.number, seq != $seq )\n" +
-        "        $o2 : Order( items[(Integer) 1] == $o1 ) \n" +
-        "    then\n" +
-        "        System.out.println( $o1 + \":\" + $o2 );\n" +
-        "end        \n";
+        String drl = """
+    	    package org.drools.mvel.compiler;
+    	    global java.util.List results;
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+    	    rule "eval rewrite"
+    	        when
+    	            $o1 : OrderItem(order.number == 11, $seq : seq == 1)
+    	    //        $o2 : OrderItem(order.number == $o1.order.number, seq != $seq)
+    	            $o2 : Order(items[(Integer) 1] == $o1) 
+    	        then
+    	            System.out.println($o1 + ":" + $o2);
+    	    end        
+    	    """;
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
-        final Order order1 = new Order( 11,
-                                        "Bob" );
-        final OrderItem item11 = new OrderItem( order1,
-                                                1 );
-        final OrderItem item12 = new OrderItem( order1,
-                                                2 );
+        final Order order1 = new Order(11, "Bob");
+        final OrderItem item11 = new OrderItem(order1, 1);
+        final OrderItem item12 = new OrderItem(order1, 2);
 
-        ksession.insert( order1 );
-        ksession.insert( item11 );
-        ksession.insert( item12 );
+        ksession.insert(order1);
+        ksession.insert(item11);
+        ksession.insert(item12);
         
         ksession.fireAllRules();
     }

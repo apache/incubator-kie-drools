@@ -73,6 +73,8 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
+import org.drools.core.reteoo.SegmentPrototypeRegistryImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
@@ -136,8 +138,9 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
-    private final transient Map<Integer, SegmentPrototype> segmentProtos = isEagerSegmentCreation() ? new HashMap<>() : new ConcurrentHashMap<>();
 
+    private SegmentPrototypeRegistry segmentPrototypeRegistry;
+    
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
@@ -179,6 +182,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         this.globals = new HashMap<>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
+        this.segmentPrototypeRegistry = new SegmentPrototypeRegistryImpl(isEagerSegmentCreation());
 
         setupRete();
 
@@ -917,35 +921,38 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         return this.reteooBuilder.getMemoryIdsGenerator().getLastId() + 1;
     }
 
+    public SegmentPrototypeRegistry getSegmentPrototypeRegistry() {
+        return segmentPrototypeRegistry;
+    }
+
     public boolean hasSegmentPrototypes() {
-        return !segmentProtos.isEmpty();
+        return segmentPrototypeRegistry.hasSegmentPrototypes();
     }
 
     public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
-        segmentProtos.put(tupleSource.getId(), smem);
+        segmentPrototypeRegistry.registerSegmentPrototype(tupleSource, smem);
     }
 
     public void invalidateSegmentPrototype(LeftTupleNode rootNode) {
-        segmentProtos.remove(rootNode.getId());
+        segmentPrototypeRegistry.invalidateSegmentPrototype(rootNode);
     }
 
     @Override
     public SegmentPrototype getSegmentPrototype(LeftTupleNode node) {
-        return segmentProtos.get(node.getId());
+        return segmentPrototypeRegistry.getSegmentPrototype(node);
     }
 
     @Override
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
-        SegmentPrototype proto = segmentProtos.get(tupleSource.getId());
-        return createSegmentFromPrototype(reteEvaluator, proto);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(reteEvaluator.getNodeMemories(), reteEvaluator.getSegmentMemorySupport(), tupleSource);
     }
 
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype proto) {
-        return proto.newSegmentMemory(reteEvaluator);
+        return segmentPrototypeRegistry.createSegmentFromPrototype(proto, reteEvaluator.getNodeMemories(), reteEvaluator.getSegmentMemorySupport());
     }
 
     public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {
-        return segmentProtos.get(segment.getRootNode().getId());
+        return segmentPrototypeRegistry.getSegmentPrototype(segment);
     }
 
     private static class TypeDeclarationCandidate {
@@ -1053,14 +1060,14 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             // All Protos must be created, before inserting objects.
             for (TerminalNode tn : terminalNodes) {
                 tn.getPathMemSpec();
-                BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, this);
+                BuildtimeSegmentUtilities.createPathProtoMemories(this.getSegmentPrototypeRegistry(), tn, null);
             }
             Set<Integer> visited = new HashSet<>();
             for (TerminalNode tn : terminalNodes) {
                 // populate memories
                 wms.stream().forEach( wm -> {
-                    Add.insertLiaFacts(tn.getPathNodes()[0], wm, visited, true);
-                    Add.insertFacts(tn, wm, visited, true);
+                    Add.insertLiaFacts(wm, tn.getPathNodes()[0], visited, true);
+                    Add.insertFacts(wm, tn, visited, true);
                 });
             }
         }

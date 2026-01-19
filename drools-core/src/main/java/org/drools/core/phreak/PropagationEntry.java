@@ -189,7 +189,7 @@ public interface PropagationEntry {
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
             LeftInputAdapterNode.LiaNodeMemory lmem = reteEvaluator.getNodeMemory( lian );
             if ( lmem.getSegmentMemory() == null ) {
-                RuntimeSegmentUtilities.getOrCreateSegmentMemory(reteEvaluator, lts, lmem);
+                reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory(lts, lmem);
             }
 
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, reteEvaluator, lmem, false, queryObject.isOpen() );

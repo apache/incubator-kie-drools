@@ -18,7 +18,6 @@
  */
 package org.drools.tms.beliefsystem.simple;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;

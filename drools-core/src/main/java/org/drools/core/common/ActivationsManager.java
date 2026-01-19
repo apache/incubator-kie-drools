@@ -36,8 +36,6 @@ public interface ActivationsManager {
     String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
     String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
 
-    ReteEvaluator getReteEvaluator();
-
     AgendaGroupsManager getAgendaGroupsManager();
 
     AgendaEventSupport getAgendaEventSupport();
@@ -93,7 +91,7 @@ public interface ActivationsManager {
 
     default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, InternalMatch justified) {
         if (!ruleAgendaItem.isQueued()) {
-            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
+            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem();
         }
         ruleAgendaItem.getRuleExecutor().modifyActiveTuple((RuleTerminalNodeLeftTuple) justified.getTuple() );
     }

@@ -34,7 +34,6 @@ import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.base.rule.Declaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -42,7 +41,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.process.AbstractProcessContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
@@ -180,7 +178,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public void cancelMatch(Match act) {
         InternalMatch match = (InternalMatch) act;
-        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
+        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match);
     }
 
     public FactHandle getFactHandle(Object object) {

@@ -1,0 +1,74 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+specVersion: alpha
+kind: YaRD
+name: "Testing MVEL"
+inputs:
+  - name: Work Address
+    type: boolean
+elements:
+  - name: JSON Test
+    type: Decision
+    logic:
+      type: LiteralExpression
+      expression: |
+        '{ "Company": "Best Company LTD" }'
+  - name: Map Test
+    type: Decision
+    logic:
+      type: LiteralExpression
+      expression: |
+        [ "Map": "Hello" ]
+  - name: Delivery Items
+    type: Decision
+    logic:
+      type: DecisionTable
+      hitPolicy: COLLECT
+      inputs: [ 'Work Address']
+      rules:
+        - when: [ true ]
+          then: '{ "Item": { "Name": "Work Shoes" } }'
+        - when: [ true ]
+          then: '{ "Item": { "Name": "Work Hat" } }'
+        - when: [ true ]
+          then: '{ "Item": { "Name": "Work Shirt" } }'
+        - when: [ false ]
+          then: '{ "Item": { "Name": "Holiday Hat" } }'
+  - name: Customer
+    type: Decision
+    logic:
+      type: DecisionTable
+      hitPolicy: ANY
+      inputs: [ 'Work Address']
+      rules:
+        - when: [ true ]
+          then: '{ "Address": { "Street": "Work Street", "Number": 23 } }'
+        - when: [ false ]
+          then: '{ "Address": { "Street": "Free Time Path", "Number": 123 } }'
+  - name: Mailing Address
+    type: Decision
+    logic:
+      type: LiteralExpression
+      expression: |
+        Customer.Address
+  - name: Delivery Item Names
+    type: Decision
+    logic:
+      type: LiteralExpression
+      expression: |
+        ( Item.Name in `Delivery Items` )
