@@ -229,7 +229,7 @@ public class DecisionTableImpl implements DecisionTable {
                 }
 
                 if ( !satisfies ) {
-                    // Check if context is lenient before returning error
+                    // Return error if context is not Lenient
                     if (!ctx.isLenient()) {
                         String values = input.getInputValuesText();
                         return Either.ofLeft(new InvalidInputEvent( FEELEvent.Severity.ERROR,
