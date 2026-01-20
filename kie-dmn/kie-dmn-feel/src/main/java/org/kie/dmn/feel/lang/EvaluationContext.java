@@ -66,7 +66,11 @@ public interface EvaluationContext {
 
     DMNVersion getDMNVersion();
 
-    boolean isLenient();
+    default boolean isLenient() {
+        return true; // Default to lenient mode
+    }
 
-    void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck);
+    default void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+        // Default implementation does nothing
+    }
 }
