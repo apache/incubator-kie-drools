@@ -50,7 +50,6 @@ import static java.util.stream.Collectors.toMap;
 
 public class DecisionTableImpl implements DecisionTable {
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableImpl.class );
-    private static final String RUNTIME_MODE_STRICT = "strict";
 
     private String               name;
     private List<String>         parameterNames;
@@ -230,20 +229,17 @@ public class DecisionTableImpl implements DecisionTable {
                 }
 
                 if ( !satisfies ) {
-                    // Check if runtimeMode is "strict" before returning error
-                    if (ctx instanceof EvaluationContextImpl) {
-                        String runtimeMode = ((EvaluationContextImpl) ctx).getRuntimeMode();
-                        if (RUNTIME_MODE_STRICT.equalsIgnoreCase(runtimeMode)) {
-                            String values = input.getInputValuesText();
-                            return Either.ofLeft(new InvalidInputEvent( FEELEvent.Severity.ERROR,
-                                                          input.getInputExpression()+"='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
-                                                          getName(),
-                                                          null,
-                                                          values )
-                                    );
-                        } else {
-                            params[i] = null;
-                        }
+                    // Check if context is lenient before returning error
+                    if (!ctx.isLenient()) {
+                        String values = input.getInputValuesText();
+                        return Either.ofLeft(new InvalidInputEvent( FEELEvent.Severity.ERROR,
+                                                      input.getInputExpression()+"='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
+                                                      getName(),
+                                                      null,
+                                                      values )
+                                );
+                    } else {
+                        params[i] = null;
                     }
                 }
             }

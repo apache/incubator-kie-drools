@@ -31,6 +31,8 @@ public interface EvaluationContext {
 
     void enterFrame();
 
+    void enterFrame(int size);
+
     void exitFrame();
 
     EvaluationContext current();
@@ -63,4 +65,8 @@ public interface EvaluationContext {
     FEELDialect getFEELDialect();
 
     DMNVersion getDMNVersion();
+
+    boolean isLenient();
+
+    void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck);
 }

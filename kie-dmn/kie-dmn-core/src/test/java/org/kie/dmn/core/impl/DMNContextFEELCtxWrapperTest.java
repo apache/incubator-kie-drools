@@ -173,6 +173,21 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
         public DMNVersion getDMNVersion() {
             return DMNVersion.getLatest();
         }
+
+        @Override
+        public void enterFrame(int size) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isLenient() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

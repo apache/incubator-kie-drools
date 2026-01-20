@@ -47,7 +47,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     private ClassLoader rootClassLoader;
     private final FEELDialect feelDialect;
     private final DMNVersion dmnVersion;
-    private String runtimeMode;
+    private boolean isLenient = true;
 
     private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion) {
         this.eventsManager = eventsManager;
@@ -55,7 +55,6 @@ public class EvaluationContextImpl implements EvaluationContext {
         this.stack = new ArrayDeque<>(stack);
         this.feelDialect = feelDialect;
         this.dmnVersion = dmnVersion;
-        this.runtimeMode = null;
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
@@ -75,7 +74,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion, String runtimeMode) {
         this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion);
-        this.runtimeMode = runtimeMode;
+        this.isLenient = runtimeMode == null || "LENIENT".equals(runtimeMode);
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
@@ -103,7 +102,7 @@ public class EvaluationContextImpl implements EvaluationContext {
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;
-        ec.runtimeMode = this.runtimeMode;
+        ec.isLenient = this.isLenient;
         return ec;
     }
 
@@ -263,11 +262,12 @@ public class EvaluationContextImpl implements EvaluationContext {
         return dmnVersion;
     }
 
-    public String getRuntimeMode() {
-        return runtimeMode;
+    @Override
+    public boolean isLenient() {
+        return isLenient;
     }
 
-    public void setRuntimeMode(String runtimeMode) {
-        this.runtimeMode = runtimeMode;
+    public void setLenient(boolean lenient) {
+        this.isLenient = lenient;
     }
 }

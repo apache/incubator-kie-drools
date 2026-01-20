@@ -78,7 +78,7 @@ public class DMNDTExpressionEvaluator
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).toList();
             Object[] params = new Object[paramNames.size()];
             String runtimeMode = ((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption().name();
-            EvaluationContextImpl ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap(), runtimeMode);
+            EvaluationContext ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap(), runtimeMode);
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 
             Map<String, Object> contextValues = result.getContext().getAll();
