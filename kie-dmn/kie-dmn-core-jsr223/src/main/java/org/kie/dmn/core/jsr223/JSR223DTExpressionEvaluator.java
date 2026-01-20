@@ -174,6 +174,9 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         // Defaulting FEELDialect to FEEL
         private final FEELDialect dialect = FEELDialect.FEEL;
         private final DMNVersion dmnVersion;
+        // Default values matching EvaluationContextImpl
+        private boolean isLenient = true;
+        private boolean performRuntimeTypeCheck = false;
 
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events, DMNVersion dmnVersion) {
             this.values = Collections.unmodifiableMap(values);
@@ -264,6 +267,21 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         @Override
         public DMNVersion getDMNVersion() {
             return dmnVersion;
+        }
+
+        @Override
+        public void enterFrame(int size) {
+            throw new UnsupportedOperationException("not implemented for this impl.");
+        }
+
+        @Override
+        public boolean isLenient() {
+            return isLenient;
+        }
+
+        @Override
+        public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+            this.performRuntimeTypeCheck = performRuntimeTypeCheck;
         }
 
     }
