@@ -52,6 +52,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final ClassLoader classLoader;
     private final CodeFunction codeFunction = CodeFunction.INSTANCE;
+    private static final String RUNTIME_MODE_LENIENT = "LENIENT";
 
     public DMNFeelExpressionEvaluator(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -117,7 +118,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
             final FEELEventListener utErrorListener = errorEvent -> utEvalErrors.add(errorEvent);
             EvaluationContext evaluationContext = ((FEELImpl) feel).newEvaluationContext(List.of(utErrorListener),
                                                                                          Collections.singletonMap(UNARY_PARAMETER_IDENTIFIER,
-                                                                                                                  resultValue), null);
+                                                                                                                  resultValue), "RUNTIME_MODE_LENIENT");
             boolean allMatch = unaryTests.stream().allMatch(unaryTest -> Optional
                             .ofNullable(unaryTest.apply(evaluationContext, resultValue))
                             .orElse(false));

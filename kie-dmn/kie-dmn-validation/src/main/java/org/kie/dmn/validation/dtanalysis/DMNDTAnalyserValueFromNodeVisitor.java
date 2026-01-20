@@ -50,6 +50,7 @@ import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.YEA
 public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparable<?>> {
 
     private final FEELImpl FEEL;
+    private static final String RUNTIME_MODE_LENIENT = "LENIENT";
 
     public DMNDTAnalyserValueFromNodeVisitor(List<FEELProfile> feelProfiles) {
         FEEL = (FEELImpl) FEELBuilder.builder().withProfiles(feelProfiles).build();
@@ -219,7 +220,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
     }
 
     private Comparable<?> blankEvaluate(FunctionInvocationNode n) {
-        return (Comparable<?>) n.evaluate(FEEL.newEvaluationContext(Collections.emptyList(), Collections.emptyMap(), null));
+        return (Comparable<?>) n.evaluate(FEEL.newEvaluationContext(Collections.emptyList(), Collections.emptyMap(), RUNTIME_MODE_LENIENT));
     }
     
 }
