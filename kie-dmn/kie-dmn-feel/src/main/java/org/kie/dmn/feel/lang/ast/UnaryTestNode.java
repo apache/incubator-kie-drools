@@ -164,30 +164,61 @@ public class UnaryTestNode
      * - Verify that the elements in left object are contained, in the same order, in the right object
      */
     private Boolean utEqualSemantic(Object left, Object right) {
-        if (left instanceof Collection<?> leftList && right instanceof Collection<?> rightList) {
-            if (leftList.size() != rightList.size()) {
-                return false;
-            }
-
-            Iterator<?> rightIterator = rightList.iterator();
-            return leftList.stream()
-                    .allMatch(leftElement -> {
-                        Object rightElement = rightIterator.next();
-                        return Boolean.TRUE.equals(
-                                DefaultDialectHandler.isEqual(leftElement, rightElement,
-                                        () -> (leftElement == null && rightElement == null),
-                                        () -> Boolean.FALSE)
-                        );
-                    });
-        }
-
-        if (right instanceof Collection) {
-            return ((Collection) right).contains(left);
+        if (left instanceof Collection && right instanceof Collection) {
+            return areCollectionsEqual((Collection<?>) left, (Collection<?>) right);
+        } else if (right instanceof Collection) {
+            return isElementInCollection((Collection<?>) right, left);
         } else {
-            // evaluate single entity
-            return DefaultDialectHandler.isEqual(left, right, () -> (left == null && right == null), () -> Boolean.FALSE);
-
+            return areElementsEqual(left, right);
         }
+    }
+
+    /**
+     * Checks if two collections are equal by comparing elements in order.
+     * Both collections must have the same size and each element at position i in left
+     * must equal the element at position i in right.
+     *
+     * @param left the left collection
+     * @param right the right collection
+     * @return true if collections have same size and elements match in order, false otherwise
+     */
+    static Boolean areCollectionsEqual(Collection<?> left, Collection<?> right) {
+        if (left.size() != right.size()) {
+            return false;
+        }
+
+        Iterator<?> rightIterator = right.iterator();
+        return left.stream()
+                .allMatch(leftElement -> {
+                    Object rightElement = rightIterator.next();
+                    return areElementsEqual(leftElement, rightElement);
+                });
+    }
+
+    /**
+     * Checks if a collection contains a specific element.
+     *
+     * @param collection the collection to search in
+     * @param element the element to search for
+     * @return true if collection contains the element, false otherwise
+     */
+    static Boolean isElementInCollection(Collection<?> collection, Object element) {
+        return collection.contains(element);
+    }
+
+    /**
+     * Checks if two elements are equal.
+     *
+     * @param left the left element
+     * @param right the right element
+     * @return true if elements are equal, false otherwise
+     */
+    static Boolean areElementsEqual(Object left, Object right) {
+        return Boolean.TRUE.equals(
+                DefaultDialectHandler.isEqual(left, right,
+                        () -> (left == null && right == null),
+                        () -> Boolean.FALSE)
+        );
     }
 
     private UnaryTest createIsEqualUnaryTest() {
