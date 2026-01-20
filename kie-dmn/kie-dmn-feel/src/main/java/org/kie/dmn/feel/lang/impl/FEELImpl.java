@@ -155,7 +155,7 @@ public class FEELImpl
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
         CompiledFEELExpression e = (CompiledFEELExpression) expr;
-        EvaluationContextImpl evaluationContext = newEvaluationContext(Collections.emptySet(), inputVariables); // split to simplify debug
+        EvaluationContextImpl evaluationContext = newEvaluationContext(Collections.emptySet(), inputVariables, null); // split to simplify debug
         return e.apply(evaluationContext);
     }
     
@@ -168,16 +168,16 @@ public class FEELImpl
     /**
      * Creates a new EvaluationContext using this FEEL instance classloader, and the supplied parameters listeners and inputVariables
      */
-    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
-        return newEvaluationContext(this.classLoader, listeners, inputVariables);
+    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables, String runtimeMode ) {
+        return newEvaluationContext(this.classLoader, listeners, inputVariables, runtimeMode);
     }
 
     /**
      * Creates a new EvaluationContext with the supplied classloader, and the supplied parameters listeners and inputVariables
      */
-    public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+    public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables, String runtimeMode ) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
-        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size(), feelDialect, dmnVersion);
+        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size(), feelDialect, dmnVersion, runtimeMode);
         if (customFrame.isPresent()) {
             ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
             ExecutionFrameImpl interveawedFrame = customFrame.get();
@@ -203,7 +203,7 @@ public class FEELImpl
         }
 
         return processUnaryTests(expression, ctx)
-                .apply(newEvaluationContext(ctx.getListeners(), EMPTY_INPUT));
+                .apply(newEvaluationContext(ctx.getListeners(), EMPTY_INPUT, null));
     }
 
     @Override

@@ -26,14 +26,15 @@ import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.api.core.EvaluatorResult;
-import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -86,7 +87,8 @@ public class DMNLiteralExpressionEvaluator
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         LiteralInvocationListener liListener = new LiteralInvocationListener();
-        EvaluationContextImpl ectx = feelInstance.newEvaluationContext(List.of(liListener), result.getContext().getAll());
+        String runtimeMode = ((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption().name();
+        EvaluationContextImpl ectx = feelInstance.newEvaluationContext(List.of(liListener), result.getContext().getAll(), runtimeMode);
         ectx.setDMNRuntime(dmrem.getRuntime());
         // in case an exception is thrown, the parent node will report it
         Set<FEELEvent> previousFeelEvents = result.getMessages(DMNMessage.Severity.WARN, DMNMessage.Severity.ERROR)

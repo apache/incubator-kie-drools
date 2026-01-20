@@ -219,7 +219,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
     }
 
     private Comparable<?> blankEvaluate(FunctionInvocationNode n) {
-        return (Comparable<?>) n.evaluate(FEEL.newEvaluationContext(Collections.emptyList(), Collections.emptyMap()));
+        return (Comparable<?>) n.evaluate(FEEL.newEvaluationContext(Collections.emptyList(), Collections.emptyMap(), null));
     }
     
 }
