@@ -161,7 +161,7 @@ public class UnaryTestNode
      * If the RIGHT is a LIST, then the semantic is "right contains left"
      * When both are Collections:
      * - Verify that the two objects have the same size
-     * - Verify that the elements in left object are contained, in the same order, in the right object
+     * - Verify that the element at each position in the left object equals the element at the same position in the right object.
      */
     private Boolean utEqualSemantic(Object left, Object right) {
         if (left instanceof Collection && right instanceof Collection) {
@@ -187,12 +187,14 @@ public class UnaryTestNode
             return false;
         }
 
+        Iterator<?> leftIterator = left.iterator();
         Iterator<?> rightIterator = right.iterator();
-        return left.stream()
-                .allMatch(leftElement -> {
-                    Object rightElement = rightIterator.next();
-                    return areElementsEqual(leftElement, rightElement);
-                });
+        while (leftIterator.hasNext() && rightIterator.hasNext()) {
+            if (!areElementsEqual(leftIterator.next(), rightIterator.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

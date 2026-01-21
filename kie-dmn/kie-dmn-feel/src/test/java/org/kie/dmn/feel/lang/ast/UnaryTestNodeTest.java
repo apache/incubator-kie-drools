@@ -91,9 +91,8 @@ class UnaryTestNodeTest {
         assertThat(result).isFalse();
     }
 
-
     @Test
-    void testAreCollectionsEqualInOrder_withEqualCollections1() {
+    void testAreCollectionsEqualInOrder_withEqualStringCollections() {
         List<String> left = Arrays.asList("a", "b", "c");
         List<String> right = Arrays.asList("a", "b", "c");
 
@@ -102,24 +101,26 @@ class UnaryTestNodeTest {
     }
 
     @Test
-    void testAreCollectionsEqualInOrder_withEqualCollections2() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(1, 2, 3);
+    void testCollectionContainsListElement() {
+        List<Integer> element = Arrays.asList(1, 2, 3);
+        List<List<Integer>> collection = Arrays.asList(
+            Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2, 3));
 
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
+        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
         assertThat(result).isTrue();
     }
 
     @Test
-    void testAreCollectionsEqualInOrder_withEqualCollections3() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(1, 2, 3);
+    void testListInCollection_NoMatch() {
+        List<Integer> element = Arrays.asList(1, 2, 3);
+        List<List<Integer>> collection = Arrays.asList(
+            Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2));
 
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isTrue();
+        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
+        assertThat(result)
+            .as("List [1,2,3] should not be found in collection ([1,2,3,4], [1,2])")
+            .isFalse();
     }
-
-
 
     @Test
     void testCollectionContainsElement_whenElementExists() {
