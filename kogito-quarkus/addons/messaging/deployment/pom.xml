@@ -29,70 +29,38 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-addons-quarkus-messaging</artifactId>
-  <name>KIE Add-On Messaging</name>
-  <description>KIE Events handling for BPMN messages Add-On (Quarkus)</description>
+  <artifactId>kie-addons-quarkus-messaging-deployment</artifactId>
+  <name>KIE Add-On Messaging - Deployment</name>
 
   <properties>
-     <java.module.name>org.kie.kogito.addon.messaging</java.module.name>
+    <java.module.name>org.kie.kogito.addon.messaging.deployment</java.module.name>
   </properties>
 
   <dependencies>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jackson-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-addons-quarkus-messaging-common</artifactId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.cloudevents</groupId>
-      <artifactId>cloudevents-http-restful-ws</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-common</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.smallrye</groupId>
-        <artifactId>jandex-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make-index</id>
-            <goals>
-              <goal>jandex</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-extension-maven-plugin</artifactId>
-        <version>${version.io.quarkus}</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>extension-descriptor</goal>
-            </goals>
-            <configuration>
-              <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
-              <capabilities>
-                <provides>org.kie.addons.messaging</provides>
-              </capabilities>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -107,6 +75,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

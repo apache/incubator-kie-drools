@@ -35,6 +35,7 @@
   <modules>
     <module>common</module>
     <module>runtime</module>
+    <module>deployment</module>
   </modules>
 
 </project>

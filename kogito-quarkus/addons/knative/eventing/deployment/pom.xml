@@ -69,6 +69,10 @@
       <artifactId>kogito-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http-deployment</artifactId>
     </dependency>
