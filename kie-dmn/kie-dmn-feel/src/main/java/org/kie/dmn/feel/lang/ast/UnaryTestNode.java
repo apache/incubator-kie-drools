@@ -199,13 +199,15 @@ public class UnaryTestNode
 
     /**
      * Checks if a collection contains a specific element.
+     * Uses areElementsEqual() to ensure consistent equality semantics
+     * with custom null handling via DefaultDialectHandler.isEqual().
      *
      * @param collection the collection to search in
      * @param element the element to search for
      * @return true if collection contains the element, false otherwise
      */
     static Boolean isElementInCollection(Collection<?> collection, Object element) {
-        return collection.contains(element);
+        return collection.stream().anyMatch(item -> areElementsEqual(item, element));
     }
 
     /**
