@@ -21,203 +21,76 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UnaryTestNodeTest {
 
-    @Test
-    void testAreCollectionsEqualInOrder_withEqualCollections() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(1, 2, 3);
-
+    @ParameterizedTest
+    @MethodSource("provideCollectionsForEqualityTest")
+    void testAreCollectionsEqual(List<?> left, List<?> right, boolean expected) {
         Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isTrue();
+        assertThat(result).isEqualTo(expected);
     }
 
-    @Test
-    void testAreCollectionsEqualInOrder_withDifferentSizes() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(1, 2, 3, 4);
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isFalse();
+    private static Stream<Arguments> provideCollectionsForEqualityTest() {
+        return Stream.of(
+            Arguments.of(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3), true, "Equal collections"),
+            Arguments.of(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3, 4), false, "Different sizes"),
+            Arguments.of(Arrays.asList(1, 2, 3), Arrays.asList(1, 5, 3), false, "Different elements"),
+            Arguments.of(Arrays.asList(1, 2, 3), Arrays.asList(3, 2, 1), false, "Different order"),
+            Arguments.of(Collections.emptyList(), Collections.emptyList(), true, "Empty collections"),
+            Arguments.of(Arrays.asList(1, null, 3), Arrays.asList(1, null, 3), true, "Null elements"),
+            Arguments.of(Arrays.asList(1, null, 3), Arrays.asList(1, 2, 3), false, "Mismatched nulls"),
+            Arguments.of(Arrays.asList("a", "b", "c"), Arrays.asList("a", "b", "c"), true, "Equal string collections")
+        );
     }
 
-    @Test
-    void testAreCollectionsEqualInOrder_withDifferentElements() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(1, 5, 3);
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreCollectionsEqualInOrder_withDifferentOrder() {
-        List<Integer> left = Arrays.asList(1, 2, 3);
-        List<Integer> right = Arrays.asList(3, 2, 1);
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreCollectionsEqualInOrder_withEmptyCollections() {
-        List<Integer> left = Collections.emptyList();
-        List<Integer> right = Collections.emptyList();
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testAreCollectionsEqualInOrder_withNullElements() {
-        List<Integer> left = Arrays.asList(1, null, 3);
-        List<Integer> right = Arrays.asList(1, null, 3);
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testAreCollectionsEqualInOrder_withMismatchedNulls() {
-        List<Integer> left = Arrays.asList(1, null, 3);
-        List<Integer> right = Arrays.asList(1, 2, 3);
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreCollectionsEqualInOrder_withEqualStringCollections() {
-        List<String> left = Arrays.asList("a", "b", "c");
-        List<String> right = Arrays.asList("a", "b", "c");
-
-        Boolean result = UnaryTestNode.areCollectionsEqual(left, right);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testCollectionContainsListElement() {
-        List<Integer> element = Arrays.asList(1, 2, 3);
-        List<List<Integer>> collection = Arrays.asList(
-            Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2, 3));
-
+    @ParameterizedTest
+    @MethodSource("provideElementInCollectionTestCases")
+    void testIsElementInCollection(List<?> collection, Object element, boolean expected) {
         Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result).isTrue();
+        assertThat(result).isEqualTo(expected);
     }
 
-    @Test
-    void testListInCollection_NoMatch() {
-        List<Integer> element = Arrays.asList(1, 2, 3);
-        List<List<Integer>> collection = Arrays.asList(
-            Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2));
-
-        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result)
-            .as("List [1,2,3] should not be found in collection ([1,2,3,4], [1,2])")
-            .isFalse();
+    private static Stream<Arguments> provideElementInCollectionTestCases() {
+        return Stream.of(Arguments.of(
+                Arrays.asList(Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2, 3)),
+                Arrays.asList(1, 2, 3), true, "List element found in collection"),
+            Arguments.of(
+                Arrays.asList(Arrays.asList(1, 2, 3, 4), Arrays.asList(1, 2)),
+                Arrays.asList(1, 2, 3), false, "List element not found in collection"),
+            Arguments.of(
+                Arrays.asList(1, 2, 3, 4, 5), 3, true, "Element exists in collection"),
+            Arguments.of(
+                Arrays.asList(1, 2, 3, 4, 5), 10, false, "Element does not exist in collection"),
+            Arguments.of(
+                Arrays.asList(1, null, 3), null, true, "Null element in collection"),
+            Arguments.of(
+                Collections.emptyList(), 1, false, "Empty collection"));
     }
 
-    @Test
-    void testCollectionContainsElement_whenElementExists() {
-        List<Integer> collection = Arrays.asList(1, 2, 3, 4, 5);
-        Integer element = 3;
-
-        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testCollectionContainsElement_whenElementDoesNotExist() {
-        List<Integer> collection = Arrays.asList(1, 2, 3, 4, 5);
-        Integer element = 10;
-
-        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testCollectionContainsElement_withNullElement() {
-        List<Integer> collection = Arrays.asList(1, null, 3);
-        Object element = null;
-
-        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testCollectionContainsElement_withEmptyCollection() {
-        List<Integer> collection = Collections.emptyList();
-        Integer element = 1;
-
-        Boolean result = UnaryTestNode.isElementInCollection(collection, element);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreElementsEqual_withEqualIntegers() {
-        Integer left = 42;
-        Integer right = 42;
-
+    @ParameterizedTest
+    @MethodSource("provideElementsForEqualityTest")
+    void testAreElementsEqual(Object left, Object right, boolean expected) {
         Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isTrue();
+        assertThat(result).isEqualTo(expected);
     }
 
-    @Test
-    void testAreElementsEqual_withDifferentIntegers() {
-        Integer left = 42;
-        Integer right = 24;
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreElementsEqual_withEqualStrings() {
-        String left = "hello";
-        String right = "hello";
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testAreElementsEqual_withDifferentStrings() {
-        String left = "hello";
-        String right = "world";
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreElementsEqual_withBothNull() {
-        Object left = null;
-        Object right = null;
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void testAreElementsEqual_withOneNull() {
-        Integer left = 42;
-        Object right = null;
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void testAreElementsEqual_withNullLeft() {
-        Object left = null;
-        Integer right = 42;
-
-        Boolean result = UnaryTestNode.areElementsEqual(left, right);
-        assertThat(result).isFalse();
+    private static Stream<Arguments> provideElementsForEqualityTest() {
+        return Stream.of(
+            Arguments.of(42, 42, true, "Equal integers"),
+            Arguments.of(42, 24, false, "Different integers"),
+            Arguments.of("hello", "hello", true, "Equal strings"),
+            Arguments.of("hello", "world", false, "Different strings"),
+            Arguments.of(null, null, true, "Both null"),
+            Arguments.of(42, null, false, "Left non-null, right null"),
+            Arguments.of(null, 42, false, "Left null, right non-null")
+        );
     }
 }
