@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -39,7 +40,6 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
@@ -77,8 +77,8 @@ public class DMNDTExpressionEvaluator
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).toList();
             Object[] params = new Object[paramNames.size()];
-            String runtimeMode = ((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption().name();
-            EvaluationContext ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap(), runtimeMode);
+            boolean isLenient = RuntimeModeOption.MODE.LENIENT.name().equals(((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption().name());
+            EvaluationContext ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap(), isLenient);
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 
             Map<String, Object> contextValues = result.getContext().getAll();

@@ -69,18 +69,18 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion) {
-        this(cl, eventsManager, size, feelDialect, dmnVersion, null);
-    }
-
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion, String runtimeMode) {
         this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion);
-        this.isLenient = runtimeMode == null || "LENIENT".equals(runtimeMode);
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
         // for function evaluation
         ExecutionFrameImpl global = new ExecutionFrameImpl(RootExecutionFrame.INSTANCE, size);
         push( global );
+    }
+
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion, boolean isLenient) {
+        this(cl, eventsManager, size, feelDialect, dmnVersion);
+        this.isLenient = isLenient;
     }
 
     @Deprecated
@@ -102,7 +102,6 @@ public class EvaluationContextImpl implements EvaluationContext {
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;
-        ec.isLenient = this.isLenient;
         return ec;
     }
 

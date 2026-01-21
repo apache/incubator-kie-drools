@@ -31,14 +31,13 @@ import org.drools.model.functions.Function1;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNVersion;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.api.core.EvaluatorResult;
-import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator.EventResults;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
@@ -175,8 +174,6 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         private final FEELDialect dialect = FEELDialect.FEEL;
         private final DMNVersion dmnVersion;
         // Default values matching EvaluationContextImpl
-        private boolean isLenient = true;
-        private boolean performRuntimeTypeCheck = false;
 
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events, DMNVersion dmnVersion) {
             this.values = Collections.unmodifiableMap(values);
@@ -267,21 +264,6 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         @Override
         public DMNVersion getDMNVersion() {
             return dmnVersion;
-        }
-
-        @Override
-        public void enterFrame(int size) {
-            throw new UnsupportedOperationException("not implemented for this impl.");
-        }
-
-        @Override
-        public boolean isLenient() {
-            return isLenient;
-        }
-
-        @Override
-        public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
-            this.performRuntimeTypeCheck = performRuntimeTypeCheck;
         }
 
     }

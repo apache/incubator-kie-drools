@@ -117,7 +117,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
             final FEELEventListener utErrorListener = errorEvent -> utEvalErrors.add(errorEvent);
             EvaluationContext evaluationContext = ((FEELImpl) feel).newEvaluationContext(List.of(utErrorListener),
                                                                                          Collections.singletonMap(UNARY_PARAMETER_IDENTIFIER,
-                                                                                                                  resultValue), null);
+                                                                                                                  resultValue));
             boolean allMatch = unaryTests.stream().allMatch(unaryTest -> Optional
                             .ofNullable(unaryTest.apply(evaluationContext, resultValue))
                             .orElse(false));

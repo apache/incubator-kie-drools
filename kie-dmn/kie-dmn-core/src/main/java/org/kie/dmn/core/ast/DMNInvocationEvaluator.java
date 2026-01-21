@@ -37,7 +37,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -126,8 +125,7 @@ public class DMNInvocationEvaluator
                 // check if it is a configured/built-in function
                 Object r;
                 if (feel != null) {
-                    String runtimeMode = ((DMNRuntimeImpl) eventManager.getRuntime()).getRuntimeModeOption().name();
-                    r = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap(), runtimeMode).getValue(functionName);
+                    r = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap()).getValue(functionName);
                 } else {
                     r = RootExecutionFrame.INSTANCE.getValue( functionName );
                 }

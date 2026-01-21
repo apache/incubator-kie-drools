@@ -334,7 +334,7 @@ public class DMNFEELHelper {
     }
 
     public EvaluationContextImpl newEvaluationContext( Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
-        return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables, null);
+        return (( FEELImpl ) feel).newEvaluationContext(listeners, inputVariables);
     }
 
     public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {
