@@ -163,7 +163,17 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         context.set( "Branches dispersion", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
 
-        testDecisionTableInvalidInput( context );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "InvalidInput.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
+        assertThat(dmnModel).isNotNull();
+
+        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        // In lenient mode, invalid input value is set to null and evaluation continues
+        assertThat( dmnResult.hasErrors()).isFalse();
+
+        final DMNContext result = dmnResult.getContext();
+        // A rule matches with null parameter, so result is defined
+        assertThat(result.isDefined( "Branches distribution")).isEqualTo(Boolean.TRUE);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -194,9 +204,11 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(dmnModel).isNotNull();
 
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, inputContext );
+        // Type mismatch or missing required input causes errors
         assertThat( dmnResult.hasErrors()).isTrue();
 
         final DMNContext result = dmnResult.getContext();
+        // Result is not defined due to errors
         assertThat(result.isDefined( "Branches distribution")).isEqualTo(Boolean.FALSE);
     }
 

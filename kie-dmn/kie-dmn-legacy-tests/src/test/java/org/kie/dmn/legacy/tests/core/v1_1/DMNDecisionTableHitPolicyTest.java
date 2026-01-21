@@ -67,8 +67,9 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
-        assertThat(result.get("Approval Status")).isNull();
-        assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
+        // In lenient mode (default), when input doesn't match constraints, it's set to null and evaluation continues
+        // Rule 4 matches: Age=any(-), RiskCategory=any(-), isAffordable=false -> "Declined"
+        assertThat(result.get("Approval Status")).isEqualTo("Declined");
     }
 
     @ParameterizedTest(name = "{0}")
