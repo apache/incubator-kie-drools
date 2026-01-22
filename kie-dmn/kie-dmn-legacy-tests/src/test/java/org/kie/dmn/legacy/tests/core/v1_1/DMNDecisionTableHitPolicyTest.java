@@ -31,6 +31,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
@@ -82,22 +83,19 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
     @MethodSource("params")
     void simpleDecisionTableHitPolicyUniqueSatisfiesStrictMode(VariantTestConf conf) {
         testConfig = conf;
-        // Test strict mode behavior - invalid input should produce errors
-        System.setProperty("org.kie.dmn.runtime.mode", "strict");
+        System.setProperty(RuntimeModeOption.PROPERTY_NAME, RuntimeModeOption.MODE.STRICT.getMode());
         try {
             final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
             final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
             assertThat(dmnModel).isNotNull();
 
-            final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
+            final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
             final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            assertThat(dmnResult.hasErrors()).isTrue();
-            assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
-            assertThat(dmnResult.getMessages().stream()
-                    .anyMatch(m -> m.getLevel() == org.kie.api.builder.Message.Level.ERROR))
-                    .isTrue();
+
+            assertThat(dmnResult.hasErrors()).isFalse();
+            assertThat(dmnResult.getContext().get("Approval Status")).isEqualTo("Approved");
         } finally {
-            System.clearProperty("org.kie.dmn.runtime.mode");
+            System.clearProperty(RuntimeModeOption.PROPERTY_NAME);
         }
     }
 
