@@ -173,7 +173,6 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         // Defaulting FEELDialect to FEEL
         private final FEELDialect dialect = FEELDialect.FEEL;
         private final DMNVersion dmnVersion;
-        // Default values matching EvaluationContextImpl
 
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events, DMNVersion dmnVersion) {
             this.values = Collections.unmodifiableMap(values);

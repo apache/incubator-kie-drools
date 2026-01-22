@@ -66,10 +66,41 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
-
-        // In lenient mode (default), when input doesn't match constraints, it's set to null and evaluation continues
+        
+        // In lenient mode, invalid input value "ASD" is set to null and evaluation continues
         // Rule 4 matches: Age=any(-), RiskCategory=any(-), isAffordable=false -> "Declined"
         assertThat(result.get("Approval Status")).isEqualTo("Declined");
+
+        assertThat(dmnResult.getDecisionResults()).hasSize(1);
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U")).isNotNull();
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U").getResult()).isEqualTo("Declined");
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U").getEvaluationStatus())
+                .isEqualTo(org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void simpleDecisionTableHitPolicyUniqueSatisfiesStrictMode(VariantTestConf conf) {
+        testConfig = conf;
+        // Test strict mode behavior - invalid input should produce errors
+        System.setProperty("org.kie.dmn.runtime.typecheck", "true");
+        try {
+            final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
+            final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
+            assertThat(dmnModel).isNotNull();
+
+            final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
+            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+            
+            // In strict mode, invalid input value should produce errors
+            assertThat(dmnResult.hasErrors()).isTrue();
+            assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
+            assertThat(dmnResult.getMessages().stream()
+                    .anyMatch(m -> m.getMessageType().equals(DMNMessage.Severity.ERROR)))
+                    .isTrue();
+        } finally {
+            System.clearProperty("org.kie.dmn.runtime.typecheck");
+        }
     }
 
     @ParameterizedTest(name = "{0}")
