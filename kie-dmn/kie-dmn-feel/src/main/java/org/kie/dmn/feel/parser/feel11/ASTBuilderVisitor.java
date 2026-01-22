@@ -185,8 +185,7 @@ public class ASTBuilderVisitor
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
         UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
-        return unaryOperator.equals(UnaryOperator.EQ) ? ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED) :
-                ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
+        return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
     @Override
@@ -194,6 +193,8 @@ public class ASTBuilderVisitor
         BaseNode value = visit(ctx.endpoint());
         String op = ctx.op.getText();
         switch (UnaryOperator.determineOperator(op)) {
+            case EQ:
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
             case GT:
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
             case GTE:
