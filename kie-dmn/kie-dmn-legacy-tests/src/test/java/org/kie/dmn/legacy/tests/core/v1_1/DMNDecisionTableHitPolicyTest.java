@@ -83,7 +83,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
     void simpleDecisionTableHitPolicyUniqueSatisfiesStrictMode(VariantTestConf conf) {
         testConfig = conf;
         // Test strict mode behavior - invalid input should produce errors
-        System.setProperty("org.kie.dmn.runtime.typecheck", "true");
+        System.setProperty("org.kie.dmn.runtime.mode", "strict");
         try {
             final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
             final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
@@ -91,15 +91,13 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
 
             final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
             final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-            
-            // In strict mode, invalid input value should produce errors
             assertThat(dmnResult.hasErrors()).isTrue();
             assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
             assertThat(dmnResult.getMessages().stream()
-                    .anyMatch(m -> m.getMessageType().equals(DMNMessage.Severity.ERROR)))
+                    .anyMatch(m -> m.getLevel() == org.kie.api.builder.Message.Level.ERROR))
                     .isTrue();
         } finally {
-            System.clearProperty("org.kie.dmn.runtime.typecheck");
+            System.clearProperty("org.kie.dmn.runtime.mode");
         }
     }
 
