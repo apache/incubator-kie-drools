@@ -71,8 +71,8 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.quarkus>3.27.1</version.io.quarkus>
-    <version.io.netty>4.1.128.Final</version.io.netty>
+    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <version.io.netty>4.1.130.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
@@ -157,7 +157,7 @@
 
     <!-- Add for kie-maven-plugin -->
     <version.plugin.plugin>3.6.4</version.plugin.plugin>
-    <version.plugin.annotations>3.13.1</version.plugin.annotations>
+    <version.plugin.annotations>3.15.1</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.4.2</version.shared.utils>
     <version.common.compress>1.28.0</version.common.compress>
@@ -189,10 +189,10 @@
 
     <version.net.byte-buddy>1.17.6</version.net.byte-buddy>
 
-    <version.org.postgresql>42.7.8</version.org.postgresql>
+    <version.org.postgresql>42.7.7</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.3.0</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.4.0</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.4</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
@@ -222,7 +222,7 @@
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
-    <version.io.vertx>4.5.22</version.io.vertx>
+    <version.io.vertx>4.5.23</version.io.vertx>
     <version.org.lz4.java>1.8.1</version.org.lz4.java>
   </properties>
 
