@@ -75,14 +75,18 @@ public class Antlr4ParserStringUtils {
     }
 
     /**
-     * Extract name from "then[name]" of RHS_NAMED_CONSEQUENCE_THEN
+     * Extract name from "then[name]" or "then [ name ]" of RHS_NAMED_CONSEQUENCE_THEN
      */
     public static String extractNamedConsequenceName(String namedConsequenceThen) {
-        if (namedConsequenceThen.toLowerCase().startsWith("then[") && namedConsequenceThen.endsWith("]")) {
-            return namedConsequenceThen.substring("then[".length(), namedConsequenceThen.length() - 1);
+        // The token format is: then<optional_spaces>[<identifier>]
+        // We need to extract the identifier between [ and ]
+        int openBracket = namedConsequenceThen.indexOf('[');
+        int closeBracket = namedConsequenceThen.indexOf(']');
+
+        if (namedConsequenceThen.toLowerCase().startsWith("then") && openBracket > 0 && closeBracket > openBracket) {
+            return namedConsequenceThen.substring(openBracket + 1, closeBracket).trim();
         } else {
-            throw new DRLParserException("namedConsequenceThen has to be surrounded by 'then[', ']' : " + namedConsequenceThen);
+            throw new DRLParserException("namedConsequenceThen has to be in format 'then[name]' or 'then [ name ]' : " + namedConsequenceThen);
         }
     }
-
 }
