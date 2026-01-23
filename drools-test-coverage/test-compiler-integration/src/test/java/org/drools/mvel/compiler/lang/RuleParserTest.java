@@ -1751,25 +1751,6 @@ public class RuleParserTest {
     }
 
     @Test
-    public void testAttributeRefract() throws Exception {
-        final String source = "rule Test refract when Person() then end";
-
-        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
-                                                 source );
-
-        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
-        RuleDescr rule = pkg.getRules().get(0);
-
-        assertThat(rule.getName()).isEqualTo("Test");
-        Map<String, AttributeDescr> attributes = rule.getAttributes();
-        assertThat(attributes.size()).isEqualTo(1);
-        AttributeDescr refract = attributes.get( "refract" );
-        assertThat(refract).isNotNull();
-        assertThat(refract.getValue()).isEqualTo("true");
-
-    }
-
-    @Test
     public void testEnabledExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_enabled_expression.drl" );

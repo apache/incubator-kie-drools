@@ -338,11 +338,7 @@ public class ParserHelper {
                validateText( text2Validate,
                              DroolsSoftKeywords.TIMER ) ||
                validateText( text2Validate,
-                             DroolsSoftKeywords.DURATION ) ||
-               validateText( text2Validate,
-                             DroolsSoftKeywords.REFRACT ) ||
-               validateText( text2Validate,
-                             DroolsSoftKeywords.DIRECT );
+                             DroolsSoftKeywords.DURATION );
     }
 
     public void reportError(Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException ex ) {

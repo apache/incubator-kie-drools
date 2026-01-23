@@ -1828,23 +1828,6 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void attributeRefract() {
-        final String source = "rule Test refract when Person() then end";
-
-        PackageDescr pkg = parseAndGetPackageDescr(
-                source);
-
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
-
-        assertThat(rule.getName()).isEqualTo("Test");
-        Map<String, AttributeDescr> attributes = rule.getAttributes();
-        assertThat(attributes).hasSize(1);
-        AttributeDescr refract = attributes.get("refract");
-        assertThat(refract).isNotNull();
-        assertThat(refract.getValue()).isEqualTo("true");
-    }
-
-    @Test
     void enabledExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                 "rule_enabled_expression.drl");

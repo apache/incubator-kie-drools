@@ -32,7 +32,6 @@ public enum DroolsSentenceType {
     IMPORT_STATEMENT, 
 	GLOBAL, 
 	FUNCTION, 
-	TEMPLATE, 
 	TYPE_DECLARATION, 
 	RULE, 
 	QUERY, 
