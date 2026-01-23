@@ -47,7 +47,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     private ClassLoader rootClassLoader;
     private final FEELDialect feelDialect;
     private final DMNVersion dmnVersion;
-    private boolean isLenient = true;
+    private boolean isLenient;
 
     private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion) {
         this.eventsManager = eventsManager;
@@ -55,6 +55,7 @@ public class EvaluationContextImpl implements EvaluationContext {
         this.stack = new ArrayDeque<>(stack);
         this.feelDialect = feelDialect;
         this.dmnVersion = dmnVersion;
+        this.isLenient = true;
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
@@ -102,6 +103,7 @@ public class EvaluationContextImpl implements EvaluationContext {
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;
+        ec.isLenient = this.isLenient;
         return ec;
     }
 

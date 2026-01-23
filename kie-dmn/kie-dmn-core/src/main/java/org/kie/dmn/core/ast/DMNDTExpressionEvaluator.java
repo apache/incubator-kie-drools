@@ -77,7 +77,7 @@ public class DMNDTExpressionEvaluator
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).toList();
             Object[] params = new Object[paramNames.size()];
-            boolean isLenient = RuntimeModeOption.MODE.LENIENT.name().equals(((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption().name());
+            boolean isLenient = RuntimeModeOption.MODE.LENIENT == ((DMNRuntimeImpl) dmrem.getRuntime()).getRuntimeModeOption();
             EvaluationContext ctx = feel.newEvaluationContext(List.of(events::add), Collections.emptyMap(), isLenient);
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 

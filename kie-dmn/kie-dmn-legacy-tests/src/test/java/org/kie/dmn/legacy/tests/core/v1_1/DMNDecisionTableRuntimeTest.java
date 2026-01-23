@@ -172,14 +172,7 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( dmnResult.hasErrors()).isFalse();
 
         final DMNContext result = dmnResult.getContext();
-        
-        // Verify that the invalid input "Province" (without leading space) was coerced to null
-        // The decision table should receive null for "Branches dispersion" parameter
-        // Since Number of Branches = 10 (<10) and Branches dispersion = null (doesn't match any specific rule),
-        // no rule should match, resulting in null output
         assertThat(result.get("Branches distribution")).isNull();
-        
-        // Verify result is defined (key exists) even though value is null
         assertThat(result.isDefined( "Branches distribution")).isEqualTo(Boolean.TRUE);
     }
 
