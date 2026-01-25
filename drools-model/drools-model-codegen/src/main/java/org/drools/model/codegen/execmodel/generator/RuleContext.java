@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -363,7 +363,11 @@ public class RuleContext {
     }
 
     public Class<?> getRuleUnitVarType(String name) {
-        Class<?> varType = ruleUnitVars.get( name );
+        return ruleUnitVars.get( name );
+    }
+
+    public Class<?> getTypeFromRuleUnitVarsAndScopedDeclarations(String name) {
+        Class<?> varType = getRuleUnitVarType( name );
         if (varType != null) {
             return varType;
         }

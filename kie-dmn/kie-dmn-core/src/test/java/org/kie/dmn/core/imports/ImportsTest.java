@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,9 +21,9 @@ package org.kie.dmn.core.imports;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -44,6 +44,129 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(ImportsTest.class);
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingModelsWithSameImportAndInputNameSimpleData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_simple_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnImporting,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A7837",
+                                                        "DMN_C66F78A2-4BD7-4BB7-A200-4C61D82AAFBD");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_054766E3-2098-4E7B-8F48-576B5373F4EE",
+                                                         "ImportingModelSimpleType");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        DMNContext context = runtime.newContext(); // old syntax
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", mapOf(entry("CLASHING_NAME", 21)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+
+
+        context = runtime.newContext();
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", 21);
+
+        evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingModelsWithSameImportAndInputNameComplexData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/same_import_and_input_name_complex_data";
+        String dmnImporting = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnImporting,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_EDBCAD2C-5119-462A-8ACA-7E32C18A78EE",
+                                                        "DMN_C66F78A2-4BD7-4BB7-A200-4C61D82AAFBD");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_054766E3-2098-4E7B-8F48-576B5373F4EE",
+                                                         "ImportingModelComplexType");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        DMNContext context = runtime.newContext(); // old syntax
+        context.set("My Input", "this is my input");
+        Map<String, Object> clashingNameComplexObject =  mapOf(entry("Complex Type Number", 21), entry("Complex Type String", "A string"));
+        context.set("CLASHING_NAME", mapOf(entry("CLASHING_NAME", clashingNameComplexObject)));
+
+        DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+
+
+        context = runtime.newContext();
+        context.set("My Input", "this is my input");
+        context.set("CLASHING_NAME", mapOf(entry("Complex Type Number", 21), entry("Complex Type String", "A string")));
+
+        evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("My Decision")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("My Decision").getResult()).isEqualTo("this is my input: 21");
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingOverridedInputDataInInheritedDecision(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_6/imports/two-input-data-same-name";
+        String dmnMain = String.format("%s/ImportingModel.dmn", basePath);
+        String dmnImported = String.format("%s/ImportedModel.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmnImported);
+
+        final DMNModel importedModel = runtime.getModel("https://kie.org/dmn/_6B0AD797-1CA7-45BD-8942-791F36526A89",
+                                                        "DMN_CA451E6C-14B2-4CA6-B8C4-C5BBCBD2FB40");
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importedModel.getMessages())).isFalse();
+
+        final DMNModel importingModel = runtime.getModel("https://kie.org/dmn/_7CBF2741-CA67-4979-A383-49D787FB3642",
+                                                         "DMN_5AE0999E-35B2-45C1-9B02-B9413CA3442C");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(importingModel.getMessages())).isFalse();
+
+        final DMNContext context = runtime.newContext();
+        context.set("a input", 21);
+
+        final DMNResult evaluateAll = runtime.evaluateAll(importingModel, context);
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("a decision2")).isNotNull();
+        assertThat(evaluateAll.getDecisionResultByName("a decision2").getResult()).isEqualTo(BigDecimal.valueOf(42));
+    }
 
     @ParameterizedTest
     @MethodSource("params")
@@ -374,7 +497,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
                                                                                        "ModelC.dmn");
 
         final DMNModelImpl modelA = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "Say hello 1ID1D");
-        assertThat(modelA.getImportChainAliases()).hasSize(0);
+        assertThat(modelA.getImportChainAliases()).isEmpty();
 
         final DMNModelImpl modelB = (DMNModelImpl) getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c", "Model B");
         assertThat(modelB.getImportChainAliases()).hasSize(1);
@@ -547,5 +670,63 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Is A Bigger?").getResult()).isEqualTo(Boolean.TRUE);
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importNestedModelsWithUnnamedImport(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_5/nested_imports";
+        String dmnMain = String.format("%s/DMNMainUnnamedImport.dmn", basePath);
+        String dmn1 = String.format("%s/DMN1.dmn", basePath);
+        String dmn2 = String.format("%s/DMN2.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmn1,
+                                                                                       dmn2);
+        String dmnMainNamespace = "https://kie.org/dmn/_84840481-6BE8-4C7D-AB86-CE933B145B9B";
+        String dmnMainModelName = "MainUnnamedImport";
+        String dmn1Namespace = "https://kie.org/dmn/_9330C60C-CD07-40EB-98BA-E56D186CCDE1";
+        String dmn1ModelName = "DMN_CDC9A17D-C69A-4F6A-8366-FF9638F398B1";
+        String dmn2Namespace = "https://kie.org/dmn/_484279FA-4F72-4596-A18A-6F265AC06DAD";
+        String dmn2ModelName = "DMN_8F060061-5BD2-400A-99B4-A54E371875C0";
+        getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
+        getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
+        getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+
+        final DMNModel dmnModel = runtime.getModel(dmnMainNamespace,
+                                                   dmnMainModelName);
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+        assertThat(evaluateAll.getDecisionResultByName("DecisionMain").getResult()).isEqualTo(Boolean.TRUE);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importNestedModelsWithNamedImport(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String basePath = "valid_models/DMNv1_5/nested_imports";
+        String dmnMain = String.format("%s/DMNMainNamedImport.dmn", basePath);
+        String dmn1 = String.format("%s/DMN1.dmn", basePath);
+        String dmn2 = String.format("%s/DMN2.dmn", basePath);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(dmnMain,
+                                                                                       this.getClass(),
+                                                                                       dmn1,
+                                                                                       dmn2);
+        String dmnMainNamespace = "https://kie.org/dmn/_84840481-6BE8-4C7D-AB86-CE933B145B9B";
+        String dmnMainModelName = "MainNamedImport";
+        String dmn1Namespace = "https://kie.org/dmn/_9330C60C-CD07-40EB-98BA-E56D186CCDE1";
+        String dmn1ModelName = "DMN_CDC9A17D-C69A-4F6A-8366-FF9638F398B1";
+        String dmn2Namespace = "https://kie.org/dmn/_484279FA-4F72-4596-A18A-6F265AC06DAD";
+        String dmn2ModelName = "DMN_8F060061-5BD2-400A-99B4-A54E371875C0";
+        getAndAssertModelNoErrors(runtime, dmn1Namespace, dmn1ModelName);
+        getAndAssertModelNoErrors(runtime, dmn2Namespace, dmn2ModelName);
+        getAndAssertModelNoErrors(runtime, dmnMainNamespace, dmnMainModelName);
+        final DMNModel dmnModel = runtime.getModel(dmnMainNamespace,
+                                                   dmnMainModelName);
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, runtime.newContext());
+        assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
+        assertThat(evaluateAll.getDecisionResultByName("DecisionMain").getResult()).isEqualTo(Boolean.TRUE);
+    }
+
 }
 

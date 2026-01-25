@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,8 +33,12 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
 
+    public PhreakGroupByNode(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, ReteEvaluator reteEvaluator, Accumulate accumulate, TupleImpl leftTuple) {
+    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, Accumulate accumulate, TupleImpl leftTuple) {
         GroupByContext accContext = new GroupByContext();
         leftTuple.setContextObject( accContext );
         // A lot less is done here, compared to super, as it needs to be done on demand during the Group creation.
@@ -59,7 +63,6 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                              final Accumulate accumulate,
                                              final TupleImpl leftTuple,
                                              final PropagationContext context,
-                                             final ReteEvaluator reteEvaluator,
                                              final AccumulateMemory memory,
                                              final AccumulateNode.BaseAccumulation accctx,
                                              final TupleSets trgLeftTuples,
@@ -75,8 +78,8 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
 
             Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, reteEvaluator);
 
-            propagateResult( accNode, sink, leftTuple, context, reteEvaluator, memory, trgLeftTuples, stagedLeftTuples,
-                             contextEntry.getKey(), result, contextEntry, propagationContext, false ); // don't want to propagate null
+            propagateResult( accNode, sink, leftTuple, context, memory, trgLeftTuples, stagedLeftTuples, contextEntry.getKey(),
+                             result, contextEntry, propagationContext, false ); // don't want to propagate null
 
             contextEntry.setToPropagate(false);
         }
@@ -88,7 +91,6 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                             final TupleImpl leftTuple,
                                             final TupleImpl rightParent,
                                             final TupleImpl match,
-                                            final ReteEvaluator reteEvaluator,
                                             final AccumulateMemory am,
                                             final AccumulateNode.BaseAccumulation accctx,
                                             final boolean reaccumulate) {
@@ -108,7 +110,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                     TupleImpl         rightTuple  = childMatch.getRightParent();
                     FactHandle childHandle = rightTuple.getFactHandle();
                     TupleImpl tuple       = leftTuple;
-                    if (accNode.isRightInputIsRiaNode()) {
+                    if (accNode.getRightInput().inputIsTupleToObjectNode()) {
                         // if there is a subnetwork, handle must be unwrapped
                         tuple = rightTuple;
                         childHandle = rightTuple.getFactHandleForEvaluation();
@@ -128,7 +130,6 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                      leftTuple,
                                      null,
                                      null,
-                                     reteEvaluator,
                                      am,
                                      accctx,
                                      true);

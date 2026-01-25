@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -89,13 +89,13 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P26M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", ComparablePeriod.parse( "P1Y8M" ) , null},
                 { "@\"xyz\"", null , FEELEvent.Severity.ERROR },
-                { "(@\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , null},
-                { "(@\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
-                { "(@\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
+                { "(@\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , FEELEvent.Severity.WARN},
+                { "(@\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , FEELEvent.Severity.WARN},
+                { "(@\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , FEELEvent.Severity.WARN},
                 { "-duration( \"P2Y2M\" )", ComparablePeriod.parse( "-P2Y2M" ) , null},
                 {"@\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-10T10" +
                                                                                                                ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
-                {"@\"10:15:00@Australia/Melbourne\"", ZoneTime.of(LocalTime.of(10, 15), ZoneId.of("Australia/Melbourne"), true), null},
+                {"@\"10:15:00@Australia/Melbourne\"", ZoneTime.of(LocalTime.of(10, 15), ZoneId.of("Australia/Melbourne"), true), FEELEvent.Severity.WARN},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
@@ -196,21 +196,21 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
                 { "@\"-P1D\" + @\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-09T10" +
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
-                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
-                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
-                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), null},
-                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
+                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
 
 
-                { "@\"10:15:00@Australia/Melbourne\" + @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" - @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"-P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"PT1H\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" - @\"PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"-PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"PT1H\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), FEELEvent.Severity.WARN},
 
-                {"string(@\"10:10@Australia/Melbourne\" + @\"PT1H\")", "11:10@Australia/Melbourne", null},
-                {"string(@\"10:10:00@Australia/Melbourne\" + @\"PT1H\")", "11:10:00@Australia/Melbourne", null},
+                {"string(@\"10:10@Australia/Melbourne\" + @\"PT1H\")", "11:10@Australia/Melbourne", FEELEvent.Severity.WARN},
+                {"string(@\"10:10:00@Australia/Melbourne\" + @\"PT1H\")", "11:10:00@Australia/Melbourne", FEELEvent.Severity.WARN},
 
 
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
@@ -270,6 +270,8 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date( 2016, 8, 2 ).month", BigDecimal.valueOf( 8 ) , null},
                 { "date( 2016, 8, 2 ).day", BigDecimal.valueOf( 2 ) , null},
                 { "date( 2017, 11, 8 ).weekday", BigDecimal.valueOf( 3 ), null},
+                { "date( 2025, 7, 3 ).value", BigDecimal.valueOf(1751500800), null},
+                { "date( 1970, 1, 1 ) + duration(\"PT1751500800S\")", LocalDate.of(2025,7,3), null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").year", BigDecimal.valueOf( 2016 ) , null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").month", BigDecimal.valueOf( 7 ) , null},
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").day", BigDecimal.valueOf( 29 ) , null},
@@ -280,6 +282,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\").time offset", Duration.parse( "PT-5H" ), null},
                 { "date and time(\"2018-12-10T10:30:00@Europe/Rome\").timezone", "Europe/Rome", null},
                 { "date and time(\"2018-12-10T10:30:00@Etc/UTC\").timezone", "Etc/UTC", null},
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").value", BigDecimal.valueOf(1469789303) , null},
+                { "date and time(\"2025-07-08T10:00:00Z\").value", BigDecimal.valueOf(1751968800) , null},
+                { "date and time(\"1970-01-01T00:00:00Z\") + duration(\"PT1751968800S\")", ZonedDateTime.of(2025, 7, 8, 10, 0, 0, 0, ZoneId.of("Z").normalized()) , null},
                 { "time(\"13:20:00-05:00\").hour", BigDecimal.valueOf( 13 ), null},
                 { "time(\"13:20:00-05:00\").minute", BigDecimal.valueOf( 20 ), null},
                 { "time(\"13:20:00-05:00\").second", BigDecimal.valueOf( 0 ), null},
@@ -287,18 +292,24 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , null},
                 { "time(\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
                 { "time(\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
+                { "time(\"13:20:00-05:00\").value", BigDecimal.valueOf(48000), null},
+                { "time(\"01:01:01\").value", BigDecimal.valueOf(3661), null},
+                { "time(\"00:00:00\") + duration(\"PT3661S\")", LocalTime.of(1, 1, 1), null},
                 { "duration( \"P2DT20H14M\" ).days", BigDecimal.valueOf(2) , null},
                 { "duration( \"P2DT20H14M\" ).hours", BigDecimal.valueOf(20) , null},
                 { "duration( \"P2DT20H14M\" ).minutes", BigDecimal.valueOf(14) , null},
                 { "duration( \"P2DT20H14M5S\" ).seconds", BigDecimal.valueOf(5) , null},
+                { "duration( \"P1DT1H\" ).value", BigDecimal.valueOf(90000) , null},
                 { "duration(\"P1Y\").years", BigDecimal.valueOf(1) , null},
                 { "duration(\"P1Y\").months", BigDecimal.valueOf(0) , null},
                 { "duration(\"P1Y\").days", null , null},
                 { "duration(\"P1Y\").hours", null , null},
                 { "duration(\"P1Y\").minutes", null , null},
                 { "duration(\"P1Y\").seconds", null , null},
-                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).years", BigDecimal.valueOf(1) , null},
-                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) , null},
+                { "duration(\"P1Y1M\").value", BigDecimal.valueOf(13) , null},
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).years", BigDecimal.valueOf(1), null},
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8), null},
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).value", BigDecimal.valueOf(20), null},
                 { "date and time(\"2017-05-14\")", LocalDateTime.of( 2017, 5, 14, 0, 0, 0, 0 ) , null},
                 { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null},
                 { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", OffsetTime::from ) , null },

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,14 +33,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.assertj.core.api.Condition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
-public class AbstractExpressionEvaluatorTest {
+class AbstractExpressionEvaluatorTest {
 
     private static final JsonNodeFactory factory = JsonNodeFactory.instance;
     private AbstractExpressionEvaluator expressionEvaluator;
@@ -48,27 +48,27 @@ public class AbstractExpressionEvaluatorTest {
 	private Condition<ExpressionEvaluatorResult> successful= new Condition<>(x -> x.isSuccessful(), "isSuccessful");
 	private Condition<ExpressionEvaluatorResult> notSuccessful= new Condition<>(x -> !x.isSuccessful(), "isSuccessful");
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         expressionEvaluator = new FakeExpressionEvaluator();
     }
     
     @Test
-    public void evaluateLiteralExpression() {
+    void evaluateLiteralExpression() {
         assertThat(expressionEvaluator.evaluateLiteralExpression(null, String.class.getCanonicalName(), null)).isNull();
         assertThat(expressionEvaluator.evaluateLiteralExpression(null, List.class.getCanonicalName(), null)).isNull();
         assertThat(expressionEvaluator.evaluateLiteralExpression(null, Map.class.getCanonicalName(), null)).isNull();
     }
 
     @Test
-    public void evaluateUnaryExpression() {
+    void evaluateUnaryExpression() {
         assertThat(expressionEvaluator.evaluateUnaryExpression(null, null, String.class)).is(successful);
         assertThat(expressionEvaluator.evaluateUnaryExpression(null, null, Map.class)).is(successful);
         assertThat(expressionEvaluator.evaluateUnaryExpression(null, null, List.class)).is(successful);
     }
 
     @Test
-    public void convertList() {
+    void convertList() {
         ArrayNode jsonNodes = new ArrayNode(factory);
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.put(VALUE, "data");
@@ -80,7 +80,7 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void convertObject_simpleList() {
+    void convertObject_simpleList() {
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.put("key1", "Polissena");
         objectNode.put("key2", "Antonia");
@@ -93,9 +93,8 @@ public class AbstractExpressionEvaluatorTest {
         assertThat(resultMap).hasSize(2).containsEntry("key1", "Polissena").containsEntry("key2", "Antonia");
     }
 
-    
     @Test
-    public void convertObject_singleLevel() {
+    void convertObject_singleLevel() {
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.put("age", "1");
         objectNode.put("name", "FS");
@@ -109,7 +108,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void convertObject_nestedObject() {
+    void convertObject_nestedObject() {
         ObjectNode objectNode = new ObjectNode(factory);
         ObjectNode nestedObject = new ObjectNode(factory);
         objectNode.set("nested", nestedObject);
@@ -127,7 +126,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void convertObject_nestedList() {
+    void convertObject_nestedList() {
         ObjectNode objectNode = new ObjectNode(factory);
         ArrayNode jsonNodes = new ArrayNode(factory);
         objectNode.set("listField", jsonNodes);
@@ -148,12 +147,12 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void isSimpleTypeNode_emptyNode() {
+    void isSimpleTypeNode_emptyNode() {
         assertThat(expressionEvaluator.isSimpleTypeNode(new ArrayNode(factory))).isFalse();
     }
     
     @Test
-    public void isSimpleTypeNode_nodeWithValueField() {
+    void isSimpleTypeNode_nodeWithValueField() {
         ObjectNode jsonNode = new ObjectNode(factory);
         jsonNode.set(VALUE, new TextNode("test"));
 
@@ -161,7 +160,7 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void isSimpleTypeNode_nodeWithValueFieldAndOtherField() {
+    void isSimpleTypeNode_nodeWithValueFieldAndOtherField() {
         ObjectNode jsonNode = new ObjectNode(factory);
         jsonNode.set(VALUE, new TextNode("test"));
 
@@ -169,7 +168,7 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void isSimpleTypeNode_nodeWithOtherField() {
+    void isSimpleTypeNode_nodeWithOtherField() {
         ObjectNode jsonNode = new ObjectNode(factory);
         jsonNode.set("otherField", new TextNode("testValue"));
         jsonNode.set(VALUE, new TextNode("test"));
@@ -178,14 +177,14 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void getSimpleTypeNodeTextValue_noSimpleTypeCausesException() {
+    void getSimpleTypeNodeTextValue_noSimpleTypeCausesException() {
         assertThatThrownBy(() -> expressionEvaluator.getSimpleTypeNodeTextValue(new ArrayNode(factory)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Parameter does not contains a simple type");
     }
 
     @Test
-    public void getSimpleTypeNodeTextValue_textNode() {
+    void getSimpleTypeNodeTextValue_textNode() {
         ObjectNode jsonNode = new ObjectNode(factory);
         jsonNode.set(VALUE, new TextNode("testValue"));
 
@@ -193,7 +192,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void getSimpleTypeNodeTextValue_intNode() {
+    void getSimpleTypeNodeTextValue_intNode() {
         ObjectNode jsonNode = new ObjectNode(factory);
         jsonNode.set(VALUE, new IntNode(10));
 
@@ -201,21 +200,21 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void isNodeEmpty_objectNode() {
+    void isNodeEmpty_objectNode() {
         ObjectNode objectNode = new ObjectNode(factory);
         
         assertThat(expressionEvaluator.isNodeEmpty(objectNode)).isTrue();
     }
 
     @Test
-    public void isNodeEmpty_arrayNode() {
+    void isNodeEmpty_arrayNode() {
         ArrayNode arrayNode = new ArrayNode(factory);
 
         assertThat(expressionEvaluator.isNodeEmpty(arrayNode)).isTrue();
     }
 
     @Test
-    public void isNodeEmpty_objectNodeWithArrayNode() {
+    void isNodeEmpty_objectNodeWithArrayNode() {
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.set("empty array", new ArrayNode(factory));
 
@@ -223,7 +222,7 @@ public class AbstractExpressionEvaluatorTest {
     }
 
     @Test
-    public void isNodeEmpty_objectNodeWithTextNode() {
+    void isNodeEmpty_objectNodeWithTextNode() {
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.set("key", new TextNode(VALUE));
 
@@ -232,7 +231,7 @@ public class AbstractExpressionEvaluatorTest {
     
 
     @Test
-    public void isNodeEmpty_arrayNodeWithTextNode() {
+    void isNodeEmpty_arrayNodeWithTextNode() {
         ArrayNode arrayNode = new ArrayNode(factory);
         arrayNode.add(new TextNode(VALUE));
         
@@ -240,7 +239,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void isNodeEmpty_textNode() {
+    void isNodeEmpty_textNode() {
         assertThat(expressionEvaluator.isNodeEmpty(new TextNode(""))).isTrue();
         assertThat(expressionEvaluator.isNodeEmpty(new TextNode(null))).isTrue();
         assertThat(expressionEvaluator.isNodeEmpty(new TextNode(VALUE))).isFalse();
@@ -248,14 +247,14 @@ public class AbstractExpressionEvaluatorTest {
     
     
     @Test
-    public void isListEmpty_noNode() {
+    void isListEmpty_noNode() {
         ArrayNode json = new ArrayNode(factory);
         
         assertThat(expressionEvaluator.isListEmpty(json)).isTrue();
     }
 
     @Test
-    public void isListEmpty_emptyNode() {
+    void isListEmpty_emptyNode() {
         ArrayNode json = new ArrayNode(factory);
         ObjectNode nestedNode = new ObjectNode(factory);
         json.add(nestedNode);
@@ -265,7 +264,7 @@ public class AbstractExpressionEvaluatorTest {
 
     
     @Test
-    public void isListEmpty_nodeWithEmptyField() {
+    void isListEmpty_nodeWithEmptyField() {
         ArrayNode json = new ArrayNode(factory);
         ObjectNode nestedNode = new ObjectNode(factory);
         json.add(nestedNode);
@@ -275,7 +274,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void isListEmpty_nodeWithNonEmptyField() {
+    void isListEmpty_nodeWithNonEmptyField() {
         ArrayNode json = new ArrayNode(factory);
         ObjectNode nestedNode = new ObjectNode(factory);
         json.add(nestedNode);
@@ -286,14 +285,14 @@ public class AbstractExpressionEvaluatorTest {
     
 
     @Test
-    public void isObjectEmpty_nodeWithNoField() {
+    void isObjectEmpty_nodeWithNoField() {
         ObjectNode json = new ObjectNode(factory);
 
         assertThat(expressionEvaluator.isObjectEmpty(json)).isTrue();
     }
     
     @Test
-    public void isObjectEmpty_nodeWithEmptyField() {
+    void isObjectEmpty_nodeWithEmptyField() {
         ObjectNode json = new ObjectNode(factory);
         ObjectNode nestedNode = new ObjectNode(factory);
         json.set("emptyField", nestedNode);
@@ -302,7 +301,7 @@ public class AbstractExpressionEvaluatorTest {
     }
     
     @Test
-    public void isObjectEmpty_nodeWithNonEmptyField() {
+    void isObjectEmpty_nodeWithNonEmptyField() {
         ObjectNode json = new ObjectNode(factory);
         ObjectNode nestedNode = new ObjectNode(factory);
         json.set("emptyField", nestedNode);
@@ -313,14 +312,14 @@ public class AbstractExpressionEvaluatorTest {
 
 
     @Test
-    public void isEmptyText() {
+    void isEmptyText() {
         assertThat(expressionEvaluator.isEmptyText(new TextNode(""))).isTrue();
         assertThat(expressionEvaluator.isEmptyText(new TextNode(VALUE))).isFalse();
         assertThat(expressionEvaluator.isEmptyText(new ObjectNode(factory))).isTrue();
     }
 
     @Test
-    public void isStructuredInput() {
+    void isStructuredInput() {
         assertThat(expressionEvaluator.isStructuredInput(List.class.getCanonicalName())).isTrue();
         assertThat(expressionEvaluator.isStructuredInput(ArrayList.class.getCanonicalName())).isTrue();
         assertThat(expressionEvaluator.isStructuredInput(LinkedList.class.getCanonicalName())).isTrue();

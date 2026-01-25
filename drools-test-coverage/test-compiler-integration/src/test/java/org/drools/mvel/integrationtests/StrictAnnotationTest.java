@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.drl.parser.DrlParser;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -141,17 +142,12 @@ public class StrictAnnotationTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, str);
         KieSession ksession = kbase.newKieSession(conf, null);
         try {
-            final List list = new ArrayList();
-
-            AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-                public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
-                    list.add("activated");
-                }
-            };
-            ksession.addEventListener(agendaEventListener);
+            TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+            ksession.addEventListener(listener);
 
             ksession.insert("test");
-            assertThat(list.size()).isEqualTo(2);
+
+            assertThat(listener.getMatchCreated()).hasSize(2);
         } finally {
             ksession.dispose();
         }

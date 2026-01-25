@@ -17,6 +17,7 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.util.ArrayList;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,7 @@ import org.mockito.verification.VerificationMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Reader;
-import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -65,18 +63,23 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void getId() {
+    void getReferenceId() {
         String localPart = "reference";
         DMNElementReference elementReference = new TDMNElementReference();
         elementReference.setHref(String.format("%s#%s", NAMESPACE, localPart));
         elementReference.setParent(parent);
-        String retrieved = DMNCompilerImpl.getId(elementReference);
+        String retrieved = DMNCompilerImpl.getReferenceId(elementReference);
         assertThat(retrieved).isNotNull().isEqualTo(localPart);
 
         String expected = String.format("%s#%s", "http://a-different-namespace", localPart);
         elementReference.setHref(expected);
-        retrieved = DMNCompilerImpl.getId(elementReference);
+        retrieved = DMNCompilerImpl.getReferenceId(elementReference);
         assertThat(retrieved).isNotNull().isEqualTo(expected);
+
+        expected = String.format("#%s", localPart);
+        elementReference.setHref(expected);
+        retrieved = DMNCompilerImpl.getReferenceId(elementReference);
+        assertThat(retrieved).isNotNull().isEqualTo(localPart);
     }
 
     @Test
@@ -216,7 +219,7 @@ class DMNCompilerImplTest {
             dMNCompiler.iterateImports(dmnDefs, null, model, null );
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), dmnInvocation);
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.whichImportType(Mockito.any()), times(1));
-            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), (Function<String, Reader>) Mockito.any(), Mockito.any()), pmmlInvocation);
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), pmmlInvocation);
             mockDMNImportsUtil.verify(() -> DMNImportsUtil.logErrorMessage(Mockito.any(), Mockito.any()), logErrorInvocation);
         }
     }

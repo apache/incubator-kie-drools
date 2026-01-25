@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -112,7 +112,7 @@ public class StudentProxyImpl2 extends TraitProxyImpl implements IStudent {
     }
 
     public void setD(double d) {
-        bit_writer.setDoubleValue( object, d );
+        bit_writer.setDecimalValue( object, d );
     }
 
     // get/set impl depends on bitmask

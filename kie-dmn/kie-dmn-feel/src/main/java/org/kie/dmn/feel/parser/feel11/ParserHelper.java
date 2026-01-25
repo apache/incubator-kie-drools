@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,7 +46,7 @@ import org.kie.dmn.feel.lang.types.GenRangeType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.FilterPathExpressionContext;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.PathDescendantFilterExpressionContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.QualifiedNameContext;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.StringEvalHelper;
@@ -172,6 +172,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         if (isFeatDMN12weekday()) {
                             // Table 60 spec DMN v1.2
                             this.currentScope.define(new VariableSymbol("weekday", BuiltInType.NUMBER));
@@ -183,6 +184,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case DATE_TIME:
                         this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
@@ -197,6 +199,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol("time offset", BuiltInType.DURATION));
                         this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case DURATION:
                         // TODO might need to distinguish between `years and months duration` and `days and time duration`
@@ -206,6 +209,7 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "hours", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "minutes", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "seconds", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "value", BuiltInType.NUMBER ));
                         break;
                     case RANGE:
                         this.currentScope.define(new VariableSymbol("start included", BuiltInType.BOOLEAN));
@@ -307,10 +311,10 @@ public class ParserHelper {
      * a specific heuristic for scope retrieval for filterPathExpression
      */
     public int fphStart(ParserRuleContext ctx, Parser parser) {
-        if (!(ctx instanceof FEEL_1_1Parser.FilterPathExpressionContext)) { // I expect in `var[1].name` for this param ctx=`var[1]` to be a filterPathExpression
+        if (!(ctx instanceof FEEL_1_1Parser.PathDescendantFilterExpressionContext)) { // I expect in `var[1].name` for this param ctx=`var[1]` to be a filterPathExpression
             return 0;
         }
-        FilterPathExpressionContext ctx0 = (FEEL_1_1Parser.FilterPathExpressionContext) ctx;
+        PathDescendantFilterExpressionContext ctx0 = (FEEL_1_1Parser.PathDescendantFilterExpressionContext) ctx;
         boolean ctxSquared = ctx0.filter != null && ctx0.n0 != null;
         if (!ctxSquared) { // I expect `var[1]` to be in the squared form `...[...]`
             return 0;

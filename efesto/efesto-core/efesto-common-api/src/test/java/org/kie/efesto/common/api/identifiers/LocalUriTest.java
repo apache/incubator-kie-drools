@@ -42,7 +42,6 @@ public class LocalUriTest {
         LocalUri hpath = LocalUri.Root.append("example").append("some-id").append("instances").append("some-instance-id");
         LocalUri parsedHPath = LocalUri.parse(path);
         assertThat(parsedHPath).isEqualTo(hpath);
-
     }
 
     @Test

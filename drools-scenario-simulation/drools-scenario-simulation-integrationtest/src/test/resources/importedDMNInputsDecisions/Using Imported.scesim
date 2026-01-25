@@ -802,7 +802,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/test/resources/importedDMNInputsDecisions/Using Imported.dmn</dmnFilePath>
+    <dmnFilePath>../../../main/resources/importedDMNInputsDecisions/Using Imported.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kiegroup.org/dmn/_7120AA2F-BEB6-4CB1-BCC7-427A17AEF71D</dmnNamespace>
     <dmnName>Using Imported</dmnName>

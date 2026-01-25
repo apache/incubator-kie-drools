@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,19 +33,9 @@ public interface WriteAccessor extends Externalizable {
 
     void setValue( Object bean, Object value );
 
-    void setCharValue( Object bean, char value );
+    void setWholeNumberValue(Object bean, long value );
 
-    void setIntValue( Object bean, int value );
-
-    void setByteValue( Object bean, byte value );
-
-    void setShortValue( Object bean, short value );
-
-    void setLongValue( Object bean, long value );
-
-    void setFloatValue( Object bean, float value );
-
-    void setDoubleValue( Object bean, double value );
+    void setDecimalValue(Object bean, double value );
 
     void setBooleanValue( Object bean, boolean value );
 

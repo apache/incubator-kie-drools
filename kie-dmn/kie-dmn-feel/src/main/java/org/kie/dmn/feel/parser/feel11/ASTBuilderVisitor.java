@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -131,7 +131,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
         BaseNode left = visit( ctx.powerExpression() );
-        BaseNode right = visit( ctx.filterPathExpression() );
+        BaseNode right = visit( ctx.pathDescendantFilterExpression() );
         String op = ctx.op.getText();
         return ASTBuilderFactory.newInfixOpNode( ctx, left, op, right );
     }
@@ -184,16 +184,19 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
-        UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
-        return unaryOperator.equals(UnaryOperator.EQ) ? ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED) :
-                ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
+        return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
     @Override
     public BaseNode visitPositiveUnaryTestIneqInterval(FEEL_1_1Parser.PositiveUnaryTestIneqIntervalContext ctx) {
         BaseNode value = visit(ctx.endpoint());
         String op = ctx.op.getText();
+        if (value instanceof ListNode) {
+            return ASTBuilderFactory.newUnaryTestNode(ctx, op, value);
+        }
         switch (UnaryOperator.determineOperator(op)) {
+            case EQ:
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);
             case GT:
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
             case GTE:
@@ -640,17 +643,22 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitFilterPathExpression(FEEL_1_1Parser.FilterPathExpressionContext ctx) {
+    public BaseNode visitPathDescendantFilterExpression(FEEL_1_1Parser.PathDescendantFilterExpressionContext ctx) {
         if( ctx.filter != null ) {
-            BaseNode expr = visit( ctx.filterPathExpression() );
+            BaseNode expr = visit( ctx.pathDescendantFilterExpression() );
             BaseNode filter = visit( ctx.filter );
             expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
             return expr;
-        } else if( ctx.qualifiedName() != null ) {
-            BaseNode expr = visit( ctx.filterPathExpression() );
+        } else if (ctx.n1 != null) {
+            BaseNode expr = visit( ctx.pathDescendantFilterExpression());
             BaseNode path = visit( ctx.qualifiedName() );
             return ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
-        } else {
+        } else if (ctx.n2 != null) {
+            BaseNode expr = visit( ctx.pathDescendantFilterExpression() );
+            BaseNode path = visit( ctx.qualifiedName() );
+            return ASTBuilderFactory.newDescendantExpressionNode( ctx, expr, path );
+        }
+        else {
             return visit( ctx.unaryExpression() );
         }
     }

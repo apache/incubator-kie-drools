@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,10 +21,11 @@ package org.kie.dmn.model.api;
 import java.util.List;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.api.dmndi.DMNDI;
 
-public interface Definitions extends NamedElement {
+public interface Definitions extends NamedElement, HasExpressionLanguage {
 
     List<Import> getImport();
 
@@ -49,11 +50,11 @@ public interface Definitions extends NamedElement {
      * Utility method to ensure any QName references contained inside the ItemDefinitions have the namespace correctly valorized, also accordingly to the prefix.
      * (Even in the case of {@link XMLConstants.DEFAULT_NS_PREFIX} it will take the DMN model namespace for the no-prefix accordingly.)
      */
-    void normalize();
-
-    String getExpressionLanguage();
-
-    void setExpressionLanguage(String value);
+    default void normalize() {
+        for (ItemDefinition itemDefinition : this.getItemDefinition()) {
+            processQNameURIs(itemDefinition, this.getNamespace());
+        }
+    }
 
     String getTypeLanguage();
 
@@ -80,5 +81,17 @@ public interface Definitions extends NamedElement {
      * @since DMN v1.2
      */
     void setDMNDI(DMNDI value);
+
+    private static void processQNameURIs(ItemDefinition iDef, String defaultNamespace) {
+        final QName typeRef = iDef.getTypeRef();
+        if (typeRef != null && XMLConstants.NULL_NS_URI.equals(typeRef.getNamespaceURI())) {
+            String prefix = typeRef.getPrefix();
+            final String namespace = prefix != null && !prefix.isEmpty() ? iDef.getNamespaceURI(prefix) : defaultNamespace;
+            iDef.setTypeRef(new QName(namespace, typeRef.getLocalPart(), typeRef.getPrefix()));
+        }
+        for (ItemDefinition comp : iDef.getItemComponent()) {
+            processQNameURIs(comp, defaultNamespace);
+        }
+    }
 
 }

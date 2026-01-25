@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,8 +23,8 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Event;
 import org.drools.testcoverage.common.model.EventA;
 import org.drools.testcoverage.common.model.EventB;
@@ -90,18 +90,10 @@ public class FusionAfterBeforeTest {
             ksession.dispose();
         }
 
-        assertThat(listener.isRuleFired("AfterMessageEvent")).as("Rule 'AfterMessageEvent' was no fired!").isTrue();
-        assertThat(listener.isRuleFired("BeforeMessageEvent")).as("Rule 'BeforeMessageEvent' was no fired!").isTrue();
+        assertThat(listener.getAfterMatchFired()).filteredOn(s -> s.equals("AfterMessageEvent")).hasSize(2);
+        assertThat(listener.getAfterMatchFired()).filteredOn(s -> s.equals("BeforeMessageEvent")).hasSize(2);
+        
 
-        // each rules should be fired 2 times
-        int firedCount = 2;
-        int actuallyFired = listener.ruleFiredCount("AfterMessageEvent");
-        assertThat(firedCount).as("Rule 'AfterMessageEvent' should be fired 2 times, but was fired "
-        + firedCount + " time(s)!").isEqualTo(actuallyFired);
-
-        firedCount = listener.ruleFiredCount("BeforeMessageEvent");
-        assertThat(firedCount).as("Rule 'BeforeMessageEvent' should be fired 2 times, but was fired "
-        + firedCount + " time(s)!").isEqualTo(actuallyFired);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")

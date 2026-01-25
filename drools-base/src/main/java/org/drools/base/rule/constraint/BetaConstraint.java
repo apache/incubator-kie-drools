@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,6 @@
 package org.drools.base.rule.constraint;
 
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.ContextEntry;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface BetaConstraint<C>

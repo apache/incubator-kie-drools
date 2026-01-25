@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,25 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import javax.xml.namespace.QName;
+import org.kie.dmn.model.impl.AbstractTExpression;
 
-import org.kie.dmn.model.api.Expression;
-
-public class TExpression extends TDMNElement implements Expression {
-
-    /**
-     * align with internal model
-     */
-    protected QName typeRef;
-
-    @Override
-    public QName getTypeRef() {
-        return this.typeRef;
-    }
-
-    @Override
-    public void setTypeRef(QName value) {
-        this.typeRef = value;
-    }
+public class TExpression extends AbstractTExpression implements URIFEELed {
 
 }

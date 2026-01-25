@@ -35,7 +35,7 @@
 
   <properties>
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
-    <version.testcontainers>1.20.1</version.testcontainers>
+    <version.testcontainers>2.0.3</version.testcontainers>
   </properties>
 
   <dependencyManagement>
@@ -49,7 +49,13 @@
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
-        <artifactId>junit-jupiter</artifactId>
+        <artifactId>testcontainers-junit-jupiter</artifactId>
+        <version>${version.testcontainers}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-jdbc</artifactId>
         <version>${version.testcontainers}</version>
         <scope>test</scope>
       </dependency>
@@ -117,7 +123,14 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- There is an exclude for 1.x testcontainers jdbc library in infinispan-server-testdriver-core dependency.
+         This brings in the 2.x version of it. -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-jdbc</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -137,6 +150,10 @@
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>jdbc</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

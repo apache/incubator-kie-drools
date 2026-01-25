@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,19 +46,9 @@ public interface ReadAccessor {
 
     Object getValue(ValueResolver valueResolver, Object object);
 
-    char getCharValue(ValueResolver valueResolver, Object object);
+    long getWholeNumberValue(ValueResolver valueResolver, Object object);
 
-    int getIntValue(ValueResolver valueResolver, Object object);
-
-    byte getByteValue(ValueResolver valueResolver, Object object);
-
-    short getShortValue(ValueResolver valueResolver, Object object);
-
-    long getLongValue(ValueResolver valueResolver, Object object);
-
-    float getFloatValue(ValueResolver valueResolver, Object object);
-
-    double getDoubleValue(ValueResolver valueResolver, Object object);
+    double getDecimalValue(ValueResolver valueResolver, Object object);
 
     boolean getBooleanValue(ValueResolver valueResolver, Object object);
 

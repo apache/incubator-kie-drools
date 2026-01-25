@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -44,10 +44,17 @@ import org.kie.api.event.rule.MatchCancelledCause;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakRuleTerminalNode {
-    public void doNode(TerminalNode rtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       RuleExecutor executor) {
+
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(ActivationsManager activationsManager,
+                       RuleExecutor executor,
+                       TerminalNode rtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(activationsManager, srcLeftTuples, executor);
         }
@@ -76,7 +83,7 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleInsert(rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
+            doLeftTupleInsert(reteEvaluator, rtnNode, executor, activationsManager, ruleAgendaItem, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -92,33 +99,31 @@ public class PhreakRuleTerminalNode {
         return rule1.getName().equals(rule2.getName()) && rule1.getPackageName().equals(rule2.getPackageName()) &&
                ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
     }
-    public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
+    public static void doLeftTupleInsert(ReteEvaluator reteEvaluator,
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleAgendaItem ruleAgendaItem,
                                          RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addActiveTuple(leftTuple);
             return;
         }
 
-        PropagationContext pctx;
-        if ( rtnNode.getRule().isNoLoop() ) {
-            pctx = leftTuple.findMostRecentPropagationContext();
-            if ( sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
-                return;
-            }
-        } else {
-            pctx = leftTuple.getPropagationContext();
+        // most recent PropagationContext is required to maintain the right recency which triggers the match
+        PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
+        if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
+            return;
         }
 
         int salienceInt = getSalienceValue(rtnNode, ruleAgendaItem, leftTuple, reteEvaluator);
 
         activationsManager.createAgendaItem( leftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
 
-        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, activationsManager.getReteEvaluator());
+        activationsManager.getAgendaEventSupport().fireActivationCreated(leftTuple, reteEvaluator);
 
-        if ( rtnNode.getRule().isLockOnActive() && pctx.getType() != PropagationContext.Type.RULE_ADDITION ) {
-            pctx = leftTuple.findMostRecentPropagationContext();
+        if (  rtnNode.getRule().isLockOnActive() &&
+                leftTuple.getPropagationContext().getType() != PropagationContext.Type.RULE_ADDITION ) {
             InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
             if (blockedByLockOnActive(rtnNode.getRule(), pctx, agendaGroup)) {
                 activationsManager.getAgendaEventSupport().fireActivationCancelled(leftTuple, reteEvaluator, MatchCancelledCause.FILTER );
@@ -166,16 +171,18 @@ public class PhreakRuleTerminalNode {
         for (RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             RuleTerminalNodeLeftTuple next = (RuleTerminalNodeLeftTuple) leftTuple.getStagedNext();
 
-            doLeftTupleUpdate(rtnNode, executor, activationsManager, leftTuple);
+            doLeftTupleUpdate(reteEvaluator, rtnNode, executor, activationsManager, leftTuple);
 
             leftTuple.clearStaged();
             leftTuple = next;
         }
     }
 
-    public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
-                                         ActivationsManager activationsManager, RuleTerminalNodeLeftTuple leftTuple) {
-        ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
+    public static void doLeftTupleUpdate(ReteEvaluator reteEvaluator, 
+                                         TerminalNode rtnNode, 
+                                         RuleExecutor executor,
+                                         ActivationsManager activationsManager, 
+                                         RuleTerminalNodeLeftTuple leftTuple) {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
@@ -225,6 +232,7 @@ public class PhreakRuleTerminalNode {
 
                     leftTuple.update( salienceInt, pctx );
                     executor.modifyActiveTuple(leftTuple );
+                    activationsManager.addItemToActivationGroup( leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
             }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,13 +18,15 @@
  */
 package org.kie.dmn.core.util;
 
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.function.Function;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNTestUtil {
-
     private DMNTestUtil() {
         // No constructor for util class.
     }
@@ -34,5 +36,9 @@ public class DMNTestUtil {
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         return dmnModel;
+    }
+
+    public static Function<String, Reader> getRelativeResolver(String key, String content) {
+        return s -> s.equals(key) ? new StringReader(content) : null;
     }
 }

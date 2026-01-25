@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,7 +18,6 @@
  */
 package org.drools.core.util;
 
-import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.index.TupleList;
 
 public class TupleRBTree<K extends Comparable< ? super K>> {

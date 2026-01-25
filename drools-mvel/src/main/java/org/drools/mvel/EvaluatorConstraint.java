@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,7 +24,6 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IntervalProviderConstraint;
@@ -187,7 +186,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint<ContextEntry> imp
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             extractor = (ReadAccessor) in.readObject();
-            factHandle = ( InternalFactHandle ) in.readObject();
+            factHandle = ( FactHandle ) in.readObject();
             next = (ContextEntry) in.readObject();
             valueResolver = ( ValueResolver ) in .readObject();
         }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,9 +22,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
@@ -65,13 +69,23 @@ public final class DMNEventUtils {
 
     public static Map<String, Object> extractDSOutputDecisionsValues(AfterEvaluateDecisionServiceEvent event) {
         Map<String, Object> results = new LinkedHashMap<>();
-        List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
+        String namespace = event.getDecisionService().getModelNamespace();
+        List<String> decisionIDs = event.getDecisionService().getDecisionService().getOutputDecision().stream().map(DMNCompilerImpl::getReferenceId).toList();
+        DMNModel dmnModel = ((DMNResultImpl) event.getResult()).getModel();
         for (String id : decisionIDs) {
-            String decisionName = ((DMNResultImpl) event.getResult()).getModel().getDecisionById(id).getName();
+            DecisionNode decisionNode = retrieveDecisionNode(dmnModel, id, namespace);
+            String decisionName = decisionNode.getName();
             Object decisionResult = event.getResult().getContext().get(decisionName);
             results.put(decisionName, decisionResult);
         }
         return results;
+    }
+
+    static DecisionNode retrieveDecisionNode(DMNModel model, String id, String namespace) {
+        return Optional.ofNullable(model.getDecisionById(id))
+                .or(() -> Optional.ofNullable(model.getDecisionById(namespace + "#" + id)))
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("Decision node with ID '%s' was not found in the model.", id)));
     }
 
     private DMNEventUtils() {

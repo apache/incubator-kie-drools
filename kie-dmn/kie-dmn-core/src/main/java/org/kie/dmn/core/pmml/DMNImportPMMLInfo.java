@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,12 +35,12 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -60,15 +60,15 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
         this.i = i;
     }
 
-    public static Either<Exception, DMNImportPMMLInfo> from(InputStream is, DMNCompilerConfigurationImpl cc, DMNModelImpl model, Import i) {
+    public static Either<Exception, DMNImportPMMLInfo> from(InputStream pmmlInputStream, DMNCompilerConfigurationImpl cc, DMNModelImpl model, Import i) {
         try {
-            final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+            final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(pmmlInputStream);
             PMMLHeaderInfo h = PMMLInfo.pmmlToHeaderInfo(pmml, pmml.getHeader());
             for (DataField df : pmml.getDataDictionary().getDataFields()) {
                 String dfName =df.getName();
                 BuiltInType ft = getBuiltInTypeByDataType(df.getDataType());
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-                DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, model.getFeelDialect());
+                DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, model.getFeelDialect(), model.getDMNVersion());
                 List<UnaryTest> av = new ArrayList<>();
                 if (df.getValues() != null && !df.getValues().isEmpty() && ft != BuiltInType.UNKNOWN) {
                     final BuiltInType feelType = ft;
@@ -99,7 +99,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 model.getTypeRegistry().registerType(type);
             }
 
-            pmml.getModels().stream().forEach(m -> registerOutputFieldType(m, model, i));
+            pmml.getModels().forEach(m -> registerOutputFieldType(m, model, i));
 
             List<DMNPMMLModelInfo> models = pmml.getModels()
                                                 .stream()

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,21 +22,21 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
-import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
+import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.util.AbstractLinkedListNode;
 
 public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements SegmentNodeMemory {
 
     private              TupleMemory leftTupleMemory;
     private              TupleMemory rightTupleMemory;
-    private              TupleSets stagedRightTuples;
-    private              C         context;
+    private              TupleSets   stagedRightTuples;
+    private              C           context;
     // the node type this memory belongs to
-    private              int     nodeType;
-    private SegmentMemory              segmentMemory;
-    private long                       nodePosMaskBit;
-    private int                        counter;
-    private RiaPathMemory              riaRuleMemory;
+    private              int         nodeType;
+    private SegmentMemory            segmentMemory;
+    private long                     nodePosMaskBit;
+    private int                      counter;
+    private SubnetworkPathMemory     subnetworkPathMemory;
 
     public BetaMemory() {
     }
@@ -68,12 +68,12 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
         return this.leftTupleMemory;
     }
 
-    public RiaPathMemory getRiaRuleMemory() {
-        return riaRuleMemory;
+    public SubnetworkPathMemory getSubnetworkPathMemory() {
+        return subnetworkPathMemory;
     }
 
-    public void setRiaRuleMemory(RiaPathMemory riaRuleMemory) {
-        this.riaRuleMemory = riaRuleMemory;
+    public void setSubnetworkPathMemory(SubnetworkPathMemory subnetworkPathMemory) {
+        this.subnetworkPathMemory = subnetworkPathMemory;
     }
 
     /**
@@ -92,12 +92,12 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
             segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.linkNode(nodePosMaskBit, reteEvaluator) :
+               segmentMemory.linkNode(nodePosMaskBit) :
                segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
     }
 
-    public boolean unlinkNode(ReteEvaluator reteEvaluator) {
-        return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
+    public boolean unlinkNode() {
+        return segmentMemory.unlinkNode(nodePosMaskBit);
     }
 
     public int getNodeType() {
@@ -145,7 +145,7 @@ public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements Seg
             segmentMemory = getOrCreateSegmentMemory( tupleSource, reteEvaluator );
         }
         return notify ?
-               segmentMemory.notifyRuleLinkSegment(reteEvaluator, nodePosMaskBit) :
+               segmentMemory.notifyRuleLinkSegment(nodePosMaskBit) :
                segmentMemory.linkSegmentWithoutRuleNotify(nodePosMaskBit);
     }
 

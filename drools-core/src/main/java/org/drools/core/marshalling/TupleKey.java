@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,10 +20,7 @@ package org.drools.core.marshalling;
 
 import java.util.Arrays;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.SuperCacheFixer;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.TupleImpl ;
 
 public class TupleKey {

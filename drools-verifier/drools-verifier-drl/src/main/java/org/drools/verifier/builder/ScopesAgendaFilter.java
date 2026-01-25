@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,6 +32,7 @@ public class ScopesAgendaFilter
     public final static String             VERIFYING_SCOPE_SINGLE_RULE       = "single-rule";
     public final static String             VERIFYING_SCOPE_DECISION_TABLE    = "decision-table";
     public final static String             VERIFYING_SCOPE_KNOWLEDGE_PACKAGE = "knowledge-package";
+    public final static String             VERIFYING_SCOPE_DEFINITION_CHECK  = "definition-check";
 
     public final static Collection<String> ALL_SCOPES                        = new ArrayList<String>() {
 
@@ -41,6 +42,7 @@ public class ScopesAgendaFilter
                                                                                      add( VERIFYING_SCOPE_DECISION_TABLE );
                                                                                      add( VERIFYING_SCOPE_SINGLE_RULE );
                                                                                      add( VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
+                                                                                     add( VERIFYING_SCOPE_DEFINITION_CHECK );
                                                                                  }
                                                                              };
 

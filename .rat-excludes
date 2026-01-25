@@ -20,12 +20,6 @@ unicode.drl.csv
 kmoduleCSVTest.dtable.drl.csv
 # drools-distribution/notice-for-distribution
 notice-for-distribution
-# drools-docs/supplemental-ui/css/search.css
-search.css
-# drools-docs/supplemental-ui/js/search-ui.js
-search-ui.js
-# drools-docs/supplemental-ui/js/vendor/lunr-2.3.9.min.js
-lunr-2.3.9.min.js
 # drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaLexer.g4
 JavaLexer.g4
 # drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaParser.g4

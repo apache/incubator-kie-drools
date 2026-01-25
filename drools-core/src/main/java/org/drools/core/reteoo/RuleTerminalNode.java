@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -98,7 +97,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         getLeftTupleSource().addTupleSink(this, context);
-        addAssociation( context, context.getRule() );
+        addAssociation(context.getRule(), context);
     }
 
     void initDeclarations(Map<String, Declaration> decls, final BuildContext context) {
@@ -132,7 +131,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
-    public void cancelMatch(InternalMatch match, ReteEvaluator reteEvaluator) {
+    public void cancelMatch(InternalMatch match) {
         if ( match.isQueued() ) {
             TupleImpl leftTuple = match.getTuple();
             if ( match.getRuleAgendaItem() != null ) {
@@ -142,7 +141,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 }
             }
             RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
-            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
         }
     }
 
@@ -160,11 +159,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public ObjectTypeNodeId getLeftInputOtnId() {
+    public ObjectTypeNodeId getInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
+    public void setInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
 

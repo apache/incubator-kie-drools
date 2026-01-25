@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,12 +20,7 @@ package org.kie.dmn.legacy.tests.core.v1_1;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
@@ -71,7 +66,7 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
         // Defaulting FEELDialect to FEEL
-        final EvaluationContext ctx =  new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
+        final EvaluationContext ctx =  new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL, DMNVersion.getLatest());
         assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
         assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");
         assertThat(feelType.getAllowedValuesFEEL()).hasSize(4);

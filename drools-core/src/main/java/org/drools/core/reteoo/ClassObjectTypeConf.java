@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -132,10 +132,10 @@ public class ClassObjectTypeConf
         if ( isEvent() ) {
             TypeDeclaration type = getTypeDeclaration();
             long timestamp = type != null && type.getTimestampExtractor() != null ?
-                    type.getTimestampExtractor().getLongValue( reteEvaluator, object ) :
+                    type.getTimestampExtractor().getWholeNumberValue( reteEvaluator, object ) :
                     reteEvaluator.getTimerService().getCurrentTime();
             long duration = type != null && type.getDurationExtractor() != null ?
-                    type.getDurationExtractor().getLongValue( reteEvaluator, object ) :
+                    type.getDurationExtractor().getWholeNumberValue( reteEvaluator, object ) :
                     0;
             return factHandleFactory.createEventFactHandle(id, object, recency, entryPoint, timestamp, duration);
         }

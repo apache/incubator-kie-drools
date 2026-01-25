@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.dmn.model.impl.AbstractTContext;
 
-import org.kie.dmn.model.api.Context;
-import org.kie.dmn.model.api.ContextEntry;
-
-public class TContext extends TExpression implements Context {
-
-    protected List<ContextEntry> contextEntry;
-
-    @Override
-    public List<ContextEntry> getContextEntry() {
-        if (contextEntry == null) {
-            contextEntry = new ArrayList<>();
-        }
-        return this.contextEntry;
-    }
+public class TContext extends AbstractTContext implements URIFEELed {
 
 }

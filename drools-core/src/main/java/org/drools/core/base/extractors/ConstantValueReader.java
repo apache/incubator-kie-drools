@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,31 +38,13 @@ public class ConstantValueReader implements ReadAccessor {
         return value;
     }
 
-    public char getCharValue(ValueResolver valueResolver, Object object) {
-        return (Character)value;
-    }
 
-    public int getIntValue(ValueResolver valueResolver, Object object) {
-        return (Integer)value;
-    }
 
-    public byte getByteValue(ValueResolver valueResolver, Object object) {
-        return (Byte)value;
-    }
-
-    public short getShortValue(ValueResolver valueResolver, Object object) {
-        return (Short)value;
-    }
-
-    public long getLongValue(ValueResolver valueResolver, Object object) {
+    public long getWholeNumberValue(ValueResolver valueResolver, Object object) {
         return value instanceof Long ? (Long)value : getTimestampFromDate( value );
     }
 
-    public float getFloatValue(ValueResolver valueResolver, Object object) {
-        return (Float)value;
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver, Object object) {
+    public double getDecimalValue(ValueResolver valueResolver, Object object) {
         return (Double)value;
     }
 

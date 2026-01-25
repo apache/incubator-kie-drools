@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.Iterator;
@@ -37,8 +38,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
@@ -707,18 +706,12 @@ public class InternalMatchIteratorTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession( conf, null );
 
-        final List list = new ArrayList();
-
-        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
-                list.add("activated");
-            }
-        };
-        ksession.addEventListener(agendaEventListener);
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
 
         ksession.insert("test");
 
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(listener.getMatchCreated()).hasSize(2);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
@@ -749,19 +742,13 @@ public class InternalMatchIteratorTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession( conf, null );
 
-        final List list = new ArrayList();
-
-        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
-                list.add("activated");
-            }
-        };
-        ksession.addEventListener(agendaEventListener);
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
 
         ksession.insert("test");
         ((InternalWorkingMemory) ksession).flushPropagations();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(listener.getMatchCreated()).hasSize(1);
     }
 
     @ParameterizedTest(name = "KieBase type={0}")

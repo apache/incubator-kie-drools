@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -144,7 +144,26 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
                                                                                                             Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
-                        new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ), null }
+                        new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ), null },
+
+                // List equality comparisons
+                {"[1,2,3] = [1,2,3]", Boolean.TRUE, null },
+                {"[1,2,3] = [1,2,3,4]", Boolean.FALSE, null },
+                {"[1,2,3] = [3,2,1]", Boolean.FALSE, null },
+                {"[] = []", Boolean.TRUE, null },
+                {"[1,null,3] = [1,null,3]", Boolean.TRUE, null },
+                {"[1,null,3] = [1,2,3]", Boolean.FALSE, null },
+                {"[\"a\",\"b\",\"c\"] = [\"a\",\"b\",\"c\"]", Boolean.TRUE, null },
+                {"[\"a\",\"b\",\"c\"] = [\"a\",\"b\"]", Boolean.FALSE, null },
+
+                {"[1,2,3] in = [1,2,3]", Boolean.TRUE, null },
+                {"[1,2,3] in [[1,2,3], [4,5,6]]", Boolean.TRUE, null },
+                {"[1,2,3] in [[1,2,3,4], [1,2]]", Boolean.FALSE, null },
+                {"3 in [1,2,3,4,5]", Boolean.TRUE, null },
+                {"10 in [1,2,3,4,5]", Boolean.FALSE, null },
+                {"null in [1,null,3]", Boolean.TRUE, null },
+                {"1 in []", Boolean.FALSE, null },
+                {"[\"a\",\"b\"] in [[\"a\",\"b\"], [\"c\",\"d\"]]", Boolean.TRUE, null }
         };
         return addAdditionalParameters(cases, false);
     }

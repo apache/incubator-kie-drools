@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,7 @@
  */
 package org.drools.core.common;
 
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 
 public interface TupleSets {
@@ -55,4 +56,6 @@ public interface TupleSets {
 
     TupleImpl getNormalizedDeleteFirst();
     boolean addNormalizedDelete(TupleImpl leftTuple);
+    
+
 }

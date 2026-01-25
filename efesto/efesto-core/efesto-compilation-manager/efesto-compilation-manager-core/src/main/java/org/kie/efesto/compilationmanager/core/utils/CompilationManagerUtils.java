@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -153,7 +153,10 @@ public class CompilationManagerUtils {
         } else if (compilationOutput instanceof EfestoCallableOutputClassesContainer efestoCallableOutputClassesContainer) {
             return new GeneratedExecutableResource(efestoCallableOutputClassesContainer.getModelLocalUriId(), efestoCallableOutputClassesContainer.getFullClassNames());
         } else if (compilationOutput instanceof EfestoCallableOutputModelContainer efestoCallableOutputModelContainer) {
-            return new GeneratedModelResource(efestoCallableOutputModelContainer.getModelLocalUriId(), efestoCallableOutputModelContainer.getModelSource(), efestoCallableOutputModelContainer.getCompiledModel());
+            return new GeneratedModelResource(efestoCallableOutputModelContainer.getModelLocalUriId(),
+                                              efestoCallableOutputModelContainer.getModelSource(),
+                                              efestoCallableOutputModelContainer.getCompiledModel(),
+                                              efestoCallableOutputModelContainer.getAdditionalInfo());
         } else {
             throw new KieCompilerServiceException("Unmanaged type " + compilationOutput.getClass().getName());
         }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:kie="https://kie.org/dmn/extensions/1.0"
+             expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+             namespace="https://kie.org/dmn/_9330C60C-CD07-40EB-98BA-E56D186CCDE1"
+             id="_B4C6A7FC-BA0A-461B-A731-1F9E3E3AA9B2"
+             name="DMN_CDC9A17D-C69A-4F6A-8366-FF9638F398B1">
+  <decision name="Decision1" id="_F86E12F0-F994-47ED-8C74-F48F4FA76A06">
+    <variable name="Decision1" id="_A248A017-98F6-4D14-A51F-21F49F5F83E6" typeRef="boolean" />
+    <literalExpression id="_2D88DEA6-ADA7-44CD-871A-A66139121DAD" label="Decision1" typeRef="boolean">
+      <text>true</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_174C0FE2-72A6-4536-82E7-F6A9F3C89757" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_2D88DEA6-ADA7-44CD-871A-A66139121DAD">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_5F0C1D3D-4472-4E57-A2DB-5C69582A535A" dmnElementRef="_F86E12F0-F994-47ED-8C74-F48F4FA76A06" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="360" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,7 +30,6 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Collect;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 

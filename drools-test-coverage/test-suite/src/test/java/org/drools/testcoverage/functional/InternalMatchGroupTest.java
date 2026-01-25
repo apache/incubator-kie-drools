@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,11 +18,9 @@
  */
 package org.drools.testcoverage.functional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
-import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -31,7 +29,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
@@ -39,7 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class InternalMatchGroupTest {
 
-    public static Stream<KieBaseTestConfiguration> parameters() {
+    private TrackingAgendaEventListener listener;
+
+	public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
@@ -49,42 +48,37 @@ public class InternalMatchGroupTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void basicTestActivationGroup(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        TrackingAgendaEventListener listener = prepareKSession(kieBaseTestConfiguration, "basicActivationGroup");
+        prepareKSession(kieBaseTestConfiguration, "basicActivationGroup");
 
-        assertThat(listener.isRuleFired("basic1")).isFalse();
-        assertThat(listener.isRuleFired("basic2")).isTrue(); 
-        assertThat(listener.isRuleFired("basic3")).isFalse();
+        assertThat(listener.getAfterMatchFired()).contains("basic2").doesNotContain("basic1", "basic3");
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void recursiveTestActivationGroup(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        TrackingAgendaEventListener listener = prepareKSession(kieBaseTestConfiguration, "recursiveActivationGroup");
-        
-        assertThat(listener.isRuleFired("simplyRecursive1")).isFalse();
-        assertThat(listener.isRuleFired("simplyRecursive2")).isTrue();
-        assertThat(listener.isRuleFired("simplyRecursive3")).isTrue();
+        prepareKSession(kieBaseTestConfiguration, "recursiveActivationGroup");
+
+        assertThat(listener.getAfterMatchFired()).contains("simplyRecursive2", "simplyRecursive3").doesNotContain("simplyRecursive1");
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testActivationGroupWithDefaultSalience(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        TrackingAgendaEventListener listener = prepareKSession(kieBaseTestConfiguration, "defaultSalienceActivationGroup");
+        prepareKSession(kieBaseTestConfiguration, "defaultSalienceActivationGroup");
         
-        assertThat(listener.rulesCount()).isEqualTo(1);
+        assertThat(listener.getAfterMatchFired()).hasSize(1);
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testActivationGroupRecursivelyWithDefaultSalience(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        TrackingAgendaEventListener listener = prepareKSession(kieBaseTestConfiguration, "defaultSalienceWithRecursion");
+        prepareKSession(kieBaseTestConfiguration, "defaultSalienceWithRecursion");
         
-        assertThat(listener.rulesCount()).isEqualTo(2);
+        assertThat(listener.getAfterMatchFired()).hasSize(2);
     }
     
-    private TrackingAgendaEventListener prepareKSession(KieBaseTestConfiguration kieBaseTestConfiguration, String startingRule) {
-        List<Command<?>> commands = new ArrayList<Command<?>>();
-        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+    private void prepareKSession(KieBaseTestConfiguration kieBaseTestConfiguration, String startingRule) {
+        listener = new TrackingAgendaEventListener();
 
         final KieSession ksession = getKieBaseForTest(kieBaseTestConfiguration).newKieSession();
         try {
@@ -95,7 +89,6 @@ public class InternalMatchGroupTest {
         } finally {
             ksession.dispose();
         }
-        return listener;
     }
 
     private KieBase getKieBaseForTest(KieBaseTestConfiguration kieBaseTestConfiguration) {

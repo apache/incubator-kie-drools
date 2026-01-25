@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -126,6 +126,22 @@ public class RuleCodegenTest {
         Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
         assertHasLegacyApiFiles(generatedFiles);
         int externalizedLambda = 5;
+        int legacyApiFiles = 2;
+        assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.drools.model.codegen.project.RuleCodegenTest#contextBuilders")
+    public void generateCepRegexRule(DroolsModelBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
+        RuleCodegen ruleCodegen = getRuleCodegenFromFiles(
+                contextBuilder,
+                new File(RESOURCE_PATH + "/org/drools/simple/cep/cep-regex.drl"));
+
+        Collection<GeneratedFile> generatedFiles = ruleCodegen.withHotReloadMode().generate();
+        assertHasLegacyApiFiles(generatedFiles);
+        int externalizedLambda = 2;
         int legacyApiFiles = 2;
         assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
     }

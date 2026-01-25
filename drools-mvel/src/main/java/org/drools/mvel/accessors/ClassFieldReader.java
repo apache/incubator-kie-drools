@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -138,47 +138,20 @@ public class ClassFieldReader implements Externalizable, ReadAccessor, FieldName
                                             object );
     }
 
-    public byte getByteValue(final ValueResolver valueResolver,
-                             final Object object) {
-        return this.reader.getByteValue( valueResolver,
-                                         object );
-    }
 
-    public char getCharValue(ValueResolver valueResolver,
-                             final Object object) {
-        return this.reader.getCharValue( valueResolver,
-                                         object );
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver,
-                                 final Object object) {
-        return this.reader.getDoubleValue( valueResolver,
+    public double getDecimalValue(ValueResolver valueResolver,
+                                  final Object object) {
+        return this.reader.getDecimalValue( valueResolver,
                                            object );
     }
 
-    public float getFloatValue(ValueResolver valueResolver,
-                               final Object object) {
-        return this.reader.getFloatValue( valueResolver,
-                                          object );
-    }
 
-    public int getIntValue(ValueResolver valueResolver,
-                           final Object object) {
-        return this.reader.getIntValue( valueResolver,
-                                        object );
-    }
-
-    public long getLongValue(ValueResolver valueResolver,
+    public long getWholeNumberValue(ValueResolver valueResolver,
                              final Object object) {
-        return this.reader.getLongValue( valueResolver,
+        return this.reader.getWholeNumberValue( valueResolver,
                                          object );
     }
 
-    public short getShortValue(ValueResolver valueResolver,
-                               final Object object) {
-        return this.reader.getShortValue( valueResolver,
-                                          object );
-    }
 
     public boolean isNullValue(ValueResolver valueResolver,
                                final Object object) {

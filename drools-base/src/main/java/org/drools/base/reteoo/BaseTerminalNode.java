@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,17 +33,7 @@ public interface BaseTerminalNode extends NetworkNode {
 
     void initInferredMask();
 
-    BitMask getDeclaredMask();
-
-    void setDeclaredMask(BitMask mask);
-
-    BitMask getInferredMask();
-
-    void setInferredMask(BitMask mask);
-
     BitMask getNegativeMask();
-
-    void setNegativeMask(BitMask mask);
 
     RuleImpl getRule();
 

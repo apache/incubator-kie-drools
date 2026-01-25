@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -104,18 +104,18 @@ public class SegmentPropagationTest {
         bm1 =(BetaMemory)  wm.getNodeMemory(sinkNode1);
         bm2 =(BetaMemory)  wm.getNodeMemory(sinkNode2);
         
-        smem = proto1.newSegmentMemory(wm);
+        smem = proto1.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm.setSegmentMemory( smem );
         
-        smem0 = proto2.newSegmentMemory(wm);
+        smem0 = proto2.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 
-        smem1 = proto3.newSegmentMemory(wm);
+        smem1 = proto3.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm1.setSegmentMemory( smem1 );       
         smem.add( smem1 );    
         
-        smem2 = proto4.newSegmentMemory(wm);
+        smem2 = proto4.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm2.setSegmentMemory( smem2 );       
         smem.add( smem2 );          
     }

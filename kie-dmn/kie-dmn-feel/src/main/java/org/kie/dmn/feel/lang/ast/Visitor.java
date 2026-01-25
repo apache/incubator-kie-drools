@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,6 +28,7 @@ public interface Visitor<T> {
     T visit(ContextTypeNode n);
     T visit(CTypeNode n);
     T visit(DashNode n);
+    T visit(DescendantExpressionNode n);
     T visit(FilterExpressionNode n);
     T visit(ForExpressionNode n);
     T visit(FormalParameterNode n);

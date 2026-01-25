@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,13 +19,15 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 import org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class BetweenNode
@@ -88,39 +90,38 @@ public class BetweenNode
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")));
             problem = true;
         }
-        if (problem) return null;
+        if (problem)
+            return null;
 
         Object o_val = value.evaluate(ctx);
         Object o_s = start.evaluate(ctx);
         Object o_e = end.evaluate(ctx);
+        FEELEvent.Severity severity = ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? FEELEvent.Severity.WARN : FEELEvent.Severity.ERROR;
         if (o_val == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "value")));
             problem = true;
         }
         if (o_s == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "start")));
             problem = true;
         }
         if (o_e == null) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")));
+            ctx.notifyEvt(astEvent(severity, Msg.createMessage(Msg.IS_NULL, "end")));
             problem = true;
         }
-        if (problem && ctx.getFEELDialect() != FEELDialect.BFEEL) return null;
+        if (problem && ctx.getFEELDialect() != FEELDialect.BFEEL)
+            return null;
 
-        Object gte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_s, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) > 0),
-                                           BooleanEvalHelper.isEqual(o_val, o_s, ctx.getFEELDialect()),
-                                           ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        Object gte = handler.executeGte(o_val, o_s, ctx);
         if (gte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")));
         }
 
-        Object lte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_e, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
-                BooleanEvalHelper.isEqual(o_val, o_e, ctx.getFEELDialect()),
-                ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        Object lte = handler.executeLte(o_val, o_e, ctx);
         if (lte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")));
         }
-
         return InfixExecutorUtils.and(gte, lte, ctx); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
@@ -131,7 +132,7 @@ public class BetweenNode
 
     @Override
     public ASTNode[] getChildrenNode() {
-        return new ASTNode[]{value, start, end};
+        return new ASTNode[] { value, start, end };
     }
 
     @Override

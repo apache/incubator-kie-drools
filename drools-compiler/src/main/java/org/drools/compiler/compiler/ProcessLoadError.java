@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,6 @@
 package org.drools.compiler.compiler;
 
 
-import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 

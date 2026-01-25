@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,24 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
+class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
 
-    private final static String RULE_NAME = "rule1";
-
+    private static final String RULE_NAME = "rule1";
     
     @Test
-    public void constructor() {
+    void constructor() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
 
         assertThat(coverageAgendaListener.getRuleExecuted()).isEmpty();
         assertThat(coverageAgendaListener.getAuditsMessages()).isEmpty();
     }
     @Test
-    public void beforeMatchFired() {
+    void beforeMatchFired() {
         CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
         
         BeforeMatchFiredEvent beforeMatchFiredEvent = createBeforeMatchFiredEventMock(RULE_NAME);

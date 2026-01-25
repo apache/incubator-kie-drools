@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<semantic:definitions
+				id="_5c8b9296-96cf-4898-bba5-3a2d21d34eed"
+				name="Loan info"
+				namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed"
+				exporter="DMN Modeler" exporterVersion="6.2.2.3"
+				xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+				xmlns="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed">
+	<semantic:itemDefinition name="tBorrower" label="tBorrower">
+		<semantic:itemComponent id="_b7dcc14d-510d-4628-a510-ca774208e501" name="Full Name">
+			<semantic:typeRef>string</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_8cb2dd31-072e-48f0-8358-65cf75fcfda9" name="Tax ID">
+			<semantic:typeRef>string</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_88b9503a-d677-4fd0-9f4c-3e16cb4f5ec0" name="Employment Income">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_dc653a3f-5bc0-4aa3-ae82-d25db1e5abbc" name="Other Income">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_1033e487-e687-48e2-b763-74cc29e2f242" name="Assets">
+			<semantic:typeRef>tAssets</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_0ef27863-fb82-48f6-b7d9-dd006feaba60" name="Liabilities">
+			<semantic:typeRef>tLiabilities</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tAsset" isCollection="false" label="tAsset">
+		<semantic:itemComponent id="_178a9712-768e-4150-860a-62fadcca989f" name="Type">
+			<semantic:typeRef>tAssetType</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_c977d77b-4c8a-486d-b177-0a5859662c97" name="Institution Account or Description">
+			<semantic:typeRef>string</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_591c646d-eeb9-4011-bc7f-69b157a6f591" name="Value">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tAssets" isCollection="true" label="tAssets">
+		<semantic:typeRef>tAsset</semantic:typeRef>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tAssetType" label="tAssetType">
+		<semantic:typeRef>string</semantic:typeRef>
+		<semantic:allowedValues>
+			<semantic:text>"Checking Savings Brokerage account","Real Estate","Other Liquid","Other Non-Liquid"</semantic:text>
+		</semantic:allowedValues>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLiability" label="tLiability">
+		<semantic:itemComponent id="_57fce471-2342-4fc7-8116-405daa3ef433" name="Type">
+			<semantic:typeRef>tLiabilityType</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_dd30338f-9852-4149-8896-0efd298b4ac0" name="Payee">
+			<semantic:typeRef>string</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_05fa38d8-21e6-4da2-a839-af266bb235f8" name="Monthly payment">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_81e5630b-f15a-4b4b-912e-6400bdb1cc36" name="Balance">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_0b284d1f-d87a-4f80-846c-70f128074f49" name="To be paid off">
+			<semantic:typeRef>boolean</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLiabilities" isCollection="true" label="tLiabilities">
+		<semantic:typeRef>tLiability</semantic:typeRef>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLiabilityType" label="tLiabilityType">
+		<semantic:typeRef>string</semantic:typeRef>
+		<semantic:allowedValues>
+			<semantic:text>"Credit card","Auto loan","Student loan","Lease","Lien","Real estate loan","Alimony child support","Other"</semantic:text>
+		</semantic:allowedValues>
+		<semantic:typeConstraint>
+			<semantic:text>"Credit card","Auto loan","Student loan","Lease","Lien","Real estate loan","Alimony child support","Other"</semantic:text>
+		</semantic:typeConstraint>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tAmortizationType" label="tAmortizationType">
+		<semantic:typeRef>string</semantic:typeRef>
+		<semantic:allowedValues>
+			<semantic:text>"Fixed rate","Variable rate"</semantic:text>
+		</semantic:allowedValues>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLoanProduct" label="tLoanProduct">
+		<semantic:itemComponent id="_1833883f-633d-4212-920d-1954b412bea6" name="Lender Name">
+			<semantic:typeRef>string</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_8d009922-d11e-4c23-8c14-f141f3ba94a8" name="Product Name">
+			<semantic:typeRef>tProductName</semantic:typeRef>
+			<semantic:allowedValues>
+				<semantic:text>"Fixed30-NoPoints","Fixed30-Standard","Fixed15-NoPoints","Fixed15-Standard","ARM5/1-NoPoints","ARM5/1-Standard"</semantic:text>
+			</semantic:allowedValues>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_1414b396-63f4-4f4b-825d-bce4ea87a07f" name="Type">
+			<semantic:typeRef>tAmortizationType</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_27d5f2e4-a73a-464d-a80b-c05ed1a95471" name="Best Rate Pct">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_e44b0b2f-71a7-4233-9fd7-0cdcdb79f80b" name="Points Pct">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_f2d16774-2421-4e39-8412-512dadf40cd6" name="Fees Amount">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_0a6f5fef-4cb1-4d50-94a3-d22cf903a8c7" name="Term">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tProperty" label="tProperty">
+		<semantic:itemComponent id="_5e820b14-1f14-44e2-bee1-a35fbedc477f" name="Address">
+			<semantic:itemComponent id="_d40919e3-168d-46dc-a7da-ccefeead8a49" name="Street">
+				<semantic:typeRef>string</semantic:typeRef>
+			</semantic:itemComponent>
+			<semantic:itemComponent id="_a03ae467-fb6a-46f0-ab1a-dc0992d81095" name="Unit">
+				<semantic:typeRef>string</semantic:typeRef>
+			</semantic:itemComponent>
+			<semantic:itemComponent id="_f902cd87-2c95-4b90-95cf-a2c6b1b87a1e" name="City">
+				<semantic:typeRef>string</semantic:typeRef>
+			</semantic:itemComponent>
+			<semantic:itemComponent id="_97f12b0d-be5c-4d42-abb5-d565599fee87" name="State">
+				<semantic:typeRef>string</semantic:typeRef>
+			</semantic:itemComponent>
+			<semantic:itemComponent id="_2fdc92bc-55da-4ff7-8a9d-c5213b69a0a8" name="ZIP">
+				<semantic:typeRef>string</semantic:typeRef>
+			</semantic:itemComponent>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_cc0e8c3f-ae44-4080-88db-555d8a2f8560" name="Purchase Price">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_3fb7e2b1-6ad9-4858-ae46-45e6b83e063d" name="Monthly Tax Payment">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_aa55fa1a-3e82-4439-b422-21921c6a64b0" name="Monthly Insurance Payment">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_77f3b202-47ba-432b-9ada-e81700db445f" name="Monthly HOA Condo Fee">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tPercentList" isCollection="true" label="tPercentList">
+		<semantic:typeRef>number</semantic:typeRef>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tPercent" label="tPercent">
+		<semantic:typeRef>number</semantic:typeRef>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tCreditScore" label="tCreditScore">
+		<semantic:typeRef>number</semantic:typeRef>
+		<semantic:allowedValues>
+			<semantic:text>[300..850]</semantic:text>
+		</semantic:allowedValues>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tProductName" label="tProductName">
+		<semantic:typeRef>string</semantic:typeRef>
+		<semantic:allowedValues>
+			<semantic:text>"Fixed30-NoPoints","Fixed30-Standard","Fixed15-NoPoints","Fixed15-Standard","ARM5/1-NoPoints","ARM5/1-Standard"</semantic:text>
+		</semantic:allowedValues>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLoanData" isCollection="false" label="tLoanData">
+		<semantic:itemComponent id="_fd6a3e80-4ffe-438c-9e39-9f77a67c1f91" name="Points Amount" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_6f71ccdc-b275-43c6-985a-31559b523c6c" name="Note Amount" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_35c2796b-c800-4803-92e6-9cb5a96fcdc8" name="LTV" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_82b33b6f-e7c3-4016-a69d-f15d55a56d58" name="Closing Costs" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_3a485bc8-8c27-4395-99ab-32c0d53616e2" name="Funds Toward Purchase" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_97e275f6-5776-4b55-86cb-f5e392c73307" name="Interest Rate Percent" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_7a9b65fd-ca47-4788-bdde-246237480654" name="Qualifying Rate Percent" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_f74f4b87-3684-4345-98b1-eaef7732385f" name="Monthly Payment" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_d6ba831e-226f-4284-9035-b1fcb7e40f21" name="Qualifying Payment" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:itemDefinition name="tLoanInfo" isCollection="false" label="tLoanInfo">
+		<semantic:itemComponent id="_4307deb6-caba-4a7b-9075-820459281679" name="Product" isCollection="false">
+			<semantic:typeRef>tProductName</semantic:typeRef>
+			<semantic:allowedValues>
+				<semantic:text>"Fixed30-NoPoints","Fixed30-Standard","Fixed15-NoPoints","Fixed15-Standard","ARM5/1-NoPoints","ARM5/1-Standard"</semantic:text>
+			</semantic:allowedValues>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_689ecdaf-4b3b-40ca-9eff-b7dff7e10bc3" name="Amortization Type" isCollection="false">
+			<semantic:typeRef>tAmortizationType</semantic:typeRef>
+			<semantic:allowedValues>
+				<semantic:text>"Fixed rate","Variable rate"</semantic:text>
+			</semantic:allowedValues>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_f96fc5bd-ecad-497f-931e-1d2ba0cc0ac7" name="LTV" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_3445d602-de4b-44b6-afa2-a3c7d04368d7" name="Note Amount" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_4ea4f624-c68b-47a0-9161-5244585e4898" name="Initial Rate Pct" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_81c9c31a-8d89-4d7f-856d-c6642499ed29" name="Qualifying Rate Pct" isCollection="false">
+			<semantic:typeRef>tPercent</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_cd96db58-d312-41dc-a3e4-6fa93766b49d" name="Initial Monthly Payment" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_c05792fd-417f-4662-b6b8-7cf708c26976" name="Qualifying Monthly Payment" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_30babadc-60b5-4879-b233-410b43349ef4" name="Points Amount">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_6c1aedf8-5d23-448d-acca-e91b5845a746" name="Fees Amount" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_d7c3f0b8-f0d7-4bc9-95be-414530c2c23c" name="Funds Toward Purchase" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_37e9699c-e1bd-40b7-aafb-6e9b9e51e532" name="Down Payment" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_ec560b2b-0a1d-43fc-9a72-4ce30a92030e" name="Closing Costs" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+		<semantic:itemComponent id="_7751d0b1-c992-4c52-a7c1-ea89b0226033" name="Cash to Close" isCollection="false">
+			<semantic:typeRef>number</semantic:typeRef>
+		</semantic:itemComponent>
+	</semantic:itemDefinition>
+	<semantic:inputData id="_e0cfe605-3068-42a2-946f-c7db3774de1e" name="Property">
+		<semantic:variable name="Property" id="_35fe76b3-4304-4a45-bbc5-c3ac926fd494" typeRef="tProperty"/>
+	</semantic:inputData>
+	<semantic:inputData id="_d78ee6d5-96ed-43e6-89d2-123e0f388a67" name="Credit Score">
+		<semantic:variable name="Credit Score" id="_3bf8b83f-789a-4e98-bb0d-34ab6a6e01d9" typeRef="tCreditScore"/>
+	</semantic:inputData>
+	<semantic:inputData id="_29a44873-e886-42de-bc2f-6d5704b6b298" name="Loan Product">
+		<semantic:variable name="Loan Product" id="_45a92729-62fc-413d-a811-5aae30277a87" typeRef="tLoanProduct"/>
+	</semantic:inputData>
+	<semantic:decision id="_91fa4ebe-d9c9-4608-b043-c27d99e1eaa5" name="Loan Data">
+		<semantic:variable name="Loan Data" id="_b864ab4b-b825-4740-b287-8f31eef41881" typeRef="tLoanData"/>
+		<semantic:informationRequirement id="_e47777c4-b10c-4aa8-8087-371824560192">
+			<semantic:requiredInput href="#_e0cfe605-3068-42a2-946f-c7db3774de1e"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_ffe87244-b1ab-4075-a243-5f2a87f170d0">
+			<semantic:requiredInput href="#_29a44873-e886-42de-bc2f-6d5704b6b298"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_d9d4a780-7427-4000-b2c7-575717ebcae5">
+			<semantic:requiredInput href="#_896a0a4a-0d0e-404c-a9e3-4500b4e2fd9c"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_8304cbac-5619-459b-92a8-b389aaaf2aff">
+			<semantic:requiredInput href="#_d78ee6d5-96ed-43e6-89d2-123e0f388a67"/>
+		</semantic:informationRequirement>
+		<semantic:knowledgeRequirement id="_28360d50-9eee-4fa1-9f4d-a19c5bc9bbcb">
+			<semantic:requiredKnowledge href="#_aeaa30db-0f84-424a-b2f5-af9b2538a9ce"/>
+		</semantic:knowledgeRequirement>
+		<semantic:knowledgeRequirement id="_ff803e3f-9159-401f-b22c-edbb48cbf164">
+			<semantic:requiredKnowledge href="#_0d2a6f36-0403-41ad-a191-f793743649d4"/>
+		</semantic:knowledgeRequirement>
+		<semantic:context id="_99e0f553-477c-424f-ab66-017e789d2070" typeRef="tLoanData">
+			<semantic:contextEntry id="_e5e58153-cc87-4746-96f8-fa7926db2f8d">
+				<semantic:variable name="Points Amount" id="_ed35ac71-a2fa-48c6-9221-838374aebce4" typeRef="number"/>
+				<semantic:literalExpression id="_abf4629a-d2cb-4d54-b700-84820144b429">
+					<semantic:text>decimal((Property.Purchase Price - Down Payment)*Loan Product.Points Pct/100,2)</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_f99be8be-baee-4480-a493-42355b9fcdaf">
+				<semantic:variable name="Note Amount" id="_73c0d2bc-6d72-41ac-a2cf-611eb0fd3bc8" typeRef="number"/>
+				<semantic:literalExpression id="_9a509356-5d67-44b1-a7b7-943af81a998a">
+					<semantic:text>Property.Purchase Price - Down Payment + Loan Product.Fees Amount + Points Amount</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_c8f5c8ed-7b41-456c-89bb-0855e69c8c33">
+				<semantic:variable name="LTV" id="_d33843ed-4131-477e-9487-ce397ccdd90b" typeRef="tPercent"/>
+				<semantic:literalExpression id="_0a20e467-7ccf-43c8-a6c3-62790a118f04">
+					<semantic:text>decimal(100*Note Amount/Property.Purchase Price,2)</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_139b25d4-2c14-46d8-8e30-f026113d2ccb">
+				<semantic:variable name="Closing Costs" id="_032891c4-ff8a-42cf-a7a3-78e7eb443996" typeRef="number"/>
+				<semantic:literalExpression id="_835a0c7a-e31c-464f-8b22-5fa51dab7a5d">
+					<semantic:text>decimal(0.02*Note Amount,2)</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_5ee98bf7-7992-4f7d-8537-178747da47f0">
+				<semantic:variable name="Funds Toward Purchase" id="_cbb00b9e-859a-4370-994a-157c12110ab1" typeRef="number"/>
+				<semantic:literalExpression id="_f5715792-e937-48ad-b5f5-311c1d7c4006">
+					<semantic:text>Note Amount - Loan Product.Fees Amount - Points Amount - Closing Costs</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_9a74db9e-53c6-40ba-beb7-9bee87a08d46">
+				<semantic:variable name="Interest Rate Percent" id="_1c30ac25-201c-4935-85ed-2d3382f47e70" typeRef="tPercent"/>
+				<semantic:literalExpression id="_6c63b7c3-33ea-4c39-b672-dd20c99fd0ea">
+					<semantic:text>Loan Product.Best Rate Pct + Rate Adjustment(Credit Score, LTV)</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_c33c71e3-dde8-40ec-a7c3-acba227fd1f6">
+				<semantic:variable name="Qualifying Rate Percent" id="_c3c44b72-ad66-4557-a2fa-c75d461b6b4d" typeRef="tPercent"/>
+				<semantic:literalExpression id="_67cb42ba-fbec-4f4a-88af-13a645097147">
+					<semantic:text>if Loan Product.Type="Variable rate" then Interest Rate Percent+2 else Interest Rate Percent</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_6285cef3-5c41-4a30-a5ff-a77ea05903cc">
+				<semantic:variable name="Monthly Payment" id="_293149c4-e398-4063-a199-872942d1ebd5" typeRef="number"/>
+				<semantic:invocation id="_b5712b08-217d-4a76-9312-63b8ff789307">
+					<semantic:literalExpression id="literal__b5712b08-217d-4a76-9312-63b8ff789307">
+						<semantic:text>payment</semantic:text>
+					</semantic:literalExpression>
+					<semantic:binding>
+						<semantic:parameter id="_95656f17-902e-44fe-8fb5-4cd509618f05" name="p"/>
+						<semantic:literalExpression id="_89014d7d-040f-40ba-b1cc-d4f38b3ae033">
+							<semantic:text>Note Amount</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+					<semantic:binding>
+						<semantic:parameter id="_a15a5721-2b87-403c-9793-dca7092091cf" name="r"/>
+						<semantic:literalExpression id="_a228a99c-bbd3-4951-8a57-76cc2ac09079">
+							<semantic:text>Interest Rate Percent/100</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+					<semantic:binding>
+						<semantic:parameter id="_ce45382c-f637-4fd6-9ac4-73266f044c4d" name="n"/>
+						<semantic:literalExpression id="_c0e4f3fc-b3fc-4920-94a7-b8dc8d97df9f">
+							<semantic:text>Loan Product.Term</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+				</semantic:invocation>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_0840a234-bfed-4f58-8ab9-309be8fbfb10">
+				<semantic:variable name="Qualifying Payment" id="_051a1c8b-dd3a-4162-bdcc-d599b2d9d464" typeRef="number"/>
+				<semantic:invocation id="_6ddbe47b-b38c-4a5e-89e9-a9bf40dbc7b9">
+					<semantic:literalExpression id="literal__6ddbe47b-b38c-4a5e-89e9-a9bf40dbc7b9">
+						<semantic:text>payment</semantic:text>
+					</semantic:literalExpression>
+					<semantic:binding>
+						<semantic:parameter id="_f911095f-98db-44e6-8f63-68009fb81074" name="p"/>
+						<semantic:literalExpression id="_8dd85c93-aac3-4d6e-b521-1c5eb251b7a6">
+							<semantic:text>Note Amount</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+					<semantic:binding>
+						<semantic:parameter id="_092230d5-5427-4a63-b814-12378ee5faee" name="r"/>
+						<semantic:literalExpression id="_70d85747-3e76-4277-9889-53042cb495b9">
+							<semantic:text>Qualifying Rate Percent/100</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+					<semantic:binding>
+						<semantic:parameter id="_91d4257c-3c3f-4159-8f76-157234246efe" name="n"/>
+						<semantic:literalExpression id="_8db10de0-2c74-4aa7-8753-76874706af14">
+							<semantic:text>Loan Product.Term</semantic:text>
+						</semantic:literalExpression>
+					</semantic:binding>
+				</semantic:invocation>
+			</semantic:contextEntry>
+		</semantic:context>
+	</semantic:decision>
+	<semantic:inputData id="_896a0a4a-0d0e-404c-a9e3-4500b4e2fd9c" name="Down Payment">
+		<semantic:variable name="Down Payment" id="_bbe3f7c0-d59c-472b-9266-73bcdcc0fbb6" typeRef="number"/>
+	</semantic:inputData>
+	<semantic:businessKnowledgeModel id="_aeaa30db-0f84-424a-b2f5-af9b2538a9ce" name="Rate Adjustment">
+		<semantic:variable name="Rate Adjustment" id="_3199df2d-5734-481f-a201-933b41d6196e" typeRef="tPercent"/>
+		<semantic:encapsulatedLogic typeRef="tPercent">
+			<semantic:formalParameter name="Credit Score" typeRef="tCreditScore"/>
+			<semantic:formalParameter name="LTV" typeRef="tPercent"/>
+			<semantic:decisionTable id="_cd20f4b0-fbc2-4b9d-b31f-4a83d951e989" hitPolicy="UNIQUE" outputLabel="Rate Adjustment" typeRef="tPercent">
+				<semantic:input id="_b66906d2-f62e-47ba-856b-538a97bb3fa5">
+					<semantic:inputExpression typeRef="tCreditScore">
+						<semantic:text>Credit Score</semantic:text>
+					</semantic:inputExpression>
+					<semantic:inputValues>
+						<semantic:text>[300..850]</semantic:text>
+					</semantic:inputValues>
+				</semantic:input>
+				<semantic:input id="_b8ec7502-1b2a-409e-93c1-cb3771025154">
+					<semantic:inputExpression typeRef="tPercent">
+						<semantic:text>LTV</semantic:text>
+					</semantic:inputExpression>
+				</semantic:input>
+				<semantic:output id="_b7f72972-4ba1-4b2f-912e-349803135418"/>
+				<semantic:annotation name="Description"/>
+				<semantic:rule id="_3e460ca6-9b4f-42f3-b88c-4917970f788c">
+					<semantic:inputEntry id="_829ad9b0-0cf3-4d00-9200-8ec1758e0552">
+						<semantic:text>&gt;=660</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_30142347-09ce-4888-8efb-1c46b9f33ab9">
+						<semantic:text>&lt;=60</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_22bb07d5-518d-4a68-9133-afd49eecf707">
+						<semantic:text>0</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_b4193cc2-fa9d-4225-bd43-d01def7a7b99">
+					<semantic:inputEntry id="_51b2a53b-a6c2-482a-be44-5bcb429fe000">
+						<semantic:text>[620..660)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_f06826ef-835c-4f38-a54d-ae1c0a310146">
+						<semantic:text>&lt;=60</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_9def10dd-fefa-415d-af70-57e604100c35">
+						<semantic:text>0.125</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_aa33035d-70c3-46c7-8a03-091aa1cac209">
+					<semantic:inputEntry id="_b5d9d461-0c25-4696-a0f0-fef4db24e091">
+						<semantic:text>&gt;=700</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_c1af9407-d7da-4375-aa32-ae6718024876">
+						<semantic:text>&gt;60</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_02773f21-ff28-4953-871f-79e11247a4ea">
+						<semantic:text>0.125</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_ab605848-4621-46b1-b004-72e2cfb0790d">
+					<semantic:inputEntry id="_7989b770-8e8e-408d-b2f6-8645a9907948">
+						<semantic:text>[660..700)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_6d21df38-d485-444b-88ab-df7f96b2acf9">
+						<semantic:text>(60..70]</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_2dc38af3-2e5e-4209-9b4c-efc01ea7bbf3">
+						<semantic:text>0.125</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_af2ccda3-bdbe-4765-b77b-5e3dbb511d67">
+					<semantic:inputEntry id="_79b63a75-ab77-4ab6-887a-ae469a742628">
+						<semantic:text>[620..660)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_7bed0211-a515-48a2-bd57-60f79342b1b5">
+						<semantic:text>(60..70]</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_519343cd-1c7a-4bc0-af66-d70cac2ee465">
+						<semantic:text>0.25</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_496169e5-073b-4387-a929-05cbe62bc98b">
+					<semantic:inputEntry id="_45f13f95-6f0f-48bf-8f3c-ab7f9bd99fde">
+						<semantic:text>[680..700)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_62afa937-c3b1-46c9-9e93-88a9fa3e1149">
+						<semantic:text>&gt;70</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_19aa90b1-12a9-4e53-83dd-e4555b05b27c">
+						<semantic:text>0.25</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_62273267-d968-4124-8f47-17c93eb7b46e">
+					<semantic:inputEntry id="_388d54da-b672-4f0c-8b01-605cf210bd09">
+						<semantic:text>[640..680)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_dbc8b85c-222f-4503-b6c5-64a39e15cdae">
+						<semantic:text>&gt;70</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_4ffd9f8b-91e7-4e49-89b6-a58e3dd26ed7">
+						<semantic:text>0.375</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_8fc1174c-a757-4549-af9f-99700065c077">
+					<semantic:inputEntry id="_ea897caa-1470-4fab-af36-c97059f147fd">
+						<semantic:text>[620..640)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_3d5c2935-ffe9-415b-a3f1-97eb34d6df76">
+						<semantic:text>(70..80]</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_8bb7e26c-c2d7-44c8-aea0-fa9a90e1427f">
+						<semantic:text>0.375</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_2e26421d-08e6-4a80-a661-5985b0a9b3ac">
+					<semantic:inputEntry id="_5af33bef-309c-4df0-a59c-646a33c54be5">
+						<semantic:text>[620..640)</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_6e811648-5954-43d4-8e3e-6668ebf3cd16">
+						<semantic:text>&gt;80</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_a24d5aab-d03f-4fb1-988d-a7cf034975b8">
+						<semantic:text>0.5</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+				<semantic:rule id="_e215d517-2d2a-4117-acfc-a982c8fb0353">
+					<semantic:inputEntry id="_9c12fc0d-2fa9-4a74-8b16-2ff02aebcaf6">
+						<semantic:text>&lt;620</semantic:text>
+					</semantic:inputEntry>
+					<semantic:inputEntry id="_c4dcb9aa-226a-43b8-badc-7f04f763d8b5">
+						<semantic:text>-</semantic:text>
+					</semantic:inputEntry>
+					<semantic:outputEntry id="_b47625d7-01f3-4284-98bf-ff9d3b86c81e">
+						<semantic:text>0.5</semantic:text>
+					</semantic:outputEntry>
+					<semantic:annotationEntry>
+						<semantic:text/>
+					</semantic:annotationEntry>
+				</semantic:rule>
+			</semantic:decisionTable>
+		</semantic:encapsulatedLogic>
+	</semantic:businessKnowledgeModel>
+	<semantic:businessKnowledgeModel id="_0d2a6f36-0403-41ad-a191-f793743649d4" name="payment">
+		<semantic:variable name="payment" id="_8c231b6d-165f-4c36-bcd3-617498b36e0e" typeRef="number"/>
+		<semantic:encapsulatedLogic id="_97168569-14dd-4533-8d8c-497681134e3b" kind="FEEL" typeRef="number">
+			<semantic:formalParameter name="p" typeRef="number" id="_b65fd962-b719-4dca-b37b-4c4d2b7e9867"/>
+			<semantic:formalParameter name="r" typeRef="number" id="_22bb5be8-b3dd-4a05-8e0d-6458fe53aa4a"/>
+			<semantic:formalParameter name="n" typeRef="number" id="_6a169eec-28b4-4789-ac5e-141348bcc99a"/>
+			<semantic:literalExpression id="_0c92187a-2412-4f49-a635-3e8cdd6e58fe" typeRef="number">
+				<semantic:text>decimal(p*r/12/(1-(1+r/12)**-n),2)</semantic:text>
+			</semantic:literalExpression>
+		</semantic:encapsulatedLogic>
+	</semantic:businessKnowledgeModel>
+	<semantic:decision id="_8a182857-b5a1-4389-9a76-01a316938cea" name="Loan Info">
+		<semantic:variable name="Loan Info" id="_edac09bb-d679-46a5-b363-ede359f2dfd9" typeRef="tLoanInfo"/>
+		<semantic:informationRequirement id="_1f641b45-5ad1-4dfa-bdc5-19d0f52b87b4">
+			<semantic:requiredDecision href="#_91fa4ebe-d9c9-4608-b043-c27d99e1eaa5"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_70f3db04-5830-45d2-ba12-7c355e571fcd">
+			<semantic:requiredInput href="#_29a44873-e886-42de-bc2f-6d5704b6b298"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_da7d6551-1fd0-49ea-9723-ec51d15005a8">
+			<semantic:requiredInput href="#_896a0a4a-0d0e-404c-a9e3-4500b4e2fd9c"/>
+		</semantic:informationRequirement>
+		<semantic:informationRequirement id="_8d9ec740-a917-4215-88ec-e531ee90a348">
+			<semantic:requiredInput href="#_e0cfe605-3068-42a2-946f-c7db3774de1e"/>
+		</semantic:informationRequirement>
+		<semantic:context id="_b61ecb51-0c30-4cb0-bc0b-db503e7e03cd" typeRef="tLoanInfo">
+			<semantic:contextEntry id="_305a8898-1350-49ed-b827-0a59a76f9216">
+				<semantic:variable name="Product" id="_07481b52-07d7-4257-a124-2bffd7a7e080" typeRef="tProductName"/>
+				<semantic:literalExpression id="_404ff614-bed5-44bc-a64d-abae8419e748">
+					<semantic:text>Loan Product.Product Name</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_b3a59630-4f96-4fab-9a75-eb50b5e745c0">
+				<semantic:variable name="Amortization Type" id="_1e05445b-6883-41d8-9ae5-cdfb5205bc19" typeRef="tAmortizationType"/>
+				<semantic:literalExpression id="_ce1727a9-2ae4-4646-93a4-7e02924e908a">
+					<semantic:text>Loan Product.Type</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_2cdc74c5-b2aa-48ca-8cf4-588db17d4f2f">
+				<semantic:variable name="LTV" id="_6cf1a718-ae6c-490b-acbd-5bec33561d2b" typeRef="tPercent"/>
+				<semantic:literalExpression id="_59388af1-8e25-4bc9-860a-a1b0c189f6cf">
+					<semantic:text>Loan Data.LTV</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_c8d181a9-e299-4779-a8db-e8233e6fb37d">
+				<semantic:variable name="Note Amount" id="_d999ea55-7695-43e0-9154-527ca2199e4b" typeRef="number"/>
+				<semantic:literalExpression id="_866f935f-7366-4cfa-92b3-d04801d2847e">
+					<semantic:text>Loan Data.Note Amount</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_111bd935-e736-459d-85e9-e00c46941198">
+				<semantic:variable name="Initial Rate Pct" id="_32dae540-bdc9-457b-850c-ab5b377cae20" typeRef="tPercent"/>
+				<semantic:literalExpression id="_37bdb610-6e92-4586-a76c-41ed00bceba8">
+					<semantic:text>Loan Data.Interest Rate Percent</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_75c82e82-f510-4d03-9b64-6dee23866637">
+				<semantic:variable name="Qualifying Rate Pct" id="_d1c92a72-78f9-4dae-9d5a-0df028f75ca0" typeRef="tPercent"/>
+				<semantic:literalExpression id="_d57fa679-94ea-4b23-a148-79b5b7440384">
+					<semantic:text>Loan Data.Qualifying Rate Percent</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_7b3c0475-18f1-46ae-b14c-bd10f2e01a6d">
+				<semantic:variable name="Initial Monthly Payment" id="_948cfa68-d3eb-449b-b16e-323fd0b77ea7" typeRef="number"/>
+				<semantic:literalExpression id="_c2ebcf27-03cd-47ee-94e9-414f37db18bd">
+					<semantic:text>Loan Data.Monthly Payment</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_e1274c1b-069b-4010-8663-08f5e27382f7">
+				<semantic:variable name="Qualifying Monthly Payment" id="_b1ea078d-4dfa-442b-98d7-4cbccce12ea5" typeRef="number"/>
+				<semantic:literalExpression id="_57b45210-6690-4432-ba16-80418853025c">
+					<semantic:text>Loan Data.Qualifying Payment</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_d5306ff6-04a9-41cd-88c6-655edd2ff712">
+				<semantic:variable name="Points Amount" id="_fdc165a7-8b0f-4888-8ff3-ad7580d8fce3" typeRef="number"/>
+				<semantic:literalExpression id="_81052536-49c2-4590-850f-cef72e3df7e9">
+					<semantic:text>Loan Data.Points Amount</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_ae4ba9f9-40a3-40e8-9b34-a331be00d6f9">
+				<semantic:variable name="Fees Amount" id="_a8834bb9-4be1-47af-a668-afc17efc6d54" typeRef="number"/>
+				<semantic:literalExpression id="_282885e1-a60f-48c2-90b2-dbe621f1317f">
+					<semantic:text>Loan Product.Fees Amount</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_bfc9b305-8e2d-4a0a-98f7-602ebd533497">
+				<semantic:variable name="Funds Toward Purchase" id="_272c1b83-e45c-4066-8e38-4f476d7e948f" typeRef="number"/>
+				<semantic:literalExpression id="_b22eaafb-59c9-4db6-8824-c33b8c303ec8">
+					<semantic:text>Loan Data.Funds Toward Purchase</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_26d4d85d-1b77-4be3-9ec3-79c36296c8ce">
+				<semantic:variable name="Down Payment" id="_591ebd13-c2be-47c7-a3dd-fb5561131e02" typeRef="number"/>
+				<semantic:literalExpression id="_d95db62e-5b4c-4c91-95d8-55b0be6f3b09">
+					<semantic:text>Down Payment</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_26dd9af6-d1d9-4965-ac86-b9e68044b675">
+				<semantic:variable name="Closing Costs" id="_839e434c-41f0-45c3-9f43-605b865c2005" typeRef="number"/>
+				<semantic:literalExpression id="_8147cce9-e3b5-486f-ba40-77a6749a5063">
+					<semantic:text>Loan Data.Closing Costs</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+			<semantic:contextEntry id="_885eb1b1-58a1-43ba-85aa-5fe90fd9a2af">
+				<semantic:variable name="Cash to Close" id="_133b174b-6408-4546-84dd-66b0ef52bb7d" typeRef="number"/>
+				<semantic:literalExpression id="_d4a59c37-c285-4486-a1f4-7a70131171db">
+					<semantic:text>Property.Purchase Price - Funds Toward Purchase</semantic:text>
+				</semantic:literalExpression>
+			</semantic:contextEntry>
+		</semantic:context>
+	</semantic:decision>
+	<semantic:decisionService id="_f5761a7f-090d-4177-a06a-7f21f925c6ff" name="Loan Info Service">
+		<semantic:variable name="Loan Info Service" id="_f8f5ffe8-362f-4cdf-8c5e-d5c2e7bdadde" typeRef="Any"/>
+		<semantic:outputDecision href="#_8a182857-b5a1-4389-9a76-01a316938cea"/>
+		<semantic:encapsulatedDecision href="#_91fa4ebe-d9c9-4608-b043-c27d99e1eaa5"/>
+		<semantic:inputData href="#_29a44873-e886-42de-bc2f-6d5704b6b298"/>
+		<semantic:inputData href="#_896a0a4a-0d0e-404c-a9e3-4500b4e2fd9c"/>
+		<semantic:inputData href="#_e0cfe605-3068-42a2-946f-c7db3774de1e"/>
+		<semantic:inputData href="#_d78ee6d5-96ed-43e6-89d2-123e0f388a67"/>
+	</semantic:decisionService>
+	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/">
+		<dmndi:DMNDiagram id="_0b101bf8-a9c5-4e7c-8763-c8fcb4263a32" name="Page 1">
+			<di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"/>
+			<dmndi:Size height="1054.996529420125" width="1803.949344176753"/>
+			<dmndi:DMNShape id="_a3898cf2-06c3-4ff6-aee8-ff1980e1df26" dmnElementRef="_e0cfe605-3068-42a2-946f-c7db3774de1e">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="1131.4602065272172" y="422.99652560542773" width="135.48234176635742" height="60.00000762939453"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="94" x="1150.6981787867387" y="445.99652560542773"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_4b1fc771-634e-4074-b5fa-9fddc959704d" dmnElementRef="_d78ee6d5-96ed-43e6-89d2-123e0f388a67">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="923.7588291168213" y="403.9965256054276" width="135.48234176635742" height="60.00000762939453"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="94" x="942.9968013763428" y="426.9965256054276"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_514ee41e-624f-49ab-bbd4-bc72290d220f" dmnElementRef="_29a44873-e886-42de-bc2f-6d5704b6b298">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="1215.460206527217" y="328.9965256054276" width="135.48234176635742" height="60.00000762939453"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="93.99999999999999" x="1234.8731191577845" y="351.9965292929683"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_9fdb64c0-601f-47bf-8592-01d5144ef096" dmnElementRef="_896a0a4a-0d0e-404c-a9e3-4500b4e2fd9c">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="1215.4602065272172" y="228.0034667651778" width="135.48234176635742" height="60.00000762939453"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="93.99999999999999" x="1234.8731191577847" y="251.0034704527185"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_6946a3af-1379-4948-831f-8b40c6fa8b52" dmnElementRef="_aeaa30db-0f84-424a-b2f5-af9b2538a9ce">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="671.734375" y="364.49652942012494" width="152" height="59"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="94.00000000000001" x="699.747362012987" y="387.51292286274787"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_aa434c2c-6b3b-4799-b1e3-628a27162558" dmnElementRef="_0d2a6f36-0403-41ad-a191-f793743649d4">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="671.7343750000001" y="278.5" width="152" height="59"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="94" x="699.7343750000001" y="301.5"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_9244509d-f461-4336-8b36-04a1a6954423" dmnElementRef="_f5761a7f-090d-4177-a06a-7f21f925c6ff" isCollapsed="false">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="878.7013774103955" y="156.00347057987508" width="260" height="219.99652942012492"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12.21875" width="254" x="894.7013774103955" y="172.00347057987508"/>
+				</dmndi:DMNLabel>
+				<dmndi:DMNDecisionServiceDividerLine>
+					<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="878.7013774103955" y="271.00347057987506"/>
+					<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1138.7013774103955" y="271.00347057987506"/>
+				</dmndi:DMNDecisionServiceDividerLine>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_e23c0c63-fda2-411e-9a7f-12226a908c91" dmnElementRef="_8a182857-b5a1-4389-9a76-01a316938cea">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="932.2013774103956" y="196.00347057987508" width="153.0000000000001" height="59.99999999999997"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12" width="146" x="935.2013774103956" y="220.00347057987508"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="_ec44949f-5a92-40a5-8165-5192c916e4ac" dmnElementRef="_91fa4ebe-d9c9-4608-b043-c27d99e1eaa5">
+				<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" x="932.2013774103958" y="291" width="152.9999999999999" height="60"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0">
+					<dc:Bounds xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" height="12.000000000000004" width="146" x="934.7078709168893" y="314.5081967213115"/>
+				</dmndi:DMNLabel>
+			</dmndi:DMNShape>
+			<dmndi:DMNEdge id="_76f6f123-fc4f-460b-8ea7-1aaab6959d9b" dmnElementRef="_e47777c4-b10c-4aa8-8087-371824560192">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1189.1981787867387" y="422.99652560542773"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1048.7013774103957" y="351"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_98386957-cfad-49d1-bce7-6259d54d5ba3" dmnElementRef="_ffe87244-b1ab-4075-a243-5f2a87f170d0">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1217.6981787867385" y="348.9965256054276"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1085.2013774103957" y="341"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_8d4993ba-08a6-4e98-96bd-dc339f359d2d" dmnElementRef="_d9d4a780-7427-4000-b2c7-575717ebcae5">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1263.1981787867387" y="228.0034667651778"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1085.2013774103957" y="301"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_2f96d770-5269-42e9-baed-ea78445b3e46" dmnElementRef="_8304cbac-5619-459b-92a8-b389aaaf2aff">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="971.4968013763428" y="403.9965256054276"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="968.7013774103958" y="351"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_382e7238-103d-4aa7-9438-7832b2ea88d2" dmnElementRef="_28360d50-9eee-4fa1-9f4d-a19c5bc9bbcb">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="823.734375" y="393.49652942012494"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="932.2013774103958" y="331"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_bf0dd31b-d9f6-4b3e-9546-f59a29795a16" dmnElementRef="_ff803e3f-9159-401f-b22c-edbb48cbf164">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="671.7343750000001" y="307.5"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1085.2013774103957" y="321"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_e20fb50a-b082-434d-892a-869950f1d79d" dmnElementRef="_1f641b45-5ad1-4dfa-bdc5-19d0f52b87b4">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="968.7013774103958" y="291"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="968.7013774103956" y="256.00347057987506"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_4515e28c-f7ea-40ff-859f-65fd5d310072" dmnElementRef="_70f3db04-5830-45d2-ba12-7c355e571fcd">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1273.1981787867385" y="328.9965256054276"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1085.2013774103957" y="236.00347057987508"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_3affdb18-a0c8-4e50-9e36-73c650b2467b" dmnElementRef="_da7d6551-1fd0-49ea-9723-ec51d15005a8">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1217.6981787867387" y="248.0034667651778"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1085.2013774103957" y="226.00347057987508"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+			<dmndi:DMNEdge id="_9b2c749a-da49-43cc-8688-e72f394f0b32" dmnElementRef="_8d9ec740-a917-4215-88ec-e531ee90a348">
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1209.1981787867387" y="422.99652560542773"/>
+				<di:waypoint xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" x="1078.7013774103957" y="256.00347057987506"/>
+				<dmndi:DMNLabel sharedStyle="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0"/>
+			</dmndi:DMNEdge>
+		</dmndi:DMNDiagram>
+		<dmndi:DMNStyle id="LS_5c8b9296-96cf-4898-bba5-3a2d21d34eed_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+	</dmndi:DMNDI>
+</semantic:definitions>

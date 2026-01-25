@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -34,7 +34,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.SortDeclarations;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.compiler.AnalysisResult;

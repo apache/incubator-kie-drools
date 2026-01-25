@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -72,6 +72,7 @@ public enum FEELDialect {
         toReturn.add(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_FEEL);
         toReturn.add(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_FEEL);
         toReturn.add(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_FEEL);
+        toReturn.add(org.kie.dmn.model.v1_6.KieDMNModelInstrumentedBase.URI_FEEL);
         return toReturn;
     }
 }

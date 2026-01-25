@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -121,5 +122,10 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     @Override
     public FEELDialect getFEELDialect() {
         return wrapped.getFEELDialect();
+    }
+
+    @Override
+    public DMNVersion getDMNVersion() {
+        return wrapped.getDMNVersion();
     }
 }

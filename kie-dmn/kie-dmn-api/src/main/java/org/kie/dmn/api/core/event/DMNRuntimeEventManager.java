@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,5 +56,11 @@ public interface DMNRuntimeEventManager {
     boolean hasListeners();
 
     DMNRuntime getRuntime();
+
+    /**
+     * Returns the name of the decision that is currently being evaluated
+     * @return the name of the decision currently being evaluated
+     */
+    String getCurrentEvaluatingDecisionName();
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintParser;
+import org.drools.model.codegen.execmodel.generator.drlxparse.DrlxParseFail;
 import org.drools.model.codegen.execmodel.generator.drlxparse.DrlxParseResult;
 import org.drools.model.codegen.execmodel.generator.drlxparse.DrlxParseSuccess;
 import org.drools.model.codegen.execmodel.generator.drlxparse.SingleDrlxParseSuccess;
@@ -203,6 +204,11 @@ public class OOPathExprGenerator {
                     MethodCallExpr expr = expressionBuilder.buildExpressionWithIndexing( singleDrlx );
                     expr.setScope( patternExpr );
                     patternExpr = expr;
+                }
+            } else {
+                DrlxParseFail fail = (DrlxParseFail) drlx;
+                if (fail.getError() != null) {
+                    context.addCompilationError(fail.getError());
                 }
             }
         }

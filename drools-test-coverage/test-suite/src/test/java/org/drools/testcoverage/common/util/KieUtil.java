@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,7 +17,6 @@
  * under the License.
  */
 package org.drools.testcoverage.common.util;
-;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;

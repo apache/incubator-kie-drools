@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,8 +17,6 @@
  * under the License.
  */
 package org.drools.core.process;
-
-import java.util.Collection;
 
 import org.kie.api.runtime.KieRuntime;
 

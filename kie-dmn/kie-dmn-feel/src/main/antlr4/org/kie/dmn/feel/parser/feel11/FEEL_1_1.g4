@@ -280,17 +280,22 @@ multiplicativeExpression
 	;
 
 powerExpression
-    :   filterPathExpression                           #powExpressionUnary
-    |   powerExpression op=POW filterPathExpression   #powExpression
+    :   pathDescendantFilterExpression                          #powExpressionUnary
+    |   powerExpression op=POW pathDescendantFilterExpression   #powExpression
     ;
 
-filterPathExpression
+// FEEL Grammar (2.g) (Path, Descendant, and Filter Expressions)
+pathDescendantFilterExpression
 @init {
     int count = 0;
 }
     :   unaryExpression
-    |   n0=filterPathExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
-    |   n1=filterPathExpression DOT {count = helper.fphStart($n1.ctx, this); helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution(); helper.fphEnd(count);}
+    // #50 Filter Expression
+    |   n0=pathDescendantFilterExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
+    // #43 Path Expression
+    |   n1=pathDescendantFilterExpression DOT {count = helper.fphStart($n1.ctx, this); helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution(); helper.fphEnd(count);}
+    // #68 Descendant Expression
+    |   n2=pathDescendantFilterExpression SPREAD {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
     ;
 
 unaryExpression
@@ -352,7 +357,7 @@ simplePositiveUnaryTest
     | op=GT  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
     | op=LE {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
     | op=GE {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
-    | op=EQUAL  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op=EQUAL  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneqInterval
     | op=NOTEQUAL {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     ;
@@ -761,6 +766,7 @@ RBRACK : ']';
 COMMA : ',';
 ELIPSIS : '..';
 DOT : '.';
+SPREAD : '...';
 
 // Operators
 

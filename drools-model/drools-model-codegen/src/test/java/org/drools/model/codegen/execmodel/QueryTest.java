@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -25,12 +25,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.QueryResultsImpl;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Relationship;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.oopathdtables.InternationalAddress;
-import org.drools.model.codegen.execmodel.util.TrackingAgendaEventListener;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
@@ -483,9 +483,9 @@ public class QueryTest extends BaseModelTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
+        assertThat(listener.getAfterMatchFired()).contains("testPullQueryRule");
 //        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
-        listener.clear();
+        listener.resetAllEvents();
 
         // when location is changed of what Peter likes, pull query should
         // ignore it
@@ -499,19 +499,19 @@ public class QueryTest extends BaseModelTest {
         ksession.insert(deskLocation);
         ksession.delete(steakHandle);
         ksession.delete(tableHandle);
+        
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).doesNotContain("testPullQueryRule", "testPushQueryRule");
+
+        listener.resetAllEvents();
 
         final Person paul = new Person("Paul");
         paul.setLikes("steak");
         ksession.insert(paul);
         ksession.fireAllRules();
-
-        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
+        
+        assertThat(listener.getAfterMatchFired()).contains("testPullQueryRule").doesNotContain("testPushQueryRule");
     }
 
     @ParameterizedTest

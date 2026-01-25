@@ -1,0 +1,57 @@
+{
+  "specVersion": "alpha",
+  "kind": "YaRD",
+  "name": "Traffic Violation",
+  "inputs": [
+    {
+      "name": "Bronze Complete",
+      "type": "boolean"
+    },
+    {
+      "name": "Silver Complete",
+      "type": "boolean"
+    },
+    {
+      "name": "Gold Complete",
+      "type": "boolean"
+    }
+  ],
+  "elements": [
+    {
+      "name": "Level",
+      "type": "Decision",
+      "logic": {
+        "type": "DecisionTable",
+        "hitPolicy": "ANY",
+        "inputs": [
+          "Bronze Complete",
+          "Silver Complete",
+          "Gold Complete"
+        ],
+        "outputComponents": [
+          "Level"
+        ],
+        "rules": [
+          [
+            true,
+            true,
+            true,
+            "Gold"
+          ],
+          [
+            true,
+            true,
+            false,
+            "Silver"
+          ],
+          [
+            true,
+            false,
+            false,
+            "Bronze"
+          ]
+        ]
+      }
+    }
+  ]
+}

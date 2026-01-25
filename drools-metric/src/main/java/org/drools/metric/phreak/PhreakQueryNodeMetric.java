@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,26 +22,28 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakQueryNode;
 import org.drools.core.phreak.StackEntry;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakQueryNodeMetric extends PhreakQueryNode {
 
+    public PhreakQueryNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
-    public void doNode(QueryElementNode queryNode,
+    public void doNode(StackEntry stackEntry,
+                       QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
-                       StackEntry stackEntry,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(queryNode);
 
-            super.doNode(queryNode, qmem, stackEntry, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            super.doNode(stackEntry, queryNode, qmem, srcLeftTuples, stagedLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

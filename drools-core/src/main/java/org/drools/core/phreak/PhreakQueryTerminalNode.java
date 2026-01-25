@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,9 +21,8 @@ package org.drools.core.phreak;
 import java.util.List;
 
 import org.drools.core.base.DroolsQueryImpl;
-import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -40,27 +39,32 @@ import org.drools.core.util.LinkedList;
 * To change this template use File | Settings | File Templates.
 */
 public class PhreakQueryTerminalNode {
-    public void doNode(QueryTerminalNode qtnNode,
-                       ActivationsManager activationsManager,
-                       TupleSets srcLeftTuples,
-                       LinkedList<StackEntry> stack) {
+    
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakQueryTerminalNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
+
+    public void doNode(LinkedList<StackEntry> stack,
+                       QueryTerminalNode qtnNode,
+                       TupleSets srcLeftTuples) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftDeletes(qtnNode, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftUpdates(qtnNode, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(qtnNode, activationsManager, srcLeftTuples, stack);
+            doLeftInserts(qtnNode, srcLeftTuples, stack);
         }
 
         srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
-                              ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -74,13 +78,13 @@ public class PhreakQueryTerminalNode {
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowAdded(qtnNode.getQuery(),
                                                       leftTuple,
-                                                      activationsManager.getReteEvaluator());
+                                                      reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -88,7 +92,6 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
-                              ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -102,13 +105,13 @@ public class PhreakQueryTerminalNode {
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowUpdated(qtnNode.getQuery(),
                                                         leftTuple,
-                                                        activationsManager.getReteEvaluator());
+                                                        reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -116,7 +119,6 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
-                              ActivationsManager activationsManager,
                               TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -132,13 +134,13 @@ public class PhreakQueryTerminalNode {
             dquery.setQuery(qtnNode.getQuery());
 
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(activationsManager, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowRemoved(qtnNode.getQuery(),
                                                         leftTuple,
-                                                        activationsManager.getReteEvaluator());
+                                                        reteEvaluator);
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -146,7 +148,7 @@ public class PhreakQueryTerminalNode {
     }
 
 
-    public static void checkAndTriggerQueryReevaluation(ActivationsManager activationsManager, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQueryImpl dquery) {
+    public static void checkAndTriggerQueryReevaluation(LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQueryImpl dquery) {
         StackEntry stackEntry = dquery.getStackEntry();
         if (!isAdded(stack, stackEntry)) {
             // Ignore unless stackEntry is not added to stack
@@ -166,7 +168,7 @@ public class PhreakQueryTerminalNode {
                     // reactivity comes form within the query, so need to notify parent rules to evaluate the results
                     for (int i = 0, length = pmems.size(); i < length; i++) {
                         PathMemory pmem = pmems.get(i);
-                        pmem.doLinkRule(activationsManager); // method already ignores is rule is activated and on agenda
+                        pmem.doLinkRule(); // method already ignores is rule is activated and on agenda
                     }
                 }
             }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,21 +20,21 @@ package org.drools.scenariosimulation.backend.util;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DMNSimulationUtilsTest {
+@ExtendWith(MockitoExtension.class)
+class DMNSimulationUtilsTest {
 
     @Test
-    public void findDMNModel() {
+    void findDMNModel() {
         List<String> pathToFind = List.of(new StringBuilder("to/find").reverse().toString().split("/"));
 
         List<DMNModel> models = List.of(createDMNModelMock("this/should/not/match"), createDMNModelMock("find"), 

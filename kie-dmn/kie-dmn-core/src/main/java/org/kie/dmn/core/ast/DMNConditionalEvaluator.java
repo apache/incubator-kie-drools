@@ -34,9 +34,11 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Decision;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +88,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
     private final DMNExpressionEvaluator elseEvaluator;
     private final DMNElement node;
     private final String name;
-    private final String decisionName;
+    private final String rootElementName;
     private final EvaluatorIdentifier ifEvaluatorIdentifier;
     private final EvaluatorIdentifier thenEvaluatorIdentifier;
     private final EvaluatorIdentifier elseEvaluatorIdentifier;
@@ -101,8 +103,33 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
-    static String getDecisionName(DMNModelInstrumentedBase dmnElement) {
-        return dmnElement instanceof Decision decision ? decision.getName() : getDecisionName(dmnElement.getParentDRDElement());
+    /**
+     * Given a DMNModelInstrumentedBase element, it looks in the DMN hierarchy to retrieve the root element name.
+     * Most of the time, the root element is a Decision node OR a BusinessKnowledgeModel node that wrap the Conditional
+     * Expression. In all other cases the top level root element identifier is returned.
+     * @param dmnElement
+     * @return The root element (Decision, BKM or Definitions) name or identifier
+     */
+    static String getRootElementNodeName(DMNModelInstrumentedBase dmnElement) {
+        if (dmnElement == null) {
+            logger.debug("Can't find the name of a null DMNModelInstrumentedBase");
+            return null;
+        }
+        if (dmnElement instanceof Decision decision) {
+            return decision.getName();
+        }
+        if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
+            return businessKnowledgeModel.getName();
+        }
+        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
+            logger.debug("Root element identifier: {} reached. " +
+                            "The conditional expression is not wrapped in a Decision or BKM node name." +
+                            "Returning this root element identifier",
+                    dmnElement.getIdentifierString());
+            return dmnElement.getIdentifierString();
+        }
+
+        return getRootElementNodeName(dmnElement.getParentDRDElement());
     }
 
     public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
@@ -115,7 +142,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
         this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
         this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
-        this.decisionName = getDecisionName(dmnElement);
+        this.rootElementName = getRootElementNodeName(dmnElement);
     }
 
     @Override
@@ -149,7 +176,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
         String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, decisionName, toReturn, executedId);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, rootElementName, toReturn, executedId);
         return toReturn;
     }
 

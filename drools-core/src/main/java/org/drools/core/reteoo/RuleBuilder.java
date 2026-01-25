@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -29,9 +29,9 @@ import org.drools.core.impl.InternalRuleBase;
 
 public interface RuleBuilder {
 
-    List<TerminalNode> addRule(RuleImpl rule, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories);
+    List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule);
 
-    void addEntryPoint(String id, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories);
+    void addEntryPoint(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, String id);
 
-    WindowNode addWindowNode(WindowDeclaration window, InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories);
+    WindowNode addWindowNode(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, WindowDeclaration window);
 }

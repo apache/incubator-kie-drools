@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -315,7 +315,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             parentNode = (DMNBaseNode) model.getBusinessKnowledgeModelByName(bkm.getName());
         }
         if (parentNode != null) {
-            parentNode.getDependencies().keySet().forEach(k -> feelCtx.addInputVariableType(k, BuiltInType.UNKNOWN));
+            parentNode.getDependencies().forEach((namespaceWithName, dependency) -> feelCtx.addInputVariableType(dependency.getName(), BuiltInType.UNKNOWN));
         }
         return feelCtx;
     }

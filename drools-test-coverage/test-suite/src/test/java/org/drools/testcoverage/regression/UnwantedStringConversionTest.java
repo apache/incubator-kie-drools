@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,7 +20,7 @@ package org.drools.testcoverage.regression;
 
 import java.util.stream.Stream;
 
-import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -61,10 +61,7 @@ public class UnwantedStringConversionTest {
         ksession.insert(message);
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("R1")).isFalse();
-        assertThat(listener.isRuleFired("R2")).isFalse();
-
-        assertThat(listener.rulesCount()).isEqualTo(0);
+        assertThat(listener.getAfterMatchFired()).hasSize(0).doesNotContain("R1", "R2");
     }
 
     public static class Message {

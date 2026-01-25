@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,6 +21,7 @@ package org.kie.dmn.feel.lang.impl;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -40,6 +41,7 @@ public class FEELBuilder {
         private ClassLoader classLoader;
         private List<FEELProfile> profiles;
         private FEELDialect feelDialect;
+        private DMNVersion dmnVersion;
 
         private Builder() {
         }
@@ -59,11 +61,17 @@ public class FEELBuilder {
             return this;
         }
 
+        public Builder withDMNVersion(DMNVersion dmnVersion) {
+            this.dmnVersion = dmnVersion;
+            return this;
+        }
+
         public FEEL build() {
             ClassLoader classLoaderToUse = classLoader != null ? classLoader : ClassLoaderUtil.findDefaultClassLoader();
             List<FEELProfile> profilesToUse = profiles != null ? profiles : Collections.emptyList();
             FEELDialect feelDialectToUse = feelDialect != null ? feelDialect : FEELDialect.FEEL;
-            return new FEELImpl(classLoaderToUse, profilesToUse, feelDialectToUse);
+            DMNVersion dmnVersionToUse = dmnVersion != null  ? dmnVersion : DMNVersion.getLatest();
+            return new FEELImpl(classLoaderToUse, profilesToUse, feelDialectToUse, dmnVersionToUse);
         }
     }
 }

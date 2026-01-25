@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.openapi.impl;
 
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
@@ -31,12 +32,12 @@ public class MapperHelper {
 
     static Object evaluateInfixOpNode(InfixOpNode toEvaluate) {
         // Defaulting FEELDialect to FEEL
-        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
+        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL, DMNVersion.getLatest()));
     }
 
     static Object evaluateAtLiteralNode(AtLiteralNode toEvaluate) {
         // Defaulting FEELDialect to FEEL
-        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
+        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL, DMNVersion.getLatest()));
     }
 
     private MapperHelper() {

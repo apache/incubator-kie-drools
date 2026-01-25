@@ -30,7 +30,7 @@
     </parent>
 
     <artifactId>drools-quarkus</artifactId>
-    <name>Drools Quarkus - Runtime</name>
+    <name>Drools :: Quarkus Extension :: Runtime</name>
     <description>Define and execute your business rules with Drools</description>
     <url>https://www.drools.org/</url>
 
@@ -38,7 +38,7 @@
         <java.module.name>org.drools.quarkus.runtime</java.module.name>
     </properties>
 
-    <dependencies>
+	<dependencies>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
@@ -108,8 +108,7 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
-    </dependencies>
+	</dependencies>
 
     <build>
         <plugins>

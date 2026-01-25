@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,8 +18,6 @@
  */
 package org.drools.model;
 
-import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import org.drools.model.functions.Function1;

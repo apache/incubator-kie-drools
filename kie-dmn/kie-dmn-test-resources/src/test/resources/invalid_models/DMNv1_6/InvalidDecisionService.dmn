@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="DecisionService" id="_B3F89E6B-756E-418D-BD4C-73E629FB2591" name="DecisionService" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <decision name="New Decision" id="_009C5383-62F7-4E0F-92F5-54A31445CEFE">
+    <variable name="New Decision" id="_04ED196E-B025-4E6B-8E4C-2D53F2BAEB68" typeRef="boolean" />
+    <informationRequirement id="_05D5999C-D0F9-467C-99D9-6F887094A149">
+      <requiredInput href="#_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0" />
+    </informationRequirement>
+    <literalExpression id="_9D91FFCF-6498-4FED-B322-5832F545794F" typeRef="boolean" label="New Decision">
+      <text>New Input Data &gt; 18</text>
+    </literalExpression>
+  </decision>
+  <inputData name="New Input Data" id="_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0">
+    <variable name="New Input Data" id="_DE47B272-FC27-47BF-9071-0106C636734A" typeRef="number" />
+  </inputData>
+  <decisionService name="New Decision Service" id="_6A46D1F3-8EC2-4105-961D-0D57D880B9CE">
+    <variable name="New Decision Service" id="_5B99C462-C4FB-4571-8D49-D2C9EEA26244" />
+    <outputDecision href="#_INVALID_ID" />
+    <inputData href="#_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0" />
+  </decisionService>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_83F5AAB1-579D-4386-8E95-5D61AD5396E2" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_9D91FFCF-6498-4FED-B322-5832F545794F">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_9D7D5790-4664-432E-A27C-78EAAD31228A" dmnElementRef="_6A46D1F3-8EC2-4105-961D-0D57D880B9CE" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="520" y="80" width="320" height="320" />
+        <dmndi:DMNDecisionServiceDividerLine id="_CAAF232A-0B31-49AC-941A-FB79DECF5787">
+          <di:waypoint x="520" y="240" />
+          <di:waypoint x="840" y="240" />
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_A3212E31-0619-4F82-A4A4-3865E72B2921" dmnElementRef="_009C5383-62F7-4E0F-92F5-54A31445CEFE" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="600" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_634A36C0-EB2D-4B08-A78A-99B6BE652E38" dmnElementRef="_0E888E5D-FDF7-45DE-BA8F-617464A2CFB0" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="960" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_09F66FDA-6EDA-4930-90CB-770F802EC698" dmnElementRef="_05D5999C-D0F9-467C-99D9-6F887094A149" sourceElement="_634A36C0-EB2D-4B08-A78A-99B6BE652E38" targetElement="_A3212E31-0619-4F82-A4A4-3865E72B2921">
+        <di:waypoint x="1040" y="180" />
+        <di:waypoint x="760" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

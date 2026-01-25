@@ -18,8 +18,6 @@ package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,13 +36,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
-import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNVersion;
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -94,14 +92,10 @@ import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
-import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
 import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
-import static org.kie.dmn.core.compiler.DMNImportsUtil.resolvePMMLImportType;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -146,8 +140,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource, Collection<DMNModel> dmnModels) {
         try {
-            DMNModel model = compile(resource.getReader(), dmnModels, resource);
-            return model;
+            return compile(resource.getReader(), dmnModels, resource);
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }
@@ -162,8 +155,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
             Definitions dmndefs = getMarshaller().unmarshal(source);
-            DMNModel model = compile(dmndefs, dmnModels, resource, null);
-            return model;
+            return compile(dmndefs, dmnModels, resource, null);
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
@@ -212,7 +204,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs, resource);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
-        DMNCompilerContext ctx = configureDMNCompiler(model.getFeelDialect(), relativeResolver);
+        DMNCompilerContext ctx = configureDMNCompiler(model.getFeelDialect(), model.getDMNVersion(), relativeResolver);
         if (!dmndefs.getImport().isEmpty()) {
             iterateImports(dmndefs, dmnModels, model, relativeResolver );
         }
@@ -224,14 +216,14 @@ public class DMNCompilerImpl implements DMNCompiler {
     /**
      * This method will Configures and creates a DMNCompilerContext for the DMN compiler, setting up the FEEL helper and relative resolver.
      * @param feeldialect : It used by the DMN compiler for parsing and evaluating FEEL expressions.
+     * @param dmnVersion : DMN version of the model.
      * @param relativeResolver : A Function that resolves relative paths to resources as Reader.
      * @return A configured DMNCompilerContext instance that can be used in the DMN compilation process.
      */
-    private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
-
+    private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, DMNVersion dmnVersion, Function<String, Reader> relativeResolver) {
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect);
+        DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles, feeldialect, dmnVersion);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
         ctx.setRelativeResolver(relativeResolver);
         return ctx;
@@ -251,10 +243,10 @@ public class DMNCompilerImpl implements DMNCompiler {
             ImportType importType = DMNImportsUtil.whichImportType(i);
             switch(importType) {
                 case DMN :
-                    resolveDMNImportType(i, dmnModels, model, toMerge);
+                    DMNImportsUtil.resolveDMNImportType(i, dmnModels, model, toMerge);
                     break;
                 case PMML:
-                    resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
+                    DMNImportsUtil.resolvePMMLImportType(model, dmndefs, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                     break;
                 default :
@@ -293,55 +285,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                                   Msg.FUNC_DEF_PMML_ERR_LOCATIONURI,
                                   i.getLocationURI());
         }
-
     }
-    protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
-        if (relativeResolver != null) {
-            Reader reader = relativeResolver.apply(i.getLocationURI());
-            return ResourceFactory.newReaderResource(reader);
-        } else if (model.getResource() != null) {
-            return pmmlImportResource(classLoader, model, i, node);
-        }
-        throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
-    }
-
-    protected static Resource pmmlImportResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
-        String locationURI = i.getLocationURI();
-        logger.trace("locationURI: {}", locationURI);
-        Resource pmmlResource = null;
-        try {
-            URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-            pmmlResource = resolveRelativeURI.isAbsolute() ?
-                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
-                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
-        } catch (URISyntaxException | IOException e) {
-            new PMMLImportErrConsumer(model, i, node).accept(e);
-        }
-        logger.trace("pmmlResource: {}", pmmlResource);
-        return pmmlResource;
-    }
-
-    protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {
-        URI relativeAsURI = new URI(null, null, relative, null);
-        if (model.getResource() instanceof FileSystemResource) {
-            FileSystemResource fsr = (FileSystemResource) model.getResource();
-            logger.trace("fsr: {}", fsr.getURL());
-            URI resolve = fsr.getURL().toURI().resolve(relativeAsURI);
-            return resolve;
-        } else {
-            URI dmnModelURI = new URI(null, null, model.getResource().getSourcePath(), null);
-            logger.trace("dmnModelURI: {}", dmnModelURI);
-            URI relativeURI = dmnModelURI.resolve(relativeAsURI);
-            return relativeURI;
-        }
-    }
-
-
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();
         
-        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
+        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition(), model.getDMNVersion());
         
         Set<String> names = new HashSet<>();
         for (ItemDefinition id : ordered) {
@@ -505,10 +454,10 @@ public class DMNCompilerImpl implements DMNCompiler {
     public void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
         for ( InformationRequirement ir : node.getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
-                String id = getId( ir.getRequiredInput() );
+                String id = getReferenceId( ir.getRequiredInput() );
                 InputDataNode input = model.getInputById( id );
                 if ( input != null ) {
-                    node.addDependency( input.getName(), input );
+                    node.addDependency( input.getModelNamespace() + "." + input.getName(), input );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -516,15 +465,16 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            model,
                                            null,
                                            null,
-                                           Msg.REQ_INPUT_NOT_FOUND_FOR_NODE,
+                                           Msg.DETAILED_REQ_INPUT_NOT_FOUND_FOR_NODE,
                                            id,
-                                           node.getName() );
+                                           node.getName(),
+                                           node.getModelNamespace());
                 }
             } else if ( ir.getRequiredDecision() != null ) {
-                String id = getId( ir.getRequiredDecision() );
+                String id = getReferenceId( ir.getRequiredDecision() );
                 DecisionNode dn = model.getDecisionById( id );
                 if ( dn != null ) {
-                    node.addDependency( dn.getName(), dn );
+                    node.addDependency( dn.getModelNamespace() + "." + dn.getName(), dn );
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -540,13 +490,13 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         for ( KnowledgeRequirement kr : node.getKnowledgeRequirement() ) {
             if ( kr.getRequiredKnowledge() != null ) {
-                String id = getId( kr.getRequiredKnowledge() );
+                String id = getReferenceId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
                 DecisionServiceNode dsn = model.getDecisionServiceById(id);
                 if ( bkmn != null ) {
-                    node.addDependency( bkmn.getName(), bkmn );
+                    node.addDependency( bkmn.getModelNamespace() + "." + bkmn.getName(), bkmn );
                 } else if (dsn != null) {
-                    node.addDependency(dsn.getName(), dsn);
+                    node.addDependency(dsn.getModelNamespace() + "." + dsn.getName(), dsn);
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -566,9 +516,14 @@ public class DMNCompilerImpl implements DMNCompiler {
      * For the purpose of Compilation, in the DMNModel the DRGElements are stored with their full ID, so an ElementReference might reference in two forms:
      *  - #id (a local to the model ID)
      *  - namespace#id (an imported DRGElement ID)
-     * This method now returns in the first case the proper ID, while leave unchanged in the latter case, in order for the ID to be reconciliable on the DMNModel. 
+     *  This method returns:
+     *  The local ID (without the leading {@code #}) when the reference is local to the current model.
+     *  The trimmed ID (with namespace removed) when the reference includes the current model's namespace.
+     *  The full {@code namespace#id} unchanged when the reference targets an imported model.
+     *  This ensures that the returned ID can be reconciled correctly within the DMNModel, while preserving namespace context for imported elements.
+     *
      */
-    public static String getId(DMNElementReference er) {
+    public static String getReferenceId(DMNElementReference er) {
         String href = er.getHref();
         if (href.startsWith("#")) {
             return href.substring(1);
@@ -666,7 +621,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
-        } else if (itemDef.getItemComponent() != null && itemDef.getItemComponent().size() > 0) {
+        } else if (itemDef.getItemComponent() != null && !itemDef.getItemComponent().isEmpty()) {
             // this is a composite type
             // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {

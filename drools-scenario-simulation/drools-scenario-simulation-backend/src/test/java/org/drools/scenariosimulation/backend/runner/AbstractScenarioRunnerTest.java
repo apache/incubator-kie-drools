@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,18 +30,19 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.Description;
-import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieContainer;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -50,8 +51,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AbstractScenarioRunnerTest {
+@ExtendWith(MockitoExtension.class)
+@Deprecated
+class AbstractScenarioRunnerTest {
 
     private final static int SCENARIO_DATA = 5;
 
@@ -62,8 +64,8 @@ public class AbstractScenarioRunnerTest {
     protected Settings settingsLocal;
     private ScenarioRunnerDTO scenarioRunnerDTOLocal;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         settingsLocal = new Settings();
         scenarioRunnerDTOLocal = getScenarioRunnerDTO();
         abstractScenarioRunnerLocal = spy(
@@ -80,7 +82,7 @@ public class AbstractScenarioRunnerTest {
     }
 
     @Test
-    public void getDescriptionForSimulationByClassNameAndSimulation() {
+    void getDescriptionForSimulationByClassNameAndSimulation() {
         Description retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.empty(), scenarioRunnerDTOLocal.getScenarioWithIndices());
         commonVerifyDescriptionForSimulation(retrieved, AbstractScenarioRunner.class.getSimpleName());
         retrieved = AbstractScenarioRunner.getDescriptionForSimulation(Optional.of("src/test/Test.scesim"), scenarioRunnerDTOLocal.getScenarioWithIndices());
@@ -88,7 +90,7 @@ public class AbstractScenarioRunnerTest {
     }
 
     @Test
-    public void getDescriptionForScenario() {
+    void getDescriptionForScenario() {
         final Scenario scenario = scenarioRunnerDTOLocal.getScenarioWithIndices().get(2).getScesimData();
         Description retrieved = AbstractScenarioRunner.getDescriptionForScenario(Optional.empty(), 1, scenario.getDescription());
         
@@ -100,19 +102,20 @@ public class AbstractScenarioRunnerTest {
     }
 
     @Test
-    public void getSpecificRunnerProvider() {
+    void getSpecificRunnerProvider() {
         // all existing types should have a dedicated runner
     	assertThat(ScenarioSimulationModel.Type.values()).extracting(x -> AbstractScenarioRunner.getSpecificRunnerProvider(x)).isNotNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getSpecificRunnerProviderNullType() {
+    @Test
+    void getSpecificRunnerProviderNullType() {
         settingsLocal.setType(null);
-        AbstractScenarioRunner.getSpecificRunnerProvider(null);
+        assertThatThrownBy(() -> AbstractScenarioRunner.getSpecificRunnerProvider(null)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void testRun() {
+     void testRun() {
         ArgumentCaptor<Failure> failureArgumentCaptor = ArgumentCaptor.forClass(Failure.class);
 
         doThrow(new ScenarioException("Failed assertion", true))
@@ -153,7 +156,7 @@ public class AbstractScenarioRunnerTest {
     }
 
     @Test
-    public void getScesimFileName() {
+    void getScesimFileName() {
         assertThat(AbstractScenarioRunner.getScesimFileName("src/test/Test.scesim")).isEqualTo("Test");
         assertThat(AbstractScenarioRunner.getScesimFileName("Test.scesim")).isEqualTo("Test");
         assertThat(AbstractScenarioRunner.getScesimFileName("Test")).isEqualTo("Test");

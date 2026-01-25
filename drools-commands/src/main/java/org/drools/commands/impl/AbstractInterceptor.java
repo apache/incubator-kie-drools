@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,6 @@ import org.drools.commands.fluent.PseudoClockRunner;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
-import org.kie.api.runtime.RequestContext;
 
 public abstract class AbstractInterceptor extends PseudoClockRunner implements ChainableRunner {
 

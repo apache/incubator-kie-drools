@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,11 +19,11 @@
 
 // $ANTLR 3.5.2 src/main/resources/org/drools/drl/parser/DRL6Lexer.g 2024-01-03 11:41:50
 
-    package org.drools.drl.parser.lang;
+package org.drools.drl.parser.lang;
 
-    import org.kie.internal.builder.conf.LanguageLevelOption;
-    import org.drools.drl.parser.DroolsParserException;
-    import org.drools.util.StringUtils;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.util.StringUtils;
 
 
 import org.antlr.runtime.*;

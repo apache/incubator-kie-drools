@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,43 +54,37 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetByteValue() {
-        assertThat(this.reader.getByteValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((byte)'a');
     }
 
     @Test
     public void testGetCharValue() {
-        assertThat(this.reader.getCharValue(null,
+        assertThat((char) this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo('a');
     }
 
     @Test
     public void testGetDoubleValue() {
-        assertThat((int) this.reader.getDoubleValue(null,
-                this.bean)).isEqualTo('a');
-    }
-
-    @Test
-    public void testGetFloatValue() {
-        assertThat((int) this.reader.getFloatValue(null,
+        assertThat((int) this.reader.getDecimalValue(null,
                 this.bean)).isEqualTo('a');
     }
 
     @Test
     public void testGetIntValue() {
-        assertThat(this.reader.getIntValue(null,
+        assertThat((int) this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo('a');
     }
 
     @Test
     public void testGetLongValue() {
-        assertThat((int) this.reader.getLongValue(null,
+        assertThat((int) this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo('a');
     }
 
     @Test
     public void testGetShortValue() {
-        assertThat(this.reader.getShortValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((short)'a');
 
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,9 +18,19 @@
  */
 package org.drools.model;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TypeMetaData extends NamedModelItem {
     Class<?> getType();
     Map<String, AnnotationValue[]> getAnnotations();
+
+    List<FieldMetaData> getFields();
+
+    interface FieldMetaData {
+
+        String getFieldName();
+
+        Map<String, AnnotationValue[]> getAnnotations();
+    }
 }

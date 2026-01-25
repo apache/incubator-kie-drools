@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,6 +32,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
@@ -51,6 +52,8 @@ public interface ReteEvaluator extends ValueResolver {
 
     long getIdentifier();
 
+    RuleNetworkEvaluator getRuleNetworkEvaluator();
+    
     ActivationsManager getActivationsManager();
 
     InternalRuleBase getKnowledgeBase();
@@ -68,6 +71,8 @@ public interface ReteEvaluator extends ValueResolver {
     <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     NodeMemories getNodeMemories();
+    
+    SegmentMemorySupport getSegmentMemorySupport();
 
     default Object getGlobal(String identifier) {
         return getGlobalResolver().resolveGlobal( identifier );
@@ -114,9 +119,7 @@ public interface ReteEvaluator extends ValueResolver {
 
     SessionClock getSessionClock();
 
-    default boolean isSequential() {
-        return getKnowledgeBase().getRuleBaseConfiguration().isSequential();
-    }
+    boolean isSequential();
 
     default void startOperation(InternalOperationType operationType) { }
     default void endOperation(InternalOperationType operationType) { }

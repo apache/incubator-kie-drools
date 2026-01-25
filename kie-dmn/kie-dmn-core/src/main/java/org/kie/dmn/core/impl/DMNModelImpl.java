@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,6 +17,8 @@
  * under the License.
  */
 package org.kie.dmn.core.impl;
+
+import javax.xml.namespace.QName;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -37,15 +39,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
-
 import org.drools.base.common.DroolsObjectInputStream;
 import org.drools.base.common.DroolsObjectOutputStream;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -61,11 +61,12 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV14;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV16;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -109,6 +110,8 @@ public class DMNModelImpl
 
     private FEELDialect feelDialect;
 
+    private DMNVersion dmnVersion;
+
     public DMNModelImpl() {
         // needed because Externalizable.
     }
@@ -121,6 +124,7 @@ public class DMNModelImpl
         String expressionLanguage = definitions.getExpressionLanguage() != null ? definitions.getExpressionLanguage() : "";
         try {
             feelDialect = FEELDialect.fromNamespace(expressionLanguage);
+            dmnVersion = DMNVersion.inferDMNVersion(definitions.getNsContext().values());
         } catch (IllegalArgumentException e) {
             feelDialect = FEELDialect.FEEL;
         }
@@ -132,8 +136,52 @@ public class DMNModelImpl
         messages = new DefaultDMNMessagesManager(resource);
     }
 
+    static Set<ModelImportTuple> populateTopmostParents(List<DMNModel> importChainDirectChildModels, DMNModelImpl importingModel) {
+        Set<ModelImportTuple> result = new HashSet<>();
+
+        for (DMNModel imported : importChainDirectChildModels) {
+            DMNModelImpl importedModelImpl = (DMNModelImpl) imported;
+            result.addAll(processImportedModel(importingModel, importedModelImpl));
+        }
+        return result;
+    }
+
+    static Set<ModelImportTuple> processImportedModel(DMNModelImpl importingModel, DMNModelImpl importedModelImpl) {
+        ImportChain importChain = importedModelImpl.importChain;
+        Set<ModelImportTuple> result = new HashSet<>();
+
+        if (importChain != null && !importChain.children.isEmpty()) {
+            List<DMNModel> nestedImportChainDirectChildModels = importChain.getImportChainDirectChildModels();
+            result.addAll(populateTopmostParents(nestedImportChainDirectChildModels, importedModelImpl));
+        } else {
+            String importName = getImportName(importedModelImpl, importingModel);
+            result.add(new ModelImportTuple(importName, importedModelImpl));
+        }
+        return result;
+    }
+
+    static String getImportName(DMNModelImpl importedModel, DMNModelImpl importingModel) {
+        return importingModel.getImportAliasFor(importedModel.getNamespace(), importedModel.getName()).orElseThrow(() -> new IllegalStateException(String.format("Missing import alias for model %s : %s inside model %s : %s", importedModel.getNamespace(), importedModel.getName(), importingModel.getNamespace(), importingModel.getName())));
+    }
+
+    /**
+     * This method returns the collection of topmost imported parents, if there is a populated ImportChain, otherwise returns an Optional.empty
+     * @return a <code>Set</code> to avoid duplicated elements
+     */
+    public Optional<Set<ModelImportTuple>> getTopmostParents() {
+        if (importChain != null && !importChain.children.isEmpty()) {
+            List<DMNModel> importChainDirectChildModels = importChain.getImportChainDirectChildModels();
+            return Optional.of(populateTopmostParents(importChainDirectChildModels, this));
+        }
+        return Optional.empty();
+    }
+
     public FEELDialect getFeelDialect() {
         return feelDialect;
+    }
+
+    public DMNVersion getDMNVersion() {
+        return dmnVersion;
     }
 
     private void wireTypeRegistry(Definitions definitions) {
@@ -145,8 +193,10 @@ public class DMNModelImpl
             types = new DMNTypeRegistryV13(Collections.unmodifiableMap(importAliases));
         } else if (definitions instanceof org.kie.dmn.model.v1_4.TDefinitions) {
             types = new DMNTypeRegistryV14(Collections.unmodifiableMap(importAliases));
-        } else {
+        } else if (definitions instanceof org.kie.dmn.model.v1_5.TDefinitions) {
             types = new DMNTypeRegistryV15(Collections.unmodifiableMap(importAliases));
+        } else {
+            types = new DMNTypeRegistryV16(Collections.unmodifiableMap(importAliases));
         }
     }
     
@@ -214,7 +264,7 @@ public class DMNModelImpl
     }
 
     private List<String> computeDRGElementModelLocalId(DMNNode node) {
-        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original one,
         // Here, if the node comes from an unnamed imported model, then it is stored only with its id, to be looked for
         // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
@@ -520,10 +570,41 @@ public class DMNModelImpl
 
     }
 
-    private static class ImportChain {
+    public static class ModelImportTuple {
+        private final String importName;
+        private final DMNModelImpl model;
+
+        public ModelImportTuple(String importName, DMNModelImpl model) {
+            this.importName = importName;
+            this.model = model;
+        }
+
+        public String getImportName() {
+            return importName;
+        }
+
+        public DMNModelImpl getModel() {
+            return model;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ModelImportTuple that)) {
+                return false;
+            }
+            return Objects.equals(importName, that.importName) && Objects.equals(model, that.model);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(importName, model);
+        }
+    }
+
+    public static class ImportChain {
         private final String alias;
         private final DMNModel node;
-        
+
         private final List<ImportChain> children = new ArrayList<>();
         
         public ImportChain(DMNModel node) {

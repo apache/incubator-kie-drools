@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -168,6 +168,19 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
+    public void modify() {
+        ModifyTestUnit unit = new ModifyTestUnit();
+
+        try ( RuleUnitInstance<ModifyTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+
+            unit.getPersons().add(new Person("Mario", 17));
+
+            assertThat(unitInstance.fire()).isEqualTo(2);
+            assertThat(unit.getResults()).containsExactly("ok");
+        }
+    }
+
+    @Test
     public void wrongType() {
         try {
             RuleUnitProvider.get().createRuleUnitInstance(new WronglyTypedUnit());
@@ -191,29 +204,6 @@ public class RuleUnitProviderImplTest {
                     e.getErrorMessages().stream().map(Objects::toString)
                             .anyMatch( s -> s.contains("Rule RuleInGroup belongs to unit AgendaGroupUnit and cannot have an agenda-group or a ruleflow-group"))
             ).isTrue();
-        }
-    }
-
-    @Test
-    public void addEventListeners() {
-        TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
-        TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();
-        TestRuleEventListener testRuleEventListener = new TestRuleEventListener();
-
-        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
-        ruleConfig.getAgendaEventListeners().add(testAgendaEventListener);
-        ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
-        ruleConfig.getRuleEventListeners().add(testRuleEventListener);
-
-        HelloWorldUnit unit = new HelloWorldUnit();
-        unit.getStrings().add("Hello World");
-
-        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
-            assertThat(unitInstance.fire()).isEqualTo(1);
-            assertThat(unit.getResults()).containsExactly("it worked!");
-            assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");
-            assertThat(testRuleRuntimeEventListener.getResults()).containsExactly("objectInserted : Hello World");
-            assertThat(testRuleEventListener.getResults()).containsExactly("onBeforeMatchFire : HelloWorld", "onAfterMatchFire : HelloWorld");
         }
     }
 

@@ -29,18 +29,22 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,6 +59,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
@@ -67,6 +72,7 @@ import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.model.Person;
@@ -77,7 +83,9 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.BuiltInTypeUtils;
+import org.kie.dmn.feel.util.Msg;
 import org.kie.dmn.feel.util.NumberEvalHelper;
+import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.InformationItem;
@@ -90,6 +98,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -462,6 +471,112 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
+    void boxedFilter(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedFilter.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_42BAF435-BAF7-460A-8C5D-351ABB98403C",
+                "DMN_DFD7A647-6D67-4014-834B-E7559668C4B5"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("fruit", "Mango");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getContext().get("BoxedFilter")).isEqualTo(Collections.singletonList("Mango"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedFilterInvalidCondition(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedFilter.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_42BAF435-BAF7-460A-8C5D-351ABB98403C",
+                "DMN_DFD7A647-6D67-4014-834B-E7559668C4B5"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("fruit", "Kiwi");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getContext().get("BoxedFilter")).isEqualTo(Collections.emptyList());
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedIterator(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedIterator.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_60C30701-AFB7-49C5-9B23-A0167DDC6795",
+                "DMN_A15DEB5A-841F-4AC0-8C09-2403F5707373"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("singleNumber", 5);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getContext().get("BoxedIterator")).isEqualTo(Collections.singletonList(BigDecimal.valueOf(30)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedIteratorInvalidConditionWithInvalidInput(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedIterator.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_60C30701-AFB7-49C5-9B23-A0167DDC6795",
+                "DMN_A15DEB5A-841F-4AC0-8C09-2403F5707373"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("singleNumber", "invalid");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).isTrue();
+        assertThat(dmnResult.getContext().get("BoxedIterator")).isNull();
+        assertThat(dmnResult.getMessages(Severity.ERROR).get(0).getMessageType()).isEqualTo(DMNMessageType.ERROR_EVAL_NODE);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void boxedIteratorInvalidConditionWithNonNumeric(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/BoxedIterator.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_60C30701-AFB7-49C5-9B23-A0167DDC6795",
+                "DMN_A15DEB5A-841F-4AC0-8C09-2403F5707373"
+        );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("singleNumber", List.of(1, 2, 3));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.hasErrors()).isTrue();
+        assertThat(dmnResult.getContext().get("BoxedIterator")).isNull();
+        assertThat(dmnResult.getMessages(Severity.ERROR).get(0).getMessageType()).isEqualTo(DMNMessageType.ERROR_EVAL_NODE);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
     void functionDefAndInvocation(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("FunctionDefinition.dmn", this.getClass());
@@ -769,6 +884,45 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(dmnResult.getContext().get("time")).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isEqualTo(LocalTime.of(5, 48, 23));
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void timeFunctionWithoutWarningEvent(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/timeFunction.dmn", getClass());
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a_time", "00:01:00@Etc/UTC");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.getMessages().size()).isEqualTo(0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void timeFunctionWithWarningEvent(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        String expectedMessage = Msg.createMessage(Msg.DEPRECATE_TIME_WITH_TIMEZONE);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/timeFunction.dmn", getClass());
+        runtime.addListener(DMNRuntimeUtil.createListener());
+
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_72913353-6A25-4439-AE70-4383A0544F31", "DMN_50C0E61A-D1F2-41F0-8BD4-CE42BA135F43");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("a_time", "00:01:00@Etc/UTC");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+        assertThat(dmnResult.getMessages().size()).isEqualTo(1);
+        assertThat(dmnResult.getMessages().get(0).getFeelEvent().getMessage()).isEqualTo(expectedMessage);
+    }
+
 
     @ParameterizedTest
     @MethodSource("params")
@@ -2189,7 +2343,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                 .isTrue();
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decide Vowel a")).isEqualTo("a");
+        assertThat(result.get("Decide Vowel a")).isEqualTo(Collections.singletonList("a"));
         assertThat(result.get("Decide BAD")).isNull();
     }
 
@@ -3533,4 +3687,109 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages()).hasSize(2);
         assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void valuePropertyTest(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/TestValueProperty.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_71C6EBC8-58FD-4917-A00D-3CFF5DF1C0D9", "DMN_8092A68F-7F00-44BA-8B59-9831ECE4EB8D");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("InputA", LocalDate.of(2025,7,3));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        assertThat(dmnResult.getDecisionResultByName("TestDate").getResult()).isEqualTo(BigDecimal.valueOf(1751500800));
+    }
+
+    @Test
+    void testDecisionServiceWithEventListener() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "testmodels/evaluated-model.dmn", this.getClass(),
+                "testmodels/to-be-included.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("evaluated-model", "evaluated-model");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "MyHelloService");
+        assertThat(dmnResult.getDecisionResultByName("MyOutput").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("MyOutput")).isEqualTo("Hello, world!");
+    }
+
+    @Test
+    void testDecisionServiceWithEventListenerInSingleModel() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/DecisionService/DecisionService.dmn", this.getClass());
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("DecisionService", "DecisionService");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("New Input Data", 20);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "New Decision Service");
+        assertThat(dmnResult.getDecisionResultByName("New Decision").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("New Decision")).isEqualTo(new BigDecimal("20"));
+    }
+
+    @Test
+    void testDecisionServiceWithEventListenerWithUnnamedImport() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "valid_models/DMNv1_6/DecisionService/UnnamedImport.dmn", this.getClass(),
+                "valid_models/DMNv1_6/DecisionService/DecisionService.dmn"
+        );
+        runtime.addListener(new DecisionLoggingListener());
+        DMNModel dmnModel = runtime.getModel("UnnamedImport", "UnnamedImport");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).isFalse();
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("New Input Data", 20);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, dmnContext, "Decision Service");
+        assertThat(dmnResult.getDecisionResultByName("Decision").getDecisionName()).isNotNull();
+        assertThat(dmnResult.getContext().get("Decision")).isEqualTo(true);
+    }
+
+    @Test
+    void testDecisionServiceWithInvalidId() {
+        assertThatThrownBy(() -> DMNRuntimeUtil.createRuntime("invalid_models/DMNv1_6/InvalidDecisionService.dmn",this.getClass()))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void testGetReferenceIdWithImports() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(
+                "valid_models/DMNv1_6/NamespaceTests/ImportingModel.dmn", this.getClass(),
+                "valid_models/DMNv1_6/NamespaceTests/ImportedModel.dmn"
+        );
+
+        DMNModel importingModel = runtime.getModel("ImportingModel", "ImportingModel");
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.hasErrors()).isFalse();
+
+        Optional<DecisionServiceNode> dsNodeOpt = importingModel.getDecisionServices().stream()
+                .filter(ds -> ds.getName().equals("DecisionService B"))
+                .findFirst();
+
+        assertThat(dsNodeOpt).isPresent();
+        DecisionServiceNode dsNode = dsNodeOpt.get();
+
+        List<DMNElementReference> reference1 = dsNode.getDecisionService().getInputData();
+        List<DMNElementReference> reference2 = dsNode.getDecisionService().getOutputDecision();
+        assertThat(reference1).isNotEmpty();
+        assertThat(reference2).isNotEmpty();
+
+        DMNElementReference importedRef = reference1.get(0);
+        String resolvedId = DMNCompilerImpl.getReferenceId(importedRef);
+        DMNElementReference importedRef2 = reference2.get(0);
+        String resolvedId2 = DMNCompilerImpl.getReferenceId(importedRef2);
+
+        assertThat(resolvedId).isEqualTo("ImportedModel#_D57E59F9-FC14-4B53-888C-CAADBA0AEFF6");
+        assertThat(resolvedId2).isEqualTo("ImportedModel#_CE7D37D7-FC33-4C3A-AD3D-6EB6BECBC2B7");
+    }
+
 }

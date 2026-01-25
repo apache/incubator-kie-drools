@@ -17,6 +17,7 @@
 # under the License.
 #
 
+# SPI implementations
 org.kie.pmml.evaluator.core.service.KieRuntimeServicePMML
 org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLRequestData
 org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLMapInput

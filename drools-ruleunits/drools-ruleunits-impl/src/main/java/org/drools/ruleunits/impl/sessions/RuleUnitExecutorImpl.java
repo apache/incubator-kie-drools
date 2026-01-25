@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,7 +36,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -47,6 +46,7 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -54,6 +54,9 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.ActivationsManagerImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluatorImpl;
+import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
@@ -102,6 +105,8 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final FactHandleFactory handleFactory;
 
     private final NodeMemories nodeMemories;
+    
+    private final SegmentMemorySupport segmentMemorySupport;
 
     private final ActivationsManager activationsManager;
     private final EntryPointsManager entryPointsManager;
@@ -111,7 +116,9 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final GlobalResolver globalResolver = new MapGlobalResolver();
 
     private final TimerService timerService;
-
+    
+    private final RuleNetworkEvaluator ruleNetworkEvaluator;
+    
     private Calendars calendars;
 
     private RuleUnits ruleUnits;
@@ -128,18 +135,21 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
-        this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
+        this.nodeMemories = new ConcurrentNodeMemories(ruleBase, this);
 
-        this.activationsManager = new ActivationsManagerImpl(this);
-        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
+        this.activationsManager = new ActivationsManagerImpl(ruleBase, this, handleFactory);
+        this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(ruleBase, this, handleFactory);
+        
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, ruleBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
         this.timerService = sessionConfiguration.createTimerService();
+        this.ruleNetworkEvaluator = new RuleNetworkEvaluatorImpl(this, nodeMemories, segmentMemorySupport);
 
-        initInitialFact(ruleBase);
+        initInitialFact();
     }
 
-    private void initInitialFact(InternalRuleBase kBase) {
+    private void initInitialFact() {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
+        InternalFactHandle handle = handleFactory.newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -155,6 +165,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         return this.identifier;
     }
 
+    @Override
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return ruleNetworkEvaluator;
+    }
+    
     @Override
     public ActivationsManager getActivationsManager() {
         return activationsManager;
@@ -182,7 +197,12 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     @Override
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
+    }
+    
+    @Override
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return segmentMemorySupport;
     }
 
     @Override
@@ -317,7 +337,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         final PropagationContext pCtx = new PhreakPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION, null, null, handle, getDefaultEntryPointId());
 
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, false);
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( ruleBase, queryName, queryObject, handle, pCtx, false);
         addPropagation( executeQuery );
         TerminalNode[] terminalNodes = executeQuery.getResult();
 
@@ -354,6 +374,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         return tmsEnabled;
     }
 
+	@Override
+	public boolean isSequential() {
+		return ruleBase.getRuleBaseConfiguration().isSequential();
+	}
+    
     @Override
     public KnowledgeHelper createKnowledgeHelper() {
         return new RuleUnitKnowledgeHelper((DefaultKnowledgeHelper) ReteEvaluator.super.createKnowledgeHelper(), this);

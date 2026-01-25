@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,10 +21,10 @@ package org.kie.dmn.core.compiler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.model.api.ItemDefinition;
 
 public class ItemDefinitionDependenciesSorter {
@@ -37,67 +37,77 @@ public class ItemDefinitionDependenciesSorter {
     
     /**
      * Return a new list of ItemDefinition sorted by dependencies (required dependencies comes first)
+     * @param itemDefinitions list of ItemDefinitions available in the model
+     * @param dmnVersion version of dmn in the current model
      */
-    public List<ItemDefinition> sort(List<ItemDefinition> ins) {
+    public List<ItemDefinition> sort(List<ItemDefinition> itemDefinitions, DMNVersion dmnVersion) {
         // In a graph A -> B -> {C, D}
         // showing that A requires B, and B requires C,D
         // then a depth-first visit would satisfy required ordering, for example a valid depth first visit is also a valid sort here: C, D, B, A.
-        Collection<ItemDefinition> visited = new ArrayList<>(ins.size());
-        List<ItemDefinition> dfv = new ArrayList<>(ins.size());
+        Collection<ItemDefinition> visited = new ArrayList<>(itemDefinitions.size());
+        List<ItemDefinition> sortedItemDefinitions = new ArrayList<>(itemDefinitions.size());
 
-        for (ItemDefinition node : ins) {
+        for (ItemDefinition node : itemDefinitions) {
             if (!visited.contains(node)) {
-                dfVisit(node, ins, visited, dfv);
+                populateSortedItemDefinitions(node, itemDefinitions, visited, sortedItemDefinitions, dmnVersion);
             }
         }
 
-        return dfv;
+        return sortedItemDefinitions;
     }
         
     /**
      * Performs a depth first visit, but keeping a separate reference of visited/visiting nodes, _also_ to avoid potential issues of circularities.
      */
-    private void dfVisit(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> dfv) {
+    private void populateSortedItemDefinitions(ItemDefinition node, List<ItemDefinition> allNodes, Collection<ItemDefinition> visited, List<ItemDefinition> sortedItemDefinitions, DMNVersion dmnVersion) {
         visited.add(node);
-
         List<ItemDefinition> neighbours = allNodes.stream()
                                                   .filter(n -> !n.getName().equals(node.getName())) // filter out `node`
-                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()))) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
-                                                  .collect(Collectors.toList());
+                                                  .filter(n -> recurseFind(node, new QName(modelNamespace, n.getName()), modelNamespace, dmnVersion)) // I pick from allNodes, those referenced by this `node`. Only neighbours of `node`, because N is referenced by NODE.
+                                                  .toList();
         for (ItemDefinition n : neighbours) {
             if (!visited.contains(n)) {
-                dfVisit(n, allNodes, visited, dfv);
+                populateSortedItemDefinitions(n, allNodes, visited, sortedItemDefinitions, dmnVersion);
             }
         }
 
-        dfv.add(node);
+        sortedItemDefinitions.add(node);
     }
-    
-    private static boolean recurseFind(ItemDefinition o1, QName qname2) {
-        if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, qname2);
-        }
-        for ( ItemDefinition ic : o1.getItemComponent() ) {
-            if ( recurseFind(ic, qname2) ) {
-                return true;
+
+    private static boolean recurseFind(ItemDefinition o1, QName qname2, String modelNamespace, DMNVersion dmnVersion) {
+        QName typeRef = retrieveTypeRef(o1, modelNamespace, dmnVersion);
+        return (typeRef != null)
+                ? matchesQNameUsingNamespacePrefixes(o1, typeRef, qname2)
+                : o1.getItemComponent().stream()
+                .anyMatch(component -> recurseFind(component, qname2, modelNamespace, dmnVersion));
+    }
+
+    static QName retrieveTypeRef(ItemDefinition o1, String  modelNamespace, DMNVersion dmnVersion) {
+        QName toReturn = o1.getTypeRef();
+        if (toReturn == null
+                && dmnVersion.getDmnVersion() > DMNVersion.V1_2.getDmnVersion()
+                && o1.getFunctionItem() != null) {
+            toReturn = o1.getFunctionItem().getOutputTypeRef();
+            if (toReturn != null && toReturn.getNamespaceURI().isEmpty()) {
+                toReturn = new QName(modelNamespace, toReturn.getLocalPart());
             }
         }
-        return false;
+        return toReturn;
     }
-    
-    private static boolean extFastEqUsingNSPrefix(ItemDefinition o1, QName qname2) {
-        if (o1.getTypeRef().equals(qname2)) {
+
+    private static boolean matchesQNameUsingNamespacePrefixes(ItemDefinition o1, QName typeRef, QName qname2) {
+        if (typeRef.equals(qname2)) {
             return true;
         }
-        if (o1.getTypeRef().getLocalPart().endsWith(qname2.getLocalPart())) {
+        if (typeRef.getLocalPart().endsWith(qname2.getLocalPart())) {
             for (String nsKey : o1.recurseNsKeys()) {
                 String ns = o1.getNamespaceURI(nsKey);
                 if (ns == null || !ns.equals(qname2.getNamespaceURI())) {
                     continue;
                 }
                 String prefix = nsKey + ".";
-                if (o1.getTypeRef().getLocalPart().startsWith(prefix) &&
-                    o1.getTypeRef().getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
+                if (typeRef.getLocalPart().startsWith(prefix) &&
+                        typeRef.getLocalPart().replace(prefix, "").equals(qname2.getLocalPart())) {
                     return true;
                 }
             }
@@ -107,7 +117,7 @@ public class ItemDefinitionDependenciesSorter {
 
     private static boolean directFind(ItemDefinition o1, QName qname2) {
         if ( o1.getTypeRef() != null ) {
-            return extFastEqUsingNSPrefix(o1, qname2);
+            return matchesQNameUsingNamespacePrefixes(o1, o1.getTypeRef(), qname2);
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
             if ( ic.getTypeRef() == null ) {
@@ -121,8 +131,8 @@ public class ItemDefinitionDependenciesSorter {
         }
         return false;
     }
-    
-    public static void displayDependencies(List<ItemDefinition> ins, String namespaceURI) {
+
+    public static void displayDependencies(List<ItemDefinition> ins, String namespaceURI, DMNVersion dmnVersion) {
         for ( ItemDefinition in : ins ) {
             System.out.println(in.getName());
             List<ItemDefinition> others = new ArrayList<>(ins);
@@ -131,7 +141,7 @@ public class ItemDefinitionDependenciesSorter {
                 QName otherQName = new QName(namespaceURI, other.getName());
                 if ( directFind(in, otherQName) ) {
                     System.out.println(" direct depends on: "+other.getName());
-                } else if ( recurseFind(in, otherQName) ) {
+                } else if ( recurseFind(in, otherQName, namespaceURI, dmnVersion) ) {
                     System.out.println(" indir. depends on: "+other.getName());
                 }
             }

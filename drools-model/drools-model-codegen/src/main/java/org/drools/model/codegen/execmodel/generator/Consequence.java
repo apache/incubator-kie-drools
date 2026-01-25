@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -58,6 +60,7 @@ import org.drools.model.codegen.execmodel.errors.CompilationProblemErrorResult;
 import org.drools.model.codegen.execmodel.errors.ConsequenceRewriteException;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
+import org.drools.model.codegen.execmodel.errors.UnsupportedMethodError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.MvelCompilerException;
@@ -66,6 +69,7 @@ import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.addCurlyBracesToBlock;
@@ -91,6 +95,7 @@ public class Consequence {
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
+    public static final Set<String> defaultEntryPointMethods = new HashSet<>();
 
     public static final Set<String> dataStoreMethods = new HashSet<>();
 
@@ -107,6 +112,10 @@ public class Consequence {
         implicitDroolsMethods.add("delete");
         implicitDroolsMethods.add("retract");
         implicitDroolsMethods.add("update");
+
+        defaultEntryPointMethods.add("insert");
+        defaultEntryPointMethods.add("insertLogical");
+        defaultEntryPointMethods.add("insertAsync");
 
         knowledgeHelperMethods.add("getWorkingMemory");
         knowledgeHelperMethods.add("getRule");
@@ -259,10 +268,10 @@ public class Consequence {
         }
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
+            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toCollection(LinkedHashSet::new));
         } else if (ruleConsequence != null) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+            return existingDecls.stream().filter(declUsedInRHS::contains).collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
         throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
@@ -357,6 +366,10 @@ public class Consequence {
                 }
             }
         } else if ( implicitDroolsMethods.contains(methodCallExpr.getNameAsString()) ) {
+            if (defaultEntryPointMethods.contains(methodCallExpr.getNameAsString()) && context.getRuleUnitDescr() != null) {
+                context.addCompilationError(new UnsupportedMethodError("'" + methodCallExpr.getNameAsString() +
+                                                                               "' is not supported with RuleUnit. Please use methods from DataStore or DataStream instead."));
+            }
             if ( methodCallExpr.getNameAsString().equals("insertLogical") && !TruthMaintenanceSystemFactory.present() ) {
                 context.addCompilationError(new MissingDependencyError(TruthMaintenanceSystemFactory.NO_TMS));
             }

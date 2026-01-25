@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
@@ -51,7 +50,9 @@ import org.drools.mvel.parser.printer.PrintUtil;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.drools.base.rule.Pattern.isCompatibleWithFromReturnType;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.collectUsedDeclarationsInExpression;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
@@ -199,13 +200,10 @@ public class FromVisitor {
     }
 
     private String addFromArgument( Expression methodCallExpr, MethodCallExpr fromCall ) {
-        Collection<String> args = methodCallExpr
-                .findAll(NameExpr.class)
+        Collection<String> args = collectUsedDeclarationsInExpression(methodCallExpr)
                 .stream()
-                .map(Object::toString)
                 .filter(context::hasDeclaration)
-                .distinct()
-                .collect(Collectors.toList());
+                .collect(toList());
 
         addArgumentWithPreexistingCheck(fromCall, args);
 

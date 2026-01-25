@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -92,7 +92,7 @@ public class ReteooRuleBuilderTest {
 
         rule.setConsequence( consequence );
 
-        final List terminals = this.builder.addRule( rule, this.rulebase, Collections.emptyList() );
+        final List terminals = this.builder.addRule( this.rulebase, Collections.emptyList(), rule );
 
         assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,6 +30,20 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
     private Set<DMNRuntimeEventListener> listeners = new HashSet<>();
 
     private DMNRuntime dmnRuntime;
+
+    /**
+     * Tracks the name of the decision currently being evaluated.
+     * <p>
+     * Scope: This field is shared across all instances of this event manager, but each thread
+     * maintains its own independent value through ThreadLocal storage.
+     * <p>
+     * Why ThreadLocal: Since a single DMNRuntimeEventManager instance can be accessed by multiple
+     * threads evaluating different decisions concurrently, using ThreadLocal prevents race conditions
+     * and ensures that each thread's evaluation context (the current decision name) remains isolated
+     * from other threads. Without ThreadLocal, concurrent evaluations would overwrite each other's
+     * decision names, leading to incorrect event reporting.
+     */
+    private final ThreadLocal<String> currentEvaluatingDecisionName = new ThreadLocal<>();
 
     public DMNRuntimeEventManagerImpl() {
 
@@ -66,4 +80,16 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
         return dmnRuntime;
     }
 
+    @Override
+    public String getCurrentEvaluatingDecisionName() {
+        return currentEvaluatingDecisionName.get();
+    }
+
+    void setCurrentEvaluatingDecisionName(String decisionName) {
+        currentEvaluatingDecisionName.set(decisionName);
+    }
+
+    void clearCurrentEvaluatingDecisionName() {
+        currentEvaluatingDecisionName.remove();
+    }
 }

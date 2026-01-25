@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -39,7 +39,6 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -56,6 +55,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
@@ -66,10 +66,12 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleNetworkEvaluator;
+import org.drools.core.phreak.RuleNetworkEvaluatorImpl;
+import org.drools.core.phreak.SegmentMemorySupportImpl;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -149,6 +151,8 @@ import static org.drools.base.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.util.ClassUtils.rawType;
 
+
+
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatefulKnowledgeSession,
@@ -171,9 +175,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public    byte[] bytes;
     protected Long    id;
 
+    private RuleNetworkEvaluator ruleNetworkEvaluator;
+    
     /** The actual memory for the <code>JoinNode</code>s. */
     private NodeMemories nodeMemories;
 
+    private SegmentMemorySupport segmentMemorySupport;
+    
     /** Global values which are associated with this memory. */
     protected GlobalResolver globalResolver;
 
@@ -249,6 +257,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Consumer<PropagationEntry> workingMemoryActionListener;
 
     private boolean tmsEnabled;
+    
+    
 
     // ------------------------------------------------------------
     // Constructors
@@ -333,19 +343,23 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = new ConcurrentNodeMemories(kBase, this);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
-        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(this);
+        this.agenda = RuntimeComponentFactory.get().getAgendaFactory( config ).createAgenda(kBase, this, handleFactory);
 
-        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
+        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(kBase, this, handleFactory);
 
+        this.segmentMemorySupport = new SegmentMemorySupportImpl(nodeMemories, kBase.getSegmentPrototypeRegistry(), entryPointsManager.getDefaultEntryPoint());
+        
         this.sequential = conf.isSequential();
 
         this.globalResolver = RuntimeComponentFactory.get().createGlobalResolver(this, this.environment);
+        
+        this.ruleNetworkEvaluator = new RuleNetworkEvaluatorImpl(this, nodeMemories, segmentMemorySupport);
 
         if (initInitFactHandle) {
             this.initialFactHandle = initInitialFact(null);
@@ -390,6 +404,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return runtimeFactory.get(cls);
     }
 
+    public RuleNetworkEvaluator getRuleNetworkEvaluator() {
+        return ruleNetworkEvaluator;
+    }
+    
     public WorkingMemoryEntryPoint getEntryPoint(String name) {
         return this.entryPointsManager.getEntryPoint(name);
     }
@@ -589,7 +607,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public InternalFactHandle initInitialFact(MarshallerReaderContext context) {
         WorkingMemoryEntryPoint defaultEntryPoint = entryPointsManager.getDefaultEntryPoint();
-        InternalFactHandle handle = getFactHandleFactory().newInitialFactHandle(defaultEntryPoint);
+        InternalFactHandle handle = handleFactory.newInitialFactHandle(defaultEntryPoint);
 
         ObjectTypeNode otn = defaultEntryPoint.getEntryPointNode().getObjectTypeNodes().get( InitialFact_ObjectType );
         if (otn != null) {
@@ -659,7 +677,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             this.handleFactory.destroyFactHandle( handle);
-
             return new QueryResultsImpl( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                          decls.toArray( new Map[decls.size()] ),
                                          this,
@@ -713,7 +730,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     private QueryTerminalNode[] evalQuery(final String queryName, final DroolsQueryImpl queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
+        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( kBase, queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
     }
@@ -753,7 +770,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
             }
 
-            getFactHandleFactory().destroyFactHandle( factHandle );
+            handleFactory.destroyFactHandle( factHandle );
             done(null);
         }
     }
@@ -835,7 +852,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void reset() {
         if (nodeMemories != null) {
-            nodeMemories.resetAllMemories( this );
+            nodeMemories.resetAllMemories();
         }
 
         this.agenda.reset();
@@ -1339,7 +1356,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * @return The node's memory.
      */
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-        return nodeMemories.getNodeMemory( node, this );
+        return nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final MemoryFactory node) {
@@ -1350,6 +1367,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return nodeMemories;
     }
 
+    
+    public SegmentMemorySupport getSegmentMemorySupport() {
+        return segmentMemorySupport;
+    }
+    
     public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
         return this.ruleRuntimeEventSupport;
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,8 +31,6 @@ public abstract class BaseClassFieldExtractorsTest {
     public abstract void testGetIntValue();
 
     public abstract void testGetLongValue();
-
-    public abstract void testGetFloatValue();
 
     public abstract void testGetDoubleValue();
 

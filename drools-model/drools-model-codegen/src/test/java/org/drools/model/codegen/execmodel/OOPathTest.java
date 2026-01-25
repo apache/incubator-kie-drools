@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,6 +30,9 @@ import org.drools.model.codegen.execmodel.domain.Toy;
 import org.drools.model.codegen.execmodel.domain.Woman;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -478,4 +481,21 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testOOPathUnknownProperty(RUN_TYPE runType) {
+        final String str =
+                "import org.drools.model.codegen.execmodel.domain.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        " $man: Man( /wife/children[unknown > 10] )\n" +
+                        "then\n" +
+                        "  list.add( $man.getName() );\n" +
+                        "end\n";
+
+        Results results = createKieBuilder(runType, str).getResults();
+
+        assertThat(results.hasMessages(Message.Level.ERROR)).isTrue();
+    }
 }

@@ -38,7 +38,7 @@
     <java.module.name>org.kie.dmn.feel</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
-    <version.net.sf.saxon.Saxon-HE>12.5</version.net.sf.saxon.Saxon-HE>
+    <version.net.sf.saxon.Saxon-HE>12.7</version.net.sf.saxon.Saxon-HE>
   </properties>
 
   <dependencyManagement>

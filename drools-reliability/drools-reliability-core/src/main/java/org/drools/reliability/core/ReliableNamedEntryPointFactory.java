@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,9 @@
 package org.drools.reliability.core;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.base.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
@@ -27,10 +29,10 @@ import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 public class ReliableNamedEntryPointFactory extends NamedEntryPointFactory {
 
     @Override
-    public NamedEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
+    public NamedEntryPoint createEntryPoint(InternalRuleBase ruleBase, ReteEvaluator reteEvaluator, FactHandleFactory factHandleFactory, EntryPointId id, EntryPointNode addedNode) {
         if (!reteEvaluator.getSessionConfiguration().hasPersistedSessionOption()) {
-            return super.createEntryPoint(addedNode, id, reteEvaluator);
+            return super.createEntryPoint(ruleBase, reteEvaluator, factHandleFactory, id, addedNode);
         }
-        return new ReliableNamedEntryPoint(id, addedNode, reteEvaluator);
+        return new ReliableNamedEntryPoint(id, addedNode, ruleBase, reteEvaluator, factHandleFactory);
     }
 }

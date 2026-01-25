@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -46,6 +46,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.SegmentPrototypeRegistry;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -484,6 +485,10 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         return delegate.getMemoryCount();
     }
 
+    public SegmentPrototypeRegistry getSegmentPrototypeRegistry() {
+        return delegate.getSegmentPrototypeRegistry();
+    }
+    
     @Override
     public void invalidateSegmentPrototype(LeftTupleNode rootNode) {
         delegate.invalidateSegmentPrototype(rootNode);

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -32,9 +32,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.DefaultPrettyPrinterVisitor;
-import com.github.javaparser.printer.configuration.ConfigurationOption;
-import com.github.javaparser.printer.configuration.DefaultConfigurationOption;
-import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
 import com.github.javaparser.printer.configuration.PrinterConfiguration;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -368,35 +365,6 @@ public class ConstraintPrintVisitor extends DefaultPrettyPrinterVisitor implemen
             }
             printer.print(">");
         }
-    }
-
-
-    public void printArguments(final NodeList<Expression> args, final Void arg) {
-        printer.print("(");
-        if (!isNullOrEmpty(args)) {
-            boolean columnAlignParameters = (args.size() > 1) &&
-                    configuration.get(new DefaultConfigurationOption(DefaultPrinterConfiguration.ConfigOption.COLUMN_ALIGN_PARAMETERS))
-                                    .map(ConfigurationOption::asBoolean).orElse(false);
-            if (columnAlignParameters) {
-                printer.indentWithAlignTo(printer.getCursor().column);
-            }
-            for (final Iterator<Expression> i = args.iterator(); i.hasNext(); ) {
-                final Expression e = i.next();
-                e.accept(this, arg);
-                if (i.hasNext()) {
-                    printer.print(",");
-                    if (columnAlignParameters) {
-                        printer.println();
-                    } else {
-                        printer.print(" ");
-                    }
-                }
-            }
-            if (columnAlignParameters) {
-                printer.unindent();
-            }
-        }
-        printer.print(")");
     }
 
     @Override

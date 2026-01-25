@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -35,8 +35,6 @@ public interface ActivationsManager {
     String ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME = "$onBeforeAllFire$";
     String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
     String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
-
-    ReteEvaluator getReteEvaluator();
 
     AgendaGroupsManager getAgendaGroupsManager();
 
@@ -93,7 +91,7 @@ public interface ActivationsManager {
 
     default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, InternalMatch justified) {
         if (!ruleAgendaItem.isQueued()) {
-            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
+            ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem();
         }
         ruleAgendaItem.getRuleExecutor().modifyActiveTuple((RuleTerminalNodeLeftTuple) justified.getTuple() );
     }

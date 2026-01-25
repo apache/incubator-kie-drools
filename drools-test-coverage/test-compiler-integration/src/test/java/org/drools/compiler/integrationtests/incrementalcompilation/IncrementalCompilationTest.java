@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,6 +23,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -907,7 +908,6 @@ public class IncrementalCompilationTest {
                           .setSourcePath("drl2.drl"));
 
         final IncrementalResults results = ((InternalKieBuilder) kieBuilder).incrementalBuild();
-        System.out.println(results.getAddedMessages());
         assertThat(results.getAddedMessages().size()).isEqualTo(0);
 
         final Results updateResults = kc.updateToVersion(id);
@@ -2798,21 +2798,17 @@ public class IncrementalCompilationTest {
 
         final KieContainer kc = ks.newKieContainer(releaseId1);
         final KieSession ksession = kc.newKieSession();
-        final List<String> fired = new ArrayList<>();
-        ksession.addEventListener(new DefaultAgendaEventListener() {
-            @Override
-            public void afterMatchFired(final AfterMatchFiredEvent event) {
-                fired.add(event.getMatch().getRule().getName());
-            }
-        });
 
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
+        
         ksession.insert(new Message("Hello World"));
         ksession.insert("x");
         assertThat(ksession.fireAllRules()).isEqualTo(2);
-        assertThat(fired.contains("Rs")).isTrue();
-        assertThat(fired.contains("Rx")).isTrue();
+        
+        assertThat(listener.getAfterMatchFired()).contains("Rs", "Rx");
 
-        fired.clear();
+        listener.resetAllEvents();
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
@@ -2821,8 +2817,8 @@ public class IncrementalCompilationTest {
         // rule Rx is UNchanged and should NOT fire again
         // rule Rs is changed and should match again, and fire again.
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        assertThat(fired.contains("Rs")).isTrue();
-        assertThat(fired.contains("Rx")).isFalse();
+
+        assertThat(listener.getAfterMatchFired()).contains("Rs").doesNotContain("Rx");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")

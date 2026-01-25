@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -680,41 +681,10 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, DeclarativeAgendaOption.ENABLED);
         KieSession ksession = kbase.newKieSession();
 
-        final List cancelled = new ArrayList();
 
-        ksession.addEventListener( new AgendaEventListener() {
-
-            public void beforeMatchFired(BeforeMatchFiredEvent event) {
-            }
-
-            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-            }
-
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-            }
-
-            public void afterMatchFired(AfterMatchFiredEvent event) {
-            }
-
-            public void matchCreated(MatchCreatedEvent event) {
-            }
-
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-            }
-
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-            }
-
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-            }
-
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-            }
-            
-            public void matchCancelled(MatchCancelledEvent event) {
-                cancelled.add( event );
-            }            
-        } );
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
+        
+        ksession.addEventListener(listener );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -724,8 +694,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
 
-        assertThat(cancelled.size()).isEqualTo(1);
-        assertThat(((MatchCancelledEvent) cancelled.get(0)).getMatch().getRule().getName()).isEqualTo("rule1");
+        assertThat(listener.getMatchCancelled()).hasSize(1).containsExactly("rule1");
         ksession.dispose();
     }
 

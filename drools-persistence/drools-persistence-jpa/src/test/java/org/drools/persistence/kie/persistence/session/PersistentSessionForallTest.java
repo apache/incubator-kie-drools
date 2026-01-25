@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,10 +19,10 @@
 package org.drools.persistence.kie.persistence.session;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.mvel.compiler.Person;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -30,8 +30,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -123,7 +121,7 @@ public class PersistentSessionForallTest {
         kieSession.insert(dog);
         kieSession.fireAllRules();
 
-        assertThat(listener.isRuleFired("Forall2")).isTrue();
+        assertThat(listener.getAfterMatchFired()).contains("Forall2");
     }
 
     public static class Pet implements Serializable {
@@ -173,49 +171,4 @@ public class PersistentSessionForallTest {
         }
     }
 
-    /**
-     * Listener tracking number of rules fired.
-     */
-    public static class TrackingAgendaEventListener extends DefaultAgendaEventListener {
-
-        private Map<String, Integer> rulesFired = new HashMap<String, Integer>();
-
-        @Override
-        public void afterMatchFired(AfterMatchFiredEvent event) {
-            String rule = event.getMatch().getRule().getName();
-            if (isRuleFired(rule)) {
-                rulesFired.put(rule, rulesFired.get(rule) + 1);
-            } else {
-                rulesFired.put(rule, 1);
-            }
-        }
-
-        /**
-         * Return true if the rule was fired at least once
-         *
-         * @param rule - name of the rule
-         * @return true if the rule was fired
-         */
-        public boolean isRuleFired(String rule) {
-            return rulesFired.containsKey(rule);
-        }
-
-        /**
-         * Returns number saying how many times the rule was fired
-         *
-         * @param rule - name of the rule
-         * @return number how many times rule was fired, 0 if rule wasn't fired
-         */
-        public int ruleFiredCount(String rule) {
-            if (isRuleFired(rule)) {
-                return rulesFired.get(rule);
-            } else {
-                return 0;
-            }
-        }
-
-        public void clear() {
-            rulesFired.clear();
-        }
-    }
 }

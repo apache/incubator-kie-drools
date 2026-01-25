@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,12 +23,16 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
-import org.drools.core.reteoo.LeftTuple;
+
+import static org.drools.core.phreak.PhreakNodeOperations.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.normalizeStagedTuples;
+import static org.drools.core.phreak.PhreakNodeOperations.unlinkAndDeleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakNodeOperations.useLeftMemory;
+import static org.drools.core.reteoo.TupleFactory.createLeftTuple;
+
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 /**
 * Created with IntelliJ IDEA.
@@ -40,25 +44,29 @@ import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 public class PhreakEvalNode {
 
     private static final String EVAL_LEFT_TUPLE_DELETED = "EVAL_LEFT_TUPLE_DELETED";
+    private final ReteEvaluator reteEvaluator;
+
+    public PhreakEvalNode(ReteEvaluator reteEvaluator) {
+        this.reteEvaluator = reteEvaluator;
+    }
 
     public void doNode(EvalConditionNode evalNode,
                        EvalMemory em,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
-                       TupleSets trgLeftTuples,
-                       TupleSets stagedLeftTuples) {
+                       TupleSets stagedLeftTuples,
+                       TupleSets trgLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftUpdates(evalNode, em, sink, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(evalNode, em, sink, reteEvaluator, srcLeftTuples, trgLeftTuples);
+            doLeftInserts(evalNode, em, sink, srcLeftTuples, trgLeftTuples);
         }
 
         srcLeftTuples.resetAll();
@@ -67,7 +75,6 @@ public class PhreakEvalNode {
     public void doLeftInserts(EvalConditionNode evalNode,
                               EvalMemory em,
                               LeftTupleSink sink,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
@@ -77,11 +84,9 @@ public class PhreakEvalNode {
             final boolean allowed = condition.isAllowed(leftTuple, reteEvaluator, em.context);
 
             if (allowed) {
-                boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(evalNode, leftTuple);
+                boolean useLeftMemory = useLeftMemory(evalNode, leftTuple);
 
-                trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
-                                                                     sink,
-                                                                     leftTuple.getPropagationContext(), useLeftMemory));
+                trgLeftTuples.addInsert(createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useLeftMemory));
             }
 
             leftTuple.clearStaged();
@@ -92,7 +97,6 @@ public class PhreakEvalNode {
     public void doLeftUpdates(EvalConditionNode evalNode,
                               EvalMemory em,
                               LeftTupleSink sink,
-                              ReteEvaluator reteEvaluator,
                               TupleSets srcLeftTuples,
                               TupleSets trgLeftTuples,
                               TupleSets stagedLeftTuples) {
@@ -110,11 +114,11 @@ public class PhreakEvalNode {
                     // update
                     TupleImpl childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
+                    normalizeStagedTuples(stagedLeftTuples, childLeftTuple);
                     trgLeftTuples.addUpdate(childLeftTuple);
                 } else {
                     // assert
-                    trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                    trgLeftTuples.addInsert(createLeftTuple(leftTuple,
                                                                          sink,
                                                                          leftTuple.getPropagationContext(), true));
                 }
@@ -125,7 +129,7 @@ public class PhreakEvalNode {
 
                     TupleImpl childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    unlinkAndDeleteChildLeftTuple(trgLeftTuples, stagedLeftTuples, childLeftTuple);
                 }
                 // else do nothing
             }
@@ -145,7 +149,7 @@ public class PhreakEvalNode {
             TupleImpl childLeftTuple = leftTuple.getFirstChild();
             if (childLeftTuple != null) {
                 childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();

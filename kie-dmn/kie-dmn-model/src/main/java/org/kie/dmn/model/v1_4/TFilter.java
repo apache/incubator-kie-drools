@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,32 +18,8 @@
  */
 package org.kie.dmn.model.v1_4;
 
-import org.kie.dmn.model.api.ChildExpression;
-import org.kie.dmn.model.api.Filter;
+import org.kie.dmn.model.impl.AbstractTFilter;
 
-public class TFilter extends TExpression implements Filter {
-
-    private ChildExpression in;
-    private ChildExpression match;
-
-    @Override
-    public ChildExpression getIn() {
-        return in;
-    }
-
-    @Override
-    public ChildExpression getMatch() {
-        return match;
-    }
-
-    @Override
-    public void setIn(ChildExpression value) {
-        this.in = value;
-    }
-
-    @Override
-    public void setMatch(ChildExpression value) {
-        this.match = value;
-    }
+public class TFilter extends AbstractTFilter implements URIFEELed {
 
 }

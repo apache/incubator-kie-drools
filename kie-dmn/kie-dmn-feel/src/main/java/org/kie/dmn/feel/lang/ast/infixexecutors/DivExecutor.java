@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.TemporalAmount;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.Msg;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
-import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class DivExecutor implements InfixExecutor {
 
@@ -48,55 +36,12 @@ public class DivExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return div(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeDivision(left, right, ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-    }
-
-    private Object div(Object left, Object right, EvaluationContext ctx) {
-        if (left == null || right == null) {
-            return null;
-        }
-
-        if (left instanceof Number) {
-            if (right instanceof Number) {
-                return math(left, right, ctx, (l, r) -> l.divide(r, MathContext.DECIMAL128));
-            }
-            if (right instanceof TemporalAmount) {
-                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
-            }
-            return null;
-        }
-
-        if (left instanceof Duration) {
-            if (right instanceof Number) {
-                final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
-                final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
-                return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
-            }
-            if (right instanceof Duration) {
-                return getBigDecimalOrNull(((Duration) left).getSeconds()).divide(getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128);
-            }
-        }
-
-        if (left instanceof ChronoPeriod) {
-            if (right instanceof Number) {
-                final BigDecimal rightDecimal = getBigDecimalOrNull(right);
-                if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
-                    ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
-                    return null;
-                } else {
-                    return ComparablePeriod.ofMonths(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
-                }
-            }
-            if (right instanceof ChronoPeriod) {
-                return getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
-            }
-        }
-
-        return null;
     }
 }

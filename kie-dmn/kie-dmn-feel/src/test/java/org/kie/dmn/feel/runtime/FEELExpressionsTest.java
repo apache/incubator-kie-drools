@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -46,8 +47,23 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 { "some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y", Boolean.TRUE , null},
                 { "some price in [ 80, 11, 110 ] satisfies price > max(100, 50, 10)", Boolean.TRUE , null},
 
+                // descendant expressions
+                {"{a: { b: { b: 1 } } }...a", List.of(Map.of("b", Map.of("b", BigDecimal.valueOf(1)))), null},
+                {"{a: { b: { b: 1 } } }...b", List.of(Map.of("b", BigDecimal.valueOf(1)), BigDecimal.valueOf(1)), null},
+                {"{a: { b: { a: 1 } } }...a", List.of(Map.of("b", Map.of("a", BigDecimal.valueOf(1))), BigDecimal.valueOf(1)), null},
+                {"{a: { b: { c: 1 } } }...c", List.of(BigDecimal.valueOf(1)) , null},
+                {"{a: { b: { b: 1 } } }...d", List.of() , null},
+                {"{a: { b: { b: 1 } } }...", null , FEELEvent.Severity.ERROR},
+                {"...a", null , FEELEvent.Severity.ERROR},
+                {"[1, 2, 3]...d", null , FEELEvent.Severity.ERROR},
+                {"1...d", null , FEELEvent.Severity.ERROR},
+
                 // path expressions
                 {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", "Doe" , null},
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.first name", "John" , null},
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.middle name", null , null},
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name", Map.of("first name", "John", "last name", "Doe") , null},
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.first", null , null},
 
                 // filter expressions with proper precedence
                 {"{ EmployeeTable : [ \n"+

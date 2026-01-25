@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -45,7 +45,7 @@ public class NativeOperatorSpec implements OperatorSpec {
         MethodCallExpr methodCallExpr = createDslTopLevelMethod( EVAL_CALL );
 
         String opName = pointFreeExpr.getOperator().asString();
-        Operator operator = addOperatorArgument( context, methodCallExpr, opName );
+        Operator<?, ?> operator = addOperatorArgument( context, methodCallExpr, opName );
         if (operator != null && !operator.isCompatibleWithType( left.getRawClass() )) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Cannot use contains on class " + left.getRawClass() + " in expression '" + PrintUtil.printNode(pointFreeExpr) + "'" ) );
         }
@@ -72,8 +72,8 @@ public class NativeOperatorSpec implements OperatorSpec {
                 methodCallExpr;
     }
 
-    protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
-        Operator operator = Operator.Register.getOperator( opName );
+    protected Operator<?, ?> addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
+        Operator<?, ?> operator = Operator.Register.getOperator( opName );
         try {
             // if the operator has an INSTANCE field avoid the operator lookup at runtime
             operator.getClass().getField( "INSTANCE" );

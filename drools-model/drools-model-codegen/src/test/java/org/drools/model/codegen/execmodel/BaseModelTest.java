@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -81,6 +81,14 @@ public abstract class BaseModelTest {
             return Stream.of(RUN_TYPE.STANDARD_FROM_DRL,
                     PATTERN_DSL);
         }
+    }
+
+    public static Stream<RUN_TYPE> parametersStandardOnly() {
+        return Stream.of(RUN_TYPE.STANDARD_FROM_DRL);
+    }
+
+    public static Stream<RUN_TYPE> parametersPatternOnly() {
+        return Stream.of(RUN_TYPE.PATTERN_DSL);
     }
 
     public BaseModelTest() {

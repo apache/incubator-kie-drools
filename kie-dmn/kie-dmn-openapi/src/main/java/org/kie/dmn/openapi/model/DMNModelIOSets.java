@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -153,7 +153,7 @@ public class DMNModelIOSets {
 
         private void buildOutputSet() {
             if (ds.getDecisionService().getOutputDecision().size() == 1) {
-                String id = DMNCompilerImpl.getId(ds.getDecisionService().getOutputDecision().get(0));
+                String id = DMNCompilerImpl.getReferenceId(ds.getDecisionService().getOutputDecision().get(0));
                 DecisionNode outputDecision = model.getDecisionById(id);
                 this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null,  null, outputDecision != null ? outputDecision.getResultType() : ds.getResultType(), null);
                 if (outputDecision != null) {
@@ -162,7 +162,7 @@ public class DMNModelIOSets {
             } else {
                 CompositeTypeImpl os = new CompositeTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet");
                 for (DMNElementReference er : ds.getDecisionService().getOutputDecision()) {
-                    String id = DMNCompilerImpl.getId(er);
+                    String id = DMNCompilerImpl.getReferenceId(er);
                     DecisionNode outputDecision = model.getDecisionById(id);
                     if (outputDecision != null) {
                         os.addField(outputDecision.getName(), outputDecision.getResultType());

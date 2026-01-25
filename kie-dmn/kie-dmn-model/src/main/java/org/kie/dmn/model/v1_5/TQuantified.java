@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,19 +18,8 @@
  */
 package org.kie.dmn.model.v1_5;
 
-import org.kie.dmn.model.api.ChildExpression;
-import org.kie.dmn.model.api.Quantified;
+import org.kie.dmn.model.impl.AbstractTQuantified;
 
-public class TQuantified extends TIterator implements Quantified {
-    
-    protected ChildExpression satisfies;
-
-    public ChildExpression getSatisfies() {
-        return satisfies;
-    }
-
-    public void setSatisfies(ChildExpression value) {
-        this.satisfies = value;
-    }
+public class TQuantified extends AbstractTQuantified implements URIFEELed {
 
 }

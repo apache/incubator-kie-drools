@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,11 +19,16 @@
 package org.drools.base.base.extractors;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.drools.base.base.BaseClassFieldReader;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
+import org.drools.util.FloatHelper;
 
 public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
@@ -49,67 +54,25 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         if ( value instanceof Boolean b ) {
             return b.booleanValue();
         }
-        
+
         throw new RuntimeException( "Conversion to boolean not supported from " + getExtractToClass().getName() );
     }
 
-    public byte getByteValue(ValueResolver valueResolver, Object object) {
-        final Object value = getValue( valueResolver, object );
 
-        if ( value instanceof Character c ) {
-            return (byte) c.charValue();
-        } 
-        
-        throw new RuntimeException( "Conversion to byte not supported from " +  getExtractToClass().getName());
-    }
-
-    public char getCharValue(ValueResolver valueResolver, Object object) {
-        final Object value = getValue( valueResolver, object );
-
-        if ( value instanceof Character c ) {
-            return c.charValue();
-        } 
-        
-        throw new RuntimeException( "Conversion to char not supported from " +  getExtractToClass().getName() );
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver, Object object) {
+    public double getDecimalValue(ValueResolver valueResolver, Object object) {
         final Object value = getValue( valueResolver, object );
 
         if( value instanceof Character c ) {
             return c.charValue();
         } else if ( value instanceof Number n ) {
-            return n.doubleValue();
+            return FloatHelper.cleanDouble( n.doubleValue() );
         }
-        
+
         throw new RuntimeException( "Conversion to double not supported from " +  getExtractToClass().getName() );
     }
 
-    public float getFloatValue(ValueResolver valueResolver, Object object) {
-        final Object value = getValue( valueResolver, object );
 
-        if( value instanceof Character c ) {
-            return c.charValue();
-        } else if ( value instanceof Number n ) {
-            return n.floatValue();
-        }
-        
-        throw new RuntimeException( "Conversion to float not supported from " +  getExtractToClass().getName() );
-    }
-
-    public int getIntValue(ValueResolver valueResolver, Object object) {
-        final Object value = getValue( valueResolver, object );
-
-        if( value instanceof Character c ) {
-            return c.charValue();
-        } else if ( value instanceof Number n ) {
-            return n.intValue();
-        }
-        
-        throw new RuntimeException( "Conversion to int not supported from " +  getExtractToClass().getName() );
-    }
-
-    public long getLongValue(ValueResolver valueResolver, Object object) {
+    public long getWholeNumberValue(ValueResolver valueResolver, Object object) {
         final Object value = getValue( valueResolver, object );
 
         if( value instanceof Character c ) {
@@ -118,8 +81,14 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return n.longValue();
         } else if ( value instanceof Date d ) {
             return d.getTime();
+        } else if ( value instanceof LocalDate ld ) {
+            return Date.from( ld.atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() ).getTime();
+        } else if ( value instanceof LocalDateTime ldt ) {
+            return Date.from( ldt.atZone( ZoneId.systemDefault() ).toInstant() ).getTime();
+        } else if ( value instanceof ZonedDateTime zdt ) {
+            return Date.from( zdt.toInstant() ).getTime();
         }
-        
+
         throw new RuntimeException( "Conversion to long not supported from " +  getExtractToClass().getName() );
     }
 
@@ -127,17 +96,6 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         return object == null || getValue( valueResolver, object ) == null;
     }
 
-    public short getShortValue(ValueResolver valueResolver, Object object) {
-        final Object value = getValue( valueResolver, object );
-
-        if( value instanceof Character c ) {
-            return (short) c.charValue();
-        } else if ( value instanceof Number n ) {
-            return n.shortValue();
-        }
-
-        throw new RuntimeException( "Conversion to short not supported from " +  getExtractToClass().getName() );
-    }
 
     public Method getNativeReadMethod() {
         try {
@@ -151,6 +109,10 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
         Class<?> type = getExtractToClass();
         if (!type.isPrimitive()) {
             return "getValue";
+        } else if (type == int.class || type == long.class || type == short.class || type == byte.class || type == char.class) {
+            return "getWholeNumberValue";
+        } else if (type == float.class || type == double.class) {
+            return "getDecimalValue";
         }
         return "get" + type.getName().substring(0, 1).toUpperCase() + type.getName().substring(1) + "Value";
     }

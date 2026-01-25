@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -78,7 +78,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
         this.dataDriven = context != null && context.getRule().isDataDriven();
-        initMasks( context, tupleSource );
+        initMasks( context );
         this.argsTemplate = initArgsTemplate( context );
 
         hashcode = calculateHashCode();

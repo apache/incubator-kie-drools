@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,6 +18,7 @@
  */
 package org.drools.metric.phreak;
 
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.phreak.PhreakAsyncReceiveNode;
 import org.drools.core.phreak.PhreakAsyncSendNode;
@@ -39,133 +40,133 @@ import org.drools.metric.util.MetricLogUtils;
 public class MetricPhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFactory {
 
     @Override
-    public PhreakJoinNode createPhreakJoinNode() {
+    public PhreakJoinNode createPhreakJoinNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakJoinNodeMetric();
+            return new PhreakJoinNodeMetric(reteEvaluator);
         } else {
-            return new PhreakJoinNode();
+            return new PhreakJoinNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakEvalNode createPhreakEvalNode() {
+    public PhreakEvalNode createPhreakEvalNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakEvalNodeMetric();
+            return new PhreakEvalNodeMetric(reteEvaluator);
         } else {
-            return new PhreakEvalNode();
+            return new PhreakEvalNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakFromNode createPhreakFromNode() {
+    public PhreakFromNode createPhreakFromNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakFromNodeMetric();
+            return new PhreakFromNodeMetric(reteEvaluator);
         } else {
-            return new PhreakFromNode();
+            return new PhreakFromNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakReactiveFromNode createPhreakReactiveFromNode() {
+    public PhreakReactiveFromNode createPhreakReactiveFromNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakReactiveFromNodeMetric();
+            return new PhreakReactiveFromNodeMetric(reteEvaluator);
         } else {
-            return new PhreakReactiveFromNode();
+            return new PhreakReactiveFromNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakNotNode createPhreakNotNode() {
+    public PhreakNotNode createPhreakNotNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakNotNodeMetric();
+            return new PhreakNotNodeMetric(reteEvaluator);
         } else {
-            return new PhreakNotNode();
+            return new PhreakNotNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakExistsNode createPhreakExistsNode() {
+    public PhreakExistsNode createPhreakExistsNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakExistsNodeMetric();
+            return new PhreakExistsNodeMetric(reteEvaluator);
         } else {
-            return new PhreakExistsNode();
+            return new PhreakExistsNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakAccumulateNode createPhreakAccumulateNode() {
+    public PhreakAccumulateNode createPhreakAccumulateNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakAccumulateNodeMetric();
+            return new PhreakAccumulateNodeMetric(reteEvaluator);
         } else {
-            return new PhreakAccumulateNode();
+            return new PhreakAccumulateNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakGroupByNode createPhreakGroupByNode() {
+    public PhreakGroupByNode createPhreakGroupByNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakGroupByNodeMetric();
+            return new PhreakGroupByNodeMetric(reteEvaluator);
         } else {
-            return new PhreakGroupByNode();
+            return new PhreakGroupByNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakBranchNode createPhreakBranchNode() {
+    public PhreakBranchNode createPhreakBranchNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakBranchNodeMetric();
+            return new PhreakBranchNodeMetric(reteEvaluator);
         } else {
-            return new PhreakBranchNode();
+            return new PhreakBranchNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakQueryNode createPhreakQueryNode() {
+    public PhreakQueryNode createPhreakQueryNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakQueryNodeMetric();
+            return new PhreakQueryNodeMetric(reteEvaluator);
         } else {
-            return new PhreakQueryNode();
+            return new PhreakQueryNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakTimerNode createPhreakTimerNode() {
+    public PhreakTimerNode createPhreakTimerNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakTimerNodeMetric();
+            return new PhreakTimerNodeMetric(reteEvaluator);
         } else {
-            return new PhreakTimerNode();
+            return new PhreakTimerNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakAsyncSendNode createPhreakAsyncSendNode() {
+    public PhreakAsyncSendNode createPhreakAsyncSendNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakAsyncSendNodeMetric();
+            return new PhreakAsyncSendNodeMetric(reteEvaluator);
         } else {
-            return new PhreakAsyncSendNode();
+            return new PhreakAsyncSendNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakAsyncReceiveNode createPhreakAsyncReceiveNode() {
+    public PhreakAsyncReceiveNode createPhreakAsyncReceiveNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakAsyncReceiveNodeMetric();
+            return new PhreakAsyncReceiveNodeMetric(reteEvaluator);
         } else {
-            return new PhreakAsyncReceiveNode();
+            return new PhreakAsyncReceiveNode(reteEvaluator);
         }
     }
 
     @Override
-    public PhreakRuleTerminalNode createPhreakRuleTerminalNode() {
-        return new PhreakRuleTerminalNode(); // TerminalNode is not BaseNode so cannot use PerfLogUtils
+    public PhreakRuleTerminalNode createPhreakRuleTerminalNode(ReteEvaluator reteEvaluator) {
+        return new PhreakRuleTerminalNode(reteEvaluator); // TerminalNode is not BaseNode so cannot use PerfLogUtils
     }
 
     @Override
-    public PhreakQueryTerminalNode createPhreakQueryTerminalNode() {
+    public PhreakQueryTerminalNode createPhreakQueryTerminalNode(ReteEvaluator reteEvaluator) {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            return new PhreakQueryTerminalNodeMetric();
+            return new PhreakQueryTerminalNodeMetric(reteEvaluator);
         } else {
-            return new PhreakQueryTerminalNode();
+            return new PhreakQueryTerminalNode(reteEvaluator);
         }
     }
 }

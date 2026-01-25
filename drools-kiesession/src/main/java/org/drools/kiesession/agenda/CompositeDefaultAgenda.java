@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,6 +38,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.CompositeIterator;
@@ -70,11 +71,10 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     public CompositeDefaultAgenda() { }
 
-    public CompositeDefaultAgenda(InternalWorkingMemory workingMemory) {
-        InternalRuleBase kBase = workingMemory.getKnowledgeBase();
-        this.agendas = new DefaultAgenda[kBase.getParallelEvaluationSlotsCount()];
+    public CompositeDefaultAgenda(InternalRuleBase kieBase, InternalWorkingMemory workingMemory, FactHandleFactory factHandleFactory) {
+        this.agendas = new DefaultAgenda[kieBase.getParallelEvaluationSlotsCount()];
         for ( int i = 0; i < this.agendas.length; i++ ) {
-            agendas[i] = new PartitionedDefaultAgenda(workingMemory, executionStateMachine, i);
+            agendas[i] = new PartitionedDefaultAgenda(kieBase, workingMemory, factHandleFactory, executionStateMachine, i);
         }
         // this composite agenda and the first partitioned one share the same propagation list
         this.propagationList = agendas[0].getPropagationList();
@@ -102,11 +102,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public InternalWorkingMemory getWorkingMemory() {
-        return agendas[0].getWorkingMemory();
-    }
-
-    @Override
-    public ReteEvaluator getReteEvaluator() {
         return agendas[0].getWorkingMemory();
     }
 

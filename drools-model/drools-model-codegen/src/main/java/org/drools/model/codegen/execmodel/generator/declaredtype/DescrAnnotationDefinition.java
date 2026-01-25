@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -41,6 +41,8 @@ import static java.util.stream.Collectors.joining;
 import static org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator.quote;
 
 public class DescrAnnotationDefinition implements AnnotationDefinition {
+
+    public static final String BUILTIN_ANNOTATION_PACKAGE = "org.kie.api.definition.type.";
 
     static final String VALUE = "value";
 

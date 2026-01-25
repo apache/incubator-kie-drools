@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,9 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.template.parser.DecisionTableParseException;
-import org.drools.testcoverage.common.listener.OrderListener;
-import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Sample;
 import org.drools.testcoverage.common.model.Subject;
@@ -221,24 +220,23 @@ public class DecisionTableTest {
 
         final TrackingAgendaEventListener rulesFired = new TrackingAgendaEventListener();
         session.addEventListener(rulesFired);
-        rulesFired.clear();
 
         // eval test 1
         final Subject mary = new Subject("Mary");
         mary.setDummy(1);
         session.insert(mary);
+        
         session.fireAllRules();
-        assertThat(rulesFired.isRuleFired("evalTest1")).isTrue();
-        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        
+        assertThat(rulesFired.getAfterMatchFired()).contains("evalTest1")
+        	.doesNotContain("evalTest2", "evalTest3", "evalTest4", "simpleBindingTest");
+        
         session.dispose();
 
         // eval test 2
         session = kbase.newKieSession();
         session.addEventListener(rulesFired);
-        rulesFired.clear();
+        rulesFired.resetAllEvents();
         final Subject inge = new Subject("Inge");
         inge.setAge(7);
         inge.setSex("F");
@@ -247,63 +245,62 @@ public class DecisionTableTest {
         jochen.setSex("M");
         session.insert(inge);
         session.insert(jochen);
+
         session.fireAllRules();
-        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest2")).isTrue();
-        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        
+        assertThat(rulesFired.getAfterMatchFired()).contains("evalTest2")
+    	.doesNotContain("evalTest1", "evalTest3", "evalTest4", "simpleBindingTest");
+
         session.dispose();
 
         // eval test 3, will run four times, there are four combinations
         session = kbase.newKieSession();
         session.addEventListener(rulesFired);
-        rulesFired.clear();
+        rulesFired.resetAllEvents();
         final Subject karl = new Subject("Karl");
         karl.setSex("male");
         final Subject egon = new Subject("Egon");
         egon.setSex("male");
         session.insert(karl);
         session.insert(egon);
+
         session.fireAllRules();
-        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest3")).isTrue();
-        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+        
+        assertThat(rulesFired.getAfterMatchFired()).contains("evalTest3")
+    	.doesNotContain("evalTest1", "evalTest2", "evalTest4", "simpleBindingTest");
+        
         session.dispose();
 
         // eval test 4
         session = kbase.newKieSession();
         session.addEventListener(rulesFired);
-        rulesFired.clear();
+        rulesFired.resetAllEvents();
         final Subject gerda = new Subject("Gerda");
         gerda.setSex("female");
         gerda.setAge(9);
         gerda.setDummy(-10);
         session.insert(gerda);
+        
         session.fireAllRules();
-        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest4")).isTrue();
-        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isFalse();
+
+        assertThat(rulesFired.getAfterMatchFired()).contains("evalTest4")
+    	.doesNotContain("evalTest1", "evalTest2", "evalTest3", "simpleBindingTest");
+        
         session.dispose();
 
         // eval test 5 - simple binding
         session = kbase.newKieSession();
         session.addEventListener(rulesFired);
-        rulesFired.clear();
+        rulesFired.resetAllEvents();
         final List<Sample> results = new ArrayList<>();
         session.setGlobal("results", results);
         final Sample sample = new Sample();
         session.insert(sample);
+
         session.fireAllRules();
-        assertThat(rulesFired.isRuleFired("evalTest1")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest2")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest3")).isFalse();
-        assertThat(rulesFired.isRuleFired("evalTest4")).isFalse();
-        assertThat(rulesFired.isRuleFired("simpleBindingTest")).isTrue();
+        
+        assertThat(rulesFired.getAfterMatchFired()).contains("simpleBindingTest")
+    	.doesNotContain("evalTest1", "evalTest2", "evalTest3", "evalTest4");
         session.dispose();
     }
 
@@ -319,7 +316,7 @@ public class DecisionTableTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, advancedDecisionTable);
         KieSession session = kbase.newKieSession();
 
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         session.addEventListener(listener);
 
         final Subject lili = new Subject("Lili");
@@ -327,16 +324,11 @@ public class DecisionTableTest {
         final Sample sample = new Sample();
         session.insert(lili);
         session.insert(sample);
+        
         session.fireAllRules();
 
         // just 4 rules should fire
-        assertThat(listener.size()).isEqualTo(4);
-
-        // rules have to be fired in expected order
-        final String[] expected = new String[]{"HelloWorld_11", "namedRule", "b1", "another rule"};
-        for (int i = 0; i < 4; i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(4).containsExactly("HelloWorld_11", "namedRule", "b1", "another rule");
 
         session.dispose();
     }
@@ -364,11 +356,11 @@ public class DecisionTableTest {
         final FactHandle steakHandle = ksession.insert(steakLocation);
         final FactHandle tableHandle = ksession.insert(tableLocation);
         ksession.insert("push");
+        
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).contains("testPushQueryRule").doesNotContain("testPullQueryRule");
+        listener.resetAllEvents();
 
         // when location is changed of what Peter likes, push query should fire
         // rule
@@ -384,18 +376,19 @@ public class DecisionTableTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).contains("testPushQueryRule")
+    	.doesNotContain("testPullQueryRule");
+        
+        listener.resetAllEvents();
 
         final Person paul = new Person("Paul");
         paul.setLikes("steak");
         ksession.insert(paul);
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPushQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).contains("testPushQueryRule")
+    		.doesNotContain("testPullQueryRule");
+        listener.resetAllEvents();
 
         ksession.dispose();
     }
@@ -425,9 +418,10 @@ public class DecisionTableTest {
         ksession.insert("pull");
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).contains("testPullQueryRule")
+    		.doesNotContain("testPushQueryRule");
+
+        listener.resetAllEvents();
 
         // when location is changed of what Peter likes, pull query should
         // ignore it
@@ -443,19 +437,18 @@ public class DecisionTableTest {
         ksession.delete(tableHandle);
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPullQueryRule")).isFalse();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
-        listener.clear();
+        assertThat(listener.getAfterMatchFired()).doesNotContain("testPullQueryRule", "testPushQueryRule");
+        listener.resetAllEvents();
 
         final Person paul = new Person("Paul");
         paul.setLikes("steak");
         ksession.insert(paul);
+
         ksession.fireAllRules();
 
-        assertThat(listener.isRuleFired("testPullQueryRule")).isTrue();
-        assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
-        listener.clear();
-
+        assertThat(listener.getAfterMatchFired()).contains("testPullQueryRule")
+    		.doesNotContain("testPushQueryRule");
+        
         ksession.dispose();
     }
 
@@ -468,15 +461,14 @@ public class DecisionTableTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, sequentialDecisionTable);
 
         final KieSession ksession = kbase.newKieSession();
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.insert("something");
+
         ksession.fireAllRules();
-        assertThat(listener.size()).as("Wrong number of rules fired").isEqualTo(3);
-        final String[] expected = {"Rule1", "Rule2", "Rule3"};
-        for (int i = 0; i < 3; i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        
+        assertThat(listener.getAfterMatchFired()).as("Wrong number of rules fired").hasSize(3).containsExactly("Rule1", "Rule2", "Rule3");
+        
         ksession.dispose();
     }
 
@@ -485,15 +477,14 @@ public class DecisionTableTest {
     public void testLockOnActive(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.insert("lockOnActive");
+        
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(3);
-        final String[] expected = {"a", "a2", "a3"};
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        
+        assertThat(listener.getAfterMatchFired()).hasSize(3).containsExactly("a", "a2", "a3");
+        
         ksession.dispose();
     }
 
@@ -506,14 +497,14 @@ public class DecisionTableTest {
     public void testAutoFocus(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first test - we try to fire rule in agenda group which has auto focus
         // disable, we won't succeed
         final FactHandle withoutAutoFocus = ksession.insert("withoutAutoFocus");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.getAfterMatchFired()).isEmpty();
 
         // second test - we try to fire rule in agenda group with auto focus
         // enabled
@@ -521,12 +512,11 @@ public class DecisionTableTest {
         // which has no auto focus
         ksession.insert("autoFocus");
         ksession.delete(withoutAutoFocus);
+        
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = {"b2", "b1"};
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("b2", "b1");
+        
         ksession.dispose();
     }
 
@@ -540,10 +530,11 @@ public class DecisionTableTest {
 
         // only one rule from activation group may fire
         ksession.insert("activationGroup");
+        
         ksession.fireAllRules();
-        assertThat(listener.isRuleFired("c1")).isFalse();
-        assertThat(listener.isRuleFired("c2")).isTrue();
-        assertThat(listener.isRuleFired("c3")).isFalse();
+        
+        assertThat(listener.getAfterMatchFired()).containsExactly("c2").doesNotContain("c1", "c3");
+
         ksession.dispose();
     }
 

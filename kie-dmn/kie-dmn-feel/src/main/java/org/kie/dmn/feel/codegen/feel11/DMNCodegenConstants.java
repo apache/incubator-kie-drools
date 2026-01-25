@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.ast.ContextEntryNode;
 import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.ContextTypeNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.DescendantExpressionNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.FormalParameterNode;
@@ -120,6 +121,7 @@ public class DMNCodegenConstants {
     public static final ClassOrInterfaceType CTYPENODE_CT =
             parseClassOrInterfaceType(CTypeNode.class.getCanonicalName());
     public static final ClassOrInterfaceType DASHNODE_CT = parseClassOrInterfaceType(DashNode.class.getCanonicalName());
+    public static final ClassOrInterfaceType DESCENDANTEXPRESSIONNODE_CT = parseClassOrInterfaceType(DescendantExpressionNode.class.getCanonicalName());
     public static final ClassOrInterfaceType FILTEREXPRESSIONNODE_CT =
             parseClassOrInterfaceType(FilterExpressionNode.class.getCanonicalName());
     public static final ClassOrInterfaceType FOREXPRESSIONNODE_CT =

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -157,6 +157,10 @@ public class ASTBuilderFactory {
 
     public static DashNode newDashNode(ParserRuleContext ctx) {
         return new DashNode( ctx );
+    }
+
+    public static DescendantExpressionNode newDescendantExpressionNode(ParserRuleContext ctx, BaseNode expr, BaseNode name) {
+        return new DescendantExpressionNode( ctx, expr, name );
     }
 
     public static CTypeNode newCTypeNode(ParserRuleContext ctx, Type type) {

@@ -49,6 +49,14 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-codegen-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-xml-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-model-codegen</artifactId>
+        </dependency>
 
         <!-- quarkus -->
         <dependency>
@@ -69,6 +77,11 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-vertx-http-deployment-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-server-spi-deployment</artifactId>
+        </dependency>
+        
 
     </dependencies>
 </project>

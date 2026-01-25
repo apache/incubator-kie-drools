@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,24 +21,24 @@ package org.drools.scenariosimulation.api.model;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
-public class FactMappingValueTest {
+class FactMappingValueTest {
 
     private FactMappingValue value;
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() {
         value = new FactMappingValue();
     }
 
     @Test
-    public void emptyFactMappingValue() {
+    void emptyFactMappingValue() {
         assertThatThrownBy(() -> new FactMappingValue(null, ExpressionIdentifier.DESCRIPTION, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("FactIdentifier has to be not null");
@@ -49,7 +49,7 @@ public class FactMappingValueTest {
     }
 
     @Test
-    public void resetStatus() {
+    void resetStatus() {
         value.resetStatus();
         
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
@@ -59,7 +59,7 @@ public class FactMappingValueTest {
     }
 
     @Test
-    public void setErrorValue() {
+    void setErrorValue() {
         value.setErrorValue(VALUE);
         
         assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
@@ -69,7 +69,7 @@ public class FactMappingValueTest {
     }
 
     @Test
-    public void setExceptionMessage() {
+    void setExceptionMessage() {
         String exceptionValue = "Exception";
         
         value.setExceptionMessage(exceptionValue);
@@ -81,7 +81,7 @@ public class FactMappingValueTest {
     }
 
     @Test
-    public void setPathToValue() {
+    void setPathToValue() {
         List<String> path = Arrays.asList("Step1", "Step2");
         
         value.setCollectionPathToValue(path);

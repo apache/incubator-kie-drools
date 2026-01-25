@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -80,10 +80,10 @@ public class PhreakNotNodeTest {
         
         BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
-        SegmentMemory smem = proto1.newSegmentMemory(wm);
+        SegmentMemory smem = proto1.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm.setSegmentMemory( smem );
         
-        SegmentMemory childSmem = proto2.newSegmentMemory(wm);
+        SegmentMemory childSmem = proto2.newSegmentMemory(wm.getNodeMemories(), wm.getSegmentMemorySupport());
         bm1.setSegmentMemory( childSmem );       
         smem.add( childSmem );     
 

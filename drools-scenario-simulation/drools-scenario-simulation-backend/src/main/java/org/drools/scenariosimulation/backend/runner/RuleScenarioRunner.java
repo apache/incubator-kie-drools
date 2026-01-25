@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,6 +22,11 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFacto
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
 import org.kie.api.runtime.KieContainer;
 
+/**
+ * @deprecated This is the JUnit 4 implementation of Test Scenario, based on
+ * {@link org.junit.runner.Runner} JUnit 4 API. Replaced by {@link TestScenarioEngine}
+ */
+@Deprecated(since = "10.2.0", forRemoval = true)
 public class RuleScenarioRunner extends AbstractScenarioRunner {
 
     public RuleScenarioRunner(KieContainer kieContainer, ScenarioRunnerDTO scenarioRunnerDTO) {

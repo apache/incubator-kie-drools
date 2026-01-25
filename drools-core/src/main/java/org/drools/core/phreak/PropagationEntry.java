@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -30,6 +30,7 @@ import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -106,6 +107,10 @@ public interface PropagationEntry {
         public PropagationEntry getSplitForPartition(int partitionNr) {
             throw new UnsupportedOperationException();
         }
+
+        public InternalFactHandle getHandle() {
+            throw new UnsupportedOperationException( "This method is not supported for this type of PropagationEntry" );
+        }
     }
 
     abstract class AbstractPartitionedPropagationEntry extends AbstractPropagationEntry {
@@ -152,9 +157,11 @@ public interface PropagationEntry {
         private final InternalFactHandle handle;
         private final PropagationContext pCtx;
         private final boolean calledFromRHS;
+		private InternalRuleBase ruleBase;
 
-        public ExecuteQuery(String queryName, DroolsQueryImpl queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS) {
-            this.queryName = queryName;
+        public ExecuteQuery(InternalRuleBase ruleBase, String queryName, DroolsQueryImpl queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS) {
+            this.ruleBase = ruleBase;
+			this.queryName = queryName;
             this.queryObject = queryObject;
             this.handle = handle;
             this.pCtx = pCtx;
@@ -163,7 +170,7 @@ public interface PropagationEntry {
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            QueryTerminalNode[] tnodes = reteEvaluator.getKnowledgeBase().getReteooBuilder().getTerminalNodesForQuery( queryName );
+            QueryTerminalNode[] tnodes = ruleBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist" );
             }
@@ -182,7 +189,7 @@ public interface PropagationEntry {
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
             LeftInputAdapterNode.LiaNodeMemory lmem = reteEvaluator.getNodeMemory( lian );
             if ( lmem.getSegmentMemory() == null ) {
-                RuntimeSegmentUtilities.getOrCreateSegmentMemory(lmem, lts, reteEvaluator);
+                reteEvaluator.getSegmentMemorySupport().getOrCreateSegmentMemory(lts, lmem);
             }
 
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, reteEvaluator, lmem, false, queryObject.isOpen() );
@@ -239,6 +246,9 @@ public interface PropagationEntry {
             if ( isOrphanHandle(handle, reteEvaluator) ) {
                 handle.setDisconnected(true);
                 handle.getEntryPoint(reteEvaluator).getObjectStore().removeHandle( handle );
+                if (handle instanceof DefaultEventHandle eventHandle) {
+                    eventHandle.unscheduleAllJobs(reteEvaluator);
+                }
             }
         }
 
@@ -292,6 +302,7 @@ public interface PropagationEntry {
             return "Insert of " + handle.getObject();
         }
 
+        @Override
         public InternalFactHandle getHandle() {
             return handle;
         }
@@ -353,6 +364,11 @@ public interface PropagationEntry {
         @Override
         public PropagationEntry getSplitForPartition( int partitionNr ) {
             return new PartitionedUpdate( handle, context, objectTypeConf, partitionNr );
+        }
+
+        @Override
+        public InternalFactHandle getHandle() {
+            return handle;
         }
 
         @Override

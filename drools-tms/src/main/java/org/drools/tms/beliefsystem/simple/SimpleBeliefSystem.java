@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,7 +19,6 @@
 package org.drools.tms.beliefsystem.simple;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;

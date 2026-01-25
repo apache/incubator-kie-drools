@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,15 +20,11 @@ package org.kie.dmn.model.api;
 
 import javax.xml.namespace.QName;
 
-public interface UnaryTests extends Expression {
+public interface UnaryTests extends Expression, HasExpressionLanguage {
 
     String getText();
 
     void setText(String value);
-
-    String getExpressionLanguage();
-
-    void setExpressionLanguage(String value);
 
     @Override
     default QName getTypeRef() {

@@ -27,13 +27,13 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -60,23 +60,27 @@ public class RangeFunction extends BaseFEELFunction {
     private static EvaluationContext STUBBED;
     private static final Range DEFAULT_VALUE = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN);
 
-    private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
-            baseNode -> baseNode instanceof NumberNode,
-            baseNode -> baseNode instanceof StringNode,
-            baseNode -> baseNode instanceof AtLiteralNode,
-            baseNode -> baseNode instanceof FunctionInvocationNode);
+    private static final Set<String> ALLOWED_FUNCTIONS = Set.of("date", "time", "date and time", "duration");
 
-    private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(Objects::isNull,
-            object -> object instanceof String,
-            object -> object instanceof Number,
-            object -> object instanceof Duration,
-            object -> object instanceof ChronoPeriod,
-            object -> object instanceof ZonedDateTime,
-            object -> object instanceof OffsetDateTime,
-            object -> object instanceof LocalDateTime,
-            object -> object instanceof LocalDate,
-            object -> object instanceof OffsetTime,
-            object -> object instanceof LocalTime);
+    private static final Set<Predicate<BaseNode>> ALLOWED_NODES = Set.of(
+            AtLiteralNode.class::isInstance,
+            NumberNode.class::isInstance,
+            NullNode.class::isInstance,
+            RangeFunction::isAllowedFunctionInvocationNode,
+            StringNode.class::isInstance);
+
+    private static final Set<Predicate<Object>> ALLOWED_TYPES = Set.of(
+            ChronoPeriod.class::isInstance,
+            Duration.class::isInstance,
+            LocalDate.class::isInstance,
+            LocalDateTime.class::isInstance,
+            LocalTime.class::isInstance,
+            Number.class::isInstance,
+            Objects::isNull,
+            OffsetDateTime.class::isInstance,
+            OffsetTime.class::isInstance,
+            String.class::isInstance,
+            ZonedDateTime.class::isInstance);
 
     private RangeFunction() {
         super("range");
@@ -134,6 +138,11 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
+
+        if (!nodesValuesRangeAreAscending(left, right)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "range endpoints must be in ascending order"));
+        }
+
         Range toReturn = getReturnedValue(left, right, startBoundary, endBoundary);
         // Boundary values need to be always defined in range string. They can be undefined only in unary test, that
         // represents range, e.g. (<10).
@@ -164,8 +173,26 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     /**
+    * Checks if the function invocation node is allowed as a range endpoint.
+     * From DMN 1.6 specification:
+     * 67. range endpoint = numeric literal | string literal | date time literal
+     * 60. date time literal = at literal | function invocation
+     * In rule 60 ("date time literal"), for the "function invocation" alternative,
+     * the only permitted functions are the
+     * builtins date, time, date and time, and duration.
+     *
+     * @param baseNode the base node to check
+     * @return true if the function invocation node is allowed, false otherwise
+     */
+    static boolean isAllowedFunctionInvocationNode(BaseNode baseNode) {
+        return baseNode instanceof FunctionInvocationNode functionInvocationNode &&
+                ALLOWED_FUNCTIONS.contains(functionInvocationNode.getName().getText()) &&
+                functionInvocationNode.getParams().getElements().stream().noneMatch(FunctionInvocationNode.class::isInstance);
+    }
+
+    /**
      * @param leftObject
-     * @param leftObject
+     * @param rightObject
      * @return
      */
     protected boolean nodesReturnsSameType(Object leftObject, Object rightObject) {
@@ -180,6 +207,19 @@ public class RangeFunction extends BaseFEELFunction {
         }
     }
 
+    /**
+     * @param leftValue
+     * @param rightValue
+     * @return It checks if the leftValue is lower or equals to rightValue, false otherwise. If one of the endpoints is null,
+     * or undefined, the endpoint range is considered as an ascending interval.
+     */
+    @SuppressWarnings("unchecked")
+    protected boolean nodesValuesRangeAreAscending(Object leftValue, Object rightValue) {
+        boolean atLeastOneEndpointIsNull = leftValue == null || rightValue == null;
+        return atLeastOneEndpointIsNull ||
+                ((Comparable<Object>) leftValue).compareTo(rightValue) <= 0;
+    }
+
     protected BaseNode parse(String input) {
         return input.isEmpty() || input.isBlank() ? getNullNode() : parseNotEmptyInput(input);
     }
@@ -192,15 +232,14 @@ public class RangeFunction extends BaseFEELFunction {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
         ParseTree tree = parser.expression();
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
-        BaseNode expr = v.visit(tree);
-        return expr;
+        return v.visit(tree);
     }
 
     private EvaluationContext getStubbed() {
         if (STUBBED == null) {
             // Defaulting FEELDialect to FEEL
             STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(),
-                                                new FEELEventListenersManager(), 0, FEELDialect.FEEL);
+                                                new FEELEventListenersManager(), 0, FEELDialect.FEEL, DMNVersion.getLatest());
         }
         return STUBBED;
     }

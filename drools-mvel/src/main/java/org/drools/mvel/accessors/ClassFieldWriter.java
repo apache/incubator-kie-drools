@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -119,44 +119,32 @@ public class ClassFieldWriter
 
     public void setByteValue(Object bean,
                              byte value) {
-        writer.setByteValue( bean,
+        writer.setWholeNumberValue( bean,
                              value );
 
     }
 
     public void setCharValue(Object bean,
                              char value) {
-        writer.setCharValue( bean,
+        writer.setWholeNumberValue( bean,
                              value );
     }
 
-    public void setDoubleValue(Object bean,
-                               double value) {
-        writer.setDoubleValue( bean,
+    public void setDecimalValue(Object bean,
+                                double value) {
+        writer.setDecimalValue( bean,
                                value );
     }
 
-    public void setFloatValue(Object bean,
-                              float value) {
-        writer.setFloatValue( bean,
-                              value );
-    }
-
-    public void setIntValue(Object bean,
-                            int value) {
-        writer.setIntValue( bean,
-                            value );
-    }
-
-    public void setLongValue(Object bean,
-                             long value) {
-        writer.setLongValue( bean,
+    public void setWholeNumberValue(Object bean,
+                                    long value) {
+        writer.setWholeNumberValue( bean,
                              value );
     }
 
     public void setShortValue(Object bean,
                               short value) {
-        writer.setShortValue( bean,
+        writer.setWholeNumberValue( bean,
                               value );
     }
 

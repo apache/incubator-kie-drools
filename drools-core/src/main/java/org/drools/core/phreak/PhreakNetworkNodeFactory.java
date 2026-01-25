@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,39 +18,40 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.core.common.ReteEvaluator;
 import org.kie.api.internal.utils.KieService;
 
 public interface PhreakNetworkNodeFactory extends KieService {
 
-    PhreakJoinNode createPhreakJoinNode();
+    PhreakJoinNode createPhreakJoinNode(ReteEvaluator reteEvaluator);
 
-    PhreakEvalNode createPhreakEvalNode();
+    PhreakEvalNode createPhreakEvalNode(ReteEvaluator reteEvaluator);
 
-    PhreakFromNode createPhreakFromNode();
+    PhreakFromNode createPhreakFromNode(ReteEvaluator reteEvaluator);
 
-    PhreakReactiveFromNode createPhreakReactiveFromNode();
+    PhreakReactiveFromNode createPhreakReactiveFromNode(ReteEvaluator reteEvaluator);
 
-    PhreakNotNode createPhreakNotNode();
+    PhreakNotNode createPhreakNotNode(ReteEvaluator reteEvaluator);
 
-    PhreakExistsNode createPhreakExistsNode();
+    PhreakExistsNode createPhreakExistsNode(ReteEvaluator reteEvaluator);
 
-    PhreakAccumulateNode createPhreakAccumulateNode();
+    PhreakAccumulateNode createPhreakAccumulateNode(ReteEvaluator reteEvaluator);
 
-    PhreakGroupByNode createPhreakGroupByNode();
+    PhreakGroupByNode createPhreakGroupByNode(ReteEvaluator reteEvaluator);
 
-    PhreakBranchNode createPhreakBranchNode();
+    PhreakBranchNode createPhreakBranchNode(ReteEvaluator reteEvaluator);
 
-    PhreakQueryNode createPhreakQueryNode();
+    PhreakQueryNode createPhreakQueryNode(ReteEvaluator reteEvaluator);
 
-    PhreakTimerNode createPhreakTimerNode();
+    PhreakTimerNode createPhreakTimerNode(ReteEvaluator reteEvaluator);
 
-    PhreakAsyncSendNode createPhreakAsyncSendNode();
+    PhreakAsyncSendNode createPhreakAsyncSendNode(ReteEvaluator reteEvaluator);
 
-    PhreakAsyncReceiveNode createPhreakAsyncReceiveNode();
+    PhreakAsyncReceiveNode createPhreakAsyncReceiveNode(ReteEvaluator reteEvaluator);
 
-    PhreakRuleTerminalNode createPhreakRuleTerminalNode();
+    PhreakRuleTerminalNode createPhreakRuleTerminalNode(ReteEvaluator reteEvaluator);
 
-    PhreakQueryTerminalNode createPhreakQueryTerminalNode();
+    PhreakQueryTerminalNode createPhreakQueryTerminalNode(ReteEvaluator reteEvaluator);
 
     class Factory {
 

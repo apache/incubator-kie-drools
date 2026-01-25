@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ public interface RightTupleSink extends Sink {
                           final PropagationContext context,
                           final ReteEvaluator reteEvaluator);
 
-    default ObjectTypeNodeId getRightInputOtnId() {
+    default ObjectTypeNodeId getInputOtnId() {
         return null;
     }
 

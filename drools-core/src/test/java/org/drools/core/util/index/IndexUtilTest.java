@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -325,37 +325,12 @@ public class IndexUtilTest {
         }
 
         @Override
-        public char getCharValue(ValueResolver valueResolver, Object object) {
+        public long getWholeNumberValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 
         @Override
-        public int getIntValue(ValueResolver valueResolver, Object object) {
-            return 0;
-        }
-
-        @Override
-        public byte getByteValue(ValueResolver valueResolver, Object object) {
-            return 0;
-        }
-
-        @Override
-        public short getShortValue(ValueResolver valueResolver, Object object) {
-            return 0;
-        }
-
-        @Override
-        public long getLongValue(ValueResolver valueResolver, Object object) {
-            return 0;
-        }
-
-        @Override
-        public float getFloatValue(ValueResolver valueResolver, Object object) {
-            return 0;
-        }
-
-        @Override
-        public double getDoubleValue(ValueResolver valueResolver, Object object) {
+        public double getDecimalValue(ValueResolver valueResolver, Object object) {
             return 0;
         }
 

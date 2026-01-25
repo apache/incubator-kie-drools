@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,7 +21,7 @@ package org.drools.testcoverage.functional;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.testcoverage.common.listener.OrderListener;
+import org.drools.core.event.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -53,57 +53,44 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = buildKieBase("declarative-agenda-simple-block.drl");
         final KieSession ksession = kbase.newKieSession();
 
-        OrderListener listener = new OrderListener();
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first run - just run rules without any blocking
         final FactHandle fireRules = ksession.insert("fireRules");
         final FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = { "blocker", "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("blocker", "sales2");
 
         // second run - add blocker rule
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.getAfterMatchFired()).isEmpty();
 
         // third run
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.delete(fireBlockerRule);
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(1);
-        final String[] expected3 = { "sales1" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected3[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(1).containsExactly("sales1");
 
         // fourth run
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(0);
+        assertThat(listener.getAfterMatchFired()).isEmpty();
 
         // fifth run
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.update(fireRules, "fireRules");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected5 = { "sales1", "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected5[i]);
-        }
-
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("sales1", "sales2");
         ksession.dispose();
     }
 
@@ -115,7 +102,7 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = buildKieBase("declarative-agenda-block.drl");
         final KieSession ksession = kbase.newKieSession();
 
-        OrderListener listener = new OrderListener();
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first run
@@ -123,25 +110,17 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         final FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(6);
-        final String[] expected = { "startAgenda", "catering1", "sales1", "salesBlocker", "catering2", "salesBlocker" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(6)
+        	.containsExactly("startAgenda", "catering1", "sales1", "salesBlocker", "catering2", "salesBlocker" );
 
         // second run
         ksession.delete(fireBlockerRule);
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
 
-        assertThat(listener.size()).isEqualTo(1); // BZ 1038076
-
-        final String[] expected2 = { "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected2[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(1).containsExactly("sales2"); // BZ 1038076
 
         ksession.dispose();
     }
@@ -181,29 +160,20 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = buildKieBase("declarative-agenda-unblockall.drl");
         final KieSession ksession = kbase.newKieSession();
 
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first run
         ksession.insert("fireRules");
         ksession.insert("fireBlockerRule");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = { "salesBlocker", "salesBlocker" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("salesBlocker", "salesBlocker");
 
         // second run
         ksession.insert("fireUnblockerRule");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(8);
-        final String[] expected2 = { "salesBlocker", "salesBlocker", "salesUnblocker", "sales1", "salesBlocker",
-                "salesUnblocker", "sales2", "salesBlocker" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected2[i]);
-        }
-
+        assertThat(listener.getAfterMatchFired()).hasSize(8).containsExactly("salesBlocker", "salesBlocker", "salesUnblocker", "sales1", "salesBlocker",
+                "salesUnblocker", "sales2", "salesBlocker" );
         ksession.dispose();
     }
 
@@ -213,7 +183,7 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = buildKieBase("declarative-agenda-cancel.drl");
         final KieSession ksession = kbase.newKieSession();
 
-        final OrderListener listener = new OrderListener();
+        final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // fires only sales1 rule, sales2 rule activation is canceled by
@@ -221,11 +191,7 @@ public class DeclarativeAgendaTest {
         ksession.insert("fireRules");
         ksession.insert("fireCancelRule");
         ksession.fireAllRules();
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = { "salesCancel", "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("salesCancel", "sales2");
 
         ksession.dispose();
     }
@@ -241,7 +207,7 @@ public class DeclarativeAgendaTest {
         final KieBase kbase = buildKieBase("declarative-agenda-cancel.drl");
         final KieSession ksession = kbase.newKieSession();
 
-        OrderListener listener = new OrderListener();
+        TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         // first run - with cancelling rule, it should cancel activation of
@@ -250,26 +216,18 @@ public class DeclarativeAgendaTest {
         final FactHandle fireCancelRule = ksession.insert("fireCancelRule");
         ksession.fireAllRules();
 
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected = { "salesCancel", "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("salesCancel", "sales2");
 
         // second run
         ksession.removeEventListener(listener);
-        listener = new OrderListener();
+        listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);
 
         ksession.update(fireCancelRule, "fireCancelRule");
         ksession.update(fireRules, "fireRules");
         ksession.fireAllRules();
 
-        assertThat(listener.size()).isEqualTo(2);
-        final String[] expected2 = { "salesCancel", "sales2" };
-        for (int i = 0; i < listener.size(); i++) {
-            assertThat(listener.get(i)).isEqualTo(expected2[i]);
-        }
+        assertThat(listener.getAfterMatchFired()).hasSize(2).containsExactly("salesCancel", "sales2");
 
         ksession.dispose();
     }

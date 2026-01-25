@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -50,7 +50,7 @@ public class PMMLCompilationContextImpl extends EfestoCompilationContextImpl<PMM
 
     public PMMLCompilationContextImpl(final String fileName,
                                       final KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        super(memoryCompilerClassLoader);
+        super(memoryCompilerClassLoader, false);
         name = "Context_" + ID_GENERATOR.incrementAndGet();
         if (!fileName.endsWith(PMML_SUFFIX)) {
             this.fileName = fileName + PMML_SUFFIX;

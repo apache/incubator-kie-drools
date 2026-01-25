@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -59,7 +59,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetByteValue() {
         try {
-            this.reader.getByteValue( null,
+            this.reader.getWholeNumberValue( null,
                                       this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -70,7 +70,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetCharValue() {
         try {
-            this.reader.getCharValue( null,
+            this.reader.getWholeNumberValue( null,
                                       this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
@@ -81,19 +81,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetDoubleValue() {
         try {
-            this.reader.getDoubleValue( null,
+            this.reader.getDecimalValue( null,
                                         this.bean );
-            fail( "Should have throw an exception" );
-        } catch ( final Exception e ) {
-            // success
-        }
-    }
-
-    @Test
-    public void testGetFloatValue() {
-        try {
-            this.reader.getFloatValue( null,
-                                       this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -103,8 +92,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetIntValue() {
         try {
-            this.reader.getIntValue( null,
-                                     this.bean );
+            this.reader.getWholeNumberValue( null,
+                                             this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -114,8 +103,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetLongValue() {
         try {
-            this.reader.getLongValue( null,
-                                      this.bean );
+            this.reader.getWholeNumberValue( null,
+                                             this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -125,7 +114,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     @Test
     public void testGetShortValue() {
         try {
-            this.reader.getShortValue( null,
+            this.reader.getWholeNumberValue( null,
                                        this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {

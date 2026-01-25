@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -58,7 +58,7 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetByteValue() {
         try {
-            assertThat(this.extractor.getByteValue(null,
+            assertThat(this.extractor.getWholeNumberValue(null,
                     this.bean)).isEqualTo((byte)LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -67,30 +67,15 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetCharValue() {
-        try {
-            this.extractor.getCharValue( null,
-                                         this.bean );
-            fail( "Should have throw an exception" );
-        } catch ( final Exception e ) {
-            // success
-        }
+        assertThat((char) this.extractor.getWholeNumberValue(null,
+                this.bean)).isEqualTo((char)LongClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetDoubleValue() {
         try {
-            assertThat(this.extractor.getDoubleValue(null,
+            assertThat(this.extractor.getDecimalValue(null,
                     this.bean)).isCloseTo(LongClassFieldExtractorTest.VALUE, within(0.01));
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
-    }
-
-    @Test
-    public void testGetFloatValue() {
-        try {
-            assertThat(this.extractor.getFloatValue(null,
-                    this.bean)).isCloseTo(LongClassFieldExtractorTest.VALUE, within(0.01f));
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -99,8 +84,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetIntValue() {
         try {
-            assertThat(this.extractor.getIntValue(null,
-                    this.bean)).isEqualTo(LongClassFieldExtractorTest.VALUE);
+            assertThat((int) this.extractor.getWholeNumberValue(null,
+                    this.bean)).isEqualTo((int) LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -109,7 +94,7 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     @Test
     public void testGetLongValue() {
         try {
-            assertThat(this.extractor.getLongValue(null,
+            assertThat(this.extractor.getWholeNumberValue(null,
                     this.bean)).isEqualTo(LongClassFieldExtractorTest.VALUE);
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -118,12 +103,8 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetShortValue() {
-        try {
-            assertThat(this.extractor.getShortValue(null,
-                    this.bean)).isEqualTo((short)LongClassFieldExtractorTest.VALUE);
-        } catch ( final Exception e ) {
-            fail( "Should not throw an exception" );
-        }
+        assertThat(this.extractor.getWholeNumberValue(null,
+                this.bean)).isEqualTo((short)LongClassFieldExtractorTest.VALUE);
     }
 
     @Test

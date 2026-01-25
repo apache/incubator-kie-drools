@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,7 +54,7 @@ public interface NetworkNode extends Serializable {
 
     NetworkNode[] getSinks();
 
-    default boolean isRightInputIsRiaNode() {
+    default boolean inputIsTupleToObjectNode() {
         // not ideal, but this was here to allow NetworkNode to be in drools-base
         return false;
     }

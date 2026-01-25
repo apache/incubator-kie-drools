@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,29 +26,29 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.drools.scenariosimulation.backend.model.ListMapClass;
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class BaseExpressionEvaluatorTest {
+class BaseExpressionEvaluatorTest {
 	
-	private Condition<ExpressionEvaluatorResult> successful= new Condition<>(x -> x.isSuccessful(), "isSuccessful");
-	private Condition<ExpressionEvaluatorResult> notSuccessful= new Condition<>(x -> !x.isSuccessful(), "isNotSuccessful");
+	private final Condition<ExpressionEvaluatorResult> successful = new Condition<>(x -> x.isSuccessful(), "isSuccessful");
+	private final Condition<ExpressionEvaluatorResult> notSuccessful = new Condition<>(x -> !x.isSuccessful(), "isNotSuccessful");
 
-    private final static ClassLoader classLoader = BaseExpressionEvaluatorTest.class.getClassLoader();
+    private static final ClassLoader classLoader = BaseExpressionEvaluatorTest.class.getClassLoader();
     private AbstractExpressionEvaluator expressionEvaluator;
     
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
     	expressionEvaluator = new BaseExpressionEvaluator(classLoader);
     }
 
     @Test
-    public void evaluateLiteralExpression() {
+    void evaluateLiteralExpression() {
         assertThat(expressionEvaluator.evaluateLiteralExpression("", Object.class.getCanonicalName(), List.of())).isEqualTo("");
 
         assertThat(expressionEvaluator.evaluateLiteralExpression("SimpleString", String.class.getCanonicalName(), List.of())).isEqualTo("SimpleString");
@@ -59,7 +59,7 @@ public class BaseExpressionEvaluatorTest {
     }
 
     @Test
-    public void createObject() {
+    void createObject() {
         assertThat(expressionEvaluator.createObject(String.class.getCanonicalName(), List.of())).isNotNull();
         assertThat(expressionEvaluator.createObject(Map.class.getCanonicalName(), List.of(String.class.getCanonicalName(), String.class.getCanonicalName()))).isInstanceOf(Map.class);
 
@@ -68,13 +68,13 @@ public class BaseExpressionEvaluatorTest {
     }
 
     @Test
-    public void verifyNullTest() {
+    void verifyNullTest() {
         assertThat(expressionEvaluator.verifyResult("[]", null, null)).is(successful);
         assertThat(expressionEvaluator.verifyResult("[{\"value\" : \"result\"}]", null, null)).is(notSuccessful);
     }
 
     @Test
-    public void nullResultTest() {
+    void nullResultTest() {
         assertThat(expressionEvaluator.evaluateUnaryExpression("> 1", null, null)).is(notSuccessful);
         assertThat(expressionEvaluator.evaluateUnaryExpression("", null, null)).is(successful);
         assertThat(expressionEvaluator.evaluateUnaryExpression(null, null, null)).is(successful);
@@ -86,7 +86,7 @@ public class BaseExpressionEvaluatorTest {
         assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfListJson, Map.of(), Map.class)).is(notSuccessful);
     }
     
-    public void convertResult_list() {
+    void convertResult_list() {
         String listJsonString = "[{\"value\" : \"10\"}, {\"value\" : \"12\"}]";
 
         List<Integer> result = (List<Integer>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(), List.of(Integer.class.getCanonicalName()));
@@ -96,7 +96,7 @@ public class BaseExpressionEvaluatorTest {
     }
     
     @Test
-    public void convertResult_mapOfStringToString() {
+    void convertResult_mapOfStringToString() {
         List<String> genericClasses = List.of(String.class.getCanonicalName(), String.class.getCanonicalName());
         String givenWorkbenchMapString = "{ \"Home\": { \"value\": \"123 Any Street\" } }";
 
@@ -106,7 +106,7 @@ public class BaseExpressionEvaluatorTest {
     }
     
     @Test
-    public void evaluateUnaryExpression_mapOfStringToString() {
+    void evaluateUnaryExpression_mapOfStringToString() {
         String stringToString = "{\"key1\" : {\"value\" : \"value1\"}, \"key2\" : {\"value\" : \"value2\"}}";
 
         assertThat(expressionEvaluator.evaluateUnaryExpression(stringToString, Map.of("key1", "value1"), Map.class)).is(notSuccessful);
@@ -114,7 +114,7 @@ public class BaseExpressionEvaluatorTest {
     }
     
     @Test
-    public void evaluateUnaryExpression_mapOfStringToString_empty() {
+    void evaluateUnaryExpression_mapOfStringToString_empty() {
         String mapOfStringJson1 = "{\"key1\" : {\"value\" : \"\"}}";
 
         assertThat(expressionEvaluator.evaluateUnaryExpression(mapOfStringJson1, Map.of(), Map.class)).is(successful);
@@ -123,7 +123,7 @@ public class BaseExpressionEvaluatorTest {
 
     
     @Test
-    public void convertResult_mapOfStringToInteger() {
+    void convertResult_mapOfStringToInteger() {
         List<String> genericClasses = List.of(String.class.getCanonicalName(), Integer.class.getCanonicalName());
         String givenWorkbenchMapInteger = "{ \"Home\": { \"value\": \"100\" } }";
 
@@ -136,7 +136,7 @@ public class BaseExpressionEvaluatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void convertResult_listMapToString() {
+    void convertResult_listMapToString() {
         String mapJsonString = "{\"first\": {\"name\": \"John\"}}";
 
         Map<String, ListMapClass> parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
@@ -148,7 +148,7 @@ public class BaseExpressionEvaluatorTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void convertResult_listMapToList() {
+    void convertResult_listMapToList() {
         String mapJsonString = "{\"first\": {\"siblings\": [{\"name\" : \"John\"}]}}";
         
         Map<String, ListMapClass> parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
@@ -160,7 +160,7 @@ public class BaseExpressionEvaluatorTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void convertResult_listMapToListMap() {
+    void convertResult_listMapToListMap() {
         String mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"1\"}}}";
 
         Map<String, ListMapClass> parsedMap = (Map<String, ListMapClass>) expressionEvaluator.convertResult(mapJsonString, Map.class.getCanonicalName(),
@@ -172,7 +172,7 @@ public class BaseExpressionEvaluatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void convertResult_listOfComplexTypes() {
+    void convertResult_listOfComplexTypes() {
 
         String listJsonString = "[{\"name\": \"John\"}, " +
                 "{\"name\": \"John\", \"names\" : [{\"value\": \"Anna\"}, {\"value\": \"Mario\"}]}]";
@@ -185,7 +185,7 @@ public class BaseExpressionEvaluatorTest {
     }
     
     @Test
-    public void verifyResult_mapOfMapsofMaps_successful() {
+    void verifyResult_mapOfMapsofMaps_successful() {
         String mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"> 1\"}}}";
 
         Map<String, ListMapClass> toCheck = new HashMap<>();
@@ -199,7 +199,7 @@ public class BaseExpressionEvaluatorTest {
     }
 
     @Test
-    public void verifyResult_mapOfMapsofMaps_notSuccessful() {
+    void verifyResult_mapOfMapsofMaps_notSuccessful() {
         String mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"> 1\"}}}";
 
         Map<String, ListMapClass> toCheck = new HashMap<>();
@@ -215,7 +215,7 @@ public class BaseExpressionEvaluatorTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void verifyResult_listOfComplexTypeTest_success() {
+    void verifyResult_listOfComplexTypeTest_success() {
 
         String listJsonString = "[{\"name\": \"John\"}, " +
                 "{\"name\": \"John\", \"names\" : [{\"value\": \"Anna\"}, {\"value\": \"Mario\"}]}]";
@@ -228,7 +228,7 @@ public class BaseExpressionEvaluatorTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void verifyResult_listOfComplexTypeTest_failure() {
+    void verifyResult_listOfComplexTypeTest_failure() {
         String listJsonString = "[{\"name\": \"John\"}, " +
                 "{\"name\": \"John\", \"names\" : [{\"value\": \"Anna\"}, {\"value\": \"Mario\"}]}]";
 
@@ -240,7 +240,7 @@ public class BaseExpressionEvaluatorTest {
     }
     
     @Test
-    public void verifyResult_mapOfStringToInteger() {
+    void verifyResult_mapOfStringToInteger() {
         String expectWorkbenchMapInteger = "{ \"Home\": { \"value\": \"> 100\" } }";
 
         assertThat(expressionEvaluator.verifyResult(expectWorkbenchMapInteger, Map.of("Home", 120), null)).is(successful);
@@ -248,7 +248,7 @@ public class BaseExpressionEvaluatorTest {
     }    
     
     @Test
-    public void listOfSimpleTypeTest() {
+    void listOfSimpleTypeTest() {
         assertThat(expressionEvaluator.verifyResult("[{\"value\" : \"> 10\"}]", List.of(13), null)).is(successful);
 
         assertThat(expressionEvaluator.verifyResult("[{\"value\" : \"> 100\"}]", List.of(13), null)).is(notSuccessful);
@@ -257,7 +257,7 @@ public class BaseExpressionEvaluatorTest {
     }
 
     @Test
-    public void expressionListVerifyResultTest() {
+    void expressionListVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("10").toString();
         List<BigDecimal> contextValue = List.of(BigDecimal.valueOf(10));
         
@@ -265,7 +265,7 @@ public class BaseExpressionEvaluatorTest {
     }
 
     @Test
-    public void expressionMapVerifyResultTest() {
+    void expressionMapVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
         Map<String, BigDecimal> contextValue = Map.of("key_a", BigDecimal.valueOf(1));
         

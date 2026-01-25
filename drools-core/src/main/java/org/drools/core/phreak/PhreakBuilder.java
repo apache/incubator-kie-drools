@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -36,8 +36,8 @@ public interface PhreakBuilder {
         return Holder.EAGER_SEGMENT_CREATION;
     }
 
-    void addRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase);
-    void removeRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase);
+    void addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> wms, TerminalNode tn);
+    void removeRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> wms, TerminalNode tn);
 
     class Holder {
         private static final boolean EAGER_SEGMENT_CREATION = Boolean.parseBoolean(getConfig("drools.useEagerSegmentCreation", "true"));

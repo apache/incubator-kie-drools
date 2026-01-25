@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -57,48 +57,37 @@ public class IntClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     @Test
     public void testGetByteValue() {
-        assertThat(this.reader.getByteValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((byte)IntClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetCharValue() {
-        try {
-            this.reader.getCharValue( null,
-                                      this.bean );
-            fail( "Should have throw an exception" );
-        } catch ( final Exception e ) {
-            // success
-        }
+        assertThat((char) this.reader.getWholeNumberValue(null,
+                this.bean)).isEqualTo((char)IntClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetDoubleValue() {
-        assertThat(this.reader.getDoubleValue(null,
+        assertThat(this.reader.getDecimalValue(null,
                 this.bean)).isCloseTo(IntClassFieldExtractorTest.VALUE, within(0.01));
     }
 
     @Test
-    public void testGetFloatValue() {
-        assertThat(this.reader.getFloatValue(null,
-                this.bean)).isCloseTo(IntClassFieldExtractorTest.VALUE, within(0.01f));
-    }
-
-    @Test
     public void testGetIntValue() {
-        assertThat(this.reader.getIntValue(null,
+        assertThat((int) this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo(IntClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetLongValue() {
-        assertThat(this.reader.getLongValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo(IntClassFieldExtractorTest.VALUE);
     }
 
     @Test
     public void testGetShortValue() {
-        assertThat(this.reader.getShortValue(null,
+        assertThat(this.reader.getWholeNumberValue(null,
                 this.bean)).isEqualTo((short)IntClassFieldExtractorTest.VALUE);
     }
 

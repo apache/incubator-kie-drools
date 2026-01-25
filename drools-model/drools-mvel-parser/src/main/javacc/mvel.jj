@@ -3373,7 +3373,7 @@ Expression EqualityExpression():
  *         ReferenceType Identifier
  * }<pre>
  */
-PatternExpr PatternExpression():
+TypePatternExpr PatternExpression():
 {
     ModifierHolder modifier;
     ReferenceType type;
@@ -3383,7 +3383,7 @@ PatternExpr PatternExpression():
     modifier = Modifiers()
     type = ReferenceType(modifier.annotations)
     name = SimpleName()
-    { return new PatternExpr(range(type, token()), modifier.modifiers, type, name); }
+    { return new TypePatternExpr(range(type, token()), modifier.modifiers, type, name); }
 }
 
 
@@ -3405,7 +3405,7 @@ Expression InstanceOfExpression():
     Expression ret;
     ReferenceType type;
     NodeList<AnnotationExpr> annotations;
-    PatternExpr pattern;
+    TypePatternExpr pattern;
 }
 {
     ret = RelationalExpression()
@@ -3414,7 +3414,7 @@ Expression InstanceOfExpression():
         (
             LOOKAHEAD(PatternExpression())
             pattern = PatternExpression()
-            { ret = new InstanceOfExpr(range(ret, token()), ret, pattern.getType(), pattern); }
+            { ret = new InstanceOfExpr(range(ret, token()), ret, pattern.getType().asReferenceType(), pattern); }
          |
             type = AnnotatedReferenceType()
             { ret = new InstanceOfExpr(range(ret, token()), ret, type, null); }

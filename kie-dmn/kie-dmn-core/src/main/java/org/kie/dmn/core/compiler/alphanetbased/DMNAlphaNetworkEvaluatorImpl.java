@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -114,7 +115,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
                                                                        (eventResults != null ? eventResults.matchedRules : null),
                                                                        (eventResults != null ? eventResults.fired : null),
                                                                        (eventResults != null ? eventResults.matchedIds : null),
-                                                                       (eventResults != null ? eventResults.firedIds : null));
+                                                                       (eventResults != null ? eventResults.firedIds : null), eventManager.getCurrentEvaluatingDecisionName());
         }
     }
 

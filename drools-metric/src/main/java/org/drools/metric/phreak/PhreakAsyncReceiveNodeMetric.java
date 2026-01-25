@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,24 +23,26 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakAsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakAsyncReceiveNodeMetric extends PhreakAsyncReceiveNode {
 
+    public PhreakAsyncReceiveNodeMetric(ReteEvaluator reteEvaluator) {
+        super(reteEvaluator);
+    }
+
     @Override
     public void doNode(AsyncReceiveNode node,
                        AsyncReceiveMemory memory,
                        LeftTupleSink sink,
-                       ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(node);
 
-            super.doNode(node, memory, sink, reteEvaluator, srcLeftTuples, trgLeftTuples);
+            super.doNode(node, memory, sink, srcLeftTuples, trgLeftTuples);
 
         } finally {
             MetricLogUtils.getInstance().logAndEndMetrics();

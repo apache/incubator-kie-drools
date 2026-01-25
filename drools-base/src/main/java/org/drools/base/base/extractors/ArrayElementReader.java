@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -90,42 +90,15 @@ public class ArrayElementReader
         return ((Boolean) array[this.index]).booleanValue();
     }
 
-    public byte getByteValue(ValueResolver valueResolver,
-                             Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
-                                                                     object );
-        return ((Number) array[this.index]).byteValue();
-    }
 
-    public char getCharValue(ValueResolver valueResolver,
-                             Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
-                                                                     object );
-        return ((Character) array[this.index]).charValue();
-    }
-
-    public double getDoubleValue(ValueResolver valueResolver,
-                                 Object object) {
+    public double getDecimalValue(ValueResolver valueResolver,
+                                  Object object) {
         Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
                                                                      object );
         return ((Number) array[this.index]).doubleValue();
     }
 
-    public float getFloatValue(ValueResolver valueResolver,
-                               Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
-                                                                     object );
-        return ((Number) array[this.index]).floatValue();
-    }
-
-    public int getIntValue(ValueResolver valueResolver,
-                           Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
-                                                                     object );
-        return ((Number) array[this.index]).intValue();
-    }
-
-    public long getLongValue(ValueResolver valueResolver,
+    public long getWholeNumberValue(ValueResolver valueResolver,
                              Object object) {
         Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
                                                                      object );
@@ -144,17 +117,18 @@ public class ArrayElementReader
     public String getNativeReadMethodName() {
         String method = "";
         if ( type != null && type.isPrimitive() ) {
+            // Handle consolidated types
+            if (type == int.class || type == long.class || type == short.class || type == byte.class) {
+                return "getWholeNumberValue";
+            }
+            if (type == float.class || type == double.class) {
+                return "getDecimalValue";
+            }
             method = StringUtils.ucFirst( type.getName () );
         }
         return "get" + method + "Value";
     }
 
-    public short getShortValue(ValueResolver valueResolver,
-                               Object object) {
-        Object[] array = (Object[]) this.arrayReadAccessor.getValue( valueResolver,
-                                                                     object );
-        return ((Number) array[this.index]).shortValue();
-    }
 
     public Object getValue(ValueResolver valueResolver,
                            Object object) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -101,7 +101,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
                             final FieldValue object2) {
         long rightTS = extractor.isSelfReference() ?
                        getRightTimestamp( object1 ) :
-                       extractor.getLongValue( valueResolver, object1.getObject() );
+                       extractor.getWholeNumberValue( valueResolver, object1.getObject() );
         long leftTS = getTimestamp(object2);
         return evaluate(rightTS, leftTS);
     }
@@ -118,7 +118,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         long leftTS = ((VariableRestriction.TimestampedContextEntry)context).timestamp;
         long rightTS = context.getFieldExtractor().isSelfReference() ?
                        getRightTimestamp(right) :
-                       context.getFieldExtractor().getLongValue( valueResolver, right.getObject() );
+                       context.getFieldExtractor().getWholeNumberValue( valueResolver, right.getObject() );
 
         return evaluate(rightTS, leftTS);
     }
@@ -135,7 +135,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         long rightTS = ((VariableRestriction.TimestampedContextEntry)context).timestamp;
         long leftTS = context.declaration.getExtractor().isSelfReference() ?
                       getLeftTimestamp( left ) :
-                      context.declaration.getExtractor().getLongValue( valueResolver, left.getObject() );
+                      context.declaration.getExtractor().getWholeNumberValue( valueResolver, left.getObject() );
 
         return evaluate(rightTS, leftTS);
     }
@@ -153,11 +153,11 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
 
         long rightTS = extractor1.isSelfReference() ?
                        getRightTimestamp( handle1 ) :
-                       extractor1.getLongValue( valueResolver, handle1.getObject() );
+                       extractor1.getWholeNumberValue( valueResolver, handle1.getObject() );
 
         long leftTS = extractor2.isSelfReference() ?
                       getLeftTimestamp( handle2 ) :
-                      extractor2.getLongValue( valueResolver, handle2.getObject() );
+                      extractor2.getWholeNumberValue( valueResolver, handle2.getObject() );
 
         return evaluate(rightTS, leftTS);
     }

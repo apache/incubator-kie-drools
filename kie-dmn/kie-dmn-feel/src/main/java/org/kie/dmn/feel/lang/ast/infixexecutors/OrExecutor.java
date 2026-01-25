@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,9 +20,8 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
-
-import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.or;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandler;
+import org.kie.dmn.feel.lang.ast.dialectHandlers.DialectHandlerFactory;
 
 public class OrExecutor implements InfixExecutor {
 
@@ -37,21 +36,24 @@ public class OrExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return or(left, right, ctx);
+        DialectHandler handler = DialectHandlerFactory.getHandler(ctx);
+        return handler.executeOr(left, right, ctx);
     }
 
+    /**
+     * Evaluates the OR operation with short-circuit logic.
+     * <p>
+     * Note: The right-hand side is passed as an AST node (not an evaluated value)
+     * to enable short-circuit evaluation. The handler must be able to handle both
+     * evaluated values and AST nodes for the right argument.
+     *
+     * @param infixNode the infix operation node
+     * @param ctx the evaluation context
+     * @return the result of the OR operation
+     */
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        Boolean leftOR = BooleanEvalHelper.getBooleanOrDialectDefault(infixNode.getLeft().evaluate(ctx), ctx.getFEELDialect());
-        if (leftOR != null) {
-            if (!leftOR.booleanValue()) {
-                return BooleanEvalHelper.getBooleanOrDialectDefault(infixNode.getRight().evaluate(ctx), ctx.getFEELDialect());
-            } else {
-                return Boolean.TRUE; //left hand operand is true, we do not need to evaluate right side
-            }
-        } else {
-            return BooleanEvalHelper.getTrueOrDialectDefault(infixNode.getRight().evaluate(ctx), ctx.getFEELDialect());
-        }
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight(), ctx);
     }
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -883,7 +883,7 @@ public class IndexingTest {
         InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
 
         try {
-            final ObjectTypeNode node = KieUtil.getObjectTypeNode(wm.getKnowledgeBase(), Person.class);
+            final ObjectTypeNode node = KieUtil.getObjectTypeNode(kbase, Person.class);
             assertThat(node).isNotNull();
             final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
             final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -197,10 +197,15 @@ public class ReteDumper {
 
     private void dumpNode( BaseNode node, String ident, Set<BaseNode> visitedNodes, BiConsumer<BaseNode, String> consumer ) {
         consumer.accept( node, ident );
+        
         if (!visitedNodes.add( node )) {
             return;
         }
+        
         NetworkNode[] sinks = node.getSinks();
+        if (node instanceof RightInputAdapterNode<?> ria) {
+            sinks = new Sink[] { ria.getBetaNode() };
+        }
         if (sinks != null) {
             for (NetworkNode sink : sinks) {
                 BaseNode sinkNode = ( BaseNode ) sink;

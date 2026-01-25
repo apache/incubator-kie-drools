@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,6 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.util.bitmask.BitMask;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,6 +66,11 @@ public class BaseNodeTest {
             return true;
         }
 
+        @Override
+        public BaseNode getParent() {
+            return null;
+        }
+
         public boolean isInUse() {
             return true;
         }
@@ -80,6 +86,16 @@ public class BaseNodeTest {
 
         public int getType() {
             return 0;
+        }
+
+        @Override
+        public BitMask getDeclaredMask() {
+            return null;
+        }
+
+        @Override
+        public BitMask getInferredMask() {
+            return null;
         }
     }
 }

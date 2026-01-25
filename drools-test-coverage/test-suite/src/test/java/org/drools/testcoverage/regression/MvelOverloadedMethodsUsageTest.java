@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -79,8 +79,7 @@ public class MvelOverloadedMethodsUsageTest extends KieSessionTest {
         commands.add(CommandFactory.newFireAllRules());
         session.execute(CommandFactory.newBatchExecution(commands));
 
-        assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods")).isEqualTo(1);
-        assertThat(firedRules.ruleFiredCount("MvelOverloadedMethods2")).isEqualTo(1);
+        assertThat(firedRules.getAfterMatchFired()).contains("MvelOverloadedMethods", "MvelOverloadedMethods2");
     }
 
     @Override

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -38,6 +38,7 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.JoinRightAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
@@ -106,7 +107,7 @@ public class MemoryLeakTest {
         JoinNode joinNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                joinNode = (JoinNode) otn.getObjectSinkPropagator().getSinks()[0];
+                joinNode = ((JoinRightAdapterNode)otn.getObjectSinkPropagator().getSinks()[0]).getBetaNode();
                 break;
             }
         }
@@ -312,5 +313,108 @@ public class MemoryLeakTest {
             }
         }
         return childObjects;
+    }
+
+    @Disabled("disabled by default as this could be unstable")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(60)
+    public void testLeakWithMatchAndDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R when\n" +
+                        "    $p : Person(name == \"Mario\")\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+
+        try (KieSession ksession = kBase.newKieSession()) {
+            String text24kb = "A".repeat(24 * 1024);
+
+            System.gc();
+            long baseMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+            for (int i = 0; i < 10000; i++) {
+                Person person = new Person("Mario", i);
+                person.setLikes(text24kb + i); // make sure that different String instances are created
+                FactHandle factHandle = ksession.insert(person);
+                int fired = ksession.fireAllRules();
+                assertThat(fired).isEqualTo(1);
+
+                ksession.delete(factHandle);
+                ksession.fireAllRules();
+
+                if (i % 1000 == 0) {
+                    System.gc();
+                    long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                    System.out.println("Used memory: " + usedMemory);
+                }
+            }
+            System.out.println("------------------");
+            // Allow some memory for the processing overhead
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it if it's not a memory leak.
+            long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
+            System.gc();
+            long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+            System.out.println("Base memory: " + baseMemory);
+            System.out.println("User memory: " + usedMemory);
+            assertThat(usedMemory).isLessThan(baseMemory + acceptableMemoryOverhead);
+        }
+    }
+
+    @Disabled("disabled by default as this could be unstable")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(60)
+    public void testLeakWithJoinMatchAndDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + Cheese.class.getCanonicalName() + "\n" +
+                        "rule R when\n" +
+                        "    $p : Person(name == \"Mario\")\n" +
+                        "    $c : Cheese(type == \"stilton\")\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+
+        try (KieSession ksession = kBase.newKieSession()) {
+            String text24kb = "A".repeat(24 * 1024);
+
+            System.gc();
+            long baseMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+            for (int i = 0; i < 10000; i++) {
+                Person person = new Person("Mario", i);
+                person.setLikes(text24kb + i); // make sure that different String instances are created
+                FactHandle factHandlePerson = ksession.insert(person);
+
+                Cheese cheese = new Cheese("stilton");
+                FactHandle factHandleCheese = ksession.insert(cheese);
+
+                int fired = ksession.fireAllRules();
+                assertThat(fired).isEqualTo(1);
+
+                ksession.delete(factHandlePerson);
+                ksession.delete(factHandleCheese);
+                ksession.fireAllRules();
+
+                if (i % 1000 == 0) {
+                    System.gc();
+                    long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                    System.out.println("Used memory: " + usedMemory);
+                }
+            }
+            System.out.println("------------------");
+            // Allow some memory for the processing overhead
+            // The acceptableMemoryOverhead may not be a critical threshold. If the test fails, you may consider increasing it if it's not a memory leak.
+            long acceptableMemoryOverhead = 10 * 1024 * 1024; // 10 MB
+            System.gc();
+            long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+            System.out.println("Base memory: " + baseMemory);
+            System.out.println("User memory: " + usedMemory);
+            assertThat(usedMemory).isLessThan(baseMemory + acceptableMemoryOverhead);
+        }
     }
 }

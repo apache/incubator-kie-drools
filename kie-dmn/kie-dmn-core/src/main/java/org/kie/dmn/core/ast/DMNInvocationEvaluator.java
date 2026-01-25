@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,13 +26,14 @@ import java.util.function.BiFunction;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNVersion;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
@@ -188,7 +189,7 @@ public class DMNInvocationEvaluator
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
             listenerMgr.addListener(events::add);
 
-            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime(), FEELDialect.FEEL);
+            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime(), FEELDialect.FEEL, DMNVersion.getLatest());
 
             invocationResult = function.invokeReflectively( ctx, namedParams );
 

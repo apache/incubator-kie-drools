@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import org.drools.base.util.IndexedValueReader;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 
 public abstract class AbstractHashTable

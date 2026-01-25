@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -52,6 +52,10 @@ public class MyComparable implements Comparable<MyComparable> {
 
     public void setIntValue(Integer intValue) {
         this.intValue = intValue;
+    }
+
+    public Long getLongValue() {
+        return intValue != null ? intValue.longValue() : null;
     }
 
     @Override
