@@ -40,7 +40,7 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 public class JavaConfiguration {
 
     // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "9"};
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "9"};
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -108,6 +108,10 @@ public class JavaConfiguration {
             return "18";
         } else if (level.startsWith("19")) {
             return "19";
+        } else if (level.startsWith("20")) {
+            return "20";
+        } else if (level.startsWith("21")) {
+            return "21";
         }
 
         return "11";

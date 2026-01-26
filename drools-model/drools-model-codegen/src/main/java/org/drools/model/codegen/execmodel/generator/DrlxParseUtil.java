@@ -497,7 +497,7 @@ public class DrlxParseUtil {
 
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
-        parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_15);
+        parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
         com.github.javaparser.JavaParser javaParser = new com.github.javaparser.JavaParser(parserConfiguration);
 
         ParseResult<BlockStmt> blockStmtParseResult = javaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock));
