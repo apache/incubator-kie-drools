@@ -1353,9 +1353,6 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                            DroolsSoftKeywords.ACTIVE ) ) {
                 attribute = booleanAttribute( as,
                                               new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
-            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.REFRACT ) ) {
-                attribute = booleanAttribute( as,
-                                              new String[]{ DroolsSoftKeywords.REFRACT } );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
