@@ -122,6 +122,9 @@ class DMNConditionalEvaluatorTest {
     @BeforeEach
     void setup() {
         reset(spiedListener);
+        reset(eventManagerMock);
+        when(eventManagerMock.hasListeners()).thenReturn(true);
+        when(eventManagerMock.getListeners()).thenReturn(Collections.singleton(spiedListener));
     }
 
     @ParameterizedTest
@@ -154,6 +157,7 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithTrue(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
+        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(true, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -169,6 +173,7 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithFalse(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
+        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(false, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -185,6 +190,7 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithNull(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName)  {
+        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(null, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
