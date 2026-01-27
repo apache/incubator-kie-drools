@@ -27,15 +27,21 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.kie.api.concurrent.KieExecutors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.util.Config.getConfig;
 
 public class ExecutorProviderImpl implements KieExecutors {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ExecutorProviderImpl.class);
 
     public static final String EXECUTOR_SERVICE_PROPERTY = "drools.executorService";
     public static final String DEFAULT_JEE_EXECUTOR_SERVICE_NAME = "java:comp/env/concurrent/ThreadPool";
@@ -45,6 +51,8 @@ public class ExecutorProviderImpl implements KieExecutors {
     private static class ExecutorHolder {
         private static final ExecutorService executor;
         private static final ThreadFactory threadFactory;
+        private static volatile boolean shutdown = false;
+        private static final Lock shutdownLock = new ReentrantLock();
 
         static {
             String threadFactoryClass = getConfig( THREAD_FACTORY_PROPERTY );
@@ -102,6 +110,23 @@ public class ExecutorProviderImpl implements KieExecutors {
 
     public <T> CompletionService<T> getCompletionService() {
         return new ExecutorCompletionService<>(getExecutor());
+    }
+
+    @Override
+    public void shutdown() {
+        ExecutorHolder.shutdownLock.lock();
+        try {
+            if (!ExecutorHolder.shutdown) {
+                ExecutorHolder.shutdown = true;
+                ExecutorService executor = ExecutorHolder.executor;
+                if (executor != null && !executor.isShutdown()) {
+                    LOG.info("Shutting down ExecutorService");
+                    executor.shutdownNow();
+                }
+            }
+        } finally {
+            ExecutorHolder.shutdownLock.unlock();
+        }
     }
 
     public static class DaemonThreadFactory implements ThreadFactory {
