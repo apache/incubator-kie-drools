@@ -41,25 +41,27 @@ public class EvaluationContextImpl implements EvaluationContext {
     private static final Logger LOG = LoggerFactory.getLogger(EvaluationContextImpl.class);
 
     private final FEELEventListenersManager eventsManager;
-    private ArrayDeque<ExecutionFrame> stack;
-    private DMNRuntime dmnRuntime;
-    private boolean performRuntimeTypeCheck = false;
-    private ClassLoader rootClassLoader;
+    private final ArrayDeque<ExecutionFrame> stack;
+        private final ClassLoader rootClassLoader;
     private final FEELDialect feelDialect;
     private final DMNVersion dmnVersion;
-    private boolean isLenient;
+    private final boolean isLenient;
 
-    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion) {
+    private DMNRuntime dmnRuntime;
+    private boolean performRuntimeTypeCheck = false;
+
+    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion, boolean isLenient) {
         this.eventsManager = eventsManager;
         this.rootClassLoader = cl;
         this.stack = new ArrayDeque<>(stack);
         this.feelDialect = feelDialect;
         this.dmnVersion = dmnVersion;
-        this.isLenient = true;
+        this.isLenient = isLenient;
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
-        this(cl, eventsManager, 32, feelDialect, dmnVersion);
+        this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion, true);
+        initializeFrames(32);
     }
 
     /**
@@ -70,40 +72,33 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion) {
-        this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion);
-        // we create a rootFrame to hold all the built in functions
-        push( RootExecutionFrame.INSTANCE );
-        // and then create a global frame to be the starting frame
-        // for function evaluation
-        ExecutionFrameImpl global = new ExecutionFrameImpl(RootExecutionFrame.INSTANCE, size);
-        push( global );
+        this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion, true);
+        initializeFrames(size);
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect, DMNVersion dmnVersion, boolean isLenient) {
-        this(cl, eventsManager, size, feelDialect, dmnVersion);
-        this.isLenient = isLenient;
+        this(cl, eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion, isLenient);
+        initializeFrames(size);
     }
 
     @Deprecated
     public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime, FEELDialect feelDialect, DMNVersion dmnVersion) {
-        this(dmnRuntime.getRootClassLoader(), eventsManager, feelDialect, dmnVersion);
+        this(dmnRuntime.getRootClassLoader(), eventsManager, new ArrayDeque<>(), feelDialect, dmnVersion, true);
         this.dmnRuntime = dmnRuntime;
+        initializeFrames(32);
     }
 
-    private EvaluationContextImpl(FEELEventListenersManager eventsManager, FEELDialect feelDialect, DMNVersion dmnVersion) {
-        this.eventsManager = eventsManager;
-        this.feelDialect = feelDialect;
-        this.dmnVersion = dmnVersion;
+    private void initializeFrames(int size) {
+        push(RootExecutionFrame.INSTANCE);
+        push(new ExecutionFrameImpl(RootExecutionFrame.INSTANCE, size));
     }
+
 
     @Override
     public EvaluationContext current() {
-        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager, feelDialect, dmnVersion);
-        ec.stack = stack.clone();
-        ec.rootClassLoader = this.rootClassLoader;
+        EvaluationContextImpl ec = new EvaluationContextImpl( this.rootClassLoader, this.eventsManager, this.stack.clone(), this.feelDialect, this.dmnVersion, this.isLenient);
         ec.dmnRuntime = this.dmnRuntime;
         ec.performRuntimeTypeCheck = this.performRuntimeTypeCheck;
-        ec.isLenient = this.isLenient;
         return ec;
     }
 
@@ -266,9 +261,5 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public boolean isLenient() {
         return isLenient;
-    }
-
-    public void setLenient(boolean lenient) {
-        this.isLenient = lenient;
     }
 }
