@@ -67,4 +67,101 @@ public class IdentityProviderFactoryImplTest {
                 .matches(identityProvider -> identityProvider.getRoles().containsAll(TEST_ROLES));
     }
 
+    @Test
+    public void testGetOrImpersonateIdentityWithNullUser() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_IMPERSONATOR_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(null, TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", KOGITO_IDENTITY_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(KOGITO_IDENTITY_IMPERSONATOR_ROLES));
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithBlankUser() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_IMPERSONATOR_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity("  ", TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", KOGITO_IDENTITY_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(KOGITO_IDENTITY_IMPERSONATOR_ROLES));
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithSameUser() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_IMPERSONATOR_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(KOGITO_IDENTITY_USER, TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", KOGITO_IDENTITY_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(KOGITO_IDENTITY_IMPERSONATOR_ROLES));
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithoutImpersonationRole() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(TEST_USER, TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", KOGITO_IDENTITY_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(KOGITO_IDENTITY_ROLES));
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithNullRoles() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_IMPERSONATOR_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(TEST_USER, null))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", TEST_USER)
+                .matches(identityProvider -> identityProvider.getRoles().isEmpty());
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithEmptyRoles() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_IMPERSONATOR_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(TEST_USER, List.of()))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", TEST_USER)
+                .matches(identityProvider -> identityProvider.getRoles().isEmpty());
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithPartialImpersonationRole() {
+        Collection<String> partialRoles = List.of("IT", "task-admin"); // task-admin is an impersonation role
+        KogitoAuthConfig config = new KogitoAuthConfig(true, KOGITO_IDENTITY_IMPERSONATOR_ROLES);
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, partialRoles), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(TEST_USER, TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", TEST_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(TEST_ROLES));
+    }
+
+    @Test
+    public void testGetOrImpersonateIdentityWithEmptyImpersonationRolesConfig() {
+        KogitoAuthConfig config = new KogitoAuthConfig(true, List.of());
+        IdentityProviderFactoryImpl identityProviderFactory = new IdentityProviderFactoryImpl(
+                IdentityProviders.of(KOGITO_IDENTITY_USER, KOGITO_IDENTITY_ROLES), config);
+
+        Assertions.assertThat(identityProviderFactory.getOrImpersonateIdentity(TEST_USER, TEST_ROLES))
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("name", KOGITO_IDENTITY_USER)
+                .matches(identityProvider -> identityProvider.getRoles().containsAll(KOGITO_IDENTITY_ROLES));
+    }
+
 }
