@@ -66,14 +66,15 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(dmnModel).isNotNull();
 
         // Risk Category is constrained to "High", "Low", "Medium" and "ASD" is not allowed
+        // In lenient mode (default), invalid input is set to null and evaluation continues
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
-        assertThat(result.get("Approval Status")).isNull();
-        assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
-        DMNMessage message = dmnResult.getMessages().iterator().next();
-        assertThat(message.getText()).isEqualTo("DMN: RiskCategory='ASD' does not match any of the valid values \"High\", \"Low\", \"Medium\" for decision table '_0004-simpletable-U'. (DMN id: _0004-simpletable-U, FEEL expression evaluation error) ");
+        // In lenient mode, the decision table evaluates with null parameter and returns a result
+        assertThat(result.get("Approval Status")).isEqualTo("Declined");
+        // No error messages in lenient mode
+        assertThat(dmnResult.getMessages()).isEmpty();
     }
 
     @ParameterizedTest

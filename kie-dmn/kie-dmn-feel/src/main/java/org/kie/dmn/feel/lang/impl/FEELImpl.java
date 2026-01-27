@@ -168,16 +168,33 @@ public class FEELImpl
     /**
      * Creates a new EvaluationContext using this FEEL instance classloader, and the supplied parameters listeners and inputVariables
      */
-    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables ) {
         return newEvaluationContext(this.classLoader, listeners, inputVariables);
     }
 
     /**
      * Creates a new EvaluationContext with the supplied classloader, and the supplied parameters listeners and inputVariables
      */
-    public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+    public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables ) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
         EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size(), feelDialect, dmnVersion);
+        setupCustomFrame(ctx);
+        ctx.setValues(inputVariables);
+        return ctx;
+    }
+
+    /**
+     * Creates a new EvaluationContext with the supplied classloader, and the supplied parameters listeners and inputVariables and isLenient
+     */
+    public EvaluationContextImpl newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables, boolean isLenient ) {
+        FEELEventListenersManager eventsManager = getEventsManager(listeners);
+        EvaluationContextImpl ctx = new EvaluationContextImpl(this.classLoader, eventsManager, inputVariables.size(), feelDialect, dmnVersion, isLenient);
+        setupCustomFrame(ctx);
+        ctx.setValues(inputVariables);
+        return ctx;
+    }
+
+    private void setupCustomFrame(EvaluationContextImpl ctx) {
         if (customFrame.isPresent()) {
             ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
             ExecutionFrameImpl interveawedFrame = customFrame.get();
@@ -186,8 +203,6 @@ public class FEELImpl
             ctx.push(interveawedFrame);
             ctx.push(globalFrame);
         }
-        ctx.setValues(inputVariables);
-        return ctx;
     }
 
     @Override
