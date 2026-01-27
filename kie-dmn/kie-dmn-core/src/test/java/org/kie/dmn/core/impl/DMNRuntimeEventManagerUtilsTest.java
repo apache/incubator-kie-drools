@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.core.impl;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -260,6 +261,50 @@ class DMNRuntimeEventManagerUtilsTest {
         latch.await();
 
         mappedThreadValues.forEach((i, threadValue) -> assertThat(threadValue.get()).isEqualTo("New Decision " + i));
+    }
+
+    @Test
+    void testEvaluateConditionalEvent() {
+        String decisionName = "D1";
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_6/ConditionalIf.dmn");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(resource))
+                .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(spiedListener);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_2693E3CA-A0F2-4861-9726-EBD251F2F549";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_1D502349-17ED-4CF7-9B6C-C107AC85FC2D");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set("Input", 2);
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.getDecisionResultByName(decisionName)).isNotNull();
+        assertThat(dmnResult.getDecisionResultByName(decisionName).getResult()).isEqualTo(BigDecimal.valueOf(6));
+
+        ArgumentCaptor<AfterEvaluateConditionalEvent> evaluateConditionalEventCaptor = ArgumentCaptor.forClass(AfterEvaluateConditionalEvent.class);
+        verify(spiedListener, times(3)).afterEvaluateConditional(evaluateConditionalEventCaptor.capture());
+
+        AfterEvaluateConditionalEvent evaluateConditionalEvent = evaluateConditionalEventCaptor.getAllValues().get(0);
+
+        assertThat(evaluateConditionalEvent).isNotNull();
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo("_63C5E174-D55D-4C52-95A1-8ED3FACF44FA");
+        assertThat(evaluateConditionalEvent.getEvaluatorResultResult().getResult()).isEqualTo(true);
+
+        ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
+        verify(spiedListener, times(3)).afterConditionalEvaluation(conditionalEvaluationEventCaptor.capture());
+
+        AfterConditionalEvaluationEvent conditionalEvaluationEvent = conditionalEvaluationEventCaptor.getAllValues().stream()
+                .filter(event -> decisionName.equals(event.getDecisionName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No conditional evaluation event found for decision: " + decisionName));
+
+        assertThat(conditionalEvaluationEvent).isNotNull();
+        assertThat(conditionalEvaluationEvent.getDecisionName()).isEqualTo(decisionName);
+        assertThat(conditionalEvaluationEvent.getNodeName()).isEqualTo("Logic IF");
+        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo("_1B74D6B2-C69A-4A50-A94A-DD55CC188EC4");
+        assertThat(conditionalEvaluationEvent.getEvaluatorResultResult().getResult()).isEqualTo(BigDecimal.valueOf(2));
     }
 
 }
