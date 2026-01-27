@@ -93,7 +93,7 @@ class DMNRuntimeEventManagerUtilsTest {
         String conditionalName = "NAME";
         String decisionName = "DECISION";
         String executedId = "EXECUTED_ID";
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, conditionalName, evaluatorResult, executedId, decisionName);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, conditionalName, decisionName, evaluatorResult, executedId);
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
         verify(spiedListener).afterConditionalEvaluation(conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
