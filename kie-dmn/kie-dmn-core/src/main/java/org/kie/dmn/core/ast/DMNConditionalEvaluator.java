@@ -102,35 +102,6 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
-//    /**
-//     * Given a DMNModelInstrumentedBase element, it looks in the DMN hierarchy to retrieve the root element name.
-//     * Most of the time, the root element is a Decision node OR a BusinessKnowledgeModel node that wrap the Conditional
-//     * Expression. In all other cases the top level root element identifier is returned.
-//     * @param dmnElement
-//     * @return The root element (Decision, BKM or Definitions) name or identifier
-//     */
-//    static String getRootElementNodeName(DMNModelInstrumentedBase dmnElement) {
-//        if (dmnElement == null) {
-//            logger.debug("Can't find the name of a null DMNModelInstrumentedBase");
-//            return null;
-//        }
-//        if (dmnElement instanceof Decision decision) {
-//            return decision.getName();
-//        }
-//        if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
-//            return businessKnowledgeModel.getName();
-//        }
-//        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
-//            logger.debug("Root element identifier: {} reached. " +
-//                            "The conditional expression is not wrapped in a Decision or BKM node name." +
-//                            "Returning this root element identifier",
-//                    dmnElement.getIdentifierString());
-//            return dmnElement.getIdentifierString();
-//        }
-//
-//        return getRootElementNodeName(dmnElement.getParentDRDElement());
-//    }
-
     public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
         this.name = name;
         this.node = dmnElement;
