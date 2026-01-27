@@ -122,9 +122,6 @@ class DMNConditionalEvaluatorTest {
     @BeforeEach
     void setup() {
         reset(spiedListener);
-        reset(eventManagerMock);
-        when(eventManagerMock.hasListeners()).thenReturn(true);
-        when(eventManagerMock.getListeners()).thenReturn(Collections.singleton(spiedListener));
     }
 
     @ParameterizedTest
