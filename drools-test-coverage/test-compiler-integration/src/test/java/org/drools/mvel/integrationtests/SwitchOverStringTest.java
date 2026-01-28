@@ -59,16 +59,9 @@ public class SwitchOverStringTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testCompileSwitchOverStringWithLngLevel17(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        double javaVersion = Double.valueOf(System.getProperty("java.specification.version"));
-        Assumptions.assumeTrue(javaVersion >= 1.7, "Test only makes sense on Java 7+.");
-        System.setProperty("drools.dialect.java.compiler.lnglevel", "1.7");
-        try {
-            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
-            List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-            assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
-        } finally {
-            System.clearProperty("drools.dialect.java.compiler.lnglevel");
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
