@@ -36,7 +36,7 @@
     <maven.compiler.release>11</maven.compiler.release>
     <junit.version>4.13.1</junit.version>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
-    <assertj.version>3.14.0</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <compiler.plugin.version>3.11.0</compiler.plugin.version>
     <surefire.plugin.version>3.1.0</surefire.plugin.version>
     <failsafe.plugin.version>3.1.0</failsafe.plugin.version>
