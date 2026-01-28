@@ -932,6 +932,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             AfterConditionalEvaluationEvent thenEvent = thenElseEvents.get(0);
             assertThat(thenEvent).isNotNull();
             assertThat(thenEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(thenEvent.getDecisionName()).isEqualTo("D1");
             assertThat(thenEvent.getEvaluatorResultResult()).isNotNull();
             assertThat(thenEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("5"));
             assertThat(thenEvent.getExecutedId()).isEqualTo("_1B74D6B2-C69A-4A50-A94A-DD55CC188EC4");
@@ -957,6 +958,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             AfterConditionalEvaluationEvent elseEvent = thenElseEvents.get(0);
             assertThat(elseEvent).isNotNull();
             assertThat(elseEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(elseEvent.getDecisionName()).isEqualTo("D1");
             assertThat(elseEvent.getEvaluatorResultResult()).isNotNull();
             assertThat(elseEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("3"));
             assertThat(elseEvent.getExecutedId()).isEqualTo("_E1106C9B-F0ED-45C8-8A28-A06C54BE652F");
@@ -981,6 +983,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
             elseEvent = thenElseEvents.get(0);
             assertThat(elseEvent).isNotNull();
             assertThat(elseEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(elseEvent.getDecisionName()).isEqualTo("D1");
             assertThat(elseEvent.getEvaluatorResultResult()).isNotNull();
             assertThat(elseEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("0"));
             assertThat(elseEvent.getExecutedId()).isEqualTo("_E1106C9B-F0ED-45C8-8A28-A06C54BE652F");

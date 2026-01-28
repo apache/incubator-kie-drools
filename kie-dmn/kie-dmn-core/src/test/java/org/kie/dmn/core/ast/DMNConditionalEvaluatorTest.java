@@ -154,7 +154,6 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithTrue(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
-        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(true, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -170,7 +169,6 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithFalse(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName) {
-        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(false, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
@@ -187,7 +185,6 @@ class DMNConditionalEvaluatorTest {
     @ParameterizedTest
     @MethodSource("dmnConditionEvaluators")
     void manageBooleanOrNullIfResultWithNull(DMNConditionalEvaluator dmnConditionalEvaluator, String expectedRootElementName)  {
-        when(eventManagerMock.getCurrentEvaluatingDecisionName()).thenReturn(expectedRootElementName);
         dmnConditionalEvaluator.manageBooleanOrNullIfResult(null, eventManagerMock, dmnResultMock);
         ArgumentCaptor<AfterConditionalEvaluationEvent> afterConditionalEvaluationEventArgumentCaptor =
                 ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
