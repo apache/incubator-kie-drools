@@ -31,9 +31,9 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
- * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
+ * drools.dialect.java.compiler.lnglevel = <1.5|...|21>
  * 
- * The default compiler is Eclipse and the default lngLevel is 1.5.
+ * The default compiler is Eclipse and the default lngLevel is 17.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
  */
@@ -90,7 +90,7 @@ public class JavaConfiguration {
         if (Arrays.binarySearch(LANGUAGE_LEVELS, normalized) >= 0) {
             return normalized;
         }
-        return "11"; // default
+        return "17"; // default
     }
 
     private static String normalizeVersion(String version) {
@@ -106,7 +106,7 @@ public class JavaConfiguration {
     }
 
     /**
-     * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
+     * You cannot set language level below 1.5, as we need static imports. 17 is now the default.
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
