@@ -882,4 +882,114 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         nullResults.forEach(nullResult -> assertThat(dmnResult.getDecisionResultById(nullResult).getResult()).isNull());
         assertThat(dmnResult.getDecisionResultById(succeedResult).getResult()).isNotNull();
     }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void conditionalEvaluationEvents(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_6/ConditionalIf.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kie.org/dmn/_2693E3CA-A0F2-4861-9726-EBD251F2F549", "DMN_1D502349-17ED-4CF7-9B6C-C107AC85FC2D");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        
+        final List<AfterEvaluateConditionalEvent> ifEvents = new ArrayList<>();
+        final List<AfterConditionalEvaluationEvent> thenElseEvents = new ArrayList<>();
+        
+        DefaultDMNRuntimeEventListener listener = new DefaultDMNRuntimeEventListener() {
+            @Override
+            public void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {
+                ifEvents.add(event);
+            }
+            
+            @Override
+            public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
+                thenElseEvents.add(event);
+            }
+        };
+        
+        runtime.addListener(listener);
+        
+        try {
+            // Test with positive input (condition true: p-1 > 0)
+            ifEvents.clear();
+            thenElseEvents.clear();
+            DMNContext context = DMNFactory.newContext();
+            context.set("Input", 5);
+            DMNResult results = runtime.evaluateAll(dmnModel, context);
+            assertThat(results.hasErrors()).as(DMNRuntimeUtil.formatMessages(results.getMessages())).isFalse();
+            assertThat(results.getDecisionResultByName("D1").getResult()).isEqualTo(new BigDecimal("15"));
+            
+            // Verify IF evaluation event was fired (3 times: D1, D2, D3 each call Logic IF BKM)
+            assertThat(ifEvents).hasSize(3);
+            AfterEvaluateConditionalEvent ifEvent = ifEvents.get(0);
+            assertThat(ifEvent).isNotNull();
+            assertThat(ifEvent.getEvaluatorResultResult()).isNotNull();
+            assertThat(ifEvent.getEvaluatorResultResult().getResult()).isEqualTo(true);
+            assertThat(ifEvent.getExecutedId()).isEqualTo("_63C5E174-D55D-4C52-95A1-8ED3FACF44FA");
+            
+            // Verify THEN branch evaluation event was fired
+            assertThat(thenElseEvents).hasSize(3);
+            AfterConditionalEvaluationEvent thenEvent = thenElseEvents.get(0);
+            assertThat(thenEvent).isNotNull();
+            assertThat(thenEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(thenEvent.getDecisionName()).isEqualTo("D1");
+            assertThat(thenEvent.getEvaluatorResultResult()).isNotNull();
+            assertThat(thenEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("5"));
+            assertThat(thenEvent.getExecutedId()).isEqualTo("_1B74D6B2-C69A-4A50-A94A-DD55CC188EC4");
+            
+            // Test with negative input (condition false: p-1 <= 0)
+            ifEvents.clear();
+            thenElseEvents.clear();
+            context = DMNFactory.newContext();
+            context.set("Input", -3);
+            results = runtime.evaluateAll(dmnModel, context);
+            assertThat(results.hasErrors()).as(DMNRuntimeUtil.formatMessages(results.getMessages())).isFalse();
+            assertThat(results.getDecisionResultByName("D1").getResult()).isEqualTo(new BigDecimal("9"));
+            
+            // Verify IF evaluation event was fired
+            assertThat(ifEvents).hasSize(3);
+            ifEvent = ifEvents.get(0);
+            assertThat(ifEvent).isNotNull();
+            assertThat(ifEvent.getEvaluatorResultResult().getResult()).isEqualTo(false);
+            assertThat(ifEvent.getExecutedId()).isEqualTo("_63C5E174-D55D-4C52-95A1-8ED3FACF44FA");
+            
+            // Verify ELSE branch evaluation event was fired
+            assertThat(thenElseEvents).hasSize(3);
+            AfterConditionalEvaluationEvent elseEvent = thenElseEvents.get(0);
+            assertThat(elseEvent).isNotNull();
+            assertThat(elseEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(elseEvent.getDecisionName()).isEqualTo("D1");
+            assertThat(elseEvent.getEvaluatorResultResult()).isNotNull();
+            assertThat(elseEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("3"));
+            assertThat(elseEvent.getExecutedId()).isEqualTo("_E1106C9B-F0ED-45C8-8A28-A06C54BE652F");
+            
+            // Test with zero input (condition false: 0 <= 0)
+            ifEvents.clear();
+            thenElseEvents.clear();
+            context = DMNFactory.newContext();
+            context.set("Input", 0);
+            results = runtime.evaluateAll(dmnModel, context);
+            assertThat(results.hasErrors()).as(DMNRuntimeUtil.formatMessages(results.getMessages())).isFalse();
+            assertThat(results.getDecisionResultByName("D1").getResult()).isEqualTo(new BigDecimal("0"));
+            
+            // Verify IF evaluation event was fired
+            assertThat(ifEvents).hasSize(3);
+            ifEvent = ifEvents.get(0);
+            assertThat(ifEvent).isNotNull();
+            assertThat(ifEvent.getEvaluatorResultResult().getResult()).isEqualTo(false);
+            assertThat(ifEvent.getExecutedId()).isEqualTo("_63C5E174-D55D-4C52-95A1-8ED3FACF44FA"); // IF id
+            
+            assertThat(thenElseEvents).hasSize(3);
+            elseEvent = thenElseEvents.get(0);
+            assertThat(elseEvent).isNotNull();
+            assertThat(elseEvent.getNodeName()).isEqualTo("Logic IF");
+            assertThat(elseEvent.getDecisionName()).isEqualTo("D1");
+            assertThat(elseEvent.getEvaluatorResultResult()).isNotNull();
+            assertThat(elseEvent.getEvaluatorResultResult().getResult()).isEqualTo(new BigDecimal("0"));
+            assertThat(elseEvent.getExecutedId()).isEqualTo("_E1106C9B-F0ED-45C8-8A28-A06C54BE652F");
+            
+        } finally {
+            runtime.removeListener(listener);
+        }
+    }
 }
