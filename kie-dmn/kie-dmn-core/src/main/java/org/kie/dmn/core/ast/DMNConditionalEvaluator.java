@@ -88,6 +88,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
     private final DMNExpressionEvaluator elseEvaluator;
     private final DMNElement node;
     private final String name;
+    private final String rootElementName;
     private final EvaluatorIdentifier ifEvaluatorIdentifier;
     private final EvaluatorIdentifier thenEvaluatorIdentifier;
     private final EvaluatorIdentifier elseEvaluatorIdentifier;
@@ -102,6 +103,38 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
     }
 
+    /**
+     * Given a DMNModelInstrumentedBase element, it looks in the DMN hierarchy to retrieve the root element name.
+     * Most of the time, the root element is a Decision node OR a BusinessKnowledgeModel node that wrap the Conditional
+     * Expression. In all other cases the top level root element identifier is returned.
+     * @param dmnElement
+     * @return The root element (Decision, BKM or Definitions) name or identifier
+     */
+    static String getRootElementNodeName(DMNModelInstrumentedBase dmnElement) {
+        if (dmnElement == null) {
+            logger.debug("Can't find the name of a null DMNModelInstrumentedBase");
+            return null;
+        }
+        if (dmnElement instanceof Decision decision) {
+            return decision.getName();
+        }
+        if (dmnElement instanceof BusinessKnowledgeModel businessKnowledgeModel) {
+            if (dmnElement.getParentDRDElement() != null && dmnElement.getParentDRDElement() instanceof Decision decision) {
+                return decision.getName();
+            }
+            return businessKnowledgeModel.getName();
+        }
+        if (dmnElement.getParentDRDElement() == null || dmnElement == dmnElement.getParentDRDElement()) {
+            logger.debug("Root element identifier: {} reached. " +
+                            "The conditional expression is not wrapped in a Decision or BKM node name." +
+                            "Returning this root element identifier",
+                    dmnElement.getIdentifierString());
+            return dmnElement.getIdentifierString();
+        }
+
+        return getRootElementNodeName(dmnElement.getParentDRDElement());
+    }
+
     public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
         this.name = name;
         this.node = dmnElement;
@@ -112,6 +145,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
         this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
         this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
+        this.rootElementName = getRootElementNodeName(dmnElement);
     }
 
     @Override
@@ -145,7 +179,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
         String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, eventManager.getCurrentEvaluatingDecisionName(), toReturn, executedId);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, rootElementName, toReturn, executedId);
         return toReturn;
     }
 
