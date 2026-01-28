@@ -186,7 +186,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "Branches dispersion", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
 
-        testDecisionTableInvalidInput( context );
+        testDecisionTableInvalidInputLenient( context );
     }
 
     @ParameterizedTest
@@ -197,7 +197,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "Branches dispersion", 1 );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
 
-        testDecisionTableInvalidInput( context );
+        testDecisionTableInvalidInputType( context );
     }
 
     @ParameterizedTest
@@ -208,18 +208,51 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "Not exists", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
 
-        testDecisionTableInvalidInput( context );
+        testDecisionTableMissingDependency( context );
     }
 
-    private void testDecisionTableInvalidInput(final DMNContext inputContext) {
+    private void testDecisionTableInvalidInputLenient(final DMNContext inputContext) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "InvalidInput.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
         assertThat(dmnModel).isNotNull();
 
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, inputContext );
+        // In lenient mode (default), invalid input values don't generate errors
+        // The invalid value is set to null and evaluation continues
+        assertThat( dmnResult.hasErrors()).isFalse();
+
+        final DMNContext result = dmnResult.getContext();
+        // Result is defined - evaluation continues with null for invalid input
+        assertThat( result.isDefined( "Branches distribution" )).isEqualTo(Boolean.TRUE);
+    }
+
+    private void testDecisionTableInvalidInputType(final DMNContext inputContext) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "InvalidInput.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
+        assertThat(dmnModel).isNotNull();
+
+        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, inputContext );
+        // Type errors generate errors regardless of lenient/strict mode
+        // Wrong type (integer instead of string) is a type mismatch error
         assertThat( dmnResult.hasErrors()).isTrue();
 
         final DMNContext result = dmnResult.getContext();
+        // With type error, the result cannot be evaluated
+        assertThat( result.isDefined( "Branches distribution" )).isEqualTo(Boolean.FALSE);
+    }
+
+    private void testDecisionTableMissingDependency(final DMNContext inputContext) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "InvalidInput.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
+        assertThat(dmnModel).isNotNull();
+
+        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, inputContext );
+        // Missing required dependency generates errors regardless of lenient/strict mode
+        // This is a structural error, not an input validation error
+        assertThat( dmnResult.hasErrors()).isTrue();
+
+        final DMNContext result = dmnResult.getContext();
+        // With missing required dependency, the result cannot be evaluated
         assertThat( result.isDefined( "Branches distribution" )).isEqualTo(Boolean.FALSE);
     }
 

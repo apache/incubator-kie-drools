@@ -45,9 +45,7 @@ public class LexerHelper {
                                                                       DroolsSoftKeywords.DIALECT,
                                                                       DroolsSoftKeywords.CALENDARS,
                                                                       DroolsSoftKeywords.TIMER,
-                                                                      DroolsSoftKeywords.DURATION,
-                                                                      DroolsSoftKeywords.REFRACT,
-                                                                      DroolsSoftKeywords.DIRECT);
+                                                                      DroolsSoftKeywords.DURATION);
 
     private final CharStream input;
     private int lookAheadCounter;

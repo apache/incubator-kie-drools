@@ -229,13 +229,18 @@ public class DecisionTableImpl implements DecisionTable {
                 }
 
                 if ( !satisfies ) {
-                    String values = input.getInputValuesText();
-                    return Either.ofLeft(new InvalidInputEvent( FEELEvent.Severity.ERROR,
-                                                  input.getInputExpression()+"='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
-                                                  getName(),
-                                                  null,
-                                                  values )
-                            );
+                    // Return error if context is not Lenient
+                    if (!ctx.isLenient()) {
+                        String values = input.getInputValuesText();
+                        return Either.ofLeft(new InvalidInputEvent( FEELEvent.Severity.ERROR,
+                                                      input.getInputExpression()+"='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
+                                                      getName(),
+                                                      null,
+                                                      values )
+                                );
+                    } else {
+                        params[i] = null;
+                    }
                 }
             }
         }

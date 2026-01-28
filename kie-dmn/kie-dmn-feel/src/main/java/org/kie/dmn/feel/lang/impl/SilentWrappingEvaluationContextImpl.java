@@ -128,4 +128,19 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     public DMNVersion getDMNVersion() {
         return wrapped.getDMNVersion();
     }
+
+    @Override
+    public void enterFrame(int size) {
+        wrapped.enterFrame(size);
+    }
+
+    @Override
+    public boolean isLenient() {
+        return wrapped.isLenient();
+    }
+
+    @Override
+    public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+        wrapped.setPerformRuntimeTypeCheck(performRuntimeTypeCheck);
+    }
 }
