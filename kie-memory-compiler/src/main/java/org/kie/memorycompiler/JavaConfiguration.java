@@ -86,35 +86,19 @@ public class JavaConfiguration {
     }
 
     public static String findJavaVersion(String level) {
-        if (level.startsWith("1.5")) {
-            return "1.5";
-        } else if (level.startsWith("1.6")) {
-            return "1.6";
-        } else if (level.startsWith("1.7")) {
-            return "1.7";
-        } else if (level.startsWith("1.8")) {
-            return "1.8";
-        } else if (level.startsWith("9")) {
-            return "9";
-        } else if (level.startsWith("10")) {
-            return "10";
-        } else if (level.startsWith("15")) {
-            return "15";
-        } else if (level.startsWith("16")) {
-            return "16";
-        } else if (level.startsWith("17")) {
-            return "17";
-        } else if (level.startsWith("18")) {
-            return "18";
-        } else if (level.startsWith("19")) {
-            return "19";
-        } else if (level.startsWith("20")) {
-            return "20";
-        } else if (level.startsWith("21")) {
-            return "21";
+        String normalized = normalizeVersion(level);
+        if (Arrays.binarySearch(LANGUAGE_LEVELS, normalized) >= 0) {
+            return normalized;
         }
+        return "11"; // default
+    }
 
-        return "11";
+    private static String normalizeVersion(String version) {
+        String[] parts = version.split("\\.");
+        if ("1".equals(parts[0]) && parts.length > 1) {
+            return "1." + parts[1]; // Legacy format: 1.8.0_292 -> 1.8
+        }
+        return parts[0]; // Modern format: 21.0.2 -> 21
     }
 
     public String getJavaLanguageLevel() {
