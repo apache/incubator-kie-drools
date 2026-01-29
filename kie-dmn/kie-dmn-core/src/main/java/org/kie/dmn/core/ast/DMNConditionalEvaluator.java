@@ -176,7 +176,9 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
         String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, rootElementName, toReturn, executedId);
+        String decisionName = (eventManager.getCurrentEvaluatingDecisionName() == null || eventManager.getCurrentEvaluatingDecisionName().isEmpty()) ?
+                rootElementName : eventManager.getCurrentEvaluatingDecisionName();
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, decisionName, toReturn, executedId);
         return toReturn;
     }
 
