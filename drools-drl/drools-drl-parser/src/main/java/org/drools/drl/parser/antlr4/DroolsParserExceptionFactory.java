@@ -203,8 +203,6 @@ public class DroolsParserExceptionFactory {
                 return "function";
             case QUERY :
                 return "query";
-            case TEMPLATE :
-                return "template";
             case RULE :
                 return "rule";
             case RULE_ATTRIBUTE :

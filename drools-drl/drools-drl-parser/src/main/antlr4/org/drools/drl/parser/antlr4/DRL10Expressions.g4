@@ -289,8 +289,6 @@ drlKeywords returns [Token token]
     | DRL_NO_LOOP
     | DRL_AUTO_FOCUS
     | DRL_LOCK_ON_ACTIVE
-    | DRL_REFRACT
-    | DRL_DIRECT
     | DRL_ACTIVATION_GROUP
     | DRL_RULEFLOW_GROUP
     | DRL_DATE_EFFECTIVE
