@@ -41,9 +41,10 @@ public class JavaCompilerFactory {
     }
 
     private static JavaCompilerSettings createSettings( JavaCompiler compiler, String lngLevel ) {
+        String normalizedLevel = JavaConfiguration.findJavaVersion( lngLevel );
         JavaCompilerSettings settings = compiler.createDefaultSettings();
-        settings.setTargetVersion( lngLevel );
-        settings.setSourceVersion( lngLevel );
+        settings.setTargetVersion( normalizedLevel );
+        settings.setSourceVersion( normalizedLevel );
         return settings;
     }
 

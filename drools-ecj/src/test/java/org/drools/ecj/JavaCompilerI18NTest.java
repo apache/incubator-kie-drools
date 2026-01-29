@@ -43,8 +43,8 @@ public class JavaCompilerI18NTest {
         reader.add(fileStr, fileContents.getBytes());
 
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
-        settings.setSourceVersion( "1.5" );
-        settings.setTargetVersion( "1.5" );
+        settings.setSourceVersion( "17" );
+        settings.setTargetVersion( "17" );
         EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
         CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), reader, store );
         assertThat(0).isEqualTo(res.getErrors().length);

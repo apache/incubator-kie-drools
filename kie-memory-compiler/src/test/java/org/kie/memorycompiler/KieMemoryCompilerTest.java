@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,5 +116,35 @@ public class KieMemoryCompilerTest {
 
         assertThat(compiled.get("org.kie.memorycompiler.ExampleClass")).isNotNull();
         assertThat(compiled.get("org.kie.memorycompiler.ExampleClass$InnerClass")).isNotNull();
+    }
+
+    private static final String JDK21_TYPE_SWITCH_CLASS = """
+            package org.kie.memorycompiler;
+            
+            public class ExampleClass {
+            
+                public String typeSwitch(Object obj) {
+                    return switch (obj) {
+                      case Integer i -> "int: " + i;
+                      case String s  -> "string: " + s;
+                      default        -> "other";
+                    };
+                }
+            }
+            """;
+
+    @EnabledForJreRange(min = JRE.JAVA_21)
+    @Test
+    void jdk21typeSwitch() throws Exception {
+        Map<String, String> source = singletonMap("org.kie.memorycompiler.ExampleClass", JDK21_TYPE_SWITCH_CLASS);
+        Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
+
+        Class<?> exampleClazz = compiled.get("org.kie.memorycompiler.ExampleClass");
+        assertThat(exampleClazz).isNotNull();
+
+        Object instance = exampleClazz.getDeclaredConstructors()[0].newInstance();
+        Method typeSwitchMethod = exampleClazz.getMethod("typeSwitch", Object.class);
+        Object result = typeSwitchMethod.invoke(instance, 51);
+        assertThat(result).isEqualTo("int: 51");
     }
 }

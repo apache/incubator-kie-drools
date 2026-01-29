@@ -60,6 +60,9 @@ public class JavaCompilerSettings {
     }
     
     public void setTargetVersion( final String pTargetVersion ) {
+        if (!JavaConfiguration.isValidLanguageLevel(pTargetVersion)) {
+            throw new RuntimeException("value '" + pTargetVersion + "' is not a valid language level");
+        }
         targetVersion = pTargetVersion;
     }
 
@@ -69,6 +72,9 @@ public class JavaCompilerSettings {
 
 
     public void setSourceVersion( final String pSourceVersion ) {
+        if (!JavaConfiguration.isValidLanguageLevel(pSourceVersion)) {
+            throw new RuntimeException("value '" + pSourceVersion + "' is not a valid language level");
+        }
         sourceVersion = pSourceVersion;
     }
 

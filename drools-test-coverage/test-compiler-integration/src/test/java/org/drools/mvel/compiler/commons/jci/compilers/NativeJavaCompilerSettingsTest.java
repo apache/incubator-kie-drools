@@ -47,8 +47,8 @@ public class NativeJavaCompilerSettingsTest {
         settings.setWarnings(true);
         settings.setDeprecations(true);
         settings.setSourceEncoding("My-Custom-Encoding");
-        settings.setSourceVersion("1.9");
-        settings.setTargetVersion("1.9");
+        settings.setSourceVersion("9");
+        settings.setTargetVersion("9");
         List<String> options = settings.toOptionsList();
 
         assertThat(options).hasSize(9);
@@ -56,8 +56,8 @@ public class NativeJavaCompilerSettingsTest {
         assertThat(options).contains("-Xlint:all");
         assertThat(options).contains("-deprecation");
         // check the order is correct, value of the option needs to be right after the option name
-        assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-source") + 1));
-        assertThat(options).contains("1.9", Index.atIndex(options.indexOf("-target") + 1));
+        assertThat(options).contains("9", Index.atIndex(options.indexOf("-source") + 1));
+        assertThat(options).contains("9", Index.atIndex(options.indexOf("-target") + 1));
         assertThat(options).contains("My-Custom-Encoding", Index.atIndex(options.indexOf("-encoding") + 1));
     }
 
