@@ -223,7 +223,7 @@
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
     <version.io.vertx>4.5.23</version.io.vertx>
-    <version.org.lz4.java>1.8.1</version.org.lz4.java>
+    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
   </properties>
 
   <dependencyManagement>
@@ -235,9 +235,9 @@
         <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-        <groupId>org.lz4</groupId>
+        <groupId>at.yawk.lz4</groupId>
         <artifactId>lz4-java</artifactId>
-        <version>${version.org.lz4.java}</version>
+        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
