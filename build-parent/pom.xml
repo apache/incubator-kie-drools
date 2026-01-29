@@ -1322,6 +1322,13 @@
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
         <version>${version.org.apache.kafka}</version>
+        <exclusions>
+          <!-- Exclude old org.lz4 to avoid duplicate classes with at.yawk.lz4 -->
+          <exclusion>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
 
