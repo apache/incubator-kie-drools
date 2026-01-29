@@ -85,9 +85,13 @@ public class JavaConfiguration {
         return findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
     }
 
+    public static boolean isValidLanguageLevel(String level) {
+        return Arrays.binarySearch(LANGUAGE_LEVELS, level) >= 0;
+    }
+
     public static String findJavaVersion(String level) {
         String normalized = normalizeVersion(level);
-        if (Arrays.binarySearch(LANGUAGE_LEVELS, normalized) >= 0) {
+        if (isValidLanguageLevel(normalized)) {
             return normalized;
         }
         return "17"; // default
@@ -110,7 +114,7 @@ public class JavaConfiguration {
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0 ) {
+        if (!isValidLanguageLevel(languageLevel)) {
             throw new RuntimeException( "value '" + languageLevel + "' is not a valid language level" );
         }
         this.languageLevel = languageLevel;
