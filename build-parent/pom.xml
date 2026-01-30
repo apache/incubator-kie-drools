@@ -99,7 +99,7 @@
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
-    <version.org.hsqldb>2.3.0</version.org.hsqldb>
+    <version.org.hsqldb>2.7.1</version.org.hsqldb>
     <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
