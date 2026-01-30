@@ -30,4 +30,17 @@ public class ExecutorProviderFactory {
     public static KieExecutors getExecutorProvider() {
         return ExecutorProviderHolder.executorProvider;
     }
+
+    /**
+     * Shuts down the internal executor service, terminating all worker threads.
+     * This method should be explicitly called when the Drools service is
+     * being stopped for redeployment (e.g. servlet container)
+     * to prevent ClassLoader leaks.
+     */
+    public static void shutdown() {
+        KieExecutors provider = ExecutorProviderHolder.executorProvider;
+        if (provider != null) {
+            provider.shutdown();
+        }
+    }
 }

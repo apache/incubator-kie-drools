@@ -35,6 +35,17 @@ public interface KieExecutors extends KieService {
 
     <T> CompletionService<T> getCompletionService();
 
+    /**
+     * Shuts down the internal executor service, terminating all worker threads.
+     * This method should be explicitly called when the Drools service is
+     * being stopped for redeployment (e.g. servlet container)
+     * to prevent ClassLoader leaks.
+     * <p>
+     * After calling this method, the executor will no longer accept new tasks.
+     * This is an irreversible operation.
+     */
+    void shutdown();
+
     public static class Pool {
         public static int SIZE = Runtime.getRuntime().availableProcessors();
     }
