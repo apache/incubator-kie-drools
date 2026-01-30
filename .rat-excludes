@@ -1,332 +1,186 @@
-# .git-blame-ignore-revs
 .git-blame-ignore-revs
-# .rat-excludes
 .rat-excludes
-# DISCLAIMER-WIP
+.rat-reports
 DISCLAIMER-WIP
-# drools-decisiontables/src/test/resources/data/ComplexWorkbook.drl.csv
-ComplexWorkbook.drl.csv
-# drools-decisiontables/src/test/resources/data/TestCsv.drl.csv
-TestCsv.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/DeclaresWorkbook.drl.csv
-DeclaresWorkbook.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv
-columnReplaceTest.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/emptyAction.drl.csv
-emptyAction.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/unicode.drl.csv
-unicode.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/integrationtests/csv/kmoduleCSVTest.dtable.drl.csv
-kmoduleCSVTest.dtable.drl.csv
-# drools-distribution/notice-for-distribution
-notice-for-distribution
-# drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaLexer.g4
-JavaLexer.g4
-# drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaParser.g4
-JavaParser.g4
-# drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test1.yml
-test1.yml
-# drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test2.drl.txt
-test2.drl.txt
-# drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/given/test1.drl.txt
-test1.drl.txt
-# drools-drlonyaml-parent/drools-drlonyaml-todrl/src/main/resources/drl.ftl
-drl.ftl
-# drools-examples/src/main/resources/org/drools/examples/sudoku/Sample.sdo
-Sample.sdo
-# drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/src/test/resources/org/drools/impact/analysis/graph/graphviz/simple.dot
-simple.dot
-# drools-model/drools-canonical-model/src/main/java/org/drools/model/bitmask/OpenBitSet.java
-OpenBitSet.java
-# drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
-mvel.jj
-# drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/resources/org/drools/hotreload/adult.txt
-adult.txt
-# drools-scenario-simulation/drools-scenario-simulation-backend/src/test/resources/folderToTest/testFile.txt
-testFile.txt
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/agenda-group.drl.csv
-agenda-group.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/emptyAction.drl.csv
-emptyAction.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sample.drl.csv
-sample.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sample_dates.drl.csv
-sample_dates.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sequential.drl.csv
-sequential.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/unicode.drl.csv
-unicode.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/decisiontable/PhoneNumberCategory.drl.csv
-PhoneNumberCategory.drl.csv
-# drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/oopath/oopath.drl.csv
-oopath.drl.csv
-# drools-util/src/main/java/org/drools/util/bitmask/OpenBitSet.java
-OpenBitSet.java
-# efesto/documentation/sdt/CompositeKnowledgeBuilderImpl_build.sdt
-CompositeKnowledgeBuilderImpl_build.sdt
-# efesto/documentation/sdt/PMMLAssemblerService_addResourceAfterRules_withoutConfigurations.sdt
-PMMLAssemblerService_addResourceAfterRules_withoutConfigurations.sdt
-# efesto/documentation/sdt/PMMLAssemblerService_addResourcesAfterRules_withConfigurations.sdt
-PMMLAssemblerService_addResourcesAfterRules_withConfigurations.sdt
-# efesto/efesto-core/efesto-common-api/src/test/custom-resources/IndexFile.testb_json
-IndexFile.testb_json
-# efesto/efesto-core/efesto-common-api/src/test/resources/IndexFile.test_json
-IndexFile.test_json
-# efesto/efesto-core/efesto-common-api/src/test/resources/TestingEmptyFile.txt
-TestingEmptyFile.txt
-# efesto/efesto-core/efesto-common-core/src/test/custom-resources/IndexFile.testb_json
-IndexFile.testb_json
-# efesto/efesto-core/efesto-common-core/src/test/resources/IndexFile.test_json
-IndexFile.test_json
-# efesto/efesto-core/efesto-common-core/src/test/resources/TestingEmptyFile.txt
-TestingEmptyFile.txt
-# efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/src/test/resources/IndexFile.test_json
-IndexFile.test_json
-# efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/custom-resources/IndexFile.testb_json
-IndexFile.testb_json
-# efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/resources/IndexFile.test_json
-IndexFile.test_json
-# kie-archetypes/kie-drools-dmn-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
-goal.txt
-# kie-archetypes/kie-drools-exec-model-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
-goal.txt
-# kie-archetypes/kie-drools-exec-model-ruleunit-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
-goal.txt
-# kie-archetypes/kie-drools-yaml-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
-goal.txt
-# kie-dmn/kie-dmn-core/src/test/filtered-resources/org/kie/dmn/core/drools-model
-drools-model
-# kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/src/test/resources/org/kie/dmn/pmml/test_naive_bayes.pmml
-test_naive_bayes.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/Churn Rules from SPSS Modeler.xml
-Churn Rules from SPSS Modeler.xml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/adult.pmml
-adult.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/churn.pmml
-churn.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/iris.pmml
-iris.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/miniloan.pmml
-miniloan.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/toto.pmml
-toto.pmml
-# kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/wifi.pmml
-wifi.pmml
-# kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/src/test/resources/IndexFile.drl_json
-IndexFile.drl_json
-# kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/src/test/resources/IndexFile.drl_json
-IndexFile.drl_json
-# kie-drl/kie-drl-runtime-common/src/test/resources/IndexFile.drl_json
-IndexFile.drl_json
-# kie-drl/kie-drl-tests/src/test/resources/IndexFile.drl_json
-IndexFile.drl_json
-# kie-maven-plugin/src/it/kie-maven-plugin-test-kjar-12/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
-SingleIrisKMeansClustering.pmml
-# kie-maven-plugin/src/test/resources/unit/pmml/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
-SingleIrisKMeansClustering.pmml
-# kie-pmml-trusty/kie-pmml-commons/src/test/resources/IndexFile.pmml_json
-IndexFile.pmml_json
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_01.txt
-KiePMMLApplyFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_02.txt
-KiePMMLApplyFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_03.txt
-KiePMMLApplyFactoryTest_03.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLCompoundPredicateFactoryTest_01.txt
-KiePMMLCompoundPredicateFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLConstantFactoryTest_01.txt
-KiePMMLConstantFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDefineFunctionFactoryTest_01.txt
-KiePMMLDefineFunctionFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_01.txt
-KiePMMLDerivedFieldFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_02.txt
-KiePMMLDerivedFieldFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_03.txt
-KiePMMLDerivedFieldFactoryTest_03.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDiscretizeBinFactoryTest_01.txt
-KiePMMLDiscretizeBinFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDiscretizeFactoryTest_01.txt
-KiePMMLDiscretizeFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFalsePredicateFactoryTest_01.txt
-KiePMMLFalsePredicateFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFieldColumnPairFactoryTest_01.txt
-KiePMMLFieldColumnPairFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFieldRefFactoryTest_01.txt
-KiePMMLFieldRefFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLInlineTableFactoryTest_01.txt
-KiePMMLInlineTableFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLIntervalFactoryTest_01.txt
-KiePMMLIntervalFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLLocalTransformationsFactoryTest_01.txt
-KiePMMLLocalTransformationsFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMapValuesFactoryTest_01.txt
-KiePMMLMapValuesFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_01.txt
-KiePMMLMiningFieldFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_02.txt
-KiePMMLMiningFieldFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_03.txt
-KiePMMLMiningFieldFactoryTest_03.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_01.txt
-KiePMMLModelFactoryUtilsTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_02.txt
-KiePMMLModelFactoryUtilsTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_03.txt
-KiePMMLModelFactoryUtilsTest_03.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_04.txt
-KiePMMLModelFactoryUtilsTest_04.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_05.txt
-KiePMMLModelFactoryUtilsTest_05.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_06.txt
-KiePMMLModelFactoryUtilsTest_06.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_07.txt
-KiePMMLModelFactoryUtilsTest_07.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_08.txt
-KiePMMLModelFactoryUtilsTest_08.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_09.txt
-KiePMMLModelFactoryUtilsTest_09.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_10.txt
-KiePMMLModelFactoryUtilsTest_10.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_11.txt
-KiePMMLModelFactoryUtilsTest_11.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_12.txt
-KiePMMLModelFactoryUtilsTest_12.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_13.txt
-KiePMMLModelFactoryUtilsTest_13.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_14.txt
-KiePMMLModelFactoryUtilsTest_14.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormContinuousFactoryTest_01.txt
-KiePMMLNormContinuousFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormContinuousFactoryTest_02.txt
-KiePMMLNormContinuousFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormDiscreteFactoryTest_01.txt
-KiePMMLNormDiscreteFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLParameterFieldFactoryTest_01.txt
-KiePMMLParameterFieldFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLRowFactoryTest_01.txt
-KiePMMLRowFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLRowFactoryTest_02.txt
-KiePMMLRowFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLSimplePredicateFactoryTest_01.txt
-KiePMMLSimplePredicateFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLSimpleSetPredicateFactoryTest_01.txt
-KiePMMLSimpleSetPredicateFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTargetFactoryTest_01.txt
-KiePMMLTargetFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTargetValueFactoryTest_01.txt
-KiePMMLTargetValueFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTextIndexFactoryTest_01.txt
-KiePMMLTextIndexFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTextIndexNormalizationFactoryTest_01.txt
-KiePMMLTextIndexNormalizationFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTransformationDictionaryFactoryTest_01.txt
-KiePMMLTransformationDictionaryFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTruePredicateFactoryTest_01.txt
-KiePMMLTruePredicateFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TargetFieldFactoryTest_01.txt
-TargetFieldFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TargetValueFactoryTest_01.txt
-TargetValueFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/MultipleTargetsFieldSample.pmml
-MultipleTargetsFieldSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdNoSegmentTargetFieldSample.pmml
-NoModelNameNoSegmentIdNoSegmentTargetFieldSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdSample.pmml
-NoModelNameNoSegmentIdSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameSample.pmml
-NoModelNameSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoOutputFieldTargetNameSample.pmml
-NoOutputFieldTargetNameSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoTargetFieldSample.pmml
-NoTargetFieldSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/OneMiningTargetFieldSample.pmml
-OneMiningTargetFieldSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TreeSample.pmml
-TreeSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.pmml
-LinearRegressionSample.pmml
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.xml
-LinearRegressionSample.xml
-# kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/src/test/resources/IndexFile.pmml_json
-IndexFile.pmml_json
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/KiePMMLClusteringModelFactoryTest_01.txt
-KiePMMLClusteringModelFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/SingleIrisKMeansClustering.pmml
-SingleIrisKMeansClustering.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/clusterwithtransformations/ClusterWithTransformations.pmml
-ClusterWithTransformations.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
-SingleIrisKMeansClustering.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering_id.pmml
-SingleIrisKMeansClustering_id.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/src/test/resources/TreeSample.pmml
-TreeSample.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/src/test/resources/TreeSample.pmml
-TreeSample.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/KiePMMLSegmentFactoryTest_01.txt
-KiePMMLSegmentFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Mixed.pmml
-MiningModel_Mixed.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_NoSegmentId.pmml
-MiningModel_NoSegmentId.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Regression.pmml
-MiningModel_Regression.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Scorecard.pmml
-MiningModel_Scorecard.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_SegmentId.pmml
-MiningModel_SegmentId.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_TreeModel.pmml
-MiningModel_TreeModel.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/mixedmining/MiningModel_Mixed.pmml
-MiningModel_Mixed.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/multiplemining/MultipleMining.pmml
-MultipleMining.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/predicatesmining/MiningModel_Predicates.pmml
-MiningModel_Predicates.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/randomforestclassifiermining/RandomForestClassifier.pmml
-RandomForestClassifier.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLClassificationTableFactoryTest_01.txt
-KiePMMLClassificationTableFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLClassificationTableFactoryTest_02.txt
-KiePMMLClassificationTableFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionModelFactoryTest_01.txt
-KiePMMLRegressionModelFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_01.txt
-KiePMMLRegressionTableFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_02.txt
-KiePMMLRegressionTableFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_03.txt
-KiePMMLRegressionTableFactoryTest_03.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_04.txt
-KiePMMLRegressionTableFactoryTest_04.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_05.txt
-KiePMMLRegressionTableFactoryTest_05.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_06.txt
-KiePMMLRegressionTableFactoryTest_06.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_07.txt
-KiePMMLRegressionTableFactoryTest_07.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/LinearRegressionSample.pmml
-LinearRegressionSample.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/src/main/resources/linearregressionsamplewithtransformations/LinearRegressionSampleWithTransformations.pmml
-LinearRegressionSampleWithTransformations.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLAttributeFactoryTest_01.txt
-KiePMMLAttributeFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLCharacteristicFactoryTest_01.txt
-KiePMMLCharacteristicFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLCharacteristicsFactoryTest_01.txt
-KiePMMLCharacteristicsFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_01.txt
-KiePMMLComplexPartialScoreFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_02.txt
-KiePMMLComplexPartialScoreFactoryTest_02.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_03.txt
-KiePMMLComplexPartialScoreFactoryTest_03.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/src/test/resources/MiningModel_Mixed.pmml
-MiningModel_Mixed.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/KiePMMLNodeFactoryTest_01.txt
-KiePMMLNodeFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSample.pmml
-TreeSample.pmml
-# kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSimplified.pmml
-TreeSimplified.pmml
+drools-core/src/test/resources/manners128.dat
+drools-core/src/test/resources/manners16.dat
+drools-core/src/test/resources/manners32.dat
+drools-core/src/test/resources/manners5.dat
+drools-core/src/test/resources/manners64.dat
+drools-core/src/test/resources/manners8.dat
+drools-core/src/test/resources/waltz12.dat
+drools-decisiontables/src/test/resources/data/ComplexWorkbook.drl.csv
+drools-decisiontables/src/test/resources/data/TestCsv.drl.csv
+drools-decisiontables/src/test/resources/org/drools/decisiontable/DeclaresWorkbook.drl.csv
+drools-decisiontables/src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv
+drools-decisiontables/src/test/resources/org/drools/decisiontable/emptyAction.drl.csv
+drools-decisiontables/src/test/resources/org/drools/decisiontable/integrationtests/csv/kmoduleCSVTest.dtable.drl.csv
+drools-decisiontables/src/test/resources/org/drools/decisiontable/unicode.drl.csv
+drools-distribution/notice-for-distribution
+drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaLexer.g4
+drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaParser.g4
+drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test1.yml
+drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test2.drl.txt
+drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/given/test1.drl.txt
+drools-drlonyaml-parent/drools-drlonyaml-todrl/src/main/resources/drl.ftl
+drools-examples/src/main/resources/org/drools/benchmark/waltz/data/waltz12.dat
+drools-examples/src/main/resources/org/drools/benchmark/waltz/data/waltz50.dat
+drools-examples/src/main/resources/org/drools/benchmark/waltzdb/data/waltzdb12.dat
+drools-examples/src/main/resources/org/drools/benchmark/waltzdb/data/waltzdb16.dat
+drools-examples/src/main/resources/org/drools/benchmark/waltzdb/data/waltzdb4.dat
+drools-examples/src/main/resources/org/drools/benchmark/waltzdb/data/waltzdb8.dat
+drools-examples/src/main/resources/org/drools/examples/pacman/grid1.dat
+drools-examples/src/main/resources/org/drools/examples/sudoku/Sample.sdo
+drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/src/test/resources/org/drools/impact/analysis/graph/graphviz/simple.dot
+drools-model/drools-canonical-model/src/main/java/org/drools/model/bitmask/OpenBitSet.java
+drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
+drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/resources/org/drools/hotreload/adult.txt
+drools-scenario-simulation/drools-scenario-simulation-backend/src/test/resources/folderToTest/testFile.txt
+drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/test_I18nPerson_latin1.drl.latin1
+drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/waltz/waltz12.dat
+drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/waltz/waltz50.dat
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/agenda-group.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/decisiontable/PhoneNumberCategory.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/emptyAction.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/oopath/oopath.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sample.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sample_dates.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/sequential.drl.csv
+drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/unicode.drl.csv
+drools-util/src/main/java/org/drools/util/bitmask/OpenBitSet.java
+efesto/documentation/sdt/CompositeKnowledgeBuilderImpl_build.sdt
+efesto/documentation/sdt/PMMLAssemblerService_addResourceAfterRules_withoutConfigurations.sdt
+efesto/documentation/sdt/PMMLAssemblerService_addResourcesAfterRules_withConfigurations.sdt
+efesto/efesto-core/efesto-common-api/src/test/custom-resources/IndexFile.testb_json
+efesto/efesto-core/efesto-common-api/src/test/resources/IndexFile.test_json
+efesto/efesto-core/efesto-common-api/src/test/resources/TestingEmptyFile.txt
+efesto/efesto-core/efesto-common-core/src/test/custom-resources/IndexFile.testb_json
+efesto/efesto-core/efesto-common-core/src/test/resources/IndexFile.test_json
+efesto/efesto-core/efesto-common-core/src/test/resources/TestingEmptyFile.txt
+efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/src/test/resources/IndexFile.test_json
+efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/custom-resources/IndexFile.testb_json
+efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/resources/IndexFile.test_json
+kie-archetypes/kie-drools-dmn-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
+kie-archetypes/kie-drools-exec-model-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
+kie-archetypes/kie-drools-exec-model-ruleunit-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
+kie-archetypes/kie-drools-yaml-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
+kie-dmn/kie-dmn-core/src/test/filtered-resources/org/kie/dmn/core/drools-model
+kie-dmn/kie-dmn-core/src/test/resources/org/kie/dmn/core/0019-flight-rebooking.pdf
+kie-dmn/kie-dmn-core/src/test/resources/org/kie/dmn/core/0020-vacation-days.pdf
+kie-dmn/kie-dmn-core/src/test/resources/org/kie/dmn/core/dmcommunity_challenge_2017_03.pdf
+kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/src/test/resources/org/kie/dmn/pmml/test_naive_bayes.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/Churn Rules from SPSS Modeler.xml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/adult.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/churn.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/iris.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/miniloan.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/toto.pmml
+kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/wifi.pmml
+kie-drl/kie-drl-implementations/kie-drl-kiesession-local/kie-drl-kiesession-local-runtime/src/test/resources/IndexFile.drl_json
+kie-drl/kie-drl-implementations/kie-drl-map-input/kie-drl-map-input-runtime/src/test/resources/IndexFile.drl_json
+kie-drl/kie-drl-runtime-common/src/test/resources/IndexFile.drl_json
+kie-drl/kie-drl-tests/src/test/resources/IndexFile.drl_json
+kie-maven-plugin/src/it/kie-maven-plugin-test-kjar-12/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
+kie-pmml-trusty/kie-pmml-commons/src/test/resources/IndexFile.pmml_json
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLApplyFactoryTest_03.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLCompoundPredicateFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLConstantFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDefineFunctionFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDerivedFieldFactoryTest_03.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDiscretizeBinFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLDiscretizeFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFalsePredicateFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFieldColumnPairFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLFieldRefFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLInlineTableFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLIntervalFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLLocalTransformationsFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMapValuesFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLMiningFieldFactoryTest_03.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_03.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_04.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_05.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_06.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_07.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_08.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_09.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_10.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_11.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_12.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_13.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLModelFactoryUtilsTest_14.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormContinuousFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormContinuousFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLNormDiscreteFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLParameterFieldFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLRowFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLRowFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLSimplePredicateFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLSimpleSetPredicateFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTargetFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTargetValueFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTextIndexFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTextIndexNormalizationFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTransformationDictionaryFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/KiePMMLTruePredicateFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/MultipleTargetsFieldSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdNoSegmentTargetFieldSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoOutputFieldTargetNameSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoTargetFieldSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/OneMiningTargetFieldSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TargetFieldFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TargetValueFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TreeSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.pmml
+kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.xml
+kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/src/test/resources/IndexFile.pmml_json
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/KiePMMLClusteringModelFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/SingleIrisKMeansClustering.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/clusterwithtransformations/ClusterWithTransformations.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering_id.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/src/test/resources/TreeSample.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/src/test/resources/TreeSample.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/KiePMMLSegmentFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Mixed.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_NoSegmentId.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Regression.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Scorecard.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_SegmentId.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_TreeModel.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/mixedmining/MiningModel_Mixed.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/multiplemining/MultipleMining.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/predicatesmining/MiningModel_Predicates.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/randomforestclassifiermining/RandomForestClassifier.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLClassificationTableFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLClassificationTableFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionModelFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_03.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_04.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_05.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_06.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/KiePMMLRegressionTableFactoryTest_07.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/LinearRegressionSample.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/src/main/resources/linearregressionsamplewithtransformations/LinearRegressionSampleWithTransformations.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLAttributeFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLCharacteristicFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLCharacteristicsFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_02.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-scorecard/kie-pmml-models-scorecard-compiler/src/test/resources/KiePMMLComplexPartialScoreFactoryTest_03.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/src/test/resources/MiningModel_Mixed.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/KiePMMLNodeFactoryTest_01.txt
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSample.pmml
+kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSimplified.pmml
