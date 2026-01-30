@@ -93,7 +93,7 @@
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.4.1</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.assertj>3.27.3</version.org.assertj>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
