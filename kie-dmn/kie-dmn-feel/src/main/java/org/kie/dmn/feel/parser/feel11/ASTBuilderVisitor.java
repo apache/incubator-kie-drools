@@ -184,7 +184,6 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
-        UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
         return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
@@ -192,6 +191,9 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneqInterval(FEEL_1_1Parser.PositiveUnaryTestIneqIntervalContext ctx) {
         BaseNode value = visit(ctx.endpoint());
         String op = ctx.op.getText();
+        if (value instanceof ListNode) {
+            return ASTBuilderFactory.newUnaryTestNode(ctx, op, value);
+        }
         switch (UnaryOperator.determineOperator(op)) {
             case EQ:
                 return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED);

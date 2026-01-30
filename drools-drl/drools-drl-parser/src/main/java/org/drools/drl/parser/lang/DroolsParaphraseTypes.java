@@ -31,7 +31,6 @@ public enum DroolsParaphraseTypes {
     GLOBAL, 
     FUNCTION, 
     QUERY, 
-    TEMPLATE, 
     RULE, 
     RULE_ATTRIBUTE, 
     PATTERN, 

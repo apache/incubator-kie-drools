@@ -31,6 +31,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.RuntimeModeOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
@@ -66,9 +67,36 @@ public class DMNDecisionTableHitPolicyTest extends BaseDMN1_1VariantTest {
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
+        
+        // In lenient mode, invalid input value "ASD" is set to null and evaluation continues
+        // Rule 4 matches: Age=any(-), RiskCategory=any(-), isAffordable=false -> "Declined"
+        assertThat(result.get("Approval Status")).isEqualTo("Declined");
 
-        assertThat(result.get("Approval Status")).isNull();
-        assertThat(dmnResult.getMessages()).hasSizeGreaterThan(0);
+        assertThat(dmnResult.getDecisionResults()).hasSize(1);
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U")).isNotNull();
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U").getResult()).isEqualTo("Declined");
+        assertThat(dmnResult.getDecisionResultByName("_0004-simpletable-U").getEvaluationStatus())
+                .isEqualTo(org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void simpleDecisionTableHitPolicyUniqueSatisfiesStrictMode(VariantTestConf conf) {
+        testConfig = conf;
+        System.setProperty(RuntimeModeOption.PROPERTY_NAME, RuntimeModeOption.MODE.STRICT.getMode());
+        try {
+            final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-U.dmn", this.getClass());
+            final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
+            assertThat(dmnModel).isNotNull();
+
+            final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
+            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+
+            assertThat(dmnResult.hasErrors()).isFalse();
+            assertThat(dmnResult.getContext().get("Approval Status")).isEqualTo("Approved");
+        } finally {
+            System.clearProperty(RuntimeModeOption.PROPERTY_NAME);
+        }
     }
 
     @ParameterizedTest(name = "{0}")
