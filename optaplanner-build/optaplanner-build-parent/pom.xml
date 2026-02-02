@@ -72,7 +72,7 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.formatter.plugin>2.23.0</version.formatter.plugin>
-    <version.impsort.plugin>1.9.0</version.impsort.plugin>
+    <version.impsort.plugin>1.13.0</version.impsort.plugin>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
     <!--
       Do not upgrade unless prepared to deal with JPMS issues.
