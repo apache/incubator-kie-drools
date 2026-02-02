@@ -38,9 +38,6 @@ public class UnaryTestNode
 
     private UnaryOperator operator;
     private BaseNode value;
-    
-    // Cache for containsQuestionMarkReference to avoid repeated AST traversals
-    private Boolean cachedContainsQuestionMark;
 
     public enum UnaryOperator {
         LTE("<="),
@@ -109,8 +106,6 @@ public class UnaryTestNode
 
     public void setValue(BaseNode value) {
         this.value = value;
-        // Invalidate cache when value changes
-        this.cachedContainsQuestionMark = null;
     }
 
     @Override
@@ -231,8 +226,7 @@ public class UnaryTestNode
     private Object evaluateRightValue(EvaluationContext context, Object left) {
         Object right;
         // set the value if the expression contains '?'
-        // Use cached result to avoid repeated AST traversals
-        if (hasQuestionMarkReference()) {
+        if (containsQuestionMarkReference(value)) {
             context.enterFrame();
             try {
                 context.setValue("?", left);
@@ -244,18 +238,6 @@ public class UnaryTestNode
             right = value.evaluate(context);
         }
         return right;
-    }
-    
-    /**
-     * Checks if the value contains a '?' reference, with caching for performance.
-     * The result is cached to avoid repeated AST traversals in scenarios where
-     * unary tests are evaluated frequently (e.g., decision tables with many rows).
-     */
-    private boolean hasQuestionMarkReference() {
-        if (cachedContainsQuestionMark == null) {
-            cachedContainsQuestionMark = containsQuestionMarkReference(value);
-        }
-        return cachedContainsQuestionMark;
     }
     
     /**
@@ -362,10 +344,6 @@ public class UnaryTestNode
 
     private UnaryTest createBooleanUnaryTest() {
         return (context, left) -> {
-            // Special case: plain '?' is a wildcard that matches anything
-            if (isPlainQuestionMark(value)) {
-                return Boolean.TRUE;
-            }
             Object right = evaluateRightValue(context, left);
             if (right instanceof Boolean) {
                 return (Boolean) right;
