@@ -4527,6 +4527,30 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void namedConsequenceThenWithSpace() {
+        final String text =
+                """
+                        rule R1
+                          when
+                            Person( $age : age > 10 )
+                            if( $age == 21 ) break [ Do2 ]
+                          then
+                            result.add("R1 Default Consequence: $age = " + $age);
+                          then[ Do2 ]
+                            result.add("R1 Do2 Consequence: $age = " + $age);
+                        end
+                        """;
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(1);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$age == 21");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("Do2");
+
+        assertThat(ruleDescr.getConsequence()).asString().isEqualToIgnoringWhitespace("result.add(\"R1 Default Consequence: $age = \" + $age);");
+        assertThat(ruleDescr.getNamedConsequences().get("Do2")).asString().isEqualToIgnoringWhitespace("result.add(\"R1 Do2 Consequence: $age = \" + $age);");
+    }
+
+    @Test
     void namedConsequenceNestedIf() {
         final String text =
                 "rule R1 dialect \"mvel\" when\n" +
