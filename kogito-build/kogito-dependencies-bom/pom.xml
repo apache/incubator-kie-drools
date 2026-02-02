@@ -74,7 +74,7 @@
     <version.com.sun.activation>2.0.1</version.com.sun.activation>
     <version.javax.inject>2.0.1</version.javax.inject>
     <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
-    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
