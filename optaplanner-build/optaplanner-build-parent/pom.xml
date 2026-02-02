@@ -83,7 +83,7 @@
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.23</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0</version.surefire.plugin>
-    <version.versions.plugin>2.15.0</version.versions.plugin>
+    <version.versions.plugin>2.21.0</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
     <maven.min.version>3.8.1</maven.min.version>
