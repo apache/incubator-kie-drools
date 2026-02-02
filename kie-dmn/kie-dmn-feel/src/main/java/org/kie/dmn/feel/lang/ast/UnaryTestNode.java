@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -158,15 +159,70 @@ public class UnaryTestNode
      * For a Unary Test an = (equal) semantic depends on the RIGHT value.
      * If the RIGHT is NOT a list, then standard equals semantic applies
      * If the RIGHT is a LIST, then the semantic is "right contains left"
+     * When both are Collections:
+     * - Verify that the two objects have the same size
+     * - Verify that the element at each position in the left object equals the element at the same position in the right object.
      */
     private Boolean utEqualSemantic(Object left, Object right) {
-        if (right instanceof Collection) {
-            return ((Collection) right).contains(left);
+        if (left instanceof Collection && right instanceof Collection) {
+            return areCollectionsEqual((Collection<?>) left, (Collection<?>) right);
+        } else if (right instanceof Collection) {
+            return isElementInCollection((Collection<?>) right, left);
         } else {
-            // evaluate single entity
-            return DefaultDialectHandler.isEqual(left, right, () -> (left == null && right == null), () -> Boolean.FALSE);
-
+            return areElementsEqual(left, right);
         }
+    }
+
+    /**
+     * Checks if two collections are equal by comparing elements in order.
+     * Both collections must have the same size and each element at position i in left
+     * must equal the element at position i in right.
+     *
+     * @param left the left collection
+     * @param right the right collection
+     * @return true if collections have same size and elements match in order, false otherwise
+     */
+    static Boolean areCollectionsEqual(Collection<?> left, Collection<?> right) {
+        if (left.size() != right.size()) {
+            return false;
+        }
+
+        Iterator<?> leftIterator = left.iterator();
+        Iterator<?> rightIterator = right.iterator();
+        while (leftIterator.hasNext() && rightIterator.hasNext()) {
+            if (!areElementsEqual(leftIterator.next(), rightIterator.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a collection contains a specific element.
+     * Uses areElementsEqual() to ensure consistent equality semantics
+     * with custom null handling via DefaultDialectHandler.isEqual().
+     *
+     * @param collection the collection to search in
+     * @param element the element to search for
+     * @return true if collection contains the element, false otherwise
+     */
+    static Boolean isElementInCollection(Collection<?> collection, Object element) {
+        return collection.stream().anyMatch(item -> areElementsEqual(item, element));
+    }
+
+    /**
+     * Checks if two elements are equal.
+     *
+     * @param left the left element
+     * @param right the right element
+     * @return true if elements are equal, false otherwise
+     */
+    static Boolean areElementsEqual(Object left, Object right) {
+        return Boolean.TRUE.equals(
+                DefaultDialectHandler.isEqual(left, right,
+                        () -> (left == null && right == null),
+                        () -> Boolean.FALSE)
+        );
     }
 
     private UnaryTest createIsEqualUnaryTest() {
