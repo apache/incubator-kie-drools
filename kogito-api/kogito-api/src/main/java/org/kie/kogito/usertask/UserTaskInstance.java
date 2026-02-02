@@ -155,4 +155,5 @@ public interface UserTaskInstance {
     void setPotentialUsers(Set<String> potentialUsers);
 
     UserTaskLifeCycle getUserTaskLifeCycle();
+
 }

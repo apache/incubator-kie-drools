@@ -67,6 +67,10 @@
             <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-process-management</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
         </dependency>

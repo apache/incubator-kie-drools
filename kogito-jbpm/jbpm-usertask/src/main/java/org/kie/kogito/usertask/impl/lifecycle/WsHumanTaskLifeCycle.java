@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.usertask.impl.lifecycle;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,30 +28,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.auth.IdentityProviders;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.usertask.UserTaskAssignmentStrategy;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
+import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.lifecycle.UserTaskState.TerminationType;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransition;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionException;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static java.util.Collections.emptyMap;
+import static org.drools.base.time.TimeUtils.parseTimeString;
 
 public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
-    public static final String WORKFLOW_ENGINE_USER = "WORKFLOW_ENGINE_USER";
 
-    public static final String PARAMETER_USER = "USER";
-    public static final String PARAMETER_NOTIFY = "NOTIFY";
+    private static final Logger LOG = LoggerFactory.getLogger(WsHumanTaskLifeCycle.class);
+
+    private static final String WORKFLOW_ENGINE_USER = "WORKFLOW_ENGINE_USER";
+    private static final String PARAMETER_USER = "USER";
+    private static final String PARAMETER_NOTIFY = "NOTIFY";
     private static final String PARAMETER_DELEGATED_USER = "DELEGATED_USER";
     private static final String PARAMETER_FORWARDED_USERS = "FORWARDED_USERS";
     private static final String PARAMETER_NOMINATED_USERS = "NOMINATED_USERS";
+    private static final String PARAMETER_SUSPEND_UNTIL = "suspendUntil";
 
     private static final String SKIPPABLE = "Skippable";
+    private static final String SUSPEND_UNTIL = "SuspendUntil";
+    private static final String SUSPENDED_TASK_JOB_ID = "SuspendedTaskJobId";
+    private static final String PREVIOUS_STATUS = "PreviousStatus";
 
-    // Actions
     public static final String ACTIVATE = "activate";
     public static final String NOMINATE = "nominate";
     public static final String CLAIM = "claim";
@@ -111,6 +129,7 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
     private final UserTaskTransition T_SUSPENDED_READY = new DefaultUserTransition(RESUME, SUSPENDED, READY, this::resume);
     private final UserTaskTransition T_SUSPENDED_RESERVED = new DefaultUserTransition(RESUME, SUSPENDED, RESERVED, this::resume);
     private final UserTaskTransition T_SUSPENDED_INPROGRESS = new DefaultUserTransition(RESUME, SUSPENDED, INPROGRESS, this::resume);
+    private final UserTaskTransition T_SUSPENDED_EXITED = new DefaultUserTransition(EXIT, SUSPENDED, EXITED, this::resumeAndExit);
 
     private List<UserTaskTransition> transitions;
 
@@ -146,7 +165,8 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
                 T_INPROGRESS_SUSPENDED,
                 T_SUSPENDED_READY,
                 T_SUSPENDED_RESERVED,
-                T_SUSPENDED_INPROGRESS);
+                T_SUSPENDED_INPROGRESS,
+                T_SUSPENDED_EXITED);
     }
 
     @Override
@@ -154,8 +174,10 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
         checkPermission(userTaskInstance, identity);
         return transitions.stream()
                 .filter(t -> t.source().equals(userTaskInstance.getStatus())
-                        && (!t.id().equals(SKIP) || "true".equals(userTaskInstance.getMetadata().get("Skippable")))
-                        && (!t.id().equals(RESUME) || t.target().getName().equals(userTaskInstance.getMetadata().get("PreviousStatus").toString())))
+                        && (!t.id().equals(SKIP) || "true".equals(userTaskInstance.getMetadata().get(SKIPPABLE)))
+                        && (!t.id().equals(RESUME) || t.target().getName().equals(userTaskInstance.getMetadata().get(PREVIOUS_STATUS).toString()))
+                        && t != T_SUSPENDED_EXITED
+                        && t != T_CREATED_READY_ACTIVATE)
                 .toList();
     }
 
@@ -199,7 +221,7 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
         if (transitionId.equals(ACTIVATE) && userTaskInstance.getPotentialUsers().isEmpty()) {
             return null;
         }
-        return newTransitionToken(transitionId, userTaskInstance.getStatus(), (String) userTaskInstance.getMetadata().get("PreviousStatus"), data);
+        return newTransitionToken(transitionId, userTaskInstance.getStatus(), (String) userTaskInstance.getMetadata().get(PREVIOUS_STATUS), data);
     }
 
     public UserTaskTransitionToken newTransitionToken(String transitionId, UserTaskState state, String previousState, Map<String, Object> data) {
@@ -361,14 +383,105 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
 
     private Optional<UserTaskTransitionToken> suspend(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
         if (userTaskInstance.getStatus() != null) {
-            userTaskInstance.getMetadata().put("PreviousStatus", userTaskInstance.getStatus().getName());
+            var suspendUntil = token.data().get(PARAMETER_SUSPEND_UNTIL) != null ? (String) token.data().get(PARAMETER_SUSPEND_UNTIL) : (String) userTaskInstance.getMetadata().get(SUSPEND_UNTIL);
+
+            if (suspendUntil != null) {
+                ZonedDateTime expirationTime = parseTemporalValue(suspendUntil);
+
+                UserTaskInstanceJobDescription jobDescription = UserTaskInstanceJobDescription.newUserTaskInstanceJobDescriptionBuilder()
+                        .id(UUID.randomUUID().toString())
+                        .expirationTime(ExactExpirationTime.of(expirationTime))
+                        .userTaskInstanceId(userTaskInstance.getId())
+                        .processId(userTaskInstance.getProcessInfo().getProcessId())
+                        .processInstanceId(userTaskInstance.getProcessInfo().getProcessInstanceId())
+                        .rootProcessInstanceId(userTaskInstance.getProcessInfo().getRootProcessInstanceId())
+                        .rootProcessId(userTaskInstance.getProcessInfo().getRootProcessId())
+                        .metadata(userTaskInstance.getMetadata())
+                        .build();
+
+                LOG.debug("Suspending usertask with id {} until {}", userTaskInstance.getId(), expirationTime);
+
+                String jobId = ((DefaultUserTaskInstance) userTaskInstance).getJobsService().scheduleJob(jobDescription);
+                userTaskInstance.getMetadata().put(SUSPENDED_TASK_JOB_ID, jobId);
+            }
+
+            userTaskInstance.getMetadata().put(PREVIOUS_STATUS, userTaskInstance.getStatus().getName());
         }
         return Optional.empty();
     }
 
+    private static ZonedDateTime parseTemporalValue(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("suspendUntil cannot be null or empty");
+        }
+
+        try {
+            var timestamp = ZonedDateTime.parse(input);
+            var now = ZonedDateTime.now();
+            if (timestamp.isAfter(now)) {
+                return timestamp;
+            }
+
+            return parseDuration(input);
+        } catch (DateTimeParseException e) {
+            return parseDuration(input);
+        }
+    }
+
+    private static ZonedDateTime parseDuration(String input) {
+        try {
+            var duration = Duration.parse(input);
+            if (duration.isNegative() || duration.isZero()) {
+                throw new IllegalArgumentException("Invalid suspendUntil duration: " + input);
+            }
+
+            return ZonedDateTime.now().plus(duration);
+        } catch (DateTimeParseException e) {
+            return parseSimpleDuration(input);
+        }
+    }
+
+    private static ZonedDateTime parseSimpleDuration(String input) {
+        try {
+            var millis = parseTimeString(input);
+            if (millis <= 0) {
+                throw new IllegalArgumentException("Invalid suspendUntil duration: " + input);
+            }
+
+            return ZonedDateTime.now().plus(Duration.ofMillis(millis));
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("Invalid suspendUntil duration: " + input);
+        }
+    }
+
     private Optional<UserTaskTransitionToken> resume(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
-        userTaskInstance.getMetadata().remove("PreviousStatus");
+        userTaskInstance.getMetadata().remove(PREVIOUS_STATUS);
+
+        var suspendedTaskJobId = (String) userTaskInstance.getMetadata().get(SUSPENDED_TASK_JOB_ID);
+        if (suspendedTaskJobId != null) {
+            ((DefaultUserTaskInstance) userTaskInstance).getJobsService().cancelJob(suspendedTaskJobId);
+            userTaskInstance.getMetadata().remove(SUSPENDED_TASK_JOB_ID);
+        }
+
         return Optional.empty();
+    }
+
+    private Optional<UserTaskTransitionToken> resumeAndExit(UserTaskInstance userTaskInstance, UserTaskTransitionToken userTaskTransitionToken, IdentityProvider identityProvider) {
+        if (!identityProvider.getName().equals(WORKFLOW_ENGINE_USER)) {
+            throw new UserTaskInstanceNotAuthorizedException("user " + identityProvider.getName() + " not authorized to perform this operation on user task " + userTaskInstance.getId());
+        }
+
+        resume(userTaskInstance, userTaskTransitionToken, identityProvider);
+        return exit(userTaskInstance, userTaskTransitionToken, identityProvider);
+    }
+
+    @Override
+    public void handleTimer(UserTaskInstanceJobDescription jobDescription, UserTaskInstance userTaskInstance) {
+        if (SUSPENDED.equals(userTaskInstance.getStatus()) && jobDescription.id().equals(userTaskInstance.getMetadata().get(SUSPENDED_TASK_JOB_ID))) {
+            LOG.debug("Auto resuming suspended usertask with id:{} after expiration", userTaskInstance.getId());
+            userTaskInstance.getMetadata().remove(SUSPENDED_TASK_JOB_ID);
+            userTaskInstance.transition(RESUME, emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
+        }
     }
 
     private String assignStrategy(UserTaskInstance userTaskInstance, IdentityProvider identityProvider) {

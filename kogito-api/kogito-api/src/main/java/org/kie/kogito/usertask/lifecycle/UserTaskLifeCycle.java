@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.usertask.UserTaskInstance;
 
 public interface UserTaskLifeCycle {
@@ -47,5 +48,9 @@ public interface UserTaskLifeCycle {
     UserTaskTransitionToken newAbortTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> data);
 
     List<UserTaskTransition> allowedTransitions(UserTaskInstance ut, IdentityProvider identity);
+
+    default void handleTimer(UserTaskInstanceJobDescription jobDescription, UserTaskInstance userTaskInstance) {
+
+    }
 
 }

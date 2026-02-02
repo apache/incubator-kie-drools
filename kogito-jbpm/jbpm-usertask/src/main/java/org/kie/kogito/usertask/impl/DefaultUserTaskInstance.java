@@ -691,6 +691,10 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.notCompletedReassignments = notCompletedReassignments;
     }
 
+    public JobsService getJobsService() {
+        return this.jobsService;
+    }
+
     public void setJobsService(JobsService jobsService) {
         this.jobsService = jobsService;
     }
@@ -771,6 +775,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     public void trigger(UserTaskInstanceJobDescription jobDescription) {
         LOG.trace("trigger timer in user tasks {} and job {}", this, jobDescription);
+        userTaskLifeCycle.handleTimer(jobDescription, this);
         checkAndSendNotification(jobDescription, notStartedDeadlinesTimers, this::startNotification);
         checkAndSendNotification(jobDescription, notCompletedDeadlinesTimers, this::endNotification);
         checkAndReassign(jobDescription, notStartedReassignmentsTimers);
