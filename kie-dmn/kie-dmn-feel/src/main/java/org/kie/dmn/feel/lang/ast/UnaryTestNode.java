@@ -227,12 +227,17 @@ public class UnaryTestNode
         Object right;
         // set the value if the expression contains '?'
         if (containsQuestionMarkReference(value)) {
-            context.enterFrame();
-            try {
-                context.setValue("?", left);
+            Object existing = context.getMapping("?");
+            if(existing != null && existing.equals(left)) {
                 right = value.evaluate(context);
-            } finally {
-                context.exitFrame();
+            } else {
+                context.enterFrame();
+                try {
+                    context.setValue("?", left);
+                    right = value.evaluate(context);
+                } finally {
+                    context.exitFrame();
+                }
             }
         } else {
             right = value.evaluate(context);

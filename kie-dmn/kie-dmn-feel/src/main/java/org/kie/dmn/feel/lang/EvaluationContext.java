@@ -74,4 +74,8 @@ public interface EvaluationContext {
     default void enterFrame(int size) {
         // Default implementation does nothing
     }
+
+    void setMapping(String variable, Object value);
+
+    Object getMapping(String variable);
 }
