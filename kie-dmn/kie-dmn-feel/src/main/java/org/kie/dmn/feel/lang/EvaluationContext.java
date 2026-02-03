@@ -75,7 +75,11 @@ public interface EvaluationContext {
         // Default implementation does nothing
     }
 
-    void setMapping(String variable, Object value);
+    default void setMapping(String variable, Object value){
+        // Default implementation does nothing
+    }
 
-    Object getMapping(String variable);
+    default Object getMapping(String variable){
+        return null;
+    }
 }
