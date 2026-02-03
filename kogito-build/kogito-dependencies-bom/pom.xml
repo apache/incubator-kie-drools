@@ -134,7 +134,7 @@
     <version.org.postgres>15.9-alpine3.20</version.org.postgres>
     <!-- we align to version used by quarkus -->
     <version.org.apache.avro>1.12.0</version.org.apache.avro>
-    <version.org.assertj>3.27.3</version.org.assertj>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
