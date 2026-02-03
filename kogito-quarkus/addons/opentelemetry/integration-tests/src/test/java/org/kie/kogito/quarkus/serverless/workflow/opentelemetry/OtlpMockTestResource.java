@@ -44,8 +44,6 @@ public class OtlpMockTestResource implements QuarkusTestResourceLifecycleManager
 
         // Configure Quarkus OpenTelemetry to use OTLP exporter pointing to our mock
         config.put("quarkus.otel.enabled", "true");
-        config.put("quarkus.otel.traces.exporter", "otlp");
-        config.put("quarkus.otel.metrics.exporter", "otlp");
 
         config.put("quarkus.otel.exporter.otlp.endpoint", otlpCollector.getBaseUrl());
 
