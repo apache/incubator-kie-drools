@@ -174,6 +174,16 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
             return DMNVersion.getLatest();
         }
 
+        @Override
+        public void setMapping(String variable, Object value) {
+            //no operation
+        }
+
+        @Override
+        public Object getMapping(String variable) {
+            return null;
+        }
+
     }
 
 }
