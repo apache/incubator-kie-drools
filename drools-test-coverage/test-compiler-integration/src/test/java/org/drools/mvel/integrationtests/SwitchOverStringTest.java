@@ -59,27 +59,12 @@ public class SwitchOverStringTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testCompileSwitchOverStringWithLngLevel17(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        double javaVersion = Double.valueOf(System.getProperty("java.specification.version"));
-        Assumptions.assumeTrue(javaVersion >= 1.7, "Test only makes sense on Java 7+.");
-        System.setProperty("drools.dialect.java.compiler.lnglevel", "1.7");
+        // Switch Over String is supported since Java 7. Set 17 here, because 17 is the minimum level supported in Drools 10
+        System.setProperty("drools.dialect.java.compiler.lnglevel", "17");
         try {
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
             List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
             assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
-        } finally {
-            System.clearProperty("drools.dialect.java.compiler.lnglevel");
-        }
-    }
-
-    @ParameterizedTest(name = "KieBase type={0}")
-    @MethodSource("parameters")
-    public void testShouldFailToCompileSwitchOverStringWithLngLevel16(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        System.setProperty("drools.dialect.java.compiler.lnglevel", "1.6");
-        try {
-            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, FUNCTION_WITH_SWITCH_OVER_STRING);
-            List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
-            assertThat(errors.isEmpty()).as("Should have an error").isFalse();
-            
         } finally {
             System.clearProperty("drools.dialect.java.compiler.lnglevel");
         }
