@@ -21,6 +21,7 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -228,11 +229,12 @@ public class UnaryTestNode
         // set the value if the expression contains '?'
         if (containsQuestionMarkReference(value)) {
             Object existing = context.getMapping("?");
-            if(existing != null && existing.equals(left)) {
+            if (Objects.equals(existing, left)) {
                 right = value.evaluate(context);
             } else {
                 context.enterFrame();
                 try {
+                    context.setMapping("?", left);
                     context.setValue("?", left);
                     right = value.evaluate(context);
                 } finally {

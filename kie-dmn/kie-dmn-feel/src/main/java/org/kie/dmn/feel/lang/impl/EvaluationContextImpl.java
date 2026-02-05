@@ -24,6 +24,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
@@ -50,7 +51,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     private DMNRuntime dmnRuntime;
     private boolean performRuntimeTypeCheck = false;
 
-    private final Map<String, Object> variableMapping = new HashMap<>();
+    private final Map<String, Object> variableMapping = new ConcurrentHashMap<>();
 
     private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion, boolean isLenient) {
         this.eventsManager = eventsManager;
@@ -269,10 +270,10 @@ public class EvaluationContextImpl implements EvaluationContext {
     public void setMapping(String variable, Object value) {
         variableMapping.put(variable, value);
     }
+
     @Override
     public Object getMapping(String variable) {
         return variableMapping.get(variable);
     }
-
 
 }
