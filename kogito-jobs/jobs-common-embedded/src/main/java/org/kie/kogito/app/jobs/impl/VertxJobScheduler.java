@@ -66,7 +66,7 @@ import io.vertx.core.WorkerExecutor;
 
 public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
-    private record TimerInfo(String jobId, Long timerId, Date timeout) {
+    private record TimerInfo(String jobId, Integer retries, Long timerId, Date timeout) {
 
     }
 
@@ -255,7 +255,8 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
 
         // this cover scenarios where the database jobs are already stored
         for (JobDetails currentJobDetails : jobDetailsList) {
-            jobsScheduled.compute(currentJobDetails.getId(), (jobId, timerInfo) -> {
+            String mapKey = getMapKey(currentJobDetails);
+            jobsScheduled.compute(mapKey, (key, timerInfo) -> {
                 if (timerInfo == null) {
                     // we schedule this (no need to trigger an event as it was already trigger during scheduling)
                     // this is new job loaded by this instance
@@ -285,13 +286,15 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         }
 
         // the ones left are the ones we need to be removed as they are not in database or active anymore
-        List<String> databaseJobIds = jobDetailsList.stream().map(JobDetails::getId).toList();
-        List<String> jobsToBeRemoved = new ArrayList<>(jobsScheduled.keySet());
-        jobsToBeRemoved.removeAll(databaseJobIds);
+        List<String> databaseJobKeys = jobDetailsList.stream().map(this::getMapKey).toList();
+        List<String> keysToBeRemoved = new ArrayList<>(jobsScheduled.keySet());
+        keysToBeRemoved.removeAll(databaseJobKeys);
 
-        for (String jobIdToBeRemoved : jobsToBeRemoved) {
-            jobsScheduled.compute(jobIdToBeRemoved, (jobId, timerInfo) -> {
-                removeTimerInfo(timerInfo);
+        for (String keyToBeRemoved : keysToBeRemoved) {
+            jobsScheduled.compute(keyToBeRemoved, (key, timerInfo) -> {
+                if (timerInfo != null) {
+                    removeTimerInfo(timerInfo);
+                }
                 return null;
             });
         }
@@ -449,11 +452,11 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         this.jobSynchronization.synchronize(new Runnable() {
             @Override
             public void run() {
-                jobsScheduled.computeIfPresent(jobDetails.getId(), (jobId, timerInfo) -> {
-                    removeTimerInfo(timerInfo);
-                    return addTimerInfo(jobDetails);
-                });
-                jobsScheduled.computeIfAbsent(jobDetails.getId(), jobId -> {
+                String mapKey = getMapKey(jobDetails);
+                jobsScheduled.compute(mapKey, (key, timerInfo) -> {
+                    if (timerInfo != null) {
+                        removeTimerInfo(timerInfo);
+                    }
                     return addTimerInfo(jobDetails);
                 });
             }
@@ -464,7 +467,8 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         this.jobSynchronization.synchronize(new Runnable() {
             @Override
             public void run() {
-                jobsScheduled.computeIfPresent(jobDetails.getId(), (jobId, timerInfo) -> {
+                String mapKey = getMapKey(jobDetails);
+                jobsScheduled.computeIfPresent(mapKey, (key, timerInfo) -> {
                     removeTimerInfo(timerInfo);
                     return null;
                 });
@@ -472,7 +476,11 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
         });
     }
 
-    // vertx calls 
+    private String getMapKey(JobDetails jobDetails) {
+        return jobDetails.getId() + "-" + jobDetails.getRetries();
+    }
+
+    // vertx calls
     private TimerInfo addTimerInfo(JobDetails jobDetails) {
         LOG.trace("addTimerInfo {}", jobDetails);
         // if it is negative means it should be executed right away
@@ -486,7 +494,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                 timeout(timerId, jobDetails.getId());
             }
         });
-        return new TimerInfo(jobDetails.getId(), timerId, jobDetails.getTrigger().hasNextFireTime());
+        return new TimerInfo(jobDetails.getId(), jobDetails.getRetries(), timerId, jobDetails.getTrigger().hasNextFireTime());
     }
 
     private void removeTimerInfo(TimerInfo timerInfo) {
@@ -543,7 +551,7 @@ public class VertxJobScheduler implements JobScheduler, Handler<Long> {
                     .executionTimeout(jobDetails.getExecutionTimeout() + retryInterval)
                     .incrementRetries()
                     .build();
-            LOG.trace("doRetryIfAny {}", retryJobDetails);
+            LOG.trace("Do retry with {}", retryJobDetails);
             return retryJobDetails;
         } else {
             JobDetails errorJobDetails = JobDetails.builder().of(jobDetails).status(JobStatus.ERROR).build();
