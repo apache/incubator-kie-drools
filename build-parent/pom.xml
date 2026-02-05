@@ -237,7 +237,7 @@
       <dependency>
         <groupId>at.yawk.lz4</groupId>
         <artifactId>lz4-java</artifactId>
-         <version>${version.at.yawk.lz4.java}</version>
+        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities - end -->
 
