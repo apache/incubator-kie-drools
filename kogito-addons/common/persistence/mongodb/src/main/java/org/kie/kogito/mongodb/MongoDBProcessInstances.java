@@ -104,11 +104,13 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     @Override
     public Stream<ProcessInstance<T>> waitingForEventType(String eventType, ProcessInstanceReadMode mode) {
         ClientSession clientSession = transactionManager.getClientSession();
-        Bson eventTypeFilter = Filters.all("eventTypes", eventType);
+        Bson eventTypeFilter = new Document("eventTypes", eventType);
         List<String> processInstancesId = new ArrayList<>();
-
-        events.find(eventTypeFilter).forEach(e -> processInstancesId.add(e.getString("id")));
-
+        if (clientSession != null) {
+            events.find(clientSession, eventTypeFilter).forEach(e -> processInstancesId.add(e.getString("id")));
+        } else {
+            events.find(eventTypeFilter).forEach(e -> processInstancesId.add(e.getString("id")));
+        }
         Bson filters = Filters.in("id", processInstancesId);
         MongoCursor<Document> docs = (clientSession == null ? collection.find(filters) : collection.find(clientSession, filters)).iterator();
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(docs, Spliterator.ORDERED), false).map(doc -> unmarshall(doc, mode)).onClose(docs::close);
@@ -176,6 +178,7 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     private void updateInternal(String id, ProcessInstance<T> instance, ClientSession clientSession, Document doc, Set<String> eventTypes) {
         Bson filters = Filters.eq(PROCESS_INSTANCE_ID, id);
+        Bson eventsFilter = Filters.eq(PROCESS_INSTANCE_ID, id);
         UpdateResult result;
         if (lock) {
             doc.put(VERSION, instance.version() + 1);
@@ -187,10 +190,10 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
         if (clientSession != null) {
             result = collection.replaceOne(clientSession, filters, doc);
-            events.replaceOne(clientSession, filters, eventsDocument);
+            events.replaceOne(clientSession, eventsFilter, eventsDocument);
         } else {
             result = collection.replaceOne(filters, doc);
-            events.replaceOne(filters, eventsDocument);
+            events.replaceOne(eventsFilter, eventsDocument);
         }
 
         if (lock && result.getModifiedCount() != 1) {
