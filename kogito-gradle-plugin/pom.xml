@@ -44,7 +44,7 @@
     <gradle.version>8.11.1</gradle.version>
     <groovy.version>4.0.29</groovy.version>
     <junit.version>5.12.1</junit.version>
-    <assertj.version>3.27.3</assertj.version>
+    <assertj.version>3.27.7</assertj.version>
     <surefire.plugin.version>3.2.5</surefire.plugin.version>
   </properties>
 
