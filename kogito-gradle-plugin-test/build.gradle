@@ -1,0 +1,72 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+plugins {
+  id 'java'
+  id("org.kie.kogito.gradle") version "${kogitoVersion}"
+  id 'org.springframework.boot' version "${springBootVersion}"
+  // inspecting/debugging purpose
+  id "com.dorongold.task-tree" version "${taskTreeVersion}"
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  implementation platform("org.kie.kogito:kogito-spring-boot-bom:999-SNAPSHOT")
+  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.jbpm:jbpm-spring-boot-starter")
+  implementation("org.drools:drools-decisions-spring-boot-starter")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("io.rest-assured:rest-assured")
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}
+
+
+generateModelConfig {
+  jsonSchemaVersion = "DRAFT_2019_09"
+}
+
+tasks.withType(JavaCompile).configureEach() {
+  options.encoding = "UTF-8"
+
+}
+
+tasks.named("bootRun") {
+  mainClass = 'org.kie.kogito.traffic.KogitoApplication'
+  dependsOn(tasks.named("compileSecondaryJava"))
+}
+
+tasks.named("jar") {
+  dependsOn(tasks.named("compileSecondaryJava"))
+  from(tasks.named("compileSecondaryJava").get())
+}
+
+tasks.named("compileTestJava") {
+  dependsOn(tasks.named("compileSecondaryJava"))
+}
+
+test {
+  dependsOn(tasks.named("jar"))
+  useJUnitPlatform()
+}
