@@ -85,7 +85,7 @@
     <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
     <version.org.apache.ant>1.10.11</version.org.apache.ant>
     <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
-    <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
+    <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.9.11</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
@@ -95,7 +95,7 @@
     <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
-    <version.org.freemarker>2.3.32</version.org.freemarker>
+    <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
@@ -125,7 +125,7 @@
     <version.org.junit.platform>1.13.4</version.org.junit.platform> <!-- Keep synchronized with junit-jupiter (middle and minor should be the same) -->
     <version.org.mvel>2.5.2.Final</version.org.mvel>
     <version.org.powermock>2.0.9</version.org.powermock>
-    <version.org.slf4j>2.0.6</version.org.slf4j>
+    <version.org.slf4j>2.0.17</version.org.slf4j>
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.xerces>2.12.0.SP04</version.xerces>
@@ -145,7 +145,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>5.17.0</version.org.mockito>
+    <version.org.mockito>5.18.0</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
