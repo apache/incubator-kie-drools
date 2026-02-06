@@ -723,7 +723,7 @@ public class RuleNetworkEvaluatorImpl implements RuleNetworkEvaluator {
         }
     }
 
-    private void processPeers(SegmentMemory sourceSegment, TupleSets leftTuples) {
+    private static void processPeers(SegmentMemory sourceSegment, TupleSets leftTuples) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
         processPeerDeletes( leftTuples.getDeleteFirst(), firstSmem );
