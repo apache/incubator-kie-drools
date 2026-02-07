@@ -113,6 +113,26 @@ public class JsonSchemaGeneratorTest {
         private String name;
     }
 
+    @UserTask(taskName = "manager approval", processName = "com.example.process")
+    private static class TaskWithDotsInProcessName {
+
+        @UserTaskParam(UserTaskParam.ParamType.INPUT)
+        private String requestId;
+
+        @UserTaskParam(UserTaskParam.ParamType.OUTPUT)
+        private boolean approved;
+    }
+
+    @ProcessInput(processName = "com.example.workflow")
+    private static class ProcessWithDotsInName {
+
+        @VariableInfo
+        private String workflowId;
+
+        @VariableInfo
+        private int priority;
+    }
+
     @ProcessInput(processName = "processName")
     private static class ProcessInputModel {
 
@@ -216,6 +236,22 @@ public class JsonSchemaGeneratorTest {
     public void testNothingToDo() throws IOException {
         Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(IgnoredClass.class)).build().generate();
         assertThat(files).isEmpty();
+    }
+
+    @Test
+    public void testJsonSchemaGenerationWithDotsInProcessName() throws IOException {
+        Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(ProcessWithDotsInName.class)).build().generate();
+        assertThat(files).hasSize(1);
+        GeneratedFile file = files.iterator().next();
+        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve("com#example#workflow.json").toString());
+    }
+
+    @Test
+    public void testJsonSchemaGenerationForTaskWithDotsInProcessName() throws IOException {
+        Collection<GeneratedFile> files = new JsonSchemaGenerator.ClassBuilder(Stream.of(TaskWithDotsInProcessName.class)).build().generate();
+        assertThat(files).hasSize(1);
+        GeneratedFile file = files.iterator().next();
+        assertThat(file.relativePath()).isEqualTo(JsonSchemaUtil.getJsonDir().resolve("com#example#process_manager_approval.json").toString());
     }
 
     @Test

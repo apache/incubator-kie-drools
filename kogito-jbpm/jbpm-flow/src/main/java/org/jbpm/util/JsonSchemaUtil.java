@@ -59,7 +59,7 @@ public class JsonSchemaUtil {
     }
 
     public static Map<String, Object> load(ClassLoader cl, String processId) {
-        return loadSchema(cl, processId);
+        return loadSchema(cl, getJsonSchemaName(processId));
     }
 
     public static Map<String, Object> load(ClassLoader cl, String processId, String taskName) {
