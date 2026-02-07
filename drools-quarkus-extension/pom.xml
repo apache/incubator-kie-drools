@@ -46,6 +46,7 @@
     <module>drools-quarkus-integration-test-hotreload</module>
     <module>drools-quarkus-integration-test-multimodule</module>
     <module>drools-quarkus-ruleunit-integration-test</module>
+    <module>drools-quarkus-ruleunit-integration-test-norest</module>
     <module>drools-quarkus-quickstart-test</module>
     <module>drools-quarkus-examples</module>
   </modules>

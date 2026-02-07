@@ -42,7 +42,8 @@ public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildC
 
     @Override
     public boolean hasRest() {
-        return hasRest;
+        return hasRest &&
+                "true".equalsIgnoreCase(getApplicationProperty(KOGITO_GENERATE_REST).orElse("true"));
     }
 
     @Override
