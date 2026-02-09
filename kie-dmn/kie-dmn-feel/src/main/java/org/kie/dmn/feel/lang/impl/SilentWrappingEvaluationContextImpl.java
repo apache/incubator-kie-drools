@@ -143,5 +143,4 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     public void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
         wrapped.setPerformRuntimeTypeCheck(performRuntimeTypeCheck);
     }
-
 }
