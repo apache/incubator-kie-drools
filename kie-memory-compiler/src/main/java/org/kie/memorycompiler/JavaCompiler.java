@@ -44,9 +44,7 @@ public interface JavaCompiler {
 
     class CompilerHolder {
         private static final JavaCompiler JAVA_COMPILER =
-                System.getProperty("jboss.server.name") != null ?
-                        JavaCompiler.createEclipseCompiler() :
-                        JavaCompiler.createNativeCompiler();
+                JavaCompiler.createNativeCompiler();
     }
 
     static JavaCompiler createNativeCompiler() {
