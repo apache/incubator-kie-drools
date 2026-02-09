@@ -179,6 +179,10 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             final JavaCompilerSettings pSettings
             ) {
 
+        if (true) {
+            throw new RuntimeException("#### EclipseJavaCompiler is called!! ####");
+        }
+
 
         final Collection problems = new ArrayList();
 
