@@ -20,9 +20,9 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.Tag;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class AddRemoveGenerated2RulesIntegerTest extends AbstractAddRemoveGenerated2RulesTest {
 
     public static Stream<ConstraintsPair> parameters() {

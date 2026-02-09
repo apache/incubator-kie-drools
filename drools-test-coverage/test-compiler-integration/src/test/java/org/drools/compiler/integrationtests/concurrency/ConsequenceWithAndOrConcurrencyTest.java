@@ -24,11 +24,12 @@ import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class ConsequenceWithAndOrConcurrencyTest extends BaseConcurrencyTest {
 
     public static Stream<KieBaseTestConfiguration> parameters() {

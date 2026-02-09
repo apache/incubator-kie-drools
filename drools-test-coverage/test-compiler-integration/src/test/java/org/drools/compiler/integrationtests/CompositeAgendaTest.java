@@ -21,9 +21,9 @@ package org.drools.compiler.integrationtests;
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static org.assertj.core.api.Assertions.fail;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@Tag("TurtleTests")
 public class CompositeAgendaTest {
 
     @Test 
