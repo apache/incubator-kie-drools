@@ -247,7 +247,8 @@ public class TupleToObjectNode extends ObjectSource
     }
 
     private int calculateHashCode() {
-        return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321);
+        return (this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321)) * 31
+               + this.startTupleSource.hashCode();
     }
 
     @Override
@@ -259,6 +260,7 @@ public class TupleToObjectNode extends ObjectSource
         return ((NetworkNode) object).getType() == NodeTypeEnums.TupleToObjectNode && this.hashCode() == object
                 .hashCode() &&
                this.tupleSource.getId() == ((TupleToObjectNode) object).tupleSource.getId() &&
+               this.startTupleSource.getId() == ((TupleToObjectNode) object).startTupleSource.getId() &&
                this.tupleMemoryEnabled == ((TupleToObjectNode) object).tupleMemoryEnabled;
     }
 
