@@ -31,16 +31,16 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
  * The valid values are "ECLIPSE" and "NATIVE" only.
  * 
  * drools.dialect.java.compiler = <ECLIPSE|NATIVE>
- * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
+ * drools.dialect.java.compiler.lnglevel = <1.5|...|21>
  * 
- * The default compiler is Eclipse and the default lngLevel is 1.5.
+ * The default compiler is Eclipse and the default lngLevel is 17.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
  */
 public class JavaConfiguration {
 
     // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "9"};
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "9"};
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -85,32 +85,24 @@ public class JavaConfiguration {
         return findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
     }
 
-    public static String findJavaVersion(String level) {
-        if (level.startsWith("1.5")) {
-            return "1.5";
-        } else if (level.startsWith("1.6")) {
-            return "1.6";
-        } else if (level.startsWith("1.7")) {
-            return "1.7";
-        } else if (level.startsWith("1.8")) {
-            return "1.8";
-        } else if (level.startsWith("9")) {
-            return "9";
-        } else if (level.startsWith("10")) {
-            return "10";
-        } else if (level.startsWith("15")) {
-            return "15";
-        } else if (level.startsWith("16")) {
-            return "16";
-        } else if (level.startsWith("17")) {
-            return "17";
-        } else if (level.startsWith("18")) {
-            return "18";
-        } else if (level.startsWith("19")) {
-            return "19";
-        }
+    public static boolean isValidLanguageLevel(String level) {
+        return Arrays.binarySearch(LANGUAGE_LEVELS, level) >= 0;
+    }
 
-        return "11";
+    public static String findJavaVersion(String level) {
+        String normalized = normalizeVersion(level);
+        if (isValidLanguageLevel(normalized)) {
+            return normalized;
+        }
+        return "17"; // default
+    }
+
+    private static String normalizeVersion(String version) {
+        String[] parts = version.split("\\.");
+        if ("1".equals(parts[0]) && parts.length > 1) {
+            return "1." + parts[1]; // Legacy format: 1.8.0_292 -> 1.8
+        }
+        return parts[0]; // Modern format: 21.0.2 -> 21
     }
 
     public String getJavaLanguageLevel() {
@@ -118,11 +110,11 @@ public class JavaConfiguration {
     }
 
     /**
-     * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
+     * You cannot set language level below 1.5, as we need static imports. 17 is now the default.
      * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS, languageLevel ) < 0 ) {
+        if (!isValidLanguageLevel(languageLevel)) {
             throw new RuntimeException( "value '" + languageLevel + "' is not a valid language level" );
         }
         this.languageLevel = languageLevel;

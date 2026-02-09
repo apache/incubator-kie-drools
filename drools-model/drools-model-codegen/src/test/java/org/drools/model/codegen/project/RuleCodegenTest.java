@@ -36,6 +36,7 @@ import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.DecisionTableProvider;
 import org.drools.io.FileSystemResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -130,6 +131,7 @@ public class RuleCodegenTest {
         assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true") // this test uses half-constraint which is not supported by DRL10
     @ParameterizedTest
     @MethodSource("org.drools.model.codegen.project.RuleCodegenTest#contextBuilders")
     public void generateCepRegexRule(DroolsModelBuildContext.Builder contextBuilder) {

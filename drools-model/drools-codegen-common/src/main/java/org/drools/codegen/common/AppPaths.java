@@ -29,8 +29,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppPaths {
+
+    private static  final Logger LOG = LoggerFactory.getLogger(AppPaths.class);
 
     public enum BuildTool {
         MAVEN("target",
@@ -63,7 +67,8 @@ public class AppPaths {
         }
 
         public static AppPaths.BuildTool findBuildTool() {
-            return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
+            String gradleAppName = System.getProperty("org.gradle.appname");
+            return (gradleAppName == null || gradleAppName.isEmpty()) ? MAVEN : GRADLE;
         }
     }
 
