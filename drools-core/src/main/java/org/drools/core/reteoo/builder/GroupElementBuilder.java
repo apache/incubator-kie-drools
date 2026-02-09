@@ -33,13 +33,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.ExistsNode;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.TupleToObjectNode;
+import org.drools.core.reteoo.*;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.definition.rule.Propagation;
 
@@ -116,12 +110,23 @@ public class GroupElementBuilder
                 builder.build( context, utils, child );
                 buildTupleSource( context, utils, isTerminalAlpha( context, child ) );
             } else {
-
-                for (final RuleConditionElement child : ge.getChildren()) {
+                List<RuleConditionElement> children = ge.getChildren();
+                for (int i = 0; i < children.size(); i++) {
+                    final RuleConditionElement child = children.get(i);
                     final ReteooComponentBuilder builder = utils.getBuilderFor( child );
                     builder.build( context, utils, child );
                     buildTupleSource( context, utils, false );
                     buildJoinNode( context, utils );
+
+                    BaseNode lastNode = context.getLastNode();
+                    if (lastNode instanceof BiLinearJoinNode) {
+                        // Bilinear node uses nodes from another network part so we skip adding them here.
+                        BiLinearDetector.Pair matchingPair = BiLinearBuildHelper.findMatchingPair(context);
+                        if (matchingPair != null) {
+                            i += matchingPair.getChainLength() - 1;
+                        }
+                    }
+
                 }
             }
         }
@@ -158,23 +163,46 @@ public class GroupElementBuilder
         }
 
         public static void buildJoinNode(BuildContext context, BuildUtils utils) {
+
+            ObjectSource objectSource = context.getObjectSource();
             // if there was a previous tuple source, then a join node is needed
-            if (context.getObjectSource() != null && context.getTupleSource() != null) {
+            if (objectSource != null && context.getTupleSource() != null) {
                 // so, create the tuple source and clean up the constraints and object source
-                final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
-                                                                                        context.getBetaconstraints(),
-                                                                                        false );
 
-                JoinNode joinNode = CoreComponentFactory.get()
-                                           .getNodeFactoryService().buildJoinNode( context.getNextNodeId(),
-                                                                                   context.getTupleSource(),
-                                                                                   context.getObjectSource(),
-                                                                                   betaConstraints,
-                                                                                   context);
+                JoinNode joinNode = getJoinNode(context, utils);
 
-                context.setTupleSource( utils.attachNode( context, joinNode));
+                JoinNode attachedNode = utils.attachNode(context, joinNode);
+
+                // Register BiLinearJoinNode for linking only if it was actually attached (not shared/discarded)
+                if (joinNode instanceof BiLinearJoinNode biLinear && attachedNode == joinNode) {
+                    BiLinearBuildHelper.registerBiLinearNode(context, biLinear);
+                }
+
+                context.setTupleSource(attachedNode);
                 context.setBetaconstraints( null );
                 context.setObjectSource( null );
+            }
+        }
+
+        private static JoinNode getJoinNode(BuildContext context, BuildUtils utils) {
+
+            final BetaConstraints betaConstraints = utils.createBetaNodeConstraint(context,
+                    context.getBetaconstraints(),
+                    false);
+
+            if (BiLinearBuildHelper.canUseBiLinearJoin(context)) {
+                    return CoreComponentFactory.get()
+                            .getNodeFactoryService().buildBiLinearJoinNode(
+                                    betaConstraints,
+                                    context);
+            } else {
+                return CoreComponentFactory.get()
+                        .getNodeFactoryService().buildJoinNode(
+                                context.getNextNodeId(),
+                                context.getTupleSource(),
+                                context.getObjectSource(),
+                                betaConstraints,
+                                context);
             }
         }
 

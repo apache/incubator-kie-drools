@@ -32,6 +32,7 @@ import org.drools.core.common.SegmentMemorySupport;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
@@ -106,7 +107,16 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public LeftTupleSink getSinkFactory() {
-        return (LeftTupleSink) proto.getRootNode();
+        LeftTupleNode rootNode = proto.getRootNode();
+
+        // LeftInputAdapterNode is a LeftTupleSource, not a LeftTupleSink
+        // Return the first actual sink child instead
+        if (rootNode instanceof LeftInputAdapterNode) {
+            LeftInputAdapterNode liaNode = (LeftInputAdapterNode) rootNode;
+            return liaNode.getSinkPropagator().getFirstLeftTupleSink();
+        }
+
+        return (LeftTupleSink) rootNode;
     }
 
     public Memory[] getNodeMemories() {
@@ -682,6 +692,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         PathEndNode[] pathEndNodes;
 
+        // BiLinear routing cache - set when nodesInSegment contains a BiLinearJoinNode
+        private int biLinearNodeIndex = -1;        // Index of BiLinearJoinNode in nodesInSegment, or -1 if none
+        private int biLinearSecondInputId = -1;    // Node ID of the BiLinearJoinNode's second left input
+
         public SegmentPrototype(LeftTupleNode rootNode, LeftTupleNode tipNode) {
             this.rootNode = rootNode;
             this.tipNode = tipNode;
@@ -793,6 +807,43 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         public void setNodesInSegment(LeftTupleNode[] nodesInSegment) {
             this.nodesInSegment = nodesInSegment;
+            // Detect BiLinearJoinNode and cache routing info
+            detectBiLinearNode(nodesInSegment);
+        }
+
+        private void detectBiLinearNode(LeftTupleNode[] nodes) {
+            this.biLinearNodeIndex = -1;
+            this.biLinearSecondInputId = -1;
+
+            if (!BiLinearDetector.isBiLinearEnabled() || nodes == null) {
+                return;
+            }
+
+            for (int i = 0; i < nodes.length; i++) {
+                if (nodes[i] instanceof BiLinearJoinNode biLinearNode) {
+                    LeftTupleSource secondInput = biLinearNode.getSecondLeftInput();
+                    if (secondInput != null) {
+                        this.biLinearNodeIndex = i;
+                        this.biLinearSecondInputId = secondInput.getId();
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Returns the index of BiLinearJoinNode in nodesInSegment, or -1 if none.
+         */
+        public int getBiLinearNodeIndex() {
+            return biLinearNodeIndex;
+        }
+
+        public int getBiLinearSecondInputId() {
+            return biLinearSecondInputId;
+        }
+
+        public boolean hasBiLinearNode() {
+            return biLinearNodeIndex >= 0;
         }
 
         public int getNodeTypesInSegment() {

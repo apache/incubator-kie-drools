@@ -40,7 +40,18 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     }
 
     public void addTupleSink(final LeftTupleSink sink) {
-        this.sinks.add( (LeftTupleSinkNode) sink );
+        // Prevent duplicate BiLinear shared nodes to avoid RETE corruption
+        LeftTupleSinkNode sinkNode = (LeftTupleSinkNode) sink;
+        
+        // Check if this exact sink instance is already registered
+        for (LeftTupleSinkNode existing = this.sinks.getFirst(); existing != null; existing = existing.getNextLeftTupleSinkNode()) {
+            if (existing == sinkNode) {
+                // Duplicate BiLinear shared node - skip to prevent corruption
+                return;
+            }
+        }
+        
+        this.sinks.add( sinkNode );
         sinkArray = null;
     }
 
@@ -67,10 +78,16 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             return sinkArray;
         }
 
-        LeftTupleSink[] sinks = new LeftTupleSink[this.sinks.size()];
+        // Count actual nodes in case of list inconsistency (BiLinear shared nodes)
+        int actualCount = 0;
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            actualCount++;
+        }
+        
+        LeftTupleSink[] sinks = new LeftTupleSink[actualCount];
 
         int i = 0;
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null && i < actualCount; sink = sink.getNextLeftTupleSinkNode() ) {
             sinks[i++] = sink;
         }
 

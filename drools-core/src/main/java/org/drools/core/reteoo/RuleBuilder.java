@@ -26,10 +26,11 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.WindowDeclaration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.reteoo.builder.BiLinearDetector;
 
 public interface RuleBuilder {
 
-    List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule);
+    List<TerminalNode> addRule(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, RuleImpl rule, BiLinearDetector.BiLinearContext biLinearContext);
 
     void addEntryPoint(InternalRuleBase kBase, Collection<InternalWorkingMemory> workingMemories, String id);
 
