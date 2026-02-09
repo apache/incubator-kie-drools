@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.event.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -127,22 +124,13 @@ class ProcessEventDispatcherTest {
     }
 
     @Test
-    void testCloudEventNewInstanceWithReference() throws Exception {
+    void testCloudEventNewInstanceWithInvalidReference() throws Exception {
         EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, null, o -> o.getData());
         ProcessInstance<DummyModel> instance = dispatcher.dispatch(DUMMY_TOPIC, new TestCloudEvent<>(new TestEvent("pepe"), DUMMY_TOPIC, "source", "invalidReference"));
-
-        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> referenceId = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map<String, List<String>>> headers = ArgumentCaptor.forClass(Map.class);
-
+        assertThat(instance).isNull();
         verify(processInstances, times(1)).findById("invalidReference");
-        verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
-        verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), headers.capture(), any(), signal.capture(), referenceId.capture(), isNull());
-
-        assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
-        assertThat(referenceId.getValue()).isEqualTo("1");
-        assertThat(headers.getValue()).containsEntry("source", Arrays.asList("source"));
-        assertThat(processInstance).isEqualTo(instance);
+        verify(processService, never()).signalProcessInstance(eq(process), any(), any(), any());
+        verify(processService, never()).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), any(), any(), any(), isNull());
     }
 
     @Test

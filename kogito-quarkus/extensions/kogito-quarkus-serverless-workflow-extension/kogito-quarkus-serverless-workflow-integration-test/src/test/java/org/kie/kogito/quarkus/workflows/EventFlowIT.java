@@ -132,6 +132,14 @@ class EventFlowIT {
         waitForFinish(flowName, id, Duration.ofSeconds(5));
     }
 
+    @Test
+    void testWrongProcessIdNotProcessedRainy() throws IOException {
+        final String flowName = "nonStartEvent";
+        final String id = startProcess(flowName);
+        sendEvents(UUID.randomUUID().toString(), "move");
+        assertThrows(ConditionTimeoutException.class, () -> waitForFinish(flowName, id, Duration.ofSeconds(5)));
+    }
+
     private void sendEvents(String id, String... eventTypes) throws IOException {
         sendEvents(id, Optional.empty(), eventTypes);
     }
