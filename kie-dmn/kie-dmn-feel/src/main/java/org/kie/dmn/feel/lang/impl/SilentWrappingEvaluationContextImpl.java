@@ -144,13 +144,4 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
         wrapped.setPerformRuntimeTypeCheck(performRuntimeTypeCheck);
     }
 
-    @Override
-    public void setMapping(String variable, Object value) {
-        wrapped.setMapping(variable, value);
-    }
-
-    @Override
-    public Object getMapping(String variable) {
-        return wrapped.getMapping(variable);
-    }
 }

@@ -51,8 +51,6 @@ public class EvaluationContextImpl implements EvaluationContext {
     private DMNRuntime dmnRuntime;
     private boolean performRuntimeTypeCheck = false;
 
-    private final Map<String, Object> variableMapping = new ConcurrentHashMap<>();
-
     private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect, DMNVersion dmnVersion, boolean isLenient) {
         this.eventsManager = eventsManager;
         this.rootClassLoader = cl;
@@ -264,16 +262,6 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public boolean isLenient() {
         return isLenient;
-    }
-
-    @Override
-    public void setMapping(String variable, Object value) {
-        variableMapping.put(variable, value);
-    }
-
-    @Override
-    public Object getMapping(String variable) {
-        return variableMapping.get(variable);
     }
 
 }
