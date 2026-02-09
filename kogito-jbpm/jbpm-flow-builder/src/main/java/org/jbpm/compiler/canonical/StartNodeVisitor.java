@@ -18,6 +18,7 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
 
 import com.github.javaparser.ast.NodeList;
@@ -74,6 +76,12 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                         getOrNullExpr(timer.getPeriod()),
                         getOrNullExpr(timer.getDate()),
                         new IntegerLiteralExpr(startNode.getTimer().getTimeType())));
+                if (startNode.getParentContainer() instanceof EventSubProcessNode eventSubProcess) {
+                    String triggerEventType = "Timer-" + eventSubProcess.getId().toExternalFormat();
+                    body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
+                            new StringLiteralExpr(triggerEventType),
+                            buildDataAssociationsExpression(startNode, Collections.emptyList())));
+                }
                 break;
             }
             case Metadata.EVENT_TYPE_SIGNAL:

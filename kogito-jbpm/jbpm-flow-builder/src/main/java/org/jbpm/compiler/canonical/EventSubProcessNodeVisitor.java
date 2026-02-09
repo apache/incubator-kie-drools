@@ -23,15 +23,19 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.StartNode;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_EVENT;
 import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_KEEP_ACTIVE;
+import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_TIMER;
 
 public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<EventSubProcessNode> {
 
@@ -60,6 +64,17 @@ public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<Even
         methods.add(getFactoryMethod(getNodeId(node), METHOD_KEEP_ACTIVE, new BooleanLiteralExpr(node.isKeepActive())));
         node.getEvents()
                 .forEach(e -> methods.add(getFactoryMethod(getNodeId(node), METHOD_EVENT, new StringLiteralExpr(e))));
+
+        StartNode startNode = node.findStartNode();
+        if (startNode != null && startNode.getTimer() != null) {
+            Timer timer = startNode.getTimer();
+            methods.add(getFactoryMethod(getNodeId(node), METHOD_TIMER,
+                    getOrNullExpr(timer.getDelay()),
+                    getOrNullExpr(timer.getPeriod()),
+                    getOrNullExpr(timer.getDate()),
+                    new IntegerLiteralExpr(String.valueOf(timer.getTimeType())).asIntegerLiteralExpr()));
+        }
+
         return methods.stream();
     }
 }

@@ -311,7 +311,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                         timerInstancesReference.remove(timerInstance.getId());
                     }
                 }
-                executeAction((Action) entry.getValue().getMetaData("Action"));
+                Action action = (Action) entry.getValue().getMetaData("Action");
+                if (action != null) {
+                    executeAction(action);
+                }
                 return;
             }
         }

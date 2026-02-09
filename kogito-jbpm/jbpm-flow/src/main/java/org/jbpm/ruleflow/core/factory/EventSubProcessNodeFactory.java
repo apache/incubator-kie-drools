@@ -19,9 +19,11 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
@@ -31,6 +33,7 @@ public class EventSubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T
 
     public static final String METHOD_KEEP_ACTIVE = "keepActive";
     public static final String METHOD_EVENT = "event";
+    public static final String METHOD_TIMER = "timer";
 
     public EventSubProcessNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new EventSubProcessNode(), id);
@@ -47,6 +50,16 @@ public class EventSubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T
         filter.setCorrelationManager(((RuleFlowProcess) getCompositeNode().getProcess()).getCorrelationManager());
         filter.setMessageRef((String) getNode().getMetaData().get(MESSAGE_REF));
         ((EventSubProcessNode) getCompositeNode()).addEvent(filter);
+        return this;
+    }
+
+    public EventSubProcessNodeFactory<T> timer(String delay, String period, String date, int timeType) {
+        Timer timer = new Timer();
+        timer.setDate(date);
+        timer.setDelay(delay);
+        timer.setPeriod(period);
+        timer.setTimeType(timeType);
+        ((EventSubProcessNode) getCompositeNode()).addTimer(timer, new DroolsConsequenceAction("java", ""));
         return this;
     }
 }
