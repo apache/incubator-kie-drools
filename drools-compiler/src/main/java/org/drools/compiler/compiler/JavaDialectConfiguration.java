@@ -108,11 +108,11 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
                 return CompilerType.ECLIPSE;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
-                return CompilerType.ECLIPSE;
+                return CompilerType.NATIVE;
             }
         } catch ( final SecurityException e ) {
             logger.error( "Drools config: unable to read the drools.compiler property. Using default.", e);
-            return CompilerType.ECLIPSE;
+            return CompilerType.NATIVE;
         }
     }
 }

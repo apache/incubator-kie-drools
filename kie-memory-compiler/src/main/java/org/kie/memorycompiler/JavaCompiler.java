@@ -44,7 +44,9 @@ public interface JavaCompiler {
 
     class CompilerHolder {
         private static final JavaCompiler JAVA_COMPILER =
-                JavaCompiler.createNativeCompiler();
+                "ECLIPSE".equalsIgnoreCase(System.getProperty(JavaConfiguration.JAVA_COMPILER_PROPERTY)) ?
+                        JavaCompiler.createEclipseCompiler() :
+                        JavaCompiler.createNativeCompiler();
     }
 
     static JavaCompiler createNativeCompiler() {
