@@ -21,7 +21,6 @@ package org.drools.ecj;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
@@ -29,7 +28,6 @@ import org.kie.memorycompiler.resources.MemoryResourceStore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("don't test EclipseJavaCompiler now")
 public class JavaCompilerI18NTest {
 
     @Test

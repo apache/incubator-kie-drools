@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -33,7 +32,6 @@ import org.kie.memorycompiler.resources.MemoryResourceStore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("don't test EclipseJavaCompiler now")
 @EnabledForJreRange(min = JRE.JAVA_21)
 class Jdk21SyntaxTest {
 
