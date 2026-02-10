@@ -24,7 +24,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
@@ -263,5 +262,4 @@ public class EvaluationContextImpl implements EvaluationContext {
     public boolean isLenient() {
         return isLenient;
     }
-
 }
