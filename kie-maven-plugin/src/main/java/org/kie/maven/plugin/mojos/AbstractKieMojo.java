@@ -82,7 +82,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "src/main/resources")
     private File resourceFolder;
 
-    @Parameter(property = "javaCompiler", defaultValue = "ecj")
+    @Parameter(property = "javaCompiler", defaultValue = "native")
     private String javaCompiler;
 
     public String getDumpKieSourcesFolder() {

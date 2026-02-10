@@ -86,6 +86,10 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
+        if (pResourcePaths == null || pResourcePaths.length == 0) {
+            return new CompilationResult( new CompilationProblem[0] );
+        }
+
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler compiler = getJavaCompiler();
 
