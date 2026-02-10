@@ -86,12 +86,12 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
                                       JavaCompilerSettings pSettings) {
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        JavaCompiler compiler = getJavaCompiler();
+
         if (pResourcePaths == null || pResourcePaths.length == 0) {
             return new CompilationResult( new CompilationProblem[0] );
         }
-
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        JavaCompiler compiler = getJavaCompiler();
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, Charset.forName(pSettings.getSourceEncoding()))) {
             try {
