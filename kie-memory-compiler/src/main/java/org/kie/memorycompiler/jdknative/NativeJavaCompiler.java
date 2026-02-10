@@ -359,14 +359,16 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                 List<JavaFileObject> result = new ArrayList<>();
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
-                    if (!new File(packageFolderURL.getFile()).isDirectory()) {
-                        if (result == null) {
-                            result = processJar(packageFolderURL, packageName);
-                        } else {
-                            List<JavaFileObject> classesInJar = processJar(packageFolderURL, packageName);
-                            if (classesInJar != null) {
-                                result.addAll(classesInJar);
-                            }
+                    File dir = new File(packageFolderURL.getFile());
+                    if (dir.isDirectory()) {
+                        List<JavaFileObject> classesInDir = processDirectory(dir, packageName);
+                        if (classesInDir != null) {
+                            result.addAll(classesInDir);
+                        }
+                    } else {
+                        List<JavaFileObject> classesInJar = processJar(packageFolderURL, packageName);
+                        if (classesInJar != null) {
+                            result.addAll(classesInJar);
                         }
                     }
                 }
@@ -374,6 +376,19 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             } catch (IOException e) {
                 return Collections.emptyList();
             }
+        }
+
+        private List<JavaFileObject> processDirectory(File directory, String packageName) {
+            File[] classFiles = directory.listFiles((dir, name) -> name.endsWith(".class"));
+            if (classFiles == null || classFiles.length == 0) {
+                return null;
+            }
+            List<JavaFileObject> result = new ArrayList<>();
+            for (File classFile : classFiles) {
+                String binaryName = packageName + "." + classFile.getName().substring(0, classFile.getName().length() - 6);
+                result.add(new CustomJavaFileObject(binaryName, classFile.toURI()));
+            }
+            return result;
         }
 
         private List<JavaFileObject> processJar(URL packageFolderURL, String packageName) throws IOException {
