@@ -48,7 +48,6 @@ public class PrimitiveConversionErrorsTest {
             "\n" +
             "import java.util.*\n" +
             "\n" +
-            "import com.example.*\n" +
             "import " + ClassWithValue.class.getCanonicalName() + ";\n" +
             "\n" +
             "rule \"Rule that breaks ExecutableModel\"\n" +
