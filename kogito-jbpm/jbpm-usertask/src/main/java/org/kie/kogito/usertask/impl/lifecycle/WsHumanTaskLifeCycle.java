@@ -218,7 +218,7 @@ public class WsHumanTaskLifeCycle implements UserTaskLifeCycle {
 
     @Override
     public UserTaskTransitionToken newTransitionToken(String transitionId, UserTaskInstance userTaskInstance, Map<String, Object> data) {
-        if (transitionId.equals(ACTIVATE) && userTaskInstance.getPotentialUsers().isEmpty()) {
+        if (transitionId.equals(ACTIVATE) && userTaskInstance.getPotentialUsers().isEmpty() && userTaskInstance.getPotentialGroups().isEmpty()) {
             return null;
         }
         return newTransitionToken(transitionId, userTaskInstance.getStatus(), (String) userTaskInstance.getMetadata().get(PREVIOUS_STATUS), data);

@@ -564,6 +564,64 @@ public class WsHumanTaskLifeCycleIT {
         isProcessCompleted(processId, pid);
     }
 
+    @Test
+    public void testSingleGroupUserTaskLifeCycle() {
+        var user = "carl";
+        var group = "hr";
+        var potentialGroups = new String[] { group };
+        var processId = "manager_single_group";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(user, group, pid);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .get(USER_TASKS_INSTANCE_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Ready"))
+                .body("potentialUsers", equalTo(List.of()))
+                .body("potentialGroups", hasItems(potentialGroups));
+
+        claim(taskId, user, group);
+        start(taskId, user, group);
+        complete(taskId, user, group);
+
+        isProcessCompleted(processId, pid);
+    }
+
+    @Test
+    public void testMultipleGroupUserTaskLifeCycle() {
+        var user = "dave";
+        var group = "it";
+        var potentialGroups = new String[] { "hr", "it" };
+        var processId = "manager_multiple_groups";
+        var pid = startProcessInstance(processId);
+        var taskId = getTaskId(user, group, pid);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .get(USER_TASKS_INSTANCE_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Ready"))
+                .body("potentialUsers", equalTo(List.of()))
+                .body("potentialGroups", hasItems(potentialGroups));
+
+        claim(taskId, user, group);
+        start(taskId, user, group);
+        complete(taskId, user, group);
+
+        isProcessCompleted(processId, pid);
+    }
+
     private void nominate(String taskId, String user, String status, String[] nominatedUsers) {
         given()
                 .contentType(ContentType.JSON)
@@ -747,6 +805,21 @@ public class WsHumanTaskLifeCycleIT {
                 .body("status.terminate", equalTo(null));
     }
 
+    private void claim(String taskId, String user, String group) {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .body(new TransitionInfo("claim"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Reserved"))
+                .body("status.terminate", equalTo(null));
+    }
+
     public String startProcessInstance(String processId) {
         return startProcessInstanceWithVariables(processId, Map.of());
     }
@@ -796,6 +869,20 @@ public class WsHumanTaskLifeCycleIT {
                 .getString("find { it.processInfo.processInstanceId == pid }.id");
     }
 
+    private String getTaskId(String user, String group, String pid) {
+        return given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .get(USER_TASKS_ENDPOINT)
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .param("pid", pid)
+                .getString("find { it.processInfo.processInstanceId == pid }.id");
+    }
+
     private void verifyTask(String processId, String pid, String taskId, String user, String state, String[] potentialUsers) {
         given().contentType(ContentType.JSON)
                 .when()
@@ -830,11 +917,41 @@ public class WsHumanTaskLifeCycleIT {
                 .body("status.terminate", equalTo("COMPLETED"));
     }
 
+    private void complete(String taskId, String user, String group) {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .body(new TransitionInfo("complete"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Completed"))
+                .body("status.terminate", equalTo("COMPLETED"));
+    }
+
     private void start(String taskId, String user) {
         given()
                 .contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", user)
+                .body(new TransitionInfo("start"))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("InProgress"))
+                .body("status.terminate", equalTo(null));
+    }
+
+    private void start(String taskId, String user, String group) {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
                 .body(new TransitionInfo("start"))
                 .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
                 .then()
