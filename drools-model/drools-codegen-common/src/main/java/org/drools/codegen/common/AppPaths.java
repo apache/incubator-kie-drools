@@ -36,6 +36,8 @@ public class AppPaths {
 
     private static  final Logger LOG = LoggerFactory.getLogger(AppPaths.class);
 
+    private static final Set<String> GRADLE_COMMANDS = Set.of("GradleWorkerMain", "GradleMain", "GradleDaemon", "GradleWrapperMain");
+
     public enum BuildTool {
         MAVEN("target",
               Path.of("target","generated-sources"),
@@ -68,7 +70,24 @@ public class AppPaths {
 
         public static AppPaths.BuildTool findBuildTool() {
             String gradleAppName = System.getProperty("org.gradle.appname");
-            return (gradleAppName == null || gradleAppName.isEmpty()) ? MAVEN : GRADLE;
+            LOG.debug("********************");
+            LOG.debug("gradleAppName: >" + gradleAppName + "<");
+            String appleAwtApplicationName = System.getProperty("apple.awt.application.name");
+            LOG.debug("appleAwtApplicationName: >" + appleAwtApplicationName + "<");
+            String sunJavaCommand = System.getProperty("sun.java.command");
+            LOG.debug("sunJavaCommand: >" + sunJavaCommand + "<");
+            LOG.debug("********************");
+            return isGradleBuild(gradleAppName, appleAwtApplicationName, sunJavaCommand) ? GRADLE : MAVEN;
+        }
+
+        private static boolean isGradleBuild(String gradleAppName, String appleAwtApplicationName, String sunJavaCommand) {
+            return  gradleAppName != null  ||
+                    isGradleCommand(appleAwtApplicationName) ||
+                    isGradleCommand(sunJavaCommand);
+        }
+
+        private static boolean isGradleCommand(String property) {
+            return property != null && GRADLE_COMMANDS.stream().anyMatch(property::contains);
         }
     }
 
