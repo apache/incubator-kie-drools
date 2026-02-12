@@ -68,7 +68,20 @@ public class AppPaths {
 
         public static AppPaths.BuildTool findBuildTool() {
             String gradleAppName = System.getProperty("org.gradle.appname");
-            return (gradleAppName == null || gradleAppName.isEmpty()) ? MAVEN : GRADLE;
+            LOG.debug("********************");
+            LOG.debug("gradleAppName: >" + gradleAppName + "<");
+            String appleAwtApplicationName = System.getProperty("apple.awt.application.name");
+            LOG.debug("appleAwtApplicationName: >" + appleAwtApplicationName + "<");
+            String sunJavaCommand = System.getProperty("sun.java.command");
+            LOG.debug("sunJavaCommand: >" + sunJavaCommand + "<");
+            LOG.debug("********************");
+            return isGradleBuild(gradleAppName, appleAwtApplicationName, sunJavaCommand) ? GRADLE : MAVEN;
+        }
+
+        private static boolean isGradleBuild(String gradleAppName, String appleAwtApplicationName, String sunJavaCommand) {
+            return  gradleAppName != null  ||
+                    (appleAwtApplicationName  != null && appleAwtApplicationName.contains("GradleWorkerMain")) ||
+                    (sunJavaCommand  != null && sunJavaCommand.contains("GradleWorkerMain"));
         }
     }
 
