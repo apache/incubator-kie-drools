@@ -36,6 +36,8 @@ public class AppPaths {
 
     private static  final Logger LOG = LoggerFactory.getLogger(AppPaths.class);
 
+    private static final Set<String> GRADLE_COMMANDS = Set.of("GradleWorkerMain", "GradleMain", "GradleDaemon", "GradleWrapperMain");
+
     public enum BuildTool {
         MAVEN("target",
               Path.of("target","generated-sources"),
@@ -80,8 +82,12 @@ public class AppPaths {
 
         private static boolean isGradleBuild(String gradleAppName, String appleAwtApplicationName, String sunJavaCommand) {
             return  gradleAppName != null  ||
-                    (appleAwtApplicationName  != null && appleAwtApplicationName.contains("GradleWorkerMain")) ||
-                    (sunJavaCommand  != null && sunJavaCommand.contains("GradleWorkerMain"));
+                    isGradleCommand(appleAwtApplicationName) ||
+                    isGradleCommand(sunJavaCommand);
+        }
+
+        private static boolean isGradleCommand(String property) {
+            return property != null && GRADLE_COMMANDS.stream().anyMatch(property::contains);
         }
     }
 
