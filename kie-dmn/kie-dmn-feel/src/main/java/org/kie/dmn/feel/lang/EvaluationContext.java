@@ -74,5 +74,4 @@ public interface EvaluationContext {
     default void enterFrame(int size) {
         // Default implementation does nothing
     }
-
 }

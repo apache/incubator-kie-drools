@@ -224,7 +224,7 @@ public class UnaryTestNode
                         () -> Boolean.FALSE)
         );
     }
-    private Object evaluateRightValue(EvaluationContext context, Object left) {
+    Object evaluateRightValue(EvaluationContext context, Object left) {
         Object right;
         // set the value if the expression contains ('?') question mark
         if (containsQuestionMarkReference(value)) {
