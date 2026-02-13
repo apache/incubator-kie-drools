@@ -51,7 +51,7 @@
       - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
     -->
-    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.commons-codec>1.18.0</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
@@ -87,14 +87,14 @@
     <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.maven>3.9.6</version.org.apache.maven>
+    <version.org.apache.maven>3.9.11</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.4.1</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.assertj>3.27.3</version.org.assertj>
-    <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
+    <version.org.assertj>3.27.7</version.org.assertj>
+    <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->

@@ -53,7 +53,6 @@ public interface EvaluationContext {
 
     void notifyEvt(Supplier<FEELEvent> event);
 
-
     Collection<FEELEventListener> getListeners();
 
     void setRootObject(Object v);
@@ -63,4 +62,16 @@ public interface EvaluationContext {
     FEELDialect getFEELDialect();
 
     DMNVersion getDMNVersion();
+
+    default boolean isLenient() {
+        return true; // Default to lenient mode
+    }
+
+    default void setPerformRuntimeTypeCheck(boolean performRuntimeTypeCheck) {
+        // Default implementation does nothing
+    }
+
+    default void enterFrame(int size) {
+        // Default implementation does nothing
+    }
 }

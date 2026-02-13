@@ -173,6 +173,7 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
         public DMNVersion getDMNVersion() {
             return DMNVersion.getLatest();
         }
+
     }
 
 }

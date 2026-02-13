@@ -113,8 +113,6 @@ DRL_ENABLED : 'enabled';
 DRL_NO_LOOP : 'no-loop';
 DRL_AUTO_FOCUS : 'auto-focus';
 DRL_LOCK_ON_ACTIVE : 'lock-on-active';
-DRL_REFRACT : 'refract';
-DRL_DIRECT : 'direct';
 DRL_ACTIVATION_GROUP : 'activation-group';
 DRL_RULEFLOW_GROUP : 'ruleflow-group';
 DRL_DATE_EFFECTIVE : 'date-effective';
@@ -202,7 +200,7 @@ RHS_STRING_LITERAL
     | ('\'' ( DrlEscapeSequence | ~('\\'|'\'') )* '\'') { setText( normalizeString( getText() ) ); }
     ;
 
-RHS_NAMED_CONSEQUENCE_THEN : DRL_THEN LBRACK IDENTIFIER RBRACK ;
+RHS_NAMED_CONSEQUENCE_THEN : DRL_THEN [ ]* LBRACK [ ]* IDENTIFIER [ ]* RBRACK ;
 
 RHS_CHUNK
     : ~[ "'()[\]{},;\t\r\n\u000C]+ // ;}) could be a delimitter proceding 'end'. ()[]{},; are delimiters to match RHS_STRING_LITERAL

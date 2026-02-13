@@ -18,17 +18,15 @@
  */
 package org.kie.dmn.core.impl;
 
-import javax.xml.namespace.QName;
-
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -84,6 +82,7 @@ public class DMNRuntimeImpl
     private final DMNRuntimeKB runtimeKB;
 
     private boolean overrideRuntimeTypeCheck = false;
+
     private RuntimeModeOption.MODE runtimeModeOption = RuntimeModeOption.MODE.LENIENT;
 
     private DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
@@ -248,6 +247,11 @@ public class DMNRuntimeImpl
     @Override
     public Set<DMNRuntimeEventListener> getListeners() {
         return this.eventManager.getListeners();
+    }
+
+    @Override
+    public String getCurrentEvaluatingDecisionName() {
+        return this.eventManager.getCurrentEvaluatingDecisionName();
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
@@ -625,6 +629,7 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
+                eventManager.setCurrentEvaluatingDecisionName(d.getName());
                 EvaluatorResult er = decision.getEvaluator().evaluate(this, result);
                 // if result messages contains errors && runtime mode = strict -> stop execution and return null
                 if (strictMode && result.hasErrors()) {
@@ -703,6 +708,7 @@ public class DMNRuntimeImpl
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision(eventManager, decision, result,
                                                                   beforeEvaluateDecisionEvent);
+            eventManager.clearCurrentEvaluatingDecisionName();
         }
     }
 
@@ -846,5 +852,9 @@ public class DMNRuntimeImpl
 
     public DMNRuntimeKB getRuntimeKB() {
         return runtimeKB;
+    }
+
+    public RuntimeModeOption.MODE getRuntimeModeOption() {
+        return runtimeModeOption;
     }
 }

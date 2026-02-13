@@ -1828,23 +1828,6 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void attributeRefract() {
-        final String source = "rule Test refract when Person() then end";
-
-        PackageDescr pkg = parseAndGetPackageDescr(
-                source);
-
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
-
-        assertThat(rule.getName()).isEqualTo("Test");
-        Map<String, AttributeDescr> attributes = rule.getAttributes();
-        assertThat(attributes).hasSize(1);
-        AttributeDescr refract = attributes.get("refract");
-        assertThat(refract).isNotNull();
-        assertThat(refract.getValue()).isEqualTo("true");
-    }
-
-    @Test
     void enabledExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                 "rule_enabled_expression.drl");
@@ -4541,6 +4524,30 @@ class MiscDRLParserTest {
         assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$a.price > Cheese.BASE_PRICE");
         assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("t1");
         assertThat(conditionalBranchDescr.getElseBranch().getConsequence().getName()).isEqualTo("t2");
+    }
+
+    @Test
+    void namedConsequenceThenWithSpace() {
+        final String text =
+                """
+                        rule R1
+                          when
+                            Person( $age : age > 10 )
+                            if( $age == 21 ) break [ Do2 ]
+                          then
+                            result.add("R1 Default Consequence: $age = " + $age);
+                          then[ Do2 ]
+                            result.add("R1 Do2 Consequence: $age = " + $age);
+                        end
+                        """;
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(1);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$age == 21");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("Do2");
+
+        assertThat(ruleDescr.getConsequence()).asString().isEqualToIgnoringWhitespace("result.add(\"R1 Default Consequence: $age = \" + $age);");
+        assertThat(ruleDescr.getNamedConsequences().get("Do2")).asString().isEqualToIgnoringWhitespace("result.add(\"R1 Do2 Consequence: $age = \" + $age);");
     }
 
     @Test
