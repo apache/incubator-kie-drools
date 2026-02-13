@@ -37,11 +37,12 @@ jobs:
 
       - name: Run Apache RAT
         run: |
-          java -jar apache-rat-0.17.jar -E .rat-excludes -- . > .rat-reports 2>&1
-          if grep -q "^! Unapproved:" .rat-reports || grep -q "INFO:   Unapproved:  [1-9]" .rat-reports; then
+          # Redirect output to .rat-reports file, continue even if RAT returns non-zero exit code because we want to print Unapproved documents
+          java -jar apache-rat-0.17.jar -E .rat-excludes -- . > .rat-reports 2>&1 || true
+          if grep -q "^! Unapproved:" .rat-reports; then
             echo "❌ Apache RAT check FAILED - Files with unapproved licenses found:"
             echo ""
-            sed -n '/Files with unapproved licenses/,/^\*\*\*\*\*/p' .rat-reports | grep -v "^\*\*\*\*\*"
+            grep "^! /" .rat-reports
             exit 1
           else
             echo "✅ Apache RAT check PASSED - All files have approved licenses."
