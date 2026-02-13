@@ -38,7 +38,7 @@ jobs:
       - name: Run Apache RAT
         run: |
           # Redirect output to .rat-reports file, continue even if RAT returns non-zero exit code because we want to print Unapproved documents
-          java -jar apache-rat-0.17.jar -E .rat-excludes -- . > .rat-reports 2>&1 || true
+          java -jar apache-rat-0.17.jar --input-exclude-file .rat-excludes -- . > .rat-reports 2>&1 || true
           if grep -q "^! Unapproved:" .rat-reports; then
             echo "❌ Apache RAT check FAILED - Files with unapproved licenses found:"
             echo ""
