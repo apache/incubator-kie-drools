@@ -42,7 +42,7 @@ public class NotificationEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().startsWith("UserTaskDeadline")) {
+        if (event.getType().startsWith("UserTaskInstanceDeadline")) {
             logger.debug("About to publish event {} to topic {}", event, CHANNEL_NAME);
             try {
                 emitter.send(event);

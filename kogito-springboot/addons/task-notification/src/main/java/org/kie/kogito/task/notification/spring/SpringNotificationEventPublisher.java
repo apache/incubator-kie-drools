@@ -42,7 +42,7 @@ public class SpringNotificationEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().startsWith("UserTaskDeadline")) {
+        if (event.getType().startsWith("UserTaskInstanceDeadline")) {
             logger.debug("About to publish event {} to Kafka topic {}", event, topic);
             try {
                 emitter.send(topic, event);
