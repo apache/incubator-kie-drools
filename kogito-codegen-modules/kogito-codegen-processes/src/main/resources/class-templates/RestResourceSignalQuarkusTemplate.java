@@ -18,6 +18,9 @@
  */
 package com.myspace.demo;
 
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.core.Response;
+
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 
@@ -52,6 +55,6 @@ public class $Type$Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public $Type$Output signalInstance(@PathParam("id") final String id, final $signalType$ data) {
         return processService.signalProcessInstance(process, id, data, "$signalName$")
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(() -> new ClientErrorException(String.format("Process instance %s is not currently accepting signal '%s'", id, "$signalName$"), Response.Status.PRECONDITION_FAILED));
     }
 }

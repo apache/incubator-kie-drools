@@ -74,4 +74,13 @@ public class ExceptionsHandler extends AbstractExceptionsHandler<Response> {
                 .entity(body.getBody())
                 .build();
     }
+
+    @Override
+    protected Response preconditionFailed(ExceptionBodyMessage body) {
+        return Response
+                .status(Response.Status.PRECONDITION_FAILED)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .entity(body.getBody())
+                .build();
+    }
 }

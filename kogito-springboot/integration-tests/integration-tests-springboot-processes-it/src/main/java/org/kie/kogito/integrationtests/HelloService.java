@@ -52,6 +52,11 @@ public class HelloService {
         return "Goodbye " + name + "!";
     }
 
+    public String bye(String name) {
+        logMethodCall("bye", name);
+        return "Bye " + name + "!";
+    }
+
     public String helloMulti(String name, String lastName) {
         logMethodCall("helloMulti", name, lastName);
         return "Hello (first and lastname) " + name.concat(" ").concat(lastName).concat("!");

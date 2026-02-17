@@ -53,6 +53,11 @@ public class HelloService {
         return mapper.readTree(retJsonStr);
     }
 
+    public String bye(String input) {
+        logMethodCall("bye", input);
+        return "Bye " + input + "!";
+    }
+
     public String goodbye(String name) {
         logMethodCall("goodbye", name);
         return "Goodbye " + name + "!";

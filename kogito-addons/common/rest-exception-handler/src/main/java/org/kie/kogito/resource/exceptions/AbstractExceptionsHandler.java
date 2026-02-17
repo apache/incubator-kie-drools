@@ -96,18 +96,14 @@ public abstract class AbstractExceptionsHandler<T> {
     }
 
     private T fromErrorCode(ExceptionBodyMessage message) {
-        switch (message.getErrorCode()) {
-            case "400":
-                return badRequest(message);
-            case "403":
-                return forbidden(message);
-            case "404":
-                return notFound(message);
-            case "409":
-                return conflict(message);
-            default:
-                return internalError(message);
-        }
+        return switch (message.getErrorCode()) {
+            case "400" -> badRequest(message);
+            case "403" -> forbidden(message);
+            case "404" -> notFound(message);
+            case "409" -> conflict(message);
+            case "412" -> preconditionFailed(message);
+            default -> internalError(message);
+        };
     }
 
     protected abstract T badRequest(ExceptionBodyMessage body);
@@ -119,6 +115,8 @@ public abstract class AbstractExceptionsHandler<T> {
     protected abstract T notFound(ExceptionBodyMessage body);
 
     protected abstract T forbidden(ExceptionBodyMessage body);
+
+    protected abstract T preconditionFailed(ExceptionBodyMessage body);
 
     public T mapException(Exception exceptionThrown) {
 

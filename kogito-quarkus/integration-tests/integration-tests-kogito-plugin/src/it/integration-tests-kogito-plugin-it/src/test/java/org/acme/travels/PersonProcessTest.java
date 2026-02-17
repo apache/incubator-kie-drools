@@ -28,6 +28,7 @@ import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.ws.rs.ClientErrorException;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Model;

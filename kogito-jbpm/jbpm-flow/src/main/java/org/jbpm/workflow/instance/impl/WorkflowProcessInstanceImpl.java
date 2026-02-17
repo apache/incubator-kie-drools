@@ -1000,7 +1000,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public String[] getEventTypes() {
-        return externalEventListeners.keySet().stream().map(this::resolveVariable).collect(Collectors.toList()).toArray(new String[externalEventListeners.size()]);
+        return externalEventListeners.keySet().stream().map(this::resolveEventType).collect(Collectors.toList()).toArray(new String[externalEventListeners.size()]);
+    }
+
+    private Object resolveEventType(String eventType) {
+        if (isVariableExpression(eventType)) {
+            return resolveVariable(eventType);
+        }
+        return eventType;
     }
 
     @Override

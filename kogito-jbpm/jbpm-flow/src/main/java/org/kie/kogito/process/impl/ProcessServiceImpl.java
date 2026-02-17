@@ -160,8 +160,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public <T extends MappableToModel<R>, R> Optional<R> signalProcessInstance(Process<T> process, String id, Object data, String signalName) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
-                () -> process.instances().findById(id)
+        return UnitOfWorkExecutor.executeInUnitOfWork(
+                application.unitOfWorkManager(),
+                () -> process
+                        .instances().acceptingEventType(signalName, id)
+                        .findFirst()
                         .map(pi -> {
                             pi.send(SignalFactory.of(signalName, data));
                             return pi.checkError().variables().toModel();

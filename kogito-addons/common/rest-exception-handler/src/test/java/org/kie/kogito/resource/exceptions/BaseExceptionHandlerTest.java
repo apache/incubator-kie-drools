@@ -57,6 +57,9 @@ class BaseExceptionHandlerTest {
     @Mock
     private Object forbiddenResponse;
 
+    @Mock
+    private Object preconditionFailedResponse;
+
     @BeforeEach
     void setUp() {
         tested = spy(new AbstractExceptionsHandler<Object>() {
@@ -83,6 +86,11 @@ class BaseExceptionHandlerTest {
             @Override
             protected Object forbidden(ExceptionBodyMessage body) {
                 return forbiddenResponse;
+            }
+
+            @Override
+            protected Object preconditionFailed(ExceptionBodyMessage body) {
+                return preconditionFailedResponse;
             }
         });
     }

@@ -91,6 +91,14 @@ public class ExceptionsHandler extends AbstractExceptionsHandler<ResponseEntity<
                 .body(body.getBody());
     }
 
+    @Override
+    protected ResponseEntity<Map<String, String>> preconditionFailed(ExceptionBodyMessage body) {
+        return ResponseEntity
+                .status(HttpStatus.PRECONDITION_FAILED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body.getBody());
+    }
+
     @ExceptionHandler(InvalidLifeCyclePhaseException.class)
     public ResponseEntity<Map<String, String>> toResponse(InvalidLifeCyclePhaseException exception) {
         return mapException(exception);
