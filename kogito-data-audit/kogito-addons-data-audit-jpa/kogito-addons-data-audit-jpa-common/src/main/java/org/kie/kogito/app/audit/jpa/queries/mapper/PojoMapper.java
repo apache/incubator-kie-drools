@@ -46,14 +46,57 @@ public class PojoMapper<T> implements DataMapper<T, Object[]> {
     @Override
     public List<T> produce(List<Object[]> data) {
         List<T> transformed = new ArrayList<>();
+        Class<?>[] paramTypes = defaultConstructor.getParameterTypes();
+
         for (Object[] row : data) {
             try {
-                transformed.add(defaultConstructor.newInstance(row));
+                // Convert DB specific types to match constructor parameters
+                Object[] converted = new Object[row.length];
+                for (int i = 0; i < row.length; i++) {
+                    converted[i] = convertType(row[i], paramTypes[i]);
+                }
+                transformed.add(defaultConstructor.newInstance(converted));
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 LOGGER.error("Could not transform data", e);
             }
         }
         return transformed;
+    }
+
+    private Object convertType(Object value, Class<?> targetType) {
+        if (value == null) {
+            return null;
+        }
+
+        // Handle BigDecimal -> Integer/Long conversion)
+        if (value instanceof java.math.BigDecimal bd) {
+            if (targetType == Integer.class || targetType == int.class) {
+                return bd.intValue();
+            } else if (targetType == Long.class || targetType == long.class) {
+                return bd.longValue();
+            }
+        }
+
+        // Handle CLOB -> String conversion
+        if (value instanceof java.sql.Clob clob && targetType == String.class) {
+            try {
+                long length = clob.length();
+                if (length == 0) {
+                    return null;
+                }
+                // Check if length exceeds int max (extremely unlikely for stack traces)
+                if (length > Integer.MAX_VALUE) {
+                    LOGGER.warn("CLOB too large ({} bytes), truncating to Integer.MAX_VALUE", length);
+                    return clob.getSubString(1, Integer.MAX_VALUE);
+                }
+                return clob.getSubString(1, (int) length);
+            } catch (java.sql.SQLException e) {
+                LOGGER.warn("Failed to read CLOB value", e);
+                return null;
+            }
+        }
+
+        return value;
     }
 
 }

@@ -5,8 +5,8 @@ type Query {
     GetJobById (jobId : String!) : [JobExecutionLog]
     GetJobByProcessInstanceId (processInstanceId : String!) : [JobExecutionLog]
 
-    GetJobHistoryById (jobId : String!) : [JobExecutionLog]
-    GetJobHistoryByProcessInstanceId (processInstanceId : String!) : [JobExecutionLog]
+    GetJobHistoryById (jobId : String!, pagination: Pagination) : [JobExecutionLog]
+    GetJobHistoryByProcessInstanceId (processInstanceId : String!, pagination: Pagination) : [JobExecutionLog]
 
     GetAllPendingJobs (pagination: Pagination): [JobExecutionLog]
     GetAllEligibleJobsForExecution (pagination: Pagination) : [JobExecutionLog]

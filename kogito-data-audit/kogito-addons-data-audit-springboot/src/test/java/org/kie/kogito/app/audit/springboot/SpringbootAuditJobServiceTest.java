@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.quarkus;
+package org.kie.kogito.app.audit.springboot;
 
 import java.util.List;
 import java.util.Map;
@@ -29,11 +29,12 @@ import org.kie.kogito.app.audit.api.SubsystemConstants;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.jobs.service.model.JobStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 
-import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-
-import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,11 +43,15 @@ import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.deriveNewState
 import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.newJobEvent;
 import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.wrapQuery;
 
-@QuarkusTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "server_port=0")
 @TestInstance(Lifecycle.PER_CLASS)
-public class QuarkusAuditJobServiceTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class SpringbootAuditJobServiceTest {
 
-    @Inject
+    @LocalServerPort
+    private Integer port;
+
+    @Autowired
     EventPublisher publisher;
 
     @BeforeAll
@@ -117,6 +122,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -142,6 +148,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -178,6 +185,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -222,6 +230,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -246,6 +255,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -265,6 +275,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -287,6 +298,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -308,6 +320,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -330,6 +343,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -354,6 +368,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -378,6 +393,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -401,6 +417,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -422,6 +439,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> data = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -451,6 +469,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -479,6 +498,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -528,6 +548,7 @@ public class QuarkusAuditJobServiceTest {
         List<Map<String, Object>> response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -551,6 +572,7 @@ public class QuarkusAuditJobServiceTest {
         response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
@@ -573,6 +595,7 @@ public class QuarkusAuditJobServiceTest {
         response = given()
                 .contentType(ContentType.JSON)
                 .body(query)
+                .port(port)
                 .when()
                 .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()

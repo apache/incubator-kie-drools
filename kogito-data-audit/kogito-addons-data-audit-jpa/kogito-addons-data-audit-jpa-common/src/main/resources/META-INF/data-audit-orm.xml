@@ -26,7 +26,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status = 'SCHEDULED'
@@ -49,7 +51,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.job_id = :jobId
@@ -71,7 +75,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
              WHERE o1.job_id = :jobId
           ORDER BY o1.event_date DESC
@@ -94,7 +100,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
              WHERE o1.process_instance_id = :processInstanceId
           ORDER BY o1.event_date DESC
@@ -116,7 +124,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status IN ('SCHEDULED', 'RETRY')
@@ -137,7 +147,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status IN ('SCHEDULED')
@@ -158,7 +170,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status IN ('RETRY', 'ERROR')
@@ -180,7 +194,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL 
@@ -202,7 +218,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status = 'EXECUTED'
@@ -223,7 +241,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status = 'ERROR'
@@ -244,7 +264,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status = 'CANCELED'
@@ -266,7 +288,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.status IN (:status) 
@@ -288,7 +312,9 @@
                   o1.retries, 
                   o1.status, 
                   o1.execution_counter,  
-                  o1.event_date
+                  o1.event_date,
+                  o1.exception_message,
+                  o1.exception_details
               FROM Job_Execution_Log o1 
               LEFT JOIN Job_Execution_Log o2 ON o1.job_id = o2.job_id AND o1.event_date &lt; o2.event_date 
              WHERE o2.job_id IS NULL AND o1.process_instance_id = :processInstanceId

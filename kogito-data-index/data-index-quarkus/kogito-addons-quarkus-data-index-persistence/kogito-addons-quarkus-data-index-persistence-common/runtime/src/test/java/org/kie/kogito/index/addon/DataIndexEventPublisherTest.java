@@ -112,6 +112,74 @@ public class DataIndexEventPublisherTest {
     }
 
     @Test
+    void onJobEventWithExceptionDetails() throws Exception {
+        ArgumentCaptor<Job> eventCaptor = ArgumentCaptor.forClass(Job.class);
+
+        Job jobWithException = buildJob();
+        jobWithException.setStatus("ERROR");
+        jobWithException.setExceptionMessage("java.lang.RuntimeException");
+        jobWithException.setExceptionDetails("Connection timeout after 30 seconds");
+
+        byte[] jsonContent = getObjectMapper().writeValueAsBytes(jobWithException);
+
+        DataEvent event = new TestingDataEvent("JobEvent", "source", jsonContent,
+                PROCESS_INSTANCE_ID, ROOT_PROCESS_INSTANCE_ID, PROCESS_ID, ROOT_PROCESS_ID);
+        dataIndexEventPublisher.publish(event);
+
+        verify(indexingService).indexJob(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getId()).isEqualTo(JOB_ID);
+        assertThat(eventCaptor.getValue().getStatus()).isEqualTo("ERROR");
+        assertThat(eventCaptor.getValue().getExceptionMessage()).isEqualTo("java.lang.RuntimeException");
+        assertThat(eventCaptor.getValue().getExceptionDetails()).isEqualTo("Connection timeout after 30 seconds");
+    }
+
+    @Test
+    void onJobEventWithRetryAndExceptionDetails() throws Exception {
+        ArgumentCaptor<Job> eventCaptor = ArgumentCaptor.forClass(Job.class);
+
+        Job jobWithRetry = buildJob();
+        jobWithRetry.setStatus("RETRY");
+        jobWithRetry.setRetries(2);
+        jobWithRetry.setExceptionMessage("java.net.ConnectException");
+        jobWithRetry.setExceptionDetails("Connection refused: connect");
+
+        byte[] jsonContent = getObjectMapper().writeValueAsBytes(jobWithRetry);
+
+        DataEvent event = new TestingDataEvent("JobEvent", "source", jsonContent,
+                PROCESS_INSTANCE_ID, ROOT_PROCESS_INSTANCE_ID, PROCESS_ID, ROOT_PROCESS_ID);
+        dataIndexEventPublisher.publish(event);
+
+        verify(indexingService).indexJob(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getId()).isEqualTo(JOB_ID);
+        assertThat(eventCaptor.getValue().getStatus()).isEqualTo("RETRY");
+        assertThat(eventCaptor.getValue().getRetries()).isEqualTo(2);
+        assertThat(eventCaptor.getValue().getExceptionMessage()).isEqualTo("java.net.ConnectException");
+        assertThat(eventCaptor.getValue().getExceptionDetails()).isEqualTo("Connection refused: connect");
+    }
+
+    @Test
+    void onJobEventWithNullExceptionDetails() throws Exception {
+        ArgumentCaptor<Job> eventCaptor = ArgumentCaptor.forClass(Job.class);
+
+        Job jobWithoutException = buildJob();
+        jobWithoutException.setStatus("EXECUTED");
+        jobWithoutException.setExceptionMessage(null);
+        jobWithoutException.setExceptionDetails(null);
+
+        byte[] jsonContent = getObjectMapper().writeValueAsBytes(jobWithoutException);
+
+        DataEvent event = new TestingDataEvent("JobEvent", "source", jsonContent,
+                PROCESS_INSTANCE_ID, ROOT_PROCESS_INSTANCE_ID, PROCESS_ID, ROOT_PROCESS_ID);
+        dataIndexEventPublisher.publish(event);
+
+        verify(indexingService).indexJob(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getId()).isEqualTo(JOB_ID);
+        assertThat(eventCaptor.getValue().getStatus()).isEqualTo("EXECUTED");
+        assertThat(eventCaptor.getValue().getExceptionMessage()).isNull();
+        assertThat(eventCaptor.getValue().getExceptionDetails()).isNull();
+    }
+
+    @Test
     void onMalformedJobEvent() throws Exception {
         byte[] jsonContent = getObjectMapper().writeValueAsBytes("MalformedJob");
 

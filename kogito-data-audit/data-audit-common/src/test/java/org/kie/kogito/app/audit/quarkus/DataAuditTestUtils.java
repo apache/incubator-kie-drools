@@ -72,6 +72,12 @@ public class DataAuditTestUtils {
     public static JobInstanceDataEvent newJobEvent(String jobId, String nodeInstanceId, Integer priority,
             String processId, String procesInstanceId, Long repeatInterval, Integer repeatLimit, String rootProcessId, String rootProcessInstanceId,
             JobStatus state, Integer executionCounter) throws Exception {
+        return newJobEvent(jobId, nodeInstanceId, priority, processId, procesInstanceId, repeatInterval, repeatLimit, rootProcessId, rootProcessInstanceId, state, executionCounter, null, null);
+    }
+
+    public static JobInstanceDataEvent newJobEvent(String jobId, String nodeInstanceId, Integer priority,
+            String processId, String procesInstanceId, Long repeatInterval, Integer repeatLimit, String rootProcessId, String rootProcessInstanceId,
+            JobStatus state, Integer executionCounter, String exceptionMessage, String exceptionDetails) throws Exception {
 
         ScheduledJob job = new ScheduledJob();
         job.setId(jobId);
@@ -89,8 +95,11 @@ public class DataAuditTestUtils {
                 .job(job)
                 .status(state)
                 .executionCounter(executionCounter)
+                .retries(executionCounter) // Set retries to match executionCounter for testing
                 .scheduledId("my scheduler")
                 .expirationTime(ZonedDateTime.now())
+                .exceptionMessage(exceptionMessage)
+                .exceptionDetails(exceptionDetails)
                 .build();
 
         JobInstanceDataEvent dataEvent =
@@ -100,13 +109,20 @@ public class DataAuditTestUtils {
     }
 
     public static JobInstanceDataEvent deriveNewState(JobInstanceDataEvent jobEvent, Integer executionCounter, JobStatus state) throws Exception {
+        return deriveNewState(jobEvent, executionCounter, state, null, null);
+    }
+
+    public static JobInstanceDataEvent deriveNewState(JobInstanceDataEvent jobEvent, Integer executionCounter, JobStatus state, String exceptionMessage, String exceptionDetails) throws Exception {
         ScheduledJob job = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(jobEvent.getData(), ScheduledJob.class);
         job = ScheduledJob.builder()
                 .job(job)
                 .status(state)
                 .executionCounter(executionCounter)
+                .retries(executionCounter) // Set retries to match executionCounter for testing
                 .scheduledId("my scheduler")
                 .expirationTime(ZonedDateTime.now())
+                .exceptionMessage(exceptionMessage)
+                .exceptionDetails(exceptionDetails)
                 .build();
 
         JobInstanceDataEvent dataEvent = new JobInstanceDataEvent("JobEvent", jobEvent.getSource().toString(), new ObjectMapper().registerModule(new JavaTimeModule()).writeValueAsBytes(job),

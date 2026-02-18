@@ -47,6 +47,8 @@ public class JobEntity extends AbstractEntity {
     private ZonedDateTime lastUpdate;
     private Integer executionCounter;
     private String endpoint;
+    private String exceptionMessage;
+    private String exceptionDetails;
 
     @Override
     public String getId() {
@@ -185,6 +187,22 @@ public class JobEntity extends AbstractEntity {
         this.nodeInstanceId = nodeInstanceId;
     }
 
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
+    }
+
+    public void setExceptionDetails(String exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -222,6 +240,8 @@ public class JobEntity extends AbstractEntity {
                 ", lastUpdate=" + lastUpdate +
                 ", executionCounter=" + executionCounter +
                 ", endpoint='" + endpoint + '\'' +
+                ", exceptionMessage='" + exceptionMessage + '\'' +
+                ", exceptionDetails='" + exceptionDetails + '\'' +
                 '}';
     }
 }

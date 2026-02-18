@@ -55,6 +55,8 @@ public class JobEntityMapper implements MongoEntityMapper<Job, JobEntity> {
         entity.setExecutionCounter(job.getExecutionCounter());
         entity.setEndpoint(job.getEndpoint());
         entity.setNodeInstanceId(job.getNodeInstanceId());
+        entity.setExceptionMessage(job.getExceptionMessage());
+        entity.setExceptionDetails(job.getExceptionDetails());
         return entity;
     }
 
@@ -82,6 +84,8 @@ public class JobEntityMapper implements MongoEntityMapper<Job, JobEntity> {
         job.setExecutionCounter(entity.getExecutionCounter());
         job.setEndpoint(entity.getEndpoint());
         job.setNodeInstanceId(entity.getNodeInstanceId());
+        job.setExceptionMessage(entity.getExceptionMessage());
+        job.setExceptionDetails(entity.getExceptionDetails());
         return job;
     }
 }

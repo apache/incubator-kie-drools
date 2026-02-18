@@ -115,6 +115,51 @@ class BlockingMessagingEventConsumerTest {
     }
 
     @Test
+    void testOnJobEventWithExceptionDetails() {
+        // Arrange
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        Job mockJob = mock(Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        // Act
+        consumer.onJobEvent(event);
+
+        // Assert
+        verify(indexingService, times(1)).indexJob(mockJob);
+    }
+
+    @Test
+    void testOnJobEventWithRetryAndExceptionDetails() {
+        // Arrange
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        Job mockJob = mock(Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        // Act
+        consumer.onJobEvent(event);
+
+        // Assert
+        verify(indexingService, times(1)).indexJob(mockJob);
+    }
+
+    @Test
+    void testOnJobEventWithNullExceptionDetails() {
+        // Arrange
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        Job mockJob = mock(Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        // Act
+        consumer.onJobEvent(event);
+
+        // Assert
+        verify(indexingService, times(1)).indexJob(mockJob);
+    }
+
+    @Test
     void testOnProcessDefinitionDataEvent() {
         // Arrange
         ProcessDefinitionDataEvent event1 = mock(ProcessDefinitionDataEvent.class);

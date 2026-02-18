@@ -133,7 +133,7 @@ class EventPublisherJobStreamsTest {
     }
 
     private void assertData(JsonNode jsonNode) {
-        assertThat(jsonNode).hasSize(17);
+        assertThat(jsonNode).hasSize(19);
         assertHasField(jsonNode, "id", JOB_ID);
         assertHasField(jsonNode, "expirationTime", EXPIRATION_TIME.toString());
         assertHasField(jsonNode, "priority", Integer.toString(PRIORITY));
@@ -151,6 +151,8 @@ class EventPublisherJobStreamsTest {
         assertHasField(jsonNode, "lastUpdate", LAST_UPDATE.toString());
         assertHasField(jsonNode, "executionCounter", Integer.toString(EXECUTION_COUNTER));
         assertHasField(jsonNode, "executionResponse", null);
+        assertHasField(jsonNode, "exceptionMessage", null);
+        assertHasField(jsonNode, "exceptionDetails", null);
     }
 
     private JobDetails buildJobDetails() {

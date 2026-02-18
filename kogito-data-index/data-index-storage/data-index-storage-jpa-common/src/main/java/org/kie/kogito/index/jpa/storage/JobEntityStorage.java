@@ -81,5 +81,7 @@ public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> im
         entity.setLastUpdate(job.getLastUpdate());
         entity.setExecutionCounter(job.getExecutionCounter());
         entity.setEndpoint(job.getEndpoint());
+        entity.setExceptionMessage(job.getExceptionMessage());
+        entity.setExceptionDetails(job.getExceptionDetails());
     }
 }

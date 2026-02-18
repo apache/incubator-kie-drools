@@ -363,6 +363,7 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setRepeatInterval(job.getRepeatInterval());
         log.setRepeatLimit(job.getRepeatLimit());
         log.setScheduledId(job.getScheduledId());
+        log.setRetries(job.getRetries());
 
         if (job.getStatus() != null) {
             log.setStatus(job.getStatus().name());
@@ -370,6 +371,8 @@ public class JPADataAuditStore implements DataAuditStore {
 
         log.setExecutionCounter(job.getExecutionCounter());
         log.setEventDate(Timestamp.from(Instant.now()));
+        log.setExceptionMessage(job.getExceptionMessage());
+        log.setExceptionDetails(job.getExceptionDetails());
         EntityManager entityManager = context.getContext();
         entityManager.persist(log);
     }

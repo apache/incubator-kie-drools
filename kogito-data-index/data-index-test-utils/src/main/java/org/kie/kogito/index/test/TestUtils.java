@@ -397,14 +397,14 @@ public final class TestUtils {
         job.setRootProcessId(rootProcessId);
         job.setRootProcessInstanceId(rootProcessInstanceId);
         job.setStatus(status);
-        job.setExpirationTime(ZonedDateTime.now());
+        job.setExpirationTime(ZonedDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         job.setPriority(1);
         job.setCallbackEndpoint("http://service");
         job.setRepeatInterval(0l);
         job.setRepeatLimit(-1);
         job.setScheduledId(UUID.randomUUID().toString());
         job.setRetries(10);
-        job.setLastUpdate(ZonedDateTime.now());
+        job.setLastUpdate(ZonedDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         job.setExecutionCounter(2);
         return job;
     }

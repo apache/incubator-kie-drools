@@ -44,6 +44,7 @@ public class JobDetails {
     private Long executionTimeout;
     private ChronoUnit executionTimeoutUnit;
     private ZonedDateTime created;
+    private JobExecutionExceptionDetails exceptionDetails;
 
     public JobDetails() {
         // do nothing
@@ -52,7 +53,7 @@ public class JobDetails {
     @SuppressWarnings("java:S107")
     protected JobDetails(String id, String correlationId, JobStatus status, ZonedDateTime lastUpdate, Integer retries,
             Integer executionCounter, String scheduledId, Recipient recipient, Trigger trigger, Integer priority,
-            Long executionTimeout, ChronoUnit executionTimeoutUnit, ZonedDateTime created) {
+            Long executionTimeout, ChronoUnit executionTimeoutUnit, ZonedDateTime created, JobExecutionExceptionDetails exceptionDetails) {
         this.id = id;
         this.correlationId = correlationId;
         this.status = status;
@@ -66,6 +67,7 @@ public class JobDetails {
         this.executionTimeout = executionTimeout;
         this.executionTimeoutUnit = executionTimeoutUnit;
         this.created = created;
+        this.exceptionDetails = exceptionDetails;
     }
 
     public String getId() {
@@ -118,6 +120,10 @@ public class JobDetails {
 
     public ZonedDateTime getCreated() {
         return created;
+    }
+
+    public JobExecutionExceptionDetails getExceptionDetails() {
+        return exceptionDetails;
     }
 
     public static JobDetailsBuilder builder() {
@@ -176,6 +182,10 @@ public class JobDetails {
         this.created = created;
     }
 
+    public void setExceptionDetails(JobExecutionExceptionDetails exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -196,14 +206,15 @@ public class JobDetails {
                 && Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime())
                 && Objects.equals(getExecutionTimeout(), that.getExecutionTimeout())
                 && Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit())
-                && Objects.equals(getCreated(), that.getCreated());
+                && Objects.equals(getCreated(), that.getCreated())
+                && Objects.equals(getExceptionDetails(), that.getExceptionDetails());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getCorrelationId(), getStatus(), getRetries(), getExecutionCounter(),
                 getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit(),
-                getCreated());
+                getCreated(), getExceptionDetails());
     }
 
     @Override
@@ -213,6 +224,6 @@ public class JobDetails {
                 .add("retries=" + retries).add("executionCounter=" + executionCounter)
                 .add("scheduledId='" + scheduledId + "'").add("recipient=" + recipient).add("trigger=" + trigger)
                 .add("executionTimeout=" + executionTimeout).add("executionTimeoutUnit=" + executionTimeoutUnit)
-                .add("created=" + created).toString();
+                .add("created=" + created).add("exceptionDetails=" + exceptionDetails).toString();
     }
 }

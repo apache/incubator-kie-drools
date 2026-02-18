@@ -82,6 +82,12 @@ public class JobDetailsEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private OffsetDateTime created;
 
+    @Column(name = "exception_message")
+    private String exceptionMessage;
+
+    @Column(name = "exception_details", columnDefinition = "TEXT")
+    private String exceptionDetails;
+
     public String getId() {
         return id;
     }
@@ -192,5 +198,21 @@ public class JobDetailsEntity {
 
     public void setCreated(OffsetDateTime created) {
         this.created = created;
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
+    }
+
+    public void setExceptionDetails(String exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
     }
 }

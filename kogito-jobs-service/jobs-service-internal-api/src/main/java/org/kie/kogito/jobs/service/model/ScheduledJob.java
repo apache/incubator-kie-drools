@@ -35,6 +35,8 @@ public class ScheduledJob extends Job {
     private ZonedDateTime lastUpdate;
     private Integer executionCounter;
     private JobExecutionResponse executionResponse;
+    private String exceptionMessage;
+    private String exceptionDetails;
 
     public ScheduledJob() {
     }
@@ -70,12 +72,20 @@ public class ScheduledJob extends Job {
         return lastUpdate;
     }
 
+    public Integer getExecutionCounter() {
+        return executionCounter;
+    }
+
     public JobExecutionResponse getExecutionResponse() {
         return executionResponse;
     }
 
-    public Integer getExecutionCounter() {
-        return executionCounter;
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
     }
 
     public Optional<Long> hasInterval() {
@@ -96,6 +106,8 @@ public class ScheduledJob extends Job {
                 .add("lastUpdate=" + lastUpdate)
                 .add("executionResponse=" + executionResponse)
                 .add("executionCounter=" + executionCounter)
+                .add("exceptionMessage=" + exceptionMessage)
+                .add("exceptionDetails=" + exceptionDetails)
                 .add("job=" + super.toString())
                 .toString();
     }
@@ -117,12 +129,15 @@ public class ScheduledJob extends Job {
                 getStatus() == that.getStatus() &&
                 getLastUpdate().equals(that.getLastUpdate()) &&
                 Objects.equals(getExecutionCounter(), that.getExecutionCounter()) &&
-                Objects.equals(getExecutionResponse(), that.getExecutionResponse());
+                Objects.equals(getExecutionResponse(), that.getExecutionResponse()) &&
+                Objects.equals(getExceptionMessage(), that.getExceptionMessage()) &&
+                Objects.equals(getExceptionDetails(), that.getExceptionDetails());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getScheduledId(), getRetries(), getStatus(), getLastUpdate(), getExecutionCounter(), getExecutionResponse());
+        return Objects.hash(super.hashCode(), getScheduledId(), getRetries(), getStatus(), getLastUpdate(), getExecutionCounter(), getExecutionResponse(), getExceptionMessage(),
+                getExceptionDetails());
     }
 
     public static class ScheduledJobBuilder {
@@ -135,6 +150,8 @@ public class ScheduledJob extends Job {
         private ZonedDateTime expirationTime;
         private JobExecutionResponse executionResponse;
         private Integer executionCounter = 0;
+        private String exceptionMessage;
+        private String exceptionDetails;
 
         public ScheduledJobBuilder job(Job job) {
             this.job = job;
@@ -189,7 +206,9 @@ public class ScheduledJob extends Job {
                     .retries(scheduledJob.getRetries())
                     .status(scheduledJob.getStatus())
                     .executionResponse(scheduledJob.getExecutionResponse())
-                    .executionCounter(scheduledJob.getExecutionCounter());
+                    .executionCounter(scheduledJob.getExecutionCounter())
+                    .exceptionMessage(scheduledJob.getExceptionMessage())
+                    .exceptionDetails(scheduledJob.getExceptionDetails());
         }
 
         public ScheduledJobBuilder merge(ScheduledJob scheduledJob) {
@@ -199,7 +218,9 @@ public class ScheduledJob extends Job {
                     .retries(j.map(ScheduledJob::getRetries).orElse(retries))
                     .status(j.map(ScheduledJob::getStatus).orElse(status))
                     .executionResponse(j.map(ScheduledJob::getExecutionResponse).orElse(executionResponse))
-                    .executionCounter(j.map(ScheduledJob::getExecutionCounter).orElse(executionCounter));
+                    .executionCounter(j.map(ScheduledJob::getExecutionCounter).orElse(executionCounter))
+                    .exceptionMessage(j.map(ScheduledJob::getExceptionMessage).orElse(exceptionMessage))
+                    .exceptionDetails(j.map(ScheduledJob::getExceptionDetails).orElse(exceptionDetails));
         }
 
         public ScheduledJobBuilder status(JobStatus status) {
@@ -222,6 +243,16 @@ public class ScheduledJob extends Job {
             return this;
         }
 
+        public ScheduledJobBuilder exceptionMessage(String exceptionMessage) {
+            this.exceptionMessage = exceptionMessage;
+            return this;
+        }
+
+        public ScheduledJobBuilder exceptionDetails(String exceptionDetails) {
+            this.exceptionDetails = exceptionDetails;
+            return this;
+        }
+
         public static ScheduledJob from(Job job) {
             return builder().job(job).build();
         }
@@ -234,6 +265,8 @@ public class ScheduledJob extends Job {
             instance.lastUpdate = getLastUpdate();
             instance.executionCounter = executionCounter;
             instance.executionResponse = executionResponse;
+            instance.exceptionMessage = exceptionMessage;
+            instance.exceptionDetails = exceptionDetails;
             return instance;
         }
 

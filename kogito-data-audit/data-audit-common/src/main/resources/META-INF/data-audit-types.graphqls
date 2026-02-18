@@ -17,6 +17,8 @@ type JobExecutionLog {
     status : String
     executionCounter : Int
     eventDate : DateTime
+    exceptionMessage : String
+    exceptionDetails : String
 }
 
 type ProcessInstanceStateLog {

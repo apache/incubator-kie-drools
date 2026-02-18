@@ -44,6 +44,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ReactiveMessagingEventConsumerTest {
@@ -136,5 +137,44 @@ public class ReactiveMessagingEventConsumerTest {
 
         future.awaitFailure().assertFailedWith(RuntimeException.class, "");
         verify(service).indexJob(event.getData());
+    }
+
+    @Test
+    public void testOnJobEventWithExceptionDetails() {
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        org.kie.kogito.index.model.Job mockJob = mock(org.kie.kogito.index.model.Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        UniAssertSubscriber<Void> future = consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create());
+
+        future.awaitItem().assertCompleted();
+        verify(service).indexJob(mockJob);
+    }
+
+    @Test
+    public void testOnJobEventWithRetryAndExceptionDetails() {
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        org.kie.kogito.index.model.Job mockJob = mock(org.kie.kogito.index.model.Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        UniAssertSubscriber<Void> future = consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create());
+
+        future.awaitItem().assertCompleted();
+        verify(service).indexJob(mockJob);
+    }
+
+    @Test
+    public void testOnJobEventWithNullExceptionDetails() {
+        KogitoJobCloudEvent event = mock(KogitoJobCloudEvent.class);
+        org.kie.kogito.index.model.Job mockJob = mock(org.kie.kogito.index.model.Job.class);
+
+        when(event.getData()).thenReturn(mockJob);
+
+        UniAssertSubscriber<Void> future = consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create());
+
+        future.awaitItem().assertCompleted();
+        verify(service).indexJob(mockJob);
     }
 }

@@ -25,11 +25,7 @@ import java.util.Optional;
 
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
-import org.kie.kogito.jobs.service.model.JobDetails;
-import org.kie.kogito.jobs.service.model.JobDetailsBuilder;
-import org.kie.kogito.jobs.service.model.Recipient;
-import org.kie.kogito.jobs.service.model.RecipientInstance;
-import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.*;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.IntervalTrigger;
@@ -96,6 +92,8 @@ public class ScheduledJobAdapter {
                 .executionCounter(jobDetails.getExecutionCounter())
                 .retries(jobDetails.getRetries())
                 .lastUpdate(jobDetails.getLastUpdate())
+                .exceptionMessage(jobDetails.getExceptionDetails() != null ? jobDetails.getExceptionDetails().exceptionMessage() : null)
+                .exceptionDetails(jobDetails.getExceptionDetails() != null ? jobDetails.getExceptionDetails().exceptionDetails() : null)
                 .build();
     }
 
@@ -111,6 +109,7 @@ public class ScheduledJobAdapter {
                 .status(scheduledJob.getStatus())
                 .trigger(triggerAdapter(scheduledJob))
                 .priority(scheduledJob.getPriority())
+                .exceptionDetails(new JobExecutionExceptionDetails(scheduledJob.getExceptionMessage(), scheduledJob.getExceptionDetails()))
                 .build();
     }
 

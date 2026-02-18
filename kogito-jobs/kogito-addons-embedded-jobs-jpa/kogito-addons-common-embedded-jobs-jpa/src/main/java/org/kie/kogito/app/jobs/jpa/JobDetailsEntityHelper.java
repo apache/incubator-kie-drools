@@ -39,6 +39,7 @@ import org.kie.kogito.jobs.service.json.ExactExpirationTimeSerializer;
 import org.kie.kogito.jobs.service.json.JobDescriptionDeserializer;
 import org.kie.kogito.jobs.service.json.JobDescriptionSerializer;
 import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobExecutionExceptionDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.utils.DateUtil;
@@ -104,6 +105,16 @@ public class JobDetailsEntityHelper {
 
         instance.setCreated(Optional.ofNullable(job.getCreated()).map(ZonedDateTime::toOffsetDateTime).orElse(lastUpdate));
         instance.setLastUpdate(lastUpdate);
+
+        // Map exception details if present
+        if (job.getExceptionDetails() != null) {
+            instance.setExceptionMessage(job.getExceptionDetails().exceptionMessage());
+            instance.setExceptionDetails(job.getExceptionDetails().exceptionDetails());
+        } else {
+            instance.setExceptionMessage(null);
+            instance.setExceptionDetails(null);
+        }
+
         return instance;
     }
 
@@ -118,6 +129,14 @@ public class JobDetailsEntityHelper {
         instance.getTrigger().remove("classType");
         Trigger trigger = getObjectMapperInstance().convertValue(instance.getTrigger(), SimpleTimerTrigger.class);
 
+        // Map exception details if present
+        JobExecutionExceptionDetails exceptionDetails = null;
+        if (instance.getExceptionMessage() != null || instance.getExceptionDetails() != null) {
+            exceptionDetails = new JobExecutionExceptionDetails(
+                    instance.getExceptionMessage(),
+                    instance.getExceptionDetails());
+        }
+
         return JobDetails.builder()
                 .id(instance.getId())
                 .correlationId(instance.getCorrelationId())
@@ -131,6 +150,7 @@ public class JobDetailsEntityHelper {
                 .executionTimeoutUnit(mapOptionalValue(instance.getExecutionTimeoutUnit(), ChronoUnit::valueOf))
                 .created(instance.getCreated().atZoneSameInstant(DEFAULT_ZONE))
                 .lastUpdate(instance.getLastUpdate().atZoneSameInstant(DEFAULT_ZONE))
+                .exceptionDetails(exceptionDetails)
                 .build();
     }
 

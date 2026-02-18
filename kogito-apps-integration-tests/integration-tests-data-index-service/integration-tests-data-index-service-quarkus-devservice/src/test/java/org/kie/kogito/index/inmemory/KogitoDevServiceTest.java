@@ -112,6 +112,7 @@ public class KogitoDevServiceTest {
     private static String getApplicationPropertiesContent() {
         return "quarkus.http.port=" + httpPort + "\n"
                 + "quarkus.kogito.devservices.port=" + dataIndexHttpPort + "\n"
+                + "quarkus.keycloak.devservices.enabled=false" + "\n"
                 + getKogitoDevServicesImageName();
     }
 

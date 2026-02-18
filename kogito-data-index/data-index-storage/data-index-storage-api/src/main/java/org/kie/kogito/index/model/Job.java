@@ -47,6 +47,10 @@ public class Job {
     private Integer executionCounter;
     private String endpoint;
 
+    // Exception details for failed jobs
+    private String exceptionMessage;
+    private String exceptionDetails;
+
     public String getId() {
         return id;
     }
@@ -183,6 +187,22 @@ public class Job {
         this.nodeInstanceId = nodeInstanceId;
     }
 
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
+    }
+
+    public void setExceptionDetails(String exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
+    }
+
     @Override
     public String toString() {
         return "Job{" +
@@ -203,6 +223,8 @@ public class Job {
                 ", lastUpdate=" + lastUpdate +
                 ", executionCounter=" + executionCounter +
                 ", endpoint='" + endpoint + '\'' +
+                ", exceptionMessage='" + exceptionMessage + '\'' +
+                ", exceptionDetails='" + exceptionDetails + '\'' +
                 '}';
     }
 

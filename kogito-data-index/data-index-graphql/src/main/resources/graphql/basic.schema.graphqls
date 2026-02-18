@@ -497,6 +497,8 @@ type Job {
     lastUpdate: DateTime
     executionCounter: Int
     endpoint: String
+    exceptionMessage: String
+    exceptionDetails: String
 }
 
 enum JobStatus {
@@ -528,6 +530,7 @@ input JobArgument {
     priority: NumericArgument
     scheduledId: IdArgument
     lastUpdate: DateArgument
+    exceptionMessage: StringArgument
 }
 
 input JobOrderBy {
@@ -539,4 +542,5 @@ input JobOrderBy {
     retries: OrderBy
     lastUpdate: OrderBy
     executionCounter: OrderBy
+    exceptionMessage: OrderBy
 }

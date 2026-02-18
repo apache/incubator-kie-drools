@@ -91,6 +91,9 @@ public class QuarkusJobsService implements JobsService {
     @Inject
     Instance<ExceptionHandler> exceptionHandlers;
 
+    @Inject
+    WrappingConditionalJobExceptionDetailsExtractor exceptionDetailsExtractor;
+
     @PostConstruct
     public void init() {
         this.jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
@@ -110,6 +113,7 @@ public class QuarkusJobsService implements JobsService {
                 .withTimeoutInterceptor(
                         new TransactionJobTimeoutInterceptor(),
                         new ErrorHandlingJobTimeoutInterceptor(exceptionHandlers.stream().toList()))
+                .withExceptionDetailsExtractor(exceptionDetailsExtractor)
                 .withNumberOfWorkerThreads(numberOfWorkerThreads)
                 .withJobSynchronization(new JobSynchronization() {
 

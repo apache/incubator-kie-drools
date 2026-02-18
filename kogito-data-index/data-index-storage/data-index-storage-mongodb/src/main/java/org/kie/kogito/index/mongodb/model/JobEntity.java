@@ -59,6 +59,10 @@ public class JobEntity {
 
     String endpoint;
 
+    String exceptionMessage;
+
+    String exceptionDetails;
+
     public String getId() {
         return id;
     }
@@ -193,6 +197,22 @@ public class JobEntity {
 
     public void setNodeInstanceId(String nodeInstanceId) {
         this.nodeInstanceId = nodeInstanceId;
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
+    }
+
+    public void setExceptionDetails(String exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
     }
 
     @Override

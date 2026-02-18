@@ -40,6 +40,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 
 import io.restassured.http.ContentType;
 
@@ -53,6 +54,7 @@ import static org.kie.kogito.app.audit.quarkus.DataAuditTestUtils.wrapQuery;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "server_port=0")
 @TestInstance(Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SpringbootAuditQueryRegistryServiceTest {
 
     @LocalServerPort

@@ -75,6 +75,7 @@ public abstract class JPAAbstractQuery<R> {
             }
             if (pagination.get("offset") != null) {
                 jpaQuery.setFirstResult((Integer) pagination.get("offset"));
+            } else {
                 jpaQuery.setFirstResult(0);
             }
         } else {

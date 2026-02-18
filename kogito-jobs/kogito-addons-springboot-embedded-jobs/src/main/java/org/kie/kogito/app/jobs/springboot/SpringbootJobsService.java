@@ -90,6 +90,9 @@ public class SpringbootJobsService implements JobsService {
     @Autowired(required = false)
     protected List<ExceptionHandler> exceptionHandlers;
 
+    @Autowired
+    protected WrappingConditionalJobExceptionDetailsExtractor exceptionDetailsExtractor;
+
     @PostConstruct
     public void init() {
         this.jobScheduler = JobSchedulerBuilder.newJobSchedulerBuilder()
@@ -109,6 +112,7 @@ public class SpringbootJobsService implements JobsService {
                 .withTimeoutInterceptor(
                         new TransactionJobTimeoutInterceptor(transactionManager),
                         new ErrorHandlingJobTimeoutInterceptor(ofNullable(exceptionHandlers).stream().toList()))
+                .withExceptionDetailsExtractor(exceptionDetailsExtractor)
                 .withNumberOfWorkerThreads(numberOfWorkerThreads)
                 .withJobSynchronization(new JobSynchronization() {
 

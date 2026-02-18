@@ -39,6 +39,7 @@ public class JobDetailsBuilder {
     private Long executionTimeout;
     private ChronoUnit executionTimeoutUnit;
     private ZonedDateTime created;
+    private JobExecutionExceptionDetails exceptionDetails;
 
     public JobDetailsBuilder id(String id) {
         this.id = id;
@@ -105,9 +106,14 @@ public class JobDetailsBuilder {
         return this;
     }
 
+    public JobDetailsBuilder exceptionDetails(JobExecutionExceptionDetails exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
+        return this;
+    }
+
     public JobDetails build() {
         return new JobDetails(id, correlationId, status, lastUpdate, retries, executionCounter, scheduledId,
-                recipient, trigger, priority, executionTimeout, executionTimeoutUnit, created);
+                recipient, trigger, priority, executionTimeout, executionTimeoutUnit, created, exceptionDetails);
     }
 
     public JobDetailsBuilder of(JobDetails jobDetails) {
@@ -123,7 +129,8 @@ public class JobDetailsBuilder {
                 .priority(jobDetails.getPriority())
                 .executionTimeout(jobDetails.getExecutionTimeout())
                 .executionTimeoutUnit(jobDetails.getExecutionTimeoutUnit())
-                .created(jobDetails.getCreated());
+                .created(jobDetails.getCreated())
+                .exceptionDetails(jobDetails.getExceptionDetails());
     }
 
     public JobDetailsBuilder incrementRetries() {
@@ -148,6 +155,7 @@ public class JobDetailsBuilder {
                 .priority(j.map(JobDetails::getPriority).orElse(priority))
                 .executionCounter(j.map(JobDetails::getExecutionCounter).orElse(executionCounter))
                 .executionTimeout(j.map(JobDetails::getExecutionTimeout).orElse(executionTimeout))
-                .executionTimeoutUnit(j.map(JobDetails::getExecutionTimeoutUnit).orElse(executionTimeoutUnit));
+                .executionTimeoutUnit(j.map(JobDetails::getExecutionTimeoutUnit).orElse(executionTimeoutUnit))
+                .exceptionDetails(j.map(JobDetails::getExceptionDetails).orElse(exceptionDetails));
     }
 }

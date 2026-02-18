@@ -48,12 +48,15 @@ public class JobExecutionTO {
 
     private OffsetDateTime eventDate;
 
+    private String exceptionMessage;
+    private String exceptionDetails;
+
     public JobExecutionTO() {
 
     }
 
     public JobExecutionTO(String jobId, Date expirationtime, Integer priority, String processInstanceId, String nodeInstanceId,
-            Long repeatInterval, Integer repeatLimit, String scheduledId, Integer retries, String status, Integer executionCounter, Date eventDate) {
+            Long repeatInterval, Integer repeatLimit, String scheduledId, Integer retries, String status, Integer executionCounter, Date eventDate, String exceptionMessage, String exceptionDetails) {
         this.jobId = jobId;
         this.expirationTime = OffsetDateTime.ofInstant(expirationtime.toInstant(), ZoneId.of("UTC"));
         this.priority = priority;
@@ -66,6 +69,8 @@ public class JobExecutionTO {
         this.status = status;
         this.executionCounter = executionCounter;
         this.eventDate = OffsetDateTime.ofInstant(eventDate.toInstant(), ZoneId.of("UTC"));
+        this.exceptionMessage = exceptionMessage;
+        this.exceptionDetails = exceptionDetails;
     }
 
     public String getJobId() {
@@ -164,4 +169,19 @@ public class JobExecutionTO {
         this.eventDate = eventDate;
     }
 
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getExceptionDetails() {
+        return exceptionDetails;
+    }
+
+    public void setExceptionDetails(String exceptionDetails) {
+        this.exceptionDetails = exceptionDetails;
+    }
 }

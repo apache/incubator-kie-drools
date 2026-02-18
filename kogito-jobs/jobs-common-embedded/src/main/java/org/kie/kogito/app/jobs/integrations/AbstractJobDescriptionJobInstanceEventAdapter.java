@@ -89,6 +89,8 @@ public abstract class AbstractJobDescriptionJobInstanceEventAdapter implements J
                 .executionCounter(jobDetails.getExecutionCounter())
                 .retries(jobDetails.getRetries())
                 .lastUpdate(jobDetails.getLastUpdate())
+                .exceptionMessage(jobDetails.getExceptionDetails() != null ? jobDetails.getExceptionDetails().exceptionMessage() : null)
+                .exceptionDetails(jobDetails.getExceptionDetails() != null ? jobDetails.getExceptionDetails().exceptionDetails() : null)
                 .build();
 
         return scheduledJob;
