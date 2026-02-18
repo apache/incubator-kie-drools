@@ -19,8 +19,6 @@
  */
 package org.kie.kogito.gradle.plugin;
 
-import javax.inject.Inject;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -28,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.inject.Inject;
+
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -53,7 +54,6 @@ public abstract class AbstractKieTask extends DefaultTask {
 
     @Internal
     protected String gradleCompilerJavaVersion;
-
 
     @Internal
     protected Property<File> projectBuildOutputDirectory;
@@ -149,4 +149,4 @@ public abstract class AbstractKieTask extends DefaultTask {
         return CodeGenManagerUtil.Framework.NONE;
     }
 
-}   
+}

@@ -19,6 +19,7 @@
 package org.kie.kogito.gradle.plugin;
 
 import java.io.File;
+
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,4 +60,4 @@ class KogitoGradlePluginTest {
                 .resolve("kogito")
                 .toFile());
     }
-}   
+}

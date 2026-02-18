@@ -27,9 +27,14 @@
   <!-- that they should prefer consuming it instead. -->
   <!-- do_not_remove: published-with-gradle-metadata -->
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito</groupId>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-build-parent</artifactId>
+    <version>999-SNAPSHOT</version>
+    <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
+  </parent>
+
   <artifactId>kogito-gradle-plugin</artifactId>
-  <version>999-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Kogito :: Gradle :: Plugin</name>
@@ -43,9 +48,6 @@
     <java.module.name>org.kie.kogito.gradle.plugin</java.module.name>
     <gradle.version>8.11.1</gradle.version>
     <groovy.version>4.0.29</groovy.version>
-    <junit.version>5.12.1</junit.version>
-    <assertj.version>3.27.7</assertj.version>
-    <surefire.plugin.version>3.2.5</surefire.plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -96,18 +98,6 @@
         <groupId>dev.gradleplugins</groupId>
         <artifactId>gradle-test-kit</artifactId>
         <version>${gradle.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <type>pom</type>
-        <scope>import</scope>
-        <version>${junit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -282,15 +272,6 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire.plugin.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

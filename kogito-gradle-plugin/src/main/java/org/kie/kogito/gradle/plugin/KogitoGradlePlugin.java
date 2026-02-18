@@ -20,6 +20,7 @@
 package org.kie.kogito.gradle.plugin;
 
 import java.io.File;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -38,7 +39,7 @@ public class KogitoGradlePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         KogitoGradleExtension extension = project.getExtensions().create("generateModelConfig", KogitoGradleExtension.class);
-        GenerateModelTask generateModelTask = project.getTasks().create(GENERATE_MODEL_TASK_NAME,  GenerateModelTask.class, extension);
+        GenerateModelTask generateModelTask = project.getTasks().create(GENERATE_MODEL_TASK_NAME, GenerateModelTask.class, extension);
         generateModelTask.setGroup(GENERATE_MODEL_TASK_NAME);
         generateModelTask.dependsOn(project.getTasks().named(CLASSES));
         File secondaryGenDir = project.getLayout().getBuildDirectory().getAsFile().get().toPath().resolve("generated").resolve("sources").resolve("kogito").toFile();
@@ -64,7 +65,7 @@ public class KogitoGradlePlugin implements Plugin<Project> {
                 .toFile();
         FileCollection fileCollection = project.getConfigurations().getByName("compileClasspath")
                 .plus(main.getCompileClasspath())
-                        .plus(project.files(compiledClassesDirectory));
+                .plus(project.files(compiledClassesDirectory));
         compileSecondaryJava.setClasspath(fileCollection);
         compileSecondaryJava.getDestinationDirectory().set(compiledClassesDirectory);
     }
