@@ -83,7 +83,7 @@ public class KogitoUserTaskEventSupportImpl implements KogitoUserTaskEventSuppor
     }
 
     @Override
-    public void fireOneUserTaskStateChange(
+    public void fireOnUserTaskStateChange(
             UserTaskInstance userTaskInstance,
             UserTaskState oldStatus, UserTaskState newStatus) {
         UserTaskStateEventImpl event = new UserTaskStateEventImpl(userTaskInstance, oldStatus, newStatus, identityProvider.getName());

@@ -36,7 +36,7 @@ public interface KogitoUserTaskEventSupport {
         ADMIN_USERS
     };
 
-    void fireOneUserTaskStateChange(
+    void fireOnUserTaskStateChange(
             UserTaskInstance instance,
             UserTaskState oldPhaseStatus, UserTaskState newPhaseStatus);
 
