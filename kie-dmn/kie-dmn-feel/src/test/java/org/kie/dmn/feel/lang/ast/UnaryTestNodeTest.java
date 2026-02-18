@@ -18,14 +18,22 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -92,5 +100,105 @@ class UnaryTestNodeTest {
             Arguments.of(42, null, false, "Left non-null, right null"),
             Arguments.of(null, 42, false, "Left null, right non-null")
         );
+    }
+
+    /**
+     * Tests for evaluateRightValue method - without question mark
+     */
+    
+    @Test
+    void testEvaluateRightValue_SimpleValue_WithoutQuestionMark() {
+        NumberNode valueNode = new NumberNode(BigDecimal.valueOf(42), "42");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, valueNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(100);
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(42));
+    }
+
+    @Test
+    void testEvaluateRightValue_WithQuestionMark_NotInContext() {
+        NameRefNode questionMarkNode = new NameRefNode(BuiltInType.UNKNOWN, "?");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, questionMarkNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(123);
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(123));
+    }
+
+    @Test
+    void testEvaluateRightValue_WithQuestionMark_AlreadyInContext_SameValue() {
+        NameRefNode questionMarkNode = new NameRefNode(BuiltInType.UNKNOWN, "?");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, questionMarkNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(123);
+        context.setValue("?", left); // '?' already set to same value
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(123));
+    }
+
+    @Test
+    void testEvaluateRightValue_WithQuestionMark_AlreadyInContext_DifferentValue() {
+        NameRefNode questionMarkNode = new NameRefNode(BuiltInType.UNKNOWN, "?");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, questionMarkNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(123);
+        context.setValue("?", BigDecimal.valueOf(999)); // '?' set to different value
+
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(123));
+        assertThat(context.getValue("?")).isEqualTo(BigDecimal.valueOf(999));
+    }
+
+    @Test
+    void testEvaluateRightValue_WithQuestionMarkInExpression() {
+        NameRefNode questionMarkNode = new NameRefNode(BuiltInType.UNKNOWN, "?");
+        NumberNode tenNode = new NumberNode(BigDecimal.valueOf(10), "10");
+        InfixOpNode additionNode = new InfixOpNode(InfixOperator.ADD, questionMarkNode, tenNode, "? + 10");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, additionNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(5);
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(15));
+    }
+
+    @Test
+    void testEvaluateRightValue_FrameCleanup() {
+        NameRefNode questionMarkNode = new NameRefNode(BuiltInType.UNKNOWN, "?");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, questionMarkNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        context.setValue("originalVar", "originalValue");
+        Object left = BigDecimal.valueOf(123);
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo(BigDecimal.valueOf(123));
+        assertThat(context.getValue("originalVar")).isEqualTo("originalValue");
+    }
+
+    @Test
+    void testEvaluateRightValue_WithNull() {
+        NullNode nullNode = new NullNode("null");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, nullNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = BigDecimal.valueOf(123);
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void testEvaluateRightValue_WithString() {
+        StringNode stringNode = new StringNode("hello");
+        UnaryTestNode unaryTestNode = new UnaryTestNode(UnaryTestNode.UnaryOperator.EQ, stringNode);
+        
+        EvaluationContext context = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+        Object left = "world";
+        Object result = unaryTestNode.evaluateRightValue(context, left);
+        assertThat(result).isEqualTo("hello");
     }
 }
