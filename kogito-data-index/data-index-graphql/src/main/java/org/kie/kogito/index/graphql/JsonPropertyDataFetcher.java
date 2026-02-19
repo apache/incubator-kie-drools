@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.PropertyDataFetcher;
 
 public class JsonPropertyDataFetcher implements DataFetcher {
 
@@ -84,6 +85,9 @@ public class JsonPropertyDataFetcher implements DataFetcher {
                 return null;
             }
         }
-        return null;
+        // Fallback to PropertyDataFetcher for non-JsonNode sources (e.g. POJOs in PostgreSQL).
+        // This allows JsonPropertyDataFetcher to be used as the default data fetcher for all
+        // domain types regardless of the storage backend.
+        return PropertyDataFetcher.fetching(property).get(environment);
     }
 }

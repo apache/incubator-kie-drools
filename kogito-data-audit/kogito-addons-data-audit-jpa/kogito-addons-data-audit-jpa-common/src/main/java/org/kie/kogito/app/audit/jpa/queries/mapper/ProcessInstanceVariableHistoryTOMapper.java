@@ -18,10 +18,7 @@
  */
 package org.kie.kogito.app.audit.jpa.queries.mapper;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.kie.kogito.app.audit.graphql.type.ProcessInstanceVariableHistoryTO;
@@ -57,9 +54,5 @@ public class ProcessInstanceVariableHistoryTOMapper implements DataMapper<Proces
         }
 
         return transformedData;
-    }
-
-    public OffsetDateTime toDateTime(Date date) {
-        return (date != null) ? OffsetDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")) : null;
     }
 }

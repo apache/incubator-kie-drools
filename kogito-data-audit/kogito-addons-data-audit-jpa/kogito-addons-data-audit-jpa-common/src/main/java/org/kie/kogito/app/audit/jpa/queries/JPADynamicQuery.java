@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.app.audit.jpa.queries;
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,6 +35,8 @@ import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchemaElement;
 import jakarta.persistence.EntityManager;
+
+import static org.kie.kogito.app.audit.jpa.queries.mapper.DateTimeUtil.toDateTime;
 
 public class JPADynamicQuery extends JPAAbstractQuery<Object> implements GraphQLSchemaQuery {
 
@@ -112,7 +111,7 @@ public class JPADynamicQuery extends JPAAbstractQuery<Object> implements GraphQL
         if (outputType instanceof GraphQLScalarType) {
             GraphQLScalarType scalarType = (GraphQLScalarType) outputType;
             if ("DateTime".equals(scalarType.getName())) {
-                target = OffsetDateTime.ofInstant(((Timestamp) source).toInstant(), ZoneId.of("UTC"));
+                target = toDateTime(source);
             }
 
         }

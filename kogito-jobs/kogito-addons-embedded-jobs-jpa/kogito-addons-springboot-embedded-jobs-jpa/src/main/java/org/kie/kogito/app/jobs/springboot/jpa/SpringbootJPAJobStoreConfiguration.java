@@ -18,9 +18,12 @@
  */
 package org.kie.kogito.app.jobs.springboot.jpa;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -29,4 +32,20 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAutoConfiguration
 public class SpringbootJPAJobStoreConfiguration {
 
+    // Hibernate 7 + Spring ORM 6.2 workaround: Hibernate 7's SessionFactory.getSchemaManager()
+    // returns org.hibernate.relational.SchemaManager, conflicting with JPA 3.2's
+    // EntityManagerFactory.getSchemaManager() returning jakarta.persistence.SchemaManager.
+    // Force plain JPA interface to avoid JDK Proxy incompatible return type error.
+    @Bean
+    public static BeanPostProcessor jobStoreEmfPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) {
+                if (bean instanceof LocalContainerEntityManagerFactoryBean emfb) {
+                    emfb.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
+                }
+                return bean;
+            }
+        };
+    }
 }

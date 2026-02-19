@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.kogito.index.graphql.GraphQLObjectTypeMapper;
+import org.kie.kogito.index.graphql.JsonPropertyDataFetcher;
 import org.kie.kogito.index.graphql.query.GraphQLInputObjectTypeMapper;
 import org.kie.kogito.index.graphql.query.GraphQLOrderByTypeMapper;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
@@ -59,6 +60,7 @@ import static org.kie.kogito.index.graphql.GraphQLObjectTypeMapper.getTypeName;
 public class GraphQLProtoSchemaMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLProtoSchemaMapper.class);
+    private static final JsonPropertyDataFetcher JSON_PROPERTY_DATA_FETCHER = new JsonPropertyDataFetcher();
 
     @Inject
     GraphQLSchemaManagerImpl schemaManager;
@@ -118,6 +120,11 @@ public class GraphQLProtoSchemaMapper {
                 codeBuilder.dataFetcher(coordinates("Query", rootType.getName()), schemaManager.getDomainModelDataFetcher(event.getProcessId()));
                 codeBuilder.dataFetcher(coordinates("Subscription", rootType.getName() + "Added"), schemaManager.getDomainModelAddedDataFetcher(event.getProcessId()));
                 codeBuilder.dataFetcher(coordinates("Subscription", rootType.getName() + "Updated"), schemaManager.getDomainModelUpdatedDataFetcher(event.getProcessId()));
+                // graphql-java 24.x LightDataFetcher optimization bypasses instrumentDataFetcher,
+                // so PropertyDataFetcher is no longer intercepted for JsonNode-based sources (MongoDB).
+                // Set default data fetcher factory to JsonPropertyDataFetcher which handles both
+                // JsonNode (MongoDB) and POJO (PostgreSQL) sources.
+                codeBuilder.defaultDataFetcher(env -> JSON_PROPERTY_DATA_FETCHER);
             });
 
             builder.codeRegistry(registry);

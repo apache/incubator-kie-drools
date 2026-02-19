@@ -89,8 +89,9 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
         addJsonQueries(typeDefinitionRegistry);
         loadAdditionalMutations(typeDefinitionRegistry);
 
+        // Note: ExtendedScalars.Json is registered once below (line ~165), not here.
+        // graphql-java 24.x strict mode throws StrictModeWiringException on duplicate scalar registration.
         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
-                .scalar(ExtendedScalars.Json)
                 .type("Query", builder -> {
                     builder.dataFetcher("ProcessDefinitions", this::getProcessDefinitionsValues);
                     builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);

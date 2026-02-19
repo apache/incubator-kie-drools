@@ -18,13 +18,32 @@
  */
 package org.kie.kogito.app.audit.springboot;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
 @ComponentScan
 public class SpringbootAuditDataConfiguration {
 
+    // Hibernate 7 + Spring ORM 6.2 workaround: Hibernate 7's SessionFactory.getSchemaManager()
+    // returns org.hibernate.relational.SchemaManager, conflicting with JPA 3.2's
+    // EntityManagerFactory.getSchemaManager() returning jakarta.persistence.SchemaManager.
+    // Force plain JPA interface to avoid JDK Proxy incompatible return type error.
+    @Bean
+    public static BeanPostProcessor auditDataEmfPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) {
+                if (bean instanceof LocalContainerEntityManagerFactoryBean emfb) {
+                    emfb.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
+                }
+                return bean;
+            }
+        };
+    }
 }

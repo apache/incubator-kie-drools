@@ -108,11 +108,5 @@
 			<artifactId>junit-platform-suite</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.6.12.Final</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>

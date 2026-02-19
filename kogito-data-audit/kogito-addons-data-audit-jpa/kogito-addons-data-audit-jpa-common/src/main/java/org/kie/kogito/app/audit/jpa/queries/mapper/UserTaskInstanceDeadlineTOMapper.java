@@ -18,16 +18,15 @@
  */
 package org.kie.kogito.app.audit.jpa.queries.mapper;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.kie.kogito.app.audit.graphql.type.UserTaskInstanceDeadlineTO;
 import org.kie.kogito.app.audit.jpa.queries.DataMapper;
 
 import graphql.com.google.common.base.Objects;
+
+import static org.kie.kogito.app.audit.jpa.queries.mapper.DateTimeUtil.toDateTime;
 
 public class UserTaskInstanceDeadlineTOMapper implements DataMapper<UserTaskInstanceDeadlineTO, Object[]> {
 
@@ -44,7 +43,7 @@ public class UserTaskInstanceDeadlineTOMapper implements DataMapper<UserTaskInst
                 transformedData.add(current);
             }
             current.setEventId((String) row[0]);
-            current.setEventDate(toDateTime((Date) row[1]));
+            current.setEventDate(toDateTime(row[1]));
             current.setUserTaskDefinitionId((String) row[2]);
             current.setUserTaskInstanceId((String) row[3]);
             current.setProcessInstanceId((String) row[4]);
@@ -55,9 +54,5 @@ public class UserTaskInstanceDeadlineTOMapper implements DataMapper<UserTaskInst
         }
 
         return transformedData;
-    }
-
-    public OffsetDateTime toDateTime(Date date) {
-        return (date != null) ? OffsetDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")) : null;
     }
 }
