@@ -17,57 +17,89 @@
 # under the License.
 #
 
-asyncapi: '2.0.0'
-id: 'callbackResults'
+asyncapi: 3.0.0
+id: callbackResults
 info:
   title: Kafka Application
-  version: '1.0.0'
+  version: 1.0.0
   description: Kafka Application
   license:
     name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
 servers:
   production:
-    url: localhost:9092
-    description: Development server
+    host: 'localhost:9092'
     protocol: kafka
-    protocolVersion: '1.0.0'
+    protocolVersion: 1.0.0
+    description: Development server
 channels:
   success:
+    address: success
+    messages:
+      sendSuccess.message:
+        $ref: '#/components/messages/message'
     description: A message channel for successful completions
-    publish:
-      operationId: sendSuccess
-      summary: Success
-      message:
-        $ref: '#/components/messages/message'
   timeoutCallbackError:
+    address: timeoutCallbackError
+    messages:
+      sendTimeoutExpiredForCallbackError.message:
+        $ref: '#/components/messages/message'
     description: A message channel for callback timeout error
-    publish:
-      operationId: sendTimeoutExpiredForCallbackError
-      summary: Timeout Expired
-      message:
-        $ref: '#/components/messages/message'
   timeoutError:
+    address: timeoutError
+    messages:
+      sendTimeoutExpiredError.message:
+        $ref: '#/components/messages/message'
     description: A message channel for timeout error
-    publish:
-      operationId: sendTimeoutExpiredError
-      summary: Timeout Expired
-      message:
-        $ref: '#/components/messages/message'
   sendEvenError:
+    address: sendEvenError
+    messages:
+      sendEvenError.message:
+        $ref: '#/components/messages/message'
     description: A message channel for publishing errors
-    publish:
-      operationId: sendEvenError
-      summary: Reporting error
-      message:
-        $ref: '#/components/messages/message'
   error:
-    description: A message channel for failed executions
-    publish:
-      operationId: sendFailed
-      summary: Failed
-      message:
+    address: error
+    messages:
+      sendFailed.message:
         $ref: '#/components/messages/message'
+    description: A message channel for failed executions
+operations:
+  sendSuccess:
+    action: send
+    channel:
+      $ref: '#/channels/success'
+    summary: Success
+    messages:
+      - $ref: '#/channels/success/messages/sendSuccess.message'
+  sendTimeoutExpiredForCallbackError:
+    action: send
+    channel:
+      $ref: '#/channels/timeoutCallbackError'
+    summary: Timeout Expired
+    messages:
+      - $ref: >-
+          #/channels/timeoutCallbackError/messages/sendTimeoutExpiredForCallbackError.message
+  sendTimeoutExpiredError:
+    action: send
+    channel:
+      $ref: '#/channels/timeoutError'
+    summary: Timeout Expired
+    messages:
+      - $ref: '#/channels/timeoutError/messages/sendTimeoutExpiredError.message'
+  sendEvenError:
+    action: send
+    channel:
+      $ref: '#/channels/sendEvenError'
+    summary: Reporting error
+    messages:
+      - $ref: '#/channels/sendEvenError/messages/sendEvenError.message'
+  sendFailed:
+    action: send
+    channel:
+      $ref: '#/channels/error'
+    summary: Failed
+    messages:
+      - $ref: '#/channels/error/messages/sendFailed.message'
 components:
   messages:
     message:
@@ -76,7 +108,7 @@ components:
       summary: A message
       contentType: application/json
       payload:
-        $ref: "#/components/schemas/message"
+        $ref: '#/components/schemas/message'
   schemas:
     message:
       type: object

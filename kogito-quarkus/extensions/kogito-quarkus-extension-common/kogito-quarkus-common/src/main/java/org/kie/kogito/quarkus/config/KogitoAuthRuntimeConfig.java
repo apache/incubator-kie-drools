@@ -21,11 +21,9 @@ package org.kie.kogito.quarkus.config;
 
 import java.util.Optional;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
-@ConfigGroup
 public interface KogitoAuthRuntimeConfig {
 
     /**

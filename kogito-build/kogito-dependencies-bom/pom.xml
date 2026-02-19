@@ -40,46 +40,46 @@
     <!-- End of various transitive overrides. -->
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.20.3</version.io.quarkus>
+    <version.io.quarkus>3.27.2</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
-    <version.org.springframework>6.2.12</version.org.springframework>
-    <version.org.springframework.boot>3.4.11</version.org.springframework.boot>
-    <version.org.apache.kafka>3.9.1</version.org.apache.kafka>
+    <version.org.springframework>6.2.15</version.org.springframework>
+    <version.org.springframework.boot>3.5.10</version.org.springframework.boot>
+    <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
 
-    <version.org.bouncycastle.bc.jdk18on>1.81</version.org.bouncycastle.bc.jdk18on>
+    <version.org.bouncycastle.bc.jdk18on>1.82</version.org.bouncycastle.bc.jdk18on>
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
-    <version.com.fasterxml.jackson>2.18.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.18.4</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
-    <version.com.ongres.scram>2.1</version.com.ongres.scram>
+    <version.com.ongres.scram>3.2</version.com.ongres.scram>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
-    <version.io.quarkiverse.jackson-jq>2.2.0</version.io.quarkiverse.jackson-jq>
+    <version.io.quarkiverse.jackson-jq>2.4.0</version.io.quarkiverse.jackson-jq>
     <version.io.quarkiverse.openapi.generator>2.11.0-lts</version.io.quarkiverse.openapi.generator>
-    <version.io.quarkiverse.asyncapi>0.3.0</version.io.quarkiverse.asyncapi>
+    <version.io.quarkiverse.asyncapi>1.0.5</version.io.quarkiverse.asyncapi>
     <version.io.quarkiverse.reactivemessaging.http>2.5.0-lts</version.io.quarkiverse.reactivemessaging.http>
     <version.io.quarkiverse.embedded.postgresql>0.7.2</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
-    <version.com.github.javaparser>3.26.4</version.com.github.javaparser>
-    <version.com.fasterxml.jackson.datatype>2.18.2</version.com.fasterxml.jackson.datatype>
+    <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
+    <version.com.fasterxml.jackson.datatype>2.19.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.org.wiremock>3.13.0</version.org.wiremock>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
     <!-- We don't use gson directly. This is just to align versions of transitive dependencies -->
-    <version.com.google.gson>2.10.1</version.com.google.gson>
+    <version.com.google.gson>2.13.2</version.com.google.gson>
     <!-- currently required for integration test only -->
     <version.com.sun.xml.bind.core>4.0.5</version.com.sun.xml.bind.core>
-    <version.com.sun.activation>2.0.1</version.com.sun.activation>
+    <version.com.sun.activation>2.0.2</version.com.sun.activation>
     <version.javax.inject>2.0.1</version.javax.inject>
     <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
     <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
-    <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
-    <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
+    <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
+    <version.jakarta.validation-api>3.1.1</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
 
-    <version.io.netty>4.1.128.Final</version.io.netty>
+    <version.io.netty>4.1.130.Final</version.io.netty>
 
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <!--
@@ -87,31 +87,30 @@
     Don't add as a management dependency because it will break SpringBoot and Quarkus
     Kubernetes addons since they use a different version.
     -->
-    <version.io.fabric8.kubernetes-client>7.1.0</version.io.fabric8.kubernetes-client>
-    <version.io.fabric8.openshift-mock>6.13.5</version.io.fabric8.openshift-mock>
+    <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.14.12</version.io.micrometer>
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
     <version.org.postgresql>42.7.8</version.org.postgresql>
     <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
-    <version.io.smallrye-config>3.11.4</version.io.smallrye-config>
-    <version.org.awaitility>4.2.2</version.org.awaitility>
+    <version.io.smallrye-config>3.13.4</version.io.smallrye-config>
+    <version.org.awaitility>4.3.0</version.org.awaitility>
 
     <version.com.squareup.okhttp3>4.12.0</version.com.squareup.okhttp3>
 
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.18.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.21.3</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.5.22</version.io.vertx>
+    <version.io.vertx>4.5.23</version.io.vertx>
     <version.io.grpc>1.76.0</version.io.grpc>
 
-    <version.io.quarkus.camel>3.20.2</version.io.quarkus.camel>
+    <version.io.quarkus.camel>3.27.2</version.io.quarkus.camel>
 
     <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
 
     <version.org.apache.commons>3.18.0</version.org.apache.commons>
-    <version.commons.io>2.19.0</version.commons.io>
+    <version.commons.io>2.20.0</version.commons.io>
 
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
 
@@ -121,7 +120,7 @@
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
-    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
+    <version.jakarta.persistence-api>3.2.0</version.jakarta.persistence-api>
 
     <version.org.jboss.resteasy>6.2.12.Final</version.org.jboss.resteasy>
     <version.org.keycloak>26.1.0</version.org.keycloak>
@@ -131,31 +130,32 @@
     <version.org.mongo-image>5.0.31</version.org.mongo-image>
     <version.org.mozilla.rhino>1.8.1</version.org.mozilla.rhino>
     <version.org.redis>2.0.4</version.org.redis>
-    <version.org.postgres>15.9-alpine3.20</version.org.postgres>
+    <!-- PostgreSQL 16.8+ required for SASL authentication protocol -->
+    <version.org.postgres>16.8-alpine3.21</version.org.postgres>
     <!-- we align to version used by quarkus -->
-    <version.org.apache.avro>1.12.0</version.org.apache.avro>
+    <version.org.apache.avro>1.12.1</version.org.apache.avro>
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
     <version.org.junit>4.13.2</version.org.junit>
-    <version.org.junit.jupiter>5.12.2</version.org.junit.jupiter>
-    <version.org.junit.platform>1.12.2</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
-    <version.org.mockito>5.17.0</version.org.mockito>
+    <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
+    <version.org.junit.platform>1.13.4</version.org.junit.platform><!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.mockito>5.18.0</version.org.mockito>
     <version.org.testcontainers>2.0.3</version.org.testcontainers>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
 
-    <version.net.byte-buddy>1.15.11</version.net.byte-buddy>
+    <version.net.byte-buddy>1.17.6</version.net.byte-buddy>
 
     <version.org.mvel>2.5.2.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.reflections>0.10.2</version.org.reflections>
-    <version.org.slf4j>2.0.6</version.org.slf4j>
+    <version.org.slf4j>2.0.17</version.org.slf4j>
 
     <version.maven>3.9.11</version.maven>
     <version.maven.project>2.2.1</version.maven.project>
-    <version.maven.plugin>3.7.1</version.maven.plugin>
+    <version.maven.plugin>3.15.1</version.maven.plugin>
     <version.maven.invoker>3.2.0</version.maven.invoker>
     <version.maven.plugin.testing.harness>4.0.0-alpha-2</version.maven.plugin.testing.harness>
     <version.plexus>2.1.0</version.plexus>
@@ -165,11 +165,13 @@
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.2.0</version.black.ninia>
     <version.com.google.collections>1.0</version.com.google.collections>
-    <version.com.google.guava>33.0.0-jre</version.com.google.guava>
-    <version.apache.commons.commons-compress>1.27.1</version.apache.commons.commons-compress>
+    <version.com.google.guava>33.4.8-jre</version.com.google.guava>
+    <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
 
     <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
-    <version.org.lz4.java>1.8.1</version.org.lz4.java>
+    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java> <!-- Upgraded for CVE fix (The library has moved from org.lz4:lz4-java to at.yawk.lz4:lz4-java )-->
+    <version.org.hibernate>7.1.14.Final</version.org.hibernate>
+  
   </properties>
 
   <dependencyManagement>
@@ -182,9 +184,9 @@
         <version>${version.angus.mail}</version>
       </dependency>
       <dependency>
-        <groupId>org.lz4</groupId>
+        <groupId>at.yawk.lz4</groupId>
         <artifactId>lz4-java</artifactId>
-        <version>${version.org.lz4.java}</version>
+        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
@@ -827,13 +829,6 @@
         <version>${version.io.fabric8.kubernetes-client}</version>
       </dependency>
 
-      <!-- fabric8 - openshift mock server -->
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>openshift-server-mock</artifactId>
-        <version>${version.io.fabric8.openshift-mock}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
@@ -978,11 +973,11 @@
         <version>${version.org.wiremock}</version>
         <scope>test</scope>
       </dependency>
+      <!-- SCRAM authentication for PostgreSQL 16+; required by Vert.x reactive pg-client -->
       <dependency>
         <groupId>com.ongres.scram</groupId>
-        <artifactId>client</artifactId>
+        <artifactId>scram-client</artifactId>
         <version>${version.com.ongres.scram}</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -1356,7 +1351,11 @@
         <artifactId>testcontainers-toxiproxy</artifactId>
         <version>${version.org.testcontainers}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${version.org.hibernate}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

@@ -50,7 +50,9 @@ class KubeDiscoveryConfigCacheUpdaterTest {
 
     @BeforeEach
     void beforeEach() {
-        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting.yaml", "test", "serverless-workflow-greeting-quarkus", remoteServiceUrl);
+        createKnativeServiceIfNotExists(client, "knative/quarkus-greeting.yaml", "test",
+                "serverless-workflow-greeting-quarkus", remoteServiceUrl);
+
         kubeDiscoveryConfigCacheUpdater = new KubeDiscoveryConfigCacheUpdater(kubernetesServiceCatalog);
     }
 

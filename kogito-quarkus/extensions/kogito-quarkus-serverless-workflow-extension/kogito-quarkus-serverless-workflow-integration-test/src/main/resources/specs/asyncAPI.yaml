@@ -17,34 +17,45 @@
 # under the License.
 #
 
-asyncapi: '2.0.0'
-id: 'oneConsumer'
+asyncapi: 3.0.0
+id: oneConsumer
 info:
   title: Kafka Application
-  version: '1.0.0'
+  version: 1.0.0
   description: Kafka Application
   license:
     name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
 servers:
   production:
-    url: localhost:9092
-    description: Development server
+    host: 'localhost:9092'
     protocol: kafka
-    protocolVersion: '1.0.0'
+    protocolVersion: 1.0.0
+    description: Development server
 channels:
   wait:
+    address: wait
+    messages:
+      sendWait.message:
+        $ref: '#/components/messages/message'
+      wait.message:
+        $ref: '#/components/messages/message'
     description: A message channel
-    subscribe:
-      operationId: wait
-      summary: Get messages
-      message:
-        $ref: '#/components/messages/message'
-    publish:
-      operationId: sendWait
-      summary: Send messages
-      message:
-        $ref: '#/components/messages/message'
+operations:
+  sendWait:
+    action: send
+    channel:
+      $ref: '#/channels/wait'
+    summary: Send messages
+    messages:
+      - $ref: '#/channels/wait/messages/sendWait.message'
+  wait:
+    action: receive
+    channel:
+      $ref: '#/channels/wait'
+    summary: Get messages
+    messages:
+      - $ref: '#/channels/wait/messages/wait.message'
 components:
   messages:
     message:
@@ -53,7 +64,7 @@ components:
       summary: A message
       contentType: application/json
       payload:
-        $ref: "#/components/schemas/message"
+        $ref: '#/components/schemas/message'
   schemas:
     message:
       type: object

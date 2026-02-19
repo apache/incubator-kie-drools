@@ -22,7 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.server.mock.KubernetesCrudDispatcher;
+import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
+import io.fabric8.mockwebserver.MockWebServer;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 /**
@@ -31,19 +34,24 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 public class KubernetesMockServerTestResource implements QuarkusTestResourceLifecycleManager {
 
     private static final String TEST_NAMESPACE = "serverless-workflow-greeting-quarkus";
-    private final KubernetesServer server = new KubernetesServer(false, true); // Use CRUD mode
+    private KubernetesMockServer server;
+    private KubernetesClient client;
+    private String previousMasterUrl;
 
     @Override
     public Map<String, String> start() {
-        try {
-            server.before(); // Start the mock Kubernetes server
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to start Kubernetes mock server", e);
-        }
+        server = new KubernetesMockServer(
+                new io.fabric8.mockwebserver.Context(),
+                new MockWebServer(),
+                new HashMap<>(),
+                new KubernetesCrudDispatcher(),
+                false);
+        server.init();
 
-        String mockServerUrl = server.getClient().getConfiguration().getMasterUrl();
+        client = server.createClient();
+        String mockServerUrl = client.getConfiguration().getMasterUrl();
 
-        // Ensure the Fabric8 client picks up the mock server
+        previousMasterUrl = System.getProperty(Config.KUBERNETES_MASTER_SYSTEM_PROPERTY);
         System.setProperty(Config.KUBERNETES_MASTER_SYSTEM_PROPERTY, mockServerUrl);
 
         Map<String, String> config = new HashMap<>();
@@ -55,15 +63,25 @@ public class KubernetesMockServerTestResource implements QuarkusTestResourceLife
 
     @Override
     public void stop() {
+        if (previousMasterUrl != null) {
+            System.setProperty(Config.KUBERNETES_MASTER_SYSTEM_PROPERTY, previousMasterUrl);
+        } else {
+            System.clearProperty(Config.KUBERNETES_MASTER_SYSTEM_PROPERTY);
+        }
+        if (client != null) {
+            client.close();
+        }
         if (server != null) {
-            server.after(); // Stop the mock server
+            server.destroy();
+            server = null;
         }
     }
 
-    /**
-     * Expose the Fabric8 Kubernetes mock server instance for advanced use in tests.
-     */
-    public KubernetesServer getServer() {
+    public KubernetesMockServer getServer() {
         return server;
+    }
+
+    public KubernetesClient getClient() {
+        return client;
     }
 }

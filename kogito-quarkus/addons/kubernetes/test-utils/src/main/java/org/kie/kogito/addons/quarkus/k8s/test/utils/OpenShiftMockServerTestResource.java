@@ -18,33 +18,62 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.test.utils;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import io.fabric8.openshift.client.server.mock.OpenShiftServer;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.server.mock.KubernetesCrudDispatcher;
+import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
+import io.fabric8.mockwebserver.MockWebServer;
+import io.fabric8.openshift.client.OpenShiftClient;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
+/**
+ * Quarkus test resource that provides a Fabric8 Kubernetes mock server with OpenShift support.
+ * Uses KubernetesMockServer with CRUD mode and adapts the client to OpenShiftClient.
+ */
 public class OpenShiftMockServerTestResource implements QuarkusTestResourceLifecycleManager {
 
-    private OpenShiftServer server;
+    private KubernetesMockServer server;
+    private KubernetesClient kubernetesClient;
+    private OpenShiftClient openShiftClient;
 
     @Override
     public Map<String, String> start() {
-        server = new OpenShiftServer(true, true);
-        server.before(); // Start mock server
+        server = new KubernetesMockServer(
+                new io.fabric8.mockwebserver.Context(),
+                new MockWebServer(),
+                new HashMap<>(),
+                new KubernetesCrudDispatcher(),
+                false);
+        server.init();
+
+        kubernetesClient = server.createClient();
+        openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
 
         return Map.of(
-                "quarkus.kubernetes-client.master-url", server.getOpenshiftClient().getMasterUrl().toString(),
+                "quarkus.kubernetes-client.master-url", kubernetesClient.getConfiguration().getMasterUrl(),
                 "quarkus.kubernetes-client.trust-certs", "true");
     }
 
     @Override
     public void stop() {
+        if (openShiftClient != null) {
+            openShiftClient.close();
+        }
+        if (kubernetesClient != null) {
+            kubernetesClient.close();
+        }
         if (server != null) {
-            server.after(); // Stop mock server
+            server.destroy();
         }
     }
 
-    public OpenShiftServer getServer() {
+    public KubernetesMockServer getServer() {
         return server;
+    }
+
+    public OpenShiftClient getClient() {
+        return openShiftClient;
     }
 }

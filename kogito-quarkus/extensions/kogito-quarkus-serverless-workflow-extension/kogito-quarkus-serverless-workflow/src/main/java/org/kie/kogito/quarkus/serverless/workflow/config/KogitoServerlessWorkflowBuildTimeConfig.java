@@ -18,11 +18,9 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.config;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
-@ConfigGroup
 public interface KogitoServerlessWorkflowBuildTimeConfig {
 
     /**

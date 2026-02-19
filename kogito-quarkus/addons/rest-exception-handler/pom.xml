@@ -79,7 +79,6 @@
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>test</scope>
-      <version>4.0.1</version>
     </dependency>
   </dependencies>
 </project>

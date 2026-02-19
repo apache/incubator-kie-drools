@@ -19,10 +19,8 @@
 
 package org.kie.flyway.quarkus;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
 import io.smallrye.config.WithDefault;
 
-@ConfigGroup
 public interface KieQuarkusFlywayNamedModuleConfig {
 
     /**

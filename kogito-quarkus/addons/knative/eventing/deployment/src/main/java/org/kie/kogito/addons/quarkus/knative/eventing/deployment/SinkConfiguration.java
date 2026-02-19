@@ -20,10 +20,8 @@ package org.kie.kogito.addons.quarkus.knative.eventing.deployment;
 
 import java.util.Optional;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
 import io.smallrye.config.WithDefault;
 
-@ConfigGroup
 public interface SinkConfiguration {
 
     String DEFAULT_SINK_API_VERSION = "eventing.knative.dev/v1";

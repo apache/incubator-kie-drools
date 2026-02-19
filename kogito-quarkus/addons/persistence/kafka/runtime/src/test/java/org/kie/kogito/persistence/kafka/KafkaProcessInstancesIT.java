@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.persistence.kafka;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
@@ -234,6 +237,12 @@ public class KafkaProcessInstancesIT {
         Properties properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "kogito");
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        try {
+            Path tempDir = Files.createTempDirectory("kafka-streams-test");
+            properties.put(StreamsConfig.STATE_DIR_CONFIG, tempDir.toString());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create temp directory for Kafka Streams state", e);
+        }
         return properties;
     }
 

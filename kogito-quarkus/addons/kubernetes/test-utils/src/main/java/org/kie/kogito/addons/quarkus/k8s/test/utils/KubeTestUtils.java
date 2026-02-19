@@ -28,6 +28,9 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.Resource;
 
+/**
+ * Utility methods for Kubernetes test resources using Fabric8 CRUD-mode mock server.
+ */
 public final class KubeTestUtils {
 
     private KubeTestUtils() {
@@ -87,9 +90,10 @@ public final class KubeTestUtils {
     }
 
     public static void createKnativeServiceIfNotExists(KubernetesClient client, String yamlPath, String namespace, String serviceName, String remoteServiceUrl) {
-        if (client.services().inNamespace(namespace).withName(serviceName).get() == null) {
-            KnativeClient knativeClient = client.adapt(KnativeClient.class);
+        KnativeClient knativeClient = client.adapt(KnativeClient.class);
 
+        // Check if Knative service exists (not regular K8s service)
+        if (knativeClient.services().inNamespace(namespace).withName(serviceName).get() == null) {
             Service service = knativeClient.services().inNamespace(namespace).load(getResourceAsStream(yamlPath)).item();
 
             if (remoteServiceUrl != null) {

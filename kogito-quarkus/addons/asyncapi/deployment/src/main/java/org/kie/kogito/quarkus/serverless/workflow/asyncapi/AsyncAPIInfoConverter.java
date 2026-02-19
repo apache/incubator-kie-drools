@@ -27,9 +27,10 @@ import org.kie.kogito.serverless.workflow.asyncapi.AsyncChannelInfo;
 import org.kie.kogito.serverless.workflow.asyncapi.AsyncInfo;
 import org.kie.kogito.serverless.workflow.asyncapi.AsyncInfoConverter;
 
-import com.asyncapi.v2._6_0.model.AsyncAPI;
-import com.asyncapi.v2._6_0.model.channel.ChannelItem;
-import com.asyncapi.v2._6_0.model.channel.operation.Operation;
+import com.asyncapi.v3._0_0.model.AsyncAPI;
+import com.asyncapi.v3._0_0.model.channel.Channel;
+import com.asyncapi.v3._0_0.model.operation.Operation;
+import com.asyncapi.v3._0_0.model.operation.OperationAction;
 
 import io.quarkiverse.asyncapi.config.AsyncAPIRegistry;
 
@@ -47,20 +48,51 @@ public class AsyncAPIInfoConverter implements AsyncInfoConverter {
     }
 
     private static AsyncInfo from(AsyncAPI asyncApi) {
-        Map<String, AsyncChannelInfo> map = new HashMap<>();
-        for (Entry<String, ChannelItem> entry : asyncApi.getChannels().entrySet()) {
-            addChannel(map, entry.getValue().getPublish(), entry.getKey() + "_out", true);
-            addChannel(map, entry.getValue().getSubscribe(), entry.getKey(), false);
-        }
-        return new AsyncInfo(map);
+        Map<String, String> channelIdToAddress = buildChannelAddressMap(asyncApi);
+        Map<String, AsyncChannelInfo> channelInfoByOperationId = buildOperationChannelInfoMap(asyncApi, channelIdToAddress);
+        return new AsyncInfo(channelInfoByOperationId);
     }
 
-    private static void addChannel(Map<String, AsyncChannelInfo> map, Operation operation, String channelName, boolean publish) {
-        if (operation != null) {
-            String operationId = operation.getOperationId();
-            if (operationId != null) {
-                map.putIfAbsent(operationId, new AsyncChannelInfo(channelName, publish));
+    /**
+     * Builds a mapping from channel ID to its address from the AsyncAPI channels.
+     */
+    private static Map<String, String> buildChannelAddressMap(AsyncAPI asyncApi) {
+        Map<String, String> channelIdToAddress = new HashMap<>();
+        if (asyncApi.getChannels() != null) {
+            for (Entry<String, Object> ch : asyncApi.getChannels().entrySet()) {
+                if (ch.getValue() instanceof Channel channel) {
+                    String channelId = ch.getKey();
+                    String address = Optional.ofNullable(channel.getAddress()).orElse(channelId);
+                    channelIdToAddress.put(channelId, address);
+                }
             }
         }
+        return channelIdToAddress;
+    }
+
+    /**
+     * Builds a mapping from operation ID to {@link AsyncChannelInfo} by resolving channel references.
+     */
+    private static Map<String, AsyncChannelInfo> buildOperationChannelInfoMap(AsyncAPI asyncApi, Map<String, String> channelIdToAddress) {
+        Map<String, AsyncChannelInfo> channelInfoByOperationId = new HashMap<>();
+        if (asyncApi.getOperations() != null) {
+            for (Entry<String, Object> opEntry : asyncApi.getOperations().entrySet()) {
+                if (opEntry.getValue() instanceof Operation op && op.getChannel() != null) {
+                    String operationId = opEntry.getKey();
+                    String ref = op.getChannel().getRef();
+                    if (ref != null && ref.contains("/")) {
+                        String channelId = ref.substring(ref.lastIndexOf('/') + 1);
+                        String address = channelIdToAddress.get(channelId);
+                        OperationAction action = op.getAction();
+                        if (address != null && action != null) {
+                            boolean publish = action == OperationAction.SEND;
+                            String channelName = publish ? address + "_out" : address;
+                            channelInfoByOperationId.putIfAbsent(operationId, new AsyncChannelInfo(channelName, publish));
+                        }
+                    }
+                }
+            }
+        }
+        return channelInfoByOperationId;
     }
 }

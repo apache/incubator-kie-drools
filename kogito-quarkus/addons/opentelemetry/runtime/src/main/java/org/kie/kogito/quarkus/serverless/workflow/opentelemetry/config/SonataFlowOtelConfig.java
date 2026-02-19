@@ -24,32 +24,59 @@ import io.smallrye.config.WithDefault;
 @ConfigMapping(prefix = "sonataflow.otel")
 public interface SonataFlowOtelConfig {
 
+    /**
+     * Enable or disable OpenTelemetry integration for SonataFlow
+     */
     @WithDefault("true")
     boolean enabled();
 
+    /**
+     * Service name for OpenTelemetry traces
+     */
     @WithDefault("${quarkus.application.name:kogito-workflow-service}")
     String serviceName();
 
+    /**
+     * Service version for OpenTelemetry traces
+     */
     @WithDefault("${quarkus.application.version:unknown}")
     String serviceVersion();
 
+    /**
+     * Span configuration
+     */
     SpanConfig spans();
 
+    /**
+     * Event configuration
+     */
     EventConfig events();
 
     interface SpanConfig {
+        /**
+         * Enable or disable span creation
+         */
         @WithDefault("true")
         boolean enabled();
     }
 
     interface EventConfig {
+        /**
+         * Enable or disable event tracking
+         */
         @WithDefault("true")
         boolean enabled();
     }
 
+    /**
+     * Test infrastructure configuration
+     */
     TestInfrastructureConfig testInfrastructure();
 
     interface TestInfrastructureConfig {
+        /**
+         * Enable or disable test infrastructure
+         */
         @WithDefault("false")
         boolean enabled();
     }

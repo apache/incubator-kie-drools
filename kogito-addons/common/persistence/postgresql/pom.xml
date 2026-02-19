@@ -53,6 +53,12 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-pg-client</artifactId>
     </dependency>
+    <!-- Required at runtime for SASL authentication; Vert.x declares it as optional -->
+    <dependency>
+      <groupId>com.ongres.scram</groupId>
+      <artifactId>scram-client</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
@@ -100,11 +106,6 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-       <groupId>com.ongres.scram</groupId>
-       <artifactId>client</artifactId>
-       <scope>test</scope>
     </dependency>
   </dependencies>
 

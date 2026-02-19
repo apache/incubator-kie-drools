@@ -47,6 +47,15 @@ public interface EventingConfiguration {
     @WithDefault("true")
     Boolean autoGenerateBroker();
 
+    /**
+     * Configuration for the Knative Sink used by this Kogito service.
+     * <p>
+     * The Sink configuration defines the target Knative resource (Broker, Channel, or Service) where events
+     * will be sent. This is used to configure the "sink" property in the generated Knative SinkBinding.
+     * <p>
+     * Use the nested properties under `org.kie.kogito.addons.knative.eventing.sink.*` to customize
+     * the sink's namespace, API version, name, and kind.
+     */
     @WithName("sink")
     SinkConfiguration sinkConfig();
 }

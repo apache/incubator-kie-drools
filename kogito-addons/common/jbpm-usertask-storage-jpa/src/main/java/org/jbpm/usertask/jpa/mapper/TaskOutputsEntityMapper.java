@@ -64,7 +64,7 @@ public class TaskOutputsEntityMapper implements EntityMapper {
                 outputEntity.setValue(JSONUtils.valueToString(value).getBytes(StandardCharsets.UTF_8));
                 outputEntity.setJavaType(value.getClass().getName());
             }
-            repository.persist(outputEntity);
+
         });
     }
 

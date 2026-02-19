@@ -63,7 +63,7 @@ public class TaskMetadataEntityMapper implements EntityMapper {
                 metadataEntity.setValue(JSONUtils.valueToString(value));
                 metadataEntity.setJavaType(value.getClass().getName());
             }
-            repository.persist(metadataEntity);
+
         });
     }
 

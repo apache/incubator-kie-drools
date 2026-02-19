@@ -145,4 +145,22 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
         combinedIndexBuildItem.getComputingIndex().getAllKnownImplementors(DotName.createSimple("com.networknt.schema.JsonValidator"))
                 .forEach(c -> reflectiveClass.produce(new ReflectiveClassBuildItem(true, true, c.name().toString())));
     }
+
+    /**
+     * Register primitive wrapper types for reflection in native builds.
+     * This is needed so that RESTEasy's DefaultTextPlain provider can use
+     * TypeConverter to deserialize text/plain responses into primitive wrapper
+     * types (e.g. Float, Double) via their valueOf(String) methods.
+     */
+    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
+    public ReflectiveClassBuildItem registerPrimitiveWrapperTypesForReflection() {
+        return new ReflectiveClassBuildItem(true, false,
+                java.lang.Float.class.getName(),
+                java.lang.Double.class.getName(),
+                java.lang.Integer.class.getName(),
+                java.lang.Long.class.getName(),
+                java.lang.Short.class.getName(),
+                java.lang.Byte.class.getName(),
+                java.lang.Boolean.class.getName());
+    }
 }

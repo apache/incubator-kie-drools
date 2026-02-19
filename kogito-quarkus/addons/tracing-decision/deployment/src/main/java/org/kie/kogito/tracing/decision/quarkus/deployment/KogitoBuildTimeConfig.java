@@ -18,16 +18,18 @@
  */
 package org.kie.kogito.tracing.decision.quarkus.deployment;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "kogito", phase = ConfigPhase.BUILD_TIME)
-public class KogitoBuildTimeConfig {
+@ConfigMapping(prefix = "kogito")
+@ConfigRoot(phase = ConfigPhase.BUILD_TIME)
+public interface KogitoBuildTimeConfig {
 
     /**
      * Configuration for DevServices. DevServices allows Quarkus to automatically start TrustyService in dev and test mode.
      */
-    @ConfigItem
-    public KogitoDevServicesBuildTimeConfig devServicesTrusty;
+    @WithName("dev-services-trusty")
+    KogitoDevServicesBuildTimeConfig devServicesTrusty();
 }

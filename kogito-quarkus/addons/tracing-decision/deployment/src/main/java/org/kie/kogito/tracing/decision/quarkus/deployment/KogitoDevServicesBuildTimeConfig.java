@@ -20,32 +20,28 @@ package org.kie.kogito.tracing.decision.quarkus.deployment;
 
 import java.util.Optional;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
 
-@ConfigGroup
-public class KogitoDevServicesBuildTimeConfig {
+public interface KogitoDevServicesBuildTimeConfig {
 
     /**
      * If Dev Services for Kogito has been explicitly enabled or disabled. Dev Services are generally enabled
      * by default, unless there is an existing configuration present.
      */
-    @ConfigItem
-    public Optional<Boolean> enabled = Optional.empty();
+    Optional<Boolean> enabled();
 
     /**
      * Optional fixed port the dev service will listen to.
      * <p>
      * If not defined, 8081 will be used.
      */
-    @ConfigItem(defaultValue = "8081")
-    public Optional<Integer> port;
+    @WithDefault("8081")
+    Optional<Integer> port();
 
     /**
      * The TrustyService image to use.
      */
-    @ConfigItem
-    public String imageName;
+    Optional<String> imageName();
 
     /**
      * Indicates if the TrustyService instance managed by Quarkus DevServices is shared.
@@ -58,8 +54,8 @@ public class KogitoDevServicesBuildTimeConfig {
      * <p>
      * Container sharing is only used in dev mode.
      */
-    @ConfigItem(defaultValue = "true")
-    public boolean shared;
+    @WithDefault("true")
+    boolean shared();
 
     /**
      * The value of the {@code kogito-dev-service-trusty-service} label attached to the started container.
@@ -69,13 +65,13 @@ public class KogitoDevServicesBuildTimeConfig {
      * container instead of starting a new one. Otherwise, it starts a new container with the
      * {@code kogito-dev-service-trusty-service} label set to the specified value.
      */
-    @ConfigItem(defaultValue = "kogito-trusty-service")
-    public String serviceName;
+    @WithDefault("kogito-trusty-service")
+    String serviceName();
 
     /**
      * Optional random port the dev service will listen to in tests.
      */
-    @ConfigItem(defaultValue = "-1")
-    public Integer portUsedByTest;
+    @WithDefault("-1")
+    Integer portUsedByTest();
 
 }

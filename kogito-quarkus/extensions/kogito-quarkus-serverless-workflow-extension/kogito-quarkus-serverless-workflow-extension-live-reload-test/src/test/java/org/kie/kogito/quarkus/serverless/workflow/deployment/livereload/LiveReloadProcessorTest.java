@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -31,8 +32,13 @@ import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.parallel.Execution;
 import org.kie.kogito.test.utils.SocketUtils;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -49,9 +55,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.parallel.ExecutionMode.SAME_THREAD;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(SAME_THREAD)
+@TestMethodOrder(OrderAnnotation.class)
+//@Disabled("Disabled temporarily - live reload tests are unstable in dev mode")
 public class LiveReloadProcessorTest {
 
     private static final int PORT = SocketUtils.findAvailablePort();
@@ -108,6 +120,7 @@ public class LiveReloadProcessorTest {
     }
 
     @Test
+    @Order(2)
     void testOpenApi() throws IOException {
         given()
                 .contentType(ContentType.JSON)
@@ -134,6 +147,7 @@ public class LiveReloadProcessorTest {
     }
 
     @Test
+    @Order(3)
     void testGrpc() throws InterruptedException, IOException {
         Server server = GreeterService.buildServer(PORT);
         server.start();
@@ -167,6 +181,7 @@ public class LiveReloadProcessorTest {
     }
 
     @Test
+    @Order(1)
     void testAsyncApi() throws IOException {
         given()
                 .contentType(ContentType.JSON)
@@ -180,15 +195,18 @@ public class LiveReloadProcessorTest {
             test.addResourceFile("asyncPublisher.sw.json", new String(Objects.requireNonNull(inputStream).readAllBytes()));
         }
 
-        String id = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
-                .post("/asyncEventPublisher")
-                .then()
-                .statusCode(201)
-                .extract().path("id");
+        // Wait for Quarkus to complete the hot reload (max 10 seconds)
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+            String id = given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
+                    .post("/asyncEventPublisher")
+                    .then()
+                    .statusCode(201)
+                    .extract().path("id");
 
-        assertThat(id).isNotBlank();
+            assertThat(id).isNotBlank();
+        });
     }
 }

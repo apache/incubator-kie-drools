@@ -19,10 +19,26 @@
 
 package org.jbpm.usertask.jpa.springboot;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @SpringBootConfiguration
 @EntityScan("org.jbpm.usertask.jpa.model")
 public class SpringBootUserTaskJPAAutoConfiguration {
+
+    @Bean
+    public static BeanPostProcessor usertaskEmfPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) {
+                if (bean instanceof LocalContainerEntityManagerFactoryBean emfb) {
+                    emfb.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
+                }
+                return bean;
+            }
+        };
+    }
 }
