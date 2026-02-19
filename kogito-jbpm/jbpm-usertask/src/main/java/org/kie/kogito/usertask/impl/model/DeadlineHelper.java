@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -130,10 +131,23 @@ public class DeadlineHelper {
 
     private static Collection<ScheduleInfo> getReassignmentSchedule(String timeStr) {
         ScheduleInfo info = new ScheduleInfo();
-        if (!timeStr.startsWith("PT")) {
-            timeStr = "PT" + timeStr;
+        // Check if it's a shorthand duration (e.g., "1m", "2h")
+        Duration shorthandDuration = parseShorthandDuration(timeStr);
+        if (shorthandDuration != null) {
+            info.setDuration(shorthandDuration);
+        } else if (!timeStr.startsWith("PT") && !timeStr.startsWith("P")) {
+            // If not already prefixed with P or PT, determine which prefix to use
+            // Check if it contains time components (H, M, S) or date components (Y, W, D)
+            // Note: M is ambiguous (could be months or minutes), so we check for T presence
+            if (timeStr.contains("T") || timeStr.matches(".*[0-9]+[HMS].*")) {
+                timeStr = "PT" + timeStr;
+            } else {
+                timeStr = "P" + timeStr;
+            }
+            info.setDuration(parseDuration(timeStr));
+        } else {
+            info.setDuration(parseDuration(timeStr));
         }
-        info.setDuration(Duration.parse(timeStr));
         return Collections.singletonList(info);
     }
 
@@ -254,7 +268,11 @@ public class DeadlineHelper {
         Matcher matcher = shorthandDurationPattern.matcher(timeStr);
         if (matcher.matches()) {
             long value = Long.parseLong(matcher.group(1));
-            String unitInput = matcher.group(2).toLowerCase();
+            String unitInput = matcher.group(2);
+            // Only convert to lowercase if it's not 'm' or 'M' (to distinguish minutes from months)
+            if (!Objects.equals(unitInput, "m") && !Objects.equals(unitInput, "M")) {
+                unitInput = unitInput.toLowerCase();
+            }
             DurationUnit unit = DurationUnit.fromString(unitInput);
             if (unit == null) {
                 throw new IllegalArgumentException("Unknown shorthand duration unit: " + unitInput);
@@ -293,6 +311,13 @@ public class DeadlineHelper {
             @Override
             Duration toDuration(long value) {
                 return Duration.ofDays(value * 7);
+            }
+        },
+        MONTHS("M") {
+            @Override
+            Duration toDuration(long value) {
+                // Convert months to Duration using Period
+                return getDuration(Period.ofMonths((int) value), Duration.ZERO);
             }
         },
         YEARS("y") {

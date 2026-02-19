@@ -239,7 +239,7 @@ public class DeadlineHelperTest {
     }
 
     @Test
-    public void testReassignment() {
+    public void testReassignmentShorthandMinutes() {
         Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
                 "[users:Pepe,Pepa|groups:Admin,Managers]@[1m]");
         assertThat(reassignments).hasSize(1);
@@ -247,6 +247,50 @@ public class DeadlineHelperTest {
         assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("Pepe", "Pepa");
         assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admin", "Managers");
         assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(Duration.ofMinutes(1));
+    }
+
+    @Test
+    public void testReassignmentMinutes() {
+        Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
+                "[users:Pepe,Pepa|groups:Admin,Managers]@[PT1M]");
+        assertThat(reassignments).hasSize(1);
+        DeadlineInfo<Reassignment> reassignment = reassignments.iterator().next();
+        assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("Pepe", "Pepa");
+        assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admin", "Managers");
+        assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(Duration.ofMinutes(1));
+    }
+
+    @Test
+    public void testReassignmentWithDateBasedDuration() {
+        Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
+                "[users:John,Jane|groups:Admins]@[365D]");
+        assertThat(reassignments).hasSize(1);
+        DeadlineInfo<Reassignment> reassignment = reassignments.iterator().next();
+        assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("John", "Jane");
+        assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admins");
+        assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(Duration.ofDays(365));
+    }
+
+    @Test
+    public void testReassignmentShorthandMonths() {
+        Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
+                "[users:John,Jane|groups:Admins]@[7M]");
+        assertThat(reassignments).hasSize(1);
+        DeadlineInfo<Reassignment> reassignment = reassignments.iterator().next();
+        assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("John", "Jane");
+        assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admins");
+        assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(DeadlineHelper.getDuration(Period.ofMonths(7), Duration.ZERO));
+    }
+
+    @Test
+    public void testReassignmentMonths() {
+        Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
+                "[users:John,Jane|groups:Admins]@[P7M]");
+        assertThat(reassignments).hasSize(1);
+        DeadlineInfo<Reassignment> reassignment = reassignments.iterator().next();
+        assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("John", "Jane");
+        assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admins");
+        assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(DeadlineHelper.getDuration(Period.ofMonths(7), Duration.ZERO));
     }
 
     private void assertEqualsDate(ZonedDateTime expectedDate, ZonedDateTime calculatedDate) {
