@@ -63,7 +63,7 @@ jobs:
         env:
           BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
           MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ runner.os }}.txt'
+          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
@@ -76,7 +76,7 @@ jobs:
       - name: Upload Dependency Trees
         uses: actions/upload-artifact@v4
         env:
-          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ runner.os }}.txt'
+          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
         if: ${{ always() }}
         with:
           name: dependency-trees-logs
