@@ -80,4 +80,4 @@ jobs:
         if: ${{ always() }}
         with:
           name: dependency-trees-logs
-          path: '**/${env.DEPENDENCY_TREE_FILE}'
+          path: '**/'${env.DEPENDENCY_TREE_FILE}
