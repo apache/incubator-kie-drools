@@ -75,9 +75,9 @@ jobs:
           report_paths: '**/*-reports/TEST-*.xml'
       - name: Upload Dependency Trees
         uses: actions/upload-artifact@v4
-#        env:
-#          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_${{ job.name }}_${{ matrix.os }}.txt'
+        env:
+          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
         if: ${{ always() }}
         with:
-          name: dependency-trees-logs
+          name: dependency-trees-logs_drools_${{ matrix.os }}
           path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
