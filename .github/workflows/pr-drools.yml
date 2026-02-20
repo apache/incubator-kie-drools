@@ -75,6 +75,8 @@ jobs:
       - name: Upload Dependency Trees
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
+        env:
+          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ runner.os }}.txt'
         with:
           name: dependency-trees-logs
-          path: '**/mvn_dependency_tree.txt'
+          path: '**/${env.DEPENDENCY_TREE_FILE}'
