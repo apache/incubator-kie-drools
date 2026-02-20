@@ -23,10 +23,9 @@ import org.kie.kogito.app.jobs.integrations.DefaultJobExceptionDetailsExtractor;
 import org.kie.kogito.app.jobs.integrations.JobExceptionDetailsExtractor;
 import org.kie.kogito.jobs.service.model.JobExecutionExceptionDetails;
 
-import io.quarkus.arc.All;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
@@ -62,7 +61,7 @@ public class WrappingConditionalJobExceptionDetailsExtractor implements JobExcep
     Boolean exceptionDetailsEnabled;
 
     @Inject
-    @All // Injects all other implementations
+    @Any // Injects all other implementations
     Instance<JobExceptionDetailsExtractor> allExtractors;
 
     private JobExceptionDetailsExtractor delegate;
