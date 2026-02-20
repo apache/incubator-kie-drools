@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_0DCC505E-71B4-4C29-8848-4006623FE51A" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_5CC0238C-2BB4-4C9F-BC94-B8E8A00F0210" name="New Hiring Offer" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.apache.org/dmn/_C3BAEB39-B8F7-4BAA-A20A-1627BE84771B">
+  <dmn:extensionElements />
+  <dmn:itemDefinition id="_91B22404-81DF-44E7-9084-6416BF211BCC" name="tCandidateData" isCollection="false">
+    <dmn:itemComponent id="_657BB44B-D8B2-490A-B383-F63EF31E781E" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_F004E7F6-6993-4CA2-8029-C3A87C8A15A8" name="lastName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_E9314196-BF96-4014-9548-2BB15D125B34" name="email" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D554122C-2BF1-4F1C-AAF2-DC7EBB72E817" name="experience" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_03ACF59E-4EC6-4C79-AE55-427BD51429BD" name="skills" isCollection="true">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_76F919CD-3E75-4EE2-AD60-FB0627E0DA54" name="tOffer" isCollection="false">
+    <dmn:itemComponent id="_C4ABF342-EEB6-4CA6-AAC1-7C6D50A1DD02" name="salary" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_3C2A61B7-AD85-4AF3-B904-51038920EF93" name="category" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+      <dmn:allowedValues kie:constraintType="enumeration" id="_8C8338A1-7CA6-48D8-AECB-3D5082333316">
+        <dmn:text>&quot;Software Engineer&quot;, &quot;Senior Software Engineer&quot;, &quot;Software Architect&quot;</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" name="CandidateData">
+    <dmn:extensionElements />
+    <dmn:variable id="_EF5D30F7-00BF-47E2-9655-D1D21B799F5C" name="CandidateData" typeRef="tCandidateData" />
+  </dmn:inputData>
+  <dmn:decision id="_26299D78-4931-4077-A636-1364B97AB94F" name="Offer">
+    <dmn:extensionElements />
+    <dmn:variable id="_1C79A32D-6535-4209-9840-D4FF6FF52CA9" name="Offer" typeRef="tOffer" />
+    <dmn:informationRequirement id="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF">
+      <dmn:requiredInput href="#_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" />
+    </dmn:informationRequirement>
+    <dmn:context id="_6CF8329F-A45C-4FC8-AEDD-F2DA34BCD9CC">
+      <dmn:contextEntry id="_7BAF16CF-A059-47EC-90E5-0142B3238EDF">
+        <dmn:variable id="_F97FBBC2-9B78-4280-8053-B5089E422B35" name="SalaryBonus" typeRef="number" />
+        <dmn:literalExpression id="_DE5ECE12-3B62-497F-9A5F-8DFE8D5B440B">
+          <dmn:text>count(CandidateData.skills) * 150</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry id="_8E5C8FDE-04E1-41BB-9115-7D1D00C07096">
+        <dmn:variable id="_CE19A7DC-A559-482A-93A8-38786291B11C" name="Offer" typeRef="tOffer" />
+        <dmn:decisionTable id="_839000A0-8C02-4FD7-A079-9DCA9C2D9C67" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+          <dmn:input id="_2003EFC0-4A87-43FA-80B1-25C14F0AB2FF">
+            <dmn:inputExpression id="_663F281B-8A30-44DC-9DA5-B141831D552B" typeRef="number">
+              <dmn:text>CandidateData.experience</dmn:text>
+            </dmn:inputExpression>
+          </dmn:input>
+          <dmn:output id="_BCCDA650-A716-4BA4-9B3D-4CD8AE93CB79" name="category" typeRef="string">
+            <dmn:outputValues kie:constraintType="enumeration" id="_78F5B0AC-CE91-4BEC-8B26-121FF0C0BC2A">
+              <dmn:text>&quot;Software Engineer&quot;, &quot;Senior Software Engineer&quot;, &quot;Software Architect&quot;</dmn:text>
+            </dmn:outputValues>
+          </dmn:output>
+          <dmn:output id="_FF119A4B-E564-438A-99D9-4D1B26E519F1" name="salary" typeRef="number" />
+          <dmn:annotation name="annotation-1" />
+          <dmn:rule id="_2E67A292-D088-4ED7-AC9D-A7D85C3B6188">
+            <dmn:inputEntry id="_5082A566-8E83-4441-B446-A69E5BE4D81E">
+              <dmn:text>[0..5)</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_BF300CEA-9C67-4A48-9E63-781B94552D6F">
+              <dmn:text>&quot;Software Engineer&quot;</dmn:text>
+            </dmn:outputEntry>
+            <dmn:outputEntry id="_7B4EBA06-D280-436F-80E6-B6631BED7E8F">
+              <dmn:text>30000 + SalaryBonus </dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text></dmn:text>
+            </dmn:annotationEntry>
+          </dmn:rule>
+          <dmn:rule id="_1322663C-FAD9-48BA-A893-8076ED7D2D55">
+            <dmn:inputEntry id="_6801EF6E-ED61-41DF-9810-7D9118A1F611">
+              <dmn:text>[5..10)</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_43E9D87D-ECE5-4298-B98A-9E69D93B967B">
+              <dmn:text>&quot;Senior Software Engineer&quot;</dmn:text>
+            </dmn:outputEntry>
+            <dmn:outputEntry id="_CF868CA5-C53A-4ECD-9167-5C55F858FF7F">
+              <dmn:text>40000 + SalaryBonus</dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text></dmn:text>
+            </dmn:annotationEntry>
+          </dmn:rule>
+          <dmn:rule id="_1104ED9E-0910-40F9-A0C3-911BF018C545">
+            <dmn:inputEntry id="_3D058456-EA96-4D78-9BF1-9AEDF3755C47">
+              <dmn:text>&gt;=10</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_061D4DC8-069B-43C7-9200-C20D11692D8F">
+              <dmn:text>&quot;Software Architect&quot;</dmn:text>
+            </dmn:outputEntry>
+            <dmn:outputEntry id="_C7269E79-EE4D-440C-99F7-C5F474F15E2F">
+              <dmn:text>50000 + SalaryBonus</dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text></dmn:text>
+            </dmn:annotationEntry>
+          </dmn:rule>
+        </dmn:decisionTable>
+      </dmn:contextEntry>
+      <dmn:contextEntry id="_485585EE-E5AB-4770-906D-9308415C3273">
+        <dmn:literalExpression id="_3676400A-0460-43CC-A96A-B28B460E4D19">
+          <dmn:text>Offer</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_C1A40C3F-E161-41CE-9ED5-BA9F449CF495" name="DRG" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_6CF8329F-A45C-4FC8-AEDD-F2DA34BCD9CC">
+            <kie:width>50</kie:width>
+            <kie:width>120</kie:width>
+            <kie:width>926</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_DE5ECE12-3B62-497F-9A5F-8DFE8D5B440B">
+            <kie:width>926</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_839000A0-8C02-4FD7-A079-9DCA9C2D9C67">
+            <kie:width>50</kie:width>
+            <kie:width>175</kie:width>
+            <kie:width>104</kie:width>
+            <kie:width>437</kie:width>
+            <kie:width>140</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3676400A-0460-43CC-A96A-B28B460E4D19">
+            <kie:width>926</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" dmnElementRef="_59F676A7-D122-4FAB-8ABB-F1E0CC997C08" isCollapsed="false">
+        <dmndi:DMNStyle id="_BC196EFB-61E2-4BCE-B8AA-348283ACAAED">
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
+        </dmndi:DMNStyle>
+        <dc:Bounds x="380" y="380" width="137" height="58" />
+        <dmndi:DMNLabel id="_EE9C98AF-FBB0-42D7-AF55-430D317D37AE" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_26299D78-4931-4077-A636-1364B97AB94F" dmnElementRef="_26299D78-4931-4077-A636-1364B97AB94F" isCollapsed="false">
+        <dmndi:DMNStyle id="_1D23D537-6AE9-4903-84BE-2824FAF0C260">
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
+        </dmndi:DMNStyle>
+        <dc:Bounds x="379" y="165" width="100" height="50" />
+        <dmndi:DMNLabel id="_CFDE3114-4DE5-4D71-879C-9AB9BFA93CED" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF" dmnElementRef="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF">
+        <di:waypoint x="448.5" y="409" />
+        <di:waypoint x="429" y="215" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
