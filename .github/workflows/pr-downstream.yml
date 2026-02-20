@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 180
     strategy:
       matrix:
-        job_name: [ kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        job_name: [ kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples, kogito-gradle-examples ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
@@ -56,6 +56,9 @@ jobs:
           - job_name: serverless-workflow-examples
             repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
+          - job_name: kogito-gradle-examples
+            repository: incubator-kie-kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: gradle-examples/
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
