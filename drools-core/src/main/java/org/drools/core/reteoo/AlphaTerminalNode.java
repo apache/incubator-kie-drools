@@ -108,7 +108,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         if (((InternalMatch)leftTuple).isMatched()) {
             leftTuple.setStagedType(Tuple.DELETE);
         }
-        PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, rtn, false ).getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple );
+        PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple );
     }
 
     public static RuleAgendaItem getRuleAgendaItem(ReteEvaluator reteEvaluator, TerminalNode rtn, boolean linkPmem ) {
