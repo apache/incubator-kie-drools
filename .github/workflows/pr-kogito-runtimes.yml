@@ -45,6 +45,8 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
+    env:
+      DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_kogito-runtimes_${{ matrix.os }}.txt'
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -71,3 +73,9 @@ jobs:
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
+      - name: Upload Dependency Trees
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: dependency-trees-logs_kogito-runtimes_${{ matrix.os }}
+          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'
