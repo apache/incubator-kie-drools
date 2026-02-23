@@ -1,230 +1,142 @@
-# .rat-excludes
 .rat-excludes
-# DISCLAIMER-WIP
+.rat-reports
 DISCLAIMER-WIP
-# addons/common/jbpm-usertask-storage-jpa/src/main/resources/META-INF/beans.xml
-beans.xml
-# addons/common/marshallers/avro/src/main/resources/jsonNode.avsc
-jsonNode.avsc
-# addons/common/marshallers/avro/src/main/resources/spec.avsc
-spec.avsc
-# addons/common/marshallers/avro/src/test/avro/pojo.avsc
-pojo.avsc
-# addons/common/monitoring/prometheus/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/filesystem/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/infinispan/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/jdbc/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/mongodb/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/postgresql/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# addons/common/persistence/rocksdb/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# api/kogito-events-core/src/main/resources/META-INF/services/com.fasterxml.jackson.databind.Module
-com.fasterxml.jackson.databind.Module
-# api/kogito-events-core/src/main/resources/META-INF/services/org.kie.kogito.event.impl.adapter.DataEventAdapter
-org.kie.kogito.event.impl.adapter.DataEventAdapter
-# drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_tree.pmml
-test_tree.pmml
-# drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_regression.pmml
-test_regression.pmml
-# drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_tree.pmml
-test_tree.pmml
-# drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_regression.pmml
-test_regression.pmml
-# jbpm/jbpm-flow/src/main/resources/META-INF/services/org.jbpm.ruleflow.core.factory.provider.NodeFactoryProvider
-org.jbpm.ruleflow.core.factory.provider.NodeFactoryProvider
-# jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilder
-org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilder
-# jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.compiler.canonical.node.NodeVisitorBuilder
-org.jbpm.compiler.canonical.node.NodeVisitorBuilder
-# jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.process.builder.transformation.DataTransformerCompiler
-org.jbpm.process.builder.transformation.DataTransformerCompiler
-# jbpm/jbpm-flow-migration/src/test/resources/META-INF/migration-plan/simple_invalid_migration.invalid
-simple_invalid_migration.invalid
-# jbpm/jbpm-flow-migration/src/test/resources/META-INF/migration-plan/simple_migration.mpf
-simple_migration.mpf
-# jbpm/jbpm-flow-migration/src/test/resources/META-INF/migration-plan/simple_migration_version.mpf
-simple_migration_version.mpf
-# jbpm/jbpm-tests/src/test/resources/calendar.properties
-calendar.properties
-# jbpm/jbpm-tests/src/test/resources/xxe-protection/Text1.txt
-Text1.txt
-# jbpm/jbpm-tests/src/test/resources/xxe-protection/Text2.txt
-Text2.txt
-# jbpm/jbpm-usertask-workitem/src/main/resources/META-INF/services/org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
-org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
-# jbpm/process-workitems/src/main/resources/META-INF/services/org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
-org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
-# kogito-codegen-modules/kogito-codegen-core/src/test/resources/.a-hidden-file.txt
-.a-hidden-file.txt
-# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_multiplemodels.pmml
-test_multiplemodels.pmml
-# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_scorecard.pmml
-test_scorecard.pmml
-# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_regression.pmml
-test_regression.pmml
-# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_miningmodel.pmml
-test_miningmodel.pmml
-# kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/META-INF/kogito.addon
-kogito.addon
-# kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/org/kie/kogito/codegen/process/process-generation-test.skip.txt
-process-generation-test.skip.txt
-# kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile1.txt
-sampleFile1.txt
-# kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile2.txt
-sampleFile2.txt
-# kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources/pepe a pepa.txt
-pepe a pepa.txt
-# kogito-serverless-workflow/kogito-serverless-workflow-executor-python/requirements.txt
-requirements.txt
-# kogito-serverless-workflow/kogito-serverless-workflow-executor-tests/src/test/resources/logback.xml
-logback.xml
-# quarkus/addons/dynamic/integration-tests/src/main/resources/application.properties
-application.properties
-# quarkus/addons/dynamic/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/events/rules/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/explainability/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/jbpm-usertask-storage-jpa/runtime/src/test/resources/META-INF/beans.xml
-beans.xml
-# quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/knative/serving/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/mail/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/messaging/common/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/messaging/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/microprofile-config-service-catalog/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/monitoring/core/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/process-definitions/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/process-management/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/process-svg/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/python/integration-tests/requirements.txt
-requirements.txt
-# quarkus/addons/source-files/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/task-management/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/task-notification/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-integration-test-hot-reload/src/test/resources/TrafficViolation.txt
-TrafficViolation.txt
-# quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-integration-test-hot-reload/src/test/resources/adult.txt
-adult.txt
-# quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/resources/PMMLRegression.pmml
-PMMLRegression.pmml   
-# quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/adult.txt
-adult.txt
-# quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/drl1.txt
-drl1.txt
-# quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/long-call.sw.yaml
-long-call.sw.yaml
-# quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/helloworldevent.sw.yaml
-helloworldevent.sw.yaml
-# quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
-src_test_resources_application.yml
-# quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
-PMMLRegression.pmml
-# quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml
-PMMLTree.pmml
-# quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
-PMMLRegression.pmml
-# quarkus/integration-tests/integration-tests-quarkus-rules/src/test/resources/LoanUnit.xls.properties.test
-LoanUnit.xls.properties.test
-# quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-processes-persistence-common/src/main/resources/transactional_error.bpmn
-transactional_error.bpmn
-# springboot/addons/events/decisions/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/events/predictions/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/explainability/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/flyway/src/main/resources/META-INF/beans.xml
-beans.xml
-# springboot/addons/jbpm-usertask-storage-jpa/src/main/resources/META-INF/beans.xml
-beans.xml
-# springboot/addons/jobs/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/kubernetes/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/mail/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/messaging/implementation/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/monitoring/core/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/monitoring/elastic/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/monitoring/prometheus/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/process-management/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/process-svg/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/task-management/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/task-notification/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/addons/tracing-decision/src/main/resources/META-INF/kogito.addon
-kogito.addon
-# springboot/archetype/src/test/resources/projects/it-basic/goal.txt
-goal.txt
-# springboot/archetype/src/test/resources/projects/it-custom-decisions/goal.txt
-goal.txt
-# springboot/archetype/src/test/resources/projects/it-custom-process/goal.txt
-goal.txt
-# springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLTree.pmml
-PMMLTree.pmml
-# springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLRegression.pmml
-PMMLRegression.pmml   
-# springboot/integration-tests/integration-tests-springboot-kafka-it/.gitignore
-.gitignore
-# springboot/integration-tests/integration-tests-springboot-norest-it/src/main/resources/PMMLRegression.pmml
-PMMLRegression.pmml
-# springboot/integration-tests/integration-tests-springboot-processes-it/.gitignore
-.gitignore
-# springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/.gitignore
-.gitignore
-# springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/src/main/resources/transactional_error.bpmn
-transactional_error.bpmn
-# quarkus/addons/process-migration/integration-tests/src/main/resources/signal.bpmn
-signal.bpmn
-# quarkus/addons/process-migration/integration-tests/src/main/resources/signal2.bpmn
-signal2.bpmn
-# quarkus/addons/process-migration/integration-tests/src/main/resources/META-INF/migration-plan/signal.mpf
-signal.mpf
+addons/common/jbpm-usertask-storage-jpa/src/main/resources/META-INF/beans.xml
+addons/common/marshallers/avro/src/main/resources/jsonNode.avsc
+addons/common/marshallers/avro/src/main/resources/spec.avsc
+addons/common/marshallers/avro/src/test/avro/pojo.avsc
+addons/common/monitoring/prometheus/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/filesystem/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/infinispan/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/jdbc/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/mongodb/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/postgresql/src/main/resources/META-INF/kogito.addon
+addons/common/persistence/rocksdb/src/main/resources/META-INF/kogito.addon
+addons/common/process-instance-migration/src/test/resources/META-INF/migration-plan/simple_migration.mpf
+addons/common/process-instance-migration/src/test/resources/META-INF/migration-plan/simple_migration_version.mpf
+api/kogito-events-core/src/main/resources/META-INF/services/com.fasterxml.jackson.databind.Module
+api/kogito-events-core/src/main/resources/META-INF/services/org.kie.kogito.event.impl.adapter.DataEventAdapter
+drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_regression.pmml
+drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_tree.pmml
+drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_regression.pmml
+drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_tree.pmml
+jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilder
+jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.compiler.canonical.node.NodeVisitorBuilder
+jbpm/jbpm-flow-builder/src/main/resources/META-INF/services/org.jbpm.process.builder.transformation.DataTransformerCompiler
+jbpm/jbpm-flow/src/main/resources/META-INF/services/org.jbpm.ruleflow.core.factory.provider.NodeFactoryProvider
+jbpm/jbpm-tests/src/test/resources/calendar.properties
+jbpm/jbpm-tests/src/test/resources/xxe-protection/Text1.txt
+jbpm/jbpm-tests/src/test/resources/xxe-protection/Text2.txt
+jbpm/jbpm-usertask-workitem/src/main/resources/META-INF/services/org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
+jbpm/process-workitems/src/main/resources/META-INF/services/org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
+kogito-codegen-modules/kogito-codegen-core/src/test/resources/.a-hidden-file.txt
+kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_miningmodel.pmml
+kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_multiplemodels.pmml
+kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_regression.pmml
+kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_scorecard.pmml
+kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/META-INF/kogito.addon
+kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/org/kie/kogito/codegen/process/process-generation-test.skip.txt
+kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile1.txt
+kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/test/resources/sampleFile2.txt
+kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources/pepe a pepa.txt
+kogito-serverless-workflow/kogito-serverless-workflow-executor-python/requirements.txt
+kogito-serverless-workflow/kogito-serverless-workflow-executor-tests/src/test/resources/logback.xml
+quarkus/addons/dynamic/integration-tests/src/main/resources/application.properties
+quarkus/addons/dynamic/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/events/decisions/deployment/.gitignore
+quarkus/addons/events/decisions/runtime/.gitignore
+quarkus/addons/events/decisions/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/events/predictions/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/events/rules/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/explainability/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/fabric8-kubernetes-service-catalog/runtime/src/test/resources/application.properties
+quarkus/addons/jbpm-usertask-storage-jpa/runtime/src/test/resources/META-INF/beans.xml
+quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/jwt-parser/integration-tests/src/main/resources/application.properties
+quarkus/addons/knative/eventing/deployment/src/test/resources/application.properties
+quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/knative/eventing/runtime/src/test/resources/application.properties
+quarkus/addons/knative/serving/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/kubernetes/integration-tests/src/test/resources/application.properties
+quarkus/addons/kubernetes/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/mail/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/messaging/common/src/main/resources/META-INF/kogito.addon
+quarkus/addons/messaging/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/microprofile-config-service-catalog/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/monitoring/core/src/main/resources/META-INF/kogito.addon
+quarkus/addons/monitoring/elastic/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/monitoring/prometheus/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/opentelemetry/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/persistence/kafka/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/process-definitions/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/process-instance-migration/integration-tests/src/main/resources/META-INF/migration-plan/signal.mpf
+quarkus/addons/process-instance-migration/integration-tests/src/main/resources/signal.bpmn
+quarkus/addons/process-instance-migration/integration-tests/src/main/resources/signal2.bpmn
+quarkus/addons/process-instance-migration/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/process-management/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/process-svg/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/python/integration-tests/requirements.txt
+quarkus/addons/source-files/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/task-management/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/task-notification/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/token-exchange/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/addons/tracing-decision/runtime/src/main/resources/META-INF/kogito.addon
+quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-integration-test-hot-reload/src/test/resources/TrafficViolation.txt
+quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-integration-test-hot-reload/src/test/resources/adult.txt
+quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/resources/PMMLRegression.pmml
+quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/adult.txt
+quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/drl1.txt
+quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/helloworldevent.sw.yaml
+quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/long-call.sw.yaml
+quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
+quarkus/extensions/kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension/kogito-quarkus-serverless-workflow-jdbc-token-persistence/src/main/resources/META-INF/beans.xml
+quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
+quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
+quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-processes-persistence-common/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-filesystem/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-infinispan/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-jdbc/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-kafka-persistence/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-mongodb/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-processes-persistence/integration-tests-quarkus-processes-postgresql/src/main/resources/transactional_error.bpmn
+quarkus/integration-tests/integration-tests-quarkus-rules/src/test/resources/LoanUnit.xls.properties.test
+springboot/addons/events/decisions/src/main/resources/META-INF/kogito.addon
+springboot/addons/events/predictions/src/main/resources/META-INF/kogito.addon
+springboot/addons/explainability/src/main/resources/META-INF/kogito.addon
+springboot/addons/flyway/src/main/resources/META-INF/beans.xml
+springboot/addons/jbpm-usertask-storage-jpa/src/main/resources/META-INF/beans.xml
+springboot/addons/jobs/src/main/resources/META-INF/kogito.addon
+springboot/addons/kubernetes/src/main/resources/META-INF/kogito.addon
+springboot/addons/mail/src/main/resources/META-INF/kogito.addon
+springboot/addons/messaging/implementation/src/main/resources/META-INF/kogito.addon
+springboot/addons/monitoring/core/src/main/resources/META-INF/kogito.addon
+springboot/addons/monitoring/elastic/src/main/resources/META-INF/kogito.addon
+springboot/addons/monitoring/prometheus/src/main/resources/META-INF/kogito.addon
+springboot/addons/process-instance-migration/src/main/resources/META-INF/kogito.addon
+springboot/addons/process-management/src/main/resources/META-INF/kogito.addon
+springboot/addons/process-svg/src/main/resources/META-INF/kogito.addon
+springboot/addons/source-files/src/main/resources/META-INF/kogito.addon
+springboot/addons/task-management/src/main/resources/META-INF/kogito.addon
+springboot/addons/task-notification/src/main/resources/META-INF/kogito.addon
+springboot/addons/tracing-decision/src/main/resources/META-INF/kogito.addon
+springboot/archetype/src/test/resources/projects/it-basic/goal.txt
+springboot/archetype/src/test/resources/projects/it-custom-decisions/goal.txt
+springboot/archetype/src/test/resources/projects/it-custom-process/goal.txt
+springboot/integration-tests/integration-tests-springboot-decisions-it/.gitignore
+springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLRegression.pmml
+springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLTree.pmml
+springboot/integration-tests/integration-tests-springboot-kafka-it/.gitignore
+springboot/integration-tests/integration-tests-springboot-norest-it/.gitignore
+springboot/integration-tests/integration-tests-springboot-norest-it/src/main/resources/PMMLRegression.pmml
+springboot/integration-tests/integration-tests-springboot-processes-it/.gitignore
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-infinispan/src/main/resources/transactional_error.bpmn
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-jdbc/src/main/resources/transactional_error.bpmn
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-mongodb/src/main/resources/transactional_error.bpmn
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/.gitignore
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/src/main/resources/transactional_error.bpmn
+springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-postgresql/src/main/resources/transactional_error.bpmn
+springboot/integration-tests/integration-tests-springboot-usertasks-it/.gitignore
+springboot/integration-tests/integration-tests-springboot-wshumantasks-it/.gitignore

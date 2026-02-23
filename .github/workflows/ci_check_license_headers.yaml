@@ -33,8 +33,17 @@ jobs:
 
       - name: Download Apache RAT
         run: |
-          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.16.1/apache-rat-0.16.1.jar
+          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.17/apache-rat-0.17.jar
 
       - name: Run Apache RAT
         run: |
-          java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
+          # Redirect output to .rat-reports file, continue even if RAT returns non-zero exit code because we want to print Unapproved documents
+          java -jar apache-rat-0.17.jar --input-exclude-file .rat-excludes -- . > .rat-reports 2>&1 || true
+          if grep -q "^! Unapproved:" .rat-reports; then
+            echo "❌ Apache RAT check FAILED - Files with unapproved licenses found:"
+            echo ""
+            grep "^! /" .rat-reports
+            exit 1
+          else
+            echo "✅ Apache RAT check PASSED - All files have approved licenses."
+          fi
