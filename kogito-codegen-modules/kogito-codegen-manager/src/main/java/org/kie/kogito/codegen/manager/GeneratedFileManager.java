@@ -78,8 +78,8 @@ public class GeneratedFileManager {
      * @param writer the {@code GeneratedFileWriter} responsible for handling the file write operation; must not be null
      */
     static void writeGeneratedFile(GeneratedFile generatedFile, GeneratedFileWriter writer) {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Writing file: {}", generatedFile.path());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Writing file: {}", generatedFile.path());
         }
         writer.write(generatedFile);
     }
