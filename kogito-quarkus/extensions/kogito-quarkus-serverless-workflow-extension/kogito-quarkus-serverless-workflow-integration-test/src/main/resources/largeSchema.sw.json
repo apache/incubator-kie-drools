@@ -1,0 +1,17 @@
+{
+  "id": "largeschema",
+  "version": "1.0",
+  "name": "Workflow with large schema",
+  "description": "A workflow with large schema",
+  "dataInputSchema" : "schema/workflow-schema.json",
+  "start": "empty",
+  "states": [
+    {
+      "name": "empty",
+      "type": "operation",
+      "actions": [
+      ], 
+	  "end":  true      
+    }
+  ]
+}

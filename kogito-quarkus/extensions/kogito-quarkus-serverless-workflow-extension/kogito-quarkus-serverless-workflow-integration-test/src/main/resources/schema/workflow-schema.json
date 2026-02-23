@@ -1,0 +1,2076 @@
+{
+  "description": "Includes all the templates required to build and release an application",
+  "properties": {
+	"numbers": {
+	            "description": "The array of numbers to be operated with",
+	            "type": "array",
+	            "items" : {
+	                "type" : "object",
+	                "properties" : {
+	                   "x" : {"type":"number"},
+	                   "y" : {"type":"number"}
+	                }
+	             }
+	        },
+    "workflowParams": {
+      "properties": {
+        "beta": {
+          "default": false,
+          "description": "Whether this is a beta version",
+          "title": "Beta",
+          "type": "boolean",
+          "ui:hidden": true
+        },
+        "selectedTemplates": {
+          "default": [
+            "managed-app-ci-pipelinerun",
+            "managed-app-ci-repository"
+          ],
+          "description": "The templates selected for this solution",
+          "items": {
+            "type": "string"
+          },
+          "title": "Selected Templates",
+          "type": "array",
+          "ui:hidden": true
+        },
+        "solutionName": {
+          "default": "managed-app-ci",
+          "description": "The name of the solution",
+          "title": "Name",
+          "type": "string",
+          "ui:hidden": true
+        },
+        "solutionVersion": {
+          "default": "8.0.1",
+          "description": "The version to use",
+          "title": "Version",
+          "type": "string",
+          "ui:hidden": true
+        }
+      },
+      "type": "object",
+      "ui:order": [
+        "*"
+      ]
+    },
+    "xParams": {
+      "properties": {
+        "appLanguage": {
+          "default": "",
+          "description": "Select the programming language used by your application.",
+          "title": "Application Programming Language",
+          "type": "string",
+          "ui:description": "Select the programming language used by your application.",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "appLanguage"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.appLanguage ? $.appLanguage : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "appLanguage"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "appName": {
+          "default": "",
+          "description": "Name of the application",
+          "title": "Application Name",
+          "type": "string",
+          "ui:description": "Name of the application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "appName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.appName ? $.appName : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "appName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "auth": {
+          "title": "auth",
+          "type": "string",
+          "ui:props": {
+            "authTokenDescriptors": [
+              {
+                "customProviderApiId": "core.auth.github-cloud",
+                "provider": "github-cloud",
+                "scope": [
+                  "repo"
+                ]
+              },
+              {
+                "provider": "microsoft",
+                "scope": [
+                  "User.Read",
+                  "Mail.Read"
+                ],
+                "tokenType": "openId"
+              }
+            ]
+          },
+          "ui:widget": "AuthRequester"
+        },
+        "bootstrapEnvironment": {
+          "default": "",
+          "description": "The environment that has been used to bootstrap (e.g., sandbox, dev, preprod)",
+          "title": "The bootstrapped environment",
+          "type": "string",
+          "ui:description": "The environment that has been used to bootstrap (e.g., sandbox, dev, preprod)",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.environment"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.platformAppName"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "bootstrapEnvironment"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "environment": "$${{current.xParams.environment}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.bootstrapEnvironment ? $.bootstrapEnvironment : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "bootstrapEnvironment"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "cacheBucket": {
+          "default": "",
+          "description": "GCS bucket to be used for caching",
+          "title": "Cache Bucket",
+          "type": "string",
+          "ui:description": "GCS bucket to be used for caching",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "cacheBucket"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.cacheBucket ? $.cacheBucket : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "cacheBucket"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "dotnetBaseContainerImage": {
+          "default": "",
+          "description": "Base Container image of .Net Application",
+          "title": "Base Container Image",
+          "type": "string",
+          "ui:description": "Base Container image of .Net Application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "dotnetBaseContainerImage"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.dotnetBaseContainerImage ? $.dotnetBaseContainerImage : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "dotnetBaseContainerImage"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "enableQuayKeylessAuth": {
+          "default": "",
+          "description": "Enable Keyless Auth for Quay if using fcr.ford.com as container registry",
+          "title": "Enable Keyless Auth for Quay",
+          "type": "string",
+          "ui:description": "Enable Keyless Auth for Quay if using fcr.ford.com as container registry",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.registryName"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.bootstrapEnvironment"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.environment"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.platformAppName"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "enableQuayKeylessAuth"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "environment": "$${{current.xParams.environment}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "registryName": "$${{current.xParams.registryName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.enableQuayKeylessAuth ? $.enableQuayKeylessAuth : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.registryName",
+              "current.xParams.bootstrapEnvironment",
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "enableQuayKeylessAuth"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.registryName",
+              "current.xParams.bootstrapEnvironment",
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "environment": {
+          "default": "",
+          "description": "The GCP project environment used for pipelinerun (e.g., dev, qa, prod)",
+          "title": "GCP Project Environment",
+          "type": "string",
+          "ui:description": "The GCP project environment used for pipelinerun (e.g., dev, qa, prod)",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "environment"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "environment": "$${{current.xParams.environment}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.environment ? $.environment : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.environment"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "environment"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.environment"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "fossaTeamName": {
+          "default": "",
+          "description": "The name of the fossa team",
+          "title": "Fossa Team Name",
+          "type": "string",
+          "ui:description": "The name of the fossa team",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "fossaTeamName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.fossaTeamName ? $.fossaTeamName : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "fossaTeamName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "gcpProjectId": {
+          "default": "",
+          "description": "GCP project ID for the pipeline service account that is used for WIF",
+          "title": "GCP Project ID",
+          "type": "string",
+          "ui:description": "GCP project ID for the pipeline service account that is used for WIF",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.bootstrapEnvironment"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.environment"
+              },
+              {
+                "isEmpty": true,
+                "when": "xParams.platformAppName"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "gcpProjectId"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "environment": "$${{current.xParams.environment}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.gcpProjectId ? $.gcpProjectId : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.bootstrapEnvironment",
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "gcpProjectId"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.bootstrapEnvironment",
+              "current.xParams.environment",
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "githubOrg": {
+          "default": "",
+          "description": "Name of the GitHub Org for your deployment",
+          "title": "Github Org",
+          "type": "string",
+          "ui:description": "Name of the GitHub Org for your deployment",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "githubOrg"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.githubOrg ? $.githubOrg : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "githubOrg"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "githubRepo": {
+          "default": "",
+          "description": "Name of the GitHub repository used to deploy your solution. **Please note that if you are deploying to ford-innersource you must first [create your repository](https://eatm.ford.com/repocreation)\n",
+          "title": "Github Repo",
+          "type": "string",
+          "ui:description": "Name of the GitHub repository used to deploy your solution. **Please note that if you are deploying to ford-innersource you must first [create your repository](https://eatm.ford.com/repocreation)\n",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "githubRepo"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.githubRepo ? $.githubRepo : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "githubRepo"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "httpHostUrl": {
+          "default": "",
+          "description": "Local host url of the .Net application",
+          "title": "Http localhost Url",
+          "type": "string",
+          "ui:description": "Local host url of the .Net application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "httpHostUrl"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.httpHostUrl ? $.httpHostUrl : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "httpHostUrl"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "httpPort": {
+          "default": "",
+          "description": "Http Port number of .Net Application",
+          "title": "Http Port Number",
+          "type": "string",
+          "ui:description": "Http Port number of .Net Application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "httpPort"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.httpPort ? $.httpPort : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "httpPort"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "httpsHostUrl": {
+          "default": "",
+          "description": "Local host url of the .Net application",
+          "title": "Https localhost Url",
+          "type": "string",
+          "ui:description": "Local host url of the .Net application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "httpsHostUrl"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.httpsHostUrl ? $.httpsHostUrl : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "httpsHostUrl"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "httpsPort": {
+          "default": "",
+          "description": "Https Port number of .Net Application",
+          "title": "Https Port Number",
+          "type": "string",
+          "ui:description": "Https Port number of .Net Application",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "httpsPort"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.httpsPort ? $.httpsPort : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "httpsPort"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "kubeClusterName": {
+          "default": "",
+          "description": "The name of the OpenShift Cluster where the pipeline(s) will be deployed and executed.",
+          "title": "Openshift Cluster Name",
+          "type": "string",
+          "ui:description": "The name of the OpenShift Cluster where the pipeline(s) will be deployed and executed.",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.platformAppName"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "kubeClusterName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "platformAppName": "$${{current.xParams.platformAppName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.kubeClusterName ? $.kubeClusterName : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "kubeClusterName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "kubeNamespace": {
+          "default": "",
+          "description": "Name of the Tekton namespace.",
+          "title": "Openshift Namespace",
+          "type": "string",
+          "ui:description": "Name of the Tekton namespace.",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.platformAppName"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "kubeNamespace"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "platformAppName": "$${{current.xParams.platformAppName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.kubeNamespace ? $.kubeNamespace : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "kubeNamespace"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "kubeStorageRequest": {
+          "default": "",
+          "description": "The amount of storage requested for the pipeline",
+          "title": "Storage Request",
+          "type": "string",
+          "ui:description": "The amount of storage requested for the pipeline",
+          "ui:enableMarkdownInDescription": true,
+          "ui:hidden": {
+            "anyOf": [
+              {
+                "isEmpty": true,
+                "when": "xParams.appLanguage"
+              }
+            ]
+          },
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "kubeStorageRequest"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.kubeStorageRequest ? $.kubeStorageRequest : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.appLanguage"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "kubeStorageRequest"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.appLanguage"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "platformAppName": {
+          "default": "",
+          "description": "Name of your [Platform App](https://fcp.ford.com/platform/application)",
+          "title": "Cloud Platform Application Name",
+          "type": "string",
+          "ui:description": "Name of your [Platform App](https://fcp.ford.com/platform/application)",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "platformAppName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "platformAppName": "$${{current.xParams.platformAppName}}"
+              }
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.platformAppName ? $.platformAppName : \"\"",
+            "fetch:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "platformAppName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:retrigger": [
+              "current.xParams.platformAppName"
+            ],
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "quayRobotAccountName": {
+          "default": "",
+          "description": "The name of the Quay robot account to use for authentication.",
+          "title": "Quay Robot Account Name",
+          "type": "string",
+          "ui:description": "The name of the Quay robot account to use for authentication.",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "quayRobotAccountName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.quayRobotAccountName ? $.quayRobotAccountName : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "quayRobotAccountName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "registryName": {
+          "default": "",
+          "description": "The type of container registry to push the image to",
+          "title": "Container Registry Type",
+          "type": "string",
+          "ui:description": "The type of container registry to push the image to",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "registryName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.registryName ? $.registryName : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "registryName"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "requestor": {
+          "title": "Requestor",
+          "type": "string",
+          "ui:hidden": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "requestor"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.requestor",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "sonarProjectKey": {
+          "default": "",
+          "description": "The projects unique key, allowed characters are (letters, numbers, -, _, . and :, with at least one non-digit)",
+          "title": "Sonar Project Key",
+          "type": "string",
+          "ui:description": "The projects unique key, allowed characters are (letters, numbers, -, _, . and :, with at least one non-digit)",
+          "ui:enableMarkdownInDescription": true,
+          "ui:props": {
+            "fetch:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraint": true,
+              "minimal": true,
+              "resolversToExecute": [
+                "sonarProjectKey"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {}
+            },
+            "fetch:error:default": "",
+            "fetch:error:ignoreUnready": true,
+            "fetch:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "POST",
+            "fetch:response:value": "$.sonarProjectKey ? $.sonarProjectKey : \"\"",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/rendermappings",
+            "validate:body": {
+              "action": "$${{current.xParams.action}}",
+              "beta": false,
+              "ignoreVersionConstraints": true,
+              "parameterNames": [
+                "sonarProjectKey"
+              ],
+              "solutionCategory": "component",
+              "solutionName": "managed-app-ci",
+              "solutionVersion": "8.0.1",
+              "xParameters": {
+                "appLanguage": "$${{current.xParams.appLanguage}}",
+                "appName": "$${{current.xParams.appName}}",
+                "bootstrapEnvironment": "$${{current.xParams.bootstrapEnvironment}}",
+                "cacheBucket": "$${{current.xParams.cacheBucket}}",
+                "dotnetBaseContainerImage": "$${{current.xParams.dotnetBaseContainerImage}}",
+                "enableQuayKeylessAuth": "$${{current.xParams.enableQuayKeylessAuth}}",
+                "environment": "$${{current.xParams.environment}}",
+                "fossaTeamName": "$${{current.xParams.fossaTeamName}}",
+                "gcpProjectId": "$${{current.xParams.gcpProjectId}}",
+                "githubOrg": "$${{current.xParams.githubOrg}}",
+                "githubRepo": "$${{current.xParams.githubRepo}}",
+                "httpHostUrl": "$${{current.xParams.httpHostUrl}}",
+                "httpPort": "$${{current.xParams.httpPort}}",
+                "httpsHostUrl": "$${{current.xParams.httpsHostUrl}}",
+                "httpsPort": "$${{current.xParams.httpsPort}}",
+                "kubeClusterName": "$${{current.xParams.kubeClusterName}}",
+                "kubeNamespace": "$${{current.xParams.kubeNamespace}}",
+                "kubeStorageRequest": "$${{current.xParams.kubeStorageRequest}}",
+                "platformAppName": "$${{current.xParams.platformAppName}}",
+                "quayRobotAccountName": "$${{current.xParams.quayRobotAccountName}}",
+                "registryName": "$${{current.xParams.registryName}}",
+                "sonarProjectKey": "$${{current.xParams.sonarProjectKey}}"
+              }
+            },
+            "validate:headers": {
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "Content-Type": "application/json",
+              "ProxyAuthorization": "Bearer $${{microsoftAuthApi.openIdToken}}",
+              "githubToken": "$${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "validate:method": "POST",
+            "validate:url": "$${{backend.baseUrl}}/api/ford-proxy/cldctl/api/v1/solutionparametervalidation"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "ssoCheck": {
+          "minLength": 1,
+          "title": "SSO Check",
+          "type": "string",
+          "ui:hidden": true,
+          "ui:props": {
+            "fetch:error:ignoreUnready": true,
+            "fetch:error:silent": true,
+            "fetch:headers": {
+              "Accept": "application/vnd.github.v3+json",
+              "Authorization": "Bearer $${{identityApi.token}}",
+              "ProxyAuthorization": "Bearer $${{customAuthApi.core.auth.github-cloud.token}}"
+            },
+            "fetch:method": "GET",
+            "fetch:response:default": "",
+            "fetch:response:value": "login",
+            "fetch:url": "$${{backend.baseUrl}}/api/ford-proxy/github-api/orgs/ford-cloud"
+          },
+          "ui:widget": "ActiveTextInput"
+        },
+        "ssoHelpMessage": {
+          "title": "GitHub SSO Status",
+          "type": "string",
+          "ui:hidden": {
+            "isEmpty": false,
+            "when": "xParams.ssoCheck"
+          },
+          "ui:props": {
+            "ui:text": "⚠️ **GitHub SSO session expired.**\n\nTo fix this:\n1. Go to [Settings → Authentication Providers](/settings/auth-providers)\n2. Find **GitHub Cloud** and click **Sign Out**\n3. Click **Sign In** to re-authenticate\n4. Return here and try again."
+          },
+          "ui:widget": "ActiveText"
+        }
+      },
+      "required": [
+        "environment",
+        "sonarProjectKey",
+        "appLanguage",
+        "kubeStorageRequest",
+        "appName",
+        "enableQuayKeylessAuth",
+        "cacheBucket",
+        "registryName",
+        "fossaTeamName",
+        "quayRobotAccountName",
+        "dotnetBaseContainerImage",
+        "githubRepo",
+        "githubOrg",
+        "platformAppName",
+        "httpHostUrl",
+        "kubeNamespace",
+        "httpsPort",
+        "kubeClusterName",
+        "httpPort",
+        "gcpProjectId",
+        "bootstrapEnvironment",
+        "httpsHostUrl",
+        "action"
+      ],
+      "title": "Solution XParameters",
+      "type": "object",
+      "ui:order": [
+        "appLanguage",
+        "appName",
+        "auth",
+        "bootstrapEnvironment",
+        "cacheBucket",
+        "dotnetBaseContainerImage",
+        "enableQuayKeylessAuth",
+        "environment",
+        "fossaTeamName",
+        "gcpProjectId",
+        "githubOrg",
+        "githubRepo",
+        "httpHostUrl",
+        "httpPort",
+        "httpsHostUrl",
+        "httpsPort",
+        "kubeClusterName",
+        "kubeNamespace",
+        "kubeStorageRequest",
+        "platformAppName",
+        "quayRobotAccountName",
+        "registryName",
+        "requestor",
+        "sonarProjectKey"
+      ]
+    }
+  },
+  "required": [
+    "numbers"
+  ],
+  "title": "managed-app-ci Workflow Input Schema",
+  "type": "object"
+}

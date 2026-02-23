@@ -96,6 +96,8 @@ public class ExpressionUtils {
                 || object instanceof String || object instanceof Enum || object instanceof Collection || object instanceof Class<?> || isTypeRegistered(object.getClass());
     }
 
+    private static final int STR_MAX_SIZE = Short.MAX_VALUE << 1;
+
     public static Expression getLiteralExpr(Object object) {
         if (object == null) {
             return new NullLiteralExpr();
@@ -117,8 +119,8 @@ public class ExpressionUtils {
             return new BigDecimalLiteralExpr((BigDecimal) object);
         } else if (object instanceof Number) {
             return new DoubleLiteralExpr(((Number) object).doubleValue());
-        } else if (object instanceof String) {
-            return new StringLiteralExpr().setString(object.toString());
+        } else if (object instanceof String str) {
+            return toStringExpr(str);
         } else if (object instanceof Enum) {
             return new FieldAccessExpr(new NameExpr(object.getClass().getCanonicalName()), ((Enum<?>) object).name());
         } else if (object instanceof Collection) {
@@ -127,6 +129,22 @@ public class ExpressionUtils {
             return new ClassExpr(parseClassOrInterfaceType(((Class<?>) object).getCanonicalName()));
         } else {
             return convertExpression(object);
+        }
+    }
+
+    private static Expression toStringExpr(String str) {
+        int length = str.length();
+        if (length > STR_MAX_SIZE) {
+            int pointer = 0;
+            Expression expr = new ObjectCreationExpr().setType(StringBuilder.class.getCanonicalName());
+            do {
+                int newPointer = pointer + Math.min(length - pointer, STR_MAX_SIZE);
+                expr = new MethodCallExpr(expr, "append").addArgument(new StringLiteralExpr().setString(str.substring(pointer, newPointer)));
+                pointer = newPointer;
+            } while (pointer < length);
+            return new MethodCallExpr(expr, "toString");
+        } else {
+            return new StringLiteralExpr().setString(str);
         }
     }
 
@@ -146,9 +164,9 @@ public class ExpressionUtils {
                     : new CastExpr(StaticJavaParser.parseClassOrInterfaceType(object.getClass().getName()),
                             new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
                                     NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                                    NodeList.nodeList(new StringLiteralExpr().setString(str))));
+                                    NodeList.nodeList(toStringExpr(str))));
         } else {
-            return new StringLiteralExpr().setString(object.toString());
+            return toStringExpr(object.toString());
         }
     }
 
