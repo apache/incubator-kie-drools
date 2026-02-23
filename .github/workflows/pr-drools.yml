@@ -45,6 +45,8 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
+    env:
+      DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -63,7 +65,6 @@ jobs:
         env:
           BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
           MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
@@ -75,8 +76,6 @@ jobs:
           report_paths: '**/*-reports/TEST-*.xml'
       - name: Upload Dependency Trees
         uses: actions/upload-artifact@v4
-        env:
-          DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_drools_${{ matrix.os }}.txt'
         if: ${{ always() }}
         with:
           name: dependency-trees-logs_drools_${{ matrix.os }}
