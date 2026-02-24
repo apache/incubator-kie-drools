@@ -1,0 +1,258 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+syntax = "proto3";
+
+package org.drools.grpc;
+
+option java_package = "org.drools.grpc.proto";
+option java_multiple_files = true;
+
+// High-performance gRPC service for evaluating Drools rules.
+// Supports both stateless (one-shot) and stateful (session-based) execution.
+service DroolsRuleService {
+  // Stateless execution: insert facts, fire all rules, and return results in a single call.
+  rpc Execute(ExecuteRequest) returns (ExecuteResponse);
+
+  // Create a new stateful KIE session.
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
+
+  // Dispose a stateful session and release resources.
+  rpc DisposeSession(DisposeSessionRequest) returns (DisposeSessionResponse);
+
+  // Insert a fact into a stateful session.
+  rpc InsertFact(InsertFactRequest) returns (InsertFactResponse);
+
+  // Delete a fact from a stateful session by its handle ID.
+  rpc DeleteFact(DeleteFactRequest) returns (DeleteFactResponse);
+
+  // Update (replace) an existing fact in a stateful session.
+  rpc UpdateFact(UpdateFactRequest) returns (UpdateFactResponse);
+
+  // Fire all rules in a stateful session.
+  rpc FireAllRules(FireAllRulesRequest) returns (FireAllRulesResponse);
+
+  // Retrieve facts from a stateful session, optionally filtered by type.
+  rpc GetFacts(GetFactsRequest) returns (GetFactsResponse);
+
+  // Bidirectional streaming for real-time fact insertion and event processing.
+  // The client opens a long-lived stream on an existing session, sends operations
+  // (insert, delete, update facts, fire rules, query facts), and receives
+  // per-operation responses plus real-time rule activation events.
+  rpc StreamingSession(stream StreamEvent) returns (stream StreamResult);
+}
+
+// A fact represented as a typed JSON payload.
+// The type field must be the fully qualified Java class name
+// of the fact object (e.g. "com.example.Order").
+message Fact {
+  string type = 1;
+  string json = 2;
+}
+
+// --- Stateless Execution ---
+
+message ExecuteRequest {
+  string kie_base_name = 1;   // KieBase name (empty = default)
+  repeated Fact facts = 2;
+  int32 max_rules = 3;        // 0 = fire all
+}
+
+message ExecuteResponse {
+  bool success = 1;
+  string error_message = 2;
+  int32 rules_fired = 3;
+  repeated Fact result_facts = 4;
+  repeated string rules_fired_names = 5;
+}
+
+// --- Session Lifecycle ---
+
+message CreateSessionRequest {
+  string kie_base_name = 1;   // KieBase name (empty = default)
+  string session_id = 2;      // Optional; auto-generated if empty
+}
+
+message CreateSessionResponse {
+  bool success = 1;
+  string error_message = 2;
+  string session_id = 3;
+}
+
+message DisposeSessionRequest {
+  string session_id = 1;
+}
+
+message DisposeSessionResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+// --- Fact Operations ---
+
+message InsertFactRequest {
+  string session_id = 1;
+  Fact fact = 2;
+}
+
+message InsertFactResponse {
+  bool success = 1;
+  string error_message = 2;
+  string fact_handle_id = 3;
+}
+
+message DeleteFactRequest {
+  string session_id = 1;
+  string fact_handle_id = 2;
+}
+
+message DeleteFactResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message UpdateFactRequest {
+  string session_id = 1;
+  string fact_handle_id = 2;
+  Fact fact = 3;
+}
+
+message UpdateFactResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+// --- Rule Firing ---
+
+message FireAllRulesRequest {
+  string session_id = 1;
+  int32 max_rules = 2;        // 0 = fire all
+}
+
+message FireAllRulesResponse {
+  bool success = 1;
+  string error_message = 2;
+  int32 rules_fired = 3;
+  repeated string rules_fired_names = 4;
+}
+
+// --- Querying Facts ---
+
+message GetFactsRequest {
+  string session_id = 1;
+  string fact_type = 2;       // Optional: filter by fully qualified class name
+}
+
+message GetFactsResponse {
+  bool success = 1;
+  string error_message = 2;
+  repeated Fact facts = 3;
+}
+
+// --- Bidirectional Streaming ---
+
+enum StreamEventType {
+  INSERT_FACT_EVENT = 0;
+  DELETE_FACT_EVENT = 1;
+  UPDATE_FACT_EVENT = 2;
+  FIRE_RULES_EVENT = 3;
+  GET_FACTS_EVENT = 4;
+  INSERT_CEP_EVENT = 5;        // Insert through a named CEP entry point
+  BATCH_INSERT_EVENT = 6;      // Insert multiple facts at once
+  SUBSCRIBE_QUERY = 7;         // Subscribe to a live query
+  UNSUBSCRIBE_QUERY = 8;       // Unsubscribe from a live query
+  SET_GLOBAL_EVENT = 9;        // Set a global variable
+  GET_GLOBAL_EVENT = 10;       // Get a global variable
+  SET_AGENDA_FOCUS_EVENT = 11; // Set focus on an agenda group
+  FIRE_UNTIL_HALT_EVENT = 12;  // Start continuous rule firing
+  HALT_EVENT = 13;             // Stop continuous rule firing
+  HEARTBEAT_EVENT = 14;        // Keepalive ping
+  CREATE_SESSION_EVENT = 15;   // Create session inline on the stream
+  DISPOSE_SESSION_EVENT = 16;  // Dispose session inline on the stream
+}
+
+// Client-to-server message on the bidirectional stream.
+message StreamEvent {
+  string session_id = 1;
+  StreamEventType type = 2;
+  Fact fact = 3;                // For INSERT / UPDATE
+  string fact_handle_id = 4;   // For DELETE / UPDATE
+  int32 max_rules = 5;         // For FIRE_RULES (0 = fire all)
+  string fact_type = 6;        // For GET_FACTS filter (empty = all)
+  int64 sequence_id = 7;       // Client-assigned ID to correlate responses
+  string entry_point = 8;      // For INSERT_CEP_EVENT: named entry point
+  repeated Fact facts = 9;     // For BATCH_INSERT_EVENT
+  string query_name = 10;      // For SUBSCRIBE / UNSUBSCRIBE_QUERY
+  repeated string query_args = 11; // For SUBSCRIBE_QUERY (JSON-encoded arguments)
+  string global_name = 12;     // For SET / GET_GLOBAL
+  string global_json = 13;     // For SET_GLOBAL: JSON value
+  string global_type = 14;     // For SET_GLOBAL: FQCN of the value
+  string agenda_group = 15;    // For SET_AGENDA_FOCUS
+  string kie_base_name = 16;   // For CREATE_SESSION
+}
+
+enum StreamResultType {
+  FACT_INSERTED = 0;
+  FACT_DELETED = 1;
+  FACT_UPDATED = 2;
+  RULES_FIRED = 3;
+  RULE_ACTIVATED = 4;          // Real-time: a rule match was created
+  RULE_MATCH_FIRED = 5;        // Real-time: a rule match was fired
+  FACTS_SNAPSHOT = 6;
+  SESSION_ERROR = 7;
+  CEP_EVENT_INSERTED = 8;      // Ack: event inserted through entry point
+  BATCH_INSERTED = 9;          // Ack: batch of facts inserted
+  QUERY_SUBSCRIBED = 10;       // Ack: live query registered
+  QUERY_UNSUBSCRIBED = 11;     // Ack: live query removed
+  QUERY_RESULT_CHANGED = 12;   // Push: live query results changed
+  GLOBAL_SET = 13;             // Ack: global variable was set
+  GLOBAL_VALUE = 14;           // Response: global variable value
+  AGENDA_FOCUS_SET = 15;       // Ack: agenda group focus changed
+  FIRE_UNTIL_HALT_STARTED = 16; // Ack: continuous firing started
+  HALTED = 17;                 // Ack: continuous firing stopped
+  FACT_INSERTED_BY_RULE = 18;  // Real-time: rule inserted a fact
+  FACT_UPDATED_BY_RULE = 19;   // Real-time: rule updated a fact
+  FACT_RETRACTED_BY_RULE = 20; // Real-time: rule retracted a fact
+  HEARTBEAT_ACK = 21;          // Pong with session metrics
+  SESSION_CREATED = 22;        // Ack: session created on the stream
+  SESSION_DISPOSED = 23;       // Ack: session disposed on the stream
+  CHECKPOINT = 24;             // Last processed sequence ID
+}
+
+// Server-to-client message on the bidirectional stream.
+message StreamResult {
+  StreamResultType type = 1;
+  bool success = 2;
+  string error_message = 3;
+  string fact_handle_id = 4;
+  int32 rules_fired = 5;
+  repeated string rules_fired_names = 6;
+  repeated Fact facts = 7;
+  string rule_name = 8;        // For RULE_ACTIVATED / RULE_MATCH_FIRED events
+  int64 sequence_id = 9;       // Echoed from the client's StreamEvent
+  repeated string fact_handle_ids = 10; // For BATCH_INSERTED
+  string session_id = 11;      // For SESSION_CREATED
+  string global_name = 12;     // For GLOBAL_VALUE
+  string global_json = 13;     // For GLOBAL_VALUE
+  string query_name = 14;      // For QUERY_RESULT_CHANGED
+  int64 fact_count = 15;       // For HEARTBEAT_ACK
+  int32 active_session_count = 16; // For HEARTBEAT_ACK
+  int64 last_sequence_id = 17; // For CHECKPOINT
+  string change_type = 18;     // For QUERY_RESULT_CHANGED (INSERTED/DELETED/UPDATED)
+}
