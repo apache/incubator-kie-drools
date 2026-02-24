@@ -97,6 +97,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>3.5.5</version>
             <optional>true</optional>
         </dependency>
 
@@ -144,6 +145,21 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-arc</artifactId>
+                <version>${version.io.quarkus}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-core</artifactId>
+                <version>${version.io.quarkus}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <extensions>
