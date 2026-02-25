@@ -36,7 +36,7 @@
   <properties>
     <java.module.name>org.kie.ci.test.bom</java.module.name>
   </properties>
-
+<!--
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -50,6 +50,6 @@
         <version>1.2.3.Final</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
 </project>

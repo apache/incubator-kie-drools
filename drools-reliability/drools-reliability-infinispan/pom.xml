@@ -37,7 +37,7 @@
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
   </properties>
 
-  <dependencyManagement>
+ <!-- <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.infinispan</groupId>
@@ -47,7 +47,7 @@
         <scope>import</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

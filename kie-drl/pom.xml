@@ -46,7 +46,7 @@
     <module>kie-drl-tests-without-index-file</module>
   </modules>
 
-  <dependencyManagement>
+ <!-- <dependencyManagement>
     <dependencies>
       <dependency>
         <artifactId>efesto-compilation-manager-api</artifactId>
@@ -110,7 +110,7 @@
         <scope>compile</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

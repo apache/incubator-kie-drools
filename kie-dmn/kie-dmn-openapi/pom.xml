@@ -34,7 +34,7 @@
     <java.module.name>org.kie.dmn.openapi</java.module.name>
   </properties>
 
-  <dependencyManagement>
+ <!-- <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -50,7 +50,7 @@
         <scope>test</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

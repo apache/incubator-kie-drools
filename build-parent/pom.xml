@@ -71,7 +71,6 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.quarkus>3.27.2</version.io.quarkus>
     <version.io.netty>4.1.131.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
@@ -226,6 +225,8 @@
     <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
 
     <version.graalvm>22.0.0.2</version.graalvm>
+    <!-- Updated to match the one imported by quarkus -->
+    <!--<version.graalvm>23.1.2</version.graalvm>-->
     <version.gradle>8.11.1</version.gradle>
     <version.org.apache.groovy>4.0.29</version.org.apache.groovy>
     <version.maven.resolver.api>1.7.3</version.maven.resolver.api>
@@ -1405,6 +1406,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!--<dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>test</scope>
+      </dependency>-->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-bom</artifactId>
@@ -1931,7 +1939,7 @@
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
         <artifactId>maven-plugin-testing-harness</artifactId>
-        <version>${plugin.testing.harness.version}</version>
+        <version>${version.plugin.testing.harness}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
@@ -2163,7 +2171,7 @@
       <dependency>
         <groupId>org.openjdk.nashorn</groupId>
         <artifactId>nashorn-core</artifactId>
-        <version>${nashorn.version}</version>
+        <version>${version.nashorn}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -2195,7 +2203,7 @@
       <dependency>
         <groupId>org.sonatype.sisu</groupId>
         <artifactId>sisu-inject-plexus</artifactId>
-        <version>${sisu.inject.version}</version>
+        <version>${version.sisu.inject}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -2301,30 +2309,160 @@
         <version>${version.simple-jndi}</version>
       </dependency>
 
+
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <type>pom</type>
+ <!--       <scope>test</scope>-->
+      </dependency>
+      <!-- TODO - check if those could be moved to engine-specific boms -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-verifier-test-jar</artifactId>
         <version>1.0.0</version>
       </dependency>
-
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>kiebase-inclusion</artifactId>
         <version>${project.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-scenario-simulation-backend</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
         <artifactId>drools-kie-ci-with-domain-test-domain</artifactId>
         <version>${project.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
         <artifactId>drools-kie-ci-without-domain-test-domain</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>test-integration-ruleunits-jar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>drools-test-coverage-jars</artifactId>
+        <type>pom</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-yard-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-feel</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-core</artifactId>
+        <classifier>tests</classifier>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-core-jsr223-jq</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency> <!-- this is not a user dependency, hence is was added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-validation-bootstrap</artifactId>
+        <optional>true</optional>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency> <!-- this is not a user dependency, hence was not added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-ruleset2dmn</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-validation</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <version>${project.version}</version>
+      </dependency>
 
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-compilation-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-runtime-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-map-input-runtime</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-drl-tests</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-pmml-tests</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- EFESTO -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-compilation</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-efesto-runtime</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

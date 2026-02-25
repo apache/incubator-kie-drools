@@ -37,8 +37,7 @@
         <java.module.name>org.kie.dmn.efesto.compilation</java.module.name>
         <dependency-plugin.version>3.6.1</dependency-plugin.version>
     </properties>
-
-    <dependencyManagement>
+<!--<dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.kie</groupId>
@@ -71,7 +70,7 @@
             <scope>test</scope>
           </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement>-->
 
 
     <dependencies>

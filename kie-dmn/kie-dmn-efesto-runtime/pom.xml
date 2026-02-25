@@ -37,7 +37,7 @@
         <java.module.name>org.kie.dmn.efesto.runtime</java.module.name>
     </properties>
 
-    <dependencyManagement>
+    <!--<dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.kie</groupId>
@@ -55,7 +55,7 @@
             <version>${project.version}</version>
           </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement>-->
 
     <dependencies>
         <!-- DMN -->

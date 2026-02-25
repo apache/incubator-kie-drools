@@ -34,7 +34,7 @@
     <java.module.name>org.kie.dmn.xls2dmn.cli</java.module.name>
   </properties>
   
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
@@ -43,7 +43,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
+      <dependency> &lt;!&ndash; this is not an user dependency, hence is not added to the boms. &ndash;&gt;
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
         <version>${project.version}</version>
@@ -51,7 +51,7 @@
         <scope>test</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

@@ -36,7 +36,7 @@
     <java.module.name>org.drools.quarkus.integrationtest.multimodule.main</java.module.name>
   </properties>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
@@ -44,7 +44,7 @@
         <version>${project.version}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

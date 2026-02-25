@@ -50,8 +50,8 @@
 
   </dependencies>
 
-  <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
+  <!--<dependencyManagement>
+    &lt;!&ndash; TODO MOVE TO kie-pmml-trusty/pom.xml &ndash;&gt;
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -59,6 +59,6 @@
         <version>${project.version}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
 </project>

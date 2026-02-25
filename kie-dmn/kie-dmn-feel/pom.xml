@@ -41,7 +41,7 @@
     <version.net.sf.saxon.Saxon-HE>12.7</version.net.sf.saxon.Saxon-HE>
   </properties>
 
-  <dependencyManagement>
+<!--  <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>net.sf.saxon</groupId>
@@ -49,7 +49,7 @@
         <version>${version.net.sf.saxon.Saxon-HE}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <!-- Internal dependencies -->

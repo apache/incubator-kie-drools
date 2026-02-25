@@ -38,7 +38,7 @@
     <module>kie-dmn-pmml-tests-trusty</module>
   </modules>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -69,7 +69,7 @@
         <version>${project.version}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

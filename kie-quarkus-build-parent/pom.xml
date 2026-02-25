@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <version>999-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kie-quarkus-build-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Kie Quarkus :: BUild Parent)</name>
+  <description>
+   Build parent for all kie+quarkus projects
+  </description>
+
+  <properties>
+    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
+    <allowedPomsList>org.kie:kie-quarkus-bom</allowedPomsList>
+    <maven.compiler.release>17</maven.compiler.release>
+  </properties>
+
+  <!-- IMPORTANT: Do not declare any build things here! -->
+  <build/>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>drools-build-parent</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-quarkus-integration-test-multimodule-dep</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-quarkus-ruleunits</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-quarkus-ruleunits-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-quarkus-util-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Not sure why it is declared that way inside drools-quarkus-extension, but let's make it available for all submodules -->
+     <!-- <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+      </dependency>-->
+    </dependencies>
+  </dependencyManagement>
+
+</project>

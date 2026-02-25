@@ -177,7 +177,7 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -199,7 +199,7 @@
         <scope>compile</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <profiles>
     <profile>

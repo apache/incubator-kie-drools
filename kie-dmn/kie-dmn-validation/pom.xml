@@ -35,7 +35,7 @@
     <drools.reproducibleExecutableModelGeneration>true</drools.reproducibleExecutableModelGeneration>
   </properties>
 
-  <dependencyManagement>
+ <!-- <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
@@ -57,7 +57,7 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
-      <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
+      <dependency> &lt;!&ndash; this is not an user dependency, hence is not added to the boms. &ndash;&gt;
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-validation-bootstrap</artifactId>
         <optional>true</optional>
@@ -71,7 +71,7 @@
         <scope>test</scope>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

@@ -29,15 +29,13 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kie</groupId>
     <artifactId>kie-yard</artifactId>
-    <version>999-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>KIE :: Yard - YAML Rules DSL</name>
     <description>Yet another Rules DSL (YaRD) - A YAML-based domain-specific language for defining business rules</description>
 
-    <dependencyManagement>
+    <!--<dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.kie</groupId>
@@ -50,7 +48,7 @@
                 <version>${version.com.fasterxml.jackson}</version>
             </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement>-->
 
     <modules>
         <module>kie-yard-api</module>

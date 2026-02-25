@@ -36,7 +36,7 @@
     <java.module.name>org.kie.dmn.pmml.tests.trusty</java.module.name>
   </properties>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -49,7 +49,7 @@
         <version>${project.version}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

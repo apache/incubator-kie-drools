@@ -38,7 +38,7 @@
     <org.kie.version>${project.version}</org.kie.version>
   </properties>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
@@ -47,7 +47,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
+-->
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

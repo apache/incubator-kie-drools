@@ -38,7 +38,7 @@
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
-  <dependencyManagement>
+  <!--<dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
@@ -47,7 +47,7 @@
         <version>${project.version}</version>
       </dependency>
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <dependencies>
     <dependency>
