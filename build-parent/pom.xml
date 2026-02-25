@@ -1248,18 +1248,6 @@
         <version>${version.io.micrometer}</version>
       </dependency>
 
-      <!-- Used by drools-opentelemetry -->
-      <dependency>
-        <groupId>io.opentelemetry</groupId>
-        <artifactId>opentelemetry-api</artifactId>
-        <version>${version.io.opentelemetry}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentelemetry</groupId>
-        <artifactId>opentelemetry-sdk-testing</artifactId>
-        <version>${version.io.opentelemetry}</version>
-      </dependency>
-
       <!-- Used by drools-grpc -->
       <dependency>
         <groupId>io.grpc</groupId>
