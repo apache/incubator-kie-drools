@@ -39,22 +39,22 @@
     <module>kie-pmml-models-drools-scorecard</module>
   </modules>
 
-  <dependencyManagement>
+<!--  <dependencyManagement>
     <dependencies>
-      <dependency>
+      &lt;!&ndash;<dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-compilation-common</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
+      </dependency>&ndash;&gt;
+      &lt;!&ndash;<dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-drl-map-input-runtime</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
-      </dependency>
+      </dependency>&ndash;&gt;
     </dependencies>
-  </dependencyManagement>
+  </dependencyManagement>-->
 
   <build>
     <plugins>
