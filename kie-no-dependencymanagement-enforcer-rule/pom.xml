@@ -29,7 +29,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-no-dependencymanagement-rule</artifactId>
+  <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
   <name>Drools :: No Dependency Management Rule</name>
   <description>Enforcer rule to forbid declaration of dependencyManagement tag in pom.</description>
 
@@ -42,7 +42,6 @@
     <version.org.apache.maven>3.9.11</version.org.apache.maven>
     <version.sisu.maven.plugin>1.0.0</version.sisu.maven.plugin>
   </properties>
-
 
   <dependencyManagement>
     <dependencies>

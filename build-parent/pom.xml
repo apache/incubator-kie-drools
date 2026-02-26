@@ -344,7 +344,7 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-no-dependencymanagement-rule</artifactId>
+        <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Version overrides to fix vulnerabilities. -->
@@ -2496,7 +2496,7 @@
             </dependency>
             <dependency>
               <groupId>org.kie</groupId>
-              <artifactId>kie-no-dependencymanagement-rule</artifactId>
+              <artifactId>kie-no-dependencymanagement-enforcer-rule</artifactId>
               <version>${project.version}</version>
             </dependency>
           </dependencies>

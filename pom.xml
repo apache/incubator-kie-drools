@@ -133,7 +133,7 @@
   </build>
 
   <modules>
-    <module>kie-no-dependencymanagement-rule</module>
+    <module>kie-no-dependencymanagement-enforcer-rule</module>
     <module>bom</module>
     <module>build-parent</module>
     <module>kie-quarkus-build-parent</module>
