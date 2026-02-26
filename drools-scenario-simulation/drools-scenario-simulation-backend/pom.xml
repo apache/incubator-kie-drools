@@ -177,30 +177,6 @@
     </dependency>
   </dependencies>
 
-  <!--<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-compilation</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-efesto-runtime</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
-
   <profiles>
     <profile>
       <id>sonarcloud-analysis</id>

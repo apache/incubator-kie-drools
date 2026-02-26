@@ -38,16 +38,6 @@
     <surefire.forkCount>1</surefire.forkCount>
   </properties>
 
- <!-- <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>test-integration-ruleunits-jar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
-
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

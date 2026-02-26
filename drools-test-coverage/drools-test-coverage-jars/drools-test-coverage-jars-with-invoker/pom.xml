@@ -38,16 +38,6 @@
     <org.kie.version>${project.version}</org.kie.version>
   </properties>
 
-  <!--<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
--->
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

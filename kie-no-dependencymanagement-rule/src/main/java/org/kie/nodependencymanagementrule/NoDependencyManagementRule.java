@@ -18,7 +18,6 @@
  */
 package org.kie.nodependencymanagementrule;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -65,22 +64,6 @@ public class NoDependencyManagementRule extends AbstractEnforcerRule {
         String ga = String.format("%s:%s", groupId, artifactId);
         return allowedPoms != null && !allowedPoms.isEmpty() && allowedPoms.contains(ga);
     }
-
-    /*    *//**
-             * If your rule is cacheable, you must return a unique id when parameters or conditions
-             * change that would cause the result to be different. Multiple cached results are stored
-             * based on their id.
-             * <p>
-             * The easiest way to do this is to return a hash computed from the values of your parameters.
-             * <p>
-             * If your rule is not cacheable, then you don't need to override this method or return null
-             *//*
-                * @Override
-                * public String getCacheId() {
-                * //no hash on boolean...only parameter so no hash is needed.
-                * return Boolean.toString(shouldIfail);
-                * }
-                */
 
     /**
      * A good practice is provided toString method for Enforcer Rule.

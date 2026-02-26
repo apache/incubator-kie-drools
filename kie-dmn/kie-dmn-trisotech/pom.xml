@@ -35,24 +35,6 @@
     <java.module.name>org.kie.dmn.trisotech</java.module.name>
   </properties>
 
-  <!--<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency> &lt;!&ndash; this is not an user dependency, hence is not added to the boms. &ndash;&gt;
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-core</artifactId>
-        <classifier>tests</classifier>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
-
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

@@ -30,52 +30,8 @@
 
   <properties>
     <java.module.name>org.kie.dmn.core.jsr223</java.module.name>
-   <!-- <allowedPomsList>org.kie:kie-dmn-core-jsr223</allowedPomsList>
--->
-    <!-- test scope versions -->
-  <!--  <nashorn.version>15.3</nashorn.version>
-    <graalvm.version>22.0.0.2</graalvm.version>-->
   </properties>
 
- <!-- <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>net.thisptr</groupId>
-        <artifactId>jackson-jq</artifactId>
-        <version>1.0.0-preview.20210928</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
- <!-- <dependencyManagement>
-    <dependencies>
-      &lt;!&ndash; test-only scope dependencies &ndash;&gt;
-      &lt;!&ndash;<dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-          <scope>test</scope>
-      </dependency>&ndash;&gt;
-     &lt;!&ndash; <dependency>
-          <groupId>org.graalvm.js</groupId>
-          <artifactId>js</artifactId>
-          <version>${graalvm.version}</version>
-          <scope>test</scope>
-      </dependency>&ndash;&gt;
-     &lt;!&ndash; <dependency>
-          <groupId>org.graalvm.js</groupId>
-          <artifactId>js-scriptengine</artifactId>
-          <version>${graalvm.version}</version>
-          <scope>test</scope>
-      </dependency>&ndash;&gt;
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-dmn-core-jsr223-jq</artifactId>
-          <version>${project.version}</version>
-          <scope>test</scope>
-        </dependency>
-    </dependencies>
-     &lt;!&ndash; /test-only scope dependencies &ndash;&gt;
-  </dependencyManagement>-->
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -122,28 +78,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core-jsr223-jq</artifactId>
-      <!--<exclusions>
-        <exclusion>
-          <groupId>net.thisptr</groupId>
-          <artifactId>jackson-jq</artifactId>
-        </exclusion>
-      </exclusions>-->
       <scope>test</scope>
     </dependency>
-    <!--<dependency>
-      <groupId>net.thisptr</groupId>
-      <artifactId>jackson-jq</artifactId>
-      <scope>test</scope>
-    </dependency>-->
     <dependency>
       <groupId>org.openjdk.nashorn</groupId>
       <artifactId>nashorn-core</artifactId>
       <scope>test</scope>
     </dependency>
-   <!-- <dependency>
-      <groupId>org.graalvm.sdk</groupId>
-      <artifactId>graal-sdk</artifactId>
-      <scope>test</scope>
-    </dependency>-->
   </dependencies>
 </project>

@@ -32,32 +32,6 @@
   <properties>
     <java.module.name>org.kie.dmn.legacytests</java.module.name>
   </properties>
-  
-  <!--<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-core</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-validation</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
 
   <dependencies>
     <dependency>

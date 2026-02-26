@@ -36,21 +36,6 @@
     <java.module.name>org.kie.dmn.pmml.tests.trusty</java.module.name>
   </properties>
 
-  <!--<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-compilation-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-map-input-runtime</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
-
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

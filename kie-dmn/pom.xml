@@ -60,18 +60,6 @@
     <module>kie-dmn-core-jsr223</module>
     <module>kie-dmn-ruleset2dmn-parent</module>
   </modules>
-<!--
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
 
   <build>
     <plugins>

@@ -34,24 +34,6 @@
     <java.module.name>org.kie.dmn.openapi</java.module.name>
   </properties>
 
- <!-- <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-core</artifactId>
-        <classifier>tests</classifier>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-test-resources</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
-
   <dependencies>
     <dependency>
       <groupId>io.smallrye</groupId>

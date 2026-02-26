@@ -13,7 +13,7 @@
   <artifactId>kie-quarkus-build-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kie Quarkus :: BUild Parent)</name>
+  <name>Kie Quarkus :: Build Parent</name>
   <description>
    Build parent for all kie+quarkus projects
   </description>
@@ -54,7 +54,6 @@
         <artifactId>drools-quarkus-util-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 

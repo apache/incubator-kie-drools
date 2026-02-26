@@ -36,20 +36,5 @@
   <properties>
     <java.module.name>org.kie.ci.test.bom</java.module.name>
   </properties>
-<!--
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.ci.test</groupId>
-        <artifactId>kie-ci-test-jar</artifactId>
-        <version>1.2.3.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.ci.test</groupId>
-        <artifactId>org.kie.ci.test.jar.with.dep</artifactId>
-        <version>1.2.3.Final</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>-->
 
 </project>
