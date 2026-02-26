@@ -19,17 +19,27 @@
 package org.drools.audit.jpa;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
+import org.drools.audit.event.AgendaOperationEvent;
 import org.drools.audit.event.AuditEvent;
 import org.drools.audit.event.AuditEventType;
 import org.drools.audit.event.FactOperationEvent;
 import org.drools.audit.event.RuleFiredEvent;
+import org.drools.audit.event.SessionOperationEvent;
+import org.drools.audit.store.AuditPersistenceException;
 import org.drools.audit.store.AuditStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +52,8 @@ import org.slf4j.LoggerFactory;
 public class JpaAuditStore implements AuditStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(JpaAuditStore.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
 
     private final EntityManagerFactory emf;
 
@@ -60,7 +72,8 @@ public class JpaAuditStore implements AuditStore {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            LOG.error("Failed to persist audit event: {}", event.getId(), ex);
+            throw new AuditPersistenceException(
+                    "Failed to persist audit event: " + event.getId(), ex);
         } finally {
             em.close();
         }
@@ -68,37 +81,43 @@ public class JpaAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findBySessionId(String sessionId) {
-        return executeQuery("SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid ORDER BY e.sequenceNumber",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid ORDER BY e.sequenceNumber",
                 q -> q.setParameter("sid", sessionId));
     }
 
     @Override
     public List<AuditEvent> findBySessionIdAndType(String sessionId, AuditEventType type) {
-        return executeQuery("SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventType = :etype ORDER BY e.sequenceNumber",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventType = :etype ORDER BY e.sequenceNumber",
                 q -> q.setParameter("sid", sessionId).setParameter("etype", type.getCode()));
     }
 
     @Override
     public List<AuditEvent> findByTimeRange(Instant from, Instant to) {
-        return executeQuery("SELECT e FROM AuditEventEntity e WHERE e.eventTimestamp >= :from AND e.eventTimestamp <= :to ORDER BY e.eventTimestamp",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e WHERE e.eventTimestamp >= :from AND e.eventTimestamp <= :to ORDER BY e.eventTimestamp, e.sessionId, e.sequenceNumber",
                 q -> q.setParameter("from", from).setParameter("to", to));
     }
 
     @Override
     public List<AuditEvent> findByRuleName(String ruleName) {
-        return executeQuery("SELECT e FROM AuditEventEntity e WHERE e.ruleName = :rname ORDER BY e.sequenceNumber",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e WHERE e.ruleName = :rname ORDER BY e.sequenceNumber",
                 q -> q.setParameter("rname", ruleName));
     }
 
     @Override
     public List<AuditEvent> findBySessionIdAndTimeRange(String sessionId, Instant from, Instant to) {
-        return executeQuery("SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventTimestamp >= :from AND e.eventTimestamp <= :to ORDER BY e.sequenceNumber",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventTimestamp >= :from AND e.eventTimestamp <= :to ORDER BY e.eventTimestamp, e.sequenceNumber",
                 q -> q.setParameter("sid", sessionId).setParameter("from", from).setParameter("to", to));
     }
 
     @Override
     public List<AuditEvent> findAll() {
-        return executeQuery("SELECT e FROM AuditEventEntity e ORDER BY e.eventTimestamp, e.sequenceNumber",
+        return executeQuery(
+                "SELECT e FROM AuditEventEntity e ORDER BY e.eventTimestamp, e.sequenceNumber",
                 q -> {});
     }
 
@@ -165,7 +184,8 @@ public class JpaAuditStore implements AuditStore {
         // emf lifecycle is managed by the caller
     }
 
-    private List<AuditEvent> executeQuery(String jpql, java.util.function.Consumer<TypedQuery<AuditEventEntity>> paramSetter) {
+    private List<AuditEvent> executeQuery(String jpql,
+                                          java.util.function.Consumer<TypedQuery<AuditEventEntity>> paramSetter) {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<AuditEventEntity> query = em.createQuery(jpql, AuditEventEntity.class);
@@ -191,42 +211,118 @@ public class JpaAuditStore implements AuditStore {
             entity.setRuleName(rfe.getRuleName());
             entity.setPackageName(rfe.getPackageName());
             entity.setSalience(rfe.getSalience());
-            entity.setEventPayload(rfe.getDeclarations().toString());
         } else if (event instanceof FactOperationEvent foe) {
             entity.setObjectClassName(foe.getObjectClassName());
             entity.setFactHandleId(foe.getFactHandleId());
             entity.setRuleName(foe.getTriggeringRuleName());
-            entity.setEventPayload(foe.getObjectRepresentation());
         }
+
+        entity.setEventPayload(serializePayload(event));
         return entity;
     }
 
     private AuditEvent fromEntity(AuditEventEntity entity) {
         AuditEventType type = AuditEventType.valueOf(entity.getEventType());
+        String id = entity.getId();
+        Instant timestamp = entity.getEventTimestamp();
+        String sessionId = entity.getSessionId();
+        long seq = entity.getSequenceNumber();
+        Map<String, Object> payload = deserializePayload(entity.getEventPayload());
+
         return switch (type.getCategory()) {
             case "rule" -> new RuleFiredEvent(
-                    type,
-                    entity.getSessionId(),
-                    entity.getSequenceNumber(),
+                    id, type, timestamp, sessionId, seq,
                     entity.getRuleName(),
                     entity.getPackageName(),
-                    java.util.Collections.emptyMap(),
-                    java.util.Collections.emptyList(),
+                    getPayloadDeclarations(payload),
+                    getPayloadFactHandleIds(payload),
                     entity.getSalience());
             case "fact" -> new FactOperationEvent(
-                    type,
-                    entity.getSessionId(),
-                    entity.getSequenceNumber(),
+                    id, type, timestamp, sessionId, seq,
                     entity.getFactHandleId() != null ? entity.getFactHandleId() : -1,
                     entity.getObjectClassName(),
-                    entity.getEventPayload(),
-                    null,
+                    getPayloadString(payload, "objectRepresentation"),
+                    getPayloadString(payload, "previousObjectRepresentation"),
                     entity.getRuleName());
-            default -> new org.drools.audit.event.SessionOperationEvent(
-                    type,
-                    entity.getSessionId(),
-                    entity.getSequenceNumber(),
-                    0, 0);
+            case "agenda" -> new AgendaOperationEvent(
+                    id, type, timestamp, sessionId, seq,
+                    getPayloadString(payload, "groupName"));
+            default -> new SessionOperationEvent(
+                    id, type, timestamp, sessionId, seq,
+                    getPayloadInt(payload, "rulesFiredCount"),
+                    getPayloadLong(payload, "durationMillis"));
         };
+    }
+
+    private String serializePayload(AuditEvent event) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        if (event instanceof RuleFiredEvent rfe) {
+            payload.put("declarations", rfe.getDeclarations());
+            payload.put("factHandleIds", rfe.getFactHandleIds());
+        } else if (event instanceof FactOperationEvent foe) {
+            payload.put("objectRepresentation", foe.getObjectRepresentation());
+            payload.put("previousObjectRepresentation", foe.getPreviousObjectRepresentation());
+        } else if (event instanceof AgendaOperationEvent aoe) {
+            payload.put("groupName", aoe.getGroupName());
+        } else if (event instanceof SessionOperationEvent soe) {
+            payload.put("rulesFiredCount", soe.getRulesFiredCount());
+            payload.put("durationMillis", soe.getDurationMillis());
+        }
+        try {
+            return MAPPER.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            LOG.warn("Failed to serialize event payload for event {}", event.getId(), e);
+            return "{}";
+        }
+    }
+
+    private Map<String, Object> deserializePayload(String json) {
+        if (json == null || json.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        try {
+            return MAPPER.readValue(json, MAP_TYPE);
+        } catch (JsonProcessingException e) {
+            LOG.debug("Could not deserialize event payload as JSON (possibly legacy format)");
+            return Collections.emptyMap();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String> getPayloadDeclarations(Map<String, Object> payload) {
+        Object decls = payload.get("declarations");
+        if (decls instanceof Map) {
+            Map<String, Object> raw = (Map<String, Object>) decls;
+            Map<String, String> result = new LinkedHashMap<>();
+            raw.forEach((k, v) -> result.put(k, v != null ? v.toString() : null));
+            return result;
+        }
+        return Collections.emptyMap();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Long> getPayloadFactHandleIds(Map<String, Object> payload) {
+        Object ids = payload.get("factHandleIds");
+        if (ids instanceof List) {
+            return ((List<Number>) ids).stream()
+                    .map(Number::longValue)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private String getPayloadString(Map<String, Object> payload, String key) {
+        Object val = payload.get(key);
+        return val != null ? val.toString() : null;
+    }
+
+    private int getPayloadInt(Map<String, Object> payload, String key) {
+        Object val = payload.get(key);
+        return val instanceof Number n ? n.intValue() : 0;
+    }
+
+    private long getPayloadLong(Map<String, Object> payload, String key) {
+        Object val = payload.get(key);
+        return val instanceof Number n ? n.longValue() : 0;
     }
 }

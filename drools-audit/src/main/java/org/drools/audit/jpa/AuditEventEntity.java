@@ -54,7 +54,7 @@ public class AuditEventEntity {
     @Column(nullable = false)
     private Instant eventTimestamp;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 255)
     private String sessionId;
 
     @Column(nullable = false)
@@ -74,7 +74,6 @@ public class AuditEventEntity {
     private int salience;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
     private String eventPayload;
 
     public AuditEventEntity() {

@@ -253,8 +253,8 @@ public class AuditEventListener {
                     sessionId, nextSeq(),
                     factHandleId(event.getFactHandle()),
                     oldObj != null ? oldObj.getClass().getName() : "unknown",
-                    null,
                     oldObj != null ? oldObj.toString() : null,
+                    null,
                     ruleName(event.getRule())));
         }
 

@@ -20,6 +20,7 @@ package org.drools.audit;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,8 +62,14 @@ public class AuditTrailService implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuditTrailService.class);
 
+    /**
+     * Maximum allowed length for caller-supplied session IDs,
+     * matching the JPA column constraint.
+     */
+    public static final int MAX_SESSION_ID_LENGTH = 255;
+
     private final AuditStore store;
-    private final ConcurrentHashMap<String, AuditEventListener> activeListeners = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AuditRegistration> activeListeners = new ConcurrentHashMap<>();
 
     public AuditTrailService(AuditStore store) {
         this.store = store;
@@ -79,11 +86,22 @@ public class AuditTrailService implements AutoCloseable {
 
     /**
      * Attaches an audit listener with a caller-supplied session ID.
+     *
+     * @throws IllegalStateException    if auditing is already active for the given session ID
+     * @throws IllegalArgumentException if the session ID is null, empty, or exceeds {@link #MAX_SESSION_ID_LENGTH}
      */
     public String startAudit(KieSession session, String sessionId) {
+        validateSessionId(sessionId);
+
         AuditEventListener listener = new AuditEventListener(store, sessionId);
+        AuditRegistration registration = new AuditRegistration(listener, session);
+
+        if (activeListeners.putIfAbsent(sessionId, registration) != null) {
+            throw new IllegalStateException("Audit already active for session " + sessionId
+                    + "; call stopAudit before starting a new audit for the same session ID");
+        }
+
         listener.attach(session);
-        activeListeners.put(sessionId, listener);
         store.store(new SessionOperationEvent(
                 AuditEventType.SESSION_CREATED, sessionId, 0, 0, 0));
         LOG.info("Audit started for session {}", sessionId);
@@ -94,9 +112,9 @@ public class AuditTrailService implements AutoCloseable {
      * Detaches the audit listener and records a session-disposed event.
      */
     public void stopAudit(KieSession session, String sessionId) {
-        AuditEventListener listener = activeListeners.remove(sessionId);
-        if (listener != null) {
-            listener.detach(session);
+        AuditRegistration registration = activeListeners.remove(sessionId);
+        if (registration != null) {
+            registration.listener().detach(session);
             store.store(new SessionOperationEvent(
                     AuditEventType.SESSION_DISPOSED, sessionId, Long.MAX_VALUE, 0, 0));
             LOG.info("Audit stopped for session {}", sessionId);
@@ -153,19 +171,28 @@ public class AuditTrailService implements AutoCloseable {
     }
 
     /**
-     * Purges all audit data for a session.
+     * Detaches the audit listener (if still active) from its KieSession
+     * and purges all audit data for the given session.
      */
     public void purgeSession(String sessionId) {
-        activeListeners.remove(sessionId);
+        AuditRegistration registration = activeListeners.remove(sessionId);
+        if (registration != null) {
+            try {
+                registration.listener().detach(registration.session());
+            } catch (Exception e) {
+                LOG.warn("Failed to detach audit listener for session {} during purge", sessionId, e);
+            }
+        }
         store.deleteBySessionId(sessionId);
         LOG.info("Audit data purged for session {}", sessionId);
     }
 
     /**
-     * Purges all audit data.
+     * Detaches all active audit listeners from their KieSessions
+     * and purges all audit data.
      */
     public void purgeAll() {
-        activeListeners.clear();
+        detachAllListeners();
         store.deleteAll();
         LOG.info("All audit data purged");
     }
@@ -186,7 +213,31 @@ public class AuditTrailService implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        activeListeners.clear();
+        detachAllListeners();
         store.close();
     }
+
+    private void detachAllListeners() {
+        activeListeners.forEach((sessionId, registration) -> {
+            try {
+                registration.listener().detach(registration.session());
+            } catch (Exception e) {
+                LOG.warn("Failed to detach audit listener for session {}", sessionId, e);
+            }
+        });
+        activeListeners.clear();
+    }
+
+    private void validateSessionId(String sessionId) {
+        Objects.requireNonNull(sessionId, "sessionId");
+        if (sessionId.isEmpty()) {
+            throw new IllegalArgumentException("sessionId must not be empty");
+        }
+        if (sessionId.length() > MAX_SESSION_ID_LENGTH) {
+            throw new IllegalArgumentException("sessionId length " + sessionId.length()
+                    + " exceeds maximum of " + MAX_SESSION_ID_LENGTH + " characters");
+        }
+    }
+
+    private record AuditRegistration(AuditEventListener listener, KieSession session) {}
 }

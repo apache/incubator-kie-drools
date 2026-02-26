@@ -18,6 +18,7 @@
  */
 package org.drools.audit.event;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,19 @@ public class RuleFiredEvent extends AuditEvent {
                           List<Long> factHandleIds,
                           int salience) {
         super(type, sessionId, sequenceNumber);
+        this.ruleName = ruleName;
+        this.packageName = packageName;
+        this.declarations = declarations != null ? Collections.unmodifiableMap(declarations) : Collections.emptyMap();
+        this.factHandleIds = factHandleIds != null ? Collections.unmodifiableList(factHandleIds) : Collections.emptyList();
+        this.salience = salience;
+    }
+
+    public RuleFiredEvent(String id, AuditEventType type, Instant timestamp,
+                          String sessionId, long sequenceNumber,
+                          String ruleName, String packageName,
+                          Map<String, String> declarations, List<Long> factHandleIds,
+                          int salience) {
+        super(id, type, timestamp, sessionId, sequenceNumber);
         this.ruleName = ruleName;
         this.packageName = packageName;
         this.declarations = declarations != null ? Collections.unmodifiableMap(declarations) : Collections.emptyMap();
