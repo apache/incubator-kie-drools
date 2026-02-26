@@ -1406,13 +1406,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!--<dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>test</scope>
-      </dependency>-->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-bom</artifactId>
@@ -1420,7 +1413,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
