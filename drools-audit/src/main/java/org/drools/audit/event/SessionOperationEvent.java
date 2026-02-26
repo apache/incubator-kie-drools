@@ -18,6 +18,8 @@
  */
 package org.drools.audit.event;
 
+import java.time.Instant;
+
 /**
  * Records session-level lifecycle events and aggregate operation
  * summaries (e.g. total rules fired in a fireAllRules invocation).
@@ -35,6 +37,14 @@ public class SessionOperationEvent extends AuditEvent {
                                  int rulesFiredCount,
                                  long durationMillis) {
         super(type, sessionId, sequenceNumber);
+        this.rulesFiredCount = rulesFiredCount;
+        this.durationMillis = durationMillis;
+    }
+
+    public SessionOperationEvent(String id, AuditEventType type, Instant timestamp,
+                                 String sessionId, long sequenceNumber,
+                                 int rulesFiredCount, long durationMillis) {
+        super(id, type, timestamp, sessionId, sequenceNumber);
         this.rulesFiredCount = rulesFiredCount;
         this.durationMillis = durationMillis;
     }

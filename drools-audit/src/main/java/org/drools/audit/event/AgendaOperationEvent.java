@@ -18,6 +18,8 @@
  */
 package org.drools.audit.event;
 
+import java.time.Instant;
+
 /**
  * Records agenda-level operations: group pushes/pops and ruleflow
  * group activation/deactivation.
@@ -33,6 +35,13 @@ public class AgendaOperationEvent extends AuditEvent {
                                 long sequenceNumber,
                                 String groupName) {
         super(type, sessionId, sequenceNumber);
+        this.groupName = groupName;
+    }
+
+    public AgendaOperationEvent(String id, AuditEventType type, Instant timestamp,
+                                String sessionId, long sequenceNumber,
+                                String groupName) {
+        super(id, type, timestamp, sessionId, sequenceNumber);
         this.groupName = groupName;
     }
 

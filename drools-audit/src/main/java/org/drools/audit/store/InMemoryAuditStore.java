@@ -21,8 +21,10 @@ package org.drools.audit.store;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.drools.audit.event.AuditEvent;
@@ -38,7 +40,13 @@ public class InMemoryAuditStore implements AuditStore {
 
     private static final int DEFAULT_MAX_CAPACITY = 100_000;
 
+    private static final Comparator<AuditEvent> TIMESTAMP_ORDER =
+            Comparator.comparing(AuditEvent::getTimestamp)
+                      .thenComparing(AuditEvent::getSessionId)
+                      .thenComparingLong(AuditEvent::getSequenceNumber);
+
     private final ConcurrentLinkedDeque<AuditEvent> events = new ConcurrentLinkedDeque<>();
+    private final AtomicInteger size = new AtomicInteger(0);
     private final int maxCapacity;
 
     public InMemoryAuditStore() {
@@ -55,8 +63,13 @@ public class InMemoryAuditStore implements AuditStore {
     @Override
     public void store(AuditEvent event) {
         events.addLast(event);
-        while (events.size() > maxCapacity) {
-            events.pollFirst();
+        int currentSize = size.incrementAndGet();
+        while (currentSize > maxCapacity) {
+            if (events.pollFirst() != null) {
+                currentSize = size.decrementAndGet();
+            } else {
+                break;
+            }
         }
     }
 
@@ -80,7 +93,7 @@ public class InMemoryAuditStore implements AuditStore {
     public List<AuditEvent> findByTimeRange(Instant from, Instant to) {
         return events.stream()
                 .filter(e -> !e.getTimestamp().isBefore(from) && !e.getTimestamp().isAfter(to))
-                .sorted()
+                .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -100,7 +113,7 @@ public class InMemoryAuditStore implements AuditStore {
                 .filter(e -> e.getSessionId().equals(sessionId)
                         && !e.getTimestamp().isBefore(from)
                         && !e.getTimestamp().isAfter(to))
-                .sorted()
+                .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -113,7 +126,7 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public long count() {
-        return events.size();
+        return size.get();
     }
 
     @Override
@@ -125,11 +138,18 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public void deleteBySessionId(String sessionId) {
-        events.removeIf(e -> e.getSessionId().equals(sessionId));
+        events.removeIf(e -> {
+            if (e.getSessionId().equals(sessionId)) {
+                size.decrementAndGet();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
     public void deleteAll() {
         events.clear();
+        size.set(0);
     }
 }

@@ -47,6 +47,19 @@ public abstract class AuditEvent implements Serializable, Comparable<AuditEvent>
         this.sequenceNumber = sequenceNumber;
     }
 
+    /**
+     * Hydration constructor for reconstructing a persisted event
+     * with its original identity and timestamp.
+     */
+    protected AuditEvent(String id, AuditEventType type, Instant timestamp,
+                         String sessionId, long sequenceNumber) {
+        this.id = Objects.requireNonNull(id, "id");
+        this.type = Objects.requireNonNull(type, "type");
+        this.timestamp = Objects.requireNonNull(timestamp, "timestamp");
+        this.sessionId = Objects.requireNonNull(sessionId, "sessionId");
+        this.sequenceNumber = sequenceNumber;
+    }
+
     public String getId() {
         return id;
     }
