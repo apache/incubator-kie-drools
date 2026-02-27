@@ -133,6 +133,7 @@
   </build>
 
   <modules>
+    <module>kie-parent</module>
     <module>kie-no-dependencymanagement-enforcer-rule</module>
     <module>bom</module>
     <module>build-parent</module>
