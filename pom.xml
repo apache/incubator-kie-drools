@@ -185,6 +185,7 @@
     <module>drools-reliability</module>
     <module>drools-drlonyaml-parent</module>
     <module>kie-yard</module>
+    <module>drools-lsp</module>
   </modules>
 
   <profiles>
