@@ -1218,6 +1218,13 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+
+      <!-- kie-yard -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-yard-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
