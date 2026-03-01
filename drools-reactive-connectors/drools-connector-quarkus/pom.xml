@@ -60,12 +60,10 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-connector-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-connector-kafka</artifactId>
-            <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
