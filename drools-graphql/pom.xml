@@ -55,6 +55,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.microprofile.graphql</groupId>
+                <artifactId>microprofile-graphqk-api</artifactId>
+                <version>2.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -67,24 +72,20 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-impact-analysis-graph-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-impact-analysis-parser</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-impact-analysis-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- MicroProfile GraphQL API (annotations only) -->
         <dependency>
             <groupId>org.eclipse.microprofile.graphql</groupId>
             <artifactId>microprofile-graphql-api</artifactId>
-            <version>2.0</version>
         </dependency>
 
         <!-- CDI API -->
