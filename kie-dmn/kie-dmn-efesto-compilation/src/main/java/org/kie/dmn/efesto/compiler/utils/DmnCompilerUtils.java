@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+
 import org.kie.api.builder.Message;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
@@ -42,12 +43,14 @@ import java.util.List;
 public class DmnCompilerUtils {
 
     static final List<String> CLEANABLE_PATTERNS = Arrays.asList("main/resources",
-                                                                 "main/java",
-                                                                 "test/resources",
-                                                                 "test/java",
-                                                                 "target/generated-resources",
-                                                                 "target/classes",
-                                                                 "target/test-classes");
+            "main/java",
+            "test/resources",
+            "test/java",
+            "target/generated-resources",
+            "target/classes",
+            "target/test-classes",
+            "build/resources/main",
+            "build/resources/test");
 
     private DmnCompilerUtils() {
         // avoid instantiation
@@ -120,6 +123,7 @@ public class DmnCompilerUtils {
     /**
      * This method remove unwanted preceding paths from given <code>File</code>, and always returns a <b>/</b>-separated path,
      * without leading <b>/</b>
+     *
      * @param fileToClean
      * @return
      */
@@ -130,6 +134,7 @@ public class DmnCompilerUtils {
     /**
      * This method remove unwanted preceding paths from given <code>String</code>, and always returns a <b>/</b>-separated path,
      * without leading <b>/</b>
+     *
      * @param filenameToClean
      * @return
      */
@@ -149,8 +154,9 @@ public class DmnCompilerUtils {
 
     /**
      * This method remove unwanted preceding paths from given <code>String</code> and always returns a <b>/</b>-separated path,
+     *
      * @param filenameToClean
-     *  @param patternToClean
+     * @param patternToClean
      * @return
      */
     static String getCleanedFileNameForURIByPattern(String filenameToClean, String patternToClean) {
