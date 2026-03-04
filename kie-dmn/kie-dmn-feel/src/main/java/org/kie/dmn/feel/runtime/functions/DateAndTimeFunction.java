@@ -136,18 +136,7 @@ public class DateAndTimeFunction
 
         try {
             if( val.contains( "T" ) ) {
-                TemporalAccessor parsed = FEEL_DATE_TIME.parseBest(val, CustomZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from);
-                // If parseBest returns a Parsed object (incomplete parse), try to convert it properly
-                if (parsed.getClass().getName().contains("Parsed")) {
-                    // Fall back to ZonedDateTime parsing which handles more formats
-                    try {
-                        return FEELFnResult.ofResult(CustomZonedDateTime.from(java.time.ZonedDateTime.parse(val, FEEL_DATE_TIME)));
-                    } catch (Exception fallbackEx) {
-                        // If that also fails, return the original parsed result
-                        return FEELFnResult.ofResult(parsed);
-                    }
-                }
-                return FEELFnResult.ofResult(parsed);
+                return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, CustomZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
             } else {
                 LocalDate value = DateTimeFormatter.ISO_DATE.parse(val, LocalDate::from);
                 return FEELFnResult.ofResult( LocalDateTime.of(value, LocalTime.of(0, 0)));

@@ -53,15 +53,12 @@ public class DateTimeEvalHelper {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
         if (datetime instanceof LocalDateTime) {
             return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
-        } else if (datetime instanceof CustomZonedDateTime) {
-            // CustomZonedDateTime already has timezone info, just get epoch seconds
-            return ((CustomZonedDateTime) datetime).getZonedDateTime().toEpochSecond();
         } else if (datetime instanceof ZonedDateTime) {
-            // ZonedDateTime already has timezone info, just get epoch seconds
             return ((ZonedDateTime) datetime).toEpochSecond();
         } else if (datetime instanceof OffsetDateTime) {
-            // OffsetDateTime already has timezone info, just get epoch seconds
             return ((OffsetDateTime) datetime).toEpochSecond();
+        } else if (datetime instanceof CustomZonedDateTime) {
+            return ((CustomZonedDateTime) datetime).getZonedDateTime().toEpochSecond();
         } else {
             throw new RuntimeException("valuedt() for " + datetime + " but is not a FEEL date and time " + datetime.getClass());
         }

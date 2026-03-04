@@ -142,35 +142,35 @@ public class EvalHelper {
                 default:
                     return PropertyValueResult.notDefined();
             }
-        } else if (current instanceof TemporalAccessor temporalAccessor) {
+        } else if (current instanceof TemporalAccessor) {
             switch ( property ) {
                 case "year":
-                    result = temporalAccessor.get(ChronoField.YEAR);
+                    result = ((TemporalAccessor) current).get(ChronoField.YEAR);
                     break;
                 case "month":
-                    result = temporalAccessor.get(ChronoField.MONTH_OF_YEAR);
+                    result = ((TemporalAccessor) current).get(ChronoField.MONTH_OF_YEAR);
                     break;
                 case "day":
-                    result = temporalAccessor.get(ChronoField.DAY_OF_MONTH);
+                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_MONTH);
                     break;
                 case "hour":
-                    result = temporalAccessor.get(ChronoField.HOUR_OF_DAY);
+                    result = ((TemporalAccessor) current).get(ChronoField.HOUR_OF_DAY);
                     break;
                 case "minute":
-                    result = temporalAccessor.get(ChronoField.MINUTE_OF_HOUR);
+                    result = ((TemporalAccessor) current).get(ChronoField.MINUTE_OF_HOUR);
                     break;
                 case "second":
-                    result = temporalAccessor.get(ChronoField.SECOND_OF_MINUTE);
+                    result = ((TemporalAccessor) current).get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                    if (temporalAccessor.isSupported(ChronoField.OFFSET_SECONDS)) {
-                        result = Duration.ofSeconds(temporalAccessor.get(ChronoField.OFFSET_SECONDS));
+                    if (((TemporalAccessor) current).isSupported(ChronoField.OFFSET_SECONDS)) {
+                        result = Duration.ofSeconds(((TemporalAccessor) current).get(ChronoField.OFFSET_SECONDS));
                     } else {
                         result = null;
                     }
                     break;
                 case "timezone":
-                    ZoneId zoneId = temporalAccessor.query(TemporalQueries.zoneId());
+                    ZoneId zoneId = ((TemporalAccessor) current).query(TemporalQueries.zoneId());
                     if (zoneId != null) {
                         result = TimeZone.getTimeZone(zoneId).getID();
                         break;
@@ -178,7 +178,7 @@ public class EvalHelper {
                         return PropertyValueResult.notDefined();
                     }
                 case "weekday":
-                    result = temporalAccessor.get(ChronoField.DAY_OF_WEEK);
+                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
                     break;
                 case "value":
                     result = null;
@@ -189,10 +189,10 @@ public class EvalHelper {
                     } else if (current instanceof LocalDate date) {
                         ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
                         result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
-                    } else if (current instanceof CustomZonedDateTime) {
-                        result = BigDecimal.valueOf(((CustomZonedDateTime) current).getZonedDateTime().toEpochSecond());
                     } else if (current instanceof ZonedDateTime) {
                         result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
+                    } else if (current instanceof CustomZonedDateTime) {
+                        result = BigDecimal.valueOf(((CustomZonedDateTime) current).getZonedDateTime().toEpochSecond());
                     }
                     break;
                 default:
