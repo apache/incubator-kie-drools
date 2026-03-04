@@ -33,8 +33,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class DateAndTimeFunctionTest {
@@ -47,7 +47,7 @@ class DateAndTimeFunctionTest {
         assertThat(retrievedResult).isNotNull();
         assertThat(retrievedResult.isRight()).isTrue();
         TemporalAccessor retrieved = retrievedResult.getOrElse(null);
-        assertThat(retrieved).isNotNull().isInstanceOf(ZonedDateTime.class);
+        assertThat(retrieved).isNotNull().isInstanceOf(CustomZonedDateTime.class);
         ZonedDateTime retrievedZonedDateTime = (ZonedDateTime) retrieved;
         assertThat(retrievedZonedDateTime.getYear()).isEqualTo(2017);
         assertThat(retrievedZonedDateTime.getMonthValue()).isEqualTo(8);

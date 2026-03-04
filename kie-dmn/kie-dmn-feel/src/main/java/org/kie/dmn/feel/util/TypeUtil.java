@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
@@ -86,6 +87,9 @@ public final class TypeUtil {
         } else if (val instanceof LocalDateTime || val instanceof OffsetDateTime) {
             return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val),
                                         wrapForCodeUsage);
+        } else if (val instanceof CustomZonedDateTime) {
+            // CustomZonedDateTime already has proper string representation
+            return formatDateTimeString(val.toString(), wrapForCodeUsage);
         } else if (val instanceof ZonedDateTime) {
             TemporalAccessor ta = (TemporalAccessor) val;
             ZoneId zone = ta.query(TemporalQueries.zone());

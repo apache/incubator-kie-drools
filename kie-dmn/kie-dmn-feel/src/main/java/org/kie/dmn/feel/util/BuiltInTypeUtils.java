@@ -28,6 +28,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Collections;
@@ -73,7 +74,7 @@ public class BuiltInTypeUtils {
             return BuiltInType.DATE;
         } else if (o instanceof LocalTime || o instanceof OffsetTime || o instanceof ZoneTime) {
             return BuiltInType.TIME;
-        } else if (o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime) {
+        } else if (o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime || o instanceof CustomZonedDateTime) {
             return BuiltInType.DATE_TIME;
         } else if (o instanceof Duration || o instanceof ChronoPeriod) {
             return BuiltInType.DURATION;

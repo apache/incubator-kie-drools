@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,8 +67,9 @@ class CoerceUtilTest {
         retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
-        assertThat(retrieved.get() instanceof ZonedDateTime).isTrue();
-        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved.get();
+        assertThat(retrieved.get()).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZdt = (CustomZonedDateTime) retrieved.get();
+        ZonedDateTime zdtRetrieved = customZdt.getZonedDateTime();
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(actualObject);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
         assertThat(zdtRetrieved.getHour()).isEqualTo(0);
@@ -80,8 +82,9 @@ class CoerceUtilTest {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.coerceParameter(BuiltInType.DATE_TIME, value);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved;
+        assertThat(retrieved).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZdt = (CustomZonedDateTime) retrieved;
+        ZonedDateTime zdtRetrieved = customZdt.getZonedDateTime();
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
         assertThat(zdtRetrieved.getHour()).isEqualTo(0);
@@ -120,8 +123,9 @@ class CoerceUtilTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
         retrievedObjects = retrieved.get();
-        assertThat(retrievedObjects[0]).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrievedObjects[0];
+        assertThat(retrievedObjects[0]).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZdt = (CustomZonedDateTime) retrievedObjects[0];
+        ZonedDateTime zdtRetrieved = customZdt.getZonedDateTime();
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(item);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
         assertThat(zdtRetrieved.getHour()).isEqualTo(0);
@@ -138,8 +142,9 @@ class CoerceUtilTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isPresent();
         Object[] retrievedObjects = retrieved.get();
-        assertThat(retrievedObjects[0]).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrievedObjects[0];
+        assertThat(retrievedObjects[0]).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZdt = (CustomZonedDateTime) retrievedObjects[0];
+        ZonedDateTime zdtRetrieved = customZdt.getZonedDateTime();
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
         assertThat(zdtRetrieved.getHour()).isEqualTo(0);
@@ -169,8 +174,9 @@ class CoerceUtilTest {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE_TIME, value);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved;
+        assertThat(retrieved).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZdt = (CustomZonedDateTime) retrieved;
+        ZonedDateTime zdtRetrieved = customZdt.getZonedDateTime();
         assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
         assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
         assertThat(zdtRetrieved.getHour()).isEqualTo(0);

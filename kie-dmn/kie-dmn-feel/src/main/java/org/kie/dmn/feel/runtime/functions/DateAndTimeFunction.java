@@ -25,7 +25,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.TemporalAccessor;
@@ -36,6 +35,7 @@ import java.util.TimeZone;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateTimeFunction;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
@@ -107,12 +107,12 @@ public class DateAndTimeFunction
             TemporalAccessor validatedTime = getValidTime(time);
             if (validatedDate instanceof LocalDate && validatedTime instanceof LocalTime) {
                 if (zoneId != null) {
-                    return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zoneId));
+                    return FEELFnResult.ofResult(CustomZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zoneId));
                 } else {
                     return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime));
                 }
             } else if (validatedDate instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId != null ? zoneId : ZoneId.from(validatedTime)));
+                return FEELFnResult.ofResult(CustomZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId != null ? zoneId : ZoneId.from(validatedTime)));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
         } catch (IllegalArgumentException e) {
@@ -136,7 +136,18 @@ public class DateAndTimeFunction
 
         try {
             if( val.contains( "T" ) ) {
-                return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
+                TemporalAccessor parsed = FEEL_DATE_TIME.parseBest(val, CustomZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from);
+                // If parseBest returns a Parsed object (incomplete parse), try to convert it properly
+                if (parsed.getClass().getName().contains("Parsed")) {
+                    // Fall back to ZonedDateTime parsing which handles more formats
+                    try {
+                        return FEELFnResult.ofResult(CustomZonedDateTime.from(java.time.ZonedDateTime.parse(val, FEEL_DATE_TIME)));
+                    } catch (Exception fallbackEx) {
+                        // If that also fails, return the original parsed result
+                        return FEELFnResult.ofResult(parsed);
+                    }
+                }
+                return FEELFnResult.ofResult(parsed);
             } else {
                 LocalDate value = DateTimeFormatter.ISO_DATE.parse(val, LocalDate::from);
                 return FEELFnResult.ofResult( LocalDateTime.of(value, LocalTime.of(0, 0)));
@@ -199,7 +210,7 @@ public class DateAndTimeFunction
             int coercedHour = coerceIntegerNumber(hour).orElseThrow(() -> new NoSuchElementException("hour"));
             int coercedMinute = coerceIntegerNumber(minute).orElseThrow(() -> new NoSuchElementException("minute"));
             int coercedSecond = coerceIntegerNumber(second).orElseThrow(() -> new NoSuchElementException("second"));
-            return FEELFnResult.ofResult(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay,
+            return FEELFnResult.ofResult(CustomZonedDateTime.of(coercedYear, coercedMonth, coercedDay,
                     coercedHour, coercedMinute, coercedSecond, 0, TimeZone.getTimeZone(timezone).toZoneId()));
         } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));

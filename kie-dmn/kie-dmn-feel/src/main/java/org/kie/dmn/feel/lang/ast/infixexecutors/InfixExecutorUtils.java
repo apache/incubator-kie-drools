@@ -28,6 +28,7 @@ import java.util.function.BinaryOperator;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
@@ -204,12 +205,12 @@ public class InfixExecutorUtils {
             final EvaluationContext ctx) {
         // Both datetimes have a timezone or both timezones don't have it. Cannot combine timezoned datetime and
         // datetime without a timezone.
-        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof OffsetDateTime)
+        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof OffsetDateTime || leftTemporal instanceof CustomZonedDateTime)
                 && (rightTemporal instanceof LocalDateTime)) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg
                     .createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "first", leftTemporal, "second", rightTemporal)));
             return false;
-        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof OffsetDateTime)
+        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof OffsetDateTime || rightTemporal instanceof CustomZonedDateTime)
                 && (leftTemporal instanceof LocalDateTime)) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg
                     .createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "second", rightTemporal, "first", leftTemporal)));

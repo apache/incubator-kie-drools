@@ -28,6 +28,7 @@ import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -141,35 +142,41 @@ public class EvalHelper {
                 default:
                     return PropertyValueResult.notDefined();
             }
-        } else if (current instanceof TemporalAccessor) {
+        } else if (current instanceof TemporalAccessor temporalAccessor) {
+            // Handle CustomZonedDateTime specially to access wrapped ZonedDateTime
+            TemporalAccessor accessor = temporalAccessor;
+            if (temporalAccessor instanceof CustomZonedDateTime customZdt) {
+                accessor = customZdt.getZonedDateTime();
+            }
+            
             switch ( property ) {
                 case "year":
-                    result = ((TemporalAccessor) current).get(ChronoField.YEAR);
+                    result = accessor.get(ChronoField.YEAR);
                     break;
                 case "month":
-                    result = ((TemporalAccessor) current).get(ChronoField.MONTH_OF_YEAR);
+                    result = accessor.get(ChronoField.MONTH_OF_YEAR);
                     break;
                 case "day":
-                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_MONTH);
+                    result = accessor.get(ChronoField.DAY_OF_MONTH);
                     break;
                 case "hour":
-                    result = ((TemporalAccessor) current).get(ChronoField.HOUR_OF_DAY);
+                    result = accessor.get(ChronoField.HOUR_OF_DAY);
                     break;
                 case "minute":
-                    result = ((TemporalAccessor) current).get(ChronoField.MINUTE_OF_HOUR);
+                    result = accessor.get(ChronoField.MINUTE_OF_HOUR);
                     break;
                 case "second":
-                    result = ((TemporalAccessor) current).get(ChronoField.SECOND_OF_MINUTE);
+                    result = accessor.get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                    if (((TemporalAccessor) current).isSupported(ChronoField.OFFSET_SECONDS)) {
-                        result = Duration.ofSeconds(((TemporalAccessor) current).get(ChronoField.OFFSET_SECONDS));
+                    if (accessor.isSupported(ChronoField.OFFSET_SECONDS)) {
+                        result = Duration.ofSeconds(accessor.get(ChronoField.OFFSET_SECONDS));
                     } else {
                         result = null;
                     }
                     break;
                 case "timezone":
-                    ZoneId zoneId = ((TemporalAccessor) current).query(TemporalQueries.zoneId());
+                    ZoneId zoneId = accessor.query(TemporalQueries.zoneId());
                     if (zoneId != null) {
                         result = TimeZone.getTimeZone(zoneId).getID();
                         break;
@@ -177,7 +184,7 @@ public class EvalHelper {
                         return PropertyValueResult.notDefined();
                     }
                 case "weekday":
-                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
+                    result = accessor.get(ChronoField.DAY_OF_WEEK);
                     break;
                 case "value":
                     result = null;
@@ -188,6 +195,8 @@ public class EvalHelper {
                     } else if (current instanceof LocalDate date) {
                         ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
                         result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
+                    } else if (current instanceof CustomZonedDateTime) {
+                        result = BigDecimal.valueOf(((CustomZonedDateTime) current).getZonedDateTime().toEpochSecond());
                     } else if (current instanceof ZonedDateTime) {
                         result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
                     }

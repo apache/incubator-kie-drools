@@ -26,14 +26,15 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DateTimeEvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger(DateTimeEvalHelper.class);
 
-    public static ZonedDateTime coerceDateTime(final LocalDate value) {
-        return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+    public static CustomZonedDateTime coerceDateTime(final LocalDate value) {
+        return CustomZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
     }
 
     public static String toParsableString(TemporalAccessor temporalAccessor) {
@@ -52,9 +53,14 @@ public class DateTimeEvalHelper {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
         if (datetime instanceof LocalDateTime) {
             return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
+        } else if (datetime instanceof CustomZonedDateTime) {
+            // CustomZonedDateTime already has timezone info, just get epoch seconds
+            return ((CustomZonedDateTime) datetime).getZonedDateTime().toEpochSecond();
         } else if (datetime instanceof ZonedDateTime) {
+            // ZonedDateTime already has timezone info, just get epoch seconds
             return ((ZonedDateTime) datetime).toEpochSecond();
         } else if (datetime instanceof OffsetDateTime) {
+            // OffsetDateTime already has timezone info, just get epoch seconds
             return ((OffsetDateTime) datetime).toEpochSecond();
         } else {
             throw new RuntimeException("valuedt() for " + datetime + " but is not a FEEL date and time " + datetime.getClass());
