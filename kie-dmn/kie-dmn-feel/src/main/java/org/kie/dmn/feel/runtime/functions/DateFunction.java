@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateFunction;
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
@@ -94,11 +93,6 @@ public class DateFunction
         }
 
         try {
-            // Handle CustomZonedDateTime by extracting the wrapped ZonedDateTime
-            if (date instanceof CustomZonedDateTime) {
-                CustomZonedDateTime customZdt = (CustomZonedDateTime) date;
-                return FEELFnResult.ofResult(customZdt.getZonedDateTime().toLocalDate());
-            }
             return FEELFnResult.ofResult(LocalDate.from(date));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));

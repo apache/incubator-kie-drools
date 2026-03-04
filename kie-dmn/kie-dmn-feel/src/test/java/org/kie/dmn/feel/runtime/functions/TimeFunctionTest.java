@@ -27,11 +27,11 @@ import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -188,7 +188,7 @@ class TimeFunctionTest {
 
     @Test
     void invokeWithZonedDateTime() {
-        ZonedDateTime from = (ZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:00@Europe/Paris")
+        CustomZonedDateTime from = (CustomZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:00@Europe/Paris")
                 .getOrElse(null);
         assertThat(from).isNotNull();
         FEELFnResult<TemporalAccessor> retrievedResult = timeFunction.invoke(from);
@@ -212,13 +212,13 @@ class TimeFunctionTest {
 
     @Test
     void getFormattedStringFromTemporalAccessorAndZone() {
-        ZonedDateTime date = (ZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:10@Europe/Paris")
+        CustomZonedDateTime date = (CustomZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:10@Europe/Paris")
                 .getOrElse(null);
         assertThat(date).isNotNull();
         ZoneId zone = date.query(TemporalQueries.zoneId());
         assertThat(TimeFunction.getFormattedStringFromTemporalAccessorAndZone(date, zone))
                 .isEqualTo("10:20:10@Europe/Paris");
-        date = (ZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:00@Europe/Paris").getOrElse(null);
+        date = (CustomZonedDateTime) DateAndTimeFunction.INSTANCE.invoke("2017-08-10T10:20:00@Europe/Paris").getOrElse(null);
         assertThat(date).isNotNull();
         zone = date.query(TemporalQueries.zoneId());
         assertThat(TimeFunction.getFormattedStringFromTemporalAccessorAndZone(date, zone))

@@ -48,13 +48,13 @@ class DateAndTimeFunctionTest {
         assertThat(retrievedResult.isRight()).isTrue();
         TemporalAccessor retrieved = retrievedResult.getOrElse(null);
         assertThat(retrieved).isNotNull().isInstanceOf(CustomZonedDateTime.class);
-        ZonedDateTime retrievedZonedDateTime = (ZonedDateTime) retrieved;
-        assertThat(retrievedZonedDateTime.getYear()).isEqualTo(2017);
-        assertThat(retrievedZonedDateTime.getMonthValue()).isEqualTo(8);
-        assertThat(retrievedZonedDateTime.getDayOfMonth()).isEqualTo(10);
-        assertThat(retrievedZonedDateTime.getHour()).isEqualTo(10);
-        assertThat(retrievedZonedDateTime.getMinute()).isEqualTo(20);
-        assertThat(retrievedZonedDateTime.getSecond()).isZero();
+        CustomZonedDateTime retrievedZonedDateTime = (CustomZonedDateTime) retrieved;
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getYear()).isEqualTo(2017);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getMonthValue()).isEqualTo(8);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getDayOfMonth()).isEqualTo(10);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getHour()).isEqualTo(10);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getMinute()).isEqualTo(20);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getSecond()).isZero();
         assertThat(retrievedZonedDateTime.getZone()).isEqualTo(ZoneId.of("Europe/Paris"));
     }
 
@@ -164,8 +164,8 @@ class DateAndTimeFunctionTest {
         FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "Z");
         assertThat(result.isRight()).isTrue();
         assertThat(result.getOrElse(null)).isNotNull();
-        ZonedDateTime actualDateTime = (ZonedDateTime) result.getOrElse(null);
-        ZonedDateTime expectedDateTime = ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
+        CustomZonedDateTime actualDateTime = (CustomZonedDateTime) result.getOrElse(null);
+        CustomZonedDateTime expectedDateTime = CustomZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
         assertThat(expectedDateTime).isEqualTo(actualDateTime);
         FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00Z");
         assertThat(retrievedResult.isRight()).isTrue();

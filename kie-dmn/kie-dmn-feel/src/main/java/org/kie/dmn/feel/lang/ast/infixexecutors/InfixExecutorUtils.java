@@ -205,12 +205,12 @@ public class InfixExecutorUtils {
             final EvaluationContext ctx) {
         // Both datetimes have a timezone or both timezones don't have it. Cannot combine timezoned datetime and
         // datetime without a timezone.
-        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof OffsetDateTime || leftTemporal instanceof CustomZonedDateTime)
+        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof CustomZonedDateTime || leftTemporal instanceof OffsetDateTime)
                 && (rightTemporal instanceof LocalDateTime)) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg
                     .createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "first", leftTemporal, "second", rightTemporal)));
             return false;
-        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof OffsetDateTime || rightTemporal instanceof CustomZonedDateTime)
+        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof CustomZonedDateTime || rightTemporal instanceof OffsetDateTime)
                 && (leftTemporal instanceof LocalDateTime)) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg
                     .createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "second", rightTemporal, "first", leftTemporal)));

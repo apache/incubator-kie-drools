@@ -28,7 +28,6 @@ import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -43,6 +42,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
@@ -143,40 +143,34 @@ public class EvalHelper {
                     return PropertyValueResult.notDefined();
             }
         } else if (current instanceof TemporalAccessor temporalAccessor) {
-            // Handle CustomZonedDateTime specially to access wrapped ZonedDateTime
-            TemporalAccessor accessor = temporalAccessor;
-            if (temporalAccessor instanceof CustomZonedDateTime customZdt) {
-                accessor = customZdt.getZonedDateTime();
-            }
-            
             switch ( property ) {
                 case "year":
-                    result = accessor.get(ChronoField.YEAR);
+                    result = temporalAccessor.get(ChronoField.YEAR);
                     break;
                 case "month":
-                    result = accessor.get(ChronoField.MONTH_OF_YEAR);
+                    result = temporalAccessor.get(ChronoField.MONTH_OF_YEAR);
                     break;
                 case "day":
-                    result = accessor.get(ChronoField.DAY_OF_MONTH);
+                    result = temporalAccessor.get(ChronoField.DAY_OF_MONTH);
                     break;
                 case "hour":
-                    result = accessor.get(ChronoField.HOUR_OF_DAY);
+                    result = temporalAccessor.get(ChronoField.HOUR_OF_DAY);
                     break;
                 case "minute":
-                    result = accessor.get(ChronoField.MINUTE_OF_HOUR);
+                    result = temporalAccessor.get(ChronoField.MINUTE_OF_HOUR);
                     break;
                 case "second":
-                    result = accessor.get(ChronoField.SECOND_OF_MINUTE);
+                    result = temporalAccessor.get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                    if (accessor.isSupported(ChronoField.OFFSET_SECONDS)) {
-                        result = Duration.ofSeconds(accessor.get(ChronoField.OFFSET_SECONDS));
+                    if (temporalAccessor.isSupported(ChronoField.OFFSET_SECONDS)) {
+                        result = Duration.ofSeconds(temporalAccessor.get(ChronoField.OFFSET_SECONDS));
                     } else {
                         result = null;
                     }
                     break;
                 case "timezone":
-                    ZoneId zoneId = accessor.query(TemporalQueries.zoneId());
+                    ZoneId zoneId = temporalAccessor.query(TemporalQueries.zoneId());
                     if (zoneId != null) {
                         result = TimeZone.getTimeZone(zoneId).getID();
                         break;
@@ -184,7 +178,7 @@ public class EvalHelper {
                         return PropertyValueResult.notDefined();
                     }
                 case "weekday":
-                    result = accessor.get(ChronoField.DAY_OF_WEEK);
+                    result = temporalAccessor.get(ChronoField.DAY_OF_WEEK);
                     break;
                 case "value":
                     result = null;

@@ -156,13 +156,6 @@ public class TimeFunction
         }
         
         try {
-            // Handle CustomZonedDateTime by extracting the wrapped ZonedDateTime
-            if (date instanceof org.kie.dmn.feel.runtime.custom.CustomZonedDateTime) {
-                org.kie.dmn.feel.runtime.custom.CustomZonedDateTime customZdt = (org.kie.dmn.feel.runtime.custom.CustomZonedDateTime) date;
-                java.time.ZonedDateTime zdt = customZdt.getZonedDateTime();
-                // Preserve nanoseconds (milliseconds) when extracting time
-                return FEELFnResult.ofResult(OffsetTime.of(zdt.toLocalTime(), zdt.getOffset()));
-            }
             // If the temporal accessor type doesn't support time, try to parse it as a date with UTC midnight.
             if (!date.isSupported(ChronoField.HOUR_OF_DAY)) {
                 return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( date, OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC) )
