@@ -43,14 +43,8 @@ import java.util.Objects;
 public final class CustomZonedDateTime
         implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
 
-
     private final ZonedDateTime zonedDateTime;
     private final String stringRepresentation;
-
-    public CustomZonedDateTime(ZonedDateTime zonedDateTime, String stringRepresentation) {
-        this.zonedDateTime = zonedDateTime;
-        this.stringRepresentation = stringRepresentation;
-    }
 
     private CustomZonedDateTime(ZonedDateTime zonedDateTime) {
         this.zonedDateTime = zonedDateTime;
