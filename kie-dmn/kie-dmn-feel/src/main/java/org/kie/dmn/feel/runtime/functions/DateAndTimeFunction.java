@@ -138,8 +138,20 @@ public class DateAndTimeFunction
             if( val.contains( "T" ) ) {
                 return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, CustomZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
             } else {
-                LocalDate value = DateTimeFormatter.ISO_DATE.parse(val, LocalDate::from);
-                return FEELFnResult.ofResult( LocalDateTime.of(value, LocalTime.of(0, 0)));
+                TemporalAccessor parsed = DateTimeFormatter.ISO_DATE.parse(val);
+                LocalDate value = LocalDate.from(parsed);
+                ZoneId zoneId = parsed.query(TemporalQueries.zone());
+                if (zoneId == null) {
+                    ZoneOffset offset = parsed.query(TemporalQueries.offset());
+                    if (offset != null) {
+                        zoneId = ZoneId.ofOffset("UTC", offset);
+                    }
+                }
+                if (zoneId != null) {
+                    return FEELFnResult.ofResult(CustomZonedDateTime.of(value, LocalTime.of(0, 0), zoneId));
+                } else {
+                    return FEELFnResult.ofResult(LocalDateTime.of(value, LocalTime.of(0, 0)));
+                }
             }
         } catch ( Exception e ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));

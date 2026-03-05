@@ -38,7 +38,21 @@ import java.util.Objects;
 
 /**
  * This class is meant as sort-of <b>decorator</b> over <code>ZonedDateTime</code>, that is a final class.
- * It is used to provide a string representation that preserves seconds even when they are zero,
+ * <p>
+ * <ul>
+ *   <li><b>String representation ({@link #toString()}):</b> Provides a custom string format that:
+ *     <ul>
+ *       <li>Always preserves seconds in the output, even when they are zero (e.g., "10:10:00" instead of "10:10")</li>
+ *       <li>Uses ISO_OFFSET_DATE_TIME format for ZoneOffset zones (e.g., "2021-01-01T10:10:10+11:00")</li>
+ *       <li>Uses REGION_DATETIME_FORMATTER for ZoneRegion zones, which properly handles extended years</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Equality semantics:</b> Can be compared with both CustomZonedDateTime and ZonedDateTime instances,
+ *       delegating to the underlying ZonedDateTime for actual comparison logic</li>
+ * </ul>
+ * <p>
+ * All temporal operations delegate to the wrapped ZonedDateTime instance, maintaining full compatibility
+ * with the Java Time API while providing the custom string representation required by FEEL specifications.
  */
 public final class CustomZonedDateTime
         implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
@@ -66,8 +80,8 @@ public final class CustomZonedDateTime
         return new CustomZonedDateTime(ZonedDateTime.from(temporal));
     }
 
-    public static CustomZonedDateTime of(int coercedYear, int coercedMonth, int coercedDay, int coercedHour, int coercedMinute, int coercedSecond, int i, ZoneId zoneId) {
-        return new CustomZonedDateTime(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay, coercedHour, coercedMinute, coercedSecond, i, zoneId));
+    public static CustomZonedDateTime of(int coercedYear, int coercedMonth, int coercedDay, int coercedHour, int coercedMinute, int coercedSecond, int nanoOfSecond, ZoneId zoneId) {
+        return new CustomZonedDateTime(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay, coercedHour, coercedMinute, coercedSecond, nanoOfSecond, zoneId));
     }
 
     @Override

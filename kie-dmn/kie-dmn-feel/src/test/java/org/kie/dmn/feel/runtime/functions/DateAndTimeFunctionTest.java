@@ -268,4 +268,21 @@ class DateAndTimeFunctionTest {
         assertResultError(DateAndTimeFunction.generateDateTimeAndTimezone(null,null, ZoneId.of("America/Costa_Rica")), InvalidParametersEvent.class);
     }
 
+    @Test
+    void invokeParamStringDateWithOffset() {
+        // Test case to verify date string with offset returns CustomZonedDateTime
+        FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke("2017-09-07+02:00");
+        assertThat(result).isNotNull();
+        assertThat(result.isRight()).isTrue();
+        TemporalAccessor retrieved = result.getOrElse(null);
+        assertThat(retrieved).isNotNull();
+
+        // Verify it returns CustomZonedDateTime with timezone preserved
+        assertThat(retrieved).isInstanceOf(CustomZonedDateTime.class);
+        CustomZonedDateTime customZonedDateTime = (CustomZonedDateTime) retrieved;
+        assertThat(customZonedDateTime.getZonedDateTime().toLocalDate()).isEqualTo(LocalDate.of(2017, 9, 7));
+        assertThat(customZonedDateTime.getZonedDateTime().toLocalTime()).isEqualTo(LocalTime.of(0, 0, 0));
+        assertThat(customZonedDateTime.getZone()).isEqualTo(ZoneOffset.of("+02:00"));
+    }
+
 }

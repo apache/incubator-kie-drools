@@ -182,17 +182,17 @@ public class EvalHelper {
                     break;
                 case "value":
                     result = null;
-                    if (current instanceof LocalTime) {
-                        result = BigDecimal.valueOf(((LocalTime) current).toSecondOfDay());
-                    } else if (current instanceof OffsetTime) {
-                        result = BigDecimal.valueOf(((OffsetTime) current).toLocalTime().toSecondOfDay());
+                    if (current instanceof LocalTime localTime) {
+                        result = BigDecimal.valueOf(localTime.toSecondOfDay());
+                    } else if (current instanceof OffsetTime offsetTime) {
+                        result = BigDecimal.valueOf(offsetTime.toLocalTime().toSecondOfDay());
                     } else if (current instanceof LocalDate date) {
                         ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
                         result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
-                    } else if (current instanceof ZonedDateTime) {
-                        result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
-                    } else if (current instanceof CustomZonedDateTime) {
-                        result = BigDecimal.valueOf(((CustomZonedDateTime) current).getZonedDateTime().toEpochSecond());
+                    } else if (current instanceof ZonedDateTime zonedDateTime) {
+                        result = BigDecimal.valueOf(zonedDateTime.toEpochSecond());
+                    } else if (current instanceof CustomZonedDateTime customZonedDateTime) {
+                        result = BigDecimal.valueOf(customZonedDateTime.getZonedDateTime().toEpochSecond());
                     }
                     break;
                 default:

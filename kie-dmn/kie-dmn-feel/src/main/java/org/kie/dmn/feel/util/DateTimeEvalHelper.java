@@ -51,14 +51,14 @@ public class DateTimeEvalHelper {
      */
     public static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
-        if (datetime instanceof LocalDateTime) {
-            return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
-        } else if (datetime instanceof ZonedDateTime) {
-            return ((ZonedDateTime) datetime).toEpochSecond();
-        } else if (datetime instanceof OffsetDateTime) {
-            return ((OffsetDateTime) datetime).toEpochSecond();
-        } else if (datetime instanceof CustomZonedDateTime) {
-            return ((CustomZonedDateTime) datetime).getZonedDateTime().toEpochSecond();
+        if (datetime instanceof LocalDateTime localDateTime) {
+            return localDateTime.atZone(alternativeTZ).toEpochSecond();
+        } else if (datetime instanceof ZonedDateTime zonedDateTime) {
+            return zonedDateTime.toEpochSecond();
+        } else if (datetime instanceof OffsetDateTime offsetDateTime) {
+            return offsetDateTime.toEpochSecond();
+        } else if (datetime instanceof CustomZonedDateTime customZonedDateTime) {
+            return customZonedDateTime.getZonedDateTime().toEpochSecond();
         } else {
             throw new RuntimeException("valuedt() for " + datetime + " but is not a FEEL date and time " + datetime.getClass());
         }
