@@ -38,6 +38,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Lazy;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
@@ -48,6 +49,7 @@ public class SpringbootJobServiceConfiguration {
     Processes processes;
 
     @Autowired
+    @Lazy
     UnitOfWorkManager unitOfWorkManager;
 
     @Autowired(required = false)
