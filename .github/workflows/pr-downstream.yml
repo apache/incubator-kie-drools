@@ -38,8 +38,9 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 180
     strategy:
+      max-parallel: 20
       matrix:
-        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples, kogito-gradle-examples  ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.11']
@@ -60,11 +61,16 @@ jobs:
           - job_name: serverless-workflow-examples
             repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
+          - job_name: kogito-gradle-examples
+            repository: incubator-kie-kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: gradle-examples/
           # - job_name: kie-jpmml-integration
           #   repository: kie-jpmml-integration
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
+    env:
+      DEPENDENCY_TREE_FILE: 'mvn_dependency_tree_${{ matrix.job_name }}_${{ matrix.os }}.txt'
     steps:
       - name: Clean Disk Space
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -93,3 +99,9 @@ jobs:
         if: ${{ always() }}
         with:
           report_paths: '**/*-reports/TEST-*.xml'
+      - name: Upload Dependency Trees
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: dependency-trees-logs_${{ matrix.job_name }}_${{ matrix.os }}
+          path: '**/${{ env.DEPENDENCY_TREE_FILE }}'

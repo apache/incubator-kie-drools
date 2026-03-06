@@ -86,6 +86,23 @@
                     <artifactId>drools-drlonyaml-schemagen</artifactId>
                     <version>${project.version}</version>
                 </dependency>
+                <!-- Pin Jackson to match project version; victools 4.37.0 brings 2.17.2
+                     which conflicts with jackson-databind 2.19.2 in exec:java classpath -->
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                    <version>${version.com.fasterxml.jackson.annotations}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>${version.com.fasterxml.jackson.databind}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>${version.com.fasterxml.jackson}</version>
+                </dependency>
             </dependencies>
         </plugin>
     </plugins>
