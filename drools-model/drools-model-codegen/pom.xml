@@ -30,7 +30,6 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.drools</groupId>
     <artifactId>drools-model-codegen</artifactId>
 
     <name>Drools :: Model :: Codegen</name>
@@ -38,23 +37,6 @@
     <properties>
         <java.module.name>org.drools.model.codegen</java.module.name>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core</artifactId>
-                <version>${version.org.openjdk.jmh}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-generator-annprocess</artifactId>
-                <version>${version.org.openjdk.jmh}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>

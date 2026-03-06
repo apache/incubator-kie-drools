@@ -41,16 +41,6 @@
     <version.net.sf.saxon.Saxon-HE>12.7</version.net.sf.saxon.Saxon-HE>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>net.sf.saxon</groupId>
-        <artifactId>Saxon-HE</artifactId>
-        <version>${version.net.sf.saxon.Saxon-HE}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
