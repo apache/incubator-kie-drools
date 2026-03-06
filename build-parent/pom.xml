@@ -95,6 +95,7 @@
     <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
+    <version.org.eclipse.lsp4j>0.24.0</version.org.eclipse.lsp4j>
     <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
@@ -1065,6 +1066,17 @@
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
         <version>${version.org.antlr4}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.lsp4j</groupId>
+        <artifactId>org.eclipse.lsp4j</artifactId>
+        <version>${version.org.eclipse.lsp4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.lsp4j</groupId>
+        <artifactId>org.eclipse.lsp4j.jsonrpc</artifactId>
+        <version>${version.org.eclipse.lsp4j}</version>
       </dependency>
 
       <dependency>

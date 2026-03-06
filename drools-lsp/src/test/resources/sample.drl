@@ -1,0 +1,28 @@
+package org.example.rules;
+
+import org.example.model.Person;
+import org.example.model.Address;
+
+global java.util.List results;
+
+declare Applicant
+    name : String
+    age  : int
+end
+
+function boolean isAdult(int age) {
+    return age >= 18;
+}
+
+rule "Check Adult"
+    salience 10
+    no-loop true
+    when
+        $p : Person(age >= 18)
+    then
+        results.add($p);
+end
+
+query "Find Person" (String nameParam)
+    Person(name == nameParam)
+end
