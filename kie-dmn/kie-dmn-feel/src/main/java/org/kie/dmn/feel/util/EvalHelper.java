@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
@@ -181,15 +182,17 @@ public class EvalHelper {
                     break;
                 case "value":
                     result = null;
-                    if (current instanceof LocalTime) {
-                        result = BigDecimal.valueOf(((LocalTime) current).toSecondOfDay());
-                    } else if (current instanceof OffsetTime) {
-                        result = BigDecimal.valueOf(((OffsetTime) current).toLocalTime().toSecondOfDay());
+                    if (current instanceof LocalTime localTime) {
+                        result = BigDecimal.valueOf(localTime.toSecondOfDay());
+                    } else if (current instanceof OffsetTime offsetTime) {
+                        result = BigDecimal.valueOf(offsetTime.toLocalTime().toSecondOfDay());
                     } else if (current instanceof LocalDate date) {
                         ZonedDateTime dtAtMidnightUTC = date.atStartOfDay(ZoneOffset.UTC);
                         result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
-                    } else if (current instanceof ZonedDateTime) {
-                        result = BigDecimal.valueOf(((ZonedDateTime) current).toEpochSecond());
+                    } else if (current instanceof ZonedDateTime zonedDateTime) {
+                        result = BigDecimal.valueOf(zonedDateTime.toEpochSecond());
+                    } else if (current instanceof FormattedZonedDateTime formattedZonedDateTime) {
+                        result = BigDecimal.valueOf(formattedZonedDateTime.getZonedDateTime().toEpochSecond());
                     }
                     break;
                 default:

@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.feel.util;
 
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -151,22 +153,10 @@ public class CodegenUtils {
         } else if (object instanceof String string) {
             return getVariableDeclaratorWithInitializerExpression(variableName, STRING_CT,
                                                                   new StringLiteralExpr(escapeJava(string)));
+        } else if (object instanceof FormattedZonedDateTime formattedZonedDateTime) {
+            return getVariableDeclaratorWithZonedDateTime(variableName, formattedZonedDateTime.getZonedDateTime());
         } else if (object instanceof ZonedDateTime zonedDateTime) {
-            Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,
-                                                             NodeList.nodeList(new StringLiteralExpr(zonedDateTime.getZone().getId())));
-            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(zonedDateTime.getYear()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getMonthValue()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getDayOfMonth()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getHour()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getMinute()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getSecond()),
-                                                   new IntegerLiteralExpr(zonedDateTime.getNano()),
-                                                   zoneIdExpression);
-            return getVariableDeclaratorWithMethodCall(variableName,
-                                                       ZONED_DATE_TIME_CT,
-                                                       OF_S,
-                                                       ZONED_DATE_TIME_N,
-                                                       arguments);
+            return getVariableDeclaratorWithZonedDateTime(variableName, zonedDateTime);
         } else if (object instanceof TemporalAccessor temporalAccessor) {
             // FallBack in case of Parse or other unmanaged classes - keep at the end
             String parsedString = DateTimeEvalHelper.toParsableString(temporalAccessor);
@@ -179,6 +169,22 @@ public class CodegenUtils {
         } else {
             throw new UnsupportedOperationException("Unexpected Object: " + object + " " + object.getClass());
         }
+    }
+
+    static VariableDeclarationExpr getVariableDeclaratorWithZonedDateTime(String variableName, ZonedDateTime zonedDateTime) {
+        Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,
+                NodeList.nodeList(new StringLiteralExpr(zonedDateTime.getZone().getId())));
+        NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(zonedDateTime.getYear()),
+                new IntegerLiteralExpr(zonedDateTime.getMonthValue()),
+                new IntegerLiteralExpr(zonedDateTime.getDayOfMonth()),
+                new IntegerLiteralExpr(zonedDateTime.getHour()),
+                new IntegerLiteralExpr(zonedDateTime.getMinute()),
+                new IntegerLiteralExpr(zonedDateTime.getSecond()),
+                new IntegerLiteralExpr(zonedDateTime.getNano()),
+                zoneIdExpression);
+        return getVariableDeclaratorWithInitializerExpression(variableName,
+                ZONED_DATE_TIME_CT,
+                new MethodCallExpr(ZONED_DATE_TIME_N, OF_S, arguments));
     }
 
     public static StringLiteralExpr getStringLiteralExpr(String text) {

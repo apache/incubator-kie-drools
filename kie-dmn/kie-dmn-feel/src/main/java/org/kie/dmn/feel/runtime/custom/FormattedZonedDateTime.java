@@ -1,0 +1,207 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.kie.dmn.feel.runtime.custom;
+
+import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.util.Objects;
+
+/**
+ * This class is meant as sort-of <b>decorator</b> over <code>ZonedDateTime</code>, that is a final class.
+ * <p>
+ * <ul>
+ *   <li><b>String representation ({@link #toString()}):</b> Provides a custom string format that:
+ *     <ul>
+ *       <li>Always preserves seconds in the output, even when they are zero (e.g., "10:10:00" instead of "10:10")</li>
+ *       <li>Uses ISO_OFFSET_DATE_TIME format for ZoneOffset zones (e.g., "2021-01-01T10:10:10+11:00")</li>
+ *       <li>Uses REGION_DATETIME_FORMATTER for ZoneRegion zones, which properly handles extended years</li>
+ *     </ul>
+ *   </li>
+ *   <li><b>Equality semantics:</b> Can be compared with both formattedZonedDateTime and ZonedDateTime instances,
+ *       delegating to the underlying ZonedDateTime for actual comparison logic</li>
+ * </ul>
+ * <p>
+ * All temporal operations delegate to the wrapped ZonedDateTime instance, maintaining full compatibility
+ * with the Java Time API while providing the custom string representation required by FEEL specifications.
+ */
+public final class FormattedZonedDateTime
+        implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
+
+    private final ZonedDateTime zonedDateTime;
+    private final String stringRepresentation;
+
+    private FormattedZonedDateTime(ZonedDateTime zonedDateTime) {
+        this.zonedDateTime = zonedDateTime;
+        ZoneId zone = zonedDateTime.getZone();
+        if (zone instanceof ZoneOffset) {
+            // For ZoneOffset, use ISO format (e.g., 2021-01-01T10:10:10+11:00)
+            this.stringRepresentation = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        } else {
+            // For ZoneRegion, use REGION_DATETIME_FORMATTER which properly handles extended years
+            this.stringRepresentation = zonedDateTime.format(DateAndTimeFunction.REGION_DATETIME_FORMATTER);
+        }
+    }
+
+    public static FormattedZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
+        return new FormattedZonedDateTime(ZonedDateTime.of(date, time, zone));
+    }
+
+    public static FormattedZonedDateTime from(TemporalAccessor temporal) {
+        return new FormattedZonedDateTime(ZonedDateTime.from(temporal));
+    }
+
+    public static FormattedZonedDateTime of(int coercedYear, int coercedMonth, int coercedDay, int coercedHour, int coercedMinute, int coercedSecond, int nanoOfSecond, ZoneId zoneId) {
+        return new FormattedZonedDateTime(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay, coercedHour, coercedMinute, coercedSecond, nanoOfSecond, zoneId));
+    }
+
+    @Override
+    public ChronoLocalDateTime<LocalDate> toLocalDateTime() {
+        return zonedDateTime.toLocalDateTime();
+    }
+
+    @Override
+    public ZoneOffset getOffset() {
+        return zonedDateTime.getOffset();
+    }
+
+    @Override
+    public ZoneId getZone() {
+        return zonedDateTime.getZone();
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> withEarlierOffsetAtOverlap() {
+        return new FormattedZonedDateTime(zonedDateTime.withEarlierOffsetAtOverlap());
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> withLaterOffsetAtOverlap() {
+        return new FormattedZonedDateTime(zonedDateTime.withLaterOffsetAtOverlap());
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> withZoneSameLocal(ZoneId zone) {
+        return new FormattedZonedDateTime(zonedDateTime.withZoneSameLocal(zone));
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> withZoneSameInstant(ZoneId zone) {
+        return new FormattedZonedDateTime(zonedDateTime.withZoneSameInstant(zone));
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> with(TemporalField field, long newValue) {
+        return new FormattedZonedDateTime(zonedDateTime.with(field, newValue));
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> plus(long amountToAdd, TemporalUnit unit) {
+        return new FormattedZonedDateTime(zonedDateTime.plus(amountToAdd, unit));
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> plus(TemporalAmount amount) {
+        return new FormattedZonedDateTime(zonedDateTime.plus(amount));
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> minus(TemporalAmount amount) {
+        return new FormattedZonedDateTime(zonedDateTime.minus(amount));
+    }
+
+    @Override
+    public long until(Temporal endExclusive, TemporalUnit unit) {
+        return zonedDateTime.until(endExclusive, unit);
+    }
+
+    @Override
+    public boolean isSupported(TemporalField field) {
+        return zonedDateTime.isSupported(field);
+    }
+
+    @Override
+    public long getLong(TemporalField field) {
+        return zonedDateTime.getLong(field);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        return zonedDateTime.isSupported(unit);
+    }
+
+    @Override
+    public ChronoZonedDateTime<LocalDate> minus(long amountToSubtract, TemporalUnit unit) {
+        return new FormattedZonedDateTime(zonedDateTime.minus(amountToSubtract, unit));
+    }
+
+    public static FormattedZonedDateTime parse(CharSequence text) {
+        return new FormattedZonedDateTime(ZonedDateTime.parse(text));
+    }
+
+    @Override
+    public int compareTo(ChronoZonedDateTime<?> other) {
+        if (other instanceof FormattedZonedDateTime) {
+            return zonedDateTime.compareTo(((FormattedZonedDateTime) other).zonedDateTime);
+        }
+        return zonedDateTime.compareTo(other);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof FormattedZonedDateTime that) {
+            return Objects.equals(zonedDateTime, that.zonedDateTime);
+        }
+        if (o instanceof ZonedDateTime other) {
+            return Objects.equals(zonedDateTime, other);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(zonedDateTime);
+    }
+
+    @Override
+    public String toString() {
+        return stringRepresentation;
+    }
+
+    public ZonedDateTime getZonedDateTime() {
+        return zonedDateTime;
+    }
+
+}
