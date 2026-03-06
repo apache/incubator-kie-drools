@@ -71,6 +71,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
+    <version.io.opentelemetry>1.40.0</version.io.opentelemetry>
     <version.io.quarkus>3.27.2</version.io.quarkus>
     <version.io.netty>4.1.131.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
