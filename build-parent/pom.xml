@@ -70,6 +70,7 @@
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.7</version.info.picocli>
+    <version.io.grpc>1.62.2</version.io.grpc>
     <version.io.micrometer>1.14.12</version.io.micrometer>
     <version.io.quarkus>3.27.2</version.io.quarkus>
     <version.io.netty>4.1.131.Final</version.io.netty>
@@ -92,6 +93,7 @@
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.4.1</version.org.apache.poi>
+    <version.org.apache.tomcat.annotations-api>6.0.53</version.org.apache.tomcat.annotations-api>
     <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
@@ -1244,6 +1246,38 @@
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
         <version>${version.io.micrometer}</version>
+      </dependency>
+
+      <!-- Used by drools-grpc -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-services</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-testing</artifactId>
+        <version>${version.io.grpc}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>annotations-api</artifactId>
+        <version>${version.org.apache.tomcat.annotations-api}</version>
       </dependency>
 
       <dependency>
