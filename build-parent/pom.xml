@@ -76,6 +76,7 @@
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
+    <version.org.eclipse.microprofile.graphql>2.0</version.org.eclipse.microprofile.graphql>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
@@ -1323,6 +1324,12 @@
             <artifactId>lz4-java</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.graphql</groupId>
+        <artifactId>microprofile-graphql-api</artifactId>
+        <version>${version.org.eclipse.microprofile.graphql}</version>
       </dependency>
     </dependencies>
 
