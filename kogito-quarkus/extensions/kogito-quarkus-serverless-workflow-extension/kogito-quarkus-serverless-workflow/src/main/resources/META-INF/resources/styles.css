@@ -1,0 +1,97 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
+ */
+
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.maindiv {
+  font-family: "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
+  background-color: #fff;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  background-color: #fff;
+  max-width: 1000px;
+}
+
+.logo img {
+  width: 80px;
+  height: auto;
+}
+
+h1 {
+  font-size: 48px;
+  color: #e44c3b;
+  padding-left: 15px;
+}
+
+h4 {
+  font-size: 30px;
+  color: #c94848;
+  margin-top: 10px;
+}
+
+p {
+  font-size: 16px;
+  color: #1f1e1e;
+  margin-top: 5px;
+  margin-bottom: 40px;
+}
+
+.btn {
+  padding: 10px 20px;
+  background-color: #e44c3b;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #c73828;
+}
+
+.versionInfo {
+  color: #1f1e1e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .maindiv,
+  .container {
+    background-color: #232121;
+  }
+
+  h4,
+  p {
+    color: #fefefe;
+  }
+
+  .versionInfo {
+    color: #fff;
+  }
+}
