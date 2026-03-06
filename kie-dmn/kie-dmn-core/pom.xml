@@ -270,6 +270,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <version>${version.dependency-plugin}</version>
         <executions>
           <execution>
             <id>unpack</id>

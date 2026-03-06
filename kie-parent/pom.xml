@@ -166,19 +166,17 @@
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
+    <version.dependency-plugin>3.6.1</version.dependency-plugin>
     <!-- plugin used to enforce architectural constraints -->
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
     <version.io.vertx>4.5.23</version.io.vertx>
     <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <version.graalvm>22.0.0.2</version.graalvm>
-    <!-- Updated to match the one imported by quarkus -->
-    <!--<version.graalvm>23.1.2</version.graalvm>-->
     <version.gradle>8.11.1</version.gradle>
     <version.org.apache.groovy>4.0.29</version.org.apache.groovy>
     <version.maven.resolver.api>1.7.3</version.maven.resolver.api>
     <version.nashorn>15.3</version.nashorn>
-    <!--<version.plugin.testing.harness>3.3.0</version.plugin.testing.harness>-->
     <!-- TODO: This version comes from kogito-runtimes : double check-->
     <version.plugin.testing.harness>4.0.0-alpha-2</version.plugin.testing.harness>
     <version.sisu.inject>1.4.2</version.sisu.inject>
@@ -544,13 +542,6 @@
         </exclusions>
         <!-- used by JUnit test suite for JSON Schema conformance -->
       </dependency>
-      <!-- <dependency>
-         <groupId>com.networknt</groupId>
-         <artifactId>json-schema-validator</artifactId>
-         <version>${version.com.networknt.json-schema-validator}</version>
-         <scope>test</scope>
-         &lt;!&ndash; used by JUnit test suite for JSON Schema conformance &ndash;&gt;
-       </dependency>-->
       <dependency>
         <groupId>com.ongres.scram</groupId>
         <artifactId>scram-client</artifactId>
@@ -969,23 +960,9 @@
         <artifactId>smallrye-open-api-core</artifactId>
         <version>${version.io.smallrye.openapi.core}</version>
       </dependency>
-      <!-- <dependency>
-         <groupId>io.smallrye.reactive</groupId>
-         <artifactId>smallrye-reactive-messaging-kafka</artifactId>
-       </dependency>
-       <dependency>
-         <groupId>io.smallrye.reactive</groupId>
-         <artifactId>smallrye-reactive-messaging-provider</artifactId>
-       </dependency>-->
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-jaxrs</artifactId>
-        <version>${version.io.smallrye-open-api}</version>
-      </dependency>
-      <!-- TODO - should this go in the springboot specific bom ? -->
-      <dependency>
-        <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-open-api-spring</artifactId>
         <version>${version.io.smallrye-open-api}</version>
       </dependency>
       <dependency>
@@ -1018,11 +995,6 @@
         <artifactId>smallrye-config-core</artifactId>
         <version>${version.io.smallrye-config}</version>
       </dependency>
-      <!-- <dependency>
-         <groupId>io.smallrye.reactive</groupId>
-         <artifactId>mutiny</artifactId>
-         <version>${version.io.sma}</version>
-       </dependency>-->
       <dependency>
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>mutiny-zero-flow-adapters</artifactId>
@@ -1033,19 +1005,11 @@
         <artifactId>smallrye-mutiny-vertx-auth-oauth2</artifactId>
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
       </dependency>
-      <!-- <dependency>
-         <groupId>io.smallrye.reactive</groupId>
-         <artifactId>smallrye-mutiny-vertx-kafka-client</artifactId>
-       </dependency>-->
       <dependency>
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
       </dependency>
-      <!-- <dependency>
-         <groupId>io.smallrye.reactive</groupId>
-         <artifactId>smallrye-reactive-messaging-api</artifactId>
-       </dependency>-->
       <dependency>
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
@@ -1089,10 +1053,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <!--    <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-          </dependency>-->
       <!-- Vertx libraries, including PostgreSQL client -->
       <dependency>
         <groupId>io.vertx</groupId>
@@ -1150,14 +1110,6 @@
         <artifactId>jakarta.transaction-api</artifactId>
         <version>${version.jakarta.transaction-api}</version>
       </dependency>
-      <!--   <dependency>
-           <groupId>io.vertx</groupId>
-           <artifactId>vertx-web-client</artifactId>
-         </dependency>
-         <dependency>
-           <groupId>io.vertx</groupId>
-           <artifactId>vertx-web-graphql</artifactId>
-         </dependency>-->
       <dependency>
         <groupId>jakarta.validation</groupId>
         <artifactId>jakarta.validation-api</artifactId>
@@ -1793,22 +1745,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <!--      <dependency>
-              <groupId>org.jboss.logging</groupId>
-              <artifactId>commons-logging-jboss-logging</artifactId>
-              <version>${version.org.jboss.logging}</version>
-              <scope>test</scope>
-            </dependency>-->
-      <!-- <dependency>
-         <groupId>org.jboss.logmanager</groupId>
-         <artifactId>jboss-logmanager</artifactId>
-         <scope>test</scope>
-       </dependency>
-       <dependency>
-         <groupId>org.jboss.logmanager</groupId>
-         <artifactId>jboss-logmanager-embedded</artifactId>
-         <scope>test</scope>
-       </dependency>-->
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-client</artifactId>
@@ -1830,10 +1766,6 @@
         <artifactId>resteasy-multipart-provider</artifactId>
         <version>${version.org.jboss.resteasy}</version>
       </dependency>
-      <!--<dependency>
-        <groupId>org.jboss.slf4j</groupId>
-        <artifactId>slf4j-jboss-logmanager</artifactId>
-      </dependency>-->
       <dependency>
         <groupId>org.jboss.weld.se</groupId>
         <artifactId>weld-se-core</artifactId>
@@ -1890,11 +1822,6 @@
         <artifactId>junit-vintage-engine</artifactId>
         <version>${version.org.junit.jupiter}</version>
       </dependency>
-      <!-- <dependency>
-         <groupId>org.junit.platform</groupId>
-         <artifactId>junit-platform-suite</artifactId>
-         <scope>test</scope>
-       </dependency>-->
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
@@ -1923,10 +1850,6 @@
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
-      <!--<dependency>
-        <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct</artifactId>
-      </dependency>-->
       <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-sync</artifactId>
