@@ -18,6 +18,7 @@
  */
 package org.kie.maven.plugin;
 
+import org.drools.util.PathUtils;
 import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -25,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class DiskResourceStore implements ResourceStore {
 
@@ -77,7 +77,7 @@ public class DiskResourceStore implements ResourceStore {
 
     private void commonWrite(String fullPath, byte[] pResourceData, boolean createFolder) {
         try {
-            final Path path = Paths.get(fullPath).normalize();
+            final Path path = PathUtils.getSecuredPath(root.toPath(), fullPath);
             if (createFolder) {
                 final Path parentPath = path.getParent();
                 if (parentPath != null) {
@@ -92,7 +92,8 @@ public class DiskResourceStore implements ResourceStore {
 
     private byte[] commonRead(String fullPath) {
         try {
-            return Files.readAllBytes(Paths.get(fullPath).normalize());
+            final Path path = PathUtils.getSecuredPath(root.toPath(), fullPath);
+            return Files.readAllBytes(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,7 +101,8 @@ public class DiskResourceStore implements ResourceStore {
 
     private void commonRemove(String fullPath) {
         try {
-            Files.deleteIfExists(Paths.get(fullPath).normalize());
+            final Path path = PathUtils.getSecuredPath(root.toPath(), fullPath);
+            Files.deleteIfExists(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
