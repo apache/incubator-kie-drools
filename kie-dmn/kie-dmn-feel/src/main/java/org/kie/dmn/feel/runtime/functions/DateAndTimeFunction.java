@@ -35,7 +35,7 @@ import java.util.TimeZone;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELDateTimeFunction;
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.kie.dmn.feel.util.NumberEvalHelper.coerceIntegerNumber;
@@ -107,12 +107,12 @@ public class DateAndTimeFunction
             TemporalAccessor validatedTime = getValidTime(time);
             if (validatedDate instanceof LocalDate && validatedTime instanceof LocalTime) {
                 if (zoneId != null) {
-                    return FEELFnResult.ofResult(CustomZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zoneId));
+                    return FEELFnResult.ofResult(FormattedZonedDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime, zoneId));
                 } else {
                     return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) validatedDate, (LocalTime) validatedTime));
                 }
             } else if (validatedDate instanceof LocalDate && time.query(TemporalQueries.localTime()) != null && time.query(TemporalQueries.zone()) != null) {
-                return FEELFnResult.ofResult(CustomZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId != null ? zoneId : ZoneId.from(validatedTime)));
+                return FEELFnResult.ofResult(FormattedZonedDateTime.of((LocalDate) validatedDate, LocalTime.from(validatedTime), zoneId != null ? zoneId : ZoneId.from(validatedTime)));
             }
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
         } catch (IllegalArgumentException e) {
@@ -136,7 +136,7 @@ public class DateAndTimeFunction
 
         try {
             if( val.contains( "T" ) ) {
-                return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, CustomZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
+                return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, FormattedZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
             } else {
                 TemporalAccessor parsed = DateTimeFormatter.ISO_DATE.parse(val);
                 LocalDate value = LocalDate.from(parsed);
@@ -148,7 +148,7 @@ public class DateAndTimeFunction
                     }
                 }
                 if (zoneId != null) {
-                    return FEELFnResult.ofResult(CustomZonedDateTime.of(value, LocalTime.of(0, 0), zoneId));
+                    return FEELFnResult.ofResult(FormattedZonedDateTime.of(value, LocalTime.of(0, 0), zoneId));
                 } else {
                     return FEELFnResult.ofResult(LocalDateTime.of(value, LocalTime.of(0, 0)));
                 }
@@ -211,7 +211,7 @@ public class DateAndTimeFunction
             int coercedHour = coerceIntegerNumber(hour).orElseThrow(() -> new NoSuchElementException("hour"));
             int coercedMinute = coerceIntegerNumber(minute).orElseThrow(() -> new NoSuchElementException("minute"));
             int coercedSecond = coerceIntegerNumber(second).orElseThrow(() -> new NoSuchElementException("second"));
-            return FEELFnResult.ofResult(CustomZonedDateTime.of(coercedYear, coercedMonth, coercedDay,
+            return FEELFnResult.ofResult(FormattedZonedDateTime.of(coercedYear, coercedMonth, coercedDay,
                     coercedHour, coercedMinute, coercedSecond, 0, TimeZone.getTimeZone(timezone).toZoneId()));
         } catch (NoSuchElementException e) { // thrown by Optional.orElseThrow()
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, e.getMessage(), "could not be coerced to Integer: either null or not a valid Number."));

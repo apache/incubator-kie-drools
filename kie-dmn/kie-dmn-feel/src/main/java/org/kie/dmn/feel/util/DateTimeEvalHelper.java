@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +57,8 @@ public class DateTimeEvalHelper {
             return zonedDateTime.toEpochSecond();
         } else if (datetime instanceof OffsetDateTime offsetDateTime) {
             return offsetDateTime.toEpochSecond();
-        } else if (datetime instanceof CustomZonedDateTime customZonedDateTime) {
-            return customZonedDateTime.getZonedDateTime().toEpochSecond();
+        } else if (datetime instanceof FormattedZonedDateTime formattedZonedDateTime) {
+            return formattedZonedDateTime.getZonedDateTime().toEpochSecond();
         } else {
             throw new RuntimeException("valuedt() for " + datetime + " but is not a FEEL date and time " + datetime.getClass());
         }

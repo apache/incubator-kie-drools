@@ -47,20 +47,20 @@ import java.util.Objects;
  *       <li>Uses REGION_DATETIME_FORMATTER for ZoneRegion zones, which properly handles extended years</li>
  *     </ul>
  *   </li>
- *   <li><b>Equality semantics:</b> Can be compared with both CustomZonedDateTime and ZonedDateTime instances,
+ *   <li><b>Equality semantics:</b> Can be compared with both formattedZonedDateTime and ZonedDateTime instances,
  *       delegating to the underlying ZonedDateTime for actual comparison logic</li>
  * </ul>
  * <p>
  * All temporal operations delegate to the wrapped ZonedDateTime instance, maintaining full compatibility
  * with the Java Time API while providing the custom string representation required by FEEL specifications.
  */
-public final class CustomZonedDateTime
+public final class FormattedZonedDateTime
         implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
 
     private final ZonedDateTime zonedDateTime;
     private final String stringRepresentation;
 
-    private CustomZonedDateTime(ZonedDateTime zonedDateTime) {
+    private FormattedZonedDateTime(ZonedDateTime zonedDateTime) {
         this.zonedDateTime = zonedDateTime;
         ZoneId zone = zonedDateTime.getZone();
         if (zone instanceof ZoneOffset) {
@@ -72,16 +72,16 @@ public final class CustomZonedDateTime
         }
     }
 
-    public static CustomZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
-        return new CustomZonedDateTime(ZonedDateTime.of(date, time, zone));
+    public static FormattedZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
+        return new FormattedZonedDateTime(ZonedDateTime.of(date, time, zone));
     }
 
-    public static CustomZonedDateTime from(TemporalAccessor temporal) {
-        return new CustomZonedDateTime(ZonedDateTime.from(temporal));
+    public static FormattedZonedDateTime from(TemporalAccessor temporal) {
+        return new FormattedZonedDateTime(ZonedDateTime.from(temporal));
     }
 
-    public static CustomZonedDateTime of(int coercedYear, int coercedMonth, int coercedDay, int coercedHour, int coercedMinute, int coercedSecond, int nanoOfSecond, ZoneId zoneId) {
-        return new CustomZonedDateTime(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay, coercedHour, coercedMinute, coercedSecond, nanoOfSecond, zoneId));
+    public static FormattedZonedDateTime of(int coercedYear, int coercedMonth, int coercedDay, int coercedHour, int coercedMinute, int coercedSecond, int nanoOfSecond, ZoneId zoneId) {
+        return new FormattedZonedDateTime(ZonedDateTime.of(coercedYear, coercedMonth, coercedDay, coercedHour, coercedMinute, coercedSecond, nanoOfSecond, zoneId));
     }
 
     @Override
@@ -101,42 +101,42 @@ public final class CustomZonedDateTime
 
     @Override
     public ChronoZonedDateTime<LocalDate> withEarlierOffsetAtOverlap() {
-        return new CustomZonedDateTime(zonedDateTime.withEarlierOffsetAtOverlap());
+        return new FormattedZonedDateTime(zonedDateTime.withEarlierOffsetAtOverlap());
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> withLaterOffsetAtOverlap() {
-        return new CustomZonedDateTime(zonedDateTime.withLaterOffsetAtOverlap());
+        return new FormattedZonedDateTime(zonedDateTime.withLaterOffsetAtOverlap());
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> withZoneSameLocal(ZoneId zone) {
-        return new CustomZonedDateTime(zonedDateTime.withZoneSameLocal(zone));
+        return new FormattedZonedDateTime(zonedDateTime.withZoneSameLocal(zone));
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> withZoneSameInstant(ZoneId zone) {
-        return new CustomZonedDateTime(zonedDateTime.withZoneSameInstant(zone));
+        return new FormattedZonedDateTime(zonedDateTime.withZoneSameInstant(zone));
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> with(TemporalField field, long newValue) {
-        return new CustomZonedDateTime(zonedDateTime.with(field, newValue));
+        return new FormattedZonedDateTime(zonedDateTime.with(field, newValue));
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> plus(long amountToAdd, TemporalUnit unit) {
-        return new CustomZonedDateTime(zonedDateTime.plus(amountToAdd, unit));
+        return new FormattedZonedDateTime(zonedDateTime.plus(amountToAdd, unit));
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> plus(TemporalAmount amount) {
-        return new CustomZonedDateTime(zonedDateTime.plus(amount));
+        return new FormattedZonedDateTime(zonedDateTime.plus(amount));
     }
 
     @Override
     public ChronoZonedDateTime<LocalDate> minus(TemporalAmount amount) {
-        return new CustomZonedDateTime(zonedDateTime.minus(amount));
+        return new FormattedZonedDateTime(zonedDateTime.minus(amount));
     }
 
     @Override
@@ -161,17 +161,17 @@ public final class CustomZonedDateTime
 
     @Override
     public ChronoZonedDateTime<LocalDate> minus(long amountToSubtract, TemporalUnit unit) {
-        return new CustomZonedDateTime(zonedDateTime.minus(amountToSubtract, unit));
+        return new FormattedZonedDateTime(zonedDateTime.minus(amountToSubtract, unit));
     }
 
-    public static CustomZonedDateTime parse(CharSequence text) {
-        return new CustomZonedDateTime(ZonedDateTime.parse(text));
+    public static FormattedZonedDateTime parse(CharSequence text) {
+        return new FormattedZonedDateTime(ZonedDateTime.parse(text));
     }
 
     @Override
     public int compareTo(ChronoZonedDateTime<?> other) {
-        if (other instanceof CustomZonedDateTime) {
-            return zonedDateTime.compareTo(((CustomZonedDateTime) other).zonedDateTime);
+        if (other instanceof FormattedZonedDateTime) {
+            return zonedDateTime.compareTo(((FormattedZonedDateTime) other).zonedDateTime);
         }
         return zonedDateTime.compareTo(other);
     }
@@ -181,7 +181,7 @@ public final class CustomZonedDateTime
         if (this == o) {
             return true;
         }
-        if (o instanceof CustomZonedDateTime that) {
+        if (o instanceof FormattedZonedDateTime that) {
             return Objects.equals(zonedDateTime, that.zonedDateTime);
         }
         if (o instanceof ZonedDateTime other) {

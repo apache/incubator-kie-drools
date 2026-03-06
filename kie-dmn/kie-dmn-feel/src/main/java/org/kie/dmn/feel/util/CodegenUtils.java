@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.feel.util;
 
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -153,8 +153,8 @@ public class CodegenUtils {
         } else if (object instanceof String string) {
             return getVariableDeclaratorWithInitializerExpression(variableName, STRING_CT,
                                                                   new StringLiteralExpr(escapeJava(string)));
-        } else if (object instanceof CustomZonedDateTime customZonedDateTime) {
-            return getVariableDeclaratorWithZonedDateTime(variableName, customZonedDateTime.getZonedDateTime());
+        } else if (object instanceof FormattedZonedDateTime formattedZonedDateTime) {
+            return getVariableDeclaratorWithZonedDateTime(variableName, formattedZonedDateTime.getZonedDateTime());
         } else if (object instanceof ZonedDateTime zonedDateTime) {
             return getVariableDeclaratorWithZonedDateTime(variableName, zonedDateTime);
         } else if (object instanceof TemporalAccessor temporalAccessor) {

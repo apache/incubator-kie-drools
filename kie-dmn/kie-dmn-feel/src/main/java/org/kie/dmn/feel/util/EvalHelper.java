@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
-import org.kie.dmn.feel.runtime.custom.CustomZonedDateTime;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
@@ -191,8 +191,8 @@ public class EvalHelper {
                         result = BigDecimal.valueOf(dtAtMidnightUTC.toEpochSecond());
                     } else if (current instanceof ZonedDateTime zonedDateTime) {
                         result = BigDecimal.valueOf(zonedDateTime.toEpochSecond());
-                    } else if (current instanceof CustomZonedDateTime customZonedDateTime) {
-                        result = BigDecimal.valueOf(customZonedDateTime.getZonedDateTime().toEpochSecond());
+                    } else if (current instanceof FormattedZonedDateTime formattedZonedDateTime) {
+                        result = BigDecimal.valueOf(formattedZonedDateTime.getZonedDateTime().toEpochSecond());
                     }
                     break;
                 default:
