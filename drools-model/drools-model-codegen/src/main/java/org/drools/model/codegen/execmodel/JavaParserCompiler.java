@@ -48,14 +48,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createDefaultCompiler;
-import static org.drools.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaCompiler JAVA_COMPILER = isJboss() ?
-                                                      JavaDialectConfiguration.createEclipseCompiler() :
+    private static final JavaCompiler JAVA_COMPILER =
                                                       JavaDialectConfiguration.createDefaultCompiler();
 
     private static final DefaultPrettyPrinter PRETTY_PRINTER = createPrettyPrinter();

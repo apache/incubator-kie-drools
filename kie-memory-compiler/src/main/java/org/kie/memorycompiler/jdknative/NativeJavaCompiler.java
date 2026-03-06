@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
@@ -86,6 +88,10 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                       JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler compiler = getJavaCompiler();
+
+        if (pResourcePaths == null || pResourcePaths.length == 0) {
+            return new CompilationResult( new CompilationProblem[0] );
+        }
 
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, Charset.forName(pSettings.getSourceEncoding()))) {
             try {
@@ -357,14 +363,16 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                 List<JavaFileObject> result = new ArrayList<>();
                 while (urlEnumeration.hasMoreElements()) { // one URL for each jar on the classpath that has the given package
                     URL packageFolderURL = urlEnumeration.nextElement();
-                    if (!new File(packageFolderURL.getFile()).isDirectory()) {
-                        if (result == null) {
-                            result = processJar(packageFolderURL);
-                        } else {
-                            List<JavaFileObject> classesInJar = processJar(packageFolderURL);
-                            if (classesInJar != null) {
-                                result.addAll(classesInJar);
-                            }
+                    File dir = new File(packageFolderURL.getFile());
+                    if (dir.isDirectory()) {
+                        List<JavaFileObject> classesInDir = processDirectory(dir, packageName);
+                        if (classesInDir != null) {
+                            result.addAll(classesInDir);
+                        }
+                    } else {
+                        List<JavaFileObject> classesInJar = processJar(packageFolderURL, packageName);
+                        if (classesInJar != null) {
+                            result.addAll(classesInJar);
                         }
                     }
                 }
@@ -374,12 +382,25 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             }
         }
 
-        private List<JavaFileObject> processJar(URL packageFolderURL) throws IOException {
+        private List<JavaFileObject> processDirectory(File directory, String packageName) {
+            File[] classFiles = directory.listFiles((dir, name) -> name.endsWith(".class"));
+            if (classFiles == null || classFiles.length == 0) {
+                return null;
+            }
+            List<JavaFileObject> result = new ArrayList<>();
+            for (File classFile : classFiles) {
+                String binaryName = packageName + "." + classFile.getName().substring(0, classFile.getName().length() - 6);
+                result.add(new CustomJavaFileObject(binaryName, classFile.toURI()));
+            }
+            return result;
+        }
+
+        private List<JavaFileObject> processJar(URL packageFolderURL, String packageName) throws IOException {
             String jarUri = jarUri(packageFolderURL.toExternalForm());
 
             URLConnection urlConnection = packageFolderURL.openConnection();
             if (!(urlConnection instanceof JarURLConnection)) {
-                return null;
+                return processNonStandardUrl(packageFolderURL, packageName);
             }
 
             JarURLConnection jarConn = (JarURLConnection) urlConnection;
@@ -397,6 +418,67 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                         result = new ArrayList<>();
                     }
                     result.add( new CustomJavaFileObject( binaryName, uri ) );
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Handle non-standard URL protocols (e.g. WildFly VFS "vfs:" URLs).
+         * Uses VFS reflection to enumerate virtual children of the package directory.
+         */
+        private List<JavaFileObject> processNonStandardUrl(URL packageFolderURL, String packageName) {
+            try {
+                return listVfsChildren(packageFolderURL, packageName);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        /**
+         * Use JBoss VFS reflection to enumerate .class files in a package directory.
+         * WildFly explodes JARs into virtual directories — physical files may not exist on disk,
+         * so we must use VFS getChildren() + openStream() instead of File.listFiles().
+         */
+        @SuppressWarnings("unchecked")
+        private List<JavaFileObject> listVfsChildren(URL packageFolderURL, String packageName) throws Exception {
+            Method getChildMethod;
+            Method getChildrenMethod;
+            Method getNameMethod;
+            Method openStreamMethod;
+            try {
+                Class<?> vfsClass = Class.forName("org.jboss.vfs.VFS");
+                Class<?> vfClass = Class.forName("org.jboss.vfs.VirtualFile");
+                getChildMethod = vfsClass.getMethod("getChild", URI.class);
+                getChildrenMethod = vfClass.getMethod("getChildren");
+                getNameMethod = vfClass.getMethod("getName");
+                openStreamMethod = vfClass.getMethod("openStream");
+            } catch (ClassNotFoundException e) {
+                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                Class<?> vfsClass = Class.forName("org.jboss.vfs.VFS", true, tccl);
+                Class<?> vfClass = Class.forName("org.jboss.vfs.VirtualFile", true, tccl);
+                getChildMethod = vfsClass.getMethod("getChild", URI.class);
+                getChildrenMethod = vfClass.getMethod("getChildren");
+                getNameMethod = vfClass.getMethod("getName");
+                openStreamMethod = vfClass.getMethod("openStream");
+            }
+
+            Object virtualFile = getChildMethod.invoke(null, packageFolderURL.toURI());
+            List<Object> children = (List<Object>) getChildrenMethod.invoke(virtualFile);
+
+            List<JavaFileObject> result = null;
+            for (Object child : children) {
+                String name = (String) getNameMethod.invoke(child);
+                if (name.endsWith(".class")) {
+                    String simpleName = name.substring(0, name.length() - 6);
+                    String binaryName = packageName + "." + simpleName;
+                    InputStream is = (InputStream) openStreamMethod.invoke(child);
+                    byte[] bytes = is.readAllBytes();
+                    is.close();
+                    if (result == null) {
+                        result = new ArrayList<>();
+                    }
+                    result.add(new CompilationInput(packageName.replace('.', '/') + "/" + name, new ByteArrayInputStream(bytes)));
                 }
             }
             return result;

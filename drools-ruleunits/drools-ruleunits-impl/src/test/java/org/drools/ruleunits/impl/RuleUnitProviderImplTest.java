@@ -188,7 +188,8 @@ public class RuleUnitProviderImplTest {
         } catch (CompilationErrorsException e) {
             assertThat(
                     e.getErrorMessages().stream().map(Objects::toString)
-                            .anyMatch( s -> s.contains("The method add(Integer) in the type DataStore<Integer> is not applicable for the arguments (String)"))
+                            .anyMatch( s -> s.contains("java.lang.String cannot be converted to java.lang.Integer") || // Native compiler message
+                                    s.contains("The method add(Integer) in the type DataStore<Integer> is not applicable for the arguments (String)")) // Eclipse compiler message
             ).isTrue();
         }
     }
