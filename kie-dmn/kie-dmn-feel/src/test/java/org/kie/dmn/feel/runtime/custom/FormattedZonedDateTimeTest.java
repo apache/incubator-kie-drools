@@ -48,6 +48,15 @@ class FormattedZonedDateTimeTest {
     }
 
     @Test
+    void testToStringWithZeroMinutesAndZeroSeconds() {
+        String dateTimeString = "2024-08-10T10:00:00";
+        ZonedDateTime zdt = ZonedDateTime.of(2024, 8, 10, 10, 0, 0, 0, ZoneId.of("Europe/Paris"));
+        FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
+        String expected = dateTimeString + "@Europe/Paris";
+        assertThat(formatted.toString()).isEqualTo(expected);
+    }
+
+    @Test
     void testToStringWithNonZeroSeconds() {
         // Test with non-zero seconds to ensure normal behavior
         String dateTimeString = "2024-12-25T18:45:30";
