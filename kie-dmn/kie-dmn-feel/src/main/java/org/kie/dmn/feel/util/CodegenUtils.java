@@ -171,7 +171,7 @@ public class CodegenUtils {
         }
     }
 
-    private static VariableDeclarationExpr getVariableDeclaratorWithZonedDateTime(String variableName, ZonedDateTime zonedDateTime) {
+    static VariableDeclarationExpr getVariableDeclaratorWithZonedDateTime(String variableName, ZonedDateTime zonedDateTime) {
         Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,
                 NodeList.nodeList(new StringLiteralExpr(zonedDateTime.getZone().getId())));
         NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(zonedDateTime.getYear()),
