@@ -76,6 +76,9 @@
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
     <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
+    <version.org.apache.pulsar>4.0.6</version.org.apache.pulsar>
+    <version.io.debezium>3.4.1.Final</version.io.debezium>
+    <version.jakarta.jms>3.1.0</version.jakarta.jms>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
@@ -1323,6 +1326,29 @@
             <artifactId>lz4-java</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.pulsar</groupId>
+        <artifactId>pulsar-client</artifactId>
+        <version>${version.org.apache.pulsar}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.debezium</groupId>
+        <artifactId>debezium-api</artifactId>
+        <version>${version.io.debezium}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.debezium</groupId>
+        <artifactId>debezium-embedded</artifactId>
+        <version>${version.io.debezium}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.jms</groupId>
+        <artifactId>jakarta.jms-api</artifactId>
+        <version>${version.jakarta.jms}</version>
       </dependency>
     </dependencies>
 
