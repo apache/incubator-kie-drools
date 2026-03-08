@@ -176,6 +176,11 @@ public final class FormattedZonedDateTime
         return zonedDateTime.compareTo(other);
     }
 
+    public FormattedZonedDateTime(ZonedDateTime zonedDateTime, String stringRepresentation) {
+        this.zonedDateTime = zonedDateTime;
+        this.stringRepresentation = stringRepresentation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
