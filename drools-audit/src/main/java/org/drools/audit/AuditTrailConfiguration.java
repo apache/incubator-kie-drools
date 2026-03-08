@@ -18,9 +18,6 @@
  */
 package org.drools.audit;
 
-import jakarta.persistence.EntityManagerFactory;
-
-import org.drools.audit.jpa.JpaAuditStore;
 import org.drools.audit.store.AuditStore;
 import org.drools.audit.store.InMemoryAuditStore;
 
@@ -35,10 +32,12 @@ import org.drools.audit.store.InMemoryAuditStore;
  *     .build();
  * }</pre>
  *
- * <p>Usage with JPA store:</p>
+ * <p>Usage with JPA store (requires {@code jakarta.persistence-api} on the classpath):</p>
  * <pre>{@code
+ * import org.drools.audit.jpa.JpaAuditStoreBuilder;
+ *
  * AuditTrailService service = AuditTrailConfiguration.builder()
- *     .jpa(entityManagerFactory)
+ *     .store(JpaAuditStoreBuilder.create(entityManagerFactory))
  *     .build();
  * }</pre>
  *
@@ -62,14 +61,12 @@ public final class AuditTrailConfiguration {
 
         private AuditStore store;
         private int maxCapacity = 100_000;
-        private EntityManagerFactory emf;
-        private StoreType storeType = StoreType.IN_MEMORY;
 
         private Builder() {
         }
 
         public Builder inMemory() {
-            this.storeType = StoreType.IN_MEMORY;
+            this.store = null;
             return this;
         }
 
@@ -78,39 +75,18 @@ public final class AuditTrailConfiguration {
             return this;
         }
 
-        public Builder jpa(EntityManagerFactory emf) {
-            this.storeType = StoreType.JPA;
-            this.emf = emf;
-            return this;
-        }
-
+        /**
+         * Sets a pre-built {@link AuditStore} implementation (JPA, custom, etc.).
+         * For JPA, use {@code JpaAuditStoreBuilder.create(emf)} to obtain the store.
+         */
         public Builder store(AuditStore store) {
-            this.storeType = StoreType.CUSTOM;
             this.store = store;
             return this;
         }
 
         public AuditTrailService build() {
-            AuditStore resolvedStore = switch (storeType) {
-                case IN_MEMORY -> new InMemoryAuditStore(maxCapacity);
-                case JPA -> {
-                    if (emf == null) {
-                        throw new IllegalStateException("EntityManagerFactory is required for JPA store");
-                    }
-                    yield new JpaAuditStore(emf);
-                }
-                case CUSTOM -> {
-                    if (store == null) {
-                        throw new IllegalStateException("AuditStore instance is required for custom store");
-                    }
-                    yield store;
-                }
-            };
+            AuditStore resolvedStore = (store != null) ? store : new InMemoryAuditStore(maxCapacity);
             return new AuditTrailService(resolvedStore);
-        }
-
-        private enum StoreType {
-            IN_MEMORY, JPA, CUSTOM
         }
     }
 }
