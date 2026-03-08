@@ -80,13 +80,21 @@ public abstract class AuditEvent implements Serializable, Comparable<AuditEvent>
         return sequenceNumber;
     }
 
+    /**
+     * Natural ordering: session, then sequence number, then id as tiebreaker
+     * to stay consistent with {@link #equals(Object)}
+     */
     @Override
     public int compareTo(AuditEvent other) {
         int cmp = this.sessionId.compareTo(other.sessionId);
         if (cmp != 0) {
             return cmp;
         }
-        return Long.compare(this.sequenceNumber, other.sequenceNumber);
+        cmp = Long.compare(this.sequenceNumber, other.sequenceNumber);
+        if (cmp != 0) {
+            return cmp;
+        }
+        return this.id.compareTo(other.id);
     }
 
     @Override
