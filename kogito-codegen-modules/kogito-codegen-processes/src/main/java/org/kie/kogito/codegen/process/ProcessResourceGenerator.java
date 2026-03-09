@@ -300,6 +300,7 @@ public class ProcessResourceGenerator {
                     signalsMap.entrySet()
                             .stream()
                             .filter(e -> Objects.nonNull(e.getKey()))
+                            .filter(e -> !isDynamicSignalName(e.getKey())) // Skip dynamic signal names
                             .forEach(entry -> {
                                 String signalName = entry.getKey();
                                 String signalType = entry.getValue();
@@ -372,6 +373,10 @@ public class ProcessResourceGenerator {
                                 });
                             });
                 });
+    }
+
+    private boolean isDynamicSignalName(String signalName) {
+        return signalName != null && signalName.matches(".*#\\{.*\\}.*");
     }
 
     protected void manageWorkItems(TemplatedGenerator.Builder templateBuilder, ClassOrInterfaceDeclaration template,
