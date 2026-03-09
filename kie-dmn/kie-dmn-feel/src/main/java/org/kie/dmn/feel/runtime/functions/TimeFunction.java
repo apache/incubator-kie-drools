@@ -168,7 +168,7 @@ public class TimeFunction
                 ZoneId zone = date.query(TemporalQueries.zoneId());
                 if (!(zone instanceof ZoneOffset)) {
                     // TZ is a ZoneRegion, so do NOT normalize (although the result will be unreversible, but will keep what was supplied originally).
-                    // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated. 
+                    // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated.
                     return invoke(getFormattedStringFromTemporalAccessorAndZone(date, zone));
                 } else {
                     return FEELFnResult.ofResult(OffsetTime.from(date));
