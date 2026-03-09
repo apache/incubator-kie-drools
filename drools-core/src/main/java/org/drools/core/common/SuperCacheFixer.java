@@ -25,6 +25,7 @@ import org.drools.core.reteoo.AccumulateRight;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
+import org.drools.core.reteoo.BiLinearJoinNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -69,6 +70,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.NotNode: return (NotNode) s;
             case NodeTypeEnums.FromNode: return (FromNode) s;
             case NodeTypeEnums.JoinNode: return (JoinNode) s;
+            case NodeTypeEnums.BiLinearJoinNode: return (BiLinearJoinNode) s;
             case NodeTypeEnums.EvalConditionNode: return (EvalConditionNode) s;
             case NodeTypeEnums.AsyncReceiveNode: return (AsyncReceiveNode) s;
             case NodeTypeEnums.AsyncSendNode: return (AsyncSendNode) s;
@@ -107,6 +109,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.NotNode: return (NotNode) n;
             case NodeTypeEnums.FromNode: return (FromNode) n;
             case NodeTypeEnums.JoinNode: return (JoinNode) n;
+            case NodeTypeEnums.BiLinearJoinNode: return (BiLinearJoinNode) n;
             case NodeTypeEnums.EvalConditionNode: return (EvalConditionNode) n;
             case NodeTypeEnums.AsyncReceiveNode: return (AsyncReceiveNode) n;
             case NodeTypeEnums.AsyncSendNode: return (AsyncSendNode) n;
@@ -130,6 +133,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.ExistsNode: return ((ExistsNode) s).getInputOtnId();
             case NodeTypeEnums.NotNode: return ((NotNode) s).getInputOtnId();
             case NodeTypeEnums.JoinNode: return ((JoinNode) s).getInputOtnId();
+            case NodeTypeEnums.BiLinearJoinNode: return ((BiLinearJoinNode) s).getInputOtnId();
             case NodeTypeEnums.FromNode: return ((FromNode) s).getInputOtnId();
             case NodeTypeEnums.EvalConditionNode: return ((EvalConditionNode) s).getInputOtnId();
             case NodeTypeEnums.AsyncReceiveNode: return ((AsyncReceiveNode) s).getInputOtnId();
@@ -167,6 +171,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.ExistsNode: return  ((ExistsNode) s).getLeftTupleSource();
             case NodeTypeEnums.NotNode: return  ((NotNode) s).getLeftTupleSource();
             case NodeTypeEnums.JoinNode: return  ((JoinNode) s).getLeftTupleSource();
+            case NodeTypeEnums.BiLinearJoinNode: return  ((BiLinearJoinNode) s).getLeftTupleSource();
             case NodeTypeEnums.FromNode: return  ((FromNode) s).getLeftTupleSource();
             case NodeTypeEnums.EvalConditionNode: return  ((EvalConditionNode) s).getLeftTupleSource();
             case NodeTypeEnums.AsyncReceiveNode: return  ((AsyncReceiveNode) s).getLeftTupleSource();
