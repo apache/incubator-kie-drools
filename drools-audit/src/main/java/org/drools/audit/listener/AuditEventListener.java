@@ -103,7 +103,12 @@ public class AuditEventListener {
         return sessionId;
     }
 
-    private long nextSeq() {
+    /**
+     * Returns the next sequence number for this session's audit trail.
+     * Package-visible so that {@link org.drools.audit.AuditTrailService}
+     * can emit session-level events in the correct order.
+     */
+    public long nextSeq() {
         return sequenceCounter.incrementAndGet();
     }
 
