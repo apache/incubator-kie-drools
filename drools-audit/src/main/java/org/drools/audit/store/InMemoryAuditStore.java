@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.drools.audit.event.AuditEvent;
 import org.drools.audit.event.AuditEventType;
+import org.drools.audit.event.FactOperationEvent;
 import org.drools.audit.event.RuleFiredEvent;
 
 /**
@@ -105,6 +106,16 @@ public class InMemoryAuditStore implements AuditStore {
                 .filter(e -> ruleName.equals(e.getRuleName()))
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    private static String extractRuleName(AuditEvent event) {
+        if (event instanceof RuleFiredEvent rfe) {
+            return rfe.getRuleName();
+        }
+        if (event instanceof FactOperationEvent foe) {
+            return foe.getTriggeringRuleName();
+        }
+        return null;
     }
 
     @Override
