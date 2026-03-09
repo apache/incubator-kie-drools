@@ -39,6 +39,10 @@ public interface AuditStore extends AutoCloseable {
 
     List<AuditEvent> findByTimeRange(Instant from, Instant to);
 
+    /**
+     * Returns all audit events associated with a given rule name, including
+     * rule activation events and fact operations triggered by that rule.
+     */
     List<AuditEvent> findByRuleName(String ruleName);
 
     List<AuditEvent> findBySessionIdAndTimeRange(String sessionId, Instant from, Instant to);
