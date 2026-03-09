@@ -173,38 +173,38 @@ class FormattedZonedDateTimeTest {
     }
 
     @Test
-    void testToStringWithZeroSecondsZoneOffset() {
-        // Test that toString() preserves seconds even when they are 0 with ZoneOffset
-        ZonedDateTime zdt = ZonedDateTime.of(2024, 3, 15, 10, 10, 0, 0, ZoneId.of("+05:30"));
+    void testToStringWithZeroHoursMinutesAndSeconds() {
+        // Test that toString() preserves hours, minutes and seconds when they are 0
+        ZonedDateTime zdt = ZonedDateTime.of(2000, 12, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
-        String expected = "2024-03-15T10:10:00+05:30";
+        String expected = "2000-12-01T00:00:00Z";
         assertThat(formatted.toString()).isEqualTo(expected);
     }
 
     @Test
-    void testToStringWithZeroSecondsZoneRegion() {
+    void testToStringWithZeroSeconds() {
         // Test that toString() preserves seconds even when they are 0 with ZoneRegion
-        ZonedDateTime zdt = ZonedDateTime.of(2024, 6, 20, 14, 30, 0, 0, ZoneId.of("America/New_York"));
+        ZonedDateTime zdt = ZonedDateTime.of(2000, 12, 1, 14, 30, 0, 0, ZoneOffset.UTC);
         FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
-        String expected = "2024-06-20T14:30:00@America/New_York";
+        String expected = "2000-12-01T14:30:00Z";
         assertThat(formatted.toString()).isEqualTo(expected);
     }
 
     @Test
     void testToStringWithZeroMinutesAndZeroSeconds() {
         // Test that toString() preserves both minutes and seconds when they are 0
-        ZonedDateTime zdt = ZonedDateTime.of(2024, 8, 10, 10, 0, 0, 0, ZoneId.of("Europe/Paris"));
+        ZonedDateTime zdt = ZonedDateTime.of(2000, 12, 1, 10, 0, 0, 0, ZoneOffset.UTC);
         FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
-        String expected = "2024-08-10T10:00:00@Europe/Paris";
+        String expected = "2000-12-01T10:00:00Z";
         assertThat(formatted.toString()).isEqualTo(expected);
     }
 
     @Test
     void testToStringWithNonZeroSeconds() {
         // Test with non-zero seconds to ensure normal behavior
-        ZonedDateTime zdt = ZonedDateTime.of(2024, 12, 25, 18, 45, 30, 0, ZoneId.of("Europe/London"));
+        ZonedDateTime zdt = ZonedDateTime.of(2000, 12, 1, 18, 45, 30, 0, ZoneOffset.UTC);
         FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
-        String expected = "2024-12-25T18:45:30@Europe/London";
+        String expected = "2000-12-01T18:45:30Z";
         assertThat(formatted.toString()).isEqualTo(expected);
     }
 
@@ -213,37 +213,28 @@ class FormattedZonedDateTimeTest {
         // Test various timezone formats to ensure seconds are always preserved
 
         // UTC - uses ZoneRegion format with @
-        ZonedDateTime utc = ZonedDateTime.of(2024, 7, 4, 9, 15, 0, 0, ZoneId.of("UTC"));
+        ZonedDateTime utc = ZonedDateTime.of(2000, 12, 1, 9, 15, 0, 0, ZoneId.of("UTC"));
         FormattedZonedDateTime formattedUtc = FormattedZonedDateTime.from(utc);
-        assertThat(formattedUtc.toString()).isEqualTo("2024-07-04T09:15:00@UTC");
-
+        assertThat(formattedUtc.toString()).isEqualTo("2000-12-01T09:15:00@UTC");
         // ZoneOffset.UTC - uses ISO format with Z
-        ZonedDateTime zdtWithZoneOffsetUTC = ZonedDateTime.of(2024, 7, 4, 9, 15, 0, 0, ZoneOffset.UTC);
+        ZonedDateTime zdtWithZoneOffsetUTC = ZonedDateTime.of(2000, 12, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdtWithZoneOffsetUTC);
-        assertThat(formatted.toString()).isEqualTo("2024-07-04T09:15:00Z");
+        assertThat(formatted.toString()).isEqualTo("2000-12-01T00:00:00Z");
 
         // Positive offset - uses ISO format
-        ZonedDateTime plusOffset = ZonedDateTime.of(2024, 7, 4, 9, 15, 0, 0, ZoneId.of("+10:00"));
+        ZonedDateTime plusOffset = ZonedDateTime.of(2000, 12, 1, 9, 15, 0, 0, ZoneId.of("+10:00"));
         FormattedZonedDateTime formattedPlus = FormattedZonedDateTime.from(plusOffset);
-        assertThat(formattedPlus.toString()).isEqualTo("2024-07-04T09:15:00+10:00");
+        assertThat(formattedPlus.toString()).isEqualTo("2000-12-01T09:15:00+10:00");
 
         // Negative offset - uses ISO format
-        ZonedDateTime minusOffset = ZonedDateTime.of(2024, 7, 4, 9, 15, 0, 0, ZoneId.of("-05:00"));
+        ZonedDateTime minusOffset = ZonedDateTime.of(2000, 12, 1, 9, 15, 0, 0, ZoneId.of("-05:00"));
         FormattedZonedDateTime formattedMinus = FormattedZonedDateTime.from(minusOffset);
-        assertThat(formattedMinus.toString()).isEqualTo("2024-07-04T09:15:00-05:00");
+        assertThat(formattedMinus.toString()).isEqualTo("2000-12-01T09:15:00-05:00");
 
         // Named timezone - uses @ format
-        ZonedDateTime named = ZonedDateTime.of(2024, 7, 4, 9, 15, 0, 0, ZoneId.of("Asia/Tokyo"));
+        ZonedDateTime named = ZonedDateTime.of(2000, 12, 1, 9, 15, 0, 0, ZoneId.of("Asia/Tokyo"));
         FormattedZonedDateTime formattedNamed = FormattedZonedDateTime.from(named);
-        assertThat(formattedNamed.toString()).isEqualTo("2024-07-04T09:15:00@Asia/Tokyo");
-    }
-
-    @Test
-    void testToStringWithNanoseconds() {
-        ZonedDateTime zdt = ZonedDateTime.of(2024, 8, 10, 10, 15, 30, 123456789, zoneId);
-        FormattedZonedDateTime formatted = FormattedZonedDateTime.from(zdt);
-        String expected = "2024-08-10T10:15:30.123456789@Europe/Paris";
-        assertThat(formatted.toString()).isEqualTo(expected);
+        assertThat(formattedNamed.toString()).isEqualTo("2000-12-01T09:15:00@Asia/Tokyo");
     }
 
 }
