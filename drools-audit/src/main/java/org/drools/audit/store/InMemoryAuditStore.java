@@ -19,11 +19,12 @@
 package org.drools.audit.store;
 
 import java.time.Instant;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,10 @@ import org.drools.audit.event.RuleFiredEvent;
  * Thread-safe, bounded in-memory audit store suitable for development,
  * testing, and short-lived sessions. Events exceeding {@code maxCapacity}
  * cause the oldest entries to be evicted.
+ *
+ * <p>All structural mutations are guarded by the intrinsic lock on
+ * {@code events} so that size tracking and element removal are atomic.
+ * Read operations snapshot the deque under the same lock.</p>
  */
 public class InMemoryAuditStore implements AuditStore {
 
@@ -46,7 +51,7 @@ public class InMemoryAuditStore implements AuditStore {
                       .thenComparing(AuditEvent::getSessionId)
                       .thenComparingLong(AuditEvent::getSequenceNumber);
 
-    private final ConcurrentLinkedDeque<AuditEvent> events = new ConcurrentLinkedDeque<>();
+    private final Deque<AuditEvent> events = new ArrayDeque<>();
     private final AtomicInteger size = new AtomicInteger(0);
     private final int maxCapacity;
 
@@ -63,20 +68,17 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public void store(AuditEvent event) {
-        events.addLast(event);
-        int currentSize = size.incrementAndGet();
-        while (currentSize > maxCapacity) {
-            if (events.pollFirst() != null) {
-                currentSize = size.decrementAndGet();
-            } else {
-                break;
+        synchronized (events) {
+            events.addLast(event);
+            while (size.get() > maxCapacity) {
+                events.pollFirst();
             }
         }
     }
 
     @Override
     public List<AuditEvent> findBySessionId(String sessionId) {
-        return events.stream()
+        return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId))
                 .sorted()
                 .collect(Collectors.toList());
@@ -84,7 +86,7 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findBySessionIdAndType(String sessionId, AuditEventType type) {
-        return events.stream()
+        return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId) && e.getType() == type)
                 .sorted()
                 .collect(Collectors.toList());
@@ -92,7 +94,7 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findByTimeRange(Instant from, Instant to) {
-        return events.stream()
+        return snapshot().stream()
                 .filter(e -> !e.getTimestamp().isBefore(from) && !e.getTimestamp().isAfter(to))
                 .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
@@ -100,10 +102,8 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findByRuleName(String ruleName) {
-        return events.stream()
-                .filter(e -> e instanceof RuleFiredEvent)
-                .map(e -> (RuleFiredEvent) e)
-                .filter(e -> ruleName.equals(e.getRuleName()))
+        return snapshot().stream()
+                .filter(e -> ruleName.equals(extractRuleName(e)))
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -120,7 +120,7 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findBySessionIdAndTimeRange(String sessionId, Instant from, Instant to) {
-        return events.stream()
+        return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId)
                         && !e.getTimestamp().isBefore(from)
                         && !e.getTimestamp().isAfter(to))
@@ -130,37 +130,42 @@ public class InMemoryAuditStore implements AuditStore {
 
     @Override
     public List<AuditEvent> findAll() {
-        List<AuditEvent> snapshot = new ArrayList<>(events);
-        Collections.sort(snapshot);
-        return snapshot;
+        List<AuditEvent> snap = snapshot();
+        Collections.sort(snap);
+        return snap;
     }
 
     @Override
     public long count() {
-        return size.get();
+        synchronized (events) {
+            return events.size();
+        }
     }
 
     @Override
     public long countBySessionId(String sessionId) {
-        return events.stream()
+        return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId))
                 .count();
     }
 
     @Override
     public void deleteBySessionId(String sessionId) {
-        events.removeIf(e -> {
-            if (e.getSessionId().equals(sessionId)) {
-                size.decrementAndGet();
-                return true;
-            }
-            return false;
-        });
+        synchronized (events) {
+            events.removeIf(e -> e.getSessionId().equals(sessionId));
+        }
     }
 
     @Override
     public void deleteAll() {
-        events.clear();
-        size.set(0);
+        synchronized (events) {
+            events.clear();
+        }
+    }
+
+    private List<AuditEvent> snapshot() {
+        synchronized (events) {
+            return new ArrayList<>(events);
+        }
     }
 }
