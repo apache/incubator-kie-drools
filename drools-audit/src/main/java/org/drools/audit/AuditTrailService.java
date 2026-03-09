@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * String sessionId = auditService.startAudit(session);
  *
  * session.insert(new MyFact());
- * session.fireAllRules();
+ * auditService.fireAllRules(session, sessionId);
  *
  * List<AuditEvent> trail = auditService.getAuditTrail(sessionId);
  * auditService.stopAudit(session, sessionId);
@@ -103,9 +103,24 @@ public class AuditTrailService implements AutoCloseable {
 
         listener.attach(session);
         store.store(new SessionOperationEvent(
-                AuditEventType.SESSION_CREATED, sessionId, 0, 0, 0));
+                AuditEventType.SESSION_CREATED, sessionId, listener.nextSeq(), 0, 0));
         LOG.info("Audit started for session {}", sessionId);
         return sessionId;
+    }
+
+    public int fireAllRules(KieSession session, String sessionId) {
+        AuditEventListener listener = activeListeners.get(sessionId).listener();
+        if (listener == null) {
+            return session.fireAllRules();
+        }
+        long startNanos = System.nanoTime();
+        int rulesFired = session.fireAllRules();
+        long durationMillis = (System.nanoTime() - startNanos) / 1_000_000;
+        store.store(new SessionOperationEvent(
+                AuditEventType.SESSION_FIRE_ALL_RULES, sessionId, listener.nextSeq(), rulesFired, durationMillis
+        ));
+        LOG.debug("fireAllRules completed for session {}: {} rules in {}ms", sessionId, rulesFired, durationMillis);
+        return rulesFired;
     }
 
     /**
@@ -116,7 +131,7 @@ public class AuditTrailService implements AutoCloseable {
         if (registration != null) {
             registration.listener().detach(session);
             store.store(new SessionOperationEvent(
-                    AuditEventType.SESSION_DISPOSED, sessionId, Long.MAX_VALUE, 0, 0));
+                    AuditEventType.SESSION_DISPOSED, sessionId, registration.listener.nextSeq(), 0, 0));
             LOG.info("Audit stopped for session {}", sessionId);
         }
     }
