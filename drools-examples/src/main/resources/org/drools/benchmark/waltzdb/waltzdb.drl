@@ -189,7 +189,7 @@ end
 rule "initial_boundary_junction_arrow"
     when
         $stage : Stage( value == Stage.FIND_INITIAL_BOUNDARY )
-        $junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
+        $junction : Junction( type == "3j", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
         $edge1 : Edge( p1 == $basePoint, p2 == $p1 )
         $edge2 : Edge( p1 == $basePoint, p2 == $p2 )
         $edge3 : Edge( p1 == $basePoint, p2 == $p3 ) //@FIXME, is this correct? I changed edge2 to edge3
@@ -253,7 +253,7 @@ end
 rule "second_boundary_junction_arrow"
     when
         $stage : Stage( value == Stage.FIND_SECOND_BOUDARY )
-        $junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
+        $junction : Junction( type == "3j", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
         Edge( p1 == $basePoint, p2 == $p1 )
         Edge( p1 == $basePoint, p2 == $p2 )
         Edge( p1 == $basePoint, p2 == $p3 )
@@ -307,8 +307,8 @@ end
 rule "visit_3j_0"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label(type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
@@ -344,8 +344,8 @@ end
 rule "visit_3j_1"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
@@ -381,8 +381,8 @@ end
 rule "visit_3j_2"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
         EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
@@ -418,8 +418,8 @@ end
 rule "visit_3j_3"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
         EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
@@ -455,8 +455,8 @@ end
 rule "visit_3j_4"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         not ( EdgeLabel( p1 == $p3, p2 == $basePoint) )
@@ -492,8 +492,8 @@ end
 rule "visit_3j_5"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label(type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
@@ -529,8 +529,8 @@ end
 rule "visit_3j_6"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
@@ -566,8 +566,8 @@ end
 rule "visit_3j_7"
     when
         Stage( value == Stage.VISITING_3J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
@@ -621,8 +621,8 @@ end
 rule "visit_2j_0"
     when
         Stage( value == Stage.VISITING_2J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-        Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label(type == $type, $id : id, $n1 : n1, $n2 : n2 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
@@ -652,8 +652,8 @@ end
 rule "visit_2j_1"
     when
         Stage( value == Stage.VISITING_2J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
         not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
@@ -683,8 +683,8 @@ end
 rule "visit_2j_2"
     when
         Stage( value == Stage.VISITING_2J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-        Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label( type == $type, $id : id, $n1 : n1, $n2 : n2 )
         EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint) )
         not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
@@ -715,8 +715,8 @@ end
 rule "visit_2j_3"
     when
         Stage( value == Stage.VISITING_2J )
-        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-        Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        Junction( $type : type, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label(type == $type, $id : id, $n1 : n1, $n2 : n2 )
         not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
         not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
