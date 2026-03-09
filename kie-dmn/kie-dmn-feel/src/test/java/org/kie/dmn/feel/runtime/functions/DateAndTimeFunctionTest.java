@@ -33,8 +33,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class DateAndTimeFunctionTest {
@@ -47,14 +47,14 @@ class DateAndTimeFunctionTest {
         assertThat(retrievedResult).isNotNull();
         assertThat(retrievedResult.isRight()).isTrue();
         TemporalAccessor retrieved = retrievedResult.getOrElse(null);
-        assertThat(retrieved).isNotNull().isInstanceOf(ZonedDateTime.class);
-        ZonedDateTime retrievedZonedDateTime = (ZonedDateTime) retrieved;
-        assertThat(retrievedZonedDateTime.getYear()).isEqualTo(2017);
-        assertThat(retrievedZonedDateTime.getMonthValue()).isEqualTo(8);
-        assertThat(retrievedZonedDateTime.getDayOfMonth()).isEqualTo(10);
-        assertThat(retrievedZonedDateTime.getHour()).isEqualTo(10);
-        assertThat(retrievedZonedDateTime.getMinute()).isEqualTo(20);
-        assertThat(retrievedZonedDateTime.getSecond()).isZero();
+        assertThat(retrieved).isNotNull().isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime retrievedZonedDateTime = (FormattedZonedDateTime) retrieved;
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getYear()).isEqualTo(2017);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getMonthValue()).isEqualTo(8);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getDayOfMonth()).isEqualTo(10);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getHour()).isEqualTo(10);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getMinute()).isEqualTo(20);
+        assertThat((retrievedZonedDateTime).getZonedDateTime().getSecond()).isZero();
         assertThat(retrievedZonedDateTime.getZone()).isEqualTo(ZoneId.of("Europe/Paris"));
     }
 
@@ -164,8 +164,8 @@ class DateAndTimeFunctionTest {
         FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke(LocalDate.of(2024, 12, 24), LocalTime.of(23, 59, 0), "Z");
         assertThat(result.isRight()).isTrue();
         assertThat(result.getOrElse(null)).isNotNull();
-        ZonedDateTime actualDateTime = (ZonedDateTime) result.getOrElse(null);
-        ZonedDateTime expectedDateTime = ZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
+        FormattedZonedDateTime actualDateTime = (FormattedZonedDateTime) result.getOrElse(null);
+        FormattedZonedDateTime expectedDateTime = FormattedZonedDateTime.of(2024, 12, 24, 23, 59, 0, 0, ZoneOffset.UTC);
         assertThat(expectedDateTime).isEqualTo(actualDateTime);
         FEELFnResult<TemporalAccessor> retrievedResult = dateTimeFunction.invoke("2024-12-24T23:59:00Z");
         assertThat(retrievedResult.isRight()).isTrue();
@@ -266,6 +266,23 @@ class DateAndTimeFunctionTest {
     @Test
     void testInvalidDateTime() {
         assertResultError(DateAndTimeFunction.generateDateTimeAndTimezone(null,null, ZoneId.of("America/Costa_Rica")), InvalidParametersEvent.class);
+    }
+
+    @Test
+    void invokeParamStringDateWithOffset() {
+        // Test case to verify date string with offset returns formattedZonedDateTime
+        FEELFnResult<TemporalAccessor> result = dateTimeFunction.invoke("2017-09-07+02:00");
+        assertThat(result).isNotNull();
+        assertThat(result.isRight()).isTrue();
+        TemporalAccessor retrieved = result.getOrElse(null);
+        assertThat(retrieved).isNotNull();
+
+        // Verify it returns formattedZonedDateTime with timezone preserved
+        assertThat(retrieved).isInstanceOf(FormattedZonedDateTime.class);
+        FormattedZonedDateTime formattedZonedDateTime = (FormattedZonedDateTime) retrieved;
+        assertThat(formattedZonedDateTime.getZonedDateTime().toLocalDate()).isEqualTo(LocalDate.of(2017, 9, 7));
+        assertThat(formattedZonedDateTime.getZonedDateTime().toLocalTime()).isEqualTo(LocalTime.of(0, 0, 0));
+        assertThat(formattedZonedDateTime.getZone()).isEqualTo(ZoneOffset.of("+02:00"));
     }
 
 }
