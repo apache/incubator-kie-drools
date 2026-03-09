@@ -225,8 +225,8 @@ public class AuditEventListener {
                     AuditEventType.FACT_INSERTED,
                     sessionId, nextSeq(),
                     factHandleId(event.getFactHandle()),
-                    obj.getClass().getName(),
-                    obj.toString(),
+                    obj != null ? obj.getClass().getName() : "unknown",
+                    obj!= null ? obj.toString() : null,
                     null,
                     ruleName(event.getRule())));
         }
@@ -239,8 +239,8 @@ public class AuditEventListener {
                     AuditEventType.FACT_UPDATED,
                     sessionId, nextSeq(),
                     factHandleId(event.getFactHandle()),
-                    obj.getClass().getName(),
-                    obj.toString(),
+                    obj != null ? obj.getClass().getName() : "unknown",
+                    obj!= null ? obj.toString() : null,
                     oldObj != null ? oldObj.toString() : null,
                     ruleName(event.getRule())));
         }
