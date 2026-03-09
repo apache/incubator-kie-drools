@@ -545,6 +545,8 @@ public class GlobalTest extends BaseModelTest {
         Results results = createKieBuilder(runType, def).getResults();
         assertThat(results.getMessages(Message.Level.ERROR)).isNotEmpty();
         assertThat(results.getMessages(Message.Level.ERROR).stream().map(Message::getText)
-                .anyMatch(s -> s.contains("The method add(Integer) in the type List<Integer> is not applicable for the arguments (String)"))).isTrue();
+                           .anyMatch(s -> s.contains("java.lang.String cannot be converted to java.lang.Integer") // Native compiler message
+                                   || s.contains("The method add(Integer) in the type List<Integer> is not applicable for the arguments (String)"))) // Eclipse compiler message
+                .isTrue();
     }
 }

@@ -96,7 +96,7 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
      */
     private CompilerType getDefaultCompiler() {
         try {
-            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, hasEclipseCompiler() ? "ECLIPSE" : "NATIVE" );
+            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, "NATIVE" );
             if (logger.isDebugEnabled()) {
                 logger.debug( "Selected compiler " + prop + " [drools.dialect.java.compiler:" +
                         this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY, null ) + ", hasEclipseCompiler:" + hasEclipseCompiler() + "]" );
@@ -108,11 +108,11 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
                 return CompilerType.ECLIPSE;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
-                return CompilerType.ECLIPSE;
+                return CompilerType.NATIVE;
             }
         } catch ( final SecurityException e ) {
             logger.error( "Drools config: unable to read the drools.compiler property. Using default.", e);
-            return CompilerType.ECLIPSE;
+            return CompilerType.NATIVE;
         }
     }
 }
