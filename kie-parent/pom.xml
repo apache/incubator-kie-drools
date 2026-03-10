@@ -216,6 +216,7 @@
         <version.io.rest-assured>5.5.6</version.io.rest-assured>
         <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
         <version.io.smallrye-config>3.13.4</version.io.smallrye-config>
+        <version.io.smallrye-health>4.2.0</version.io.smallrye-health>
         <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
         <version.io.smallrye.reactive.messaging.in.memory>4.28.0</version.io.smallrye.reactive.messaging.in.memory>
         <version.io.smallrye.reactive.mutiny-vertx-web-client>3.21.3</version.io.smallrye.reactive.mutiny-vertx-web-client>
@@ -699,12 +700,24 @@
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>openshift-client</artifactId>
-                <version>${version.io.fabric8.kubernetes-client}</version>
+                <version>${version.io.fabric8}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>openshift-model-config</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>openshift-client-api</artifactId>
                 <version>${version.io.fabric8.kubernetes-client}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>openshift-model-config</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!-- gRPC dependencies -->
             <dependency>
@@ -2104,6 +2117,12 @@
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock</artifactId>
                 <version>${version.org.wiremock}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.jetty.toolchain</groupId>
+                        <artifactId>jetty-jakarta-servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
                 <scope>test</scope>
             </dependency>
             <dependency>
