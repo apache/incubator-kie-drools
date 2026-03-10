@@ -20,30 +20,30 @@ package org.kie.kogito.services.uow;
 
 import java.util.function.Supplier;
 
+import org.kie.kogito.process.ProcessInstanceExecutionException;
+import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
-public abstract class UnitOfWorkExecutor {
+public class DefaultUnitOfWorkExecutor extends UnitOfWorkExecutor {
 
-    private static volatile UnitOfWorkExecutor unitOfWorkExecutor;
+    @Override
+    public <T> T execute(UnitOfWorkManager uowManager, Supplier<T> supplier) {
+        T result;
+        UnitOfWork uow = uowManager.newUnitOfWork();
 
-    public static void set(UnitOfWorkExecutor executor) {
-        unitOfWorkExecutor = executor;
-    }
+        try {
+            uow.start();
 
-    private static UnitOfWorkExecutor getExecutor() {
-        if (unitOfWorkExecutor == null) {
-            synchronized (UnitOfWorkExecutor.class) {
-                if (unitOfWorkExecutor == null) {
-                    unitOfWorkExecutor = new DefaultUnitOfWorkExecutor();
-                }
-            }
+            result = supplier.get();
+            uow.end();
+
+            return result;
+        } catch (ProcessInstanceExecutionException e) {
+            uow.end();
+            throw e;
+        } catch (RuntimeException e) {
+            uow.abort();
+            throw e;
         }
-        return unitOfWorkExecutor;
     }
-
-    public static <T> T executeInUnitOfWork(UnitOfWorkManager uowManager, Supplier<T> supplier) {
-        return getExecutor().execute(uowManager, supplier);
-    }
-
-    abstract <T> T execute(UnitOfWorkManager uowManager, Supplier<T> supplier);
 }

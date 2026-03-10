@@ -505,7 +505,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
         generateSourceFileProviderProducer();
 
-        if (CodegenUtil.isTransactionEnabled(this, context()) && !isServerless) {
+        if (isTransactionEnabled(this, context()) && !isServerless) {
             String template = "ExceptionHandlerTransaction";
             TemplatedGenerator generator = TemplatedGenerator.builder()
                     .withTemplateBasePath("/class-templates/transaction/")
@@ -514,6 +514,17 @@ public class ProcessCodegen extends AbstractGenerator {
                     .build(context(), template);
             CompilationUnit handler = generator.compilationUnitOrThrow();
             storeFile(MODEL_TYPE, generator.generatedFilePath(), handler.toString());
+        }
+
+        if (isTransactionEnabled(this, context())) {
+            TemplatedGenerator generator = TemplatedGenerator.builder()
+                    .withTemplateBasePath("/class-templates/transaction/")
+                    .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                    .build(context(), "UnitOfWorkExecutorInitializer");
+
+            storeFile(GeneratedFileType.SOURCE,
+                    generator.generatedFilePath(),
+                    generator.compilationUnitOrThrow().toString());
         }
 
         if (context().hasRESTForGenerator(this)) {

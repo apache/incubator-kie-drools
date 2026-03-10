@@ -304,6 +304,16 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         } catch (Exception e) {
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e);
             if (exceptionScopeInstance == null) {
+                if (!WORKFLOW_PARAM_TRANSACTIONS.get(getProcessInstance().getProcess())) {
+                    logger.error("Error executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a non transactional environment  ", getStringId(), getNodeName(),
+                            getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+                    captureError(e);
+                } else {
+                    logger.error("Error {} executing node instance '{}' (node '{}' id: '{}') in process instance '{}' (process: '{}') in a transactional environment (Wrapping)", e.getMessage(),
+                            getStringId(), getNodeName(),
+                            getNodeDefinitionId(), processInstance.getId(), processInstance.getProcessId());
+                    throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
+                }
                 throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
             }
             context.getContextData().put("Exception", e);
