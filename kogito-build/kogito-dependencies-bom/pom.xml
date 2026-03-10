@@ -168,8 +168,7 @@
     <version.com.google.guava>33.4.8-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
 
-    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
-    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java> <!-- Upgraded for CVE fix (The library has moved from org.lz4:lz4-java to at.yawk.lz4:lz4-java )-->
+    <version.tomcat.embed.core>10.1.52</version.tomcat.embed.core>
     <version.org.hibernate>7.1.14.Final</version.org.hibernate>
     <version.com.graphql-java>24.3</version.com.graphql-java>
   </properties>
@@ -188,11 +187,6 @@
         <groupId>org.eclipse.angus</groupId>
         <artifactId>angus-mail</artifactId>
         <version>${version.angus.mail}</version>
-      </dependency>
-      <dependency>
-        <groupId>at.yawk.lz4</groupId>
-        <artifactId>lz4-java</artifactId>
-        <version>${version.at.yawk.lz4.java}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
@@ -488,6 +482,13 @@
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-clients</artifactId>
         <version>${version.org.apache.kafka}</version>
+        <exclusions>
+          <!-- CVE-2025-12183: excluding lz4-java-1.8.0.jar that comes along kafka-clients 4.0.0 -->
+          <exclusion>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- marshalling -->
