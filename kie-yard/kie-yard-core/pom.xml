@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.kie</groupId>
         <artifactId>kie-yard</artifactId>
-        <version>10.2.999-SNAPSHOT</version>
+        <version>10.2.0</version>
     </parent>
 
     <artifactId>kie-yard-core</artifactId>
