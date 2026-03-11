@@ -1,0 +1,8 @@
+package org.example.rules;
+
+rule "Broken Rule"
+    when
+        Person(name ==
+    then
+        System.out.println("hello");
+end
