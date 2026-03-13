@@ -96,6 +96,7 @@
     <version.org.jboss.narayana.tomcat>7.2.2.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
     <version.org.jboss.logmanager>3.2.1.Final</version.org.jboss.logmanager>
+    <version.org.jboss.logmanager.embedded>1.2.0.Final</version.org.jboss.logmanager.embedded>
     <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
@@ -1768,6 +1769,11 @@
         <groupId>org.jboss.logmanager</groupId>
         <artifactId>jboss-logmanager</artifactId>
         <version>${version.org.jboss.logmanager}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logmanager</groupId>
+        <artifactId>jboss-logmanager-embedded</artifactId>
+        <version>${version.org.jboss.logmanager.embedded}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.logging</groupId>
