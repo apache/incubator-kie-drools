@@ -361,7 +361,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/1.1/xsd/dmn.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/1.1/xsd/dmn.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20151101/</outputDirectory>
               <md5>ff4a266fa7a91b51b5c7ffde0e19aa5f</md5>
@@ -377,7 +377,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/1.2/xsd/DC.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/1.2/xsd/DC.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20180521/</outputDirectory>
               <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
@@ -392,7 +392,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/1.2/xsd/DI.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/1.2/xsd/DI.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20180521/</outputDirectory>
               <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
@@ -407,7 +407,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/1.2/xsd/DMN12.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/1.2/xsd/DMN12.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20180521/</outputDirectory>
               <md5>f2fdcef4f5a1a32473e0ddca2dd72592</md5>
@@ -422,7 +422,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/1.2/xsd/DMNDI12.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/1.2/xsd/DMNDI12.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20180521/</outputDirectory>
               <md5>96e6865c368fa27ada05ed85eaa4b370</md5>
@@ -438,7 +438,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.3/xsd/DC.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.3/xsd/DC.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20191111/</outputDirectory>
               <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
@@ -453,7 +453,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.3/xsd/DI.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.3/xsd/DI.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20191111/</outputDirectory>
               <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
@@ -468,7 +468,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.3/xsd/DMN13.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.3/xsd/DMN13.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20191111/</outputDirectory>
               <md5>ae7ca8c95404dc3af5acde0b40d7f975</md5>
@@ -483,7 +483,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.3/xsd/DMNDI13.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.3/xsd/DMNDI13.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20191111/</outputDirectory>
               <md5>f8934f1d8538ec404d3cf459755bc0ed</md5>
@@ -499,7 +499,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.4/xsd/DC.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.4/xsd/DC.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20211108/</outputDirectory>
               <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
@@ -514,7 +514,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.4/xsd/DI.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.4/xsd/DI.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20211108/</outputDirectory>
               <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
@@ -529,7 +529,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.4/xsd/DMN14.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.4/xsd/DMN14.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20211108/</outputDirectory>
               <md5>576746eb17873791d683908b1fa60ec1</md5>
@@ -544,7 +544,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.4/xsd/DMNDI13.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.4/xsd/DMNDI13.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20211108/</outputDirectory>
               <md5>f8934f1d8538ec404d3cf459755bc0ed</md5>
@@ -560,7 +560,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DC.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DC.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20230324/</outputDirectory>
               <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
@@ -575,7 +575,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DI.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DI.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20230324/</outputDirectory>
               <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
@@ -590,7 +590,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DMN15.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DMN15.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20230324/</outputDirectory>
               <md5>49a582b2cd228d4a5102d41b688ddc6b</md5>
@@ -605,7 +605,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DMNDI15.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DMNDI15.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20230324/</outputDirectory>
               <md5>b453d960af8c505c14b671373c370d7c</md5>
@@ -622,7 +622,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DC.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DC.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
               <md5>89afb8f008550f81cc3989c5d0b9e4ea</md5>
@@ -637,7 +637,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DI.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DI.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
               <md5>635f0e1e62ba09c22ca302c6103738ba</md5>
@@ -652,7 +652,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.6/xsd/DMN16.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.6/xsd/DMN16.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
               <md5>a1a136e9dc0e65f58ce2840bcc9f0ceb</md5>
@@ -667,7 +667,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/omg-dmn-taskforce/omg-dmn-spec/tree/v1.5/xsd/DMNDI15.xsd</url>
+              <url>https://raw.githubusercontent.com/omg-dmn-taskforce/omg-dmn-spec/v1.5/xsd/DMNDI15.xsd</url>
               <unpack>false</unpack>
               <outputDirectory>${output.spec.directory}/20240513/</outputDirectory>
               <md5>b453d960af8c505c14b671373c370d7c</md5>
