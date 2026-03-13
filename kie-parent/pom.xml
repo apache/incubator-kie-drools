@@ -315,6 +315,8 @@
     <!-- enforcer -->
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
+    <!-- set to "none" to disable the no-managed-deps rule -->
+    <enforcer.no-managed-deps.phase>initialize</enforcer.no-managed-deps.phase>
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
     <!-- Set to "true" on every project that has no violations. -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
@@ -2248,7 +2250,7 @@
               <goals>
                 <goal>enforce</goal>
               </goals>
-              <phase>initialize</phase>
+              <phase>${enforcer.no-managed-deps.phase}</phase>
               <configuration>
                 <rules>
                   <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
