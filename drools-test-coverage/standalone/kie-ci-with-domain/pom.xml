@@ -43,14 +43,4 @@
     <module>tests</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>drools-kie-ci-with-domain-test-domain</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>

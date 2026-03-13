@@ -33,23 +33,6 @@
     <java.module.name>org.kie.dmn.ruleset2dmn.cli</java.module.name>
   </properties>
   
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-ruleset2dmn</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

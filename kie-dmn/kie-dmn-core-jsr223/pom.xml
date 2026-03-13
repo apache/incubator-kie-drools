@@ -30,40 +30,8 @@
 
   <properties>
     <java.module.name>org.kie.dmn.core.jsr223</java.module.name>
-    <!-- test scope versions -->
-    <nashorn.version>15.3</nashorn.version>
-    <graalvm.version>22.0.0.2</graalvm.version>
   </properties>
-  <dependencyManagement>
-    <dependencies>
-      <!-- test-only scope dependencies -->
-      <dependency>
-          <groupId>org.openjdk.nashorn</groupId>
-          <artifactId>nashorn-core</artifactId>
-          <version>${nashorn.version}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.graalvm.js</groupId>
-          <artifactId>js</artifactId>
-          <version>${graalvm.version}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.graalvm.js</groupId>
-          <artifactId>js-scriptengine</artifactId>
-          <version>${graalvm.version}</version>
-          <scope>test</scope>
-      </dependency>
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-dmn-core-jsr223-jq</artifactId>
-          <version>${project.version}</version>
-          <scope>test</scope>
-        </dependency>
-    </dependencies>
-     <!-- /test-only scope dependencies -->
-  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

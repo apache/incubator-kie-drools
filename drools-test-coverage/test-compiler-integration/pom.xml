@@ -38,17 +38,6 @@
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>drools-test-coverage-jars</artifactId>
-        <type>pom</type>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
