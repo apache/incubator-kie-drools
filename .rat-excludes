@@ -55,6 +55,7 @@ quarkus/addons/jobs/knative-eventing/runtime/src/main/resources/META-INF/kogito.
 quarkus/addons/jobs/management/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/jobs/messaging/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/jwt-parser/integration-tests/src/main/resources/application.properties
+quarkus/addons/jwt-parser/integration-tests/src/test/resources/application.properties
 quarkus/addons/knative/eventing/deployment/src/test/resources/application.properties
 quarkus/addons/knative/eventing/runtime/src/main/resources/META-INF/kogito.addon
 quarkus/addons/knative/eventing/runtime/src/test/resources/application.properties
@@ -91,7 +92,9 @@ quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integrati
 quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/helloworldevent.sw.yaml
 quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources/long-call.sw.yaml
 quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
+quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/application.properties
 quarkus/extensions/kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension/kogito-quarkus-serverless-workflow-jdbc-token-persistence/src/main/resources/META-INF/beans.xml
+quarkus/extensions/kogito-quarkus-serverless-workflow-jdbc-token-persistence-extension/kogito-quarkus-serverless-workflow-jdbc-token-persistence-integration-test/src/test/resources/application.properties
 quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
 quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
 quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml
