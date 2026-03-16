@@ -1040,7 +1040,6 @@
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
         <version>${version.io.smallrye.reactive.messaging.in.memory}</version>
-        <scope>test</scope>
       </dependency>
       <!-- OAS v3 -->
       <dependency>
