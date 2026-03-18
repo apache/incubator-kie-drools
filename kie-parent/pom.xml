@@ -254,6 +254,7 @@
     <version.org.awaitility>4.3.0</version.org.awaitility>
     <version.org.bouncycastle.bc.jdk18on>1.82</version.org.bouncycastle.bc.jdk18on>
     <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
+    <version.org.eclipse.jetty.jakarta.servlet.api>5.0.2</version.org.eclipse.jetty.jakarta.servlet.api>
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
@@ -1579,6 +1580,11 @@
         <groupId>org.eclipse.jdt</groupId>
         <artifactId>ecj</artifactId>
         <version>${version.org.eclipse.jdt}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.toolchain</groupId>
+        <artifactId>jetty-jakarta-servlet-api</artifactId>
+        <version>${version.org.eclipse.jetty.jakarta.servlet.api}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.microprofile.config</groupId>
