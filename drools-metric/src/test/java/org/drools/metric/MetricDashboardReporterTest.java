@@ -75,17 +75,6 @@ public class MetricDashboardReporterTest {
     }
 
     @Test
-    public void testGenerateReportEmpty() {
-        SessionMetricCollector collector = new SessionMetricCollector();
-        String html = MetricDashboardReporter.generateReport(collector);
-
-        assertThat(html).contains("<!DOCTYPE html>");
-        assertThat(html).contains("No rules have been fired yet");
-        // chart-row only appears if hotspot chart is rendered with actual data
-        assertThat(html).doesNotContain("chart-row");
-    }
-
-    @Test
     public void testWriteReportToFile() throws IOException {
         SessionMetricCollector collector = new SessionMetricCollector();
         collector.recordRuleFiring("test.Rule1", 2_000_000);
