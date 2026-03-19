@@ -315,6 +315,8 @@
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
     <!-- enforcer -->
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <!-- set to "none" to disable the ban-duplicated-classes rule -->
+    <enforcer.ban-duplicated-classes.phase>none</enforcer.ban-duplicated-classes.phase>
     <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
     <!-- set to "none" to disable the no-managed-deps rule -->
     <enforcer.no-managed-deps.phase>initialize</enforcer.no-managed-deps.phase>
@@ -3034,20 +3036,25 @@
           <name>full</name>
         </property>
       </activation>
+      <properties>
+        <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. -->
+        <enforcer.ban-duplicated-classes.phase>validate</enforcer.ban-duplicated-classes.phase>
+      </properties>
       <build>
         <plugins>
-          <plugin>
+          <!--<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
               <execution>
                 <id>ban-duplicated-classes</id>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
-                     execution is enabled (by specifying a phase) for full profile builds. -->
+                &lt;!&ndash; The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. &ndash;&gt;
                 <phase>validate</phase>
               </execution>
             </executions>
-          </plugin>
+          </plugin>-->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
