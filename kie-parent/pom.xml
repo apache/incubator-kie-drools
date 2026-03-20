@@ -980,11 +980,6 @@
         <version>${version.io.smallrye.jandex}</version>
       </dependency>
       <dependency>
-        <groupId>io.smallrye.reactive</groupId>
-        <artifactId>mutiny</artifactId>
-        <version>${version.io.smallrye.mutiny}</version>
-      </dependency>
-      <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-core</artifactId>
         <version>${version.io.smallrye.openapi.core}</version>
