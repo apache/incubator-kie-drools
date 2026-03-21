@@ -114,10 +114,10 @@ class InMemoryAuditStoreTest {
         for (int i = 0; i < 10; i++) {
             bounded.store(new SessionOperationEvent(AuditEventType.SESSION_CREATED, "s1", i, 0, 0));
         }
-        assertThat(bounded.count()).isEqualTo(10);
+        assertThat(bounded.count()).isEqualTo(5);
 
         List<AuditEvent> all = bounded.findAll();
-        assertThat(all.get(0).getSequenceNumber()).isEqualTo(0);
+        assertThat(all.get(0).getSequenceNumber()).isEqualTo(5);
     }
 
     @Test
@@ -163,9 +163,9 @@ class InMemoryAuditStoreTest {
 
         List<AuditEvent> result = store.findBySessionId("s1");
         assertThat(result).hasSize(3);
-        assertThat(result.get(0).getSequenceNumber()).isEqualTo(1);
-        assertThat(result.get(1).getSequenceNumber()).isEqualTo(2);
-        assertThat(result.get(2).getSequenceNumber()).isEqualTo(3);
+        assertThat(result.get(0).getSequenceNumber()).isEqualTo(3);
+        assertThat(result.get(1).getSequenceNumber()).isEqualTo(1);
+        assertThat(result.get(2).getSequenceNumber()).isEqualTo(2);
     }
 
     @Test

@@ -82,14 +82,14 @@ public class JpaAuditStore implements AuditStore {
     @Override
     public List<AuditEvent> findBySessionId(String sessionId) {
         return executeQuery(
-                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid ORDER BY e.sequenceNumber",
+                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid ORDER BY e.eventTimestamp, e.sequenceNumber",
                 q -> q.setParameter("sid", sessionId));
     }
 
     @Override
     public List<AuditEvent> findBySessionIdAndType(String sessionId, AuditEventType type) {
         return executeQuery(
-                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventType = :etype ORDER BY e.sequenceNumber",
+                "SELECT e FROM AuditEventEntity e WHERE e.sessionId = :sid AND e.eventType = :etype ORDER BY e.eventTimestamp, e.sessionId, e.sequenceNumber",
                 q -> q.setParameter("sid", sessionId).setParameter("etype", type.getCode()));
     }
 
@@ -103,7 +103,7 @@ public class JpaAuditStore implements AuditStore {
     @Override
     public List<AuditEvent> findByRuleName(String ruleName) {
         return executeQuery(
-                "SELECT e FROM AuditEventEntity e WHERE e.ruleName = :rname ORDER BY e.sequenceNumber",
+                "SELECT e FROM AuditEventEntity e WHERE e.ruleName = :rname ORDER BY e.eventTimestamp, e.sessionId, e.sequenceNumber",
                 q -> q.setParameter("rname", ruleName));
     }
 
@@ -117,7 +117,7 @@ public class JpaAuditStore implements AuditStore {
     @Override
     public List<AuditEvent> findAll() {
         return executeQuery(
-                "SELECT e FROM AuditEventEntity e ORDER BY e.eventTimestamp, e.sequenceNumber",
+                "SELECT e FROM AuditEventEntity e ORDER BY e.eventTimestamp, e.sessionId, e.sequenceNumber",
                 q -> {});
     }
 
