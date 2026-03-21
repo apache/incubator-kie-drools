@@ -87,7 +87,7 @@ AuditTrailService service = AuditTrailConfiguration.builder()
 ```java
 EntityManagerFactory emf = ...;
 AuditTrailService service = AuditTrailConfiguration.builder()
-        .jpa(emf)
+        .store(JpaAuditStoreBuilder.create(emf))
         .build();
 ```
 
@@ -143,4 +143,3 @@ Each event has:
 - In-memory store is bounded; set `maxCapacity` based on expected load.
 - For compliance, prefer the JPA store or a custom durable store.
 - Remember to call `stopAudit` (and dispose the session) to avoid dangling listeners.
-

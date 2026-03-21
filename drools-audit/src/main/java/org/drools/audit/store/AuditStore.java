@@ -28,6 +28,9 @@ import org.drools.audit.event.AuditEventType;
  * Service Provider Interface for persisting and querying audit events.
  * Implementations may store events in memory, on disk, in a relational
  * database (JPA), or in a dedicated event store.
+ *
+ * <p>All methods returning {@code List<AuditEvent>} must order results by
+ * {@code timestamp ASC, sessionId ASC, sequenceNumber ASC}.</p>
  */
 public interface AuditStore extends AutoCloseable {
 

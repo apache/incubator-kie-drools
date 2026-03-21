@@ -79,7 +79,7 @@ public class InMemoryAuditStore implements AuditStore {
     public List<AuditEvent> findBySessionId(String sessionId) {
         return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId))
-                .sorted()
+                .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +87,7 @@ public class InMemoryAuditStore implements AuditStore {
     public List<AuditEvent> findBySessionIdAndType(String sessionId, AuditEventType type) {
         return snapshot().stream()
                 .filter(e -> e.getSessionId().equals(sessionId) && e.getType() == type)
-                .sorted()
+                .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +103,7 @@ public class InMemoryAuditStore implements AuditStore {
     public List<AuditEvent> findByRuleName(String ruleName) {
         return snapshot().stream()
                 .filter(e -> ruleName.equals(extractRuleName(e)))
-                .sorted()
+                .sorted(TIMESTAMP_ORDER)
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +130,7 @@ public class InMemoryAuditStore implements AuditStore {
     @Override
     public List<AuditEvent> findAll() {
         List<AuditEvent> snap = snapshot();
-        Collections.sort(snap);
+        snap.sort(TIMESTAMP_ORDER);
         return snap;
     }
 
