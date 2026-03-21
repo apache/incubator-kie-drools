@@ -52,7 +52,6 @@ public class InMemoryAuditStore implements AuditStore {
                       .thenComparingLong(AuditEvent::getSequenceNumber);
 
     private final Deque<AuditEvent> events = new ArrayDeque<>();
-    private final AtomicInteger size = new AtomicInteger(0);
     private final int maxCapacity;
 
     public InMemoryAuditStore() {
@@ -70,7 +69,7 @@ public class InMemoryAuditStore implements AuditStore {
     public void store(AuditEvent event) {
         synchronized (events) {
             events.addLast(event);
-            while (size.get() > maxCapacity) {
+            while (events.size() > maxCapacity) {
                 events.pollFirst();
             }
         }
