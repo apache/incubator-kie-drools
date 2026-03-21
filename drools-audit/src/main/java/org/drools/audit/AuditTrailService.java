@@ -109,10 +109,11 @@ public class AuditTrailService implements AutoCloseable {
     }
 
     public int fireAllRules(KieSession session, String sessionId) {
-        AuditEventListener listener = activeListeners.get(sessionId).listener();
-        if (listener == null) {
+        AuditRegistration registration = activeListeners.get(sessionId);
+        if (registration == null) {
             return session.fireAllRules();
         }
+        AuditEventListener listener = registration.listener();
         long startNanos = System.nanoTime();
         int rulesFired = session.fireAllRules();
         long durationMillis = (System.nanoTime() - startNanos) / 1_000_000;
