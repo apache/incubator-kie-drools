@@ -125,7 +125,7 @@
     <bpmn2:boundaryEvent id="_12026FED-3D13-4409-9397-6F84D9323F3D" drools:dockerinfo="48.0377358490566^74|" drools:boundaryca="true" attachedToRef="_E2424AB3-6F2A-4624-B451-C126EE9EABA1">
       <bpmn2:outgoing>_7F20517C-28E8-46CE-9B44-E8A92AE86F46</bpmn2:outgoing>
       <bpmn2:timerEventDefinition>
-        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT2S</bpmn2:timeDuration>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT4S</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:boundaryEvent>
   </bpmn2:process>

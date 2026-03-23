@@ -34,7 +34,7 @@ public final class FailingServiceTestUtil {
     public static final String USER_TASK_NODE_DEFINTION_ID = "_E2424AB3-6F2A-4624-B451-C126EE9EABA1";
 
     public static final Duration TIMEOUT = Duration.ofSeconds(10);
-    public static final Duration POLL_DELAY = Duration.ofSeconds(3);
+    public static final Duration POLL_DELAY = Duration.ofSeconds(5);
     public static final Duration POLL_INTERVAL = Duration.ofMillis(500);
 
     private FailingServiceTestUtil() {

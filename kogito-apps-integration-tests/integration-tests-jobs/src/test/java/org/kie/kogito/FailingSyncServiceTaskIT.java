@@ -18,7 +18,6 @@
  */
 package org.kie.kogito;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,11 +33,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.kie.kogito.FailingServiceTestUtil.FAILING_SYNC_SERVICE_TASK_PROCESS_ID;
-import static org.kie.kogito.FailingServiceTestUtil.TIMEOUT;
-import static org.kie.kogito.FailingServiceTestUtil.USER_TASK_NODE_DEFINTION_ID;
-import static org.kie.kogito.FailingServiceTestUtil.executeGraphQLQuery;
-import static org.kie.kogito.FailingServiceTestUtil.getQuery;
+import static org.kie.kogito.FailingServiceTestUtil.*;
 
 @QuarkusIntegrationTest
 class FailingSyncServiceTaskIT {
@@ -96,11 +91,11 @@ class FailingSyncServiceTaskIT {
         assertThat(jobBefore.get("nodeInstanceId")).isEqualTo(userTaskNodeInstanceId);
         assertThat(jobBefore.get("status")).isIn("SCHEDULED", "RETRY");
 
-        // After 2s Boundary Timer triggers
+        // After 4s Boundary Timer triggers
         JsonPath resultAfter = await()
-                .pollDelay(Duration.ofSeconds(3))
+                .pollDelay(POLL_DELAY)
                 .atMost(TIMEOUT)
-                .pollInterval(Duration.ofMillis(500))
+                .pollInterval(POLL_INTERVAL)
                 .until(() -> {
                     JsonPath result = executeGraphQLQuery(query);
 
