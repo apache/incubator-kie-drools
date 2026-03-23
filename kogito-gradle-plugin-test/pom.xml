@@ -38,6 +38,8 @@
     <maven.compiler.release>17</maven.compiler.release>
     <gradle.executable>./gradlew</gradle.executable>
     <exec.plugin.version>3.6.3</exec.plugin.version>
+    <!-- Since there are no java code to compile, we can skip javadoc generation -->
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
 
   <dependencies>
