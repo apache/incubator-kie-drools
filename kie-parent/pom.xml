@@ -1019,6 +1019,13 @@
         <artifactId>smallrye-config-core</artifactId>
         <version>${version.io.smallrye-config}</version>
       </dependency>
+      <!-- For the moment being, this is the version declared by Quarkus BOM, but we need to declare it here to be available for common modules. -->
+      <!-- Framework-specific BOMs would need,eventually, to override it -->
+      <dependency>
+        <groupId>io.smallrye.reactive</groupId>
+        <artifactId>mutiny</artifactId>
+        <version>${version.io.smallrye.mutiny}</version>
+      </dependency>
       <dependency>
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>mutiny-zero-flow-adapters</artifactId>
