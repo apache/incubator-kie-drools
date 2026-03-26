@@ -55,7 +55,6 @@ public class OtlpMockTestResource implements QuarkusTestResourceLifecycleManager
         config.put("quarkus.otel.exporter.otlp.protocol", "http/protobuf");
 
         config.put("otel.metrics.exporter", "none");
-	config.put("otel.traces.exporter", "none");
 
         // Immediate export for testing (use simple span processor)
         config.put("quarkus.otel.traces.sampler", "always_on");
