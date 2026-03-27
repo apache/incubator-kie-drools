@@ -96,7 +96,7 @@ public class ExpressionUtils {
                 || object instanceof String || object instanceof Enum || object instanceof Collection || object instanceof Class<?> || isTypeRegistered(object.getClass());
     }
 
-    private static final int STR_MAX_SIZE = Short.MAX_VALUE << 1;
+    private static final int STR_MAX_SIZE = Short.MAX_VALUE;
 
     public static Expression getLiteralExpr(Object object) {
         if (object == null) {
