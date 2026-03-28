@@ -24,14 +24,14 @@
     <parent>
         <groupId>org.kie</groupId>
         <artifactId>drools-build-parent</artifactId>
-        <version>10.2.999-SNAPSHOT</version>
+        <version>10.2.0</version>
         <relativePath>../build-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kie</groupId>
     <artifactId>kie-yard</artifactId>
-    <version>10.2.999-SNAPSHOT</version>
+    <version>10.2.0</version>
     <packaging>pom</packaging>
 
     <name>KIE :: Yard - YAML Rules DSL</name>
