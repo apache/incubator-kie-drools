@@ -15,6 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 github:
+  description: Kogito Apps houses source code for addons and supporting services for Kogito Runtimes
+  homepage: https://kie.apache.org
+  labels:
+    - apache
+    - java
+    - jbpm
+    - workflow
+    - workflow-engine
+    - rule-engine
+    - spring-boot
+    - quarkus
+    - kogito
+    - knative
+    - cloud-native
+    - bpm
+    - dmn
+    - pmml
+    - hacktoberfest
+    - persistence
+    - data-index
+    - jobs-service
   features:
     issues: true
   enabled_merge_buttons:
