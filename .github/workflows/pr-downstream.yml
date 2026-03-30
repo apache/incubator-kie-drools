@@ -38,6 +38,7 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 180
     strategy:
+      max-parallel: 20
       matrix:
         job_name: [ kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples, kogito-gradle-examples ]
         os: [ubuntu-latest]
