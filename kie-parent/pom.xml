@@ -298,6 +298,11 @@
     <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
     <version.maven.min>3.8.1</version.maven.min>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+    <!-- OpenRewrite plugin -->
+    <version.rewrite.maven.plugin>4.42.0</version.rewrite.maven.plugin>
+    <version.rewrite.testing.frameworks>1.22.0</version.rewrite.testing.frameworks>
+    <!-- JDepend plugin -->
+    <version.jdepend.maven.plugin>2.0</version.jdepend.maven.plugin>
     <!--  JaCoCo -->
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
@@ -2468,6 +2473,11 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.openrewrite.maven</groupId>
+          <artifactId>rewrite-maven-plugin</artifactId>
+          <version>${version.rewrite.maven.plugin}</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
           <dependencies>
             <dependency>
@@ -2776,6 +2786,11 @@
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jdepend-maven-plugin</artifactId>
+          <version>${version.jdepend.maven.plugin}</version>
         </plugin>
         <plugin>
           <groupId>com.github.spotbugs</groupId>

@@ -37,9 +37,9 @@
   <description>New model container framework</description>
 
   <properties>
-    <rewrite.maven.plugin.version>4.42.0</rewrite.maven.plugin.version>
-    <rewrite.testing.frameworks.version>1.22.0</rewrite.testing.frameworks.version>
-    <jdepend.maven.plugin.version>2.0</jdepend.maven.plugin.version>
+    <!--<version.rewrite.maven.plugin.version>4.42.0</version.rewrite.maven.plugin.version>
+    <version.rewrite.testing.frameworks>1.22.0</version.rewrite.testing.frameworks>-->
+    <!--<version.jdepend.maven.plugin>2.0</version.jdepend.maven.plugin>-->
     <skip.jdepend>true</skip.jdepend>
   </properties>
 
@@ -81,20 +81,20 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
+    <!--<pluginManagement>
       <plugins>
-        <plugin>
+        &lt;!&ndash;<plugin>
           <groupId>org.openrewrite.maven</groupId>
           <artifactId>rewrite-maven-plugin</artifactId>
-          <version>${rewrite.maven.plugin.version}</version>
-        </plugin>
+          <version>${version.rewrite.maven.plugin}</version>
+        </plugin>&ndash;&gt;
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jdepend-maven-plugin</artifactId>
-          <version>${jdepend.maven.plugin.version}</version>
+          <version>${version.jdepend.maven.plugin}</version>
         </plugin>
       </plugins>
-    </pluginManagement>
+    </pluginManagement>-->
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -137,7 +137,7 @@
           <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-testing-frameworks</artifactId>
-            <version>${rewrite.testing.frameworks.version}</version>
+            <version>${version.rewrite.testing.frameworks}</version>
           </dependency>
         </dependencies>
       </plugin>
