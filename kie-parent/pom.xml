@@ -2447,7 +2447,7 @@
               </configuration>
             </execution>
             <execution>
-              <id>no-dependendymanagement</id>
+              <id>no-dependencymanagement</id>
               <configuration>
                 <rules>
                   <noDependencyManagementRule>
