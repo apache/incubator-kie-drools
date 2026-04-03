@@ -171,7 +171,7 @@ jobs:
           mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
 
       - name: "Upload JIT Executor binary"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: jitexecutor_${{ runner.os }}
           path: ./jitexecutor-native/jitexecutor-native-*/target/jitexecutor-native-*-${{ steps.version.outputs.PROJECT_VERSION }}-run*
