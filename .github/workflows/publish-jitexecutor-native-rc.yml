@@ -279,7 +279,7 @@ jobs:
 
       - name: "Setup MSBUILD"
         if: runner.os == 'Windows'
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: "Setup GraalVM"
         if: runner.os == 'Windows'
