@@ -94,7 +94,7 @@ jobs:
         with:
           report_paths: '**/*-reports/TEST-*.xml'
       - name: Upload Dependency Trees
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() }}
         with:
           name: dependency-trees-logs_${{ matrix.job_name }}_${{ matrix.os }}
