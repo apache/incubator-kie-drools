@@ -48,7 +48,7 @@ jobs:
         path: jenkins-pipeline-shared-libraries
 
     - name: Set up JDK 8
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: 8
         distribution: temurin
