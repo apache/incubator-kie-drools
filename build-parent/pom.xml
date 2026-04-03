@@ -177,8 +177,7 @@
     <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
     <!-- Set to "true" on every project that has no violations. -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
-    <!-- replaces findbugs-maven-plugin -->
-    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
+    <version.com.github.spotbugs-maven-plugin>4.9.8.3</version.com.github.spotbugs-maven-plugin>
 
     <version.maven.min>3.8.1</version.maven.min>
     <!-- property for productisation to know the last released version -->
@@ -1935,19 +1934,11 @@
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${version.com.github.spotbugs-maven-plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie</groupId>
-              <artifactId>kie-build-tools</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
           <configuration>
             <maxRank>6</maxRank>
             <effort>Max</effort>
             <xmlOutput>true</xmlOutput>
             <failOnError>${spotbugs.failOnViolation}</failOnError>
-            <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
         </plugin>
         <plugin>

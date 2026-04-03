@@ -833,3 +833,4 @@ public class KnowledgePackageImpl
         this.cloningResources.put(key, resource);
     }
 }
+
