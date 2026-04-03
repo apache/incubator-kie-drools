@@ -37,12 +37,12 @@ jobs:
     name: Jenkinsfiles
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: main
 
     - name: Checkout shared libraries
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: apache/incubator-kie-kogito-pipelines
         path: jenkins-pipeline-shared-libraries
