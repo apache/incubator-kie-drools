@@ -24,6 +24,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.expr.Expression;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.SelfReferencingConstraint;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
@@ -31,14 +35,22 @@ import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.modelcompiler.util.EvaluationUtil;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.ResultSeverity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstraintParserTest {
 
     private ConstraintParser parser;
+
+    @AfterEach
+    public void tearDown() {
+        System.getProperties().remove("drools.kbuilder.severity." + SelfReferencingConstraint.KEY);
+    }
 
     @BeforeEach
     public void setup() {
@@ -247,5 +259,78 @@ public class ConstraintParserTest {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(money in (100B, 200B))");
 
         assertThat(result.getExpr().toString()).isEqualTo("D.eval(org.drools.model.operators.InOperator.INSTANCE, _this.getMoney(), new java.math.BigDecimal(\"100\"), new java.math.BigDecimal(\"200\"))");
+    }
+
+    @Test
+    public void testSelfComparisonWarning() {
+        BuildResultCollectorImpl resultCollector = new BuildResultCollectorImpl();
+        PackageModel packageModel = new PackageModel("org.kie.test:constraint-parser-test:1.0.0", "org.kie.test", null, null, new DRLIdGenerator());
+        Set<String> imports = new HashSet<>();
+        imports.add(Person.class.getCanonicalName());
+        TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
+        RuleContext context = new RuleContext(null, resultCollector, packageModel, typeResolver, new RuleDescr("testRule"), 0);
+        ConstraintParser selfCompParser = ConstraintParser.defaultConstraintParser(context, packageModel);
+
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) selfCompParser.drlxParse(Person.class, "$p", "name == name");
+
+        assertThat(result).isNotNull();
+        assertThat(resultCollector.hasResults(ResultSeverity.WARNING)).isTrue();
+        assertThat(resultCollector.getAllResults()).anyMatch(r -> r.getSeverity() == ResultSeverity.WARNING
+                && r.getMessage().contains("compares field")
+                && r.getMessage().contains("to itself"));
+    }
+
+    @Test
+    public void testNoWarningForNormalConstraint() {
+        BuildResultCollectorImpl resultCollector = new BuildResultCollectorImpl();
+        PackageModel packageModel = new PackageModel("org.kie.test:constraint-parser-test:1.0.0", "org.kie.test", null, null, new DRLIdGenerator());
+        Set<String> imports = new HashSet<>();
+        imports.add(Person.class.getCanonicalName());
+        TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
+        RuleContext context = new RuleContext(null, resultCollector, packageModel, typeResolver, new RuleDescr("testRule"), 0);
+        ConstraintParser selfCompParser = ConstraintParser.defaultConstraintParser(context, packageModel);
+
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) selfCompParser.drlxParse(Person.class, "$p", "name == \"John\"");
+
+        assertThat(result).isNotNull();
+        assertThat(resultCollector.hasResults(ResultSeverity.WARNING)).isFalse();
+    }
+
+    @Test
+    public void testSelfReferencingConstraintDefaultSeverityIsWarning() {
+        SelfReferencingConstraint constraint = new SelfReferencingConstraint(null, null, "name", "name == name");
+        assertThat(constraint.getSeverity()).isEqualTo(ResultSeverity.WARNING);
+        assertThat(constraint.getMessage()).contains("compares field");
+        assertThat(constraint.getMessage()).contains("to itself");
+    }
+
+    @Test
+    public void testSelfReferencingConstraintConfiguredAsError() {
+        System.setProperty("drools.kbuilder.severity." + SelfReferencingConstraint.KEY, "ERROR");
+        KnowledgeBuilderConfigurationImpl config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration()
+                .as(KnowledgeBuilderConfigurationImpl.KEY);
+
+        SelfReferencingConstraint constraint = new SelfReferencingConstraint(null, config, "name", "name == name");
+        assertThat(constraint.getSeverity()).isEqualTo(ResultSeverity.ERROR);
+    }
+
+    @Test
+    public void testSelfReferencingConstraintConfiguredAsInfo() {
+        System.setProperty("drools.kbuilder.severity." + SelfReferencingConstraint.KEY, "INFO");
+        KnowledgeBuilderConfigurationImpl config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration()
+                .as(KnowledgeBuilderConfigurationImpl.KEY);
+
+        SelfReferencingConstraint constraint = new SelfReferencingConstraint(null, config, "name", "name == name");
+        assertThat(constraint.getSeverity()).isEqualTo(ResultSeverity.INFO);
+    }
+
+    @Test
+    public void testSelfReferencingConstraintDefaultsToWarningWithoutConfig() {
+        // When config exists but property is not set, severity defaults to WARNING
+        KnowledgeBuilderConfigurationImpl config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration()
+                .as(KnowledgeBuilderConfigurationImpl.KEY);
+
+        SelfReferencingConstraint constraint = new SelfReferencingConstraint(null, config, "age", "age == age");
+        assertThat(constraint.getSeverity()).isEqualTo(ResultSeverity.WARNING);
     }
 }
