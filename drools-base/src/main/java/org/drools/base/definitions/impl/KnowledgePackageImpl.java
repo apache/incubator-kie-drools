@@ -614,7 +614,7 @@ public class KnowledgePackageImpl
             Class<?> typeClass = null;
             try {
                 typeClass = typeDeclaration.getTypeClass();
-                if (typeClass != null || !typeClass.isPrimitive()) {
+                if (typeClass != null && !typeClass.isPrimitive()) {
                     Class<?> cls = getPackageClassLoader().loadClass(typeClass.getName());
                     typeDeclaration.setTypeClass(cls);
                 }
