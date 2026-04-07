@@ -77,7 +77,7 @@ class GreetRestIT {
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.HTML)
-                .body(containsString("SONATAFLOW WORKFLOW ENDPOINT"));
+                .body(containsString("<h4>SonataFlow Workflow Endpoint service is up and working!</h4>"));
     }
 
     @Test
