@@ -622,6 +622,44 @@ public class WsHumanTaskLifeCycleIT {
         isProcessCompleted(processId, pid);
     }
 
+    @Test
+    public void testMultipleGroupsWithVariablesUserTaskLifeCycle() {
+        // This test verifies the fix for multi-variable expressions in BPMN
+        // The GroupId is defined as #{group1},#{group2},#{group3} in the BPMN
+        var user = "dave";
+        var group = "engineering";
+        var potentialGroups = new String[] { "hr", "engineering", "management" };
+        var processId = "manager_multiple_groups_variables";
+
+        // Start process with variables that will be resolved in GroupId expression
+        var pid = startProcessInstanceWithVariables(processId, Map.of(
+                "group1", "hr",
+                "group2", "engineering",
+                "group3", "management"));
+
+        var taskId = getTaskId(user, group, pid);
+
+        // Verify all three groups are present in potentialGroups
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", user)
+                .queryParam("group", group)
+                .get(USER_TASKS_INSTANCE_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Ready"))
+                .body("potentialUsers", equalTo(List.of()))
+                .body("potentialGroups", hasItems(potentialGroups));
+
+        claim(taskId, user, group);
+        start(taskId, user, group);
+        complete(taskId, user, group);
+
+        isProcessCompleted(processId, pid);
+    }
+
     private void nominate(String taskId, String user, String status, String[] nominatedUsers) {
         given()
                 .contentType(ContentType.JSON)

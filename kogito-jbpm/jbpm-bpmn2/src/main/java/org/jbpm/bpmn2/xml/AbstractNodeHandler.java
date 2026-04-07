@@ -636,17 +636,23 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return assignments;
     }
 
+    /**
+     * Simplifies variable expression in order to improve performance
+     *
+     * If the expression contains just once variable, we can skip MVEL expression evaluation
+     * 
+     * @param expression MVEL expression to evaluate
+     * @return Variable name if expression evaluation is not needed, original expression otherwise
+     */
     private String cleanUp(String expression) {
-        // this is for user task expressions (they should be set as it is)
-        if (expression.startsWith("[")) {
-            return expression;
+        Matcher matcher = PatternConstants.SINGLE_PARAMETER_MATCHER.matcher(expression);
+        if (matcher.matches()) {
+            if (!matcher.group(1).contains(".")) {
+                return matcher.group(1);
+            }
         }
-        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(expression);
-        String temp = expression;
-        if (matcher.find()) {
-            temp = matcher.group(1);
-        }
-        return temp.contains(".") ? expression : temp;
+
+        return expression;
     }
 
     private DataDefinition toDataExpression(String id, String expression) {
