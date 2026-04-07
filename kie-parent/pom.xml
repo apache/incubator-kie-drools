@@ -155,6 +155,7 @@
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
     <version.jakarta.activation>2.0.3</version.jakarta.activation>
+    <version.jakarta.activation-api>2.1.4</version.jakarta.activation-api>
     <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
     <version.jakarta.enterprise.cdi-api>4.1.0</version.jakarta.enterprise.cdi-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
