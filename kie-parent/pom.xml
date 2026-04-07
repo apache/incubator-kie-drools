@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
@@ -22,206 +23,128 @@
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>kie-parent</artifactId>
-  <name>Kie :: Parent</name>
   <packaging>pom</packaging>
+  <name>Kie :: Parent</name>
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
-    <surefire.forkCount>1</surefire.forkCount>
     <!-- Used to define which poms are allowed to have dependencyManagement sections. This is to enforce the convention that only the root pom should have dependencyManagement, and all other poms should inherit from it. -->
     <allowedPomsList>org.kie:kie-parent</allowedPomsList>
+    <!-- CHECKSTYLE -->
+    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+    <checkstyle.header.extensions>java</checkstyle.header.extensions>
+    <checkstyle.header.template>.*</checkstyle.header.template>
+    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
+    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
     <drools.exclude.checkstyle/>
+    <!-- ENFORCER -->
+    <!-- set to "none" to disable the ban-duplicated-classes rule -->
+    <enforcer.ban-duplicated-classes.phase>none</enforcer.ban-duplicated-classes.phase>
+    <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <!-- set to "none" to disable the no-managed-deps rule -->
+    <enforcer.no-managed-deps.phase>initialize</enforcer.no-managed-deps.phase>
+    <illegaltransitivereportonly>false</illegaltransitivereportonly>
+    <!--  JaCoCo -->
+    <!-- JaCoCo coverage data file location -->
+    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
+    <!-- Jacoco plugin configurations -->
+    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+    <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
     <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
          being used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
+    <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!--suppress UnresolvedMavenProperty -->
+    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <!-- Set to "true" on every project that has no violations. -->
+    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
+    <surefire.forkCount>1</surefire.forkCount>
+
     <!--
-      CONVENTIONS:
-      - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
-      - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
-    -->
-    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
-    <version.commons-codec>1.19.0</version.commons-codec>
-    <version.commons-collections>3.2.2</version.commons-collections>
-    <version.commons-logging>1.1.1</version.commons-logging>
-    <version.commons-io>2.20.0</version.commons-io>
-    <version.common-text>1.14.0</version.common-text>
-    <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.19.2</version.com.fasterxml.jackson.annotations>
-    <version.com.github.victools>4.37.0</version.com.github.victools>
-    <!-- victools should align with Jackson if possible -->
-    <version.com.miglayout>3.7.4</version.com.miglayout>
-    <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-    <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.com.h2database>2.3.232</version.com.h2database>
-    <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
-    <version.com.sun.xml.bind>4.0.5</version.com.sun.xml.bind>
-    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
-    <version.guru.nidi>0.18.0</version.guru.nidi>
-    <version.info.picocli>4.7.7</version.info.picocli>
-    <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.netty>4.1.131.Final</version.io.netty>
-    <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
-    <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
-    <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
-    <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
-    <version.junit>4.13.2</version.junit>
-    <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
+     CONVENTIONS:
+     - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
+     - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
+   -->
+    <version.angus.mail>2.0.5</version.angus.mail>
     <version.antlr>2.7.7</version.antlr>
-    <version.org.antlr>3.5.2</version.org.antlr>
-    <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
-    <version.org.apache.ant>1.10.11</version.org.apache.ant>
-    <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
-    <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
-    <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.maven>3.9.11</version.org.apache.maven>
-    <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
-    <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
-    <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
-    <version.org.apache.poi>5.4.1</version.org.apache.poi>
-    <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.assertj>3.27.7</version.org.assertj>
-    <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
-    <version.org.freemarker>2.3.34</version.org.freemarker>
-    <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
-    <!--This needs to be in sync with JUnit-->
-    <version.org.hamcrest>2.2</version.org.hamcrest>
-    <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.21.Final</version.org.infinispan>
-    <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
-    <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>7.2.2.Final</version.org.jboss.narayana.tomcat>
-    <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
-    <version.org.jboss.logmanager>3.2.1.Final</version.org.jboss.logmanager>
-    <version.org.jboss.logmanager.embedded>1.2.0.Final</version.org.jboss.logmanager.embedded>
-    <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
-    <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
-    <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
-    <version.jakarta.enterprise.cdi-api>4.1.0</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.activation>2.0.3</version.jakarta.activation>
-    <version.jakarta.activation-api>2.1.4</version.jakarta.activation-api>
-    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
-    <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
-    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
-    <version.jakarta.persistence-api>3.2.0</version.jakarta.persistence-api>
-    <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
-    <version.jakarta.json.bind-api>3.0.1</version.jakarta.json.bind-api>
-    <version.jakarta.json>1.1.7</version.jakarta.json>
-    <version.jakarta.json-api>2.1.3</version.jakarta.json-api>
-    <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
-    <version.org.jpmml.model>1.6.4</version.org.jpmml.model>
-    <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
-    <version.org.junit.platform>1.13.4</version.org.junit.platform>
-    <!-- Keep synchronized with junit-jupiter (middle and minor should be the same) -->
-    <version.org.mvel>2.5.2.Final</version.org.mvel>
-    <version.org.powermock>2.0.9</version.org.powermock>
-    <version.org.slf4j>2.0.17</version.org.slf4j>
-    <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
-    <version.simple-jndi>0.11.4.1</version.simple-jndi>
-    <version.xerces>2.12.0.SP04</version.xerces>
-    <version.com.squareup.okhttp3>4.9.2</version.com.squareup.okhttp3>
-    <!-- External dependency versions bom -->
-    <!-- ################################################################################ -->
-    <!-- New and overwritten dependencies -->
-    <!-- ################################################################################ -->
-    <version.org.antlr4>4.13.2</version.org.antlr4>
-    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
-    <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
-    <version.org.xmlunit>2.10.4</version.org.xmlunit>
-    <!-- therefore the property is rewritten in that repository parent -->
-    <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
-    <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
-    <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>5.18.0</version.org.mockito>
-    <!-- Version of JMH -->
-    <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
-    <!-- Add for kie-maven-plugin -->
-    <version.plugin.plugin>3.10.2</version.plugin.plugin>
-    <version.plugin.annotations>3.15.1</version.plugin.annotations>
-    <version.artifact.transfer>0.9.1</version.artifact.transfer>
-    <version.shared.utils>3.4.2</version.shared.utils>
-    <version.common.compress>1.28.0</version.common.compress>
-    <version.common.exec>1.3</version.common.exec>
-    <version.com.github.eirslett>1.15.1</version.com.github.eirslett>
-    <version.compiler.plugin>3.13.0</version.compiler.plugin>
-    <version.shade.plugin>3.3.0</version.shade.plugin>
-    <version.net.byte-buddy>1.17.6</version.net.byte-buddy>
-    <version.org.postgresql>42.7.8</version.org.postgresql>
-    <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.4.0</version.io.smallrye.jandex>
-    <version.io.smallrye.mutiny>2.9.5</version.io.smallrye.mutiny>
-    <version.org.eclipse.yasson>3.0.4</version.org.eclipse.yasson>
-    <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
-    <version.com.google.guava>33.4.8-jre</version.com.google.guava>
-    <version.org.awaitility>4.3.0</version.org.awaitility>
-    <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule -->
-    <version.jdk>${maven.compiler.release}</version.jdk>
-    <version.maven>${version.org.apache.maven}</version.maven>
-    <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
-    <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
-    <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
-    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
-    <!-- download-maven-plugin used to download arbitrary files at compile time -->
-    <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
-    <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
-    <version.dependency-plugin>3.6.1</version.dependency-plugin>
+    <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
+    <version.archunit.junit5>1.4.0</version.archunit.junit5>
     <!-- plugin used to enforce architectural constraints -->
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
-    <version.archunit.junit5>1.4.0</version.archunit.junit5>
-    <version.io.vertx>4.5.23</version.io.vertx>
-    <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
-    <version.graalvm>22.0.0.2</version.graalvm>
-    <version.gradle>8.11.1</version.gradle>
-    <version.org.apache.groovy>4.0.29</version.org.apache.groovy>
-    <version.maven.resolver.api>1.7.3</version.maven.resolver.api>
-    <version.nashorn>15.3</version.nashorn>
-    <!-- TODO: This version comes from kogito-runtimes : double check-->
-    <version.plugin.testing.harness>4.0.0-alpha-2</version.plugin.testing.harness>
-    <version.sisu.inject>1.4.2</version.sisu.inject>
-    <version.angus.mail>2.0.5</version.angus.mail>
-    <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
+    <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <version.black.ninia>4.2.0</version.black.ninia>
+    <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
+    <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.com.fasterxml.jackson>2.19.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.annotations>2.19.2</version.com.fasterxml.jackson.annotations>
     <version.com.fasterxml.jackson.databind>2.19.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.datatype>2.19.2</version.com.fasterxml.jackson.datatype>
+    <version.com.github.eirslett>1.15.1</version.com.github.eirslett>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
+    <!-- replaces findbugs-maven-plugin -->
+    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.com.google.collections>1.0</version.com.google.collections>
     <version.com.google.gson>2.13.2</version.com.google.gson>
     <version.com.google.guava>33.4.8-jre</version.com.google.guava>
+    <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
     <!-- graphql-java upgraded from 22.0 to 24.3 for java-dataloader 3.4.0+ compatibility
             required by Spring Boot 3.5.x (DataLoaderOptions.newDefaultOptions()).
             extended-scalars version must match graphql-java major version. -->
     <version.com.graphql-java>24.3</version.com.graphql-java>
     <version.com.graphql-java-extended-scalars>24.0</version.com.graphql-java-extended-scalars>
     <version.com.h2>2.3.232</version.com.h2>
+    <version.com.h2database>2.3.232</version.com.h2database>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
+    <!-- victools should align with Jackson if possible -->
+    <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.com.networknt>1.0.86</version.com.networknt>
+    <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
     <version.com.ongres.scram>3.2</version.com.ongres.scram>
     <version.com.squareup.okhttp3>4.12.0</version.com.squareup.okhttp3>
     <version.com.sun.activation>2.0.2</version.com.sun.activation>
+    <version.com.sun.xml.bind>4.0.5</version.com.sun.xml.bind>
     <version.com.sun.xml.bind.core>4.0.5</version.com.sun.xml.bind.core>
-    <version.commons.io>2.20.0</version.commons.io>
+    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
+    <version.common-text>1.14.0</version.common-text>
+    <version.common.compress>1.28.0</version.common.compress>
+    <version.common.exec>1.3</version.common.exec>
+    <version.commons-codec>1.19.0</version.commons-codec>
+    <version.commons-collections>3.2.2</version.commons-collections>
+    <version.commons-io>2.20.0</version.commons-io>
+    <version.commons-logging>1.1.1</version.commons-logging>
+    <version.compiler.plugin>3.13.0</version.compiler.plugin>
+    <version.dependency-plugin>3.6.1</version.dependency-plugin>
+    <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
+    <!-- download-maven-plugin used to download arbitrary files at compile time -->
+    <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
+    <version.graalvm>22.0.0.2</version.graalvm>
+    <version.gradle>8.11.1</version.gradle>
+    <version.guru.nidi>0.18.0</version.guru.nidi>
+    <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <version.io.fabric8>7.3.1</version.io.fabric8>
     <version.io.fabric8.kubernetes-client>7.3.1</version.io.fabric8.kubernetes-client>
     <version.io.grpc>1.76.0</version.io.grpc>
     <version.io.micrometer>1.14.12</version.io.micrometer>
-    <version.io.netty>4.1.130.Final</version.io.netty>
+    <version.io.netty>4.1.132.Final</version.io.netty>
+    <version.io.opentelemetry>1.0.0-alpha</version.io.opentelemetry>
     <version.io.rest-assured>5.5.6</version.io.rest-assured>
     <version.io.serverlessworkflow>4.1.0.Final</version.io.serverlessworkflow>
     <version.io.smallrye-config>3.13.4</version.io.smallrye-config>
     <version.io.smallrye-health>4.2.0</version.io.smallrye-health>
     <version.io.smallrye-open-api>4.0.12</version.io.smallrye-open-api>
+    <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
+    <version.io.smallrye.jandex>3.4.0</version.io.smallrye.jandex>
+    <version.io.smallrye.mutiny>2.9.5</version.io.smallrye.mutiny>
+    <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.reactive.messaging.in.memory>4.28.0</version.io.smallrye.reactive.messaging.in.memory>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.21.3</version.io.smallrye.reactive.mutiny-vertx-web-client>
     <!-- Mutiny Zero Flow Adapters -->
@@ -229,44 +152,101 @@
     <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
     <version.io.vertx>4.5.23</version.io.vertx>
-    <version.io.opentelemetry>1.0.0-alpha</version.io.opentelemetry>
+    <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
+    <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+    <version.jakarta.activation>2.0.3</version.jakarta.activation>
     <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
+    <version.jakarta.enterprise.cdi-api>4.1.0</version.jakarta.enterprise.cdi-api>
+    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
+    <version.jakarta.json>1.1.7</version.jakarta.json>
+    <version.jakarta.json-api>2.1.3</version.jakarta.json-api>
+    <version.jakarta.json.bind-api>3.0.1</version.jakarta.json.bind-api>
     <version.jakarta.persistence-api>3.2.0</version.jakarta.persistence-api>
+    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
     <version.jakarta.validation-api>3.1.1</version.jakarta.validation-api>
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
     <version.javax.inject>2.0.1</version.javax.inject>
+    <!-- JDepend plugin -->
+    <version.jdepend.maven.plugin>2.0</version.jdepend.maven.plugin>
+    <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule -->
+    <version.jdk>${maven.compiler.release}</version.jdk>
+    <version.junit>4.13.2</version.junit>
+    <version.maven>${version.org.apache.maven}</version.maven>
     <version.maven>3.9.11</version.maven>
+    <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
+    <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
+    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
     <version.maven.invoker>3.2.0</version.maven.invoker>
+    <version.maven.min>3.8.1</version.maven.min>
     <version.maven.plugin>3.15.1</version.maven.plugin>
     <version.maven.project>2.2.1</version.maven.project>
+    <version.maven.resolver.api>1.7.3</version.maven.resolver.api>
+    <version.nashorn>15.3</version.nashorn>
     <version.net.byte-buddy>1.17.6</version.net.byte-buddy>
+    <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.sf.saxon.Saxon-HE>12.7</version.net.sf.saxon.Saxon-HE>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
+    <version.org.antlr>3.5.2</version.org.antlr>
+    <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
+    <!-- External dependency versions bom -->
+    <!-- ################################################################################ -->
+    <!-- New and overwritten dependencies -->
+    <!-- ################################################################################ -->
+    <version.org.antlr4>4.13.2</version.org.antlr4>
+    <version.org.apache.ant>1.10.11</version.org.apache.ant>
     <version.org.apache.avro>1.12.1</version.org.apache.avro>
     <version.org.apache.commons>3.18.0</version.org.apache.commons>
     <version.org.apache.commons.csv>1.10.0</version.org.apache.commons.csv>
+    <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
+    <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.groovy>4.0.29</version.org.apache.groovy>
+    <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
+    <version.org.apache.maven>3.9.11</version.org.apache.maven>
+    <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
+    <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
+    <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
     <version.org.apache.opennlp>2.3.2</version.org.apache.opennlp>
+    <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
+    <version.org.apache.poi>5.4.1</version.org.apache.poi>
     <version.org.apache.tomcat>6.0.53</version.org.apache.tomcat>
+    <version.org.apache.tomcat.tomcat-dbcp>10.1.48</version.org.apache.tomcat.tomcat-dbcp>
+    <!-- therefore the property is rewritten in that repository parent -->
+    <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
+    <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.awaitility>4.3.0</version.org.awaitility>
     <version.org.bouncycastle.bc.jdk18on>1.82</version.org.bouncycastle.bc.jdk18on>
-    <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
+    <version.org.eclipse.jdt>3.44.0</version.org.eclipse.jdt>
     <version.org.eclipse.jetty.jakarta.servlet.api>5.0.2</version.org.eclipse.jetty.jakarta.servlet.api>
+    <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
+    <version.org.eclipse.microprofile.openapi>4.0.2</version.org.eclipse.microprofile.openapi>
+    <version.org.eclipse.yasson>3.0.4</version.org.eclipse.yasson>
     <version.org.flywaydb>11.14.1</version.org.flywaydb>
+    <version.org.freemarker>2.3.34</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
+    <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hibernate>7.1.14.Final</version.org.hibernate>
+    <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
+    <version.org.javassist>3.26.0-GA</version.org.javassist>
+    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
+    <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
+    <version.org.jboss.logmanager>3.2.1.Final</version.org.jboss.logmanager>
+    <version.org.jboss.logmanager.embedded>1.2.0.Final</version.org.jboss.logmanager.embedded>
+    <version.org.jboss.narayana.tomcat>7.2.2.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.resteasy>6.2.12.Final</version.org.jboss.resteasy>
+    <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
+    <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
+    <version.org.jpmml.model>1.6.4</version.org.jpmml.model>
     <version.org.jredisearch>2.2.0</version.org.jredisearch>
     <version.org.json>20231013</version.org.json>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
-    <version.org.junit>4.13.2</version.org.junit>
     <version.org.junit.jupiter>5.13.4</version.org.junit.jupiter>
     <version.org.junit.platform>1.13.4</version.org.junit.platform>
     <version.org.keycloak>26.1.0</version.org.keycloak>
@@ -274,60 +254,48 @@
     <version.org.mockito>5.18.0</version.org.mockito>
     <version.org.mongo>5.3.1</version.org.mongo>
     <version.org.mozilla.rhino>1.8.1</version.org.mozilla.rhino>
+    <!-- Keep synchronized with junit-jupiter (middle and minor should be the same) -->
     <version.org.mvel>2.5.2.Final</version.org.mvel>
+    <!-- Version of JMH -->
+    <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
     <version.org.postgresql>42.7.8</version.org.postgresql>
+    <version.org.powermock>2.0.9</version.org.powermock>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.reflections>0.10.2</version.org.reflections>
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <version.org.skyscreamer>1.5.1</version.org.skyscreamer>
+    <version.org.slf4j>2.0.17</version.org.slf4j>
     <version.org.spockframework>2.2-groovy-4.0</version.org.spockframework>
     <version.org.springdoc>2.8.13</version.org.springdoc>
     <version.org.testcontainers>2.0.3</version.org.testcontainers>
     <version.org.testcontainers.junit-jupiter>1.21.4</version.org.testcontainers.junit-jupiter>
     <version.org.testcontainers.postgresql>1.21.4</version.org.testcontainers.postgresql>
+    <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
     <version.org.webjars.bootstrap>5.1.3</version.org.webjars.bootstrap>
     <version.org.webjars.jquery>3.6.0</version.org.webjars.jquery>
     <version.org.wiremock>3.13.0</version.org.wiremock>
     <version.org.wiremock.webhooks>3.0.4</version.org.wiremock.webhooks>
+    <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
     <version.plexus>2.2.0</version.plexus>
     <version.plexus.classworld>2.9.0</version.plexus.classworld>
     <version.plexus.container>2.1.1</version.plexus.container>
-    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
-    <!-- replaces findbugs-maven-plugin -->
-    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
-    <version.maven.min>3.8.1</version.maven.min>
-    <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+    <version.plugin.annotations>3.15.1</version.plugin.annotations>
+    <!-- Add for kie-maven-plugin -->
+    <version.plugin.plugin>3.10.2</version.plugin.plugin>
+    <!-- TODO: This version comes from kogito-runtimes : double check-->
+    <version.plugin.testing.harness>4.0.0-alpha-2</version.plugin.testing.harness>
+    <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- OpenRewrite plugin -->
     <version.rewrite.maven.plugin>4.42.0</version.rewrite.maven.plugin>
     <version.rewrite.testing.frameworks>1.22.0</version.rewrite.testing.frameworks>
-    <!-- JDepend plugin -->
-    <version.jdepend.maven.plugin>2.0</version.jdepend.maven.plugin>
-    <!--  JaCoCo -->
-    <!-- JaCoCo coverage data file location -->
-    <!--suppress UnresolvedMavenProperty -->
-    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
-    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
-    <!-- Jacoco plugin configurations -->
-    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
-    <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
-    <!-- checkstyle -->
-    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
-    <checkstyle.header.template>.*</checkstyle.header.template>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
-    <!-- enforcer -->
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-    <!-- set to "none" to disable the ban-duplicated-classes rule -->
-    <enforcer.ban-duplicated-classes.phase>none</enforcer.ban-duplicated-classes.phase>
-    <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
-    <!-- set to "none" to disable the no-managed-deps rule -->
-    <enforcer.no-managed-deps.phase>initialize</enforcer.no-managed-deps.phase>
-    <illegaltransitivereportonly>false</illegaltransitivereportonly>
-    <!-- Set to "true" on every project that has no violations. -->
-    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
+    <version.shade.plugin>3.3.0</version.shade.plugin>
+    <version.shared.utils>3.4.2</version.shared.utils>
+    <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
+    <version.simple-jndi>0.11.4.1</version.simple-jndi>
+    <version.sisu.inject>1.4.2</version.sisu.inject>
+    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
+    <version.xerces>2.12.0.SP04</version.xerces>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -943,13 +911,13 @@
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>
         <version>${version.io.rest-assured}</version>
+        <scope>test</scope>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>io.rest-assured</groupId>
@@ -2161,13 +2129,13 @@
         <groupId>org.wiremock</groupId>
         <artifactId>wiremock</artifactId>
         <version>${version.org.wiremock}</version>
+        <scope>test</scope>
         <exclusions>
           <exclusion>
             <groupId>org.eclipse.jetty.toolchain</groupId>
             <artifactId>jetty-jakarta-servlet-api</artifactId>
           </exclusion>
         </exclusions>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.wiremock</groupId>
@@ -2310,12 +2278,12 @@
             </execution>
             <execution>
               <id>ban-duplicated-classes</id>
-              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
-                   is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
-              <phase>none</phase>
               <goals>
                 <goal>enforce</goal>
               </goals>
+              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
+                   is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+              <phase>none</phase>
               <configuration>
                 <rules>
                   <banDuplicateClasses>
@@ -2382,16 +2350,16 @@
               </goals>
               <configuration>
                 <rules>
-                  <banDuplicatePomDependencyVersions/>
+                  <banDuplicatePomDependencyVersions></banDuplicatePomDependencyVersions>
                 </rules>
               </configuration>
             </execution>
             <execution>
               <id>ban-blacklisted-dependencies</id>
-              <phase>validate</phase>
               <goals>
                 <goal>enforce</goal>
               </goals>
+              <phase>validate</phase>
               <configuration>
                 <rules>
                   <bannedDependencies>
@@ -2442,6 +2410,9 @@
             </execution>
             <execution>
               <id>no-dependencymanagement</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
               <configuration>
                 <rules>
                   <noDependencyManagementRule>
@@ -2449,9 +2420,6 @@
                   </noDependencyManagementRule>
                 </rules>
               </configuration>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
             </execution>
             <!-- <execution>
                <id>dependencies-convergence</id>
@@ -2513,6 +2481,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
+          <configuration>
+            <includes>
+              <include>**/*IntegrationTest.java</include>
+              <include>**/*IT.java</include>
+            </includes>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+          </configuration>
           <executions>
             <execution>
               <goals>
@@ -2521,13 +2496,6 @@
               </goals>
             </execution>
           </executions>
-          <configuration>
-            <includes>
-              <include>**/*IntegrationTest.java</include>
-              <include>**/*IT.java</include>
-            </includes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
@@ -2538,6 +2506,14 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
           <executions>
             <execution>
               <id>default-jar</id>
@@ -2564,9 +2540,7 @@
                 <archive>
                   <manifestEntries>
                     <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                   </manifestEntries>
@@ -2574,14 +2548,6 @@
               </configuration>
             </execution>
           </executions>
-          <configuration>
-            <archive>
-              <manifest>
-                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              </manifest>
-            </archive>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -2603,14 +2569,10 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${java.module.name}.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>${java.module.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -2625,14 +2587,10 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${java.module.name}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${java.module.name}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>${java.module.name}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -2646,10 +2604,10 @@
           <executions>
             <execution>
               <id>project-sources-archive</id>
-              <phase>initialize</phase>
               <goals>
                 <goal>archive</goal>
               </goals>
+              <phase>initialize</phase>
             </execution>
           </executions>
         </plugin>
@@ -2774,7 +2732,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore></ignore>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -2790,13 +2748,6 @@
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${version.com.github.spotbugs-maven-plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie</groupId>
-              <artifactId>kie-build-tools</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
           <configuration>
             <maxRank>6</maxRank>
             <effort>Max</effort>
@@ -2804,6 +2755,13 @@
             <failOnError>${spotbugs.failOnViolation}</failOnError>
             <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.kie</groupId>
+              <artifactId>kie-build-tools</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.pitest</groupId>
@@ -2885,11 +2843,11 @@
         <version>${version.build.helper.maven.plugin}</version>
         <executions>
           <execution>
-            <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
               <goal>parse-version</goal>
             </goals>
+            <phase>generate-sources</phase>
             <configuration>
               <sources>
                 <source>target/generated-sources/annotations/</source>
@@ -2932,15 +2890,15 @@
         </property>
       </activation>
       <properties>
+        <archetype.test.skip>true</archetype.test.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+        <enforcer.skip>true</enforcer.skip>
         <formatter.skip>true</formatter.skip>
+        <invoker.skip>true</invoker.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <revapi.skip>true</revapi.skip>
         <skipITs>true</skipITs>
         <skipTests>true</skipTests>
-        <invoker.skip>true</invoker.skip>
-        <archetype.test.skip>true</archetype.test.skip>
-        <enforcer.skip>true</enforcer.skip>
-        <revapi.skip>true</revapi.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-        <checkstyle.skip>true</checkstyle.skip>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -2951,10 +2909,10 @@
               <artifactId>properties-maven-plugin</artifactId>
               <executions>
                 <execution>
-                  <phase>initialize</phase>
                   <goals>
                     <goal>set-system-properties</goal>
                   </goals>
+                  <phase>initialize</phase>
                   <configuration>
                     <properties>
                       <property>
@@ -2979,12 +2937,12 @@
         </property>
       </activation>
       <properties>
-        <formatter.skip>false</formatter.skip>
-        <formatter.goal>validate</formatter.goal>
-        <impsort.goal>check</impsort.goal>
-        <skipITs>true</skipITs>
-        <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
+        <formatter.goal>validate</formatter.goal>
+        <formatter.skip>false</formatter.skip>
+        <impsort.goal>check</impsort.goal>
+        <invoker.skip>true</invoker.skip>
+        <skipITs>true</skipITs>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -2995,10 +2953,10 @@
               <artifactId>properties-maven-plugin</artifactId>
               <executions>
                 <execution>
-                  <phase>initialize</phase>
                   <goals>
                     <goal>set-system-properties</goal>
                   </goals>
+                  <phase>initialize</phase>
                   <configuration>
                     <properties>
                       <property>
@@ -3034,10 +2992,10 @@
         </property>
       </activation>
       <properties>
+        <archetype.test.skip>true</archetype.test.skip>
+        <invoker.skip>true</invoker.skip>
         <skipITs>true</skipITs>
         <skipTests>true</skipTests>
-        <invoker.skip>true</invoker.skip>
-        <archetype.test.skip>true</archetype.test.skip>
       </properties>
     </profile>
     <profile>
@@ -3071,10 +3029,10 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
               <execution>
-                <phase>package</phase>
                 <goals>
                   <goal>jar</goal>
                 </goals>
+                <phase>package</phase>
                 <configuration>
                   <source>${maven.compiler.release}</source>
                 </configuration>
@@ -3092,22 +3050,30 @@
       <properties>
         <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.organization>kiegroup</sonar.organization>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+        <sonar.organization>kiegroup</sonar.organization>
       </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <!-- Keep the version in sync with jacoco-maven-plugin -->
+                <version>${version.jacoco.plugin}</version>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <id>generate-aggregated-jacoco-report</id>
-                <phase>validate</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
+                <phase>validate</phase>
                 <configuration>
                   <!--
                     Jacoco ant "report" task provides control over scope of the generated report. The report task
@@ -3122,16 +3088,16 @@
                     https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
                   -->
                   <target>
-                    <echo message="Generating JaCoCo Reports"/>
-                    <taskdef classname="org.jacoco.ant.ReportTask" name="report"/>
-                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <echo message="Generating JaCoCo Reports"></echo>
+                    <taskdef classname="org.jacoco.ant.ReportTask" name="report"></taskdef>
+                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"></mkdir>
                     <report>
                       <executiondata>
                         <fileset dir="${project.root.dir}/target">
                           <!--
                             Include a single jacoco.exec file, which should be used in append mode by every module.
                           -->
-                          <include name="jacoco.exec"/>
+                          <include name="jacoco.exec"></include>
                         </fileset>
                       </executiondata>
                       <structure name="Coverage Report">
@@ -3141,19 +3107,19 @@
                               <!--
                                 Include class files from every module.
                               -->
-                              <include name="**/target/classes/**/*.class"/>
+                              <include name="**/target/classes/**/*.class"></include>
                               <!--
                                 Following classes are excluded as they are present in multiple modules. Usually they
                                 are a product of tests or 3rd party dependencies that got unwrapped in target/classes
                                 folder during the build. These are not a subject of test coverage measurement.
                               -->
-                              <exclude name="**/target/**/target/classes/**/*.class"/>
+                              <exclude name="**/target/**/target/classes/**/*.class"></exclude>
                               <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.
                                 They need to be renamed to enable coverage reporting for them.
                                 -->
-                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"/>
-                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"/>
+                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"></exclude>
+                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"></exclude>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">
@@ -3161,26 +3127,18 @@
                               <!--
                                 Include source files from every module.
                               -->
-                              <include name="**/src/main/**/*.java"/>
+                              <include name="**/src/main/**/*.java"></include>
                             </fileset>
                           </sourcefiles>
                         </group>
                       </structure>
                       <!-- The same report is generated in each module -->
-                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"/>
+                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"></xml>
                     </report>
                   </target>
                 </configuration>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.jacoco</groupId>
-                <artifactId>org.jacoco.ant</artifactId>
-                <!-- Keep the version in sync with jacoco-maven-plugin -->
-                <version>${version.jacoco.plugin}</version>
-              </dependency>
-            </dependencies>
           </plugin>
           <plugin>
             <groupId>org.sonarsource.scanner.maven</groupId>
@@ -3205,13 +3163,13 @@
         </property>
       </activation>
       <properties>
-        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
-        <!--suppress UnresolvedMavenProperty -->
-        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
+        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
       </properties>
     </profile>
     <!-- Forces en_US usage during test execution. Useful for machine with different locale -->
@@ -3246,13 +3204,11 @@
     <profile>
       <id>run-code-coverage</id>
       <properties>
-        <jacoco.excludes>*Lexer</jacoco.excludes>
         <!--suppress UnresolvedMavenProperty -->
         <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
-        <surefire.argLine>
-          -Dfile.encoding=${project.build.sourceEncoding}
-          ${jacoco.agent.line}
-        </surefire.argLine>
+        <jacoco.excludes>*Lexer</jacoco.excludes>
+        <surefire.argLine>-Dfile.encoding=${project.build.sourceEncoding}
+          ${jacoco.agent.line}</surefire.argLine>
       </properties>
       <build>
         <pluginManagement>
@@ -3308,10 +3264,10 @@
             <executions>
               <execution>
                 <id>unpack-jar</id>
-                <phase>compile</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
+                <phase>compile</phase>
               </execution>
             </executions>
           </plugin>
@@ -3324,8 +3280,8 @@
         <jdk>[17,21)</jdk>
       </activation>
       <properties>
-        <version.archunit.maven.plugin>2.9.1</version.archunit.maven.plugin>
         <version.archunit.junit5>1.2.0</version.archunit.junit5>
+        <version.archunit.maven.plugin>2.9.1</version.archunit.maven.plugin>
       </properties>
     </profile>
   </profiles>
