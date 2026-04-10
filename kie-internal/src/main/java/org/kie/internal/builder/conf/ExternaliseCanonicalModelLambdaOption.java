@@ -25,7 +25,7 @@ import org.kie.api.conf.OptionKey;
  *
  * drools.externaliseCanonicalModelLambda = &lt;true|false&gt;
  *
- * DEFAULT = false
+ * DEFAULT = true
  */
 public enum ExternaliseCanonicalModelLambdaOption implements SingleValueRuleBuilderOption {
 
