@@ -23,9 +23,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.acme.travels.Traveller;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.usertask.model.AttachmentInfo;
@@ -444,4 +446,32 @@ class TaskIT {
         assertThat(downTaskInfo.getInputParams().get("traveller")).isNull();
     }
 
+    @AfterEach
+    public void cleanUp() {
+        List<String> staleProcessInstanceIds = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/approvals")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList("id", String.class);
+
+        staleProcessInstanceIds.forEach(processInstanceId -> {
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .delete("/approvals/{processInstanceId}", processInstanceId)
+                    .then()
+                    .statusCode(200);
+        });
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/approvals")
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(0));
+    }
 }
