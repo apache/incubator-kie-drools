@@ -88,7 +88,7 @@
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
     <!-- replaces findbugs-maven-plugin -->
-    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
+    <version.com.github.spotbugs-maven-plugin>4.9.8.3</version.com.github.spotbugs-maven-plugin>
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.com.github.victools>4.37.0</version.com.github.victools>
     <version.com.google.collections>1.0</version.com.google.collections>
@@ -2754,15 +2754,7 @@
             <effort>Max</effort>
             <xmlOutput>true</xmlOutput>
             <failOnError>${spotbugs.failOnViolation}</failOnError>
-            <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie</groupId>
-              <artifactId>kie-build-tools</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.pitest</groupId>
