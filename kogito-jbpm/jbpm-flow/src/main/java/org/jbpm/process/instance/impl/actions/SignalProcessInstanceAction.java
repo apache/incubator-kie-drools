@@ -40,6 +40,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
 
     public static final String DEFAULT_SCOPE = "default";
     public static final String PROCESS_INSTANCE_SCOPE = "processInstance";
+    public static final String PROJECT_SCOPE = "project";
     public static final String EXTERNAL_SCOPE = "external";
 
     public static final String UNSET_SCOPE = System.getProperty("org.jbpm.signals.defaultscope", PROCESS_INSTANCE_SCOPE);
@@ -107,7 +108,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         context.getKogitoProcessRuntime().getProcessEventSupport()
                 .fireOnSignal(processInstance, nodeInstance, context.getKieRuntime(), signalName, signal);
         LOG.debug("about to signal {} process {} with scope {}", signalName, processInstance.getId(), scope);
-        if (DEFAULT_SCOPE.equals(scope)) {
+        if (DEFAULT_SCOPE.equals(scope) || PROJECT_SCOPE.equals(scope)) {
             context.getKogitoProcessRuntime().signalEvent(signalName, signal);
         } else if (PROCESS_INSTANCE_SCOPE.equals(scope)) {
             context.getProcessInstance().signalEvent(signalName, signal);

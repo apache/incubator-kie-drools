@@ -2882,4 +2882,27 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         kruntime.signalEvent("stopChild:999", null, updatedChild.getStringId());
         assertProcessInstanceFinished(updatedChild, kruntime);
     }
+
+    @Test
+    public void testSignalProjectScope() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        org.kie.kogito.process.Process<IntermediateCatchEventSignalForScopeModel> catchEventSignalForScope = IntermediateCatchEventSignalForScopeProcess.newProcess(app);
+        org.kie.kogito.process.Process<IntermediateThrowEventProjectScopeModel> throwEventProjectScopeProcess = IntermediateThrowEventProjectScopeProcess.newProcess(app);
+
+        ProcessInstance<IntermediateCatchEventSignalForScopeModel> catchEventInstance = catchEventSignalForScope.createInstance(catchEventSignalForScope.createModel());
+        catchEventInstance.start();
+        assertThat(catchEventInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        ProcessInstance<IntermediateThrowEventProjectScopeModel> throwEventProjectScopeInstance = throwEventProjectScopeProcess.createInstance(throwEventProjectScopeProcess.createModel());
+        throwEventProjectScopeInstance.start();
+        assertThat(throwEventProjectScopeInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(ProcessTestHelper.findRemovedInstance(app, catchEventInstance.id()))
+                .isPresent()
+                .get()
+                .extracting(WorkflowProcessInstance::getState)
+                .isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
 }
