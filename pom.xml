@@ -140,6 +140,7 @@
     <module>kie-util</module>
     <module>kie-memory-compiler</module>
     <module>drools-ruleunits</module>
+    <module>drools-reactive-connectors</module>
     <module>drools-wiring</module>
     <module>kie-test-util</module>
     <module>drools-util</module>
