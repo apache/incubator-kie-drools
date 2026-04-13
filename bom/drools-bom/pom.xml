@@ -1184,6 +1184,19 @@
         <version>${project.version}</version>
       </dependency>
       
+      <!-- GraphQL API -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-graphql</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-graphql</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
       <!-- drlonyaml -->
       <dependency>
         <groupId>org.drools</groupId>
