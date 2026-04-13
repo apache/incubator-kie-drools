@@ -79,7 +79,7 @@
     <version.jakarta.validation-api>3.1.1</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
 
-    <version.io.netty>4.1.130.Final</version.io.netty>
+    <version.io.netty>4.1.132.Final</version.io.netty>
 
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <!--
