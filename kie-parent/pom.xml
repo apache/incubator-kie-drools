@@ -151,7 +151,7 @@
     <version.io.smallrye.reactive.mutiny-zero>1.1.1</version.io.smallrye.reactive.mutiny-zero>
     <version.io.swagger.core.v3>2.2.38</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.1.34</version.io.swagger.parser.v3>
-    <version.io.vertx>4.5.23</version.io.vertx>
+    <version.io.vertx>4.5.24</version.io.vertx>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
     <version.jakarta.activation>2.0.3</version.jakarta.activation>
@@ -232,7 +232,7 @@
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hibernate>7.1.14.Final</version.org.hibernate>
-    <version.org.hsqldb>2.3.0</version.org.hsqldb>
+    <version.org.hsqldb>2.7.1</version.org.hsqldb>
     <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
