@@ -295,7 +295,7 @@
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.sisu.inject>1.4.2</version.sisu.inject>
-    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
+    <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
     <version.xerces>2.12.0.SP04</version.xerces>
   </properties>
   <dependencyManagement>
