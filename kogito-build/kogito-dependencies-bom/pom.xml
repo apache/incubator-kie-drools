@@ -168,7 +168,7 @@
     <version.com.google.guava>33.4.8-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
 
-    <version.tomcat.embed.core>10.1.52</version.tomcat.embed.core>
+    <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
     <version.org.hibernate>7.1.14.Final</version.org.hibernate>
     <version.com.graphql-java>24.3</version.com.graphql-java>
   </properties>
