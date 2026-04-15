@@ -128,6 +128,13 @@ class BasicRestIT {
                 .statusCode(200);
 
         assertExpectedUnitOfWorkEvents(1);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/approvals/{processId}", processId)
+                .then()
+                .statusCode(200);
     }
 
     @Test

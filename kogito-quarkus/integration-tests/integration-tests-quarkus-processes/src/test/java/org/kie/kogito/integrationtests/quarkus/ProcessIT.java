@@ -74,6 +74,13 @@ public class ProcessIT {
                 .body("traveller.lastName", equalTo(traveller.getLastName()))
                 .body("traveller.email", equalTo(traveller.getEmail()))
                 .body("traveller.nationality", equalTo(traveller.getNationality()));
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/approvals/{processId}", processId)
+                .then()
+                .statusCode(200);
     }
 
     private void testProcessSchema(String processId, String schemaFileName) throws IOException {

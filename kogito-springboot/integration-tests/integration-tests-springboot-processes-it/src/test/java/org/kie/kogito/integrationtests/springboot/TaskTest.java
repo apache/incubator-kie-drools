@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -58,32 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 public class TaskTest extends BaseRestTest {
 
-    @AfterEach
-    public void cleanUp() {
-        String processId = "";
-        do {
-            processId = given()
-                    .when()
-                    .contentType(ContentType.JSON)
-                    .queryParam("user", "admin")
-                    .queryParam("group", "managers")
-                    .get("/approvals")
-                    .then()
-                    .statusCode(200)
-                    .extract()
-                    .path("[0].id");
-            if (processId != null && !processId.isBlank()) {
-                given()
-                        .when()
-                        .contentType(ContentType.JSON)
-                        .queryParam("user", "admin")
-                        .queryParam("group", "managers")
-                        .pathParam("processId", processId)
-                        .delete("/approvals/{processId}")
-                        .then();
-            }
-        } while (processId != null && !processId.isBlank());
-    }
+    public static final String TASK_ID_BY_PROCESS_INSTANCE_ID_JSONPATH = "find { it.processInfo.processInstanceId == \"%s\" }.id";
 
     @Test
     void testJsonSchema() {
@@ -148,7 +124,7 @@ public class TaskTest extends BaseRestTest {
     public void testInputOutputsViaJsonTypeProperty() throws Exception {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
 
-        given()
+        String processId = given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -167,7 +143,8 @@ public class TaskTest extends BaseRestTest {
                 .then()
                 .statusCode(200)
                 .extract()
-                .path("[0].id");
+                .jsonPath()
+                .getString(TASK_ID_BY_PROCESS_INSTANCE_ID_JSONPATH.formatted(processId));
 
         traveller = new Traveller("pepe2", "rubiales2", "pepe.rubiales@gmail.com", "Spanish2", null);
         ObjectMapper mapper = new ObjectMapper();
@@ -208,7 +185,7 @@ public class TaskTest extends BaseRestTest {
     void testCommentAndAttachment() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
 
-        given()
+        String processId = given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -227,7 +204,8 @@ public class TaskTest extends BaseRestTest {
                 .then()
                 .statusCode(200)
                 .extract()
-                .path("[0].id");
+                .jsonPath()
+                .getString(TASK_ID_BY_PROCESS_INSTANCE_ID_JSONPATH.formatted(processId));
 
         final String commentId = given().contentType(ContentType.JSON)
                 .when()
@@ -403,9 +381,9 @@ public class TaskTest extends BaseRestTest {
 
     @Test
     void testUpdateTaskInfo() {
-        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", new Address("Alfredo Di Stefano", "Madrid", "28033", "Spain"));
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
 
-        given()
+        String processId = given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -417,14 +395,17 @@ public class TaskTest extends BaseRestTest {
 
         String taskId = given()
                 .contentType(ContentType.JSON)
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
                 .when()
                 .get("/usertasks/instance")
                 .then()
                 .statusCode(200)
                 .extract()
-                .path("[0].id");
+                .jsonPath()
+                .getString(TASK_ID_BY_PROCESS_INSTANCE_ID_JSONPATH.formatted(processId));
+
+        traveller.setEmail("javierito@gmail.com");
 
         TaskInfo upTaskInfo = new TaskInfo("firstAproval", "high", Collections.singleton("admin"),
                 Collections.singleton("managers"), Collections.singleton("Javierito"), Collections.emptySet(),
@@ -433,18 +414,17 @@ public class TaskTest extends BaseRestTest {
         //at first, we try with user that doesn't have rights
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "jsnow")
+                .queryParam("user", "admin")
                 .pathParam("taskId", taskId)
                 .body(upTaskInfo)
                 .put("/management/usertasks/{taskId}")
                 .then()
-                .statusCode(403); //should fail, because there is not an "jsnow" user assigned to User Task
+                .statusCode(403); //should fail, because there is not an "admin" user assigned to User Task
 
-        //"managers" should have rights
+        //"manager" should have rights
         given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "manager")
-                .queryParam("group", "managers")
                 .pathParam("taskId", taskId)
                 .body(upTaskInfo)
                 .put("/management/usertasks/{taskId}")
@@ -476,4 +456,32 @@ public class TaskTest extends BaseRestTest {
         assertThat(downTaskInfo.getInputParams().get("traveller")).isNull();
     }
 
+    @AfterEach
+    public void cleanUp() {
+        List<String> staleProcessInstanceIds = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/approvals")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList("id", String.class);
+
+        staleProcessInstanceIds.forEach(processInstanceId -> {
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .delete("/approvals/{processInstanceId}", processInstanceId)
+                    .then()
+                    .statusCode(200);
+        });
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/approvals")
+                .then()
+                .statusCode(200)
+                .body("$.size()", equalTo(0));
+    }
 }
