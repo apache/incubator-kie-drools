@@ -75,7 +75,7 @@
     <version.io.netty>4.1.132.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
-    <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
+    <version.org.apache.kafka>4.0.2</version.org.apache.kafka>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
