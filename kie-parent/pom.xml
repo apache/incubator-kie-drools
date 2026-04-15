@@ -70,11 +70,13 @@
    -->
     <version.angus.mail>2.0.5</version.angus.mail>
     <version.antlr>2.7.7</version.antlr>
+    <version.ant-apache-regexp>1.8.2</version.ant-apache-regexp>
     <version.apache.commons.commons-compress>1.28.0</version.apache.commons.commons-compress>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
     <!-- plugin used to enforce architectural constraints -->
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
+    <version.asciidoctor-maven-plugin>2.0.0-RC.1</version.asciidoctor-maven-plugin>
     <version.at.yawk.lz4.java>1.10.1</version.at.yawk.lz4.java>
     <version.black.ninia>4.2.0</version.black.ninia>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
@@ -121,13 +123,19 @@
     <version.commons-io>2.20.0</version.commons-io>
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.compiler.plugin>3.13.0</version.compiler.plugin>
+    <version.copy-rename-maven-plugin>1.0</version.copy-rename-maven-plugin>
     <version.dependency-plugin>3.6.1</version.dependency-plugin>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <!-- download-maven-plugin used to download arbitrary files at compile time -->
     <version.download-maven-plugin>2.0.0</version.download-maven-plugin>
+    <version.enforce-managed-deps-rule>1.3</version.enforce-managed-deps-rule>
+    <version.enforce-victims-rule>1.3.4</version.enforce-victims-rule>
+    <version.exec-maven-plugin>1.5.0</version.exec-maven-plugin>
+    <version.extra-enforcer-rules>1.0</version.extra-enforcer-rules>
     <version.graalvm>22.0.0.2</version.graalvm>
     <version.gradle>8.11.1</version.gradle>
     <version.guru.nidi>0.18.0</version.guru.nidi>
+    <version.illegal-transitive-dependency-check>1.7.4</version.illegal-transitive-dependency-check>
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.cloudevents>3.0.0</version.io.cloudevents>
     <version.io.fabric8>7.3.1</version.io.fabric8>
@@ -167,23 +175,29 @@
     <version.jakarta.validation-api>3.1.1</version.jakarta.validation-api>
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
     <version.jakarta.xml.bind-api>4.0.4</version.jakarta.xml.bind-api>
-    <version.javax.inject>2.0.1</version.javax.inject>
+    <version.javax.inject>1</version.javax.inject>
+    <version.jaxb2-maven-plugin>2.2</version.jaxb2-maven-plugin>
     <!-- JDepend plugin -->
     <version.jdepend.maven.plugin>2.0</version.jdepend.maven.plugin>
     <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule -->
     <version.jdk>${maven.compiler.release}</version.jdk>
     <version.junit>4.13.2</version.junit>
+    <version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
     <version.maven>${version.org.apache.maven}</version.maven>
     <version.maven>3.9.11</version.maven>
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
+    <version.maven.enforcer>3.3.0</version.maven.enforcer>
     <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+    <!-- Note: following ones are two different plugins -->
     <version.maven.invoker>3.2.0</version.maven.invoker>
+    <version.maven-invoker-plugin>3.2.1</version.maven-invoker-plugin>
     <version.maven.min>3.8.1</version.maven.min>
     <version.maven.plugin>3.15.1</version.maven.plugin>
     <version.maven.project>2.2.1</version.maven.project>
     <version.maven.resolver.api>1.7.3</version.maven.resolver.api>
     <version.nashorn>15.3</version.nashorn>
+    <version.native2ascii-maven-plugin>1.0-beta-1</version.native2ascii-maven-plugin>
     <version.net.byte-buddy>1.17.6</version.net.byte-buddy>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
@@ -231,6 +245,7 @@
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
+    <version.org.hamcrest.hamcrest-all>1.3</version.org.hamcrest.hamcrest-all>
     <version.org.hibernate>7.1.14.Final</version.org.hibernate>
     <version.org.hsqldb>2.7.1</version.org.hsqldb>
     <version.org.infinispan>15.0.21.Final</version.org.infinispan>
@@ -278,6 +293,7 @@
     <version.org.wiremock.webhooks>3.0.4</version.org.wiremock.webhooks>
     <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
+    <version.pitest-maven>1.2.0</version.pitest-maven>
     <version.plexus>2.2.0</version.plexus>
     <version.plexus.classworld>2.9.0</version.plexus.classworld>
     <version.plexus.container>2.1.1</version.plexus.container>
@@ -286,6 +302,7 @@
     <version.plugin.plugin>3.10.2</version.plugin.plugin>
     <!-- TODO: This version comes from kogito-runtimes : double check-->
     <version.plugin.testing.harness>4.0.0-alpha-2</version.plugin.testing.harness>
+    <version.project-sources-maven-plugin>0.3</version.project-sources-maven-plugin>
     <version.property-maven-plugin>1.2.1</version.property-maven-plugin>
     <!-- OpenRewrite plugin -->
     <version.rewrite.maven.plugin>4.42.0</version.rewrite.maven.plugin>
@@ -295,8 +312,12 @@
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.sisu.inject>1.4.2</version.sisu.inject>
+    <version.sonar-maven-plugin>3.6.0.1398</version.sonar-maven-plugin>
     <version.tomcat.embed.core>10.1.54</version.tomcat.embed.core>
+    <version.versions-maven-plugin>2.10.0</version.versions-maven-plugin>
+    <version.wildfly-maven-plugin>1.2.0.Final</version.wildfly-maven-plugin>
     <version.xerces>2.12.0.SP04</version.xerces>
+    <version.xml-maven-plugin>1.0</version.xml-maven-plugin>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -328,7 +349,6 @@
         <artifactId>logback-classic</artifactId>
         <version>${version.ch.qos.logback}</version>
       </dependency>
-      <!-- Version overrides to fix vulnerabilities - end -->
       <!-- Keep in sync with groupId org.slf4j -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -516,6 +536,7 @@
         <artifactId>miglayout</artifactId>
         <version>${version.com.miglayout}</version>
       </dependency>
+      <!-- used by JUnit test suite for JSON Schema conformance -->
       <dependency>
         <groupId>com.networknt</groupId>
         <artifactId>json-schema-validator</artifactId>
@@ -526,7 +547,6 @@
             <artifactId>commons-lang3</artifactId>
           </exclusion>
         </exclusions>
-        <!-- used by JUnit test suite for JSON Schema conformance -->
       </dependency>
       <dependency>
         <groupId>com.ongres.scram</groupId>
@@ -1079,6 +1099,7 @@
         <artifactId>vertx-web-client</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
+      <!-- Version overrides to fix vulnerabilities - end -->
       <dependency>
         <groupId>it.unimi.dsi</groupId>
         <artifactId>fastutil</artifactId>
@@ -1142,7 +1163,7 @@
       <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
-        <version>1</version>
+        <version>${version.javax.inject}</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -1641,7 +1662,7 @@
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-all</artifactId>
-        <version>1.3</version>
+        <version>${version.org.hamcrest.hamcrest-all}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1970,7 +1991,7 @@
         <artifactId>reflections</artifactId>
         <version>${version.org.reflections}</version>
       </dependency>
-      <!--rockdb-->
+      <!--rocksdb-->
       <dependency>
         <groupId>org.rocksdb</groupId>
         <artifactId>rocksdbjni</artifactId>
@@ -2193,27 +2214,27 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>${version.maven.enforcer}</version>
           <dependencies>
             <dependency>
               <groupId>de.is24.maven.enforcer.rules</groupId>
               <artifactId>illegal-transitive-dependency-check</artifactId>
-              <version>1.7.4</version>
+              <version>${version.illegal-transitive-dependency-check}</version>
             </dependency>
             <dependency>
               <groupId>com.redhat.victims</groupId>
               <artifactId>enforce-victims-rule</artifactId>
-              <version>1.3.4</version>
+              <version>${version.enforce-victims-rule}</version>
             </dependency>
             <dependency>
               <groupId>org.commonjava.maven.enforcer</groupId>
               <artifactId>enforce-managed-deps-rule</artifactId>
-              <version>1.3</version>
+              <version>${version.enforce-managed-deps-rule}</version>
             </dependency>
             <dependency>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>extra-enforcer-rules</artifactId>
-              <version>1.0</version>
+              <version>${version.extra-enforcer-rules}</version>
             </dependency>
             <dependency>
               <groupId>org.kie</groupId>
@@ -2446,7 +2467,7 @@
             <dependency>
               <groupId>org.apache.ant</groupId>
               <artifactId>ant-apache-regexp</artifactId>
-              <version>1.8.2</version>
+              <version>${version.ant-apache-regexp}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -2601,7 +2622,7 @@
         <plugin>
           <groupId>org.commonjava.maven.plugins</groupId>
           <artifactId>project-sources-maven-plugin</artifactId>
-          <version>0.3</version>
+          <version>${version.project-sources-maven-plugin}</version>
           <executions>
             <execution>
               <id>project-sources-archive</id>
@@ -2639,12 +2660,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.2</version>
+          <version>${version.jaxb2-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>xml-maven-plugin</artifactId>
-          <version>1.0</version>
+          <version>${version.xml-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>io.smallrye</groupId>
@@ -2654,7 +2675,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>2.0.0-RC.1</version>
+          <version>${version.asciidoctor-maven-plugin>}</version>
           <dependencies>
             <dependency>
               <groupId>org.asciidoctor</groupId>
@@ -2671,12 +2692,12 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>native2ascii-maven-plugin</artifactId>
-          <version>1.0-beta-1</version>
+          <version>${version.native2ascii-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>com.coderplus.maven.plugins</groupId>
           <artifactId>copy-rename-maven-plugin</artifactId>
-          <version>1.0</version>
+          <version>${version.copy-rename-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -2685,7 +2706,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>${version.maven-invoker-plugin}</version>
           <configuration>
             <writeJunitReport>true</writeJunitReport>
           </configuration>
@@ -2698,7 +2719,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
-          <version>2.10.0</version>
+          <version>${version.versions-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -2718,7 +2739,7 @@
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
+          <version>${version.lifecycle-mapping}</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
@@ -2759,23 +2780,23 @@
         <plugin>
           <groupId>org.pitest</groupId>
           <artifactId>pitest-maven</artifactId>
-          <version>1.2.0</version>
+          <version>${version.pitest-maven}</version>
         </plugin>
         <!-- Incremental compiler-->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>1.5.0</version>
+          <version>${version.exec-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.wildfly.plugins</groupId>
           <artifactId>wildfly-maven-plugin</artifactId>
-          <version>1.2.0.Final</version>
+          <version>${version.wildfly-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.6.0.1398</version>
+          <version>${version.sonar-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
