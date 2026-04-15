@@ -1,0 +1,15 @@
+this:
+  is:
+    a: test
+    b: notNull
+  was:
+    a: test
+    b: notNull
+
+that:
+  is:
+    a: test
+    b: notNull
+  was:
+    a: test
+    b: notNull

@@ -193,6 +193,7 @@
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.4.0</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.4</version.org.eclipse.yasson>
+    <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
 
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
 
@@ -1235,6 +1236,12 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.org.yaml.snakeyaml}</version>
       </dependency>
 
       <!-- Used by kie-pmml-trusty projects -->
