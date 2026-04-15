@@ -40,6 +40,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.custom.FormattedZonedDateTime;
 import org.kie.dmn.feel.runtime.custom.ZoneTime;
 
 public class BuiltInTypeUtils {
@@ -73,7 +74,7 @@ public class BuiltInTypeUtils {
             return BuiltInType.DATE;
         } else if (o instanceof LocalTime || o instanceof OffsetTime || o instanceof ZoneTime) {
             return BuiltInType.TIME;
-        } else if (o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime) {
+        } else if (o instanceof ZonedDateTime || o instanceof FormattedZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime) {
             return BuiltInType.DATE_TIME;
         } else if (o instanceof Duration || o instanceof ChronoPeriod) {
             return BuiltInType.DURATION;

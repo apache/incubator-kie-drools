@@ -18,5 +18,13 @@
 #
 
 github:
+  description: Drools is a rule engine, DMN engine and complex event processing (CEP) engine for Java
+  homepage: https://kie.apache.org
+  labels:
+    - apache
+    - java
+    - rule-engine
+    - dmn
+    - hacktoberfest
   features:
     issues: true
