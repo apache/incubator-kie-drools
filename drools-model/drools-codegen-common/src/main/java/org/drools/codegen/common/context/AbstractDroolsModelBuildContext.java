@@ -110,8 +110,8 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
     protected static TreeMap<String, Object> loadYmlMap(File ymlFile) {
         if (ymlFile.exists() && ymlFile.isFile() && ymlFile.canRead()) {
             Yaml yaml = new Yaml();
-            try {
-                return yaml.loadAs(new FileReader(ymlFile, StandardCharsets.UTF_8), TreeMap.class);
+            try (FileReader yamlFileReader = new FileReader(ymlFile, StandardCharsets.UTF_8)){
+                return yaml.loadAs(yamlFileReader, TreeMap.class);
             } catch (IOException e) {
                 LOGGER.debug("Unable to load '{}'.", ymlFile.getName(), e);
             }
@@ -134,7 +134,8 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
                 convertYamlObjectToMap((Map<String, Object>) value, newBuilder.append(key).append("."), toPopulate);
             } else {
                 String property = builder.toString() + key;
-                toPopulate.put(property, value.toString());
+                String propertyValue = value != null ? value.toString() : "";
+                toPopulate.put(property, propertyValue);
             }
         });
     }
