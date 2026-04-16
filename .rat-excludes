@@ -34,6 +34,7 @@ data-index/data-index-quarkus/kogito-addons-quarkus-data-index/kogito-addons-qua
 data-index/data-index-quarkus/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-postgresql/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
 data-index/data-index-quarkus/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-jpa/integration-tests-process/src/main/resources/hello.bpmn
 data-index/data-index-quarkus/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-jpa/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+data-index/data-index-quarkus/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-jpa/integration-tests-process/src/test/resources/application.properties
 data-index/data-index-quarkus/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-mongodb/integration-tests-process/src/main/resources/hello.bpmn
 data-index/data-index-quarkus/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-postgresql/integration-tests-process/src/main/resources/hello.bpmn
 data-index/data-index-service/data-index-service-common/src/main/resources/domain.schema.graphqls

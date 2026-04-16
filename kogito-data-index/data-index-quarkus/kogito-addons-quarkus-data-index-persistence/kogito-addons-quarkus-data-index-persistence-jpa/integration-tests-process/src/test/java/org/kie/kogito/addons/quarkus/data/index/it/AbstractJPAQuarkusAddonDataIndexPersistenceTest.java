@@ -26,9 +26,6 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.model.ProcessInstance;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -38,19 +35,15 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-@QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class JPAQuarkusAddonDataIndexPersistenceTest {
-
-    @Inject
-    ProcessDefinitionEntityStorage processDefinitionEntityStorage;
-
-    @Inject
-    ProcessInstanceEntityStorage processInstanceEntityStorage;
-
+public abstract class AbstractJPAQuarkusAddonDataIndexPersistenceTest {
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
+
+    @Inject
+    ProcessDefinitionEntityStorage processDefinitionEntityStorage;
+    @Inject
+    ProcessInstanceEntityStorage processInstanceEntityStorage;
 
     @Test
     void testDataIndexAddon() {
@@ -109,5 +102,4 @@ class JPAQuarkusAddonDataIndexPersistenceTest {
                 .hasFieldOrProperty("end")
                 .hasFieldOrProperty("lastUpdate");
     }
-
 }
