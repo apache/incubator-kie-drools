@@ -1,0 +1,4 @@
+{
+  "$schema":  "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": ["maven@3.9.12"]
+}

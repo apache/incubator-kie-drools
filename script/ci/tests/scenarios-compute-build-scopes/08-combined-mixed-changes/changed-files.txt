@@ -1,0 +1,5 @@
+drools-drl/pom.xml
+drools-drl/drools-drl-removed-fixture/src/main/java/org/example/RemovedClass.java
+drools-beliefs/src/main/java/org/drools/beliefs/bayes/BayesNetwork.java
+drools-core/src/main/java/org/drools/core/WorkingMemory.java
+drools-kiesession/src/main/java/org/drools/kiesession/session/StatefulKnowledgeSessionImpl.java

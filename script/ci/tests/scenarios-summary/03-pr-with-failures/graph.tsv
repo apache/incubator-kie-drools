@@ -1,0 +1,5 @@
+P	g:u	{ROOT}/u
+P	g:a1	{ROOT}/a1
+P	g:a2	{ROOT}/a2
+D	g:a1	g:u
+D	g:a2	g:a1
