@@ -38,7 +38,7 @@
   <bpmn2:itemDefinition id="ItemDefinition_14" isCollection="false"/>
   <bpmn2:itemDefinition id="ItemDefinition_15" isCollection="false"/>
   <bpmn2:itemDefinition id="ItemDefinition_16" isCollection="false"/>
-  <bpmn2:process id="boundaryTimerCycleCron" drools:packageName="org.jbpm" drools:version="1.0" name="Test_Cron" isExecutable="true">
+  <bpmn2:process id="MultipleBoundaryTimerCycleCronVariable" drools:packageName="org.jbpm.bpmn2.event" drools:version="1.0" name="Test_Cron" isExecutable="true">
     <bpmn2:property id="cronStr" itemSubjectRef="_cronStrItem" name="cronStr"/>
     <bpmn2:property id="complete" itemSubjectRef="_completeItem" name="complete"/>
     <bpmn2:startEvent id="processStartEvent" drools:bgcolor="#9acd32" drools:selectable="true" name="">
@@ -174,10 +174,15 @@
       <bpmn2:dataInputAssociation id="DataInputAssociation_9">
         <bpmn2:targetRef>DataInput_9</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_erIyhZZ7EeSDh8PHobjSSA_2">
+        <bpmn2:resourceAssignmentExpression id="_erIyhpZ7EeSDh8PHobjSSA_2">
+          <bpmn2:formalExpression id="_erIyh5Z7EeSDh8PHobjSSA_2">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="_erJZkJZ7EeSDh8PHobjSSA">
-    <bpmndi:BPMNPlane id="_erJZkZZ7EeSDh8PHobjSSA" bpmnElement="boundaryTimerCycleCron">
+    <bpmndi:BPMNPlane id="_erJZkZZ7EeSDh8PHobjSSA" bpmnElement="MultipleBoundaryTimerCycleCronVariable">
       <bpmndi:BPMNShape id="_erJZkpZ7EeSDh8PHobjSSA" bpmnElement="processStartEvent">
         <dc:Bounds height="30.0" width="30.0" x="60.0" y="105.0"/>
         <bpmndi:BPMNLabel id="BPMNLabel_1"/>

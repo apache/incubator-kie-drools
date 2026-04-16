@@ -37,10 +37,16 @@ import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationModel;
 import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationProcess;
 import org.jbpm.bpmn2.event.BoundarySignalWithNameEventOnTaskModel;
 import org.jbpm.bpmn2.event.BoundarySignalWithNameEventOnTaskProcess;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleCronModel;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleCronProcess;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleCronVariableModel;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleCronVariableProcess;
 import org.jbpm.bpmn2.event.BoundaryTimerCycleISOModel;
 import org.jbpm.bpmn2.event.BoundaryTimerCycleISOProcess;
 import org.jbpm.bpmn2.event.BoundaryTimerCycleISOVariableModel;
 import org.jbpm.bpmn2.event.BoundaryTimerCycleISOVariableProcess;
+import org.jbpm.bpmn2.event.MultipleBoundaryTimerCycleCronVariableModel;
+import org.jbpm.bpmn2.event.MultipleBoundaryTimerCycleCronVariableProcess;
 import org.jbpm.bpmn2.intermediate.*;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopBoundaryTimerModel;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopBoundaryTimerProcess;
@@ -204,6 +210,75 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         List<WorkItem> workItems = allWorkItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
         assertThat(workItems).hasSize(1);
         instance.completeWorkItem(workItems.get(0).getId(), Collections.emptyMap());
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testTimerBoundaryEventCronCycle() {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
+        ProcessTestHelper.registerHandler(app, "Human Task", new TestUserTaskWorkItemHandler());
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryTimerCycleCronModel> definition = BoundaryTimerCycleCronProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleCronModel> instance = definition
+                .createInstance(definition.createModel());
+        instance.start();
+        listener.waitTillCompleted();
+        List<WorkItem> allWorkItems = instance.workItems();
+        assertThat(allWorkItems).hasSize(4);
+        List<WorkItem> workItems = allWorkItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
+        assertThat(workItems).hasSize(1);
+        instance.completeWorkItem(workItems.get(0).getId(), Collections.emptyMap());
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testTimerBoundaryEventCronCycleVariable() {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
+        ProcessTestHelper.registerHandler(app, "Human Task", new TestUserTaskWorkItemHandler());
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryTimerCycleCronVariableModel> definition = BoundaryTimerCycleCronVariableProcess.newProcess(app);
+        BoundaryTimerCycleCronVariableModel model = definition.createModel();
+        model.setCronStr("0/1 * * * * ?");
+        org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleCronVariableModel> instance = definition
+                .createInstance(model);
+        instance.start();
+        listener.waitTillCompleted();
+        List<WorkItem> allWorkItems = instance.workItems();
+        assertThat(allWorkItems).hasSize(4);
+        List<WorkItem> workItems = allWorkItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
+        assertThat(workItems).hasSize(1);
+        instance.completeWorkItem(workItems.get(0).getId(), Collections.emptyMap());
+        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
+                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultipleTimerBoundaryEventCronCycleVariable() {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 2);
+        ProcessTestHelper.registerHandler(app, "Human Task", new TestUserTaskWorkItemHandler());
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<MultipleBoundaryTimerCycleCronVariableModel> definition =
+                MultipleBoundaryTimerCycleCronVariableProcess.newProcess(app);
+        MultipleBoundaryTimerCycleCronVariableModel model = definition.createModel();
+        model.setCronStr("0/1 * * * * ?");
+        org.kie.kogito.process.ProcessInstance<MultipleBoundaryTimerCycleCronVariableModel> instance =
+                definition.createInstance(model);
+        instance.start();
+        List<WorkItem> workItems = instance.workItems();
+        assertThat(workItems).isNotNull();
+        assertThat(workItems.size()).isEqualTo(1);
+        listener.waitTillCompleted();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        workItems = instance.workItems();
+        assertThat(workItems).hasSizeGreaterThanOrEqualTo(3);
+        List<WorkItem> finishWork = workItems.stream().filter(e -> "Finish Work".equals(e.getName())).toList();
+        assertThat(finishWork).hasSize(1);
+        instance.completeWorkItem(finishWork.get(0).getId(), Collections.emptyMap());
         assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
                 .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
@@ -1978,8 +2053,9 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createInstance(definition.createModel());
         instance.start();
         latch.await(5, TimeUnit.SECONDS);
-        assertThat(ProcessTestHelper.findRemovedInstance(app, instance.id()))
-                .isPresent().get().extracting(WorkflowProcessInstance::getState).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        instance.abort();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
     }
 
     @Test

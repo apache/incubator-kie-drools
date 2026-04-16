@@ -41,7 +41,7 @@
     <startEvent id="_1" name="StartProcess" />
     <intermediateCatchEvent id="_3" name="timer" >
       <timerEventDefinition>
-        <timeCycle language="iso">R3/PT1S</timeCycle>
+        <timeCycle language="cron">0/1 * * * * ?</timeCycle>
       </timerEventDefinition>
     </intermediateCatchEvent>
     <scriptTask id="_4" name="Event" >

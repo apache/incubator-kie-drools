@@ -18,14 +18,17 @@
  */
 package org.jbpm.process.core.timer;
 
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Objects;
 
 import org.drools.base.time.TimeUtils;
+import org.drools.core.time.impl.CronExpression;
 
 public class DateTimeUtils extends TimeUtils {
 
@@ -43,6 +46,30 @@ public class DateTimeUtils extends TimeUtils {
         }
 
         return false;
+    }
+
+    public static boolean isCronExpression(String dateTimeStr) {
+        return dateTimeStr != null && CronExpression.isValidExpression(dateTimeStr);
+    }
+
+    public static long[] parseCronAsRepeatableInterval(String cronExpression) {
+        try {
+            CronExpression cron = new CronExpression(cronExpression);
+            Date now = new Date();
+            Date firstFire = cron.getNextValidTimeAfter(now);
+            if (firstFire == null) {
+                throw new IllegalArgumentException("Cron expression will never fire: " + cronExpression);
+            }
+            long delay = firstFire.getTime() - now.getTime();
+            Date secondFire = cron.getNextValidTimeAfter(firstFire);
+            if (secondFire != null) {
+                long interval = secondFire.getTime() - firstFire.getTime();
+                return new long[] { Integer.MAX_VALUE, delay, interval };
+            }
+            return new long[] { 1, delay, delay };
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid cron expression: " + cronExpression, e);
+        }
     }
 
     public static long parseDateTime(String dateTimeStr) {

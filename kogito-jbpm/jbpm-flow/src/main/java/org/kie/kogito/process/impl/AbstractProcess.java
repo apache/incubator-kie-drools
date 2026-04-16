@@ -272,7 +272,12 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         switch (timer.getTimeType()) {
             case Timer.TIME_CYCLE:
                 // when using ISO date/time period is not set
-                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                long[] repeatValues;
+                if (DateTimeUtils.isCronExpression(timer.getDelay())) {
+                    repeatValues = DateTimeUtils.parseCronAsRepeatableInterval(timer.getDelay());
+                } else {
+                    repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                }
                 if (repeatValues.length == 3) {
                     int parsedReapedCount = (int) repeatValues[0];
                     if (parsedReapedCount <= -1) {

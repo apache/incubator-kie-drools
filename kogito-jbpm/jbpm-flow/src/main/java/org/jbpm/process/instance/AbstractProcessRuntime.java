@@ -144,7 +144,12 @@ public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
         switch (timer.getTimeType()) {
             case Timer.TIME_CYCLE:
                 // when using ISO date/time period is not set
-                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                long[] repeatValues;
+                if (DateTimeUtils.isCronExpression(timer.getDelay())) {
+                    repeatValues = DateTimeUtils.parseCronAsRepeatableInterval(timer.getDelay());
+                } else {
+                    repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                }
                 if (repeatValues.length == 3) {
                     int repeatLimit = repeatValues[0] < 0 ? 0 : (int) repeatValues[0];
                     return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], repeatLimit);

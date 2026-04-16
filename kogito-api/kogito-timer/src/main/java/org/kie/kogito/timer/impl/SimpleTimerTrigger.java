@@ -230,6 +230,13 @@ public class SimpleTimerTrigger implements Trigger {
         return repeatCount == INDEFINITELY;
     }
 
+    public int computeRemainingRepetitions() {
+        if (isIndefinitely()) {
+            return -1;
+        }
+        return getRepeatCount() - getCurrentRepeatCount();
+    }
+
     /**
      * @return The number of executed repetitions for this timer, or -1 if the timer was configured with the indefinitely
      *         repeatCount = -1.

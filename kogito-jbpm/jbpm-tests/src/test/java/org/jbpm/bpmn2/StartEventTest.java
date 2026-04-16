@@ -196,6 +196,24 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testTimerStartCron() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 3);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        final Set<String> startedInstances = new HashSet<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                startedInstances.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+            }
+        });
+        org.kie.kogito.process.Process<TimerStartCronModel> definition = TimerStartCronProcess.newProcess(app);
+        assertThat(startedInstances).isEmpty();
+        countDownListener.waitTillCompleted();
+        assertThat(startedInstances).hasSize(3);
+    }
+
+    @Test
     public void testTimerStartDuration() throws Exception {
         Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);

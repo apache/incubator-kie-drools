@@ -149,6 +149,10 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
                     String tempDelay = resolveTimerExpression(timer.getDelay());
                     String tempPeriod = resolveTimerExpression(timer.getPeriod());
+                    if (DateTimeUtils.isCronExpression(tempDelay)) {
+                        long[] cronValues = DateTimeUtils.parseCronAsRepeatableInterval(tempDelay);
+                        return DurationExpirationTime.repeat(cronValues[1], cronValues[2], (int) cronValues[0]);
+                    }
                     if (DateTimeUtils.isRepeatable(tempDelay)) {
                         String[] values = DateTimeUtils.parseISORepeatable(tempDelay);
                         String tempRepeatLimit = values[0];
@@ -207,14 +211,16 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     }
                 } else {
                     String resolvedDelay = resolveTimerExpression(timer.getDelay());
-
                     // when using ISO date/time period is not set
                     long[] repeatValues = null;
-                    try {
-                        repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                    } catch (RuntimeException e) {
-                        // cannot parse delay, trying to interpret it
-                        repeatValues = DateTimeUtils.parseRepeatableDateTime(resolvedDelay);
+                    if (DateTimeUtils.isCronExpression(resolvedDelay)) {
+                        repeatValues = DateTimeUtils.parseCronAsRepeatableInterval(resolvedDelay);
+                    } else {
+                        try {
+                            repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                        } catch (RuntimeException e) {
+                            repeatValues = DateTimeUtils.parseRepeatableDateTime(resolvedDelay);
+                        }
                     }
                     if (repeatValues.length == 3) {
                         int parsedReapedCount = (int) repeatValues[0];
