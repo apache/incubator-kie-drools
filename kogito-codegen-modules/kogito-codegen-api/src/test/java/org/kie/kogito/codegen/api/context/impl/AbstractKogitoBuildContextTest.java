@@ -18,16 +18,28 @@
  */
 package org.kie.kogito.codegen.api.context.impl;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
+import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.codegen.common.DroolsModelBuildContext.APPLICATION_PROPERTIES_YAML_FILE_NAME;
+import static org.drools.codegen.common.DroolsModelBuildContext.APPLICATION_PROPERTIES_YML_FILE_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AbstractKogitoBuildContextTest {
 
@@ -85,6 +97,80 @@ class AbstractKogitoBuildContextTest {
         assertThat(builder.build().getGAV()).isEmpty();
         assertThatThrownBy(() -> builder.withGAV(null)).isInstanceOf(NullPointerException.class).hasMessageContaining("gav");
         assertThat(builder.withGAV(KogitoGAV.EMPTY_GAV).build().getGAV()).hasValue(KogitoGAV.EMPTY_GAV);
+    }
+
+    @MethodSource("testData")
+    @ParameterizedTest
+    void loadYmlProperties(String fileName) {
+        File ymlFile = FileUtils.getFile(fileName);
+        assertTrue(ymlFile.exists());
+        Properties properties = new Properties();
+        AbstractKogitoBuildContext.loadYmlProperties(ymlFile, properties);
+        assertEquals("test", properties.getProperty("this.is.a"));
+        assertEquals("notNull", properties.getProperty("this.is.b"));
+        assertEquals("test", properties.getProperty("this.was.a"));
+        assertEquals("notNull", properties.getProperty("this.was.b"));
+        assertEquals("test", properties.getProperty("that.is.a"));
+        assertEquals("notNull", properties.getProperty("that.is.b"));
+        assertEquals("test", properties.getProperty("that.was.a"));
+        assertEquals("notNull", properties.getProperty("that.was.b"));
+    }
+
+    @MethodSource("testData")
+    @ParameterizedTest
+    void loadYmlStringMap(String fileName) {
+        File ymlFile = FileUtils.getFile(fileName);
+        assertTrue(ymlFile.exists());
+        Map<String, String> retrieved = AbstractKogitoBuildContext.loadYmlStringMap(ymlFile);
+        assertNotNull(retrieved);
+        commonCheck(retrieved);
+    }
+
+    @MethodSource("testData")
+    @ParameterizedTest
+    void loadYmlMap(String fileName) {
+        File ymlFile = FileUtils.getFile(fileName);
+        assertTrue(ymlFile.exists());
+        TreeMap<String, Object> retrieved = AbstractKogitoBuildContext.loadYmlMap(ymlFile);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.containsKey("this"));
+    }
+
+    @MethodSource("testData")
+    @ParameterizedTest
+    void convertYamlObjectToMap(String fileName) {
+        File ymlFile = FileUtils.getFile(fileName);
+        assertTrue(ymlFile.exists());
+        TreeMap<String, Object> ymlMap = AbstractKogitoBuildContext.loadYmlMap(ymlFile);
+        assertNotNull(ymlMap);
+
+        Map<String, String> retrieved = AbstractKogitoBuildContext.convertYamlObjectToMap(ymlMap);
+        commonCheck(retrieved);
+    }
+
+    private static Collection<String> testData() {
+        return java.util.List.of(APPLICATION_PROPERTIES_YML_FILE_NAME, APPLICATION_PROPERTIES_YAML_FILE_NAME);
+    }
+
+    private void commonCheck(Map<String, String> retrieved) {
+        assertNotNull(retrieved);
+        assertTrue(retrieved.containsKey("this.is.a"));
+        assertEquals("test", retrieved.get("this.is.a"));
+        assertTrue(retrieved.containsKey("this.is.b"));
+        assertEquals("notNull", retrieved.get("this.is.b"));
+        assertTrue(retrieved.containsKey("this.was.a"));
+        assertEquals("test", retrieved.get("this.was.a"));
+        assertTrue(retrieved.containsKey("this.was.b"));
+        assertEquals("notNull", retrieved.get("this.was.b"));
+
+        assertTrue(retrieved.containsKey("that.is.a"));
+        assertEquals("test", retrieved.get("that.is.a"));
+        assertTrue(retrieved.containsKey("that.is.b"));
+        assertEquals("notNull", retrieved.get("that.is.b"));
+        assertTrue(retrieved.containsKey("that.was.a"));
+        assertEquals("test", retrieved.get("that.was.a"));
+        assertTrue(retrieved.containsKey("that.was.b"));
+        assertEquals("notNull", retrieved.get("that.was.b"));
     }
 
     static class MockKogitoBuildContext extends AbstractKogitoBuildContext {

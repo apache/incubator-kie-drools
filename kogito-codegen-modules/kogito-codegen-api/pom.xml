@@ -33,6 +33,7 @@
 
   <properties>
     <java.module.name>org.kie.kogito.codegen.api</java.module.name>
+    <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
   </properties>
 
     <dependencyManagement>
@@ -43,6 +44,11 @@
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${version.org.yaml.snakeyaml}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -66,6 +72,11 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
 
         <!-- test -->
