@@ -30,6 +30,8 @@ import org.drools.codegen.common.rest.RestAnnotator;
 public interface DroolsModelBuildContext {
 
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
+    String APPLICATION_PROPERTIES_YML_FILE_NAME = "application.yml";
+    String APPLICATION_PROPERTIES_YAML_FILE_NAME = "application.yaml";
     String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
     /**
      * (boolean) enable/disable global rest endpoint generation (default true)
