@@ -294,6 +294,7 @@
     <version.org.wiremock.webhooks>3.0.4</version.org.wiremock.webhooks>
     <version.org.xmlunit>2.10.4</version.org.xmlunit>
     <version.org.xmlunit-core>2.10.4</version.org.xmlunit-core>
+    <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
     <version.pitest-maven>1.2.0</version.pitest-maven>
     <version.plexus>2.2.0</version.plexus>
     <version.plexus.classworld>2.9.0</version.plexus.classworld>
@@ -2061,6 +2062,11 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
         <version>${version.org.slf4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.org.yaml.snakeyaml}</version>
       </dependency>
       <dependency>
         <groupId>org.sonatype.sisu</groupId>
