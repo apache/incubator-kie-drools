@@ -113,21 +113,61 @@ class BFEELDialectHandlerTest {
         assertThat(handler.executeSub(LocalDate.of(2024, 1, 10), Duration.ofDays(5), ctx))
                 .isEqualTo(LocalDate.of(2024, 1, 5));
         
-        // Multiplication - returns zero for invalid
+        // Multiplication - B-FEEL returns default values (never null)
         assertThat(handler.executeMult("test", 5, ctx)).isEqualTo(BigDecimal.ZERO);
         assertThat(handler.executeMult(5, 10, ctx)).isEqualTo(new BigDecimal("50"));
         assertThat(handler.executeMult(Duration.ofDays(5), null, ctx)).isEqualTo(Duration.ZERO);
         assertThat(handler.executeMult(Period.ofMonths(3), null, ctx)).isEqualTo(ComparablePeriod.ofMonths(0));
-        assertThat(handler.executeMult(Duration.ofDays(5), Duration.ofDays(3), ctx)).isNull();
         
-        // Division - returns zero for invalid, null for division by zero
+        // Case A: Same Duration Types - Duration × Duration (same type) → zero duration (B-FEEL default)
+        assertThat(handler.executeMult(Duration.ofDays(5), Duration.ofDays(3), ctx)).isEqualTo(Duration.ZERO);
+        assertThat(handler.executeMult(Period.ofMonths(6), Period.ofMonths(2), ctx)).isEqualTo(ComparablePeriod.ofMonths(0));
+        
+        // Case B: Mixed Duration Types - B-FEEL implicit coercion
+        // Period × Duration: Duration converted to seconds (PT1S = 1 second), result is Period
+        // P1Y (12 months) × PT1S (1 second) = P12M
+        assertThat(handler.executeMult(Period.ofYears(1), Duration.ofSeconds(1), ctx)).isEqualTo(ComparablePeriod.ofMonths(12));
+        
+        // Duration × Period: Period converted to months (P1Y = 12 months), result is Duration
+        // PT1S (1 second) × P1Y (12 months) = PT12S
+        assertThat(handler.executeMult(Duration.ofSeconds(1), Period.ofYears(1), ctx)).isEqualTo(Duration.ofSeconds(12));
+        
+        // Division - B-FEEL implicit coercion: converts duration to numeric value before division
         assertThat(handler.executeDivision("test", 5, ctx)).isEqualTo(BigDecimal.ZERO);
         assertThat(handler.executeDivision(20, 4, ctx)).isEqualTo(new BigDecimal("5"));
-        assertThat(handler.executeDivision(10, Duration.ofDays(5), ctx)).isNull();
+        
+        // Number ÷ Duration: Duration converted to seconds (5 days = 432000 seconds)
+        // 10 ÷ 432000 = 0.000023148...
+        assertThat(handler.executeDivision(10, Duration.ofDays(5), ctx)).isInstanceOf(BigDecimal.class);
+        assertThat(((BigDecimal) handler.executeDivision(10, Duration.ofDays(5), ctx)).compareTo(BigDecimal.ZERO)).isGreaterThan(0);
+        
+        // Number ÷ Period: Period converted to months (P2Y = 24 months)
+        // 26 ÷ 24 = 1.0833...
+        assertThat(handler.executeDivision(26, Period.ofYears(2), ctx)).isInstanceOf(BigDecimal.class);
+        BigDecimal result = (BigDecimal) handler.executeDivision(26, Period.ofYears(2), ctx);
+        assertThat(result.compareTo(new BigDecimal("1.08"))).isGreaterThan(0);
+        assertThat(result.compareTo(new BigDecimal("1.09"))).isLessThan(0);
+        
+        // Division by zero duration returns BigDecimal.ZERO (B-FEEL never returns null)
+        assertThat(handler.executeDivision(10, Duration.ZERO, ctx)).isEqualTo(BigDecimal.ZERO);
+        assertThat(handler.executeDivision(10, Period.ofMonths(0), ctx)).isEqualTo(BigDecimal.ZERO);
+        
+        // Duration ÷ Duration → number (valid operation, returns ratio)
+        // PT10S ÷ PT5S = 2
+        assertThat(handler.executeDivision(Duration.ofSeconds(10), Duration.ofSeconds(5), ctx)).isEqualTo(new BigDecimal("2"));
+        // Division by zero duration returns BigDecimal.ZERO in B-FEEL
+        assertThat(handler.executeDivision(Duration.ofSeconds(10), Duration.ZERO, ctx)).isEqualTo(BigDecimal.ZERO);
+        
+        // Period ÷ Period → number (valid operation, returns ratio)
+        // P2Y ÷ P1Y = 24 months ÷ 12 months = 2
+        assertThat(handler.executeDivision(Period.ofYears(2), Period.ofYears(1), ctx)).isEqualTo(new BigDecimal("2"));
+        // Division by zero period returns BigDecimal.ZERO in B-FEEL
+        assertThat(handler.executeDivision(Period.ofMonths(12), Period.ofMonths(0), ctx)).isEqualTo(BigDecimal.ZERO);
+        
         assertThat(handler.executeDivision(Duration.ofDays(5), null, ctx)).isEqualTo(Duration.ZERO);
         assertThat(handler.executeDivision(Period.ofMonths(3), null, ctx)).isEqualTo(ComparablePeriod.ofMonths(0));
         assertThat(handler.executeDivision(null, 5, ctx)).isEqualTo(BigDecimal.ZERO);
-        assertThat(handler.executeDivision(10, 0, ctx)).isNull(); // Division by zero
+        assertThat(handler.executeDivision(10, 0, ctx)).isEqualTo(BigDecimal.ZERO); // Division by zero returns 0 in B-FEEL
     }
 
     @Test

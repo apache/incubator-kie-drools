@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.lang.ast.dialectHandlers;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.chrono.ChronoPeriod;
@@ -34,6 +35,7 @@ import org.kie.dmn.feel.lang.ast.infixexecutors.EqExecutor;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.getString;
+import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 /**
  * Handler implementation of the DialectHandler interface providing BFEEL specific
@@ -415,13 +417,37 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
                 new CheckedPredicate((left, right) -> left == null && right instanceof ChronoPeriod, false),
                 (left, right) -> ComparablePeriod.ofMonths(0));
 
+        // Period × Duration (mixed types) → B-FEEL implicit coercion: convert Duration to seconds, multiply
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof Duration, false),
+                (left, right) -> {
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left));
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) right).getSeconds());
+                    if (months == null || seconds == null)
+                        return ComparablePeriod.ofMonths(0);
+                    return ComparablePeriod.ofMonths(months.multiply(seconds, MathContext.DECIMAL128).intValue());
+                });
+
+        // Duration × Period (mixed types) → B-FEEL implicit coercion: convert Period to months, multiply
+        map.put(
+                new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof ChronoPeriod, false),
+                (left, right) -> {
+                    BigDecimal seconds = getBigDecimalOrNull(((Duration) left).getSeconds());
+                    BigDecimal months = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right));
+                    if (seconds == null || months == null)
+                        return Duration.ZERO;
+                    return Duration.ofSeconds(seconds.multiply(months, MathContext.DECIMAL128).longValue());
+                });
+
+        // Duration × Duration (same type) → returns zero duration (B-FEEL default for disallowed operation)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof Duration && right instanceof Duration, false),
-                (left, right) -> null);
+                (left, right) -> Duration.ZERO);
 
+        // Period × Period (same type) → returns zero period (B-FEEL default for disallowed operation)
         map.put(
                 new CheckedPredicate((left, right) -> left instanceof ChronoPeriod && right instanceof ChronoPeriod, false),
-                (left, right) -> null);
+                (left, right) -> ComparablePeriod.ofMonths(0));
         map.putAll(getCommonMultOperations(ctx));
         return map;
     }
@@ -445,13 +471,25 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         map.put(new CheckedPredicate((l, r) -> l instanceof String && r instanceof String, false),
                 (l, r) -> BigDecimal.ZERO);
 
-        // number ÷ duration → invalid → null
+        // number ÷ duration → B-FEEL implicit coercion: convert duration to seconds, then divide
         map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof Duration, false),
-                (l, r) -> null);
+                (l, r) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(l);
+                    BigDecimal rightSecs = getBigDecimalOrNull(((Duration) r).getSeconds());
+                    if (leftNum == null || rightSecs == null || rightSecs.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftNum.divide(rightSecs, MathContext.DECIMAL128);
+                });
 
-        // number ÷ period → invalid → null
+        // number ÷ period → B-FEEL implicit coercion: convert period to total months, then divide
         map.put(new CheckedPredicate((l, r) -> l instanceof Number && r instanceof ChronoPeriod, false),
-                (l, r) -> null);
+                (l, r) -> {
+                    BigDecimal leftNum = getBigDecimalOrNull(l);
+                    BigDecimal rightMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) r));
+                    if (leftNum == null || rightMonths == null || rightMonths.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftNum.divide(rightMonths, MathContext.DECIMAL128);
+                });
 
         // duration ÷ null → Duration.ZERO
         map.put(new CheckedPredicate((l, r) -> l instanceof Duration && r == null, false),
@@ -472,6 +510,26 @@ public class BFEELDialectHandler extends DefaultDialectHandler implements Dialec
         // null ÷ number
         map.put(new CheckedPredicate((l, r) -> l == null && r instanceof Number, false),
                 (l, r) -> BigDecimal.ZERO);
+
+        // duration ÷ duration → number (B-FEEL: returns 0 instead of null when divisor is zero)
+        map.put(new CheckedPredicate((l, r) -> l instanceof Duration && r instanceof Duration, false),
+                (l, r) -> {
+                    BigDecimal leftSecs = getBigDecimalOrNull(((Duration) l).getSeconds());
+                    BigDecimal rightSecs = getBigDecimalOrNull(((Duration) r).getSeconds());
+                    if (leftSecs == null || rightSecs == null || rightSecs.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftSecs.divide(rightSecs, MathContext.DECIMAL128);
+                });
+
+        // period ÷ period → number (B-FEEL: returns 0 instead of null when divisor is zero)
+        map.put(new CheckedPredicate((l, r) -> l instanceof ChronoPeriod && r instanceof ChronoPeriod, false),
+                (l, r) -> {
+                    BigDecimal leftMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) l));
+                    BigDecimal rightMonths = getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) r));
+                    if (leftMonths == null || rightMonths == null || rightMonths.compareTo(BigDecimal.ZERO) == 0)
+                        return BigDecimal.ZERO; // B-FEEL returns 0 instead of null
+                    return leftMonths.divide(rightMonths, MathContext.DECIMAL128);
+                });
 
         map.putAll(getCommonDivisionOperations(ctx));
         return map;
