@@ -72,10 +72,10 @@
     <version.info.picocli>4.7.7</version.info.picocli>
     <version.io.micrometer>1.14.12</version.io.micrometer>
     <version.io.quarkus>3.27.2</version.io.quarkus>
-    <version.io.netty>4.1.131.Final</version.io.netty>
+    <version.io.netty>4.1.132.Final</version.io.netty>
     <version.io.smallrye.openapi.core>4.0.12</version.io.smallrye.openapi.core>
     <version.io.smallrye.config.core>3.13.4</version.io.smallrye.config.core>
-    <version.org.apache.kafka>4.0.0</version.org.apache.kafka>
+    <version.org.apache.kafka>4.0.2</version.org.apache.kafka>
 
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.2</version.junit>
@@ -99,7 +99,7 @@
     <version.org.glassfish.jaxb>4.0.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
-    <version.org.hsqldb>2.3.0</version.org.hsqldb>
+    <version.org.hsqldb>2.7.1</version.org.hsqldb>
     <version.org.infinispan>15.0.21.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.13.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
@@ -177,8 +177,7 @@
     <enforcer.failOnBannedDependencies>true</enforcer.failOnBannedDependencies>
     <!-- Set to "true" on every project that has no violations. -->
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
-    <!-- replaces findbugs-maven-plugin -->
-    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
+    <version.com.github.spotbugs-maven-plugin>4.9.8.3</version.com.github.spotbugs-maven-plugin>
 
     <version.maven.min>3.8.1</version.maven.min>
     <!-- property for productisation to know the last released version -->
@@ -194,6 +193,7 @@
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.4.0</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.4</version.org.eclipse.yasson>
+    <version.org.yaml.snakeyaml>2.6</version.org.yaml.snakeyaml>
 
     <version.com.github.javaparser>3.27.0</version.com.github.javaparser>
 
@@ -222,12 +222,18 @@
     <version.archunit.maven.plugin>4.0.2</version.archunit.maven.plugin>
     <version.archunit.junit5>1.4.0</version.archunit.junit5>
 
-    <version.io.vertx>4.5.23</version.io.vertx>
+    <version.io.vertx>4.5.24</version.io.vertx>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <!-- Version overrides to fix vulnerabilities. -->
+      <!-- Override vertx-core version from Quarkus 3.27.2 BOM (CVE fix) -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
@@ -1232,6 +1238,12 @@
         <version>${version.com.google.guava}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${version.org.yaml.snakeyaml}</version>
+      </dependency>
+
       <!-- Used by kie-pmml-trusty projects -->
       <dependency>
         <groupId>org.kie</groupId>
@@ -1935,19 +1947,11 @@
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${version.com.github.spotbugs-maven-plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie</groupId>
-              <artifactId>kie-build-tools</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
           <configuration>
             <maxRank>6</maxRank>
             <effort>Max</effort>
             <xmlOutput>true</xmlOutput>
             <failOnError>${spotbugs.failOnViolation}</failOnError>
-            <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
           </configuration>
         </plugin>
         <plugin>
